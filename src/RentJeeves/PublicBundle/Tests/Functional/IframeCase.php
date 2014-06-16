@@ -7,7 +7,9 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -28,6 +30,98 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
+    }
+
+    public function provideGoogleAddress()
+    {
+        return array(
+            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', null, 40.699021, -73.993744),
+            array('13 Greenwich St, Manhattan, New York, NY 10013', 'New York', 'Manhattan', 40.7218084, -74.0097316),
+        );
+    }
+
+    /**
+     * @test
+     * @dataProvider provideGoogleAddress
+     */
+    public function parseGoogleAddress($address, $city, $district, $jb, $kb)
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+
+        $this->fillGoogleAddress($address);
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
+
+        $repo = $this->getContainer()->get('doctrine')->getManager()->getRepository('RjDataBundle:Property');
+        $this->assertNotNull($property = $repo->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb));
+        $this->assertEquals($city, $property->getCity());
+        $this->assertEquals($district, $property->getDistrict());
+    }
+
+    /**
+     * @test
+     */
+    public function iframeInviteLandlord()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
+        $this->assertNotNull($submit = $form->findButton('iframe.find'));
+        $fillAddress = '350 5th Avenue, Manhattan, New York City, NY 10118, United States';
+        $this->fillGoogleAddress($fillAddress);
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
+        $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype').length > 0");
+        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
+
+        $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_invitetenanttype_invite_is_single'                 => false,
+                'rentjeeves_publicbundle_invitetenanttype_invite_unit'                      => '',
+                'rentjeeves_publicbundle_invitetenanttype_invite_first_name'                => 'Met',
+                'rentjeeves_publicbundle_invitetenanttype_invite_last_name'                 => 'Torr',
+                'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'landlord@ya.ru',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_first_name'                => "Andrew",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_last_name'                 => "Ssiw",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_email'                     => "newtenant@test.com",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_password_Password'         => 'pass',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_password_Verify_Password'  => 'pass',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_tos'                       => true,
+            )
+        );
+
+        $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
+        $submit->click();
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(1, $errorList);
+        $this->assertEquals('invite.error.specify_unit_or_mark_single', $errorList[0]->getText());
+
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_invitetenanttype_invite_is_single'                 => true,
+                'rentjeeves_publicbundle_invitetenanttype_invite_unit'                      => '',
+                'rentjeeves_publicbundle_invitetenanttype_invite_first_name'                => 'Met',
+                'rentjeeves_publicbundle_invitetenanttype_invite_last_name'                 => 'Torr',
+                'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'landlord@ya.ru',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_first_name'                => "Andrew",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_last_name'                 => "Ssiw",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_email'                     => "newtenant@test.com",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_password_Password'         => 'pass',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_password_Verify_Password'  => 'pass',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_tos'                       => true,
+            )
+        );
+        $submit->click();
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+
+        $fields = $this->page->findAll('css', '#inviteText>h4');
+        $this->assertCount(3, $fields, 'wrong number of text h4');
     }
 
     /**
@@ -55,7 +149,7 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(6, $errorList, 'Wrong number of errors');
+        $this->assertCount(7, $errorList, 'Wrong number of errors');
         //Check search on the not found
         $fillAddress = 'Manhattan, New York City, NY 10118';
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
@@ -112,6 +206,7 @@ class IframeCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_publicbundle_invitetenanttype_invite_is_single'                 => false,
                 'rentjeeves_publicbundle_invitetenanttype_invite_unit'                      => 'e3',
                 'rentjeeves_publicbundle_invitetenanttype_invite_first_name'                => 'Alex',
                 'rentjeeves_publicbundle_invitetenanttype_invite_last_name'                 => 'Sharamko',
@@ -175,16 +270,12 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#invitelandlordtype'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(6, $errorList, 'Wrong number of pending');
+        $this->assertCount(2, $errorList, 'Wrong number of pending');
         $this->fillForm(
             $form,
             array(
                 'invitelandlordtype_landlord_password_Password'          => 'pass',
                 'invitelandlordtype_landlord_password_Verify_Password'   => 'pass',
-                'invitelandlordtype_deposit_nickname'                    => 'nickname',
-                'invitelandlordtype_deposit_AccountNumber'               => '12345678',
-                'invitelandlordtype_deposit_RoutingNumber'               => '12345678',
-                'invitelandlordtype_deposit_ACHDepositType_1'            => true,
                 'invitelandlordtype_landlord_tos'                        => true,
             )
         );
@@ -357,14 +448,21 @@ class IframeCase extends BaseTestCase
         $order = new Order();
         $operation = new Operation();
         $contract = new Contract();
-        $contract->setPaidTo(new \DateTime());
+        $contract->setPaidTo(new DateTime());
+        $property = $em->getRepository('RjDataBundle:Property')
+            ->findOneByJbKbWithUnitAndAlphaNumericSort(40.7426129, -73.9828048);
+        $unit = $property->getSingleUnit();
+        $contract->setProperty($property);
+        $contract->setUnit($unit);
+        $contract->setStatus(ContractStatus::PENDING);
         $operation->setType(OperationType::RENT);
         $operation->setContract($contract);
+        $operation->setPaidFor($contract->getPaidTo());
         $order->addOperation($operation);
         $order->setUser($user);
         $order->setStatus(OrderStatus::NEWONE);
         $em->persist($order);
-        $date = new \DateTime();
+        $date = new DateTime();
         $this->assertEquals($date->format('Y-m-d'), $partnerCode->getFirstPaymentDate()->format('Y-m-d'));
         $this->assertFalse($partnerCode->getIsCharged());
         $em->detach($order);
@@ -401,10 +499,13 @@ class IframeCase extends BaseTestCase
         $this->load(true);
         $this->getIframeFound('connie@rentrack.com');
         $this->checkResendInvite();
+        // Close browser and reset session by thist
+        static::tearDownAfterClass();
     }
 
     /**
      * @test
+     * @depends resendInviteIframeFound
      */
     public function resendInviteIframeNotFound()
     {

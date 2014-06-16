@@ -226,10 +226,13 @@ abstract class BaseTestCase extends Base
                 static::getMink()->getSession()->getDriver()->getScreenshot()
             );
 
-            $e = new \RuntimeException(
+            $e = new \ErrorException(
                 $e->getMessage() . ' http://' . static::getContainer()->getParameter('server_name') .
                 '/uploads' . $name,
                 $e->getCode(),
+                0,
+                $e->getFile(),
+                $e->getLine() - 1, /* @link http://php.net/manual/en/exception.getline.php#102225 */
                 $e
             );
         }

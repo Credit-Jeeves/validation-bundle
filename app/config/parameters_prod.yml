@@ -2,9 +2,9 @@ parameters:
     database_driver: pdo_mysql
     database_host: 127.0.0.1
     database_port: null
-    database_name: credit_jeeves
+    database_name: renttrack
     database_user: root
-    database_password: 'passw0rd2'
+    database_password: 'passw0rd'
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: null
@@ -14,7 +14,7 @@ parameters:
     api.client_secret: 39uyn651qlk4ssws40sgs44cwsskgccoc0o04ccgsccgooowwo
     server: live
     server_name_cj: my.creditjeeves.com
-    server_name_rj: renttrack.com
+    server_name_rj: my.renttrack.com
     google_maps_key: AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24
     session.lifetime: 3600 #in seconds
     payment_report_path: /home/heartland

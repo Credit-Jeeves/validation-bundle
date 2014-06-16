@@ -1,0 +1,23 @@
+<table class="properties-table zebra-grid">
+    <thead>
+        <tr class="properties-th">
+            <th class="pie-el"><span>{{ 'common.column'|trans }}</span></th>
+            <th class="pie-el"><span>{{ 'import.data.row1'|trans }}</span></th>
+            <th class="pie-el"><span>{{ 'import.data.row2'|trans }}</span></th>
+            <th class="pie-el"><span>{{ 'matching.rent.track.field'|trans }}</span></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data %}
+            <tr>
+                <td>{{ item['name'] }}</td>
+                <td>{{ item['row1'] }}</td>
+                <td>{{ item['row2'] }}</td>
+                <td>
+                    {{ form_widget(attribute(form, item['form'])) }}
+                    {{ form_errors(attribute(form, item['form'])) }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

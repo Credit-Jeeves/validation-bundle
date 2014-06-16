@@ -24,9 +24,17 @@ monolog:
         chromephp:
             type:  chromephp
             level: info
+        doctrine:
+            type:  stream
+            action_level: info
+            path:  %kernel.logs_dir%/%kernel.environment%_doctrine.log
+            channels: doctrine
 
 khepin_yaml_fixtures:
     resources:
         - DataBundle
         - RjDataBundle
     directory: Resources/fixtures
+    datetime_class: 'RentJeeves\CoreBundle\DateTime'
+
+backup_restore: ~

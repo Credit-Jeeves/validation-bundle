@@ -7,6 +7,12 @@ YAML - is default configs format
 
 Annotation - is default configuration where it is possible
 
+DEV resources
+------------
+
+http://dev.creditjeeves.com/phpMyAdmin
+
+
 Installation
 ------------
 
@@ -84,3 +90,9 @@ Selenium server (RC) version 2.33.0 does not work with Firefox 23.x
 STG
 ---
 Last DB 20130924_credit_jeeves_2_before_RT.sql
+
+---
+For selenium server need maunting folder
+
+sudo sshfs -o allow_other -p 22 ec2-user@dev.creditjeeves.com:/var/www/dev2.creditjeeves.com/data/fixtures -o IdentityFile=/home/ec2-user/alex /var/www/dev2.creditjeeves.com/data/fixtures
+

@@ -48,6 +48,10 @@ class Property extends Base
                     }
                 }
             }
+            if (empty($property['city']) && !empty($property['district'])) {
+                $property['city'] = $property['district'];
+                unset($property['district']);
+            }
         }
         return $property;
     }
@@ -84,6 +88,7 @@ class Property extends Base
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();
         $item['address'] = $this->getAddress();
+        $item['isSingle'] = $this->isSingle();
         if ($group) {
             $item['units'] = $this->countUnitsByGroup($group);
         } else {
@@ -117,42 +122,17 @@ class Property extends Base
         return $result;
     }
 
-    /**
-     * 
-     * @param string $search
-     */
-    public function createContract($em, $tenant, $search = null)
+    public function searchUnit($unitSearch)
     {
-        // Search for unit
-        $units = $this->getUnits();
-        foreach ($units as $unit) {
-            if ($search == $unit->getName()) {
-                $contract = new Contract();
-                $contract->setTenant($tenant);
-                $contract->setHolding($unit->getHolding());
-                $contract->setGroup($unit->getGroup());
-                $contract->setProperty($unit->getProperty());
-                $contract->setStatus(ContractStatus::PENDING);
-                $contract->setUnit($unit);
-                $em->persist($contract);
-                $em->flush();
-                return true;
+        $result = null;
+        foreach ($this->getUnits() as $unit) {
+            if ($unitSearch === $unit->getName()) {
+                $result = $unit;
+                break;
             }
         }
-        // If there is no such unit we'll send contract for all potential landlords
-        $groups = $this->getPropertyGroups();
-        foreach ($groups as $group) {
-            $contract = new Contract();
-            $contract->setTenant($tenant);
-            $contract->setHolding($group->getHolding());
-            $contract->setGroup($group);
-            $contract->setProperty($this);
-            $contract->setStatus(ContractStatus::PENDING);
-            $contract->setSearch($search);
-            $em->persist($contract);
-        }
-        $em->flush();
-        return true;
+
+        return $result;
     }
 
     public function getLocationAddress()
@@ -183,6 +163,49 @@ class Property extends Base
         }
 
         return $merchantExist;
+    }
+
+    public function hasUnits()
+    {
+        if ($this->getUnits()->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function hasGroups()
+    {
+        if ($this->getPropertyGroups()->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isSingle()
+    {
+        return $this->getIsSingle() == true;
+    }
+
+    public function getSingleUnit()
+    {
+        if ($this->isSingle()) {
+            return $this->getUnits()->first();
+        }
+
+        return null;
+    }
+
+    public function hasIntegratedGroup()
+    {
+        foreach ($this->getPropertyGroups() as $group) {
+            if ($group->getGroupSettings()->getIsIntegrated()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function __toString()

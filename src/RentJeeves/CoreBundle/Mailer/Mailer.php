@@ -4,14 +4,15 @@ namespace RentJeeves\CoreBundle\Mailer;
 use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
+use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
-use \Exception;
-use \RuntimeException;
+use Exception;
+use RuntimeException;
 use CreditJeeves\DataBundle\Enum\OrderType;
 
 /**
@@ -79,11 +80,12 @@ class Mailer extends BaseMailer
 
     public function sendRjLandlordComeFromInvite($tenant, $landlord, $contract, $sTemplate = 'rjLandlordComeFromInvite')
     {
+        $unitName = $contract->getUnit()? $contract->getUnit()->getName() : $contract->getSearch();
         $vars = array(
             'nameTenant'            => $tenant->getFirstName(),
             'fullNameLandlord'      => $landlord->getFullName(),
             'address'               => $contract->getProperty()->getAddress(),
-            'unitName'              => $contract->getUnit()->getName(),
+            'unitName'              => $unitName,
             'rentAmount'            => $contract->getRent(),
         );
 
@@ -150,11 +152,11 @@ class Mailer extends BaseMailer
 
     public function sendRentReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderReceipt')
     {
-        $tenant = $order->getContract()->getTenant();
+        $tenant = $order->getUser();
         $history = $order->getHeartlands()->last();
         $type = $order->getType();
         $fee = 0;
-        $amount = $order->getAmount();
+        $amount = $order->getSum();
         switch ($type) {
             case OrderType::HEARTLAND_CARD:
                 $fee = round($amount * (float)$this->container->getParameter('payment_card_fee')) / 100;
@@ -167,11 +169,12 @@ class Mailer extends BaseMailer
             'nameTenant' => $tenant->getFullName(),
             'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'transactionID' => $history ? $history->getTransactionId() : 'N/A',
-            'amount' => $order->getAmount(),
+            'amount' => $amount,
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
-            'nameTenant' => $tenant->getFullName(),
+            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
+            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
@@ -181,7 +184,7 @@ class Mailer extends BaseMailer
         $tenant = $order->getContract()->getTenant();
         $type = $order->getType();
         $fee = 0;
-        $amount = $order->getAmount();
+        $amount = $order->getSum();
         switch ($type) {
             case OrderType::HEARTLAND_CARD:
                 $fee = round($amount * (float)$this->container->getParameter('payment_card_fee')) / 100;
@@ -193,13 +196,15 @@ class Mailer extends BaseMailer
         $vars = array(
             'nameTenant' => $tenant->getFullName(),
             'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
-            'amount' => $order->getAmount(),
+            'amount' => $amount,
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
             'orderId' => $order->getId(),
             'error' => $order->getHeartlandErrorMessage(),
-            'transactionId' => $order->getHeartlandTransactionId()
+            'transactionId' => $order->getHeartlandTransactionId(),
+            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
+            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
@@ -317,7 +322,7 @@ class Mailer extends BaseMailer
         $vars = array(
             'tenantFullName' => $tenant->getFullName(),
             'orderStatus' => $order->getStatus(),
-            'rentAmount' => $order->getAmount(),
+            'rentAmount' => $order->getSum(),
             'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s')
         );
 
@@ -326,14 +331,17 @@ class Mailer extends BaseMailer
 
     public function sendOrderCancelToLandlord(Order $order, $template = 'rjOrderCancelToLandlord')
     {
+        $tenant = $order->getContract()->getTenant();
         $vars = array(
             'landlordFirstName' => '',
             'orderStatus' => $order->getStatus(),
-            'rentAmount' => $order->getAmount(),
-            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s')
+            'rentAmount' => $order->getSum(),
+            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
+            'tenantName' => $tenant->getFullName(),
         );
 
         $group = $order->getContract()->getGroup();
+        /** @var Landlord $landlord */
         foreach ($group->getGroupAgents() as $landlord) {
             $vars['landlordFirstName'] = $landlord->getFirstName();
             $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
@@ -344,7 +352,7 @@ class Mailer extends BaseMailer
     {
         $tenant = $order->getContract()->getTenant();
         $history = $order->getHeartlands()->last();
-        $amount = $order->getAmount();
+        $amount = $order->getSum();
         $fee = ($order->getType() == OrderType::HEARTLAND_CARD) ?
             round($amount * (float)$this->container->getParameter('payment_card_fee')) / 100 : 0;
         $total = $fee + $amount;
@@ -352,11 +360,24 @@ class Mailer extends BaseMailer
             'tenantName' => $tenant->getFullName(),
             'orderTime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'transactionID' => $history ? $history->getTransactionId() : 'N/A',
-            'amount' => $order->getAmount(),
+            'amount' => $amount,
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
+            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
+            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
         );
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendContractAmountChanged(Contract $contract, Payment $payment)
+    {
+        $tenant = $contract->getTenant();
+        $vars = array(
+            'tenantName' => $tenant->getFullName(),
+            'rentAmount' => $contract->getRent(),
+            'paymentAmount' => $payment->getAmount(),
+        );
+        return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 }

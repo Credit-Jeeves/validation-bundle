@@ -6,12 +6,15 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
+use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @Assert\Callback(methods={"isEndLaterThanStart"})
  */
 class Payment extends Base
 {
@@ -38,14 +41,15 @@ class Payment extends Base
     public function setStartDate($date = 'now')
     {
         $dateTime = new DateTime($date);
-        $this->setDueDate($dateTime->format('d'));
-        $this->setStartMonth($dateTime->format('m'));
+        $this->setDueDate($dateTime->format('j'));
+        $this->setStartMonth($dateTime->format('n'));
         $this->setStartYear($dateTime->format('Y'));
     }
 
     public function getStartDate()
     {
-        return new DateTime($this->getDueDate() . '-' . $this->getStartMonth() . '-' . $this->getStartYear());
+        $date = new DateTime('0000-00-00T00:00:00');
+        return $date->setDate($this->getStartYear(), $this->getStartMonth(), $this->getDueDate());
     }
 
     public function setEndDate($date = '+ 9 months')
@@ -116,12 +120,26 @@ class Payment extends Base
             $month = $currentMonth;
             $year = $currentYear;
         }
+        return $now->setDate($year, $month, $day);
+    }
 
-        $daysInMont = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-        if ($day > $daysInMont) {
-            $day = $daysInMont;
+    public function getOther()
+    {
+        return $this->getTotal()?$this->getTotal() - $this->getAmount():0;
+    }
+
+    public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
+    {
+        if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate() ||
+            !$this->getEndMonth() || !$this->getEndYear()
+        ) {
+            return;
         }
-
-        return new DateTime(implode('-', array($year, $month, $day)));
+        $end = new DateTime();
+        $end->setTime(0, 0, 0);
+        $end->setDate($this->getEndYear(), $this->getEndMonth(), $this->getDueDate());
+        if ($end < $this->getStartDate()) {
+            $validatorContext->addViolationAt('endMonth', 'contract.error.is_end_later_than_start', array(), null);
+        }
     }
 }

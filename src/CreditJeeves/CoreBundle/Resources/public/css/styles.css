@@ -764,11 +764,11 @@ header ul li.login a {
 
 .mainform h1 {
   display:block;
-  padding:25px 0 0;
+  padding:31px 0 0;
   text-align:center;
   color:#eb6024;
   font-weight:bold;
-  font-size:42px;
+  font-size:32px;
   line-height:normal;
   text-shadow:0px 1px 0px #fff;
 }
@@ -4273,12 +4273,24 @@ table.ui-datepicker-calendar tbody tr td a {
 #rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth_row .fields-box,
 #rentjeeves_checkoutbundle_paymenttype_endMonth_box,
 #rentjeeves_checkoutbundle_paymenttype_endYear_box,
-#rentjeeves_checkoutbundle_userdetailstype_ssn .fields-box {
+#rentjeeves_checkoutbundle_userdetailstype_ssn .fields-box,
+#rentjeeves_checkoutbundle_paymenttype_amount_box,
+#rentjeeves_checkoutbundle_paymenttype_paidFor_label,
+#rentjeeves_checkoutbundle_paymenttype_paidFor_box {
     width: auto;
 }
 
+#rentjeeves_checkoutbundle_paymenttype_paidFor_label {
+    margin-left: 10px;
+}
+
+#rentjeeves_checkoutbundle_paymenttype_total_view {
+    padding-left: 9px;
+    line-height: 25px;
+}
+
 #rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1_row,
-#rentjeeves_checkoutbundle_userdetailstype_new_address_row{
+#rentjeeves_checkoutbundle_userdetailstype_new_address_row {
     padding-left: 0px;
 }
 

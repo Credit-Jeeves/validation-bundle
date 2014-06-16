@@ -2,15 +2,21 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
+use RentJeeves\CoreBundle\Traits\DateCommon;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 class ContractRepository extends EntityRepository
 {
+    use DateCommon;
     /**
      * We'll use following aliases in this class
      * c - Contracts
@@ -206,33 +212,6 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param Group $group
-     * @param string $searchField
-     * @param string $searchString
-     *
-     * @return mixed
-     */
-    public function countActionsRequired($group, $searchField = 'address', $searchString = '')
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.property', 'p');
-        $query->innerJoin('c.tenant', 't');
-        $query->where(
-            'c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today)'
-        );
-        $query->setParameter('group', $group);
-        $query->setParameter('date', new DateTime());
-        $query->setParameter('today', new DateTime());
-        $query->setParameter('status1', ContractStatus::FINISHED);
-        $query->setParameter('status2', ContractStatus::DELETED);
-
-        $query = $this->applySearchFilter($query, $searchField, $searchString);
-        $query = $query->getQuery();
-        return $query->getScalarResult();
-    }
-
-    /**
-     * @param Group $group
      * @param int $page
      * @param int $limit
      * @param string $sortField
@@ -240,9 +219,9 @@ class ContractRepository extends EntityRepository
      * @param string $searchField
      * @param string $searchString
      *
-     * @return mixed
+     * @return QueryBuilder
      */
-    public function getActionsRequiredPage(
+    public function getActionsRequiredPageQuery(
         $group,
         $page = 1,
         $limit = 100,
@@ -256,8 +235,10 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where(
-            'c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today)'
+            '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
+            ' AND (c.paidTo < :date OR c.finishAt < :today))' .
+            ' AND c.id IN (SELECT IDENTITY(o.contract) FROM DataBundle:Operation o WHERE' .
+            ' o.contract = c.id )'
         );
         $query->setParameter('group', $group);
         $query->setParameter('date', new DateTime());
@@ -266,31 +247,13 @@ class ContractRepository extends EntityRepository
         $query->setParameter('status2', ContractStatus::DELETED);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $this->applySortOrder($query, $sortField, $sortOrder);
-        $query->setFirstResult($offset);
-        $query->setMaxResults($limit);
-        $query = $query->getQuery();
-        return $query->execute();
-    }
-
-    /**
-     * @param Tenant $tenant
-     * @param null $status
-     *
-     * @return mixed
-     */
-    public function getCountByStatus($tenant, $status = null)
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->select('count(c.id)');
-        $query->innerJoin('c.tenant', 't');
-        $query->where('t.id = :tenant');
-        if (!is_null($status)) {
-            $query->andWhere('c.status =:status');
-            $query->setParameter('status', $status);
+        if ($offset) {
+            $query->setFirstResult($offset);
         }
-        $query->setParameter('tenant', $tenant->getId());
-        $query = $query->getQuery();
-        return $query->getSingleScalarResult();
+        if ($limit) {
+            $query->setMaxResults($limit);
+        }
+        return $query;
     }
 
     /**
@@ -304,7 +267,10 @@ class ContractRepository extends EntityRepository
         $query->select('count(c.id)');
         $query->innerJoin('c.tenant', 't');
         $query->where('t.id = :tenant');
-        $query->andWhere('c.reporting = 1');
+        $query->andWhere(
+            'c.reportToTransUnion = 1 OR c.reportToExperian = 1
+            OR c.experianStartAt is not NULL OR c.transUnionStartAt is not NULL'
+        );
         $query->andWhere('c.status = :status');
         $query->setParameter('tenant', $tenant->getId());
         $query->setParameter('status', ContractStatus::CURRENT);
@@ -337,22 +303,26 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getPaymentsToLandlord($status = array(OrderStatus::COMPLETE))
-    {
+    public function getPaymentsToLandlord(
+        $orderStatus = array(OrderStatus::COMPLETE),
+        $orderType = array(OrderType::HEARTLAND_BANK, OrderType::HEARTLAND_CARD)
+    ) {
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
-        $query->select('SUM(o.amount) AS amount, h.id, g.id as group_id');
+        $query->select('SUM(o.sum) AS amount, h.id, g.id as group_id');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('c.operation', 'operation');
-        $query->innerJoin('operation.orders', 'o');
-        $query->where('o.status IN (:status)');
+        $query->innerJoin('c.operations', 'operation');
+        $query->innerJoin('operation.order', 'o');
+        $query->where('o.status IN (:orderStatus)');
+        $query->setParameter('orderStatus', $orderStatus);
+        $query->andWhere('o.type in (:orderType)');
+        $query->setParameter('orderType', $orderType);
         $query->andWhere('o.updated_at BETWEEN :start AND :end');
-        $query->groupBy('h.id');
-        $query->setParameter('status', $status);
         $query->setParameter('start', $start->format('Y-m-d'));
         $query->setParameter('end', $end->format('Y-m-d'));
+        $query->groupBy('h.id');
         $query = $query->getQuery();
         return $query->execute();
     }
@@ -372,11 +342,11 @@ class ContractRepository extends EntityRepository
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
-        $query->select('SUM(o.amount)');
+        $query->select('SUM(o.sum)');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('c.operation', 'operation');
-        $query->innerJoin('operation.orders', 'o');
+        $query->innerJoin('c.operations', 'operation');
+        $query->innerJoin('operation.order', 'o');
         $query->where('c.holding = :holding');
         $query->andWhere('o.status =:status');
         $query->andWhere('o.updated_at BETWEEN :start AND :end');
@@ -404,19 +374,47 @@ class ContractRepository extends EntityRepository
         return !empty($result) ? $result[1] : 0;
     }
 
+    /**
+     * Complicated query, have unit test
+     *
+     * @param int $days
+     * @return ArrayCollection
+     */
     public function getLateContracts($days = 5)
     {
+        $days *= -1;
+        $date = new DateTime($days.' days');
+        $now = new DateTime();
+        $dueDays = $this->getDueDays(0, $date);
+
         $query = $this->createQueryBuilder('c');
-        $query->leftJoin('c.operation', 'op');
-        $query->leftJoin('op.orders', 'o', Expr\Join::WITH, 'o.status = :orderStatus');
-        $query->setParameter('orderStatus', OrderStatus::PENDING);
+
+        $query->leftJoin(
+            'c.operations',
+            'op',
+            Expr\Join::WITH,
+            "op.paidFor >= :paidForInterval"
+        );
+        $query->setParameter('paidForInterval', $now->getClone()->modify('-1 month'));
+
+        $query->leftJoin(
+            'op.order',
+            'o',
+            Expr\Join::WITH,
+            'o.status IN (:orderStatuses)'
+        );
+        $query->setParameter('orderStatuses', array(OrderStatus::COMPLETE, OrderStatus::PENDING));
+
+        $query->where('c.status IN (:contractStatuses)');
+        $query->setParameter('contractStatuses', array(ContractStatus::APPROVED, ContractStatus::CURRENT));
+
+        $query->andWhere('c.dueDate IN (:dueDays)');
+        $query->setParameter('dueDays', $dueDays);
+
         $query->andWhere('o.id IS NULL');
-        $query->andWhere('c.paidTo BETWEEN :start AND :now');
-        $query->setParameter('start', new DateTime('-'.$days.' days'));
-        $query->setParameter('now', new DateTime());
-        $query->andWhere('c.status = :status');
-        $query->setParameter('status', ContractStatus::APPROVED);
+
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -430,6 +428,214 @@ class ContractRepository extends EntityRepository
         $query->setParameter('status', $status);
         $query->setParameter('date', new DateTime());
         $query = $query->getQuery();
+        return $query->iterate();
+    }
+
+    public function getImportContract($tenant, $unitName)
+    {
+        $query = $this->createQueryBuilder('contract');
+        $query->leftJoin('contract.unit', 'unit');
+        $query->leftJoin('contract.tenant', 'tenant');
+        $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
+        $query->andWhere('tenant.id = :tenantId');
+        $query->andWhere('unit.name = :unitName');
+        // if 2 or more contract get contract with status current in first priority
+        $query->addOrderBy('contract.status', "DESC");
+        //If 2 or more contract, get last updated
+        $query->addOrderBy('contract.updatedAt', "DESC");
+        $query->setParameter('approved', ContractStatus::APPROVED);
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('invite', ContractStatus::INVITE);
+        $query->setParameter('tenantId', $tenant);
+        $query->setParameter('unitName', $unitName);
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function getLastActivityDate()
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('c.updatedAt');
+        $query->orderBy('c.updatedAt', 'DESC');
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
+
+    public function getContractsForExperianRentalReport($monthNo, $yearNo)
+    {
+        $firstDate = new DateTime("$yearNo-$monthNo-01");
+        $lastDate = new DateTime($firstDate->format('Y-m-t'));
+
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.reportToExperian = 1 AND c.experianStartAt is not NULL AND c.experianStartAt <= :startDate');
+        $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setParameter('startDate', $firstDate);
+        $query->setParameter('lastDate', $lastDate);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    public function getContractsForTransUnionRentalReport($monthNo, $yearNo)
+    {
+        $firstDate = new DateTime("$yearNo-$monthNo-01");
+        $lastDate = new DateTime($firstDate->format('Y-m-t'));
+
+        $query = $this->createQueryBuilder('c');
+        $query->where(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :startDate'
+        );
+        $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setParameter('startDate', $firstDate);
+        $query->setParameter('lastDate', $lastDate);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * We have test for this query because query not so clear as I want
+     * Test name ContractRepositoryCase
+     *
+     * @param DateTime $date
+     * @return mixed
+     */
+    public function getPotentialLateContract(DateTime $date)
+    {
+        $startPaymentDate = clone $date;
+
+        $endPaymentDate = clone $date;
+        $dueDays = $this->getDueDays(0, $date);
+
+        $startPaymentDateDql = PaymentRepository::getStartDateDQLString('p');
+        $dql = "
+            c.dueDate IN(:dueDays)
+            AND (
+                c.status=:current
+                OR
+                c.status=:approved
+            )
+            AND (
+                p.id IS NULL
+                OR NOT (
+                    {$startPaymentDateDql} <= STR_TO_DATE(:startDate,'%Y-%c-%e')
+                    AND (
+                        (p.endYear IS NULL AND p.endMonth IS NULL)
+                        OR
+                        (p.endYear > :endYear)
+                        OR
+                        (p.endYear = :endYear AND p.endMonth >= :endMonth)
+                    )
+                )
+            )
+        ";
+        $query = $this->createQueryBuilder('c');
+        $query->leftJoin(
+            'c.payments',
+            'p',
+            Expr\Join::WITH,
+            "p.status = :active"
+        );
+
+        $query->where($dql);
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('approved', ContractStatus::APPROVED);
+        $query->setParameter('active', PaymentStatus::ACTIVE);
+        $query->setParameter('startDate', $startPaymentDate->format('Y-m-d'));
+        $query->setParameter('endMonth', $endPaymentDate->format('n'));
+        $query->setParameter('endYear', $endPaymentDate->format('Y'));
+        $query->setParameter('dueDays', $dueDays);
+
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param QueryBuilder $query
+     * @param string $orderStatus
+     * @param int $monthAgo
+     *
+     * @return QueryBuilder
+     */
+    public static function queryOperationsOrdersHistory(&$query, $orderStatus = OrderStatus::COMPLETE, $monthAgo = 6)
+    {
+        $paidTo = new DateTime();
+        $paidTo->modify("-{$monthAgo} months");
+        $query->leftJoin(
+            'c.operations',
+            'op',
+            Expr\Join::WITH,
+            "op.paidFor > :paidTo"
+        );
+        $query->setParameter('paidTo', $paidTo->format('Y-m-d'));
+        $query->leftJoin(
+            'op.order',
+            'o',
+            Expr\Join::WITH,
+            "o.status = :orderStatus"
+        );
+        $query->setParameter('orderStatus', $orderStatus);
+
+        return $query;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Contract
+     */
+    public function findOneWithOperationsOrders($id)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->andWhere('c.id = :id');
+        $query->setParameter('id', $id);
+
+        $query = static::queryOperationsOrdersHistory($query)->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function findByTenantIdInvertedStatusesForPayments(
+        $tenantId,
+        $statuses = array(ContractStatus::DELETED)
+    ) {
+        $query = $this->createQueryBuilder('c');
+        $query->leftJoin('c.holding', 'h');
+        $query->leftJoin('c.property', 'p');
+        $query->leftJoin('c.unit', 'u');
+        $query->leftJoin('c.group', 'g');
+        $query->leftJoin('g.deposit_account', 'da');
+        $query->leftJoin('c.payments', 'pay');
+        if (!empty($status)) {
+            $query->andWhere('c.status NOT IN :statuses');
+            $query->setParameter('statuses', $statuses);
+        }
+        $query->andWhere('c.tenant = :tenantId');
+        $query->setParameter('tenantId', $tenantId);
+
+        $query = static::queryOperationsOrdersHistory($query)->getQuery();
+
+        return $query->execute();
+    }
+
+    public function getContractsForUpdateBalance($dueDays)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.dueDate IN (:dueDays)');
+        $query->andWhere('c.status = :status');
+        $query->setParameter('status', ContractStatus::CURRENT);
+        $query->setParameter('dueDays', $dueDays);
+        $query = $query->getQuery();
+
         return $query->iterate();
     }
 }

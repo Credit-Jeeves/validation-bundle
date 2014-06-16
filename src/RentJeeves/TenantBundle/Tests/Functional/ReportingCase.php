@@ -3,9 +3,6 @@ namespace RentJeeves\TenantBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-/**
- * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
- */
 class ReportingCase extends BaseTestCase
 {
     /**
@@ -15,17 +12,31 @@ class ReportingCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
-        $this->login('tenant11@example.com', 'pass');
-//         $this->assertNotNull($button = $this->page->find('css', '#info-block div.infoBlock button.button'));
-//         $button->click();
-//         $this->assertNotNull($button = $this->page->find('css', '#blockPopupEditProperty a.button'));
-//         $button->click();
-//         $this->session->wait($this->timeout, "jQuery('#contracts-history').length > 0");
-//         $this->assertNotNull($link = $this->page->find('css', 'a span.reporting-action'));
-//         $link->click();
-//         $this->assertNotNull($button = $this->page->find('css', '#stop-reporting'));
-//         $button->click();
-//         $this->session->wait($this->timeout, "jQuery('#reporting-stop').css('display') == 'none'");
-        $this->logout();
+        $this->login('mamazza@rentrack.com', 'pass');
+        $this->page->clickLink('tabs.summary');
+        $this->session->wait($this->timeout+5000, "jQuery('#info-block').length > 0");
+        $this->assertNotNull($button = $this->page->find('css', '#info-block button'));
+        $button->click();
+        $this->assertNotNull(
+            $form = $this->page->find('css', '#reporting-form')
+        );
+        $this->fillForm(
+            $form,
+            array(
+                'rep-experian'  => true,
+//                'rep-tu'    => true,
+            )
+        );
+
+        $this->assertNotNull($button = $this->page->find('css', '#reporting-form a.button-link'));
+        $button->click();
+
+        $this->session->wait($this->timeout, "jQuery('#contracts-history').length > 0");
+        $this->assertNotNull($link = $this->page->find('css', 'a span.reporting-action'));
+        $link->click();
+        $this->assertNotNull($checkboxes = $this->page->findAll('css', '.reporting-start input[type=checkbox]'));
+        $this->assertEquals(1, count($checkboxes));
+        $this->assertTrue($checkboxes[0]->isChecked());
+//        $this->assertTrue($checkboxes[1]->isChecked());
     }
 }

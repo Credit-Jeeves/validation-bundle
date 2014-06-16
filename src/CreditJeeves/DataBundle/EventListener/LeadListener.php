@@ -48,8 +48,6 @@ class LeadListener
         if (!($lead instanceof Lead)) {
             return;
         }
-        $em = $eventArgs->getEntityManager();
-        $id = $lead->getId();
 
         if ($eventArgs->hasChangedField('status')
             &&

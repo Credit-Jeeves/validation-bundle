@@ -9,6 +9,7 @@ use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Symfony\Component\Form\Form;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -62,22 +63,30 @@ class RegistrationManager
         $holding->addGroup($group);
         $landlord->setAgentGroups($group);
 
-        $property = $this->em->getRepository('RjDataBundle:Property')->find($formData['property']);
+        /** @var Property $property */
+        $property = $this->em->getRepository('RjDataBundle:Property')->find($formData['property']['propertyId']);
         if ($property) {
-            $units = (isset($formData['units']))? $formData['units'] : array();
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
-            if (!empty($units)) {
-                foreach ($units as $name) {
-                    if (empty($name)) {
-                        continue;
+
+            if ($form->get('property')->get('isSingleProperty')->getData() == true) {
+                $property->setIsSingle(true);
+            } else {
+                $property->setIsSingle(false);
+                $units = (isset($formData['property']['units']))? $formData['property']['units'] : array();
+
+                if (!empty($units)) {
+                    foreach ($units as $name) {
+                        if (empty($name)) {
+                            continue;
+                        }
+                        $unit = new Unit();
+                        $unit->setProperty($property);
+                        $unit->setHolding($holding);
+                        $unit->setGroup($group);
+                        $unit->setName($name);
+                        $this->em->persist($unit);
                     }
-                    $unit = new Unit();
-                    $unit->setProperty($property);
-                    $unit->setHolding($holding);
-                    $unit->setGroup($group);
-                    $unit->setName($name);
-                    $this->em->persist($unit);
                 }
             }
         }

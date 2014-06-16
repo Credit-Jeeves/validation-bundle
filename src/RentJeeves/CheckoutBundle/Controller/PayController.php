@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
+use JMS\Serializer\SerializationContext;
 use Exception;
 
 /**
@@ -33,18 +34,30 @@ class PayController extends Controller
     use FormErrors;
     use Traits\PaymentProcess;
 
-    protected function createPaymentForm()
+    protected function createPaymentForm(Request $request)
     {
-        $formType = new PaymentType($this->container->getParameter('payment_one_time_until_value'));
-        $formData = $this->getRequest()->get($formType->getName());
+        $formData = $request->get(PaymentType::NAME);
         /** @var Payment $paymentEntity */
         $paymentEntity = null;
+        $contract = null;
         if (!empty($formData['id'])) {
             $paymentEntity = $this->getDoctrine()
                 ->getManager()
                 ->getRepository('RjDataBundle:Payment')
-                ->find($formData['id']);
+                ->findOneWithContractOrdersOperations($formData['id']);
+            $contract = $paymentEntity->getContract();
         }
+        if (null == $contract) {
+            $contract = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('RjDataBundle:Contract')
+                ->findOneWithOperationsOrders($formData['contractId']);
+        }
+
+        $formType = new PaymentType(
+            $this->container->getParameter('payment_one_time_until_value'),
+            $this->container->get('checkout.paid_for')->getArray($contract)
+        );
         if (!empty($paymentEntity) &&
             $paymentEntity->getPaymentAccount()->getUser()->getId() != $this->getUser()->getId()
         ) {
@@ -60,7 +73,7 @@ class PayController extends Controller
      */
     public function paymentAction(Request $request)
     {
-        $paymentType = $this->createPaymentForm();
+        $paymentType = $this->createPaymentForm($request);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
@@ -85,8 +98,12 @@ class PayController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
+        // TODO: deal with multiple groups
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
+
         try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser());
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser(), $group);
         } catch (Exception $e) {
             return new JsonResponse(
                 array(
@@ -102,7 +119,8 @@ class PayController extends Controller
                 'success' => true,
                 'paymentAccount' => $this->get('jms_serializer')->serialize(
                     $paymentAccountEntity,
-                    'array'
+                    'array',
+                    SerializationContext::create()->setGroups(array('basic'))
                 ),
                 'newAddress' => $this->hasNewAddress ?
                     $this->get('jms_serializer')->serialize(
@@ -163,13 +181,13 @@ class PayController extends Controller
      */
     public function execAction(Request $request)
     {
-        $paymentType = $this->createPaymentForm();
+        $paymentType = $this->createPaymentForm($request);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
 
-        $em = $this->get('doctrine.orm.default_entity_manager');
+        $em = $this->getDoctrine()->getManager();
 
         /** @var Payment $paymentEntity */
         $paymentEntity = $paymentType->getData();

@@ -23,21 +23,19 @@
                 ) }}
             </div>
           <div class="errorsGoogleSearch"></div>
-
-          <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}"
-           method="post" {{ form_enctype(form) }}>
             {{ include(
              'RjComponentBundle:Google:searchResultBox.html.twig',
              { 'property': property, 'countPropery':countPropery, 'propertyList': propertyList }
              ) }}
-            {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
-            {{ form_rest(form) }}
-            <div class="buttons-box clearfix">
-              <div class="buttons left">
-                <button type="submit" class="button greyButton" id="register"><span>{{ 'continue'|trans }}</span></button>
-              </div>
-            </div>
-            <input type="hidden" name="propertyId" value="" id="propertyId">
+            <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}"
+                  method="post" {{ form_enctype(form) }}>
+                {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
+                {{ form_rest(form) }}
+                <div class="buttons-box clearfix">
+                  <div class="buttons left">
+                    <button type="submit" class="button greyButton" id="register"><span>{{ 'continue'|trans }}</span></button>
+                  </div>
+                </div>
            </form>
         </div>
       </div>

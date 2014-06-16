@@ -1,4 +1,4 @@
-function CurrentPayments(contracts, verification) {
+function CurrentPayments(contracts, verification, paidForArr) {
     var self = this;
 
     this.verification = verification;
@@ -13,6 +13,17 @@ function CurrentPayments(contracts, verification) {
             return true;
         });
         return contract;
+    };
+    this.getPaidForArrContractById = function(id) {
+        var paidFor = null;
+        jQuery.each(paidForArr, function(key, val) {
+            if (id == key) {
+                paidFor = val;
+                return false;
+            }
+            return true;
+        });
+        return paidFor;
     };
 
     this.openPayPopup = function(contractId) {

@@ -23,14 +23,15 @@ class YamlLoader extends KhepinYamlLoader
 
     /**
      * @InjectParams({
-     *    "em"                = @DI\Inject("kernel"),
-     *    "bundles"           = @DI\Inject("%khepin_yaml_fixtures.resources%"),
-     *    "directory"         = @DI\Inject("%khepin_yaml_fixtures.directory%")
+     *    "em"              = @DI\Inject("kernel"),
+     *    "bundles"         = @DI\Inject("%khepin_yaml_fixtures.resources%"),
+     *    "directory"       = @DI\Inject("%khepin_yaml_fixtures.directory%"),
+     *    "dateTimeClass"   = @DI\Inject("%khepin_yaml_fixtures.datetime_class%")
      * })
      */
-    public function __construct(\AppKernel $kernel, $bundles, $directory)
+    public function __construct(\AppKernel $kernel, $bundles, $directory, $dateTimeClass)
     {
-        parent::__construct($kernel, $bundles, $directory);
+        parent::__construct($kernel, $bundles, $directory, $dateTimeClass);
     }
 
     /**
@@ -46,13 +47,13 @@ class YamlLoader extends KhepinYamlLoader
             // if nothing is specified, we use doctrine orm for persistence
             $persistence = isset($fixture_data['persistence']) ? $fixture_data['persistence'] : 'orm';
             $fixture = $this->getFixtureClass($persistence);
-            $fixture = new $fixture($fixture_data, $this, $file);
+            $fixture = new $fixture($fixture_data, $this, $this->dateTimeClass);
             $fixture->load($this->getManager($persistence), func_get_args());
         }
 
         if (!is_null($this->acl_manager)) {
             foreach ($this->fixture_files as $file) {
-                $fixture = new YamlAclFixture($file, $this);
+                $fixture = new YamlAclFixture($file, $this, $this->dateTimeClass);
                 $fixture->load($this->acl_manager, func_get_args());
             }
         }

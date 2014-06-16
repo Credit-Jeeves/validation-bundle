@@ -48,8 +48,6 @@ class PayCommand extends ContainerAwareCommand
     {
         $output->writeln('Start');
 
-        $routeGenerator = $this->getContainer()->get('sonata.admin.route.default_generator');
-
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $jobId = $input->getOption('jms-job-id');
@@ -74,45 +72,51 @@ class PayCommand extends ContainerAwareCommand
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
 
-        $filterClosure = function (Order $order) use ($date) {
-            if ($order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
+        $filterClosure = function (Operation $operation) use ($date) {
+            if (($order = $operation->getOrder()) &&
+                $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
                 OrderStatus::ERROR != $order->getStatus()
             ) {
                 return true;
             }
             return false;
         };
-        if ($contract->getOperation() && $contract->getOperation()->getOrders()->filter($filterClosure)->count()) {
+        if ($contract->getOperations()->filter($filterClosure)->count()) {
             $output->writeln('Payment already executed.');
             return 1;
         }
-        $operation = $contract->getOperation();
-        /**
-         * @link https://github.com/Credit-Jeeves/Credit-Jeeves-SF2/commit/35b45d9b23d6210fcc8bc340931a05f4cae31c48
-         * It must be changed to new concept: each operation must have complete (success) order
-         * and if it have order but not complete - operation must be reused
-         */
-        if (empty($operation)) {
-            $operation = new Operation();
-        }
-        $amount = $payment->getAmount();
+        $order = new Order();
+        $total = $payment->getTotal();
         $fee = 0;
 
-        $order = new Order();
-        $operation->setType(OperationType::RENT);
-        $operation->setContract($contract);
+
+        if ($amount = $payment->getAmount()) {
+            $operation = new Operation();
+            $operation->setOrder($order);
+            $operation->setType(OperationType::RENT);
+            $operation->setContract($contract);
+            $operation->setAmount($amount);
+            $operation->setPaidFor($payment->getPaidFor());
+        }
+        if ($payment->getTotal() && ($amount = ($payment->getTotal() - $payment->getAmount()))) {
+            $operation = new Operation();
+            $operation->setOrder($order);
+            $operation->setType(OperationType::OTHER);
+            $operation->setContract($contract);
+            $operation->setAmount($amount);
+            $operation->setPaidFor($payment->getPaidFor());
+        }
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $fee = round($amount * ((double)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
+            $fee = round($total * ((float)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
             $order->setType(OrderType::HEARTLAND_CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $fee = (double)$this->getContainer()->getParameter('payment_bank_fee');
+            $fee = (float)$this->getContainer()->getParameter('payment_bank_fee');
             $order->setType(OrderType::HEARTLAND_BANK);
         }
 
-        $order->addOperation($operation);
         $order->setUser($paymentAccount->getUser());
-        $order->setAmount($amount);
+        $order->setSum($total);
         $order->setStatus(OrderStatus::NEWONE);
 
         $request = new MakePaymentRequest();
@@ -126,11 +130,11 @@ class PayCommand extends ContainerAwareCommand
         $billTransaction->setID3(sprintf("%s %s", $tenant->getFirstName(), $tenant->getLastName()));
         $billTransaction->setID4($contract->getGroup()->getName());
 
-        $billTransaction->setAmountToApplyToBill($amount);
+        $billTransaction->setAmountToApplyToBill($total);
         $request->getBillTransactions()->setBillTransaction(array($billTransaction));
 
         $tokenToCharge = new TokenToCharge();
-        $tokenToCharge->setAmount($amount);
+        $tokenToCharge->setAmount((float)$total);
         $tokenToCharge->setExpectedFeeAmount($fee);
         $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
         $tokenToCharge->setToken($paymentAccount->getToken());
@@ -138,7 +142,7 @@ class PayCommand extends ContainerAwareCommand
         $request->getTokensToCharge()->setTokenToCharge(array($tokenToCharge));
 
         $request->getTransaction()
-            ->setAmount($amount)
+            ->setAmount($total)
             ->setFeeAmount($fee);
 
         $paymentDetails = new PaymentDetails();
@@ -170,7 +174,6 @@ class PayCommand extends ContainerAwareCommand
         $message = 'OK';
         if ($statusRequest->isSuccess()) {
             $order->setStatus(OrderStatus::PENDING);
-            $contract->shiftPaidTo($amount);
             $status = $contract->getStatus();
             if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
                 $contract->setStatus(ContractStatus::CURRENT);
@@ -179,7 +182,7 @@ class PayCommand extends ContainerAwareCommand
             $order->setStatus(OrderStatus::ERROR);
             $message = $model->getMessages();
         }
-        $paymentDetails->setAmount($amount + $fee);
+        $paymentDetails->setAmount($total + $fee);
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
         $em->persist($paymentDetails);
         $em->persist($order);

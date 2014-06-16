@@ -1,6 +1,8 @@
 <?php
 namespace CreditJeeves\TestBundle\Command;
 
-class BaseTestCase extends \CreditJeeves\TestBundle\BaseTestCase
+use CreditJeeves\TestBundle\BaseTestCase as Base;
+
+class BaseTestCase extends Base
 {
 }

@@ -54,6 +54,7 @@
     moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+    min-height: 185px;
 }
 .infoBlock>.text {
     width: 345px;
@@ -62,6 +63,7 @@
 }
 .infoBlock>.text>h3{
     color: #73AF27;
+    font-weight: bold;
 }
 .infoBlock>.img {
     float: left;   
@@ -91,7 +93,7 @@
 .addPropertyContainer {
     display: block;
     position: absolute;
-    margin-left: 762px;
+    margin-left: 752px;
     margin-top: -20px;
 }
 
@@ -189,4 +191,63 @@ button.contract-delete {
     position: relative;
     float: right;
     margin-right: -380px;
+}
+.select-bureaus {
+    padding: 20px 0px 20px;
+}
+.select-bureaus p {
+    margin-bottom: 10px;
+}
+.reporting-start {
+    display: none;
+}
+.reporting-box {
+    height: 340px;
+    margin: 0 15px 0 15px;
+}
+.reporting-action {
+    cursor: pointer;
+}
+.start-reporting {
+    width: 75px;
+}
+.select-bureaus label {
+    line-height: 100%;
+    font-size: 15px;
+}
+.filter-box {
+    margin-bottom: 40px;
+}
+.fiter-box h1 {
+    float:left;
+    padding-right: 350px;
+}
+.fiter-box label {
+    float:right !important;
+    margin:5px 5px 0 0;
+    font:14px/15px "PT Sans",sans-serif;
+}
+a.linkselect-link {
+    width: 200px;
+    font-size: 12px;
+    height: 25px;
+}
+a.linkselect-link .linkselect-link-text {
+    padding-top: 3px;
+}
+.fiter-box .linkselect-link-icon {
+    background: url(/bundles/rjpublic/images/select.png) no-repeat top left;
+    height: 22px;
+    width: 19px;
+    margin-top: 1px;
+}
+.fiter-box a {
+    float: right;
+    width: 135px;
+    font-size: 13px;
+    height: 23px;
+    margin-left: 10px;
+}
+.properties-table-block.table-wrap {
+    overflow: visible;
 }

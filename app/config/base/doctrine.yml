@@ -16,6 +16,8 @@ doctrine:
                 str_to_date: DoctrineExtensions\Query\Mysql\StrToDate
                 day: DoctrineExtensions\Query\Mysql\Day
                 last_day: DoctrineExtensions\Query\Mysql\LastDay
+                month: DoctrineExtensions\Query\Mysql\Month
+                year: DoctrineExtensions\Query\Mysql\Year
             string_functions:
                 field: DoctrineExtensions\Query\Mysql\Field
                 concat_ws: DoctrineExtensions\Query\Mysql\ConcatWs
@@ -34,7 +36,6 @@ doctrine:
                 alias: GedmoLoggable # this one is optional and will default to the name set for the mapping
                 is_bundle: false
         hydrators:
-             PaymentHydrator: \RentJeeves\CheckoutBundle\Hydrators\PaymentHydrator
 #            gedmo_translatable:
 #                type: annotation
 #                prefix: Gedmo\Translatable\Entity
@@ -63,7 +64,7 @@ stof_doctrine_extensions:
 #            gedmo_loggable: true
             loggable: true
     class:
-        loggable: CreditJeeves\CoreBundle\EventListener\Loggable
+        loggable: CreditJeeves\DataBundle\EventListener\LoggableListener
     uploadable:
         validate_writable_directory: false
 

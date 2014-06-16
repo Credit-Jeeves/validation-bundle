@@ -1,5 +1,5 @@
 function Pay(parent, contractId) {
-    ko.cleanNode($('#pay-popup').get(0));
+    ko.cleanNode(jQuery('#pay-popup').get(0));
 
     var self = this;
     var contract = parent.getContractById(contractId);
@@ -8,10 +8,9 @@ function Pay(parent, contractId) {
     this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
     this.infoMessage = ko.observable(null);
 
-    this.getCurrentStep = function()
-    {
+    this.getCurrentStep = function() {
         return steps[current];
-    }
+    };
 
     this.previous = function() {
         window.formProcess.removeAllErrors('#pay-popup');
@@ -23,9 +22,9 @@ function Pay(parent, contractId) {
     this.getTotalAmount = function(paymentCardFee) {
         var fee = 0;
         if (this.paymentSource.type() == 'card') {
-            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
+            fee = this.total()*parseFloat(paymentCardFee)/100;
         }
-        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
+        return Format.money(parseFloat(this.total()) + fee);
     };
 
     var forms = {
@@ -47,7 +46,7 @@ function Pay(parent, contractId) {
 
     this.isPassed = function(step) {
         return this.passedSteps().indexOf(step) >= 0;
-    }
+    };
 
 
     this.step.subscribe(function(newValue) {
@@ -149,6 +148,23 @@ function Pay(parent, contractId) {
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
     this.payment.endYear(finishDate.getYear());
+    var paidForArr = parent.getPaidForArrContractById(contractId);
+    this.payment.paidForOptions(associativeArrayToOptions(paidForArr));
+
+    this.getPaidFor = ko.computed(function() {
+        return paidForArr[self.payment.paidFor()];
+    });
+
+    this.total = ko.computed(function() { // It will diplay to user
+        return total = (self.payment.amount()?parseFloat(self.payment.amount()):0) +
+            (self.payment.amountOther()?parseFloat(self.payment.amountOther()):0);
+    });
+    this.totalInput = ko.computed(function() { // It will be put into the hidden input
+        if (!self.payment.amount() && !self.payment.amountOther()) {
+            return null;
+        }
+        return self.total();
+    });
 
     this.newUserAddress = ko.observableArray([]);
     this.payment.paymentAccountId.subscribe(function(newValue) {
@@ -168,9 +184,11 @@ function Pay(parent, contractId) {
     });
     this.paymentAccounts = ko.observableArray([]);
     jQuery.each(window.paymentAccounts, function (key, val) {
-        if (contract.groupId == val.groupId) {
-            self.paymentAccounts.push(val);
-        }
+        jQuery.each(val.deposit_accounts, function (index, depositAccount) {
+            if (depositAccount.group && contract.groupId == depositAccount.group.id) {
+                self.paymentAccounts.push(val);
+            }
+        });
     });
 
 
@@ -215,17 +233,16 @@ function Pay(parent, contractId) {
         return settleDate.toString('M/d/yyyy');
     }, this);
     this.getLastPaymentDay = ko.computed(function() {
-        var finishDate = new Date(contract.finishAt);
-        if ('on' == this.payment.ends()) {
-            finishDate.setMonth(this.payment.endMonth() - 1);
-            finishDate.setYear(this.payment.endYear());
-            var daysInMonth = Date.getDaysInMonth(parseInt(this.payment.endYear()), this.payment.endMonth() - 1);
-            finishDate.setDate(
-                this.payment.dueDate() > daysInMonth ?
-                    daysInMonth :
-                    this.payment.dueDate()
-            );
-        }
+        var finishDate = new Date();
+        finishDate.setDate(1);
+        finishDate.setMonth(this.payment.endMonth() - 1);
+        finishDate.setYear(this.payment.endYear());
+        var daysInMonth = Date.getDaysInMonth(this.payment.endYear(), this.payment.endMonth() - 1);
+        finishDate.setDate(
+            this.payment.dueDate() > daysInMonth ?
+                daysInMonth :
+                this.payment.dueDate()
+        );
         return finishDate.toString('M/d/yyyy');
     }, this);
 
@@ -236,11 +253,17 @@ function Pay(parent, contractId) {
     this.questions = ko.observable(parent.questions);
 
     this.getAmount = ko.computed(function() {
-        return '$' + this.payment.amount();
+        return Format.money(this.payment.amount());
+    }, this);
+    this.getOtherAmount = ko.computed(function() {
+        return Format.money(this.payment.amountOther());
+    }, this);
+    this.getTotal = ko.computed(function() {
+        return Format.money(this.total());
     }, this);
 
     this.getFeeAmountText = function(paymentCardFee) {
-        return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
+        return Format.money(this.total() * parseFloat(paymentCardFee) / 100);
     };
 
     this.isForceSave = ko.computed(function() {
@@ -306,7 +329,7 @@ function Pay(parent, contractId) {
                 current -= 2;
                 break;
             case 'pay':
-                $('#pay-popup').dialog('close');
+                jQuery('#pay-popup').dialog('close');
                 jQuery('body').showOverlay();
                 window.location.reload();
                 return;
@@ -356,7 +379,7 @@ function Pay(parent, contractId) {
             success: function(data, textStatus, jqXHR) {
                 window.formProcess.removeAllErrors('#pay-popup ');
                 jQuery.each(forms, function(key, formName) {
-                    $('#' + formName + ' .error').removeClass('error');
+                    jQuery('#' + formName + ' .error').removeClass('error');
                 });
 
                 jQuery('#pay-popup').hideOverlay();
@@ -410,7 +433,7 @@ function Pay(parent, contractId) {
                 } else if(self.isValidUser() && self.isProcessQuestion) {
                     window.formProcess.removeAllErrors('#pay-popup ');
                     jQuery.each(forms, function(key, formName) {
-                        $('#' + formName + ' .error').removeClass('error');
+                        jQuery('#' + formName + ' .error').removeClass('error');
                     });
                     onSuccessStep([]);
                 }
@@ -433,21 +456,26 @@ function Pay(parent, contractId) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
     }
 
-    $('#pay-popup').dialog({
+    if (isNaN(this.payment.startMonth())) {
+        var startDate = new Date();
+        this.payment.startMonth(startDate.getMonth() + 1);
+    }
+
+    jQuery('#pay-popup').dialog({
         width: 650,
         modal: true,
         beforeClose: function( event, ui ) {
             self.paymentAccounts([{id: '', name: ''}]);
             self.newUserAddress([new Address()]);
-            $("input.datepicker-field").datepicker("destroy");
+            jQuery("input.datepicker-field").datepicker("destroy");
         }
     });
 
 
-    $('.ui-dialog>#pay-popup').css("top","0px");
+    jQuery('.ui-dialog>#pay-popup').css("top","0px");
 
 
-    $("input.datepicker-field").datepicker({
+    jQuery("input.datepicker-field").datepicker({
         showOn: "both",
         buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
         buttonImageOnly: true,
@@ -457,16 +485,16 @@ function Pay(parent, contractId) {
         minDate: new Date()
     });
 
-//    $("#vi-questions").parent().replaceWith($("#vi-questions"));
-//    $('#vi-questions').slimScroll({
+//    jQuery("#vi-questions").parent().replaceWith(jQuery("#vi-questions"));
+//    jQuery('#vi-questions').slimScroll({
 //        alwaysVisible:true,
 //        width:330,
 //        height:260
 //    });
 
-    $('.user-ssn').ssn();
+    jQuery('.user-ssn').ssn();
 
-    ko.applyBindings(this, $('#pay-popup').get(0));
+    ko.applyBindings(this, jQuery('#pay-popup').get(0));
 
     jQuery.each(forms, function(key, formName) {
         jsfv[formName].addError = window.formProcess.addFormError;

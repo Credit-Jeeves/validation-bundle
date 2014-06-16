@@ -3,6 +3,13 @@
     <div class="col">
       <h4 class="active">{{'didnotfind'|trans}}</h4>
       {{ form_errors(form) }}
+        <div class="single-property-checkbox clearfix">
+            {{ form_errors(form.is_single) }}
+            <label class="checkbox register-tos">
+                {{ form_widget(form.is_single) }}
+                <span>{{ 'property.single.checkbox_label'|trans }}</span>
+            </label>
+        </div>
       <div class="form-row clearfix">
         {{ form_label(form.unit) }}
         <div class="fields-box">

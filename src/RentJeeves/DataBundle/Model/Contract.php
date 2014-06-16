@@ -3,11 +3,14 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\DisputeCode;
+use LogicException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -19,6 +22,7 @@ abstract class Contract
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -65,7 +69,8 @@ abstract class Contract
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Property",
-     *     inversedBy="contracts"
+     *     inversedBy="contracts",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="property_id",
@@ -83,12 +88,14 @@ abstract class Contract
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
-     *     inversedBy="contracts"
+     *     inversedBy="contracts",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="unit_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $unit;
 
@@ -115,6 +122,8 @@ abstract class Contract
      *         "default"="pending"
      *     }
      * )
+     * @Gedmo\Versioned
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $status;
 
@@ -128,11 +137,77 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.rent.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
+     * @Gedmo\Versioned
+     * @Assert\Regex(
+     *     pattern = "/^\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
-    protected $rent;
+    protected $rent = null;
+
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=true,
+     *     name="uncollected_balance"
+     * )
+     * @Gedmo\Versioned
+     */
+    protected $uncollectedBalance;
+
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=false,
+     *     name="balance",
+     *     options={
+     *          "default":"0.00"
+     *     }
+     * )
+     * @Gedmo\Versioned
+     */
+    protected $balance = 0.00;
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=false,
+     *     name="integrated_balance",
+     *     options={
+     *          "default":"0.00"
+     *     }
+     * )
+     * @Assert\NotBlank(
+     *     message="error.balance.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Gedmo\Versioned
+     */
+    protected $integratedBalance = 0.00;
 
     /**
      * @ORM\Column(
@@ -141,20 +216,63 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
-     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Gedmo\Versioned
      */
     protected $paidTo;
 
     /**
      * @ORM\Column(
+     *     name="report_to_experian",
      *     type="boolean",
      *     nullable=true,
      *     options={
      *         "default"="0"
      *     }
      * )
+     * @Serializer\Exclude
      */
-    protected $reporting = 0;
+    protected $reportToExperian = 0;
+
+    /**
+     * @ORM\Column(
+     *     name="report_to_trans_union",
+     *     type="boolean",
+     *     nullable=true,
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $reportToTransUnion = 0;
+
+    /**
+     * @ORM\Column(
+     *     name="experian_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $experianStartAt;
+
+    /**
+     * @ORM\Column(
+     *     name="trans_union_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $transUnionStartAt;
+
+    /**
+     * @ORM\Column(name="due_date", type="integer", nullable=true)
+     *
+     * @var int
+     */
+    protected $dueDate;
 
     /**
      * @ORM\Column(
@@ -165,11 +283,13 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.start.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Gedmo\Versioned
      */
     protected $startAt;
 
@@ -186,9 +306,10 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
-     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Gedmo\Versioned
      */
-    protected $finishAt;
+    protected $finishAt = null;
     
 
     /**
@@ -208,20 +329,21 @@ abstract class Contract
      *     type="datetime"
      * )
      * @Serializer\Exclude
+     * @Gedmo\Versioned
      */
     protected $updatedAt;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
      *     mappedBy="contract",
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
-     * @var \CreditJeeves\DataBundle\Entity\Operation
      * @Serializer\Exclude
+     * @var ArrayCollection
      */
-    protected $operation;
+    protected $operations;
 
     /**
      * @ORM\OneToMany(
@@ -236,103 +358,35 @@ abstract class Contract
      */
     protected $payments;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ContractHistory",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $histories;
 
     /**
      * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
+     *     type="DisputeCode",
      *     nullable=true,
-     *     name="uncollected_balance"
-     * )
-     */
-    protected $uncollectedBalance;
-
-
-    /**
-     * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
-     *     nullable=false,
-     *     name="balance",
      *     options={
-     *          "default":"0.00"
+     *         "default"="BLANK"
      *     }
      * )
+     * @Serializer\Exclude
      */
-    protected $balance = 0.00;
-
-    /**
-     * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
-     *     nullable=false,
-     *     name="imported_balance",
-     *     options={
-     *          "default":"0.00"
-     *     }
-     * )
-     */
-    protected $importedBalance = 0.00;
-
+    protected $disputeCode = DisputeCode::DISPUTE_CODE_BLANK;
 
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
+        $this->histories = new ArrayCollection();
     }
-
-    /**
-     * @param float $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getBalance()
-    {
-        return $this->balance;
-    }
-
-    /**
-     * @param float $importedBalance
-     */
-    public function setImportedBalance($importedBalance)
-    {
-        $this->importedBalance = $importedBalance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getImportedBalance()
-    {
-        return $this->importedBalance;
-    }
-
-
-    /**
-     * @param float $uncollectedBalance
-     */
-    public function setUncollectedBalance($uncollectedBalance)
-    {
-        $this->uncollectedBalance = $uncollectedBalance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getUncollectedBalance()
-    {
-        return $this->uncollectedBalance;
-    }
-
 
     /**
      * Get id
@@ -521,9 +575,58 @@ abstract class Contract
     }
 
     /**
+     * @param float $balance
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    /**
+     * @param float $integratedBalance
+     */
+    public function setIntegratedBalance($integratedBalance)
+    {
+        $this->integratedBalance = $integratedBalance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getIntegratedBalance()
+    {
+        return $this->integratedBalance;
+    }
+
+
+    /**
+     * @param float $uncollectedBalance
+     */
+    public function setUncollectedBalance($uncollectedBalance)
+    {
+        $this->uncollectedBalance = $uncollectedBalance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUncollectedBalance()
+    {
+        return $this->uncollectedBalance;
+    }
+
+    /**
      * Set Paid to
      *
-     * @param \DateTime $paidTo
+     * @param DateTime $paidTo
      * @return Contract
      */
     public function setPaidTo($paidTo)
@@ -535,55 +638,69 @@ abstract class Contract
     /**
      * Get startAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getPaidTo()
     {
-        $date = $this->paidTo;
-        if (empty($date)) {
-            $date = $this->getStartAt();
-        }
-        return $date;
+        return $this->paidTo;
     }
 
     /**
-     * Set Reporting
+     * Set dueDate
      *
-     * @param boolean $reporting
-     * @return Contract
+     * @param integer $dueDate
+     * @return $this
      */
-    public function setReporting($reporting)
+    public function setDueDate($dueDate)
     {
-        $this->reporting = $reporting;
+        $dueDate = (int)$dueDate;
+        if ($dueDate > 31 || $dueDate < 1) {
+            throw new LogicException("Due date can't be more than 31 and less than 1");
+        }
+        $this->dueDate = $dueDate;
+
         return $this;
     }
 
     /**
-     * Get Reporting
+     * Get dueDate
      *
-     * @return boolean
+     * @return integer
      */
-    public function getReporting()
+    public function getDueDate()
     {
-        return $this->reporting;
+        return $this->dueDate;
+    }
+
+    public static function getRangeDueDate()
+    {
+        $dueDate = array();
+        foreach (range(1, 31, 1) as $value) {
+            $dueDate[$value] = $value;
+        }
+
+        return $dueDate;
     }
 
     /**
      * Set startAt
      *
-     * @param \DateTime $startAt
+     * @param DateTime $startAt
      * @return Contract
      */
     public function setStartAt($startAt)
     {
         $this->startAt = $startAt;
+        if ($this->getDueDate() == null && ($this->startAt instanceof \DateTime)) {
+            $this->setDueDate($this->startAt->format('j'));
+        }
         return $this;
     }
 
     /**
      * Get startAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getStartAt()
     {
@@ -593,7 +710,7 @@ abstract class Contract
     /**
      * Set finishAt
      *
-     * @param \DateTime $finishAt
+     * @param DateTime $finishAt
      * @return Contract
      */
     public function setFinishAt($finishAt)
@@ -605,7 +722,7 @@ abstract class Contract
     /**
      * Get finishAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getFinishAt()
     {
@@ -615,7 +732,7 @@ abstract class Contract
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      * @return Contract
      */
     public function setCreatedAt($createdAt)
@@ -627,7 +744,7 @@ abstract class Contract
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -637,7 +754,7 @@ abstract class Contract
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      * @return Contract
      */
     public function setUpdatedAt($updatedAt)
@@ -649,7 +766,7 @@ abstract class Contract
     /**
      * Get updatedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdatedAt()
     {
@@ -657,25 +774,35 @@ abstract class Contract
     }
 
     /**
-     * Set operation
+     * Add payment
      *
      * @param \CreditJeeves\DataBundle\Entity\Operation $operation
      * @return Contract
      */
-    public function setOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
-        $this->operation = $operation;
+        $this->operations[] = $operation;
         return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
+     */
+    public function removeOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    {
+        $this->operations->removeElement($operation);
     }
 
     /**
      * Get operations
      *
-     * @return \CreditJeeves\DataBundle\Entity\Operation
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getOperation()
+    public function getOperations()
     {
-        return $this->operation;
+        return $this->operations;
     }
 
     /**
@@ -708,5 +835,85 @@ abstract class Contract
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * @param mixed $disputeCode
+     */
+    public function setDisputeCode($disputeCode)
+    {
+        $this->disputeCode = $disputeCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisputeCode()
+    {
+        return $this->disputeCode;
+    }
+
+    /**
+     * @param DateTime $experianStartAt
+     */
+    public function setExperianStartAt($experianStartAt)
+    {
+        $this->experianStartAt = $experianStartAt;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getExperianStartAt()
+    {
+        return $this->experianStartAt;
+    }
+
+    /**
+     * @param boolean $reportExperian
+     */
+    public function setReportToExperian($reportExperian)
+    {
+        $this->reportToExperian = $reportExperian;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToExperian()
+    {
+        return $this->reportToExperian;
+    }
+
+    /**
+     * @param boolean $reportTransUnion
+     */
+    public function setReportToTransUnion($reportTransUnion)
+    {
+        $this->reportToTransUnion = $reportTransUnion;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToTransUnion()
+    {
+        return $this->reportToTransUnion;
+    }
+
+    /**
+     * @param DateTime $transUnionStartAt
+     */
+    public function setTransUnionStartAt($transUnionStartAt)
+    {
+        $this->transUnionStartAt = $transUnionStartAt;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getTransUnionStartAt()
+    {
+        return $this->transUnionStartAt;
     }
 }

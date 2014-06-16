@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use CreditJeeves\DataBundle\Entity\Group;
 
 /**
  * @ORM\MappedSuperclass
@@ -17,6 +18,7 @@ abstract class Unit
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -26,6 +28,22 @@ abstract class Unit
      *     type="string",
      *     length=50
      * )
+     * @Assert\NotBlank(
+     *     message="error.unit.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     message="error.unit.regexp",
+     *     pattern = "/^[A-Za-z_0-9\-]{1,50}$/",
+     *     groups = {
+     *         "import",
+     *         "registration_tos"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Accessor(getter="getName",setter="setName")
      */
     protected $name;
 
@@ -52,7 +70,8 @@ abstract class Unit
      * )
      * @ORM\JoinColumn(
      *     name="property_id",
-     *     referencedColumnName="id"
+     *     referencedColumnName="id",
+     *     nullable=false
      * )
      * @Serializer\Exclude
      */
@@ -105,6 +124,15 @@ abstract class Unit
     protected $updatedAt;
 
     /**
+     * @ORM\Column(
+     *      name="deleted_at",
+     *      type="datetime",
+     *      nullable=true
+     * )
+     */
+    protected $deletedAt;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
      *     mappedBy="unit",
@@ -116,37 +144,29 @@ abstract class Unit
      *     orphanRemoval=true
      * )
      * @Serializer\Exclude
+     *
+     * @var ArrayCollection
      */
     protected $contracts;
 
     /**
-     * @ORM\Column(
-     *      name="deleted_at",
-     *      type="datetime",
-     *      nullable=true
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
+     *     mappedBy="unit",
+     *     cascade={
+     *       "persist"
+     *     }
      * )
+     * @Serializer\Exclude
+     *
+     * @var ArrayCollection
      */
-    protected $deletedAt;
-
-    /**
-     * @param mixed $deletedAt
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
+    protected $contractsWaiting;
 
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
+        $this->contractsWaiting = new ArrayCollection();
     }
     
     /**
@@ -270,6 +290,22 @@ abstract class Unit
     }
 
     /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
      * Set Property
      *
      * @param Property $property
@@ -339,7 +375,7 @@ abstract class Unit
      * Add Contract
      *
      * @param Contract $contract
-     * @return Unit
+     * @return $this
      */
     public function addContract(Contract $contract)
     {
@@ -351,19 +387,53 @@ abstract class Unit
      * Remove Contract
      *
      * @param Contract
+     * @return $this
      */
     public function removeContract(Contract $contract)
     {
         $this->contracts->removeElement($contract);
+        return $this;
     }
     
     /**
      * Get contracts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    /**
+     * Add ContractWaiting
+     *
+     * @param ContractWaiting $contract
+     * @return $this
+     */
+    public function addContractWaiting(ContractWaiting $contract)
+    {
+        $this->contractsWaiting[] = $contract;
+        return $this;
+    }
+
+    /**
+     * Remove ContractWaiting
+     *
+     * @param Contract
+     * @return $this
+     */
+    public function removeContractWaiting(ContractWaiting $contract)
+    {
+        $this->contractsWaiting->removeElement($contract);
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getContractsWaiting()
+    {
+        return $this->contractsWaiting;
     }
 }

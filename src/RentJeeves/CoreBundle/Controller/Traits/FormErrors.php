@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 trait FormErrors
 {
+    protected $translator;
 
     /**
      * @param FormInterface $form
@@ -16,10 +17,13 @@ trait FormErrors
      */
     private function getFormChildErrors(FormInterface $child, $name)
     {
+        if (empty($this->translator)) {
+            $this->translator = $this->get('translator.default');
+        }
         $errorMessages = array();
         if (!$child->isValid()) {
             foreach ($child->getErrors() as $error) {
-                $errorMessages[] = $this->get('translator.default')->trans(
+                $errorMessages[] = $this->translator->trans(
                     $error->getMessage()
                 );
             }

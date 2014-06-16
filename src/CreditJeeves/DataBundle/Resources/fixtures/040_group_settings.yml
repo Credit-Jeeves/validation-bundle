@@ -1,0 +1,5 @@
+model: RentJeeves\DataBundle\Entity\GroupSettings
+fixtures:
+  setting:
+    isIntegrated: 1
+    group: RentGroup_1

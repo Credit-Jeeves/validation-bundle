@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
+use \DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -66,18 +67,10 @@ abstract class Order
      *      type="decimal",
      *      precision=10,
      *      scale=2,
-     *      nullable=true
+     *      nullable=false
      * )
      */
-    protected $amount;
-
-    /**
-     * @ORM\Column(
-     *     type="integer",
-     *     nullable=true
-     * )
-     */
-    protected $days_late = null;
+    protected $sum;
 
     /**
      * @ORM\Column(
@@ -118,25 +111,10 @@ abstract class Order
     protected $heartlands;
 
     /**
-     * @ORM\ManyToMany(
+     * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
-     *     inversedBy="orders",
+     *     mappedBy="order",
      *     cascade={"all"}
-     * )
-     * @ORM\JoinTable(
-     *      name="cj_order_operation",
-     *      joinColumns={
-     *          @ORM\JoinColumn(
-     *              name="cj_order_id",
-     *              referencedColumnName="id"
-     *          )
-     *      },
-     *      inverseJoinColumns={
-     *          @ORM\JoinColumn(
-     *              name="cj_operation_id",
-     *              referencedColumnName="id"
-     *          )
-     *      }
      * )
      *
      * @Serializer\SerializedName("Details")
@@ -159,7 +137,8 @@ abstract class Order
         $this->operations = new ArrayCollection();
         $this->authorizes = new ArrayCollection();
         $this->heartlands = new ArrayCollection();
-        $this->created_at = new \DateTime();
+        $this->operations = new ArrayCollection();
+        $this->created_at = new DateTime();
     }
 
     /**
@@ -242,56 +221,32 @@ abstract class Order
     }
 
     /**
-     * Set amount
+     * Set sum
      *
-     * @param double $amount
+     * @param double $sum
      * @return Order
      */
-    public function setAmount($amount)
+    public function setSum($sum)
     {
-        $this->amount = $amount;
+        $this->sum = $sum;
     
         return $this;
     }
     
     /**
-     * Get amount
+     * Get sum
      *
      * @return double
      */
-    public function getAmount()
+    public function getSum()
     {
-        return $this->amount;
+        return $this->sum;
     }
-
-    /**
-     * Set days_late
-     *
-     * @param double $days
-     * @return Order
-     */
-    public function setDaysLate($days)
-    {
-        $this->days_late = $days;
-    
-        return $this;
-    }
-    
-    /**
-     * Get days_late
-     *
-     * @return double
-     */
-    public function getDaysLate()
-    {
-        return $this->days_late;
-    }
-    
     
     /**
      * Set created_date
      *
-     * @param \DateTime $createdDate
+     * @param DateTime $createdDate
      * @return Order
      */
     public function setCreatedAt($createdAt)
@@ -304,7 +259,7 @@ abstract class Order
     /**
      * Get created_date
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -314,7 +269,7 @@ abstract class Order
     /**
      * Set updated_at
      *
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      * @return Order
      */
     public function setUpdatedAt($updatedAt)
@@ -327,7 +282,7 @@ abstract class Order
     /**
      * Get updated_at
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdatedAt()
     {

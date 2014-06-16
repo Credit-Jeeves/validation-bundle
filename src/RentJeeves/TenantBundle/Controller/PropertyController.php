@@ -3,6 +3,7 @@
 namespace RentJeeves\TenantBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\CoreBundle\Services\ContractProcess;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteType;
@@ -93,14 +94,19 @@ class PropertyController extends Controller
         }
         $unitName = $request->request->get('unit'.$property->getId());
         $unitNew = $request->request->get('unitNew'.$property->getId());
-        $unitSearch = null;
+        $unitSearch = Unit::SEARCH_PROPERTY_NEW_NAME;
         if (!empty($unitName) && $unitName != 'new') {
             $unitSearch = $unitName;
-        } elseif (!empty($unitNew) && $unitNew != 'none') {
+        } elseif (!empty($unitNew)) {
             $unitSearch = $unitNew;
         }
         $tenant = $this->getUser();
-        $property->createContract($em, $tenant, $unitSearch);
+
+        /**
+         * @var $contractProcess ContractProcess
+         */
+        $contractProcess = $this->get('contract.process');
+        $contractProcess->createContractFromTenantSide($tenant, $property, $unitSearch);
 
         return $this->redirect($this->generateUrl('tenant_homepage'), 301);
     }
@@ -117,23 +123,20 @@ class PropertyController extends Controller
             throw $this->createNotFoundException('The property does not exist.');
         }
 
-        $invite = new Invite();
-        $invite->setProperty($property);
-        $invite->setTenant($this->getUser());
         $form = $this->createForm(
-            new InviteType(),
-            $invite
+            new InviteType()
         );
 
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $invite = $form->getData();
+            $invite->setProperty($property);
+            $invite->setTenant($this->getUser());
 
-                $this->get('invite.landord')->invite($invite, $this->getUser());
+            $this->get('invite.landord')->invite($invite, $this->getUser());
 
-                return $this->redirect($this->generateUrl('tenant_homepage'), 301);
-            }
+            return $this->redirect($this->generateUrl('tenant_homepage'), 301);
         }
 
         return array(

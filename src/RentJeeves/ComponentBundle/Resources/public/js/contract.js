@@ -2,6 +2,14 @@ function Contract() {
     var self = this;
     this.outstandingBalance = ko.observable(0);
     this.propertiesList = ko.observableArray([]);
+    this.dueDateList = ko.observableArray([]);
+    for(i = 1; i <= 31; i++) {
+        var data = {
+            'text': i,
+            'value': i
+        };
+        self.dueDateList().push(data);
+    }
     this.unitsList = ko.observableArray([]);
     this.currentPropertyId = ko.observable();
     this.currentUnitId = ko.observable();
@@ -15,6 +23,7 @@ function Contract() {
     this.errorsApprove = ko.observableArray([]);
     this.errorsEdit = ko.observableArray([]);
     this.statusBeforeTriedSave = ko.observable();
+    this.isSingleProperty = ko.observable(true);
 
     this.cancelEdit = function (data) {
         $('#tenant-edit-property-popup').dialog('close');
@@ -35,6 +44,8 @@ function Contract() {
             success: function (response) {
                 $('#unit-edit').parent().find('.loader').hide();
                 self.unitsList(response.units);
+                self.isSingleProperty(response.isSingle == true);
+                self.currentUnitId(self.contract().unit_id);
             }
         });
     };
@@ -84,7 +95,6 @@ function Contract() {
 
         self.currentPropertyId(self.contract().property_id);
         self.getProperties(self.contract().property_id);
-        self.currentUnitId(self.contract().unit_id);
         self.getUnits(self.contract().property_id);
 
 

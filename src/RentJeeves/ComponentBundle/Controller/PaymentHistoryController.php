@@ -12,14 +12,17 @@ class PaymentHistoryController extends Controller
      * @Template("RjComponentBundle:PaymentHistory:index.html.twig")
      * @return mixed
      */
-    public function indexAction(\CreditJeeves\DataBundle\Entity\User $user, $short = false)
+    public function indexAction()
     {
+        $user = $this->getUser();
         $active = array();
         $finished = array();
         $aMonthes = array();
         for ($i = 1; $i < 13; $i++) {
             $aMonthes[] = date('M', mktime(0, 0, 0, $i, 1));
         }
+
+        $this->get('soft.deleteable.control')->disable();
         $em = $this->get('doctrine.orm.default_entity_manager');
         $translator = $this->get('translator.default');
         $contracts = $user->getContracts();
@@ -35,7 +38,7 @@ class PaymentHistoryController extends Controller
             $startDate = $contract->getStartAt();
             $finishedDate = $contract->getFinishAt();
 
-            if (!$startDate || !$finishedDate) {
+            if (!$startDate) {
                 continue;
             }
 
@@ -55,6 +58,8 @@ class PaymentHistoryController extends Controller
                 $item['balance_month'] = $finishedDate->format('m');
             }
             $item['tenant'] = $contract->getTenant()->getFullName();
+            $item['reporting']['experian'] = $contract->getReportToExperian();
+            $item['reporting']['trans_union'] = $contract->getReportToTransUnion();
             switch ($status = $contract->getStatus()) {
                 case ContractStatus::APPROVED:
                     $history = $contract->getFuturePaymentHistory($em);
@@ -62,7 +67,6 @@ class PaymentHistoryController extends Controller
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = $translator->trans('contract.status.pay');
-                    $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
                 case ContractStatus::CURRENT:
@@ -71,7 +75,6 @@ class PaymentHistoryController extends Controller
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = $translator->trans('contract.status.current');
-                    $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
                 case ContractStatus::FINISHED:
@@ -88,7 +91,6 @@ class PaymentHistoryController extends Controller
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,
             'aMonthes' => $aMonthes,
-            'short' => $short,
         );
     }
 }

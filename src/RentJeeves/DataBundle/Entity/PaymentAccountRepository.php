@@ -15,7 +15,6 @@ class PaymentAccountRepository extends EntityRepository
     public function findOneWithGroupAddress($id)
     {
         $queryBuilder = $this->createQueryBuilder('pa');
-        $queryBuilder->leftJoin('pa.group', 'g');
         $queryBuilder->leftJoin('pa.address', 'a');
         $queryBuilder->where('pa.id = :id');
         $queryBuilder->setParameter('id', $id);

@@ -1,8 +1,10 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Contract as Base;
@@ -10,14 +12,21 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\Serializer\Annotation as Serializer;
-use \DateTime;
-use \RuntimeException;
+use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\CoreBundle\DateTime;
+use RuntimeException;
+use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Contract
  *
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\ContractRepository")
  * @ORM\Table(name="rj_contract")
+ *
+ * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"User", "Default"})
+ *
+ * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
  */
 class Contract extends Base
 {
@@ -120,6 +129,30 @@ class Contract extends Base
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getDueDate()
+    {
+        $day = parent::getDueDate();
+        if (empty($day) && ($this->getStartAt() instanceof DateTime)) {
+            $day = $this->getStartAt()->format('j');
+        }
+        return $day;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPaidTo()
+    {
+        $date = parent::getPaidTo();
+        if (empty($date)) {
+            $date = $this->getStartAt();
+        }
+        return $date;
+    }
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("payToName")
      * @return string
@@ -163,6 +196,8 @@ class Contract extends Base
         $unit = $this->getUnit();
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
+        $result['dueDate'] = $this->getDueDate();
+        $result['balance'] = $this->getBalance();
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];
@@ -173,6 +208,7 @@ class Contract extends Base
         if ($unit) {
             $result['unit_id'] = $unit->getId();
         }
+        $result['isSingleProperty'] = $property->getIsSingle();
         $result['tenant'] = ucwords(strtolower($tenant->getFullName()));
         $result['first_name'] = $tenant->getFirstName();
         $result['last_name'] = $tenant->getLastName();
@@ -223,11 +259,11 @@ class Contract extends Base
 
     private function getLateDays()
     {
-        $result = '1 DAY LATE';
+        $result = '1 DAY LATE'; //TODO it is wrong because PaidTo==null can't be 1 day late
         if ($date = $this->getPaidTo()) {
             $now = new DateTime();
             $interval = $now->diff($date);
-            if ($interval->days > 0) {
+            if ($interval->format("%r%a") < 0) {
                 $result = $interval->days.self::PAYMENT_LATE;
             }
         }
@@ -238,12 +274,13 @@ class Contract extends Base
     {
         $result = self::EMPTY_LAST_PAYMENT;
         $payments = array();
-        $operation = $this->getOperation();
-        if (empty($operation)) {
+        $operations = $this->getOperations();
+        if (!$operations->count()) {
             return $result;
         } else {
-            $orders = $operation->getOrders();
-            foreach ($orders as $order) {
+            /** @var Operation $operation */
+            foreach ($operations as $operation) {
+                $order = $operation->getOrder();
                 if (OrderStatus::COMPLETE == $order->getStatus()) {
                     $payments[] = $order->getCreatedAt()->format('M d, Y');
                 }
@@ -316,11 +353,17 @@ class Contract extends Base
      * @param $unit
      * @return string
      */
-    public function getRentAddress($property, $unit)
+    public function getRentAddress($property = null, $unit = null)
     {
         $result = array();
+        if (!$property) {
+            $property = $this->getProperty();
+        }
+        if (!$unit) {
+            $unit = $this->getUnit();
+        }
         $result[] = $property->getAddress();
-        if ($unit) {
+        if (!$property->isSingle() && $unit) {
             $result[] = $unit->getName();
             $result = implode(' #', $result);
         } else {
@@ -344,6 +387,11 @@ class Contract extends Base
         return $this->getPaymentHistory($em);
     }
 
+    /**
+     * @param EntityManager $em
+     *
+     * @return array
+     */
     public function getPaymentHistory($em)
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '-');
@@ -352,22 +400,15 @@ class Contract extends Base
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
         $repo = $em->getRepository('DataBundle:Order');
         $orders = $repo->getContractHistory($this);
+        /** @var Order $order */
         foreach ($orders as $order) {
-            $orderDate = $order->getCreatedAt();
-            $lastPaymentDate = $orderDate->format('m/d/Y');
-            $late = $order->getDaysLate();
-            if ($late < 0) {
-//                @TODO: temporary commented. Should be removed if it helps to fix history.
-//                $late--;
-                $orderDate = $orderDate->modify('+'.(-1)*$late.' days');
-            } elseif ($late > 0) {
-//                @TODO: temporary commented. Should be removed if it helps to fix history.
-//                $late++;
-                $orderDate = $orderDate->modify('-'.$late.' days');
-            }
-            $nYear = $orderDate->format('Y');
-            $nMonth = $orderDate->format('m');
-            $interval = $currentDate->diff($orderDate)->format('%r%a');
+            $operation = $order->getRentOperation();
+            $paidFor = $operation->getPaidFor();
+            $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
+            $late = $operation->getDaysLate();
+            $nYear = $paidFor->format('Y');
+            $nMonth = $paidFor->format('m');
+            $interval = $currentDate->diff($paidFor)->format('%r%a');
             $status = $order->getStatus();
             switch ($status) {
                 case OrderStatus::NEWONE:
@@ -376,19 +417,20 @@ class Contract extends Base
                     break;
                 case OrderStatus::COMPLETE:
                     if ($interval >= $lastDate) {
-                        $result['last_amount'] = $order->getAmount();
+                        $result['last_amount'] = $operation->getAmount();
                         $result['last_date'] = $lastPaymentDate;
                     }
                     $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
                     $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-                    if ($late > 0) {
+                    if ($late >= 30) {
                         $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                        $payments[$nYear][$nMonth]['text'] = $late;
+                        $lateText = floor($late / 30) * 30;
+                        $payments[$nYear][$nMonth]['text'] = $lateText;
                     }
                     if (!isset($payments[$nYear][$nMonth]['amount'])) {
-                        $payments[$nYear][$nMonth]['amount'] = $order->getAmount();
+                        $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
                     } else {
-                        $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
+                        $payments[$nYear][$nMonth]['amount']+= $operation->getAmount();
                     }
                     break;
                 default:
@@ -422,15 +464,38 @@ class Contract extends Base
         for ($i = $startYear; $i <= $finishYear; $i++) {
             $result[$i] = $aMonthes;
         }
-        if (ContractStatus::FINISHED != $this->getStatus()) {
+        /*if (ContractStatus::FINISHED != $this->getStatus()) {
             $paidTo = $this->getPaidTo();
             $result[$paidTo->format('Y')][$paidTo->format('m')] = array(
                 'status' => self::STATUS_PAY,
                 'text' => self::PAYMENT_PAY,
                 'amount' => 0,
             );
-        }
+        }*/
         return $result;
+    }
+
+    /**
+     * Fix mistake based on balance and due date
+     *
+     * @param DateTime $newDate
+     *
+     * @return DateTime
+     */
+    private function fixDay($newDate)
+    {
+        if (28 < $this->getDueDate() && $newDate->format('j') != $this->getDueDate() &&
+            (0 == $this->getBalance() || abs($this->getBalance()) == $this->getRent())
+        ) {
+            if ($newDate->format('t') >= $this->getDueDate() && 3 >= abs($newDate->format('j') - $this->getDueDate())) {
+                $newDate->setDate(null, null, $this->getDueDate());
+            }
+            if (3 >= $newDate->format('j')) {
+                $newDate->modify('-1 month');
+                $newDate->setDate(null, null, $this->getDueDate());
+            }
+        }
+        return $newDate;
     }
 
     public function shiftPaidTo($amount = null)
@@ -442,15 +507,15 @@ class Contract extends Base
         if ($amount > $rent) {
             $newDate->modify('+1 months');
             $diff = $amount - $rent;
-            $days = $this->countPaidDays($rent, $diff);
+            $days = $this->countPaidDays($rent, $diff, $paidTo);
             $newDate->modify('+'.$days.' days');
         } elseif ($amount < $rent) {
-            $days = $this->countPaidDays($rent, $amount);
+            $days = $this->countPaidDays($rent, $amount, $paidTo);
             $newDate->modify('+'.$days.' days');
         } else {
             $newDate->modify('+1 months');
         }
-        return $this->setPaidTo($newDate);
+        return $this->setPaidTo($this->fixDay($newDate));
     }
 
     /**
@@ -461,25 +526,33 @@ class Contract extends Base
         $paidTo = $this->getPaidTo();
         $newDate = clone $paidTo;
         $rent = $this->getRent();
-        $amount = ($amount) ? $amount : $rent;
+        $amount = $amount?:$rent;
         if ($amount > $rent) {
             $newDate->modify('-1 months');
             $diff = $amount - $rent;
-            $days = $this->countPaidDays($rent, $diff);
+            $days = $this->countPaidDays($rent, $diff, $newDate);
             $newDate->modify('-'.$days.' days');
         } elseif ($amount < $rent) {
-            $days = $this->countPaidDays($rent, $amount);
+            $days = $this->countPaidDays($rent, $amount, $newDate);
             $newDate->modify('-'.$days.' days');
         } else {
             $newDate->modify('-1 months');
         }
 
-        return $this->setPaidTo($newDate);
+        return $this->setPaidTo($this->fixDay($newDate));
     }
 
-    private function countPaidDays($rent, $paid)
+    /**
+     * @param float $rent
+     * @param float $paid
+     * @param DateTime $date
+     *
+     * @return float
+     */
+    private function countPaidDays($rent, $paid, $date)
     {
-        return floor($paid * 30/ $rent);
+        $days = $date->format('t');
+        return floor($paid * $days/ $rent);
     }
 
     /**
@@ -491,7 +564,7 @@ class Contract extends Base
     {
         $property = $this->getProperty();
         $unit = $this->getUnit();
-        $repo = $em->getRepository('DataBundle:Order');
+        $orderRepository = $em->getRepository('DataBundle:Order');
         $result = array();
         $result['id'] = $this->getId();
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
@@ -508,7 +581,7 @@ class Contract extends Base
         $result['isPayment'] = false;
         $result['payment_status'] = false;
         /** @var Order $lastOrder */
-        $lastOrder = $repo->getLastContractPayment($this);
+        $lastOrder = $orderRepository->getLastContractPayment($this);
         $lastPaymentDate = null;
         if ($lastOrder) {
             $result['payment_last'] = $lastOrder->getUpdatedAt()->format('m/d/Y');
@@ -549,7 +622,13 @@ class Contract extends Base
     public function setStatusApproved()
     {
         $startAt = $this->getStartAt();
-        $paidTo = clone $startAt;
+        $dueDateFromStartAt = (int)$startAt->format('j');
+        $paidTo = new DateTime();
+        $paidTo->setDate($startAt->format('Y'), $startAt->format('n'), null);
+        if ($dueDateFromStartAt >= $this->getDueDate()) {
+            $paidTo->modify("+1 month");
+        }
+        $paidTo->setDate(null, null, $this->getDueDate());
         $this->setPaidTo($paidTo);
         $this->setStatus(ContractStatus::APPROVED);
         return $this;
@@ -594,6 +673,11 @@ class Contract extends Base
         return $this->getGroup()->getGroupSettings()->getIsPidVerificationSkipped();
     }
 
+    public function getAvailableDisputeCodes()
+    {
+        return DisputeCode::all();
+    }
+
     public function __toString()
     {
         return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
@@ -622,5 +706,66 @@ class Contract extends Base
             return null;
         }
         return $collection[0];
+    }
+
+
+    /**
+     * Have test by path: src/RentJeeves/DataBundle/Tests/Unit/ContractEntityCase.php
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Type("boolean")
+     *
+     * @return bool
+     */
+    public function isLate()
+    {
+        $paidTo = $this->getPaidTo();
+
+        if (empty($paidTo) || !is_null($this->getId())) {
+            return false;
+        }
+
+        $today = new DateTime();
+        $interval = $today->diff($paidTo)->format("%r%a");
+
+        if ($interval > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return DateTime | null
+     */
+    public function getPaidToWithDueDate()
+    {
+        if (!$this->getPaidTo() || !$this->getDueDate()) {
+            return null;
+        }
+        if ($this->getDueDate() == $this->getPaidTo()->format('j')) {
+            return $this->getPaidTo();
+        }
+        $startAt = new DateTime($this->getPaidTo()->format('c'));
+        if ($this->getDueDate() < $startAt->format('j')) {
+            $startAt->modify('+1 month');
+        }
+
+        return $startAt->setDate(null, null, $this->getDueDate());
+    }
+
+
+    /**
+     * FIXME find why does not work!!!
+     */
+    public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
+    {
+        if (!$this->getStartAt() || !$this->getFinishAt()) {
+            return;
+        }
+        if ($this->getFinishAt() < $this->getStartAt()) {
+            $validatorContext->addViolationAt('finish', 'contract.error.is_end_later_than_start', array(), null);
+        }
     }
 }

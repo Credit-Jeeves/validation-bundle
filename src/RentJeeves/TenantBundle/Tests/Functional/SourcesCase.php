@@ -34,7 +34,10 @@ class SourcesCase extends BaseTestCase
 
         $this->page->pressButton('payment_account.edit.save');
 
-        $this->session->wait($this->timeout, "jQuery('#payment-account-edit .attention-box li').length");
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#payment-account-edit .attention-box li').length"
+        );
         $this->assertNotNull($errors = $this->page->findAll('css', '#payment-account-edit .attention-box li'));
         $this->assertCount(6, $errors);
 
@@ -44,7 +47,7 @@ class SourcesCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'New Card',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy Applegate',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
-                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
+                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '90210',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => date('n'),
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 1,
 //                'rentjeeves_checkoutbundle_paymentaccounttype_address_choice_24' => true,
@@ -58,8 +61,6 @@ class SourcesCase extends BaseTestCase
         );
         $this->assertCount(2, $choices);
         $choices[1]->click();
-
-
 
         $this->page->pressButton('payment_account.edit.save');
 
@@ -150,7 +151,6 @@ class SourcesCase extends BaseTestCase
     }
 
     /**
-     *
      * @test
      */
     public function checkEmailNotifyWhenRemoveContract()

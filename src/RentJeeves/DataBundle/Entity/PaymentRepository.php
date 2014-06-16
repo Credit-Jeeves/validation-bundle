@@ -9,8 +9,8 @@ use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use \Doctrine_Expression;
-use \DateTime;
+use Doctrine_Expression;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @author Alex Emelyanov
@@ -43,7 +43,13 @@ class PaymentRepository extends EntityRepository
 
         $query = $this->createQueryBuilder('p');
         $query->select("p, c, g, d");
-        $query->innerJoin('p.contract', 'c');
+        $query->innerJoin(
+            'p.contract',
+            'c',
+            Expr\Join::WITH,
+            "c.status NOT IN (:contractNotActiveStatuses)"
+        );
+        $query->setParameter('contractNotActiveStatuses', array(ContractStatus::DELETED, ContractStatus::FINISHED));
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('g.deposit_account', 'd');
         $query->leftJoin(
@@ -77,44 +83,6 @@ class PaymentRepository extends EntityRepository
 
         $query = $query->getQuery();
         return $query->execute();
-    }
-
-    /**
-     * @param DateTime $date
-     * @param array $types
-     * @param array $statuses
-     * @param array $contract
-     *
-     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
-     */
-    public function getNonAutoPayments(
-        $date,
-        $types = array(PaymentType::ONE_TIME, PaymentType::IMMEDIATE),
-        $statuses = array(PaymentStatus::PAUSE, PaymentStatus::CLOSE),
-        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
-    ) {
-        $query = $this->createQueryBuilder('p');
-        $query->select('p, c');
-        $query->innerJoin('p.contract', 'c');
-        $query->where('p.status IN (:status)');
-        $query->andWhere('p.type IN (:type)');
-        $query->andWhere('p.dueDate IN (:days)');
-        $query->andWhere('c.status IN (:contract)');
-        $query->andWhere(
-            self::getStartDateDQLString('p') . ' <= :startDate'
-        );
-        $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
-
-        $query->setParameter('status', $statuses);
-        $query->setParameter('type', $types);
-        $query->setParameter('days', $this->getDueDays(0, $date));
-        $query->setParameter('contract', $contract);
-        $query->setParameter('month', $date->format('n'));
-        $query->setParameter('year', $date->format('Y'));
-        $query->setParameter('startDate', $date->format('Y-m-d'));
-    
-        $query = $query->getQuery();
-        return $query->iterate();
     }
 
     /**
@@ -172,5 +140,22 @@ class PaymentRepository extends EntityRepository
                 '%Y-%c-%e'
             )"
         );
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Payment | null
+     */
+    public function findOneWithContractOrdersOperations($id)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->innerJoin('p.contract', 'c');
+        $query->andWhere('p.id = :id');
+        $query->setParameter('id', $id);
+        $query = ContractRepository::queryOperationsOrdersHistory($query)->getQuery();
+
+        return $query->getOneOrNullResult();
+
     }
 }

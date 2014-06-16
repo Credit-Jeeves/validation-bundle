@@ -39,22 +39,25 @@
                 <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span>
               </a>
               </strong>
-              {% if prop.hasLandlord %}
+              {% if prop.hasLandlord and not prop.isSingle %}
                 <div class="form-row clearfix">
-                  <label class="lab1">{{ 'add.unit'|trans }}</label>
-                  <label class="lab2">{{ 'select.unit'|trans }}</label>
-                  <div class="fields-box selectUnit">
-                    <select id="idUnit{{ prop.id }}" name="unit{{ prop.id }}" class="select-unit linkselect-link">
-                      <option value="none" class="noneField">{{ 'none'|trans}}</option>
-                      {% for unit in  prop.units %}
-                        <option value="{{ unit.name }}">{{ unit.name }}</option>
-                      {% endfor %}
-                      <option value="new"  class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
-                    </select>
-                  </div>
-                  <div class="fields-box createNewUnit">
-                      <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">{{ 'see.all'|trans }}</a>
-                  </div>
+                    {% if prop.units|length == 0 %}
+                        <label>{{ 'add.unit'|trans }}</label>
+                    {% else %}
+                        <label class="lab1">{{ 'add.unit'|trans }}</label>
+                        <label class="lab2">{{ 'select.unit'|trans }}</label>
+                        <div class="fields-box selectUnit">
+                            <select id="idUnit{{ prop.id }}" name="unit{{ prop.id }}" class="select-unit linkselect-link">
+                              {% for unit in  prop.units %}
+                                <option value="{{ unit.name }}">{{ unit.name }}</option>
+                              {% endfor %}
+                              <option value="new" class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
+                            </select>
+                        </div>
+                    {% endif %}
+                    <div class="fields-box{% if prop.units|length > 0 %} createNewUnit{% endif %}">
+                        <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A" style="width: 50px;"> <a href="#" class="see-all">{{ 'see.all'|trans }}</a>
+                    </div>
                 </div>
               {% endif %}
               <div class="buttons-box clearfix">
@@ -65,7 +68,7 @@
                     </button>
                   {% else %}
                         <br />
-                        <a href="{{ path("tenant_invite_landlord", {'propertyId': prop.id } )}}" class="button middle inviteLandlord" >
+                        <a href="{{ path("iframe_invite", {'propertyId': prop.id } )}}" class="button middle inviteLandlord" >
                         <span>{{ 'invite.landlord'|trans }}</span></a>
                  {% endif %}
                 </div>

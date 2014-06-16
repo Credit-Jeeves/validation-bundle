@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
@@ -25,8 +26,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
-use \DateTime;
-use \Exception;
+use RentJeeves\CoreBundle\DateTime;
+use Exception;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * 
@@ -90,7 +92,6 @@ class AjaxController extends Controller
      */
     public function contractMonthToMonth($contractId, Request $request)
     {
-        $group = $this->getCurrentGroup();
         $contract = $this->getContract($contractId);
         $contract->setFinishAt(null);
         $em = $this->getDoctrine()->getManager();
@@ -189,7 +190,7 @@ class AjaxController extends Controller
     public function getAllProperties()
     {
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
+        $repo = $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Property');
         $properties = $repo->getPropetiesAll($group);
 
         foreach ($properties as $property) {
@@ -210,9 +211,8 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function getPropertiesList()
+    public function getPropertiesList(Request $request)
     {
-        $request = $this->getRequest();
         $page = $request->request->all('data');
         $page = $page['data'];
         $data = array('properties' => array(), 'total' => 0, 'pagination' => array());
@@ -257,11 +257,10 @@ class AjaxController extends Controller
      *
      * @return array
      */
-    public function addProperty()
+    public function addProperty(Request $request)
     {
         $property = array();
         $itsNewProperty = false;
-        $request = $this->getRequest();
         $data = $request->request->all('address');
         $addGroup = $request->request->all('addGroup');
         $data = json_decode($data['data'], true);
@@ -280,7 +279,11 @@ class AjaxController extends Controller
             );
         }
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
+        /** @var Property $property */
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
+        if ($property && $request->request->has('isSingle')) {
+            $property->setIsSingle($request->request->get('isSingle') == 'true');
+        }
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
@@ -311,7 +314,18 @@ class AjaxController extends Controller
                     'message' => $this->get('translator')->trans('fill.full.address')
                 )
             );
+        } catch (Exception $e) {
+            return new JsonResponse(
+                array(
+                    'message' => $this->get('translator')->trans(
+                        'property.error.can_not_be_added',
+                        array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+                    )
+                ),
+                500
+            );
         }
+
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
             $google = $this->container->get('google');
             $google->savePlace($property);
@@ -359,9 +373,8 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function deleteProperty()
+    public function deleteProperty(Request $request)
     {
-        $request = $this->getRequest();
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
         $user = $this->getUser();
@@ -392,16 +405,16 @@ class AjaxController extends Controller
      * )
      * @Method({"POST"})
      */
-    public function getUnitsList()
+    public function getUnitsList(Request $request)
     {
         $result = array('property' => '', 'units' => array());
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
-        $request = $this->getRequest();
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
         $result['property'] = $property->getAddress();
+        $result['isSingle'] = $property->getIsSingle();
         $result['units'] = $this->getDoctrine()
             ->getRepository('RjDataBundle:Unit')
             ->getUnitsArray(
@@ -453,7 +466,7 @@ class AjaxController extends Controller
      * )
      * @Method({"POST"})
      */
-    public function saveUnitsList()
+    public function saveUnitsList(Request $request)
     {
         $data = array();
         $names = array();
@@ -462,7 +475,6 @@ class AjaxController extends Controller
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
-        $request = $this->getRequest();
         $data = $request->request->all('units');
         $property = $request->request->all('property');
         $parent = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($property['property_id']);
@@ -533,11 +545,10 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function getTenantsList()
+    public function getTenantsList(Request $request)
     {
         $items = array();
         $total = 0;
-        $request = $this->getRequest();
         $page = $request->request->all('data');
         $page = $page['data'];
         $data = array('tenants' => array(), 'total' => 0, 'pagination' => array());
@@ -571,14 +582,13 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function getContractsList()
+    public function getContractsList(Request $request)
     {
         //@TODO find best way for this implementation
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         $items = array();
         $total = 0;
-        $request = $this->getRequest();
         $dataRequest = $request->request->all('data')['data'];
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
@@ -617,15 +627,13 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function getActionsList()
+    public function getActionsList(Request $request)
     {
         //For this page need show unit each was removed
         //@TODO find best way for this implementation
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
-        $request = $this->getRequest();
-        $page = $request->request->all('data');
+        $page = $request->request->all();
         $data = $page['data'];
 
         $sortColumn = $data['sortColumn'];
@@ -637,26 +645,27 @@ class AjaxController extends Controller
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $total = $repo->countActionsRequired($group, $searchField, $searchText);
-        $total = count($total);
-        if ($total) {
-            $contracts = $repo->getActionsRequiredPage(
-                $group,
-                $data['page'],
-                $data['limit'],
-                $sortColumn,
-                $sortType,
-                $searchField,
-                $searchText
-            );
-            foreach ($contracts as $contract) {
-                $contract->setStatusShowLateForce(true);
-                $item = $contract->getItem();
-                $items[] = $item;
-            }
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
+        $query = $repo->getActionsRequiredPageQuery(
+            $group,
+            $data['page'],
+            $data['limit'],
+            $sortColumn,
+            $sortType,
+            $searchField,
+            $searchText
+        );
+        $contracts = $query->getQuery()->execute();
+        foreach ($contracts as $contract) {
+            $contract->setStatusShowLateForce(true);
+            $item = $contract->getItem();
+            $items[] = $item;
         }
-        
+        $total = $query->select('count(c)')
+            ->setMaxResults(null)
+            ->setFirstResult(null)
+            ->getQuery()
+            ->getSingleScalarResult();
         $result['actions'] = $items;
         $result['total'] = $total;
         $result['pagination'] = $this->datagridPagination($total, $data['limit']);
@@ -674,13 +683,12 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function saveContract()
+    public function saveContract(Request $request)
     {
         $errors = array();
         $response = array();
         $translator = $this->get('translator');
         $em = $this->getDoctrine()->getManager();
-        $request = $this->getRequest();
         $contract = $request->request->all('contract');
         $details = $contract['contract'];
         $action = 'edit';
@@ -693,7 +701,9 @@ class AjaxController extends Controller
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
-
+        /**
+         * @var $contract Contract
+         */
         $contract = $em->getRepository('RjDataBundle:Contract')->find($details['id']);
         $tenant = $contract->getTenant();
         $tenant->setFirstName($details['first_name']);
@@ -701,11 +711,17 @@ class AjaxController extends Controller
         $tenant->setEmail($details['email']);
         $tenant->setPhone($details['phone']);
         $property = $em->getRepository('RjDataBundle:Property')->find($details['property_id']);
+
+        if (!$property->isSingle() && empty($details['unit_id'])) {
+            $errors[] = $translator->trans('contract.error.unit');
+        }
+
         $unit = $em->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
         $contract->setRent($details['amount']);
-        $contract->setStartAt(new \Datetime($details['start']));
+        $contract->setDueDate($details['dueDate']);
+        $contract->setStartAt(new DateTime($details['start']));
         if (!empty($details['finish'])) {
-            $contract->setFinishAt(new \Datetime($details['finish']));
+            $contract->setFinishAt(new DateTime($details['finish']));
         } else {
             $contract->setFinishAt(null);
         }
@@ -733,6 +749,12 @@ class AjaxController extends Controller
             return new JsonResponse($response);
         }
 
+        $validatorErrors = $this->get('validator')->validate($contract);
+        /** @var ConstraintViolation $error */
+        foreach ($validatorErrors as $error) {
+            $errors[] = $translator->trans($error->getMessage());
+        }
+
         if (!empty($errors)) {
             $response['errors'] = $errors;
             return new JsonResponse($response);
@@ -754,10 +776,9 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function resolveContract()
+    public function resolveContract(Request $request)
     {
         $amount = null;
-        $request = $this->getRequest();
         $data = $request->request->all('data');
         if (!isset($data['action'])) {
             return new JsonResponse(array());
@@ -765,7 +786,9 @@ class AjaxController extends Controller
         if (isset($data['amount'])) {
             $amount = $data['amount'];
         }
-        $contract = $this->get('doctrine.orm.default_entity_manager')
+        /** @var Contract $contract */
+        $contract = $this->getDoctrine()
+            ->getManager()
             ->getRepository('RjDataBundle:Contract')
             ->find($data['contract_id']);
         $tenant = $contract->getTenant();
@@ -776,24 +799,21 @@ class AjaxController extends Controller
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
-                // Check operations
-                $operation = $contract->getOperation();
-                if (empty($operation)) {
-                    $operation = new Operation();
-                    $operation->setType(OperationType::RENT);
-                    $operation->setContract($contract);
-                    $em->persist($operation);
-                    $em->flush();
-                }
                 // Create order
                 $order = new Order();
-                $order->addOperation($operation);
                 $order->setUser($tenant);
-                $order->setAmount($contract->getRent());
+                $order->setSum($contract->getRent());
                 $order->setStatus(OrderStatus::COMPLETE);
                 $order->setType(OrderType::CASH);
                 $em->persist($order);
-                $em->flush();
+                // Create operation
+                $operation = new Operation();
+                $operation->setOrder($order);
+                $operation->setType(OperationType::RENT);
+                $operation->setContract($contract);
+                $operation->setAmount($contract->getRent());
+                $operation->setPaidFor($contract->getPaidTo());
+                $em->persist($operation);
                 // Change paid to date
                 $contract->shiftPaidTo($amount);
                 $contract->setStatus(ContractStatus::CURRENT);
@@ -826,7 +846,6 @@ class AjaxController extends Controller
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
         $request = $this->getRequest();
         $page = $request->request->all('data');
         $data = $page['data'];
@@ -839,6 +858,7 @@ class AjaxController extends Controller
 
         $result = array();
         $group = $this->getCurrentGroup();
+        /** @var OrderRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
 
         $total = $repo->countOrders($group, $searchCollum, $searchText);

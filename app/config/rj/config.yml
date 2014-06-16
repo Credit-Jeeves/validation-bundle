@@ -25,9 +25,14 @@ parameters:
 
     rt_merchant_name: 'RentTrackCorp'
 
+    property_management:
+        name: 'RENTTRACK'
+        address: '13911 RIDGEDALE DR # 401C MINNETONKA MN 55305'
+        phone: '8618419090'
+
     external_urls:
         main_site: 'www.renttrack.com'
-        user_voice: 'renttrack.uservoice.com'
+        user_voice: 'help.renttrack.com'
 
     partners:
         price: 0
@@ -69,6 +74,7 @@ sonata_admin:
                 - rj_email.email_admin
                 - sonata.admin.admin
                 - sonata.admin.orders
+                - sonata.admin.operations
                 - sonata.admin.jobs
             RentJeeves:
               items:
@@ -102,6 +108,10 @@ doctrine:
                 type: xml
                 dir: %kernel.root_dir%/../vendor/payum/heartland/src/Payum/Heartland/Bridge/Doctrine/Resources/mapping
                 prefix: Payum\Heartland\Bridge\Doctrine\Entity
+
+stof_doctrine_extensions:
+    class:
+        loggable: RentJeeves\DataBundle\EventListener\LoggableListener
 
 payum:
     contexts:

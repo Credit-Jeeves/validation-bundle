@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\CoreBundle\Tests\Connamd;
+namespace RentJeeves\CoreBundle\Tests\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -37,6 +37,7 @@ class EmailTenantCommandCase extends BaseTestCase
      */
     public function executeNonAutoPayment()
     {
+        $this->load(false);
         $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
     
@@ -59,6 +60,7 @@ class EmailTenantCommandCase extends BaseTestCase
      */
     public function executeDueAutoPayment()
     {
+        $this->load(false);
         $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
 
@@ -87,6 +89,7 @@ class EmailTenantCommandCase extends BaseTestCase
      */
     public function executeLate()
     {
+        $this->load(false);
         $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
         
@@ -102,6 +105,6 @@ class EmailTenantCommandCase extends BaseTestCase
             )
         );
         $this->assertRegExp('/Start processing late contracts/', $commandTester->getDisplay());
-        $this->assertCount(1, $plugin->getPreSendMessages());
+        $this->assertCount(1, $plugin->getPreSendMessages());// Contracts with ids: 7
     }
 }

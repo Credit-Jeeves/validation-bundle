@@ -38,7 +38,7 @@ class LandlordCase extends BaseTestCase
         $submit->click();
         $this->session->wait($this->timeout, "$('.error_list').length > 0");
         $errorList = $this->page->findAll('css', '.error_list');
-        $this->assertCount(12, $errorList, 'Error list');
+        $this->assertCount(8, $errorList, 'Error list');
         $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->page->clickLink('Pricing');
@@ -63,11 +63,6 @@ class LandlordCase extends BaseTestCase
                 'LandlordAddressType_address_city'                       => 'Test',
                 'LandlordAddressType_address_zip'                        =>'1231',
                 'numberOfUnit'                                           => 3,
-                'LandlordAddressType_deposit_nickname'                   => 'Nick',
-                'LandlordAddressType_deposit_PayorName'                  => 'Nick Staut',
-                'LandlordAddressType_deposit_AccountNumber'              => '12345678',
-                'LandlordAddressType_deposit_RoutingNumber'              => '12345678',
-                'LandlordAddressType_deposit_ACHDepositType_0'           => true,
             )
         );
         $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit>span'));
@@ -78,15 +73,71 @@ class LandlordCase extends BaseTestCase
         $unitNames[2]->setValue('1C');
 
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
-        $currentUrl = $this->session->getCurrentUrl();
         $submit->click();
 
-        $this->session->wait($this->timeout, "$('#main-content-wrapper').is(':visible')");
+        $this->assertEquals($this->getUrl() . 'landlord/tenants', $this->session->getCurrentUrl());
+    }
 
-        $this->assertEquals(
-            'https://onlineboarding.heartlandpaymentsystems.com/Wizard/Wizard/CardProcessing',
-            $this->session->getCurrentUrl()
+    /**
+     * @test
+     */
+    public function landlordRegistersWithSingleProperty()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->session->visit($this->getUrl() . 'landlord/register/');
+        $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY 10112';
+        $this->fillGoogleAddress($fillAddress);
+
+        $this->assertNotNull($form = $this->page->find('css', '#LandlordAddressType'));
+        $this->fillForm(
+            $form,
+            array(
+                'LandlordAddressType_address_unit'                       => 'e3',
+                'LandlordAddressType_landlord_first_name'                => 'Alex',
+                'LandlordAddressType_landlord_last_name'                 => 'Sharamko',
+                'LandlordAddressType_landlord_email'                     => "newlandlord12@yandex.ru",
+                'LandlordAddressType_landlord_password_Password'         => 'pass',
+                'LandlordAddressType_landlord_password_Verify_Password'  => 'pass',
+                'LandlordAddressType_landlord_tos'                       => true,
+                'LandlordAddressType_address_street'                     => 'My Street',
+                'LandlordAddressType_address_city'                       => 'Test',
+                'LandlordAddressType_address_zip'                        =>'1231',
+            )
         );
+        $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
+        $submit->click();
+        $this->session->wait($this->timeout, "$('.error_list').length > 0");
+        $errorList = $this->page->findAll('css', '.error_list');
+        $this->assertCount(1, $errorList);
+        $this->assertEquals('units.error.add_or_mark_single', $errorList[0]->getText());
+
+        $this->fillForm(
+            $form,
+            array(
+                'LandlordAddressType_address_unit'                       => 'e3',
+                'LandlordAddressType_landlord_first_name'                => 'Alex',
+                'LandlordAddressType_landlord_last_name'                 => 'Sharamko',
+                'LandlordAddressType_landlord_email'                     => "newlandlord12@yandex.ru",
+                'LandlordAddressType_landlord_password_Password'         => 'pass',
+                'LandlordAddressType_landlord_password_Verify_Password'  => 'pass',
+                'LandlordAddressType_landlord_tos'                       => true,
+                'LandlordAddressType_address_street'                     => 'My Street',
+                'LandlordAddressType_address_city'                       => 'Test',
+                'LandlordAddressType_address_zip'                        =>'1231',
+                'numberOfUnit'                                           => 3,
+            )
+        );
+        $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit>span'));
+        $addUnit->click();
+        $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-name'));
+        $unitNames[0]->setValue('1A');
+        $unitNames[1]->setValue('1B');
+        $unitNames[2]->setValue('1C');
+
+        $submit->click();
+
+        $this->assertEquals($this->getUrl() . 'landlord/tenants', $this->session->getCurrentUrl());
     }
 
     /**

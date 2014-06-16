@@ -6,7 +6,9 @@ fixtures:
         type: recurring
         status: active
         amount: 1400
-        startDate: '-3 month'
+        total: 1400
+        paidFor: 'now'
+        startDate: '-3 month -10 days'
         endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
@@ -16,16 +18,20 @@ fixtures:
         type: recurring
         status: close
         amount: 1500
+        total: 1500
+        paidFor: 'now'
         startDate: 'now'
         endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     Payment_4:
-        contract: Contract_4
+        contract: Contract_41
         paymentAccount: PaymentAccount_4
         type: recurring
         status: active
         amount: 1700
+        total: 1700
+        paidFor: 'now'
         startDate: 'now'
         endDate: '+9 months'
         createdAt: '-5 days'
@@ -36,9 +42,11 @@ fixtures:
         type: recurring
         status: active
         amount: 1700
+        total: 1700
+        paidFor: '1 year -2 months'
         startDate: '1 year -2 months'
         endDate: '+9 months'
-        createdAt: '-5 days'
+        createdAt: '1 year -2 months'
         updatedAt: '-5 days'
     Payment_11:
         contract: Contract_11
@@ -46,7 +54,9 @@ fixtures:
         type: recurring
         status: active
         amount: 2100
-        startDate: '+1 year +1 month +1 day'
+        total: 2100
+        paidFor: '+1 year +1 month +6 day'
+        startDate: '+1 year +1 month +6 day'
         endDate: '+9 months'
         createdAt: '-50 days'
         updatedAt: '-50 days'
@@ -56,9 +66,9 @@ fixtures:
         type: recurring
         status: active
         amount: 2100
-        dueDate: 31
-        startMonth: 2
-        startYear: 2014
-        createdAt: '2014-02-27'
-        updatedAt: '2014-02-27'
+        total: 2100
+        paidFor: '-1 days'
+        startDate: '-1 month -6 days'
+        createdAt: '-1 month -6  days'
+        updatedAt: '-6 days'
 

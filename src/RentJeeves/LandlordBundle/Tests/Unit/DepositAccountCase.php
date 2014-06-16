@@ -23,10 +23,7 @@ class DepositAccountCase extends BaseTestCase
     public function prePersistTest()
     {
         $this->load(true);
-        //@TODO Its hack, becouse after use load function, for load fixtures, we have problem.
-        static::$kernel = null;
-        //end hack
-        $container = static::getContainer();
+        $container = $this->getContainer();
         $inviteLandlordService = $container->get('invite.landord');
         $em = $container->get('doctrine.orm.entity_manager');
         $this->assertTrue($inviteLandlordService instanceof InviteLandlord);

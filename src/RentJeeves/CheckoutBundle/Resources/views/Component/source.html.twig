@@ -23,7 +23,9 @@
 {% endfor %}
 
     window.paymentAccounts = [];
-{% for paymentAccount in paymentAccounts %}
-    window.paymentAccounts.push({{ paymentAccount | serialize('json') | raw }});
-{% endfor %}
+    var payAccounts = JSON.parse('{{ payAccounts|raw }}');
+    jQuery.each(payAccounts, function(key, val) {
+        window.paymentAccounts.push(val);
+    });
+
 </script>

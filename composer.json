@@ -1,7 +1,7 @@
 {
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
-    "version": "2.1",
+    "version": "3.0",
     "minimum-stability": "stable",
     "authors": [
         {
@@ -165,6 +165,14 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/DoctrineExtensions.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/BackupRestoreBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/doctrine2.git"
         }
     ],
     "require": {
@@ -192,7 +200,7 @@
         "nelmio/api-doc-bundle": "dev-master",
         "friendsofsymfony/oauth-server-bundle": "dev-master",
         "braincrafted/validation-bundle": "dev-ton as dev-master",
-        "doctrine/orm": "2.4.*",
+        "doctrine/orm": "dev-preUpdate as 2.4.0",
         "doctrine/doctrine-bundle": "dev-master",
         "doctrine/doctrine-cache-bundle": "dev-master",
         "twig/twig": "dev-master",
@@ -235,7 +243,8 @@
         "willdurand/js-translation-bundle": "dev-master",
         "beberlei/DoctrineExtensions": "dev-master",
         "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
-        "pagerfanta/pagerfanta": "dev-master"
+        "pagerfanta/pagerfanta": "dev-master",
+        "fp/jsformvalidator-bundle": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",
@@ -245,11 +254,12 @@
         "behat/mink-bundle": "1.4.*",
         "behat/mink-selenium2-driver": "1.1.*",
         "behat/mink-zombie-driver": "dev-master",
-        "behat/mink-goutte-driver": "dev-master",
+        "behat/mink-goutte-driver": "v1.0.8",
         "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
         "sensio/generator-bundle": "dev-master",
-        "khepin/yaml-fixtures-bundle": "dev-master"
+        "khepin/yaml-fixtures-bundle": "dev-master",
+        "comfortablynumb/backup-restore-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

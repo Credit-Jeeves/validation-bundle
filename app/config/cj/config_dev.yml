@@ -26,3 +26,5 @@ khepin_yaml_fixtures:
     resources:
         - DataBundle
     directory: Resources/fixtures
+
+backup_restore: ~

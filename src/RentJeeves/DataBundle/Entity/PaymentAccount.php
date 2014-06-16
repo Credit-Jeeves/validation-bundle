@@ -19,4 +19,11 @@ class PaymentAccount extends Base implements UserAwareInterface
     {
         return $this->getName();
     }
+
+    public function setDepositAccounts($depositAccounts)
+    {
+        foreach ($depositAccounts as $depositAccount) {
+            $this->addDepositAccount($depositAccount);
+        }
+    }
 }

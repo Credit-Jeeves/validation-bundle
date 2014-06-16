@@ -16,11 +16,11 @@
             </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
-                <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" and "Pay Rent. Build Credit." are trademarks.</target>
+                <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" and "Pay Rent. Build Credit History." are trademarks.</target>
             </trans-unit>
             <trans-unit id="rj.footer.comment">
                 <source>rj.footer.comment</source>
-                <target>RentTrack helps tenants learn about and build creditworthiness, while providing landlords with a effortless way to accept rent payments online.</target>
+                <target>RentTrack helps tenants learn about and build credit history, while providing landlords with a effortless way to accept rent payments online.</target>
             </trans-unit>
             <trans-unit id="rj.footer.title.learn">
                 <source>rj.footer.title.learn</source>
@@ -145,13 +145,13 @@
             <trans-unit id="iframe.title">
                 <source>iframe.title</source>
                 <target>
-                        Pay Rent. Build Credit.
+                        Pay Rent. Build Credit History.
                 </target>
             </trans-unit>
             <trans-unit id="iframe.description">
                 <source>iframe.description</source>
                 <target>
-                       Get your Free Credit Score and Free Electronic Payments
+                       No more paper checks. Pay online with e-Check or Credit Card.
                 </target>
             </trans-unit>
             <trans-unit id="iframe.find">
@@ -314,6 +314,10 @@
                 <source>nameofunit</source>
                 <target>Name Of Units</target>
             </trans-unit>
+            <trans-unit id="property.single.checkbox_label">
+                <source>property.single.checkbox_label</source>
+                <target>This is a Single Property with no Units</target>
+            </trans-unit>
             <trans-unit id="savechanges">
                 <source>savechanges</source>
                 <target>Save Changes</target>
@@ -404,7 +408,7 @@
                 <source>landlord.register.text1</source>
                 <target><![CDATA[
                         <p>This information is used to help tenants find you in the RentTrack system.</p>
-                        <p>If you have no units, just leave that field blank.</p>
+                        <p>If this is a standalone property, please check "This is a Single Property with no Units".</p>
                         <p> 
                           You will be able to add additional properties and invite tenants to pay you directly through RentTrack after you have created your account.
                         </p>]]>
@@ -412,7 +416,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*Up to 5 eChecks are included with your minimum monthly fee of $9.95. Additional eChecks are $1.95 each per month.
+                <target>*$9.95 per month. $1.95 each eCheck payment. No charge for CC payments.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -478,6 +482,14 @@
             <trans-unit id="amount">
                 <source>amount</source>
                 <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="import.payment.amount">
+                <source>import.payment.amount</source>
+                <target>Payment Amount</target>
+            </trans-unit>
+            <trans-unit id="import.payment.date">
+                <source>import.payment.date</source>
+                <target>Payment Date</target>
             </trans-unit>
             <trans-unit id="start">
                 <source>start</source>
@@ -565,8 +577,12 @@
             </trans-unit>
             <trans-unit id="due_date">
                 <source>due_date</source>
+                <target>Due Date</target>
+            </trans-unit>
+            <trans-unit id="common.default.due_date">
+                <source>common.default.due_date</source>
                 <target>
-                   Due Date
+                   Default Due Date
                 </target>
             </trans-unit>
             <trans-unit id="paid_to">
@@ -653,19 +669,59 @@
                 <source>bureau.reporting.setup</source>
                 <target>Set Up Bureau Reporting</target>
            </trans-unit>
-           <trans-unit id="bureau.reporting.text">
-                <source>bureau.reporting.text</source>
-                <target><![CDATA[RentTrack can report your payments to a credit reporting agency.
-                                 This optional activity helps establish a history of on-time payments in your credit profile.<br /><br />
-                                 Within a few months after signing up, you will notice a new entry on your credit report titled "RentTrack."
-                                 This entry will reflect your payment status on a particular property and is updated monthly.
-                                 Once this entry exists, it will begin to affect any credit score models that take rent payments into account.<br /><br />
-                                 You can stop reporting at any time. However, once eligible payments have been reported to the credit reporting agency,
-                                 they cannot be erased. Furthermore, stopping and subsequently starting reporting again
-                                 may have a negative on your credit history.<br /><br />
+           <trans-unit id="bureau.reporting.text1">
+                <source>bureau.reporting.text1</source>
+                <target><![CDATA[RentTrack can report your rent payments to major credit reporting agencies.
+                                 This optional activity helps establish or build credit history in your credit profile.<br /><br /> ]]>
+             </target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.text2">
+               <source>bureau.reporting.text2</source>
+               <target><![CDATA[Within a few months, you will notice a new "RentTrack" entry on your credit report.
+                                 This will reflect your current payment status and is updated monthly.
+                                 You can stop reporting at any time. However, once eligible payments have been reported to the credit bureau,
+                                 they cannot be erased.<br /><br />
                                  Reporting is covered in more detail in our <a href="%link%" type="Terms of Service">Terms of Service</a>. Please review the terms, then click on the button below
                                  to begin building credit.]]>
-                                 </target>
+               </target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.select">
+               <source>bureau.reporting.select</source>
+               <target>Select which bureaus you want to report to:</target>
+           </trans-unit>
+            <trans-unit id="bureau.reporting.select.for">
+                <source>bureau.reporting.select.for</source>
+                <target>You are currently reporting to the checked bureaus for:</target>
+            </trans-unit>
+           <trans-unit id="bureau.reporting.experian">
+               <source>bureau.reporting.experian</source>
+               <target>Experian RentBureau</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.trans_union">
+               <source>bureau.reporting.trans_union</source>
+               <target>TransUnion</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.manage">
+               <source>bureau.reporting.manage</source>
+               <target>Manage Bureau Reporting</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.manage.description">
+               <source>bureau.reporting.manage.description</source>
+               <target><![CDATA[If you uncheck a bureau above, your payments will no longer be reported to that bureau
+                                and you may not receive credit for your payments. Note that stopping and subsequently
+                                starting reporting again may have a negative impact on your credit history.]]></target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.save">
+               <source>bureau.reporting.save</source>
+               <target>Save</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.experian.title">
+               <source>bureau.reporting.experian.title</source>
+               <target>Experian RentBureau</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.trans_union.title">
+               <source>bureau.reporting.trans_union.title</source>
+               <target>TransUnion</target>
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
@@ -677,19 +733,43 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by choosing to report your payments to a major credit bureau. This optional activity helps establish good credit when you make your rent payments on-time.</target>
+                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This optional activity helps establish or build credit history when you make your rent payments on-time.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
                 <target>Property can't be empty.</target>
             </trans-unit>
+            <trans-unit id="error.file.empty">
+                <source>error.file.empty</source>
+                <target>File can't be empty.</target>
+            </trans-unit>
+            <trans-unit id="error.file.size.big">
+                <source>error.file.size.big</source>
+                <target>File size is too big.</target>
+            </trans-unit>
            <trans-unit id="error.unit.empty">
                 <source>error.unit.empty</source>
                 <target>Unit can't be empty.</target>
             </trans-unit>
+            <trans-unit id="error.unit.reserved">
+                <source>error.unit.reserved</source>
+                <target><![CDATA[
+                    We're sorry, but we could not find a resident with that name
+                    for specified unit. Please contact your property manager.
+                    ]]>
+                </target>
+            </trans-unit>
+           <trans-unit id="error.unit.regexp">
+                <source>error.unit.regexp</source>
+                <target>Unit name is invalid, it should contain only A-Za-z_0-9- and not be blank.</target>
+            </trans-unit>
            <trans-unit id="error.rent.empty">
                 <source>error.rent.empty</source>
                 <target>Please specify the rent amount.</target>
+            </trans-unit>
+           <trans-unit id="error.balance.empty">
+                <source>error.balance.empty</source>
+                <target>Please specify the balance.</target>
             </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
@@ -850,9 +930,9 @@
                 <source>action.required</source>
                 <target>Action Required</target>
             </trans-unit>
-            <trans-unit id="current_payments.title">
-                <source>current_payments.title</source>
-                <target>Payments</target>
+            <trans-unit id="current_contracts.title">
+                <source>current_contracts.title</source>
+                <target>Contracts</target>
             </trans-unit>
             <trans-unit id="pay_to">
                 <source>pay_to</source>
@@ -861,6 +941,10 @@
             <trans-unit id="status">
                 <source>status</source>
                 <target>Status To</target>
+            </trans-unit>
+            <trans-unit id="next">
+                <source>next</source>
+                <target>Next</target>
             </trans-unit>
             <trans-unit id="next_due_date">
                 <source>next_due_date</source>
@@ -939,6 +1023,10 @@
                 <source>contract.error.start</source>
                 <target>Start At could not be empty</target>
             </trans-unit>
+            <trans-unit id="contract.error.unit">
+                <source>contract.error.unit</source>
+                <target>Unit for contract is not specified</target>
+            </trans-unit>
             <trans-unit id="contract.status.pay">
                 <source>contract.status.pay</source>
                 <target>This account is in good standing</target>
@@ -1007,7 +1095,7 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.title_2">
                 <source>popup.invite.tenant.title_2</source>
-                <target>Build credit while you pay rent. Introductory pricing.</target>
+                <target>Build credit history while you pay rent. Introductory pricing.</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.note.title">
                 <source>popup.invite.tenant.note.title</source>
@@ -1055,7 +1143,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
-                <target>Build Credit (opt-in)</target>
+                <target>Build Credit History (opt-in)</target>
             </trans-unit>
             <trans-unit id="popup.tenant.support">
                 <source>popup.tenant.support</source>
@@ -1246,7 +1334,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_1">
                 <source>public.base.pay.title_1</source>
-                <target>Pay your rent on time. Build your credit.</target>
+                <target>Pay your rent on time. Build credit history.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_2">
                 <source>public.base.pay.title_2</source>
@@ -1258,7 +1346,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_4">
                 <source>public.base.pay.title_4</source>
-                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit by reporting your on-time payments to credit reporting agencies.</target>
+                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit history by reporting your payments to credit reporting agencies.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_5">
                 <source>public.base.pay.title_5</source>
@@ -1612,7 +1700,7 @@
             </trans-unit>
             <trans-unit id="iframe.items.title">
                 <source>iframe.items.title</source>
-                <target>Pay rent. Build Credit.</target>
+                <target>Pay Rent. Build Credit History.</target>
             </trans-unit>
             <trans-unit id="iframe.item.pay.title">
                 <source>iframe.item.pay.title</source>
@@ -1650,13 +1738,9 @@
                 <source>iframe.powered</source>
                 <target>Powered by</target>
             </trans-unit>
-            <trans-unit id="unit.live.it.empty">
-                <source>unit.live.it.empty</source>
-                <target>leave blank if this is a single property</target>
-            </trans-unit>
             <trans-unit id="property.number.not.exist">
                 <source>property.number.not.exist</source>
-                <target>Please put number for property.</target>
+                <target>Address not found. Please try again.</target>
             </trans-unit>
             <trans-unit id="direct_deposit.info">
                 <source>direct_deposit.info</source>
@@ -1664,7 +1748,7 @@
             </trans-unit>
             <trans-unit id="help.popup">
                 <source>help.popup</source>
-                <target>Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.</target>
+                <target>Enter the monthly rent amount and due date according to your lease. The next payment date should correspond with the due date - if the next month is June and the Due Date is the 1st, enter June 1st. Finally, specify a month-to-month lease or a specific end date.</target>
             </trans-unit>
             <trans-unit id="order.type.cash">
                 <source>order.type.cash</source>
@@ -1902,7 +1986,7 @@
             </trans-unit>
             <trans-unit id="payments.filter.group_by.deposit">
                 <source>payments.filter.group_by.deposit</source>
-                <target>Group by Deposit</target>
+                <target>Batch Deposit Report</target>
             </trans-unit>
             <trans-unit id="filter.group_by.deposit.echeck">
                 <source>filter.group_by.deposit.echeck</source>
@@ -1935,7 +2019,7 @@
             <trans-unit id="already.invited.error">
                 <source>already.invited.error</source>
                 <target><![CDATA[
-                    This email was address already invited. We recommend you
+                    This email address has already been invited. We recommend you
                     <a href="%%LINK%%" class="resend-email">
                     click here to resend the invite.</a>
                  ]]>
@@ -1982,6 +2066,310 @@
             <trans-unit id="info.payment.date">
                 <source>info.payment.date</source>
                 <target>Your payment scheduled for the %%DAY_1%%st will be executed on the %%DAY_2%%th due to the short month.</target>
+            </trans-unit>
+            <trans-unit id="tab.accounting">
+                <source>tab.accounting</source>
+                <target>Accounting</target>
+            </trans-unit>
+            <trans-unit id="import">
+                <source>import</source>
+                <target>Import</target>
+            </trans-unit>
+            <trans-unit id="export">
+                <source>export</source>
+                <target>Export</target>
+            </trans-unit>
+            <trans-unit id="accounting.file.import">
+                <source>accounting.file.import</source>
+                <target>Accounting File Import</target>
+            </trans-unit>
+            <trans-unit id="import.file">
+                <source>import.file</source>
+                <target>Import File</target>
+            </trans-unit>
+            <trans-unit id="match.fields">
+                <source>match.fields</source>
+                <target>Match Fields</target>
+            </trans-unit>
+            <trans-unit id="review.and.post">
+                <source>review.and.post</source>
+                <target><![CDATA[Review & Post]]></target>
+            </trans-unit>
+            <trans-unit id="csv.file">
+                <source>csv.file</source>
+                <target>CSV File</target>
+            </trans-unit>
+            <trans-unit id="common.column">
+                <source>common.column</source>
+                <target>Column</target>
+            </trans-unit>
+            <trans-unit id="import.data.row1">
+                <source>import.data.row1</source>
+                <target>Import Data Row 1</target>
+            </trans-unit>
+            <trans-unit id="import.data.row2">
+                <source>import.data.row2</source>
+                <target>Import Data Row 2</target>
+            </trans-unit>
+            <trans-unit id="matching.rent.track.field">
+                <source>matching.rent.track.field</source>
+                <target>Matching RentTrack Field</target>
+            </trans-unit>
+            <trans-unit id="csv.file.too.small1">
+                <source>csv.file.too.small1</source>
+                <target>
+                    CSV file is too small. Each file must have a header row and
+                    at least one data row. Please correct the file.
+                </target>
+            </trans-unit>
+            <trans-unit id="skip">
+                <source>skip</source>
+                <target>Skip</target>
+            </trans-unit>
+            <trans-unit id="csv.file.too.small2">
+               <source>csv.file.too.small2</source>
+               <target><![CDATA[
+                    CSV file should contain minimum 8 columns. Suggested fields:
+                    Unit, Resident ID, Name, Actual Rent, Move In, Lease Expiration, Move Out, Balance.
+                    Please correct the file.
+                   ]]>
+               </target>
+            </trans-unit>
+            <trans-unit id="field.delimiter">
+               <source>field.delimiter</source>
+               <target>Field Delimiter</target>
+            </trans-unit>
+            <trans-unit id="text.delimiter">
+               <source>text.delimiter</source>
+               <target>Text Delimiter</target>
+            </trans-unit>
+            <trans-unit id="value.cannot.duplicate">
+               <source>value.cannot.duplicate</source>
+               <target>Value can not be duplicated</target>
+            </trans-unit>
+            <trans-unit id="you.need.map">
+              <source>you.need.map</source>
+              <target>You need to map at least %NUMBER% fields. Please map: %VALUE_WHICH_NEED_SELECT%</target>
+            </trans-unit>
+            <trans-unit id="auto.import">
+              <source>auto.import</source>
+              <target>Automatically import</target>
+            </trans-unit>
+            <trans-unit id="manually.import">
+              <source>manually.import</source>
+              <target>Manually Import, check each contract</target>
+            </trans-unit>
+            <trans-unit id="import.status">
+              <source>import.status</source>
+              <target>Status</target>
+            </trans-unit>
+            <trans-unit id="import.unit">
+              <source>import.unit</source>
+              <target>Unit</target>
+            </trans-unit>
+            <trans-unit id="import.residentId">
+              <source>import.residentId</source>
+              <target>Resident ID</target>
+            </trans-unit>
+            <trans-unit id="import.first_name">
+              <source>import.first_name</source>
+              <target>First Name</target>
+            </trans-unit>
+            <trans-unit id="import.last_name">
+              <source>import.last_name</source>
+              <target>Last Name</target>
+            </trans-unit>
+            <trans-unit id="import.email">
+              <source>import.email</source>
+              <target>Email</target>
+            </trans-unit>
+            <trans-unit id="import.rent">
+              <source>import.rent</source>
+              <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="import.move_in">
+              <source>import.move_in</source>
+              <target>Move In</target>
+            </trans-unit>
+            <trans-unit id="import.move_out">
+              <source>import.move_out</source>
+              <target>Move Out</target>
+            </trans-unit>
+            <trans-unit id="import.lease_end">
+              <source>import.lease_end</source>
+              <target>Lease End</target>
+            </trans-unit>
+            <trans-unit id="common.balance">
+              <source>common.balance</source>
+              <target>Balance</target>
+            </trans-unit>
+            <trans-unit id="import.action">
+              <source>import.action</source>
+              <target>Action</target>
+            </trans-unit>
+            <trans-unit id="send.invite">
+              <source>send.invite</source>
+              <target>Invite</target>
+            </trans-unit>
+            <trans-unit id="import.pmt.amt">
+              <source>import.pmt.amt</source>
+              <target>Import Pmt Amt</target>
+            </trans-unit>
+            <trans-unit id="import.pmt.date">
+              <source>import.pmt.date</source>
+              <target>Import Pmt Date</target>
+            </trans-unit>
+            <trans-unit id="import.error.access">
+              <source>import.error.access</source>
+              <target>Access denied, move to first step please.</target>
+            </trans-unit>
+            <trans-unit id="import.status.skip">
+              <source>import.status.skip</source>
+              <target>Skip</target>
+            </trans-unit>
+            <trans-unit id="import.status.ended">
+              <source>import.status.ended</source>
+              <target>Ended</target>
+            </trans-unit>
+            <trans-unit id="import.status.error">
+              <source>import.status.error</source>
+              <target>Error</target>
+            </trans-unit>
+            <trans-unit id="import.status.match">
+              <source>import.status.match</source>
+              <target>Match</target>
+            </trans-unit>
+            <trans-unit id="import.status.new">
+              <source>import.status.new</source>
+              <target>New</target>
+            </trans-unit>
+            <trans-unit id="import.status.waiting">
+              <source>import.status.waiting</source>
+              <target>Waiting</target>
+            </trans-unit>
+            <trans-unit id="import.review.and.post">
+              <source>import.review.and.post</source>
+              <target>Import and Review Next Page</target>
+            </trans-unit>
+            <trans-unit id="import.review.finish">
+              <source>import.review.finish</source>
+              <target>Data has been imported.</target>
+            </trans-unit>
+            <trans-unit id="regexp.error.name">
+                <source>regexp.error.name</source>
+                <target><![CDATA[Names should not have special characters except space, apostrophe, and hyphen (-).]]></target>
+            </trans-unit>
+            <trans-unit id="import.error.flush">
+              <source>import.error.flush</source>
+              <target>Import failed. Something went wrong, please contact the administrator.</target>
+            </trans-unit>
+            <trans-unit id="import.error.unit">
+              <source>import.error.unit</source>
+              <target><![CDATA[Unit name is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
+            <trans-unit id="import.error.residentId">
+              <source>import.error.residentId</source>
+              <target><![CDATA[Resident ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
+            <trans-unit id="csrf.token.is.invalid">
+              <source>csrf.token.is.invalid</source>
+              <target>The CSRF token is invalid. Please try to resubmit the form.</target>
+            </trans-unit>
+            <trans-unit id="tenant.payments.title">
+                <source>tenant.payments.title</source>
+                <target>Payment History</target>
+            </trans-unit>
+            <trans-unit id="tenant.payments.filter">
+                <source>tenant.payments.filter</source>
+                <target>Filter by Property</target>
+            </trans-unit>
+            <trans-unit id="payment.status">
+                <source>payment.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="payment.date">
+                <source>payment.date</source>
+                <target>Date</target>
+            </trans-unit>
+            <trans-unit id="payment.property">
+                <source>payment.property</source>
+                <target>Property</target>
+            </trans-unit>
+            <trans-unit id="payment.rent">
+                <source>payment.rent</source>
+                <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="payment.other">
+                <source>payment.other</source>
+                <target>Other</target>
+            </trans-unit>
+            <trans-unit id="payment.total">
+                <source>payment.total</source>
+                <target>Total</target>
+            </trans-unit>
+            <trans-unit id="payment.type">
+                <source>payment.type</source>
+                <target>Type</target>
+            </trans-unit>
+            <trans-unit id="common.choose_an_option">
+                <source>common.choose_an_option</source>
+                <target>Choose an option</target>
+            </trans-unit>
+            <trans-unit id="common.tenant_name">
+                <source>common.tenant_name</source>
+                <target>Tenant Name</target>
+            </trans-unit>
+            <trans-unit id="error.operation.exist">
+                <source>error.operation.exist</source>
+                <target>For that date already have payment with such sum.</target>
+            </trans-unit>
+            <trans-unit id="common.on">
+                <source>common.on</source>
+                <target>On</target>
+            </trans-unit>
+            <trans-unit id="common.off">
+                <source>common.off</source>
+                <target>Off</target>
+            </trans-unit>
+            <trans-unit id="common.date_format">
+                <source>common.date_format</source>
+                <target>Date format</target>
+            </trans-unit>
+            <trans-unit id="units.collection.error">
+                <source>units.collection.error</source>
+                <target>You need to specify at least one unit if this property is not single.</target>
+            </trans-unit>
+            <trans-unit id="property.error.can_not_be_added">
+                <source>property.error.can_not_be_added</source>
+                <target><![CDATA[This property can not be added. Please, contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>]]></target>
+            </trans-unit>
+            <trans-unit id="units.error.add_or_mark_single">
+                <source>units.error.add_or_mark_single</source>
+                <target>You should either add units to the property or mark it as single.</target>
+            </trans-unit>
+            <trans-unit id="property.standalone">
+                <source>property.standalone</source>
+                <target>Standalone property</target>
+            </trans-unit>
+            <trans-unit id="property.is_standalone">
+                <source>property.is_standalone</source>
+                <target>Standalone</target>
+            </trans-unit>
+            <trans-unit id="invite.error.specify_unit_or_mark_single">
+                <source>invite.error.specify_unit_or_mark_single</source>
+                <target>Either Specify a Unit or Mark the Property as Single</target>
+            </trans-unit>
+            <trans-unit id="contract.error.is_end_later_than_start">
+                <source>contract.error.is_end_later_than_start</source>
+                <target>End date must be later than start</target>
+            </trans-unit>
+            <trans-unit id="email.rent_amount">
+                <source>email.rent_amount</source>
+                <target>Rent Amount</target>
+            </trans-unit>
+            <trans-unit id="email.other_amount">
+                <source>email.other_amount</source>
+                <target>Other Amount</target>
             </trans-unit>
         </body>
     </file>

@@ -5,9 +5,6 @@ namespace RentJeeves\PublicBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use RentJeeves\PublicBundle\Form\AddressType;
-use RentJeeves\PublicBundle\Form\LandlordType;
-use RentJeeves\PublicBundle\Form\BankAccountType;
 
 class LandlordAddressType extends AbstractType
 {
@@ -24,29 +21,9 @@ class LandlordAddressType extends AbstractType
                 'inviteEmail' => $options['inviteEmail']
             )
         );
-
         $builder->add(
             'property',
-            'hidden'
-        );
-
-        $builder->add(
-            'units',
-            'collection',
-            array(
-                'type'          => 'text',
-                'required'      => false,
-                'allow_add'     => true,
-                'options'       => array(
-                    'required'  => false,
-                    'attr'      => array('class' => 'unit-box')
-                ),
-            )
-        );
-
-        $builder->add(
-            'deposit',
-            new BankAccountType()
+            new PropertyType()
         );
     }
 

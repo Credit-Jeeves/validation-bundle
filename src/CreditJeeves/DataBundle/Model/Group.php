@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -320,14 +321,6 @@ abstract class Group
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
-     *     mappedBy="group"
-     * )
-     */
-    protected $paymentAccounts;
-
-    /**
-     * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\GroupPhone",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"}
@@ -353,6 +346,15 @@ abstract class Group
      */
     protected $groupSettings;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     */
+    protected $waitingContracts;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -365,9 +367,9 @@ abstract class Group
         $this->group_properties = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
-        $this->paymentAccounts = new ArrayCollection();
         $this->groupPhones = new ArrayCollection();
         $this->billingAccounts = new ArrayCollection();
+        $this->waitingContracts = new ArrayCollection();
     }
 
     /**
@@ -1058,38 +1060,6 @@ abstract class Group
     }
 
     /**
-     * Add PaymentAccount
-     *
-     * @param \RentJeeves\DataBundle\Entity\Contract $paymentAccount
-     * @return Group
-     */
-    public function addPaymentAccounts(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccounts[] = $paymentAccount;
-        return $this;
-    }
-
-    /**
-     * Remove PaymentAccount
-     *
-     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
-     */
-    public function removePaymentAccounts(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccounts->removeElement($paymentAccount);
-    }
-
-    /**
-     * Get PaymentAccounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPaymentAccounts()
-    {
-        return $this->paymentAccounts;
-    }
-
-    /**
      * @param BillingAccount $billingAccount
      * @return $this
      */
@@ -1173,5 +1143,21 @@ abstract class Group
     public function getGroupAgents()
     {
         return $this->group_agents;
+    }
+
+    /**
+     * @param ContractWaiting $waitingContract
+     */
+    public function addWaitingContract(ContractWaiting $waitingContract)
+    {
+        $this->waitingContracts[] = $waitingContract;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWaitingContracts()
+    {
+        return $this->waitingContracts;
     }
 }
