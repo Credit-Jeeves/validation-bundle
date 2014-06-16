@@ -5,7 +5,7 @@ function Payment(parent, paidTo) {
         if (isNaN(self.startYear()) || isNaN(self.startMonth())) {
             return null;
         }
-        var dayInMonth = Date.getDaysInMonth(self.startYear(), self.startMonth() - 1);
+        var dayInMonth = Date.getDaysInMonth(parseInt(self.startYear()), parseInt(self.startMonth()) - 1);
 
         if (dayInMonth >= self.dueDate()) {
             parent.infoMessage(null);
@@ -59,7 +59,7 @@ function Payment(parent, paidTo) {
             if (isNaN(self.startYear()) || isNaN(self.startMonth())) {
                 return null;
             }
-            var dayInMonth = Date.getDaysInMonth(self.startYear(), self.startMonth() - 1);
+            var dayInMonth = Date.getDaysInMonth(parseInt(self.startYear()), parseInt(self.startMonth()) - 1);
 
             if (dayInMonth >= self.dueDate()) {
                 return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
