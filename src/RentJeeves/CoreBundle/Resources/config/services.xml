@@ -23,6 +23,10 @@
             </call>
             <tag name="doctrine.event_listener" event="prePersist" method="prePersist"/>
         </service>
-    </services>
 
+        <service id="fixed_date_time" class="JMS\Serializer\Handler\DateHandler">
+            <tag name="jms_serializer.handler" type="RentJeeves\CoreBundle\DateTime" direction="serialization"
+                 format="json" method="serializeDateTime" />
+        </service>
+    </services>
 </container>
