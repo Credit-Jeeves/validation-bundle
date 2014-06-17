@@ -1,11 +1,11 @@
 function Payment(parent, paidTo) {
     var self = this;
-    this.daysInMonth = function (month,year) {
-        return new Date(year, month, 0).getDate();
-    };
 
     this.checkDueDate = function () {
-        var dayInMonth = self.daysInMonth(self.startMonth(), self.startYear());
+        if (isNaN(self.startYear()) || isNaN(self.startMonth())) {
+            return null;
+        }
+        var dayInMonth = Date.getDaysInMonth(parseInt(self.startYear()), parseInt(self.startMonth()) - 1);
 
         if (dayInMonth >= self.dueDate()) {
             parent.infoMessage(null);
@@ -56,7 +56,10 @@ function Payment(parent, paidTo) {
     this.dueDate(paidTo.toString("d"));
     this.startDate = ko.computed({
         read: function() {
-            var dayInMonth = self.daysInMonth(self.startMonth(), self.startYear());
+            if (isNaN(self.startYear()) || isNaN(self.startMonth())) {
+                return null;
+            }
+            var dayInMonth = Date.getDaysInMonth(parseInt(self.startYear()), parseInt(self.startMonth()) - 1);
 
             if (dayInMonth >= self.dueDate()) {
                 return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
@@ -66,6 +69,9 @@ function Payment(parent, paidTo) {
         },
         write: function (value) {
             var date = Date.parseExact(value,  "M/d/yyyy");
+            if (!date) {
+                return;
+            }
 
             this.startMonth(date.getMonth()+1);
             this.startYear(date.getFullYear());

@@ -23,6 +23,7 @@ function Contract() {
     this.errorsApprove = ko.observableArray([]);
     this.errorsEdit = ko.observableArray([]);
     this.statusBeforeTriedSave = ko.observable();
+    this.isSingleProperty = ko.observable(true);
 
     this.cancelEdit = function (data) {
         $('#tenant-edit-property-popup').dialog('close');
@@ -43,6 +44,7 @@ function Contract() {
             success: function (response) {
                 $('#unit-edit').parent().find('.loader').hide();
                 self.unitsList(response.units);
+                self.isSingleProperty(response.isSingle == true);
                 self.currentUnitId(self.contract().unit_id);
             }
         });

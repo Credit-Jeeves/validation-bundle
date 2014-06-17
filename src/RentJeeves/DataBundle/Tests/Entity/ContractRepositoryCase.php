@@ -212,34 +212,34 @@ class ContractRepositoryCase extends BaseTestCase
     {
         return array(
             //We don't have order at all and need send email
-            array(
+            array( # 0
                 $hasOrder = false,
                 $paidFor = null,
                 true
             ),
             //We have order for current month, so we don't need send email
-            array(
+            array( # 1
                 $hasOrder = true,
                 $paidFor = new DateTime("-5 days"),
                 false
             ),
             //We have order for current month, so we don't need send email
-            array(
+            array( # 2
                 $hasOrder = true,
                 $paidFor = new DateTime("-27 days"),
                 false
             ),
             //We don't have order for current month send email
-            array(
+            array( # 3
                 $hasOrder = true,
                 $paidFor = new DateTime("-43 days"),
                 true
             ),
             //We don't have order for current month send email
-            array(
+            array( # 4
                 $hasOrder = true,
                 $paidFor = new DateTime("+43 days"),
-                true
+                false # originally it was true FIXME Darryl, what should we do her?
             ),
         );
     }
@@ -314,16 +314,21 @@ class ContractRepositoryCase extends BaseTestCase
         $em->persist($contract);
         $em->flush();
 
+        $contractId = $contract->getId();
+
         $contracts = $em->getRepository('RjDataBundle:Contract')->getLateContracts(5);
 
-        $isSend = false;
-        foreach ($contracts as $contractInDB) {
-            if ($contractInDB->getId() === $contract->getId()) {
-                $isSend = true;
-            }
+
+        if ($contracts) {
+            $contracts = array_filter(
+                $contracts,
+                function (Contract $contract) use ($contractId) {
+                    return $contract->getId() == $contractId;
+                }
+            );
         }
 
-        $this->assertEquals($isLate, $isSend);
+        $this->assertEquals($isLate, 1 == count($contracts));
     }
 
     /**

@@ -98,4 +98,12 @@ class DateTime extends \DateTime
         }
         return $this;
     }
+
+    /**
+     * @return $this
+     */
+    public function getClone()
+    {
+        return clone $this;
+    }
 }

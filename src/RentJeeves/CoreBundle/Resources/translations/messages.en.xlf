@@ -416,7 +416,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*Up to 5 eChecks are included with your minimum monthly fee of $9.95. Additional eChecks are $1.95 each per month.
+                <target>*$9.95 per month. $1.95 each eCheck payment. No charge for CC payments.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -1748,7 +1748,7 @@
             </trans-unit>
             <trans-unit id="help.popup">
                 <source>help.popup</source>
-                <target>Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.</target>
+                <target>Enter the monthly rent amount and due date according to your lease. The next payment date should correspond with the due date - if the next month is June and the Due Date is the 1st, enter June 1st. Finally, specify a month-to-month lease or a specific end date.</target>
             </trans-unit>
             <trans-unit id="order.type.cash">
                 <source>order.type.cash</source>
@@ -1986,7 +1986,7 @@
             </trans-unit>
             <trans-unit id="payments.filter.group_by.deposit">
                 <source>payments.filter.group_by.deposit</source>
-                <target>Group by Deposit</target>
+                <target>Batch Deposit Report</target>
             </trans-unit>
             <trans-unit id="filter.group_by.deposit.echeck">
                 <source>filter.group_by.deposit.echeck</source>
@@ -2362,6 +2362,14 @@
             <trans-unit id="contract.error.is_end_later_than_start">
                 <source>contract.error.is_end_later_than_start</source>
                 <target>End date must be later than start</target>
+            </trans-unit>
+            <trans-unit id="email.rent_amount">
+                <source>email.rent_amount</source>
+                <target>Rent Amount</target>
+            </trans-unit>
+            <trans-unit id="email.other_amount">
+                <source>email.other_amount</source>
+                <target>Other Amount</target>
             </trans-unit>
         </body>
     </file>

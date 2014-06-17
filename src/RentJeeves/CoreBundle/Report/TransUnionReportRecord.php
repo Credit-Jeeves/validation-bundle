@@ -252,16 +252,16 @@ class TransUnionReportRecord
         //RR‐ Eviction
         //SS‐ Rent unpaid, renter skipped, and did not fulfill remaining lease term
 
-        if ($this->lastPaymentDate) {
-            $paidOnDay = $this->lastPaymentDate->format('j');
-            switch ($paidOnDay) {
-                case ($paidOnDay < 6):
-                    return 'MM';
-                case ($paidOnDay >= 6 && $paidOnDay < 15):
-                    return 'NN';
-                case ($paidOnDay >= 15):
-                    return 'OO';
-            }
+        $unpaidInterval = $this->getUnpaidInterval();
+
+        if ($unpaidInterval > 3 and $unpaidInterval < 6) {
+            return 'MM';
+        }
+        if ($unpaidInterval >= 6 and $unpaidInterval < 15) {
+            return 'NN';
+        }
+        if ($unpaidInterval >= 15) {
+            return 'OO';
         }
 
         return str_repeat(' ', 2);
@@ -415,34 +415,30 @@ class TransUnionReportRecord
             $interval = $paidTo->diff($lastDayOfRequiredMonth)->format('%r%a');
         }
 
-        return $interval;
+        return (int)$interval;
     }
 
     private function getLateLeaseStatus($interval)
     {
-        switch ($interval) {
-            case ($interval >= 30 && $interval <= 59):
-                $status = self::LEASE_STATUS_30_59_DAYS_LATE;
-                break;
-            case ($interval >= 60 && $interval <= 89):
-                $status = $status = self::LEASE_STATUS_60_89_DAYS_LATE;
-                break;
-            case ($interval >= 90 && $interval <= 119):
-                $status = $status = self::LEASE_STATUS_90_119_DAYS_LATE;
-                break;
-            case ($interval >= 120 && $interval <= 149):
-                $status = $status = self::LEASE_STATUS_120_149_DAYS_LATE;
-                break;
-            case ($interval >= 150 && $interval <= 179):
-                $status = $status = self::LEASE_STATUS_150_179_DAYS_LATE;
-                break;
-            case ($interval >= 180):
-                $status = $status = self::LEASE_STATUS_MORE_THAN_180_DAYS_LATE;
-                break;
-            default:
-                $status = $status = self::LEASE_STATUS_CURRENT;
+        if ($interval >= 30 && $interval <= 59) {
+            return self::LEASE_STATUS_30_59_DAYS_LATE;
+        }
+        if ($interval >= 60 && $interval <= 89) {
+            return self::LEASE_STATUS_60_89_DAYS_LATE;
+        }
+        if ($interval >= 90 && $interval <= 119) {
+            return self::LEASE_STATUS_90_119_DAYS_LATE;
+        }
+        if ($interval >= 120 && $interval <= 149) {
+            return self::LEASE_STATUS_120_149_DAYS_LATE;
+        }
+        if ($interval >= 150 && $interval <= 179) {
+            return self::LEASE_STATUS_150_179_DAYS_LATE;
+        }
+        if ($interval >= 180) {
+            return self::LEASE_STATUS_MORE_THAN_180_DAYS_LATE;
         }
 
-        return $status;
+        return self::LEASE_STATUS_CURRENT;
     }
 }

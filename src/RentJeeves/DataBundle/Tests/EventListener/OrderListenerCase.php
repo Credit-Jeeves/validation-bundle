@@ -288,4 +288,42 @@ class OrderListenerCase extends Base
         $this->assertEquals($balanceOrderMustBe, $contract->getBalance());
         $this->assertEquals($integratedBalanceMustBe, $contract->getIntegratedBalance());
     }
+
+    /**
+     * @test
+     */
+    public function shouldUnshiftContractDateWhenOrderIsCancelled()
+    {
+        $this->load(true);
+        $container = static::getContainer();
+        /** @var EntityManager $em */
+        $em = $container->get('doctrine.orm.entity_manager');
+
+        $orders = $em->getRepository('DataBundle:Order')
+            ->findBy(
+                array(
+                    'status' => OrderStatus::COMPLETE,
+                    'type' => OrderType::HEARTLAND_CARD,
+                    'sum' => 1250.00
+                )
+            );
+
+        /** @var Order $order */
+        $order = $orders[0];
+
+        /** @var Operation $operation */
+        $operation = $order->getOperations()->last();
+        $contract = $operation->getContract();
+        $currentPaidToDate = clone $contract->getPaidTo();
+        $expectedPaidTo = $currentPaidToDate->format('Y-m-d');
+
+        $order->setStatus(OrderStatus::CANCELLED);
+        $em->flush();
+
+        $newPaidToDate = $currentPaidToDate->modify('-1 month');
+        $actualPaidTo = $newPaidToDate->format('Y-m-d');
+
+        $this->assertNotEquals($expectedPaidTo, $actualPaidTo);
+        $this->assertEquals($newPaidToDate, $contract->getPaidTo());
+    }
 }

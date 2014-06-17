@@ -365,6 +365,7 @@ abstract class Contract
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
+     * @Serializer\Exclude
      */
     protected $histories;
 
