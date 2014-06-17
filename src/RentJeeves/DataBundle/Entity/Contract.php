@@ -155,6 +155,8 @@ class Contract extends Base
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("payToName")
+     * @Serializer\Groups({"payRent"})
+     *
      * @return string
      */
     public function getPayToName()
@@ -171,6 +173,7 @@ class Contract extends Base
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("payment")
      * @Serializer\Type("RentJeeves\DataBundle\Entity\Payment")
+     * @Serializer\Groups({"payRent"})
      *
      * @return Payment
      */
@@ -665,6 +668,7 @@ class Contract extends Base
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("isPidVerificationSkipped")
      * @Serializer\Type("boolean")
+     * @Serializer\Groups({"payRent"})
      *
      * @return boolean
      */
@@ -755,10 +759,6 @@ class Contract extends Base
         return $startAt->setDate(null, null, $this->getDueDate());
     }
 
-
-    /**
-     * FIXME find why does not work!!!
-     */
     public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
     {
         if (!$this->getStartAt() || !$this->getFinishAt()) {
@@ -767,5 +767,16 @@ class Contract extends Base
         if ($this->getFinishAt() < $this->getStartAt()) {
             $validatorContext->addViolationAt('finish', 'contract.error.is_end_later_than_start', array(), null);
         }
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("depositAccount")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\DepositAccount")
+     * @Serializer\Groups({"payRent"})
+     */
+    public function getDepositAccount()
+    {
+        return $this->getGroup()->getDepositAccount();
     }
 }

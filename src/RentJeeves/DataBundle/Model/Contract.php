@@ -22,7 +22,7 @@ abstract class Contract
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      */
     protected $id;
 
@@ -35,7 +35,6 @@ abstract class Contract
      *     name="tenant_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\Exclude
      */
     protected $tenant;
 
@@ -48,7 +47,6 @@ abstract class Contract
      *     name="holding_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\Exclude
      */
     protected $holding;
 
@@ -63,6 +61,7 @@ abstract class Contract
      * )
      * @Serializer\SerializedName("groupId")
      * @Serializer\Accessor(getter="getGroupId")
+     * @Serializer\Groups({"payRent"})
      */
     protected $group;
 
@@ -82,6 +81,7 @@ abstract class Contract
      *         "tenant_invite"
      *     }
      * )
+     * @Serializer\Groups({"payRent"})
      */
     protected $property;
 
@@ -95,7 +95,7 @@ abstract class Contract
      *     name="unit_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      */
     protected $unit;
 
@@ -111,7 +111,6 @@ abstract class Contract
      *         "tenant_contract",
      *     }
      * )
-     * @Serializer\Exclude
      */
     protected $search;
 
@@ -123,7 +122,7 @@ abstract class Contract
      *     }
      * )
      * @Gedmo\Versioned
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      */
     protected $status;
 
@@ -148,7 +147,7 @@ abstract class Contract
      *         "import"
      *     }
      * )
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      */
     protected $rent = null;
 
@@ -230,7 +229,6 @@ abstract class Contract
      *         "default"="0"
      *     }
      * )
-     * @Serializer\Exclude
      */
     protected $reportToExperian = 0;
 
@@ -243,7 +241,6 @@ abstract class Contract
      *         "default"="0"
      *     }
      * )
-     * @Serializer\Exclude
      */
     protected $reportToTransUnion = 0;
 
@@ -253,7 +250,6 @@ abstract class Contract
      *     type="date",
      *     nullable=true
      * )
-     * @Serializer\Exclude
      */
     protected $experianStartAt;
 
@@ -263,12 +259,12 @@ abstract class Contract
      *     type="date",
      *     nullable=true
      * )
-     * @Serializer\Exclude
      */
     protected $transUnionStartAt;
 
     /**
      * @ORM\Column(name="due_date", type="integer", nullable=true)
+     * @Serializer\SerializedName("dueDate")
      *
      * @var int
      */
@@ -288,7 +284,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      * @Gedmo\Versioned
      */
     protected $startAt;
@@ -306,7 +302,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      * @Gedmo\Versioned
      */
     protected $finishAt = null;
@@ -318,7 +314,6 @@ abstract class Contract
      *     name="created_at",
      *     type="datetime"
      * )
-     * @Serializer\Exclude
      */
     protected $createdAt;
 
@@ -328,7 +323,6 @@ abstract class Contract
      *     name="updated_at",
      *     type="datetime"
      * )
-     * @Serializer\Exclude
      * @Gedmo\Versioned
      */
     protected $updatedAt;
@@ -340,7 +334,6 @@ abstract class Contract
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
-     * @Serializer\Exclude
      * @var ArrayCollection
      */
     protected $operations;
@@ -353,7 +346,6 @@ abstract class Contract
      *     orphanRemoval=true,
      *     fetch="EAGER"
      * )
-     * @Serializer\Exclude
      * @var ArrayCollection
      */
     protected $payments;
@@ -365,7 +357,6 @@ abstract class Contract
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
-     * @Serializer\Exclude
      * @var ArrayCollection
      */
     protected $histories;
@@ -378,7 +369,6 @@ abstract class Contract
      *         "default"="BLANK"
      *     }
      * )
-     * @Serializer\Exclude
      */
     protected $disputeCode = DisputeCode::DISPUTE_CODE_BLANK;
 

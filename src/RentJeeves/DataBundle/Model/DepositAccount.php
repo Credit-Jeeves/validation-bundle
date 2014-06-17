@@ -24,14 +24,13 @@ abstract class DepositAccount
     /**
      * @ORM\OneToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *      inversedBy="deposit_account"
+     *      inversedBy="depositAccount"
      * )
      * @ORM\JoinColumn(
      *      name="group_id",
      *      referencedColumnName="id"
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
-     * @Serializer\MaxDepth(3)
      */
     protected $group;
 
@@ -42,6 +41,7 @@ abstract class DepositAccount
      *      length=255,
      *      nullable=true
      * )
+     * @Serializer\SerializedName("merchantName")
      */
     protected $merchantName;
 
@@ -72,6 +72,8 @@ abstract class DepositAccount
      *      scale=2,
      *      nullable=true
      * )
+     * @Serializer\SerializedName("feeCC")
+     * @Serializer\Groups({"payRent"})
      */
     protected $feeCC;
 
@@ -82,6 +84,8 @@ abstract class DepositAccount
      *      scale=2,
      *      nullable=true
      * )
+     * @Serializer\SerializedName("feeACH")
+     * @Serializer\Groups({"payRent"})
      */
     protected $feeACH;
 
@@ -90,6 +94,7 @@ abstract class DepositAccount
      *      targetEntity="PaymentAccount",
      *      mappedBy="depositAccounts"
      * )
+     * @Serializer\SerializedName("paymentAccounts")
      */
     protected $paymentAccounts;
 

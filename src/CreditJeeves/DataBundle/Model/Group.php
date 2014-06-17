@@ -317,7 +317,7 @@ abstract class Group
      *     orphanRemoval=true
      * )
      */
-    protected $deposit_account;
+    protected $depositAccount;
 
     /**
      * @ORM\OneToMany(
@@ -1045,7 +1045,7 @@ abstract class Group
 
     public function setDepositAccount($account)
     {
-        $this->deposit_account = $account;
+        $this->depositAccount = $account;
         return $this;
     }
 
@@ -1056,7 +1056,7 @@ abstract class Group
      */
     public function getDepositAccount()
     {
-        return $this->deposit_account;
+        return $this->depositAccount;
     }
 
     /**

@@ -18,7 +18,7 @@ abstract class Unit
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      */
     protected $id;
 
@@ -42,7 +42,7 @@ abstract class Unit
      *         "registration_tos"
      *     }
      * )
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      * @Serializer\Accessor(getter="getName",setter="setName")
      */
     protected $name;
@@ -73,7 +73,6 @@ abstract class Unit
      *     referencedColumnName="id",
      *     nullable=false
      * )
-     * @Serializer\Exclude
      */
     protected $property;
 
@@ -86,7 +85,6 @@ abstract class Unit
      *     name="holding_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\Exclude
      */
     protected $holding;
 
@@ -99,7 +97,6 @@ abstract class Unit
      *     name="group_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\Exclude
      */
     protected $group;
 
@@ -109,7 +106,6 @@ abstract class Unit
      *     name="created_at",
      *     type="datetime"
      * )
-     * @Serializer\Exclude
      */
     protected $createdAt;
 
@@ -119,7 +115,6 @@ abstract class Unit
      *     name="updated_at",
      *     type="datetime"
      * )
-     * @Serializer\Exclude
      */
     protected $updatedAt;
 
@@ -143,7 +138,6 @@ abstract class Unit
      *     },
      *     orphanRemoval=true
      * )
-     * @Serializer\Exclude
      *
      * @var ArrayCollection
      */
@@ -157,7 +151,6 @@ abstract class Unit
      *       "persist"
      *     }
      * )
-     * @Serializer\Exclude
      *
      * @var ArrayCollection
      */

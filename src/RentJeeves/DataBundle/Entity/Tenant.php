@@ -55,7 +55,7 @@ class Tenant extends User
      *
      * @var ArrayCollection
      */
-    protected $payment_accounts;
+    protected $paymentAccounts;
 
     /**
      * @ORM\OneToMany(
@@ -207,7 +207,7 @@ class Tenant extends User
      */
     public function addPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $account)
     {
-        $this->payment_accounts[] = $account;
+        $this->paymentAccounts[] = $account;
         return $this;
     }
 
@@ -218,17 +218,17 @@ class Tenant extends User
      */
     public function removePaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $account)
     {
-        $this->payment_accounts->removeElement($account);
+        $this->paymentAccounts->removeElement($account);
     }
 
     /**
-     * Get payment_accounts
+     * Get paymentAccounts
      *
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getPaymentAccounts()
     {
-        return $this->payment_accounts;
+        return $this->paymentAccounts;
     }
 
     public function getAvailableVerificationStatuses()

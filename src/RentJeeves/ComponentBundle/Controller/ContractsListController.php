@@ -4,12 +4,14 @@ namespace RentJeeves\ComponentBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use RentJeeves\CoreBundle\DateTime;
 
 class ContractsListController extends Controller
 {
@@ -30,7 +32,7 @@ class ContractsListController extends Controller
             $merchantName = $group->getMerchantName();
             $canInvite = (!empty($merchantName))? true : false;
         }
-        $date = new \DateTime();
+        $date = new DateTime();
         $start = $date->format('m/d/Y');
         $date->modify('+1 year');
         $end = $date->format('m/d/Y');
@@ -78,6 +80,10 @@ class ContractsListController extends Controller
         $contractsArr = array();
         $activeContracts = array();
         $paidForArr = array();
+        $isNewUser = false;
+        if (1 == count($contracts) && $contracts[0]->status() == ContractStatus::INVITE) {
+            $isNewUser = true;
+        }
         /** @var $contract Contract */
         foreach ($contracts as $contract) {
             $contractsArr[] = $contract->getDatagridRow($em);
@@ -87,11 +93,18 @@ class ContractsListController extends Controller
             }
         }
 
+        $contractsJson = $this->get('jms_serializer')->serialize(
+            $activeContracts,
+            'json',
+            SerializationContext::create()->setGroups(array('payRent'))
+        );
+
         return array(
-            'contractsRaw' => new ArrayCollection($activeContracts),
-            'contracts'    => $contractsArr,
-            'paidForArr'   => $paidForArr,
-            'user'         => $tenant,
+            'contractsJson' => $contractsJson,
+            'contracts'     => $contractsArr,
+            'paidForArr'    => $paidForArr,
+            'user'          => $tenant,
+            'isNewUser'     => $isNewUser,
         );
     }
 }

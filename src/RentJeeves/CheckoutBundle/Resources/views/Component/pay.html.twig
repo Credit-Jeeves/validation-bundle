@@ -96,12 +96,18 @@
                         </label>
                     <!-- /ko -->
                     <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
-                        <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus"><span></span>{{ 'payment.account.new' | trans }}</a>
+                        <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus">
+                            <span></span>{{ 'payment.account.new' | trans }}
+                        </a>
                     </div>
                 </div>
             </div>
             <div data-bind="visible: isNewPaymentAccount || !$root.notEmptyPaymentAccount">
                 {{ render(controller('RjCheckoutBundle:Component:source')) }}
+                <p class="note" data-bind="visible: 'card' == paymentSource.type()">
+                    <strong>{{ 'checkout.fee.note' | trans({'%FEE%': payment_card_fee}) }}</strong>
+                    <i title="{{ 'checkout.fee.note.help' | trans }}" class="help after-checkbox pie-el tooltip-link">?</i>
+                </p>
             </div>
         </div>
 
