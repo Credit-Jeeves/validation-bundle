@@ -366,6 +366,7 @@ abstract class Contract
      *     orphanRemoval=true
      * )
      * @Serializer\Exclude
+     * @var ArrayCollection
      */
     protected $histories;
 

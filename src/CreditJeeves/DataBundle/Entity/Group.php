@@ -69,20 +69,6 @@ class Group extends BaseGroup
         return $properties ? count($properties) : 0;
     }
 
-    public function setMerchantName($name)
-    {
-        if (!empty($name)) {
-            if (!$this->deposit_account) {
-                $this->deposit_account = new DepositAccount();
-                $this->deposit_account->setGroup($this);
-            }
-            $this->deposit_account->setMerchantName($name);
-            $this->deposit_account->setStatus(DepositAccountStatus::DA_COMPLETE);
-        }
-
-        return $this;
-    }
-
     public function getMerchantName()
     {
         $depositAccount = $this->getDepositAccount();

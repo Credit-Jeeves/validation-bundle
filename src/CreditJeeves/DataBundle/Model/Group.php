@@ -830,7 +830,7 @@ abstract class Group
     }
 
     /**
-     * @return Holding
+     * @return \CreditJeeves\DataBundle\Entity\Holding
      */
     public function getHolding()
     {

@@ -23,12 +23,12 @@ abstract class DepositAccount
 
     /**
      * @ORM\OneToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="deposit_account"
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *      inversedBy="deposit_account"
      * )
      * @ORM\JoinColumn(
-     *     name="group_id",
-     *     referencedColumnName="id"
+     *      name="group_id",
+     *      referencedColumnName="id"
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
      * @Serializer\MaxDepth(3)
@@ -37,20 +37,20 @@ abstract class DepositAccount
 
     /**
      * @ORM\Column(
-     *     name="merchant_name",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
+     *      name="merchant_name",
+     *      type="string",
+     *      length=255,
+     *      nullable=true
      * )
      */
     protected $merchantName;
 
     /**
      * @ORM\Column(
-     *     type="DepositAccountStatus",
-     *     options={
+     *      type="DepositAccountStatus",
+     *      options={
      *         "default"="init"
-     * }
+     *      }
      * )
      *
      */
@@ -58,12 +58,32 @@ abstract class DepositAccount
 
     /**
      * @ORM\Column(
-     *     type="string",
-     *     length=255,
-     *     nullable=true
+     *      type="string",
+     *      length=255,
+     *      nullable=true
      * )
      */
     protected $message;
+
+    /**
+     * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     */
+    protected $feeCC;
+
+    /**
+     * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     */
+    protected $feeACH;
 
     /**
      * @ORM\ManyToMany(
@@ -112,7 +132,7 @@ abstract class DepositAccount
     }
 
     /**
-     * @return CreditJeeves\DataBundle\Entity\Group
+     * @return \CreditJeeves\DataBundle\Entity\Group
      */
     public function getGroup()
     {
@@ -154,6 +174,38 @@ abstract class DepositAccount
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @param float $feeACH
+     */
+    public function setFeeACH($feeACH)
+    {
+        $this->feeACH = $feeACH;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFeeACH()
+    {
+        return $this->feeACH;
+    }
+
+    /**
+     * @param float $feeCC
+     */
+    public function setFeeCC($feeCC)
+    {
+        $this->feeCC = $feeCC;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFeeCC()
+    {
+        return $this->feeCC;
     }
 
     /**
