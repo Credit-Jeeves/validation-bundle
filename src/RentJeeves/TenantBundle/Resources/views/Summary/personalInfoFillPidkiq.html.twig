@@ -22,12 +22,12 @@
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     <script type="text/javascript">
-        addressesViewModels = [];
-        {% for address in addresses %}
+        window.addressesViewModels = [];
+        jQuery.each({{ addressesJson | raw }}, function(key, val) {
             var address = new Address(null);
-            ko.mapping.fromJS({{ address | serialize('json') | raw }}, {}, address);
+            ko.mapping.fromJS(val, {}, address);
             window.addressesViewModels.push(address);
-        {% endfor %}
+        });
         var PersonalInfoFillPidkiqModel = new PersonalInfoFillPidkiq(addressesViewModels);
         {% if defaultAddressId %}
             PersonalInfoFillPidkiqModel.address.addressChoice({{ defaultAddressId }});

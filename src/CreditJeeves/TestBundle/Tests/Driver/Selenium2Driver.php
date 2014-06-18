@@ -4,15 +4,14 @@ namespace CreditJeeves\TestBundle\Tests\Driver;
 use Behat\Mink\Driver\Selenium2Driver as BaseSelenium2Driver;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
-use WebDriver\Exception\ElementNotVisible;
-
+use Exception;
 
 /**
  * Selenium2 driver extension
  */
 class Selenium2Driver extends BaseSelenium2Driver
 {
-    const WAIT = 5;
+    const WAIT = 3;
 
     private $session;
 
@@ -39,9 +38,11 @@ class Selenium2Driver extends BaseSelenium2Driver
         do {
             $nodes = $this->getWebDriverSession()->elements('xpath', $xpath);
             if ($i) {
-                usleep(2000000);
+                usleep(1000000);
             }
             $i++;
+
+            var_dump("Try N {$i}");
         } while (empty($nodes) && static::WAIT >= $i);
 
         $elements = array();
@@ -65,9 +66,9 @@ class Selenium2Driver extends BaseSelenium2Driver
                 parent::click($xpath);
 
                 return;
-            } catch (ElementNotVisible $e) {
+            } catch (Exception $e) {
                 $exception = $e;
-                usleep(2000000);
+                usleep(1000000);
                 var_dump("Try N {$i}");
             }
         } while (static::WAIT >= $i);
