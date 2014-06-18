@@ -1,18 +1,18 @@
 {% trans_default_domain 'checkout' %}
 <div class="pod-small pod-border pod-padding shadow credittrack-promo-box">
-    <h3>{{ 'credittrack-box-title' | trans }}</h3>
+    <h3>{{ 'credittrack.box.title' | trans }}</h3>
     <p>
-        {{ 'credittrack-box-message' | trans }}
+        {{ 'credittrack.box.message' | trans }}
     </p>
 
-    <a href="#" class="button small blue narrow show-credittrack-pricing-popup">{{ 'credittrack-buy-link' | trans }}</a>
+    <a href="#" class="button small blue narrow show-credittrack-pricing-popup">{{ 'credittrack.buy.link' | trans }}</a>
 
     <div class="note-text biggerbold">
-        {{ 'credittrack-box-note' | trans }}
+        {{ 'credittrack.box.note' | trans }}
     </div>
 
     <div class="price">
-      {{ 'credittrack-promo-amount' | trans({"%dollars%": credittrack_payment_per_month_dollars, "%cents%": credittrack_payment_per_month_cents}) | raw }}
+      {{ 'credittrack.promo.amount' | trans({"%dollars%": credittrack_payment_per_month_dollars, "%cents%": credittrack_payment_per_month_cents}) | raw }}
     </div>
 </div>
 

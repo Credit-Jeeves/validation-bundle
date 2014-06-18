@@ -5,15 +5,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
-use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\UserSettings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Payum\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
-use Payum\Heartland\Model\TokenReregistration;
-use Payum\Request\CaptureRequest;
 use JMS\Serializer\SerializationContext;
+use DateTime;
 
 
 class CreditTrackController extends Controller
@@ -24,11 +20,11 @@ class CreditTrackController extends Controller
      */
     public function payAction()
     {
-        $rt_merchant_name = $this->container->getParameter('rt_merchant_name');
+        $rtMerchantName = $this->container->getParameter('rt_merchant_name');
 
         $em = $this->getDoctrine()->getManager();
         $group = $em->getRepository('DataBundle:Group')
-            ->findOneByCode($rt_merchant_name);
+            ->findOneByCode($rtMerchantName);
         $user = $this->getUser();
         $paymentAccounts = $user->getPaymentAccounts();
         $serializer = $this->get('jms_serializer');
@@ -52,12 +48,10 @@ class CreditTrackController extends Controller
 
     /**
      * @Route("/credittrack/exec", name="credittrack_pay_exec", options={"expose"=true})
-     * **Method({"POST"})
      */
     public function execAction(Request $request)
     {
         $user = $this->getUser();
-        $request = $this->get('request');
         $params = $request->get('rentjeeves_checkoutbundle_paymentaccounttype');
         $paymentAccountId = $params['id'];
 
@@ -84,7 +78,7 @@ class CreditTrackController extends Controller
         }
 
         $settings->setCreditTrackPaymentAccount($paymentAccount);
-        $settings->setCreditTrackEnabledAt(new \DateTime('now'));
+        $settings->setCreditTrackEnabledAt(new DateTime('now'));
 
         $em->persist($settings);
         $em->flush();

@@ -1,5 +1,5 @@
 function CreditTrackPayDialog(options) {
-    this.root = $('#pay-popup');
+    this.root = $('#credit-track-pay-popup');
 
     ko.cleanNode(this.root.get(0));
 
@@ -12,13 +12,12 @@ function CreditTrackPayDialog(options) {
     var current = 0;
     this.infoMessage = ko.observable(null);
 
-    this.getCurrentStep = function()
-    {
+    this.getCurrentStep = function() {
         return steps[current];
     }
 
     this.previous = function() {
-        window.formProcess.removeAllErrors('#pay-popup');
+        window.formProcess.removeAllErrors('#credit-track-pay-popup');
         current--;
         this.step(steps[current]);
     };
@@ -36,9 +35,7 @@ function CreditTrackPayDialog(options) {
 
     this.isPassed = function(step) {
         return this.passedSteps().indexOf(step) >= 0;
-          // WHAT?
     }
-
 
     this.step.subscribe(function(newValue) {
 
@@ -51,13 +48,6 @@ function CreditTrackPayDialog(options) {
             if (typeof steps[stepNum - 1] != 'undefined') {
                 self.passedSteps.push(steps[stepNum - 1]);
             }
-        }
-
-        switch (newValue) {
-            case 'source':
-                break;
-            case 'pay':
-                break;
         }
     });
 
@@ -89,8 +79,8 @@ function CreditTrackPayDialog(options) {
         }
     });
 
-    this.getTotalAmount = function(paymentCardFee) {
-        return '$' + parseFloat(this.payment.amount()).toFixed(2);
+    this.getTotalAmount = function() {
+        return Format.money(this.payment.amount(), 'USD');
     };
 
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
@@ -111,34 +101,10 @@ function CreditTrackPayDialog(options) {
         self.paymentSource.clear();
     };
 
-
-    this.settleDays = 3; // All logic logic in "settle" method depends on this value
-    this.settle = ko.computed(function() {
-        var settleDate = new Date(this.payment.startDate());
-        var startDayOfWeek = (0 == settleDate.getDay()?7:settleDate.getDay()); // Move Sunday from 0 to 7
-        /* logic: skip weekends */
-        var daysAdd = (4 == startDayOfWeek || 6 == startDayOfWeek ? 1 : 0);
-        if (0 == daysAdd) {
-            daysAdd = (5 == startDayOfWeek ? 2 : 0);
-        }
-        /* end of logic: skip weekends */
-
-        settleDate.add(/*this.settleDays*/3).days();// see comment of this.settleDays
-        var dayOfWeek = (0 == settleDate.getDay()?7:settleDate.getDay()); // Move Sunday from 0 to 7
-        var daysShift = 8 - dayOfWeek; // Settle day can't be weekend
-        if (2 < daysShift) {
-            daysShift = 0;
-        }
-        settleDate.add(daysShift + daysAdd).days();
-        return settleDate.toString('M/d/yyyy');
-    }, this);
-
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
     this.paymentSource.groupId(this.paymentGroup.id);
 
-    this.getLastPaymentDay = ko.computed(function() {
-        return 'no finish date';
-    }, this);
+    this.getLastPaymentDay = 'no finish date';
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
 
@@ -148,7 +114,6 @@ function CreditTrackPayDialog(options) {
         this.paymentSource.isForceSave(result);
         return result;
     }, this);
-
 
     this.stepExist = function(step) {
         return -1 != steps.indexOf(step);
@@ -194,7 +159,7 @@ function CreditTrackPayDialog(options) {
                 // End
                 break;
             case 'pay':
-                $('#pay-popup').dialog('close');
+                $('#credit-track-pay-popup').dialog('close');
                 jQuery('body').showOverlay();
                 window.location.reload();
                 return;
@@ -205,7 +170,7 @@ function CreditTrackPayDialog(options) {
     };
 
     var sendData = function(url, formId) {
-        jQuery('#pay-popup').showOverlay();
+        jQuery('#credit-track-pay-popup').showOverlay();
 
         var data = jQuery('#' + formId).serializeArray();
 
@@ -216,18 +181,18 @@ function CreditTrackPayDialog(options) {
             dataType: 'json',
             data: jQuery.param(data, false),
             error: function(jqXHR, textStatus, errorThrown) {
-                window.formProcess.removeAllErrors('#pay-popup ');
-                jQuery('#pay-popup').hideOverlay();
+                window.formProcess.removeAllErrors('#credit-track-pay-popup ');
+                jQuery('#credit-track-pay-popup').hideOverlay();
                 window.formProcess.reLogin(jqXHR, errorThrown);
                 window.formProcess.addFormError('#' + formId, errorThrown);
             },
             success: function(data, textStatus, jqXHR) {
-                window.formProcess.removeAllErrors('#pay-popup ');
+                window.formProcess.removeAllErrors('#credit-track-pay-popup ');
                 jQuery.each(forms, function(key, formName) {
                     $('#' + formName + ' .error').removeClass('error');
                 });
 
-                jQuery('#pay-popup').hideOverlay();
+                jQuery('#credit-track-pay-popup').hideOverlay();
                 if (!data.success) {
                     window.formProcess.applyErrors(data);
                     return;
@@ -242,7 +207,7 @@ function CreditTrackPayDialog(options) {
         switch (currentStep) {
             case 'source':
                 if (!self.payment.paymentAccountId() && !self.newPaymentAccount()) {
-                    window.formProcess.removeAllErrors('#pay-popup ');
+                    window.formProcess.removeAllErrors('#credit-track-pay-popup ');
                     window.formProcess.addFormError(
                         '#' + forms[currentStep],
                         Translator.trans('payment_account.error.choice.empty')
@@ -265,9 +230,9 @@ function CreditTrackPayDialog(options) {
         new Cancel(self.payment.id());
     };
 
-    ko.applyBindings(this, $('#pay-popup').get(0));
+    ko.applyBindings(this, $('#credit-track-pay-popup').get(0));
 
-    $('#pay-popup').dialog({
+    $('#credit-track-pay-popup').dialog({
         width: 650,
         modal: true,
         beforeClose: function( event, ui ) {
@@ -276,6 +241,6 @@ function CreditTrackPayDialog(options) {
         }
     });
 
-    window.formProcess.removeAllErrors('#pay-popup');
+    window.formProcess.removeAllErrors('#credit-track-pay-popup');
 }
 

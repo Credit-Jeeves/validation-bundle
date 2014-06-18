@@ -157,24 +157,24 @@
                 <source>exp_date</source>
                 <target>Expiration</target>
             </trans-unit>
-            <trans-unit id="credittrack-box-title">
-                <source>credittrack-box-title</source>
+            <trans-unit id="credittrack.box.title">
+                <source>credittrack.box.title</source>
                 <target>Track Your Progress</target>
             </trans-unit>
-            <trans-unit id="credittrack-box-message">
-                <source>credittrack-box-message</source>
+            <trans-unit id="credittrack.box.message">
+                <source>credittrack.box.message</source>
                 <target>Online Monthly Credit Reports and Scores from Experian</target>
             </trans-unit>
-            <trans-unit id="credittrack-buy-link">
-                <source>credittrack-buy-link</source>
+            <trans-unit id="credittrack.buy.link">
+                <source>credittrack.buy.link</source>
                 <target>Sign Up</target>
             </trans-unit>
-            <trans-unit id="credittrack-promo-amount">
-                <source>credittrack-promo-amount</source>
-                <target>Only &lt;span class="integer"&gt;$%dollars%&lt;/span&gt;&lt;span class="decimal"&gt;%cents%&lt;/span&gt;/mo</target>
+            <trans-unit id="credittrack.promo.amount">
+                <source>credittrack.promo.amount</source>
+                <target><![CDATA[Only <span class="integer">$%dollars%</span><span class="decimal">%cents%</span>/mo]]></target>
             </trans-unit>
-            <trans-unit id="credittrack-box-note">
-                <source>credittrack-box-note</source>
+            <trans-unit id="credittrack.box.note">
+                <source>credittrack.box.note</source>
                 <target>CreditTrack&#8482;</target>
             </trans-unit>
         </body>

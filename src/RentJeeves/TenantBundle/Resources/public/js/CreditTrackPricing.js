@@ -16,22 +16,22 @@ function CreditTrackPricing(options){
     self.pricing.call(self);
     return false;
   });
-};
 
-/**
-  * Instantiate the dialog
+  /**
+    * Instantiate the dialog
+    */
+  this.pricing = function(){
+    this.pricingDialog.dialog({
+      width:660,
+      modal:true
+    });
+  };
+
+  /**
+  * Close the pricing dialog and launch the pay dialog
   */
-CreditTrackPricing.prototype.pricing = function(){
-  this.pricingDialog.dialog({
-    width:660,
-    modal:true
-  });
-};
-
-/**
- * Close the pricing dialog and launch the pay dialog
- */
-CreditTrackPricing.prototype.pay = function(){
-  this.pricingDialog.dialog('close');
-  this.payDialog = new CreditTrackPayDialog(this.options);
+  this.pay = function(){
+    this.pricingDialog.dialog('close');
+    this.payDialog = new CreditTrackPayDialog(this.options);
+  };
 };
