@@ -152,7 +152,7 @@ class PayCase extends BaseTestCase
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
-            $this->timeout+ 10000,
+            $this->timeout+ 45000,
             "!jQuery('#id-source-step').is(':visible')"
         );
 

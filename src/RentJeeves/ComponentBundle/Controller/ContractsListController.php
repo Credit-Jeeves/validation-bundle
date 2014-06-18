@@ -81,7 +81,7 @@ class ContractsListController extends Controller
         $activeContracts = array();
         $paidForArr = array();
         $isNewUser = false;
-        if (1 == count($contracts) && $contracts[0]->status() == ContractStatus::INVITE) {
+        if ($contracts && 1 == count($contracts) && $contracts[0]->getStatus() == ContractStatus::INVITE) {
             $isNewUser = true;
         }
         /** @var $contract Contract */

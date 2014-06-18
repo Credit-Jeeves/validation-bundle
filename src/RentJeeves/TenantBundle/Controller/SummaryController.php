@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
 use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
+use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
@@ -70,9 +71,17 @@ class SummaryController extends Controller
             $defaultAddressId = ($address = $this->getUser()->getDefaultAddress()) ? $address->getId() : null;
         }
 
+
+
+        $addressesJson = $this->get('jms_serializer')->serialize(
+            $this->getUser()->getAddresses(),
+            'json',
+            SerializationContext::create()->setGroups(array('paymentAccounts'))
+        );
+
         return array(
             'form'             => $personalInfoForm->createView(),
-            'addresses'        => $this->getUser()->getAddresses(),
+            'addressesJson'        => $addressesJson,
             'defaultAddressId' => $defaultAddressId,
         );
     }

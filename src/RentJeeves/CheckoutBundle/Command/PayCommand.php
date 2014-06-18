@@ -86,7 +86,7 @@ class PayCommand extends ContainerAwareCommand
             return 1;
         }
         $order = new Order();
-        $total = $payment->getTotal();
+        $total = $payment->getAmount() + $payment->getOther();
         $fee = 0;
 
 
