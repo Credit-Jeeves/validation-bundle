@@ -11,7 +11,9 @@ use Exception;
  */
 class Selenium2Driver extends BaseSelenium2Driver
 {
-    const WAIT = 3;
+    const WAIT_TIMES = 4;
+    const TIMEOUT = 500000;
+
 
     private $session;
 
@@ -38,12 +40,11 @@ class Selenium2Driver extends BaseSelenium2Driver
         do {
             $nodes = $this->getWebDriverSession()->elements('xpath', $xpath);
             if ($i) {
-                usleep(1000000);
+                usleep(static::TIMEOUT);
+                var_dump("Find try N {$i}");
             }
             $i++;
-
-            var_dump("Try N {$i}");
-        } while (empty($nodes) && static::WAIT >= $i);
+        } while (empty($nodes) && static::WAIT_TIMES >= $i);
 
         $elements = array();
         foreach ($nodes as $i => $node) {
@@ -64,14 +65,13 @@ class Selenium2Driver extends BaseSelenium2Driver
             try {
                 $i++;
                 parent::click($xpath);
-
                 return;
             } catch (Exception $e) {
                 $exception = $e;
-                usleep(1000000);
-                var_dump("Try N {$i}");
+                usleep(static::TIMEOUT);
+                var_dump("Click try N {$i}");
             }
-        } while (static::WAIT >= $i);
+        } while (static::WAIT_TIMES >= $i);
         throw $exception;
     }
 }
