@@ -41,7 +41,7 @@ class Selenium2Driver extends BaseSelenium2Driver
             $nodes = $this->getWebDriverSession()->elements('xpath', $xpath);
             if ($i) {
                 usleep(static::TIMEOUT);
-                var_dump("Find try N {$i}");
+//                var_dump("Find try N {$i}");
             }
             $i++;
         } while (empty($nodes) && static::WAIT_TIMES >= $i);
@@ -69,7 +69,7 @@ class Selenium2Driver extends BaseSelenium2Driver
             } catch (Exception $e) {
                 $exception = $e;
                 usleep(static::TIMEOUT);
-                var_dump("Click try N {$i}");
+//                var_dump("Click try N {$i}");
             }
         } while (static::WAIT_TIMES >= $i);
         throw $exception;
@@ -90,7 +90,7 @@ class Selenium2Driver extends BaseSelenium2Driver
             } catch (Exception $e) {
                 $exception = $e;
                 usleep(static::TIMEOUT);
-                var_dump("Set value try N {$i}");
+//                var_dump("Set value try N {$i}");
             }
         } while (static::WAIT_TIMES >= $i);
         throw $exception;
