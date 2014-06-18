@@ -74,4 +74,25 @@ class Selenium2Driver extends BaseSelenium2Driver
         } while (static::WAIT_TIMES >= $i);
         throw $exception;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function setValue($xpath, $value)
+    {
+        $i = 0;
+        $exception = null;
+        do {
+            try {
+                $i++;
+                parent::setValue($xpath, $value);
+                return;
+            } catch (Exception $e) {
+                $exception = $e;
+                usleep(static::TIMEOUT);
+                var_dump("Set value try N {$i}");
+            }
+        } while (static::WAIT_TIMES >= $i);
+        throw $exception;
+    }
 }
