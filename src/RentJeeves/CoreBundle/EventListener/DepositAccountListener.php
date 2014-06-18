@@ -75,11 +75,11 @@ class DepositAccountListener
             return;
         }
 
-        if ($entity->getFeeACH() == $this->feeACH) {
+        if ($eventArgs->hasChangedField('feeACH') && $entity->getFeeACH() == $this->feeACH) {
             $eventArgs->setNewValue('feeACH', null);
         }
 
-        if ($entity->getFeeCC() == $this->feeCC) {
+        if ($eventArgs->hasChangedField('feeCC') && $entity->getFeeCC() == $this->feeCC) {
             $eventArgs->setNewValue('feeCC', null);
         }
 

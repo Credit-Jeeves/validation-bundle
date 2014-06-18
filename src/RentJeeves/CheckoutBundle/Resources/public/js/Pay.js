@@ -358,7 +358,7 @@ function Pay(parent, contractId) {
         jQuery.ajax({
             url: url,
             type: 'POST',
-            timeout: 30000, // 30 secs
+            timeout: 60000, // 30 secs
             dataType: 'json',
             data: jQuery.param(data, false),
 //            complete: function(jqXHR, textStatus) {
