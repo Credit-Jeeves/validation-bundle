@@ -81,8 +81,18 @@ trait AccountAssociate
         $paymentDetails->setRequest($request);
         $captureRequest = new CaptureRequest($paymentDetails);
 
-        /** @var Payment $payment */
-        $payment = $this->get('payum')->getPayment('heartland');
+        if (method_exists($this, 'getConfigurationPool')) {
+            /** @var Payment $payment */
+            $payment = $this->getConfigurationPool()
+                ->getContainer()
+                ->get('payum')
+                ->getPayment('heartland');
+        } else {
+            /** @var Payment $payment */
+            $payment = $this->get('payum')
+                ->getPayment('heartland');
+        }
+
         $payment->execute($captureRequest);
 
         $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());

@@ -94,9 +94,14 @@ class DepositAccountListener
             return;
         }
 
-        $usersAdminList = $entity->getGroup()->getHolding()->getHoldingAdmin();
-        $users = $entity->getGroup()->getHolding()->getDealers();
         $group =  $entity->getGroup();
+
+        if (!$group) {
+            return;
+        }
+
+        $usersAdminList = $group->getHolding()->getHoldingAdmin();
+        $users = $group->getHolding()->getDealers();
         /** @var Mailer $mail */
         $mail = $this->container->get('project.mailer');
 

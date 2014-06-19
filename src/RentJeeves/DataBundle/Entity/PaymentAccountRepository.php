@@ -21,4 +21,20 @@ class PaymentAccountRepository extends EntityRepository
 
         return $queryBuilder->getQuery()->getSingleResult();
     }
+
+    /**
+     * @param int $id
+     *
+     * @return PaymentAccount
+     */
+    public function findByDepositAccountId($id)
+    {
+        return $this->createQueryBuilder('pa')
+            ->select('pa')
+            ->join('pa.depositAccounts', 'da')
+            ->where('da.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->execute();
+    }
 }

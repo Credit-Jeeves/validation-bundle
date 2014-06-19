@@ -144,7 +144,7 @@ abstract class DepositAccount
         return $this->group;
     }
 
-    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
+    public function setGroup($group)
     {
         $this->group = $group;
     }
