@@ -102,10 +102,10 @@
                     </div>
                 </div>
             </div>
-            <div data-bind="visible: isNewPaymentAccount || !$root.notEmptyPaymentAccount">
+            <div data-bind="visible: isNewPaymentAccount || $root.notEmptyPaymentAccount">
                 {{ render(controller('RjCheckoutBundle:Component:source')) }}
-                <p class="note" data-bind="visible: 'card' == paymentSource.type()">
-                    <strong>{{ 'checkout.fee.note' | trans({'%FEE%': payment_card_fee}) }}</strong>
+                <p class="note" data-bind="visible: fee">
+                    <strong data-bind="i18n: {'FEE': fee}">checkout.fee.note-%FEE%</strong>
                     <i title="{{ 'checkout.fee.note.help' | trans }}" class="help after-checkbox pie-el tooltip-link">?</i>
                 </p>
             </div>
@@ -207,8 +207,7 @@
                     <div class="form-row clearfix">
                         <label>{{ 'checkout.fee' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="visible: 'bank' == paymentSource.type()">$0.00</span>
-                            <span class="value" data-bind="visible: 'card' == paymentSource.type(), text: getFeeAmountText('{{ payment_card_fee }}')"></span>
+                            <span class="value" data-bind="text: feeTotal"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix total-amount">

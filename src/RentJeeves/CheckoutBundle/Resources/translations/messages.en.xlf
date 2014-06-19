@@ -357,7 +357,7 @@
                 <target>Please, select Expiration Year.</target>
             </trans-unit>
             <trans-unit id="checkout.fee.note">
-                <source>checkout.fee.note</source>
+                <source>checkout.fee.note-%FEE%</source>
                 <target>NOTE: A %FEE% technology platform fee will be added to credit card payments.</target>
             </trans-unit>
             <trans-unit id="checkout.fee.note.help">

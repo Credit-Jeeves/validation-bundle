@@ -127,7 +127,7 @@ function Pay(parent, contractId) {
     this.propertyFullAddress.zip(contract.property.zip);
     this.propertyFullAddress.district(contract.property.district);
     this.propertyFullAddress.area(contract.property.area);
-    if (typeof contract.unit == 'undefined') {
+    if (typeof contract.unit == 'undefined') { // TODO check and may be remove
         this.propertyFullAddress.unit('');
     } else {
         this.propertyFullAddress.unit(contract.unit.name);
@@ -155,7 +155,7 @@ function Pay(parent, contractId) {
         return paidForArr[self.payment.paidFor()];
     });
 
-    this.total = ko.computed(function() { // It will diplay to user
+    this.total = ko.computed(function() { // It will display to user
         return total = (self.payment.amount()?parseFloat(self.payment.amount()):0) +
             (self.payment.amountOther()?parseFloat(self.payment.amountOther()):0);
     });
@@ -253,7 +253,26 @@ function Pay(parent, contractId) {
         return Format.money(this.total());
     }, this);
 
-    this.getFeeAmountText = function(paymentCardFee) {
+    this.fee = ko.computed(function() {
+        if ('card' == this.paymentSource.type()) {
+            return contract.depositAccount.feeCC + '%';
+        } else if ('bank' == this.paymentSource.type()) {
+            return Format.money(contract.depositAccount.feeACH);
+        }
+        return null;
+    }, this);
+
+    this.feeTotal = ko.computed(function() {
+        var fee = 0.00;
+        if ('card' == this.paymentSource.type()) {
+            fee = contract.depositAccount.feeCC / 100 * this.total();
+        } else if ('bank' == this.paymentSource.type()) {
+            fee = contract.depositAccount.feeACH;
+        }
+        return Format.money(fee);
+    }, this);
+
+    this.getFeeText = function() {
         return Format.money(this.total() * parseFloat(paymentCardFee) / 100);
     };
 

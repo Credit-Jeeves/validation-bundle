@@ -16,7 +16,7 @@ Format = {
         return '';
     },
     number: function(number, decimals) {
-        if (!decimals) {
+        if (typeof decimals == "undefined") {
             decimals = 2;
         }
         return parseFloat(number).toFixed(decimals);

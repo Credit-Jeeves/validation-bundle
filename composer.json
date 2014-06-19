@@ -187,6 +187,7 @@
         "ext-SimpleXML": "*",
         "ext-Reflection": "*",
         "ext-intl": "*",
+        "ext-calendar": "*",
         "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*",
