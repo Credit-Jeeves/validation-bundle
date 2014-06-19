@@ -98,7 +98,7 @@ class PayCommand extends ContainerAwareCommand
             $operation->setAmount($amount);
             $operation->setPaidFor($payment->getPaidFor());
         }
-        if ($payment->getTotal() && ($amount = ($payment->getTotal() - $payment->getAmount()))) {
+        if ($amount = $payment->getOther()) {
             $operation = new Operation();
             $operation->setOrder($order);
             $operation->setType(OperationType::OTHER);

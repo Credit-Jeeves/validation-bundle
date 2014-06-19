@@ -121,6 +121,7 @@ class ExportType extends AbstractType
             'integer',
             array(
                 'label'       => 'property.id',
+                'required'    => false,
                 'attr'        => array(
                     'class' => 'int',
                 ),
@@ -142,6 +143,7 @@ class ExportType extends AbstractType
             'text',
             array(
                 'label'       => 'account.id',
+                'required'    => false,
                 'attr'        => array(
                     'class' => 'int',
                 ),
@@ -162,6 +164,7 @@ class ExportType extends AbstractType
             'text',
             array(
                 'label'       => 'ar.account.id',
+                'required'    => false,
                 'attr'        => array(
                     'class' => 'int',
                 ),

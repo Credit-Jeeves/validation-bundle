@@ -6,5 +6,6 @@ parameters:
     database_user: root
     database_password: 'passw0rd'
 
+    server: prod
     server_name_cj: dar.creditjeeves.com
     server_name_rj: dar.renttrack.com

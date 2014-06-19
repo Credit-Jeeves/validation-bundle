@@ -125,7 +125,7 @@ class Payment extends Base
 
     public function getOther()
     {
-        return $this->getTotal()?$this->getTotal() - $this->getAmount():0;
+        return ((0 < $this->getTotal())?$this->getTotal() - $this->getAmount() : null);
     }
 
     public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)

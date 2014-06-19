@@ -1188,7 +1188,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.monthly.minimum">
                 <source>popup.landlord.monthly.minimum</source>
-                <target>Monthly Minimum</target>
+                <target>Monthly</target>
             </trans-unit>
             <trans-unit id="popup.landlord.electronic.check.online">
                 <source>popup.landlord.electronic.check.online</source>
