@@ -19,13 +19,6 @@ function Pay(parent, contractId) {
     };
 
     this.isProcessQuestion = false;
-    this.getTotalAmount = function(paymentCardFee) {
-        var fee = 0;
-        if (this.paymentSource.type() == 'card') {
-            fee = this.total()*parseFloat(paymentCardFee)/100;
-        }
-        return Format.money(parseFloat(this.total()) + fee);
-    };
 
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
@@ -253,27 +246,69 @@ function Pay(parent, contractId) {
         return Format.money(this.total());
     }, this);
 
-    this.fee = ko.computed(function() {
-        if ('card' == this.paymentSource.type()) {
-            return contract.depositAccount.feeCC + '%';
-        } else if ('bank' == this.paymentSource.type()) {
-            return Format.money(contract.depositAccount.feeACH);
+    var fee = function(isText) {
+        var fee = null;
+        if ('card' == self.paymentSource.type()) {
+            fee = contract.depositAccount.feeCC;
+            if (isText) {
+                fee += '%'
+            }
+        } else if ('bank' == self.paymentSource.type()) {
+            fee = contract.depositAccount.feeACH;
+            if (isText) {
+                fee = Format.money(fee);
+            }
+        }
+        return fee;
+    };
+
+    this.getFee = ko.computed(function() {
+        return fee(false);
+    }, this);
+
+    this.getFeeText = ko.computed(function() {
+        return fee(true);
+    }, this);
+
+    this.getFeeNote = ko.computed(function() {
+        if ('card' == self.paymentSource.type()) {
+            return 'checkout.fee.card.note-%FEE%';
+        } else if ('bank' == self.paymentSource.type()) {
+            return 'checkout.fee.bank.note-%FEE%';
         }
         return null;
-    }, this);
+    });
 
-    this.feeTotal = ko.computed(function() {
+    this.getFeeNoteHelp = ko.computed(function() {
+        var i18nKey = null;
+        if ('card' == self.paymentSource.type()) {
+            i18nKey = 'checkout.fee.card.note.help-%FEE%';
+        } else if ('bank' == self.paymentSource.type()) {
+            i18nKey = 'checkout.fee.bank.note.help-%FEE%';
+        }
+        return i18nKey ? Translator.trans(i18nKey, {'FEE': fee(true)}) : null;
+    });
+
+    var getFeeAmount = function(isText) {
         var fee = 0.00;
-        if ('card' == this.paymentSource.type()) {
-            fee = contract.depositAccount.feeCC / 100 * this.total();
-        } else if ('bank' == this.paymentSource.type()) {
+        if ('card' == self.paymentSource.type()) {
+            fee = contract.depositAccount.feeCC / 100 * self.total();
+        } else if ('bank' == self.paymentSource.type()) {
             fee = contract.depositAccount.feeACH;
         }
-        return Format.money(fee);
+        if (isText) {
+            fee = Format.money(fee);
+        }
+        return fee;
+    };
+
+    this.getFeeAmountText = ko.computed(function() {
+        return getFeeAmount(true);
     }, this);
 
-    this.getFeeText = function() {
-        return Format.money(this.total() * parseFloat(paymentCardFee) / 100);
+    this.getTotalWithFee = function() {
+        var fee = getFeeAmount();
+        return Format.money(parseFloat(this.total()) + fee);
     };
 
     this.isForceSave = ko.computed(function() {
