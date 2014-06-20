@@ -301,7 +301,7 @@ class ImportContractType extends AbstractType
         $form = $event->getForm();
         $isSingle = $form->get('isSingle')->getData();
 
-        if ((empty($data['unit']) && !$isSingle) || (!empty($data['unit']) && $isSingle) ) {
+        if ((empty($data['unit']) && !$isSingle) || (!empty($data['unit']) && $isSingle)) {
             $errorMessage = $this->translator->trans('import.error.add_single_property_or_add_unit');
             $form->get('isSingle')->addError(new FormError($errorMessage));
         }
