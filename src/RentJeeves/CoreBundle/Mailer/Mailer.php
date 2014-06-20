@@ -154,16 +154,8 @@ class Mailer extends BaseMailer
     {
         $tenant = $order->getUser();
         $history = $order->getHeartlands()->last();
-        $type = $order->getType();
-        $fee = 0;
+        $fee = $order->getFee();
         $amount = $order->getSum();
-        switch ($type) {
-            case OrderType::HEARTLAND_CARD:
-                $fee = round($amount * (float)$this->container->getParameter('payment_card_fee')) / 100;
-                break;
-            default:
-                break;
-        }
         $total = $fee + $amount;
         $vars = array(
             'nameTenant' => $tenant->getFullName(),
@@ -182,16 +174,8 @@ class Mailer extends BaseMailer
     public function sendRentError(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderError')
     {
         $tenant = $order->getContract()->getTenant();
-        $type = $order->getType();
-        $fee = 0;
+        $fee = $order->getFee();
         $amount = $order->getSum();
-        switch ($type) {
-            case OrderType::HEARTLAND_CARD:
-                $fee = round($amount * (float)$this->container->getParameter('payment_card_fee')) / 100;
-                break;
-            default:
-                break;
-        }
         $total = $fee + $amount;
         $vars = array(
             'nameTenant' => $tenant->getFullName(),
@@ -353,8 +337,7 @@ class Mailer extends BaseMailer
         $tenant = $order->getContract()->getTenant();
         $history = $order->getHeartlands()->last();
         $amount = $order->getSum();
-        $fee = ($order->getType() == OrderType::HEARTLAND_CARD) ?
-            round($amount * (float)$this->container->getParameter('payment_card_fee')) / 100 : 0;
+        $fee = $order->getFee();
         $total = $fee + $amount;
         $vars = array(
             'tenantName' => $tenant->getFullName(),
