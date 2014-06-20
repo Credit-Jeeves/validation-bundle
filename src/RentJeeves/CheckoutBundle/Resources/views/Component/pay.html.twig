@@ -194,7 +194,7 @@
                             <span class="value" data-bind="text: getAmount"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    <div class="form-row clearfix" data-bind="visible: getOtherAmount()">
                         <label>{{ 'checkout.other_amount' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: getOtherAmount"></span>
@@ -206,7 +206,7 @@
                             <span class="value" data-bind="text: getLastPaymentDay"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    <div class="form-row clearfix" data-bind="visible: getFee()">
                         <label>{{ 'checkout.fee' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: getFeeAmountText()"></span>
