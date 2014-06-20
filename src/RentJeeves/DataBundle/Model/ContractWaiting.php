@@ -36,6 +36,20 @@ abstract class ContractWaiting
     protected $unit;
 
     /**
+     * @ORM\ManyToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Property",
+     *     inversedBy="contractsWaiting",
+     *     cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *     name="property_id",
+     *     referencedColumnName="id",
+     *     nullable=false
+     * )
+     */
+    protected $property;
+
+    /**
      * @ORM\Column(
      *     type="decimal",
      *     precision=10,
@@ -247,6 +261,23 @@ abstract class ContractWaiting
     {
         return $this->lastName;
     }
+
+    /**
+     * @param Property $property
+     */
+    public function setProperty(Property $property)
+    {
+        $this->property = $property;
+    }
+
+    /**
+     * @return Property
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
+
 
     /**
      * Get id

@@ -3,6 +3,30 @@
 <tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !is_skipped && !contract.id && !tenant.id && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
+    {% if isMultipleProperty == 'true' %}
+            <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
+                <span data-bind="text: contract.property.full_address">
+                </span>
+                <br />
+                <br />
+                {{
+                form_widget(
+                    form.contract.isSingle,
+                    {
+                        "attr":
+                        {
+                            "class": "isSingle",
+                            "data-bind":"checked: contract.property.is_single"
+                        }
+                    }
+                )
+                }}<span>{{ 'property.single.checkbox_label'|trans }}</span>
+            </td>
+            <td  class="errorField" data-bind="if: contract.property === null, visible: (contract.property === null)">
+                <span  data-bind="html: address, attr: {title: '{{ 'property.cannot.map'|trans }}'}"></span>
+            </td>
+        </td>
+    {% endif %}
     <td data-bind="
         attr:
         {
@@ -15,9 +39,7 @@
                 form.contract.unit.name,
                 {"attr":
                     {
-                    "data-bind":
-                    "html: contract.unit.name
-                    "
+                    "data-bind": "html: $root.getUnitName($data)"
                     }
                 }
             )
@@ -41,6 +63,20 @@
                 }
             )
         }}
+        {% if isMultipleProperty == 'true' %}
+            <hr />
+            {{
+                form_widget(
+                    form.contract.unitMapping.externalUnitId,
+                    {"attr":
+                        {
+                            "data-bind":
+                            "html: unit_mapping.external_unit_id"
+                        }
+                    }
+                )
+            }}
+        {% endif %}
     </td>
     <td>
         {{  form_widget(

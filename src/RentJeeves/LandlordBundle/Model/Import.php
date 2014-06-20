@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use Symfony\Component\Form\Form;
 
 class Import
@@ -48,10 +49,22 @@ class Import
     protected $residentMapping = null;
 
     /**
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\UnitMapping")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $unitMapping = null;
+
+    /**
      * @Serializer\Type("string")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $csrfToken = '';
+
+    /**
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $address = '';
 
     /**
      * @Serializer\Groups({"RentJeevesImport"})
@@ -76,6 +89,23 @@ class Import
      */
     protected $email;
 
+    protected $isMultipleProperty;
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
 
     /**
      * @param ResidentMapping $residentMapping
@@ -253,5 +283,21 @@ class Import
     public function setOperation(Operation $operation)
     {
         $this->operation = $operation;
+    }
+
+    /**
+     * @param UnitMapping $unitMapping
+     */
+    public function setUnitMapping(UnitMapping $unitMapping)
+    {
+        $this->unitMapping = $unitMapping;
+    }
+
+    /**
+     * @return UnitMapping|null
+     */
+    public function getUnitMapping()
+    {
+        return $this->unitMapping;
     }
 }

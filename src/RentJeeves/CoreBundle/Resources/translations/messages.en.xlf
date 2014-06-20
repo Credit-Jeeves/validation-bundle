@@ -318,6 +318,10 @@
                 <source>property.single.checkbox_label</source>
                 <target>This is a Single Property with no Units</target>
             </trans-unit>
+            <trans-unit id="property.cannot.map">
+                <source>property.cannot.map</source>
+                <target><![CDATA[We can not map this property]]></target>
+            </trans-unit>
             <trans-unit id="savechanges">
                 <source>savechanges</source>
                 <target>Save Changes</target>
@@ -2271,6 +2275,10 @@
               <source>import.error.residentId</source>
               <target><![CDATA[Resident ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
+            <trans-unit id="import.error.propertyId">
+              <source>import.error.propertyId</source>
+              <target><![CDATA[Property ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
@@ -2370,6 +2378,46 @@
             <trans-unit id="email.other_amount">
                 <source>email.other_amount</source>
                 <target>Other Amount</target>
+            </trans-unit>
+            <trans-unit id="common.street">
+                <source>common.street</source>
+                <target>Street</target>
+            </trans-unit>
+            <trans-unit id="common.city">
+                <source>common.city</source>
+                <target>City</target>
+            </trans-unit>
+            <trans-unit id="common.state">
+                <source>common.state</source>
+                <target>State</target>
+            </trans-unit>
+            <trans-unit id="common.zip">
+                <source>common.zip</source>
+                <target>Zip</target>
+            </trans-unit>
+            <trans-unit id="common.property.id">
+                <source>common.property.id</source>
+                <target>Property ID</target>
+            </trans-unit>
+            <trans-unit id="landlord.form.import.multiple.property">
+                <source>landlord.form.import.multiple.property</source>
+                <target><![CDATA[(Multi-Property Import)]]></target>
+            </trans-unit>
+            <trans-unit id="import.error.add_single_property_or_add_unit">
+                <source>import.error.add_single_property_or_add_unit</source>
+                <target>Property should be standalone or have a unit</target>
+            </trans-unit>
+            <trans-unit id="common.month_to_month">
+                <source>common.month_to_month</source>
+                <target>Month to Month</target>
+            </trans-unit>
+            <trans-unit id="import.error.external_unit_id">
+                <source>import.error.external_unit_id</source>
+                <target>Unit ID is invalid, it should contain only A-Za-z_0-9- and not be blank</target>
+            </trans-unit>
+            <trans-unit id="import.unit_id">
+                <source>import.unit_id</source>
+                <target>Unit ID</target>
             </trans-unit>
         </body>
     </file>

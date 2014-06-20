@@ -156,6 +156,49 @@ abstract class Unit
      */
     protected $contractsWaiting;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\UnitMapping",
+     *     mappedBy="unit",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $unitMapping;
+
+    /**
+     * @param ContractWaiting $contractsWaiting
+     */
+    public function addContractsWaiting(ContractWaiting $contractsWaiting)
+    {
+        $this->contractsWaiting = $contractsWaiting;
+    }
+
+    /**
+     * @return ContractWaiting
+     */
+    public function getContractsWaiting()
+    {
+        return $this->contractsWaiting;
+    }
+
+
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
@@ -283,22 +326,6 @@ abstract class Unit
     }
 
     /**
-     * @param mixed $deletedAt
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set Property
      *
      * @param Property $property
@@ -423,10 +450,18 @@ abstract class Unit
     }
 
     /**
-     * @return ArrayCollection
+     * @param UnitMapping $unitMapping
      */
-    public function getContractsWaiting()
+    public function setUnitMapping(UnitMapping $unitMapping)
     {
-        return $this->contractsWaiting;
+        $this->unitMapping = $unitMapping;
+    }
+
+    /**
+     * @return UnitMapping
+     */
+    public function getUnitMapping()
+    {
+        return $this->unitMapping;
     }
 }

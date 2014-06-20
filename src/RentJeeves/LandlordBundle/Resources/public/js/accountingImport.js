@@ -1,11 +1,16 @@
 function accountingImport() {
     var self = this;
+    this.isMultipleProperty = ko.observable(false);
     this.fieldsWhichNotContaintInForm = [
         "import_new_user_with_contract_contract_residentMapping_residentId",
-        "import_new_user_with_contract_contract_unit_name",
-        "import_contract_unit_name",
         "import_contract_residentMapping_residentId"
     ];
+
+    this.unitName = [
+        "import_new_user_with_contract_contract_unit_name",
+        "import_contract_unit_name"
+    ];
+
     this.rowsTotal = ko.observable(0);
     this.errorLoadDataMessage = ko.observable('');
     this.isFinishReview =  ko.observable(false);
@@ -13,8 +18,6 @@ function accountingImport() {
     this.formErrors = ko.observableArray([]);
     this.loadData = function(next) {
         self.setProcessing(true);
-        self.rows([]);
-        self.rowsTotal(0);
         jQuery.ajax({
             url: Routing.generate('accounting_import_get_rows'),
             type: 'POST',
@@ -23,6 +26,8 @@ function accountingImport() {
                 'newRows': next
             },
             error: function() {
+                self.rows([]);
+                self.rowsTotal(0);
                 self.setProcessing(false);
                 self.errorLoadDataMessage(Translator.trans('import.error.flush'));
             },
@@ -89,7 +94,7 @@ function accountingImport() {
             return Translator.trans('import.status.skip');
         }
 
-        if (!self.isValidFieldsWhichNotContainsInForm(data)) {
+        if (!self.isValidFieldsWhichNotContainsInForm(data) || data.contract.property === null) {
             return Translator.trans('import.status.error');
         }
 
@@ -144,8 +149,8 @@ function accountingImport() {
             forms[number] = form;
             number++;
         });
-
         self.formErrors([]);
+        var data = self.rows();
         jQuery.ajax({
             url: Routing.generate('accounting_import_save_rows'),
             type: 'POST',
@@ -159,7 +164,7 @@ function accountingImport() {
             success: function(response) {
                 var errorsLen = jQuery.map(response.formErrors, function(n, i) { return i; }).length;
                 if (errorsLen > 0) {
-                    self.rows(self.rows());
+                    self.rows(data);
                     self.formErrors(response.formErrors);
                     self.setProcessing(false);
                 } else {
@@ -243,6 +248,10 @@ function accountingImport() {
     }
 
     this.getErrorClass = function(data, nameField) {
+        if (self.isErrorForUnit(data, nameField)) {
+            return '';
+        }
+
         if (nameField instanceof Array) {
             var errorClass = '';
             ko.utils.arrayForEach(nameField, function (value) {
@@ -269,6 +278,10 @@ function accountingImport() {
     };
 
     this.getErrorTitle = function(data, nameField) {
+        if (self.isErrorForUnit(data, nameField)) {
+            return '';
+        }
+
         if (nameField instanceof Array) {
             var title = '';
             ko.utils.arrayForEach(nameField, function (value) {
@@ -319,5 +332,73 @@ function accountingImport() {
         }
 
         return email.length > 0;
+    }
+
+    /**
+     * @param data
+     * @returns {boolean}
+     */
+    this.isValidUnitAndIsSingle = function(data) {
+        if (!self.getErrorsList(data)) {
+            return isValid;
+        }
+
+        var isSingle = data.contract.property.is_single;
+        var errorList = self.getErrorsFields(self.getErrorsList(data));
+        var isValid = true;
+
+        ko.utils.arrayForEach(self.unitName, function (value) {
+            if (errorList[value] !== undefined) {
+                isValid = false;
+            }
+        });
+
+        if (isValid) {
+            return true;
+        }
+
+        if (isSingle) {
+            return true;
+        }
+
+        return false;
+    }
+
+    this.isUnitField = function(fieldName)
+    {
+        var isUnitField = false;
+        ko.utils.arrayForEach(self.unitName, function (value) {
+            if (value === fieldName) {
+                isUnitField = true;
+            }
+        });
+
+        return isUnitField;
+    }
+
+    this.isErrorForUnit = function(data, nameField)
+    {
+        if (!self.isUnitField(nameField)) {
+            return false;
+        }
+
+        if (data.contract.property === null) {
+            return false;
+        }
+
+        if (data.contract.property.is_single) {
+            return true;
+        }
+
+        return false;
+    }
+
+    this.getUnitName = function(data)
+    {
+        if (data.contract.unit === null) {
+            return '';
+        }
+
+        return data.contract.unit.name;
     }
 }

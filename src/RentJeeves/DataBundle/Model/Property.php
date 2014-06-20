@@ -17,6 +17,7 @@ abstract class Property
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -132,6 +133,7 @@ abstract class Property
      *     type="boolean",
      *     nullable=true
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $isSingle;
 
@@ -195,11 +197,71 @@ abstract class Property
      */
     protected $contracts;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\PropertyMapping",
+     *     mappedBy="property",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $propertyMapping;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
+     *     mappedBy="property",
+     *     cascade={
+     *       "persist"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $contractsWaiting;
+
     public function __construct()
     {
         $this->property_groups = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
+        $this->contractsWaiting = new ArrayCollection();
+    }
+
+    /**
+     * @param ContractWaiting $contractsWaiting
+     */
+    public function addContractsWaiting(ContractWaiting $contractsWaiting)
+    {
+        $this->contractsWaiting = $contractsWaiting;
+    }
+
+    /**
+     * @return ContractWaiting
+     */
+    public function getContractsWaiting()
+    {
+        return $this->contractsWaiting;
+    }
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     */
+    public function setPropertyMapping(PropertyMapping $propertyMapping)
+    {
+        $this->propertyMapping = $propertyMapping;
+    }
+
+    /**
+     * @return PropertyMapping
+     */
+    public function getPropertyMapping()
+    {
+        return $this->propertyMapping;
     }
 
     /**

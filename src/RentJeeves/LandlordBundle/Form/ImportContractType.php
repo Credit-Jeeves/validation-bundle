@@ -3,9 +3,12 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,9 +37,13 @@ class ImportContractType extends AbstractType
 
     protected $residentMapping;
 
+    protected $unitMapping;
+
     protected $em;
 
     protected $translator;
+
+    protected $isMultipleProperty;
 
     /**
      * @param Tenant $tenant
@@ -45,13 +52,15 @@ class ImportContractType extends AbstractType
      * @param bool $operation
      */
     public function __construct(
-        Tenant $tenant,
-        Unit $unit,
-        ResidentMapping $residentMapping,
         EntityManager $em,
         Translator $translator,
+        Tenant $tenant,
+        ResidentMapping $residentMapping,
+        UnitMapping $unitMapping,
+        Unit $unit = null,
         $token = true,
-        $operation = true
+        $operation = true,
+        $isMultipleProperty = false
     ) {
         $this->isUseToken =  $token;
         $this->isUseOperation = $operation;
@@ -60,10 +69,14 @@ class ImportContractType extends AbstractType
         $this->translator = $translator;
         $this->unit = $unit;
         $this->residentMapping = $residentMapping;
+        $this->unitMapping = $unitMapping;
+        $this->isMultipleProperty = $isMultipleProperty;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $self = $this;
+
         $builder->add(
             'startAt',
             'date',
@@ -105,10 +118,43 @@ class ImportContractType extends AbstractType
             )
         );
 
-        $builder->add(
-            'unit',
-            new ImportUnitType()
-        );
+        /**
+         * we must show this flag only for multiple property
+         */
+        if ($this->isMultipleProperty) {
+            $builder->add(
+                'isSingle',
+                'checkbox',
+                array(
+                    'data'      => false,
+                    'required'  => false,
+                    'mapped'    => false,
+                )
+            );
+
+            $builder->add(
+                'unitMapping',
+                new ImportUnitMappingType(),
+                array(
+                    'mapped' => false,
+                )
+            );
+
+            $builder->addEventListener(
+                FormEvents::PRE_SUBMIT,
+                function (FormEvent $event) use ($self) {
+                    $self->validateUnit($event);
+                    $self->setExternalUnitId($event);
+                }
+            );
+        }
+
+        if ($this->unit) {
+            $builder->add(
+                'unit',
+                new ImportUnitType()
+            );
+        }
 
         $builder->add(
             'residentMapping',
@@ -127,8 +173,6 @@ class ImportContractType extends AbstractType
                 )
             );
         }
-
-        $self = $this;
 
         if ($this->isUseOperation) {
             $builder->add(
@@ -157,15 +201,26 @@ class ImportContractType extends AbstractType
 
     public function setUnitName(FormEvent $event)
     {
+        if (!$this->unit) {
+            return;
+        }
+
         $data = $event->getData();
+
         if (empty($data)) {
             return;
         }
+
         if (!isset($data['unit'])) {
             $data['unit'] = array();
         }
+
+        if (isset($data['unit']['name'])) {
+            return;
+        }
+
         $data['unit'] = array(
-            'name' => $this->unit->getName(),
+            'name' => ($this->unit)? $this->unit->getName() : '',
         );
         $event->setData($data);
     }
@@ -181,6 +236,21 @@ class ImportContractType extends AbstractType
         }
         $data['residentMapping'] = array(
             'residentId' => $this->residentMapping->getResidentId(),
+        );
+        $event->setData($data);
+    }
+
+    public function setExternalUnitId(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (empty($data)) {
+            return;
+        }
+        if (!isset($data['unitMapping'])) {
+            $data['unitMapping'] = array();
+        }
+        $data['unitMapping'] = array(
+            'externalUnitId' => $this->unitMapping->getExternalUnitId(),
         );
         $event->setData($data);
     }
@@ -223,6 +293,18 @@ class ImportContractType extends AbstractType
         $errorMessage = $this->translator->trans('error.operation.exist');
         $amount = $operationField->get('amount')->addError(new FormError($errorMessage));
         $paidFor = $operationField->get('paidFor')->addError(new FormError($errorMessage));
+    }
+
+    public function validateUnit(FormEvent $event)
+    {
+        $data = $event->getData();
+        $form = $event->getForm();
+        $isSingle = $form->get('isSingle')->getData();
+
+        if ((empty($data['unit']) && !$isSingle) || (!empty($data['unit']) && $isSingle)) {
+            $errorMessage = $this->translator->trans('import.error.add_single_property_or_add_unit');
+            $form->get('isSingle')->addError(new FormError($errorMessage));
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -353,6 +353,7 @@ class ContractRepositoryCase extends BaseTestCase
         $this->assertTrue($unit->getContractsWaiting()->count() === 0);
 
         $contractWaiting = new ContractWaiting();
+        $contractWaiting->setProperty($unit->getProperty());
         $contractWaiting->setUnit($unit);
         $contractWaiting->setGroup($unit->getGroup());
         $contractWaiting->setResidentId('test');

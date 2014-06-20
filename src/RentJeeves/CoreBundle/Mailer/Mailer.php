@@ -58,6 +58,7 @@ class Mailer extends BaseMailer
             'fullNameLandlord'      => $landlord->getFullName(),
             'nameTenant'            => $tenant->getFirstName(),
             'address'               => $contract->getProperty()->getAddress(),
+            'rentAddress'           => $contract->getRentAddress(),
             'unitName'              => $unit ? $unit->getName() : '',
             'inviteCode'            => $tenant->getInviteCode(),
         );

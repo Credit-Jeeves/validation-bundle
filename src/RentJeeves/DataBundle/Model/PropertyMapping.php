@@ -3,14 +3,13 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use RentJeeves\DataBundle\Entity\Tenant;
 use CreditJeeves\DataBundle\Entity\Holding;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class ResidentMapping
+abstract class PropertyMapping
 {
     /**
      * @ORM\Column(name="id", type="bigint")
@@ -22,23 +21,23 @@ abstract class ResidentMapping
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Tenant",
-     *     inversedBy="residentsMapping"
+     *     targetEntity="RentJeeves\DataBundle\Entity\Property",
+     *     inversedBy="propertyMapping"
      * )
      * @ORM\JoinColumn(
-     *     name="tenant_id",
+     *     name="property_id",
      *     referencedColumnName="id",
      *     nullable=false
      * )
      * @Assert\NotBlank
      * @Serializer\Exclude
      */
-    protected $tenant;
+    protected $property;
 
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="residentsMapping"
+     *     inversedBy="propertyMapping"
      * )
      * @ORM\JoinColumn(
      *     name="holding_id",
@@ -50,11 +49,10 @@ abstract class ResidentMapping
      */
     protected $holding;
 
-
     /**
      * @ORM\Column(
      *      type="string",
-     *      name="resident_id",
+     *      name="landlord_property_id",
      *      length=128,
      *      nullable=false
      * )
@@ -71,15 +69,47 @@ abstract class ResidentMapping
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[\sA-Za-z_0-9,.-]{1,128}$/",
-     *     message = "import.error.residentId",
+     *     pattern = "/^[A-Za-z_0-9]{1,128}$/",
+     *     message = "import.error.propertyId",
      *     groups = {
      *         "import"
      *     }
      * )
      * @Serializer\Groups({"RentJeevesImport"})
      */
-    protected $residentId;
+    protected $landlordPropertyId;
+
+    /**
+     * @param string $landlordPropertyId
+     */
+    public function setLandlordPropertyId($landlordPropertyId)
+    {
+        $this->landlordPropertyId = $landlordPropertyId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLandlordPropertyId()
+    {
+        return $this->landlordPropertyId;
+    }
+
+    /**
+     * @param Property $property
+     */
+    public function setProperty(Property $property)
+    {
+        $this->property = $property;
+    }
+
+    /**
+     * @return Property
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
 
     /**
      * Get id
@@ -89,44 +119,6 @@ abstract class ResidentMapping
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param string $residentId
-     */
-    public function setResidentId($residentId)
-    {
-        $this->residentId = $residentId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResidentId()
-    {
-        return $this->residentId;
-    }
-
-    /**
-     * Set Tenant
-     *
-     * @param Tenant $tenant
-     * @return ResidentMapping
-     */
-    public function setTenant(Tenant $tenant)
-    {
-        $this->tenant = $tenant;
-        return $this;
-    }
-
-    /**
-     * Get Tenant
-     *
-     * @return Tenant
-     */
-    public function getTenant()
-    {
-        return $this->tenant;
     }
 
     /**

@@ -2,7 +2,9 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping as ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\ImportStorage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -19,10 +21,13 @@ class ImportMatchFileType extends AbstractType
 
     protected $translator;
 
-    public function __construct($number, Translator $translator)
+    protected $storage;
+
+    public function __construct($number, Translator $translator, ImportStorage $storage)
     {
         $this->numberRow  = $number;
         $this->translator = $translator;
+        $this->storage = $storage;
     }
 
     public static function getFieldNameByNumber($i)
@@ -36,24 +41,35 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_BALANCE         => $this->translator->trans('common.balance'),
             ImportMapping::KEY_RESIDENT_ID     => $this->translator->trans('import.residentId'),
             ImportMapping::KEY_TENANT_NAME     => $this->translator->trans('common.tenant_name'),
-            ImportMapping::KEY_UNIT            => $this->translator->trans('import.unit'),
             ImportMapping::KEY_RENT            => $this->translator->trans('import.rent'),
             ImportMapping::KEY_LEASE_END       => $this->translator->trans('import.lease_end'),
             ImportMapping::KEY_MOVE_IN         => $this->translator->trans('import.move_in'),
             ImportMapping::KEY_MOVE_OUT        => $this->translator->trans('import.move_out'),
         );
 
+        $choicesNoneRequired = array(
+            ImportMapping::KEY_EMAIL                => $this->translator->trans('email'),
+            ImportMapping::KEY_PAYMENT_AMOUNT       => $this->translator->trans('import.payment.amount'),
+            ImportMapping::KEY_PAYMENT_DATE         => $this->translator->trans('import.payment.date'),
+            ImportMapping::KEY_MONTH_TO_MONTH       => $this->translator->trans('common.month_to_month'),
+        );
+
+        if ($this->storage->isMultipleProperty()) {
+            $choicesRequired[ImportMapping::KEY_STREET] = $this->translator->trans('common.street');
+            $choicesRequired[ImportMapping::KEY_ZIP] = $this->translator->trans('common.zip');
+            $choicesRequired[ImportMapping::KEY_STATE] = $this->translator->trans('common.state');
+            $choicesRequired[ImportMapping::KEY_CITY] = $this->translator->trans('common.city');
+            $choicesRequired[ImportMapping::KEY_UNIT_ID] = $this->translator->trans('import.unit_id');
+            $choicesNoneRequired[ImportMapping::KEY_UNIT] = $this->translator->trans('import.unit');
+        } else {
+            $choicesRequired[ImportMapping::KEY_UNIT] = $this->translator->trans('import.unit');
+        }
+
         $choicesRequired =  array_map(
             function ($value) {
                 return $value."*";
             },
             $choicesRequired
-        );
-        
-        $choicesNoneRequired = array(
-            ImportMapping::KEY_EMAIL           => $this->translator->trans('email'),
-            ImportMapping::KEY_PAYMENT_AMOUNT  => $this->translator->trans('import.payment.amount'),
-            ImportMapping::KEY_PAYMENT_DATE    => $this->translator->trans('import.payment.date'),
         );
 
         $choices = array_merge(
