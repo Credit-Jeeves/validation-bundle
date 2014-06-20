@@ -16,6 +16,11 @@ class Version20140525115818 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_contract_waiting
+                ADD property_id BIGINT NOT NULL"
+        );
+
+        $this->addSql(
+            "ALTER TABLE rj_contract_waiting
                 ADD CONSTRAINT FK_23991718549213EC
                 FOREIGN KEY (property_id)
                 REFERENCES rj_property (id)"
@@ -32,7 +37,7 @@ class Version20140525115818 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        
+
         $this->addSql(
             "ALTER TABLE rj_contract_waiting
                 DROP
@@ -45,8 +50,7 @@ class Version20140525115818 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_contract_waiting
-                DROP property_id,
-                CHANGE unit_id unit_id BIGINT NOT NULL"
+                DROP property_id"
         );
     }
 }
