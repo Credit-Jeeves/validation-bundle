@@ -410,7 +410,8 @@ class ImportProcess
         } else {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
-                $row[ImportMapping::KEY_UNIT]
+                $row[ImportMapping::KEY_UNIT],
+                isset($row[ImportMapping::KEY_UNIT_ID])? $row[ImportMapping::KEY_UNIT_ID] : null
             );
 
             if (empty($contract)) {
@@ -533,6 +534,7 @@ class ImportProcess
                 in_array(
                     $contract->getStatus(),
                     array(
+                        ContractStatus::INVITE,
                         ContractStatus::APPROVED,
                         ContractStatus::CURRENT
                     )

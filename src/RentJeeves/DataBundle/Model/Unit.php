@@ -28,12 +28,6 @@ abstract class Unit
      *     type="string",
      *     length=50
      * )
-     * @Assert\NotBlank(
-     *     message="error.unit.empty",
-     *     groups={
-     *         "import"
-     *     }
-     * )
      * @Assert\Regex(
      *     message="error.unit.regexp",
      *     pattern = "/^[A-Za-z_0-9\-]{1,50}$/",
@@ -463,5 +457,28 @@ abstract class Unit
     public function getUnitMapping()
     {
         return $this->unitMapping;
+    }
+
+    /**
+     * Sometimes unit name can be empty if the property is single, so they should be checked together.
+     *
+     * @Assert\True(
+     *     message="error.unit.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     */
+    public function isValidName()
+    {
+        if (!empty($this->name)) {
+            return true;
+        }
+
+        if ($this->getProperty()->isSingle()) {
+            return true;
+        }
+
+        return false;
     }
 }
