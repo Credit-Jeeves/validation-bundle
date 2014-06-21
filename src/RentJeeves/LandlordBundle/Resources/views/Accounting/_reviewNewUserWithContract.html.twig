@@ -7,20 +7,6 @@
             <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
                 <span data-bind="text: contract.property.full_address">
                 </span>
-                <br />
-                <br />
-                {{
-                form_widget(
-                    form.contract.isSingle,
-                    {
-                        "attr":
-                        {
-                            "class": "isSingle",
-                            "data-bind":"checked: contract.property.is_single"
-                        }
-                    }
-                )
-                }}<span>{{ 'property.single.checkbox_label'|trans }}</span>
             </td>
             <td  class="errorField" data-bind="if: contract.property === null, visible: (contract.property === null)">
                 <span  data-bind="html: address, attr: {title: '{{ 'property.cannot.map'|trans }}'}"></span>
@@ -44,6 +30,20 @@
                 }
             )
         }}
+        {% if isMultipleProperty == "true" %}
+            {{
+                form_widget(
+                    form.contract.isSingle,
+                    {"attr":
+                        {
+                            "class": "isSingle",
+                            "data-bind":"checked: contract.property.is_single, visible: contract.property.is_single"
+                        }
+                    }
+                )
+            }}
+            <label data-bind="visible: contract.property.is_single" class="single-property-chkbox">{{ 'import.property.single.checkbox_label'|trans }}</label>
+        {% endif %}
     </td>
     <td data-bind="
         attr:

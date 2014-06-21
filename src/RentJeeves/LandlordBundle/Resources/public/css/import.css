@@ -110,3 +110,8 @@ table tbody tr td {
     width: 55px !important;
     margin-top: 5px !important;
 }
+.single-property-chkbox {
+    line-height: 15px;
+    font-size: 12px;
+    font-weight: 300;
+}

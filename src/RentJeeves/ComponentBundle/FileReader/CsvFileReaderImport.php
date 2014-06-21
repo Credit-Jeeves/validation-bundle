@@ -22,13 +22,11 @@ class CsvFileReaderImport extends Base
 
         $totalLines = $this->countLines($file);
 
-        if (!is_null($offset) && $offset >= $totalLines) {
+        if (!is_null($offset) && ++$offset >= $totalLines) { // ++offset Because first line is header
             return $result;
         }
 
         if (!is_null($offset)) {
-            //Because first line is header
-            $offset += 1;
             $file->seek($offset);
             $offsetMax = $offset + $rowCount;
         }

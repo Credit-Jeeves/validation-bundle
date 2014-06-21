@@ -954,6 +954,9 @@ class ImportProcess
     {
         $property = $contract->getProperty();
         $property->setIsSingle($isSingle);
+        $property->addPropertyGroup($this->group);
+        $this->group->addGroupProperty($property);
+        $this->em->flush($this->group);
         $this->em->flush($property);
 
         if ($property->isSingle() && !$contract->getUnit()) {
