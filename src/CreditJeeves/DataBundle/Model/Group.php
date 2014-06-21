@@ -889,7 +889,17 @@ abstract class Group
      */
     public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
     {
-        $this->group_properties[] = $property;
+        $hasProperty = false;
+        foreach ($this->group_properties as $groupProperty) {
+            if ($groupProperty == $property) {
+                $hasProperty = true;
+            }
+        }
+
+        if (!$hasProperty) {
+            $this->group_properties[] = $property;
+        }
+
         return $this;
     }
 
