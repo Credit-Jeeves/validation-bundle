@@ -471,10 +471,14 @@ abstract class Unit
      */
     public function isValidName()
     {
-        if (empty($this->name) && !$this->getProperty()->isSingle()) {
-            return false;
+        if (!empty($this->name)) {
+            return true;
         }
 
-        return true;
+        if ($this->getProperty()->isSingle()) {
+            return true;
+        }
+
+        return false;
     }
 }
