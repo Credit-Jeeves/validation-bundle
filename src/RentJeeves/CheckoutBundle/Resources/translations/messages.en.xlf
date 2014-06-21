@@ -356,13 +356,21 @@
                 <source>checkout.error.ExpirationYear.empty</source>
                 <target>Please, select Expiration Year.</target>
             </trans-unit>
-            <trans-unit id="checkout.fee.note">
-                <source>checkout.fee.note</source>
+            <trans-unit id="checkout.fee.card.note">
+                <source>checkout.fee.card.note-%FEE%</source>
                 <target>NOTE: A %FEE% technology platform fee will be added to credit card payments.</target>
             </trans-unit>
-            <trans-unit id="checkout.fee.note.help">
-                <source>checkout.fee.note.help</source>
-                <target>You will see an additional fee for 2.95% of your rent amount when using a credit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
+            <trans-unit id="checkout.fee.card.note.help">
+                <source>checkout.fee.card.note.help-%FEE%</source>
+                <target>You will see an additional fee for %FEE% of your rent amount when using a credit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee.bank.note">
+                <source>checkout.fee.bank.note-%FEE%</source>
+                <target>NOTE: A %FEE% E-Check fee will be added to payments.</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee.bank.note.help">
+                <source>checkout.fee.bank.note.help-%FEE%</source>
+                <target>Your landlord requires an additional fee of %FEE% when using E-Checks for payment. An final total will be shown on the Review &amp; Pay step.</target>
             </trans-unit>
             <trans-unit id="checkout.recurring_for">
                 <source>checkout.recurring_for</source>

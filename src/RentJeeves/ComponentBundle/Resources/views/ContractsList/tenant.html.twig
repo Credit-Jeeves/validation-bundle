@@ -130,10 +130,8 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        var contracts = {{ contractsJson | raw }};
-        console.log(contracts);
         var currentPaymentsViewModel = new CurrentPayments(
-            contracts,
+            {{ contractsJson | raw }},
             '{{ user.getIsVerified }}',
             {{ paidForArr | serialize('json') | raw }}
         );

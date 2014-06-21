@@ -102,11 +102,13 @@
                     </div>
                 </div>
             </div>
-            <div data-bind="visible: isNewPaymentAccount || !$root.notEmptyPaymentAccount">
+            <div data-bind="visible: isNewPaymentAccount || $root.notEmptyPaymentAccount">
                 {{ render(controller('RjCheckoutBundle:Component:source')) }}
-                <p class="note" data-bind="visible: 'card' == paymentSource.type()">
-                    <strong>{{ 'checkout.fee.note' | trans({'%FEE%': payment_card_fee}) }}</strong>
-                    <i title="{{ 'checkout.fee.note.help' | trans }}" class="help after-checkbox pie-el tooltip-link">?</i>
+                <p class="note" data-bind="visible: getFee">
+                    <strong data-bind="text: getFeeNote, i18n: {'FEE': getFeeText}"></strong>
+                    <i data-bind="attr: {'title': getFeeNoteHelp}" class="help after-checkbox pie-el tooltip-link">
+                        ?
+                    </i>
                 </p>
             </div>
         </div>
@@ -192,7 +194,7 @@
                             <span class="value" data-bind="text: getAmount"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    <div class="form-row clearfix" data-bind="visible: getOtherAmount()">
                         <label>{{ 'checkout.other_amount' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: getOtherAmount"></span>
@@ -204,17 +206,16 @@
                             <span class="value" data-bind="text: getLastPaymentDay"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    <div class="form-row clearfix" data-bind="visible: getFee()">
                         <label>{{ 'checkout.fee' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="visible: 'bank' == paymentSource.type()">$0.00</span>
-                            <span class="value" data-bind="visible: 'card' == paymentSource.type(), text: getFeeAmountText('{{ payment_card_fee }}')"></span>
+                            <span class="value" data-bind="text: getFeeAmountText()"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix total-amount">
                         <label>{{ 'checkout.total' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="text: getTotalAmount('{{ payment_card_fee }}')"></span>
+                            <span class="value" data-bind="text: getTotalWithFee()"></span>
                         </div>
                     </div>
                 </div>
