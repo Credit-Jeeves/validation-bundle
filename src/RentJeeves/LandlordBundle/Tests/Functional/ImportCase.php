@@ -123,7 +123,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * $test
+     * @test
      */
     public function withoutPayment()
     {
@@ -318,7 +318,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * $test
+     * @test
      */
     public function withPayment()
     {
@@ -446,7 +446,7 @@ class ImportCase extends BaseTestCase
     }
     
     /**
-     * $test
+     * @test
      */
     public function waitingRoom()
     {
@@ -508,7 +508,7 @@ class ImportCase extends BaseTestCase
 
     /**
      * @depends waitingRoom
-     * $test
+     * @test
      */
     public function createContractFromWaiting()
     {
@@ -608,7 +608,7 @@ class ImportCase extends BaseTestCase
 
     /**
      * @depends createContractFromWaiting
-     * $test
+     * @test
      */
     public function checkFindingUserByResidentId()
     {
@@ -680,7 +680,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * $test
+     * @test
      */
     public function checkFormatDate()
     {
