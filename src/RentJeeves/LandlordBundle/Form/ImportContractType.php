@@ -7,9 +7,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\LandlordBundle\Accounting\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -192,7 +190,7 @@ class ImportContractType extends AbstractType
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) use ($options, $self) {
+            function (FormEvent $event) use ($self) {
                 $self->setUnitName($event);
                 $self->setResidentId($event);
             }
