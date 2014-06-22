@@ -38,7 +38,7 @@ fixtures:
         culture: %locale%
         has_data: true
         has_report: true
-        is_verified: none
+        is_verified: passed
         lastLogin: '-1 days'
         created_at: '-45 days'
         updated_at: '-2 days'

@@ -188,7 +188,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    <div class="form-row clearfix" data-bind="visible: getAmount()">
                         <label>{{ 'checkout.rent_amount' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: getAmount"></span>

@@ -133,7 +133,10 @@ class ContractAdmin extends Admin
             ->add('search')
             ->add('status')
             ->add('paidTo')
-            ->add('reporting')
+            ->add('reportToExperian')
+            ->add('experianStartAt')
+            ->add('reportToTransUnion')
+            ->add('transUnionStartAt')
             ->add('startAt')
             ->add('finishAt')
             ->add('uncollectedBalance')
@@ -153,7 +156,10 @@ class ContractAdmin extends Admin
             ->add('search')
             ->add('status')
             ->add('paidTo')
-            ->add('reporting')
+            ->add('reportToExperian')
+            ->add('experianStartAt')
+            ->add('reportToTransUnion')
+            ->add('transUnionStartAt')
             ->add('startAt')
             ->add('finishAt');
     }

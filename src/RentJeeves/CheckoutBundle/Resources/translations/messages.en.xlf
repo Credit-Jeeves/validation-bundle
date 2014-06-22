@@ -48,15 +48,15 @@
             </trans-unit>
             <trans-unit id="checkout.error.amount.empty">
                 <source>checkout.error.amount.empty</source>
-                <target>Amount is required.</target>
+                <target>Rent amount is required.</target>
             </trans-unit>
             <trans-unit id="checkout.error.amount.min">
                 <source>checkout.error.amount.min</source>
-                <target>Amount should be nothing, 1 or more.</target>
+                <target>Rent amount should be nothing, 1 or more.</target>
             </trans-unit>
             <trans-unit id="checkout.error.amount.valid">
                 <source>checkout.error.amount.valid</source>
-                <target>Amount should be a valid number.</target>
+                <target>Rent amount should be a valid number.</target>
             </trans-unit>
             <trans-unit id="checkout.date">
                 <source>checkout.date</source>
@@ -97,7 +97,7 @@
 
             <trans-unit id="checkout.error.total.empty">
                 <source>checkout.error.total.empty</source>
-                <target>You must fill "Amount" or "Other" field.</target>
+                <target>You must fill "Rent" or "Other" field.</target>
             </trans-unit>
             <trans-unit id="checkout.error.total.min">
                 <source>checkout.error.total.min</source>

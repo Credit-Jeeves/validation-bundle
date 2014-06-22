@@ -249,12 +249,12 @@ function Pay(parent, contractId) {
     var fee = function(isText) {
         var fee = null;
         if ('card' == self.paymentSource.type()) {
-            fee = contract.depositAccount.feeCC;
+            fee = parseFloat(contract.depositAccount.feeCC);
             if (isText) {
                 fee += '%'
             }
         } else if ('bank' == self.paymentSource.type()) {
-            fee = contract.depositAccount.feeACH;
+            fee = parseFloat(contract.depositAccount.feeACH);
             if (isText) {
                 fee = Format.money(fee);
             }
@@ -292,9 +292,9 @@ function Pay(parent, contractId) {
     var getFeeAmount = function(isText) {
         var fee = 0.00;
         if ('card' == self.paymentSource.type()) {
-            fee = contract.depositAccount.feeCC / 100 * self.total();
+            fee = parseFloat(contract.depositAccount.feeCC) / 100 * self.total();
         } else if ('bank' == self.paymentSource.type()) {
-            fee = contract.depositAccount.feeACH;
+            fee = parseFloat(contract.depositAccount.feeACH);
         }
         if (isText) {
             fee = Format.money(fee);
