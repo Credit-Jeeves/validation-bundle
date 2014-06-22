@@ -159,6 +159,27 @@ class TenantType extends AbstractType
         );
 
         $self = $this;
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) use ($self) {
+                $data = $event->getData();
+                $form = $event->getForm();
+                $propertyId = $data['propertyId'];
+                if (empty($propertyId)) {
+                    return;
+                }
+                /**
+                 * @var $property Property
+                 */
+                $property = $self->em->getRepository('RjDataBundle:Property')->find($propertyId);
+                if ($property && $property->isSingle()) {
+                    $unit = $property->getSingleUnit();
+                    $form->get('unit')->setData($unit);
+                }
+            }
+        );
+
         /**
          * Logic which we must have in this event describe here
          * https://credit.atlassian.net/wiki/display/RT/Tenant+Sign+up+for+Integrated+Property
@@ -167,14 +188,9 @@ class TenantType extends AbstractType
             FormEvents::SUBMIT,
             function (FormEvent $event) use ($options, $self) {
                 $form = $event->getForm();
-                $unit = $form->get('unit');
-                /**
-                 * @var $unit Unit
-                 */
-                $unit = $unit->getData();
+
                 $propertyId = $form->get('propertyId')->getData();
-                $unitName = $unit->getName();
-                if (empty($propertyId) || empty($unitName)) {
+                if (empty($propertyId)) {
                     return;
                 }
                 /**
@@ -184,33 +200,90 @@ class TenantType extends AbstractType
 
                 if (empty($property)) {
                     $form->addError(new FormError('error.property.empty'));
-                }
-
-                /**
-                 * @var $unitInDb Unit
-                 */
-                $unitInDb = $property->searchUnit($unit->getName());
-
-                if (empty($unitInDb)) {
                     return;
                 }
-                /**
-                 * @var $group Group
-                 */
-                $group = $unitInDb->getGroup();
-                $isIntegratedUnit = $group->getGroupSettings()->getIsIntegrated();
+                if ($property->isSingle()) {
+                    $unit = $property->getSingleUnit();
+                    if (!$property->hasIntegratedGroup()) {
+                        return;
+                    }
+                } else {
+                    /**
+                     * @var $formUnit Unit
+                     */
+                    $formUnit = $form->get('unit')->getData();
+                    $unitName = $formUnit->getName();
+                    if (empty($unitName)) {
+                        return;
+                    }
+                    /**
+                     * @var $unit Unit
+                     */
+                    $unit = $property->searchUnit($unitName);
 
-                if (!$isIntegratedUnit) {
-                    return;
+                    if (empty($unit)) {
+                        return;
+                    }
+                    /**
+                     * @var $group Group
+                     */
+                    $group = $unit->getGroup();
+                    $isIntegratedUnit = $group->getGroupSettings()->getIsIntegrated();
+                    if (!$isIntegratedUnit) {
+                        return;
+                    }
                 }
 
+                $contractsWaiting = $unit->getContractsWaiting();
+
+
+
+
+
+//                $unit = $form->get('unit');
+//                /**
+//                 * @var $unit Unit
+//                 */
+//                $unit = $unit->getData();
+//                $propertyId = $form->get('propertyId')->getData();
+//                $unitName = $unit->getName();
+//                if (empty($propertyId) || empty($unitName)) {
+//                    return;
+//                }
+//                /**
+//                 * @var $property Property
+//                 */
+//                $property = $self->em->getRepository('RjDataBundle:Property')->find($propertyId);
+//
+//                if (empty($property)) {
+//                    $form->addError(new FormError('error.property.empty'));
+//                }
+//
+//                /**
+//                 * @var $unitInDb Unit
+//                 */
+//                $unitInDb = $property->searchUnit($unit->getName());
+//
+//                if (empty($unitInDb)) {
+//                    return;
+//                }
+//                /**
+//                 * @var $group Group
+//                 */
+//                $group = $unitInDb->getGroup();
+//                $isIntegratedUnit = $group->getGroupSettings()->getIsIntegrated();
+//
+//                if (!$isIntegratedUnit) {
+//                    return;
+//                }
+//
                 /**
                  * @var $tenant Tenant
                  */
                 $tenant = $form->getData();
                 $firstName = strtolower($tenant->getFirstName());
                 $lastName = strtolower($tenant->getLastName());
-                $contractsWaiting = $unitInDb->getContractsWaiting();
+//                $contractsWaiting = $unitInDb->getContractsWaiting();
 
                 /**
                  * @var $contractWaiting ContractWaiting
