@@ -236,54 +236,12 @@ class TenantType extends AbstractType
 
                 $contractsWaiting = $unit->getContractsWaiting();
 
-
-
-
-
-//                $unit = $form->get('unit');
-//                /**
-//                 * @var $unit Unit
-//                 */
-//                $unit = $unit->getData();
-//                $propertyId = $form->get('propertyId')->getData();
-//                $unitName = $unit->getName();
-//                if (empty($propertyId) || empty($unitName)) {
-//                    return;
-//                }
-//                /**
-//                 * @var $property Property
-//                 */
-//                $property = $self->em->getRepository('RjDataBundle:Property')->find($propertyId);
-//
-//                if (empty($property)) {
-//                    $form->addError(new FormError('error.property.empty'));
-//                }
-//
-//                /**
-//                 * @var $unitInDb Unit
-//                 */
-//                $unitInDb = $property->searchUnit($unit->getName());
-//
-//                if (empty($unitInDb)) {
-//                    return;
-//                }
-//                /**
-//                 * @var $group Group
-//                 */
-//                $group = $unitInDb->getGroup();
-//                $isIntegratedUnit = $group->getGroupSettings()->getIsIntegrated();
-//
-//                if (!$isIntegratedUnit) {
-//                    return;
-//                }
-//
                 /**
                  * @var $tenant Tenant
                  */
                 $tenant = $form->getData();
                 $firstName = strtolower($tenant->getFirstName());
                 $lastName = strtolower($tenant->getLastName());
-//                $contractsWaiting = $unitInDb->getContractsWaiting();
 
                 /**
                  * @var $contractWaiting ContractWaiting
