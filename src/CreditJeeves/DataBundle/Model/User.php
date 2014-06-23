@@ -685,6 +685,11 @@ abstract class User extends BaseUser
      */
     public function getSettings()
     {
+        if (!$this->settings) {
+            $this->settings = new UserSettings();
+            $this->settings->setUser($this);
+        }
+
         return $this->settings;
     }
 

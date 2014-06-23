@@ -20,7 +20,7 @@ abstract class UserSettings
     /**
      * @ORM\Column(type="boolean", name="is_base_order_report")
      */
-    protected $isBaseOrderReport;
+    protected $isBaseOrderReport = false;
 
     /**
      * @ORM\OneToOne(targetEntity="\CreditJeeves\DataBundle\Entity\User", inversedBy="settings")

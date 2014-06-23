@@ -68,15 +68,6 @@ class CreditTrackController extends Controller
         }
 
         $settings = $user->getSettings();
-
-        if (!$settings) {
-            $settings = new UserSettings();
-            $settings->setUser($user);
-
-            // TODO: Is this correct? It cannot be null
-            $settings->setIsBaseOrderReport(false);
-        }
-
         $settings->setCreditTrackPaymentAccount($paymentAccount);
         $settings->setCreditTrackEnabledAt(new DateTime('now'));
 
