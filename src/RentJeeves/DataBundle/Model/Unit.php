@@ -475,7 +475,8 @@ abstract class Unit
             return true;
         }
 
-        if ($this->getProperty()->isSingle()) {
+        $property = $this->getProperty();
+        if ($property && $property->isSingle()) {
             return true;
         }
 
