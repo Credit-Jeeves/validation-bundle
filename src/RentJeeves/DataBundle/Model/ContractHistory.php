@@ -181,7 +181,6 @@ abstract class ContractHistory extends AbstractLogEntry
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
-     * @Serializer\Exclude
      * @var ArrayCollection
      */
     protected $operations;
@@ -194,7 +193,6 @@ abstract class ContractHistory extends AbstractLogEntry
      *     orphanRemoval=true,
      *     fetch = "EAGER"
      * )
-     * @Serializer\Exclude
      * @var ArrayCollection
      */
     protected $payments;

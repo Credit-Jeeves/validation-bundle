@@ -82,7 +82,7 @@ class RjGroupAdmin extends Admin
             ->add('groupPhones')
             ->add('count_properties')
             ->add(
-                'deposit_account',
+                'depositAccount',
                 'sonata_type_model',
                 array(
                     'empty_value' => 'None',
@@ -128,7 +128,17 @@ class RjGroupAdmin extends Admin
                     )
                 )
                 ->add('name')
-                ->add('merchant_name', 'text')
+                ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name'))
+                ->add(
+                    'depositAccount.feeCC',
+                    'number',
+                    array('label' => 'CC Fee (%)', 'required' => false)
+                )
+                ->add(
+                    'depositAccount.feeACH',
+                    'number',
+                    array('label' => 'ACH Fee ($)', 'required' => false)
+                )
             ->end()
             ->with('Group Phones')
                 ->add(
@@ -192,7 +202,7 @@ class RjGroupAdmin extends Admin
     {
         $datagridMapper
             ->add('name')
-            ->add('deposit_account.status', null, array('label' => 'Merchant status'));
+            ->add('depositAccount.status', null, array('label' => 'Merchant status'));
     }
 
     

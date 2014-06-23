@@ -92,7 +92,19 @@ STG
 Last DB 20130924_credit_jeeves_2_before_RT.sql
 
 ---
-For selenium server need maunting folder
+For selenium server need mount folder
 
-sudo sshfs -o allow_other -p 22 ec2-user@dev.creditjeeves.com:/var/www/dev2.creditjeeves.com/data/fixtures -o IdentityFile=/home/ec2-user/alex /var/www/dev2.creditjeeves.com/data/fixtures
+sudo sshfs -o allow_other -p 22 ec2-user@dev.creditjeeves.com:/var/www/dev2.creditjeeves.com/data/fixtures -o \
+ IdentityFile=/home/ec2-user/alex /var/www/dev2.creditjeeves.com/data/fixtures
 
+TODO
+----
+
+Environment:
+1. Make sure default time zone is correct value
+2. If XDebug is installed - need to do required check for nesting level
+3. Add check for encryption keys
+4. Add check for nginx buffer values
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 4 256k;
+        fastcgi_busy_buffers_size 256k;

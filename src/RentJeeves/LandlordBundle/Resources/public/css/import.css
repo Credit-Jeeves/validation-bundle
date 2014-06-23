@@ -12,8 +12,9 @@
     margin: 0px;
 }
 .properties-table td>input[type="text"] {
-    width: 55px !important;
+    width: 47px !important;
     margin-top: 5px;
+    margin-left: -4px;
 }
 .column-middle {
     padding: 2px;
@@ -108,4 +109,9 @@ table tbody tr td {
 .import_operation_amount, .import_operation_paidFor {
     width: 55px !important;
     margin-top: 5px !important;
+}
+.single-property-chkbox {
+    line-height: 15px;
+    font-size: 12px;
+    font-weight: 300;
 }

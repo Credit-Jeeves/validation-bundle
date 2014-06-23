@@ -136,8 +136,10 @@ class OrderRepository extends EntityRepository
     {
         switch ($field) {
             case 'status':
-            case 'amount':
                 $field = 'o.'.$field;
+                break;
+            case 'amount':
+                $field = 'o.sum';
                 break;
             case 'property':
                 $field = 'CONCAT(prop.street, prop.number)';
@@ -155,8 +157,10 @@ class OrderRepository extends EntityRepository
     {
         switch ($field) {
             case 'status':
-            case 'amount':
                 $field = 'o.'.$field;
+                break;
+            case 'amount':
+                $field = 'o.sum';
                 break;
             case 'date-posted':
                 $field = 'o.created_at';

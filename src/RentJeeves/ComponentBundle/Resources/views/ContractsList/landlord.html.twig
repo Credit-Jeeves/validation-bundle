@@ -254,7 +254,7 @@
                     <!-- /ko -->
                 </div>
                 <!-- ko if: status == 'PENDING' || status == 'INVITE' || status == 'APPROVED' -->
-                <div class="form-row clearfix" data-bind="visible: !$root.contract().isSingle">
+                <div class="form-row clearfix" data-bind="visible: $root.isSingleProperty() != true">
                     <label>{{ 'unit'|trans|capitalize }}<b>*</b></label>
                     <select id="unit-edit" data-bind="
                                 options: $root.unitsList,

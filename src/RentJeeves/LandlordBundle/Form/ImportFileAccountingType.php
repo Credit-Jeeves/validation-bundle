@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use RentJeeves\LandlordBundle\Accounting\ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\ImportStorage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -28,17 +29,13 @@ class ImportFileAccountingType extends AbstractType
             'property',
             'entity',
             array(
+                'empty_value'   => 'landlord.form.import.multiple.property',
                 'class'         => 'RjDataBundle:Property',
                 'attr'          => array(
                     'class' => 'original widthSelect',
                 ),
-                'constraints'   => array(
-                    new NotBlank(
-                        array(
-                            'message' => 'error.property.empty'
-                        )
-                    ),
-                ),
+                'required'      => false,
+                'mapped'        => false,
                 'query_builder' => function (EntityRepository $er) use ($group) {
                     $query = $er->createQueryBuilder('p');
                     $query->innerJoin('p.property_groups', 'g');
@@ -113,7 +110,7 @@ class ImportFileAccountingType extends AbstractType
                 'choices'   => ImportMapping::$mappingDates,
                 'label'     => 'common.date_format',
                 'attr'      => array(
-                    'class' => 'half-width original'
+                    'class' => 'half-width original import-date'
                 ),
                 'constraints'    => array(
                     new NotBlank(),

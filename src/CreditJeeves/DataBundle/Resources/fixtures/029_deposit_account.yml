@@ -16,3 +16,6 @@ fixtures:
     merchantName: WestPac
     group: RentGroup_3
     status: complete
+  DepositAccount_4:
+    group: RentGroup_4
+    status: init

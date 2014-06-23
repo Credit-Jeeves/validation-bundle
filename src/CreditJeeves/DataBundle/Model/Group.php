@@ -319,7 +319,7 @@ abstract class Group
      *     orphanRemoval=true
      * )
      */
-    protected $deposit_account;
+    protected $depositAccount;
 
     /**
      * @ORM\OneToMany(
@@ -832,7 +832,7 @@ abstract class Group
     }
 
     /**
-     * @return Holding
+     * @return \CreditJeeves\DataBundle\Entity\Holding
      */
     public function getHolding()
     {
@@ -891,7 +891,17 @@ abstract class Group
      */
     public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
     {
-        $this->group_properties[] = $property;
+        $hasProperty = false;
+        foreach ($this->group_properties as $groupProperty) {
+            if ($groupProperty == $property) {
+                $hasProperty = true;
+            }
+        }
+
+        if (!$hasProperty) {
+            $this->group_properties[] = $property;
+        }
+
         return $this;
     }
 
@@ -1047,7 +1057,7 @@ abstract class Group
 
     public function setDepositAccount($account)
     {
-        $this->deposit_account = $account;
+        $this->depositAccount = $account;
         return $this;
     }
 
@@ -1058,7 +1068,7 @@ abstract class Group
      */
     public function getDepositAccount()
     {
-        return $this->deposit_account;
+        return $this->depositAccount;
     }
 
     /**

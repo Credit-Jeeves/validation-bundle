@@ -86,7 +86,7 @@ class PayCommand extends ContainerAwareCommand
             return 1;
         }
         $order = new Order();
-        $total = $payment->getTotal();
+        $total = $payment->getAmount() + $payment->getOther();
         $fee = 0;
 
 
@@ -98,7 +98,7 @@ class PayCommand extends ContainerAwareCommand
             $operation->setAmount($amount);
             $operation->setPaidFor($payment->getPaidFor());
         }
-        if ($payment->getTotal() && ($amount = ($payment->getTotal() - $payment->getAmount()))) {
+        if ($amount = $payment->getOther()) {
             $operation = new Operation();
             $operation->setOrder($order);
             $operation->setType(OperationType::OTHER);
@@ -108,10 +108,10 @@ class PayCommand extends ContainerAwareCommand
         }
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $fee = round($total * ((float)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
+            $fee = round($total * ((float)$contract->getDepositAccount()->getFeeCC() / 100), 2);
             $order->setType(OrderType::HEARTLAND_CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $fee = (float)$this->getContainer()->getParameter('payment_bank_fee');
+            $fee = (float)$contract->getDepositAccount()->getFeeACH();
             $order->setType(OrderType::HEARTLAND_BANK);
         }
 

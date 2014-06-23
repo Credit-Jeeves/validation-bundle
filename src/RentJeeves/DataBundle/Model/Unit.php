@@ -18,7 +18,7 @@ abstract class Unit
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      */
     protected $id;
 
@@ -28,12 +28,6 @@ abstract class Unit
      *     type="string",
      *     length=50
      * )
-     * @Assert\NotBlank(
-     *     message="error.unit.empty",
-     *     groups={
-     *         "import"
-     *     }
-     * )
      * @Assert\Regex(
      *     message="error.unit.regexp",
      *     pattern = "/^[A-Za-z_0-9\-]{1,50}$/",
@@ -42,7 +36,8 @@ abstract class Unit
      *         "registration_tos"
      *     }
      * )
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
+     * @Serializer\Accessor(getter="getName",setter="setName")
      */
     protected $name;
 
@@ -72,7 +67,6 @@ abstract class Unit
      *     referencedColumnName="id",
      *     nullable=false
      * )
-     * @Serializer\Exclude
      */
     protected $property;
 
@@ -85,7 +79,6 @@ abstract class Unit
      *     name="holding_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\Exclude
      */
     protected $holding;
 
@@ -98,7 +91,6 @@ abstract class Unit
      *     name="group_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\Exclude
      */
     protected $group;
 
@@ -108,7 +100,6 @@ abstract class Unit
      *     name="created_at",
      *     type="datetime"
      * )
-     * @Serializer\Exclude
      */
     protected $createdAt;
 
@@ -118,7 +109,6 @@ abstract class Unit
      *     name="updated_at",
      *     type="datetime"
      * )
-     * @Serializer\Exclude
      */
     protected $updatedAt;
 
@@ -142,7 +132,6 @@ abstract class Unit
      *     },
      *     orphanRemoval=true
      * )
-     * @Serializer\Exclude
      *
      * @var ArrayCollection
      */
@@ -156,11 +145,53 @@ abstract class Unit
      *       "persist"
      *     }
      * )
-     * @Serializer\Exclude
      *
      * @var ArrayCollection
      */
     protected $contractsWaiting;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\UnitMapping",
+     *     mappedBy="unit",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $unitMapping;
+
+    /**
+     * @param ContractWaiting $contractsWaiting
+     */
+    public function addContractsWaiting(ContractWaiting $contractsWaiting)
+    {
+        $this->contractsWaiting = $contractsWaiting;
+    }
+
+    /**
+     * @return ContractWaiting
+     */
+    public function getContractsWaiting()
+    {
+        return $this->contractsWaiting;
+    }
+
+
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
 
     public function __construct()
     {
@@ -289,22 +320,6 @@ abstract class Unit
     }
 
     /**
-     * @param mixed $deletedAt
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set Property
      *
      * @param Property $property
@@ -429,10 +444,41 @@ abstract class Unit
     }
 
     /**
-     * @return ArrayCollection
+     * @param UnitMapping $unitMapping
      */
-    public function getContractsWaiting()
+    public function setUnitMapping(UnitMapping $unitMapping)
     {
-        return $this->contractsWaiting;
+        $this->unitMapping = $unitMapping;
+    }
+
+    /**
+     * @return UnitMapping
+     */
+    public function getUnitMapping()
+    {
+        return $this->unitMapping;
+    }
+
+    /**
+     * Sometimes unit name can be empty if the property is single, so they should be checked together.
+     *
+     * @Assert\True(
+     *     message="error.unit.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     */
+    public function isValidName()
+    {
+        if (!empty($this->name)) {
+            return true;
+        }
+
+        if ($this->getProperty()->isSingle()) {
+            return true;
+        }
+
+        return false;
     }
 }

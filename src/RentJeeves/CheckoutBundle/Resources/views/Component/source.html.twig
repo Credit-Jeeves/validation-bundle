@@ -9,21 +9,18 @@
     {{ form_widget(paymentAccountType) }}
     {{ JSFV(paymentAccountType) }}
 </form>
-<p class="note" data-bind="visible: 'card' == paymentSource.type()">
-    <strong>{{ 'checkout.fee.note' | trans({'%FEE%': payment_card_fee}) }}</strong>
-    <i title="{{ 'checkout.fee.note.help' | trans }}" class="help after-checkbox pie-el tooltip-link">?</i>
-</p>
 
 <script type="text/javascript">
     window.addressesViewModels = [];
-{% for address in addresses %}
-    var address = new Address(null);
-    ko.mapping.fromJS({{ address | serialize('json') | raw }}, {}, address);
-    window.addressesViewModels.push(address);
-{% endfor %}
+
+    jQuery.each({{ addressesJson | raw }}, function(key, val) {
+        var address = new Address(null);
+        ko.mapping.fromJS(val, {}, address);
+        window.addressesViewModels.push(address);
+    });
 
     window.paymentAccounts = [];
-    var payAccounts = JSON.parse('{{ payAccounts|raw }}');
+    var payAccounts = JSON.parse('{{ payAccountsJson|raw }}');
     jQuery.each(payAccounts, function(key, val) {
         window.paymentAccounts.push(val);
     });

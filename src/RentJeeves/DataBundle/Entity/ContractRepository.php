@@ -385,30 +385,18 @@ class ContractRepository extends EntityRepository
     {
         $days *= -1;
         $date = new DateTime($days.' days');
+        $now = new DateTime();
         $dueDays = $this->getDueDays(0, $date);
 
         $query = $this->createQueryBuilder('c');
 
-        $months = array($date->format('n'));
-        $with = 'MONTH(op.paidFor) IN (:months) AND YEAR(op.paidFor) = :year';
-        if (28 > $date->format('j')) {
-            $monthsDate = clone $date;
-            $monthsDate->modify('-1 month');
-            $months[] = $monthsDate->format('n');
-            if ($date->format('Y') != $monthsDate->format('Y')) {
-                $with = '(MONTH(op.paidFor) = :month1 AND YEAR(op.paidFor) = :year) OR
-                (MONTH(op.paidFor) = :month2 AND YEAR(op.paidFor) = :year2) ';
-
-                $query->setParameter('month1', $months[0]);
-                $query->setParameter('month2', $months[1]);
-                $query->setParameter('year2', $monthsDate->format('Y'));
-            } else {
-                $query->setParameter('months', $months);
-            }
-        }
-
-        $query->leftJoin('c.operations', 'op', Expr\Join::WITH, $with);
-        $query->setParameter('year', $date->format('Y'));
+        $query->leftJoin(
+            'c.operations',
+            'op',
+            Expr\Join::WITH,
+            "op.paidFor >= :paidForInterval"
+        );
+        $query->setParameter('paidForInterval', $now->getClone()->modify('-1 month'));
 
         $query->leftJoin(
             'op.order',
@@ -444,14 +432,21 @@ class ContractRepository extends EntityRepository
         return $query->iterate();
     }
 
-    public function getImportContract($tenant, $unitName)
+    public function getImportContract($tenant, $unitName, $externalUnitId = null)
     {
         $query = $this->createQueryBuilder('contract');
-        $query->leftJoin('contract.unit', 'unit');
-        $query->leftJoin('contract.tenant', 'tenant');
+        $query->innerJoin('contract.unit', 'unit');
+        $query->innerJoin('contract.tenant', 'tenant');
         $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
         $query->andWhere('tenant.id = :tenantId');
-        $query->andWhere('unit.name = :unitName');
+        if (!empty($externalUnitId)) {
+            $query->innerJoin('unit.unitMapping', 'uMap');
+            $query->andWhere('uMap.externalUnitId = :externalUnit');
+            $query->setParameter('externalUnit', $externalUnitId);
+        } else {
+            $query->andWhere('unit.name = :unitName');
+            $query->setParameter('unitName', $unitName);
+        }
         // if 2 or more contract get contract with status current in first priority
         $query->addOrderBy('contract.status', "DESC");
         //If 2 or more contract, get last updated
@@ -460,7 +455,7 @@ class ContractRepository extends EntityRepository
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('invite', ContractStatus::INVITE);
         $query->setParameter('tenantId', $tenant);
-        $query->setParameter('unitName', $unitName);
+
         $query->setMaxResults(1);
         $query = $query->getQuery();
 
@@ -626,7 +621,7 @@ class ContractRepository extends EntityRepository
         $query->leftJoin('c.property', 'p');
         $query->leftJoin('c.unit', 'u');
         $query->leftJoin('c.group', 'g');
-        $query->leftJoin('g.deposit_account', 'da');
+        $query->leftJoin('g.depositAccount', 'da');
         $query->leftJoin('c.payments', 'pay');
         if (!empty($status)) {
             $query->andWhere('c.status NOT IN :statuses');

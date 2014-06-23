@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportProcess;
 use RentJeeves\LandlordBundle\Accounting\ImportStorage;
@@ -155,7 +156,12 @@ class AccountingController extends Controller
         $importStorage->setFieldDelimiter($fieldDelimiter);
         $importStorage->setTextDelimiter($textDelimiter);
         $importStorage->setFilePath($newFileName);
-        $importStorage->setPropertyId($property->getId());
+        if ($property instanceof Property) {
+            $importStorage->setPropertyId($property->getId());
+            $importStorage->setIsMultipleProperty(false);
+        } else {
+            $importStorage->setIsMultipleProperty(true);
+        }
         $importStorage->setDateFormat($dateFormat);
 
         return $this->redirect($this->generateUrl('accounting_match_file'));
@@ -190,10 +196,13 @@ class AccountingController extends Controller
             );
         }
 
-
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
-            new ImportMatchFileType(count($dataView), $this->get('translator'))
+            new ImportMatchFileType(
+                count($dataView),
+                $this->get('translator'),
+                $this->get('accounting.import.storage')
+            )
         );
         $form->handleRequest($this->get('request'));
         if ($form->isValid()) {
@@ -237,13 +246,15 @@ class AccountingController extends Controller
          */
         $importProcess = $this->get('accounting.import.process');
         $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm(
-            new Unit(),
-            new ResidentMapping()
+            new ResidentMapping(),
+            new UnitMapping(),
+            new Unit()
         );
         $formContract = $importProcess->getContractForm(
             new Tenant(),
-            new Unit(),
-            new ResidentMapping()
+            new ResidentMapping(),
+            new UnitMapping(),
+            new Unit()
         );
         $formContractFinish = $importProcess->getContractFinishForm();
 
@@ -251,6 +262,8 @@ class AccountingController extends Controller
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
             'formContract'            => $formContract->createView(),
             'formContractFinish'      => $formContractFinish->createView(),
+            //Make it string because it's var for js and I want boolean
+            'isMultipleProperty'      => ($importStorage->isMultipleProperty())? "true" : "false",
         );
     }
 

@@ -39,6 +39,7 @@ class ContractAdmin extends Admin
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
+            ->addIdentifier('id', null, array('route' => array('name' => 'show')))
             ->add('holding.name')
             ->add('group.name')
             ->add('unit.name')
@@ -132,13 +133,16 @@ class ContractAdmin extends Admin
             ->add('search')
             ->add('status')
             ->add('paidTo')
-            ->add('reporting')
+            ->add('reportToExperian')
+            ->add('experianStartAt')
+            ->add('reportToTransUnion')
+            ->add('transUnionStartAt')
             ->add('startAt')
             ->add('finishAt')
             ->add('uncollectedBalance')
             ->add('createdAt')
             ->add('updatedAt')
-            ->add('operation.orders', null, array('route' => array('name' => 'show')));
+            ->add('operations.order', null, array('route' => array('name' => 'show')));
     }
 
     protected function configureFormFields(FormMapper $formMapper)
@@ -152,7 +156,10 @@ class ContractAdmin extends Admin
             ->add('search')
             ->add('status')
             ->add('paidTo')
-            ->add('reporting')
+            ->add('reportToExperian')
+            ->add('experianStartAt')
+            ->add('reportToTransUnion')
+            ->add('transUnionStartAt')
             ->add('startAt')
             ->add('finishAt');
     }

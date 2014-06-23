@@ -27,21 +27,32 @@
                         <thead>
                         <tr class="properties-th">
                             <th class="pie-el status"><span>{{ 'import.status'|trans }}</span></th>
+                            {% if isMultipleProperty == 'true' %}
+                                <th class="pie-el unit"><span>{{ 'property'|trans }}*</span></th>
+                            {% endif %}
                             <th class="pie-el unit"><span>{{ 'import.unit'|trans }}*</span></th>
-                            <th class="pie-el resident"><span>{{ 'import.residentId'|trans }}*</span></th>
+                            <th class="pie-el resident">
+                                <span>
+                                    {{ 'import.residentId'|trans }}*
+                                    {% if isMultipleProperty == 'true' %}
+                                        <hr />
+                                        {{ 'import.unit_id'|trans }}*
+                                    {% endif %}
+                                </span>
+                            </th>
                             <th class="pie-el"><span>{{ 'import.first_name'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.last_name'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.email'|trans }}*</span></th>
                             <th class="pie-el">
                                 <span>
-                                    {{ 'import.rent'|trans }} <br />
+                                    {{ 'import.rent'|trans }} <hr />
                                     {{ 'common.balance'|trans }}
                                 </span>
                             </th>
                             <th class="pie-el dates">
                                 <span>
                                     {{ 'import.move_in'|trans }}
-                                    <br />
+                                    <hr />
                                     {{ 'import.lease_end'|trans }}
                                 </span>
                             </th>
@@ -61,6 +72,7 @@
                                     'LandlordBundle:Accounting:_reviewNewUserWithContract.html.twig',
                                     {
                                     'form': formNewUserWithContract,
+                                    'isMultipleProperty': isMultipleProperty
                                     }
                                 )
                             }}
@@ -69,6 +81,7 @@
                                     'LandlordBundle:Accounting:_reviewUpdateCreateContract.html.twig',
                                     {
                                     'form': formContract,
+                                    'isMultipleProperty': isMultipleProperty
                                     }
                                 )
                             }}
@@ -76,7 +89,8 @@
                                 include(
                                     'LandlordBundle:Accounting:_reviewSkip.html.twig',
                                     {
-                                        'form': formContractFinish
+                                        'form': formContractFinish,
+                                        'isMultipleProperty': isMultipleProperty
                                     }
                                 )
                             }}
@@ -110,6 +124,7 @@
 
     $(document).ready(function() {
         ko.applyBindings(accountingImport, $('#reviewContainer').get(0));
+        accountingImport.isMultipleProperty({{isMultipleProperty}});
         accountingImport.loadData(false);
     });
 </script>

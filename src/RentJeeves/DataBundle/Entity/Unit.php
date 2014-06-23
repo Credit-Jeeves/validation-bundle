@@ -19,9 +19,18 @@ class Unit extends Base
     const SINGLE_PROPERTY_UNIT_NAME = 'SINGLE_PROPERTY';
     const SEARCH_PROPERTY_NEW_NAME = 'NEW';
 
+    public function getName()
+    {
+        $name = parent::getName();
+        if (static::SINGLE_PROPERTY_UNIT_NAME == $name) {
+            return '';
+        }
+        return $name;
+    }
+
     public function __toString()
     {
-        return $this->getName();
+        return $this->name;
     }
 
     /**

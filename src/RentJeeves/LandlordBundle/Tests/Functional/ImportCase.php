@@ -32,6 +32,24 @@ class ImportCase extends BaseTestCase
         '14'=> Import::KEY_EMAIL,
     );
 
+    protected $mapMultiplePropertyFile = array(
+        '1' => Import::KEY_RESIDENT_ID,
+        '2' => Import::KEY_TENANT_NAME,
+        '3' => Import::KEY_RENT,
+        '4' => Import::KEY_BALANCE,
+        '5' => Import::KEY_UNIT_ID,
+        '6' => Import::KEY_STREET,
+        '8' => Import::KEY_UNIT,
+        '9' => Import::KEY_CITY,
+        '10'=> Import::KEY_STATE,
+        '11'=> Import::KEY_ZIP,
+        '13'=>Import::KEY_MOVE_IN,
+        '14'=>Import::KEY_LEASE_END,
+        '15'=>Import::KEY_MOVE_OUT,
+        '16'=>Import::KEY_MONTH_TO_MONTH,
+        '17'=>Import::KEY_EMAIL,
+    );
+
     protected function getFilePathByName($fileName)
     {
         $sep = DIRECTORY_SEPARATOR;
@@ -43,17 +61,17 @@ class ImportCase extends BaseTestCase
     protected function waitReviewAndPost()
     {
         $this->session->wait(
-            5000,
+            10000,
             "$('.overlay-trigger').length > 0"
         );
 
         $this->session->wait(
-            5000,
+            10000,
             "$('.overlay-trigger').length <= 0"
         );
 
         $this->session->wait(
-            5000,
+            10000,
             "$('.submitImportFile>span').is(':visible')"
         );
     }
@@ -127,7 +145,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNotNull($error = $this->page->find('css', '.error_list>li'));
-        $this->assertEquals('csv.file.too.small2', $error->getHtml());
+        $this->assertEquals('csv.file.too.small1', $error->getHtml());
         $this->assertNotNull($prev = $this->page->find('css', '.button'));
         $prev->click();
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
@@ -135,6 +153,9 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/Y');
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -311,6 +332,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -439,6 +461,7 @@ class ImportCase extends BaseTestCase
             $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
             $attFile->attachFile($filePath);
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+            $this->setProperty();
             $submitImportFile->click();
             $this->assertNull($error = $this->page->find('css', '.error_list>li'));
             $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -613,6 +636,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import_waiting_room.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
+        $this->setProperty();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -668,6 +692,7 @@ class ImportCase extends BaseTestCase
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $filePath = $this->getFilePathByName('import_date_format.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $this->setProperty();
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $this->assertNotNull($dateFormat = $this->page->find('css', '#import_file_type_dateFormat'));
@@ -710,5 +735,230 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('11/09/2013', $datepicker[0]->getValue(), $datepicker[0]->getValue());
         $this->assertEquals('11/08/2014', $datepicker[1]->getValue(), $datepicker[1]->getValue());
         $this->logout();
+    }
+
+    protected function setProperty()
+    {
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+            array(
+                'street' => 'Broadway',
+                'number' => '770',
+                'zip'    => '10003'
+            )
+        );
+        $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
+        $propertySelector->selectOption($property->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function importMultipleProperties()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+
+        //First Step
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import_multiple.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/y');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        for ($i = 1; $i <= 17; $i++) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            if (isset($this->mapMultiplePropertyFile[$i])) {
+                $choice->selectOption($this->mapMultiplePropertyFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.errorField').length > 0"
+        );
+        $this->waitReviewAndPost();
+        $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
+        $this->assertEquals(5, count($errorFields));
+
+        $this->assertEquals('', $errorFields[0]->getValue());
+        $this->assertEquals('', $errorFields[1]->getValue());
+        $this->assertEquals('& Adelai', $errorFields[2]->getValue());
+        $this->assertEquals('Carol Acha.Mo', $errorFields[3]->getValue());
+        $this->assertEquals('Matthew &', $errorFields[4]->getValue());
+
+        $trs = $this->getParsedTrsByStatus();
+
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(10, count($trs['import.status.waiting']), "All contracts should be waiting");
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+
+        $this->assertNotNull($firstName1 = $this->page->find('css', 'input.1_first_name'));
+        $firstName1->setValue('Logan');
+        $this->assertNotNull($lastName1 = $this->page->find('css', 'input.1_last_name'));
+        $lastName1->setValue('Cooper');
+
+        $this->assertNotNull($lastName2 = $this->page->find('css', 'input.2_last_name'));
+        $lastName2->setValue('Adelai');
+
+        $this->assertNotNull($lastName3 = $this->page->find('css', '.3_last_name'));
+        $lastName3->setValue('AchaMo');
+
+        $this->assertNotNull($firstName4 = $this->page->find('css', '.4_first_name'));
+        $firstName4->setValue('Mattew');
+
+        $submitImportFile->click();
+
+        $this->waitReviewAndPost();
+
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(10, count($trs['import.status.waiting']), "All contracts should be waiting");
+
+        $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
+        $this->assertEquals(0, count($errorFields));
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+
+        $submitImportFile->click();
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('.overlay-trigger').length > 0"
+        );
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('.overlay-trigger').length = 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+
+        //Check notify tenant invite for new user
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(0, $email, 'Wrong number of emails');
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine')->getManager();
+
+        $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
+            array('externalUnitId' => 'SP1152-C')
+        );
+        $this->assertNotNull($unitMapping);
+        $this->assertNotNull($unit = $unitMapping->getUnit());
+
+        /** @var ContractWaiting $waitingContract */
+        $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            array(
+                'residentId'    => 'ABBOTT,MIT',
+                'firstName'     => 'Logan',
+                'lastName'      => 'Cooper',
+                'property'      => $unit->getProperty()->getId(),
+                'unit'          => $unit->getId(),
+            )
+        );
+        $this->assertNotNull($waitingContract);
+        $this->assertEquals(975, $waitingContract->getRent());
+        $this->assertEquals(193, $waitingContract->getIntegratedBalance());
+        $this->assertEquals('2014-01-01', $waitingContract->getStartAt()->format('Y-m-d'));
+        $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
+        $this->assertTrue($unit->getProperty()->isSingle());
+
+        $this->assertEquals(20, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
+    }
+
+    /**
+     * @test
+     * @depends importMultipleProperties
+     */
+    public function signUpFromImportedWaitingContract()
+    {
+        $this->markTestSkipped('Double check this test. Manual rechecking works well.');
+
+        $this->setDefaultSession('selenium2');
+        $this->logout();
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine')->getManager();
+
+        $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
+            array('externalUnitId' => 'NO813-C')
+        );
+        $this->assertNotNull($unitMapping);
+        $this->assertNotNull($unit = $unitMapping->getUnit());
+
+        $waitingContractParams = array(
+            'residentId' => 'ALDRICH,JOSHUA',
+            'firstName' => 'Daniel',
+            'lastName' => 'Price',
+            'property' => $unit->getProperty()->getId(),
+            'unit' => $unit->getId(),
+        );
+        /** @var ContractWaiting $waitingContract */
+        $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            $waitingContractParams
+        );
+        $this->assertNotNull($waitingContract);
+
+        $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+
+        $address = '813 West Nopal Place, Chandler, AZ 85225';
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-add'));
+        $this->fillForm(
+            $form,
+            array(
+                'property-search' => $address,
+            )
+        );
+        $propertySearch->click();
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
+        $this->session->wait($this->timeout, "$('#register').length > 0");
+
+        $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_tenanttype_first_name'                => "Daniel",
+                'rentjeeves_publicbundle_tenanttype_last_name'                 => "Price",
+                'rentjeeves_publicbundle_tenanttype_email'                     => 'dan.price@mail.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+            )
+        );
+        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $thisIsMyRental->click();
+        $this->assertNotNull($submit = $this->page->find('css', '#register'));
+        $submit->click();
+
+        $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            $waitingContractParams
+        );
+        $this->assertNull($waitingContract);
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('DataBundle:Tenant')->findOneBy(
+            array('email' => 'dan.price@mail.com')
+        );
+        $this->assertNotNull($tenant);
+        $this->assertEquals('Daniel', $tenant->getFirstName());
+        $this->assertEquals('Price', $tenant->getLastName());
     }
 }

@@ -1,6 +1,7 @@
 parameters:
     experian.net_connect.class: CreditJeeves\TestBundle\Experian\NetConnectTest
     experian.pidkiq.class: CreditJeeves\TestBundle\Experian\PidkiqTest
+    mink.driver.selenium2.class: CreditJeeves\TestBundle\Tests\Driver\Selenium2Driver
 
 services:
     experian.net_connect:
