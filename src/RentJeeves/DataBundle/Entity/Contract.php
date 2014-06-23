@@ -200,7 +200,12 @@ class Contract extends Base
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
         $result['dueDate'] = $this->getDueDate();
-        $result['balance'] = $this->getBalance();
+        if ($this->getGroup()->getGroupSettings()->getIsIntegrated()) {
+            $balance = $this->getIntegratedBalance();
+        } else {
+            $balance = $this->getBalance();
+        }
+        $result['balance'] = $balance;
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];

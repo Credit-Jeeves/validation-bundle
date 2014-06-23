@@ -99,6 +99,7 @@ class OrderListener
             $save = false;
             switch ($operation->getType()) {
                 case OperationType::RENT:
+                case OperationType::OTHER:
                     $status = $entity->getStatus();
                     switch ($status) {
                         case OrderStatus::PENDING:
@@ -235,7 +236,6 @@ class OrderListener
 
         $group = $contract->getGroup();
         $isIntegrated = $group->getGroupSettings()->getIsIntegrated();
-        $em = $eventArgs->getEntityManager();
         $operations = $order->getOperations();
         switch ($order->getStatus()) {
             //Order complete so we must make minus
@@ -244,7 +244,7 @@ class OrderListener
                  * @var $operation Operation
                  */
                 foreach ($operations as $operation) {
-                    if ($operation->getType() === OperationType::RENT) {
+                    if ($operation->getType() === OperationType::RENT && !$isIntegrated) {
                         $contract->setBalance($contract->getBalance() - $operation->getAmount());
                     }
 

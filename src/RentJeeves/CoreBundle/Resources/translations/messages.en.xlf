@@ -2419,6 +2419,10 @@
                 <source>import.unit_id</source>
                 <target>Unit ID</target>
             </trans-unit>
+            <trans-unit id="import.property.single.checkbox_label">
+                <source>import.property.single.checkbox_label</source>
+                <target>Single Property (No Units)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

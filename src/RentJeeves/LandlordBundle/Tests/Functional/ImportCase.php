@@ -824,14 +824,23 @@ class ImportCase extends BaseTestCase
 
         $this->waitReviewAndPost();
 
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(10, count($trs['import.status.waiting']), "All contracts should be waiting");
+
         $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
         $this->assertEquals(0, count($errorFields));
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
         $submitImportFile->click();
 
         $this->session->wait(
-            5000,
-            "$('.finishedTitle').length > 0"
+            $this->timeout,
+            "jQuery('.overlay-trigger').length > 0"
+        );
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('.overlay-trigger').length = 0"
         );
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
@@ -845,7 +854,7 @@ class ImportCase extends BaseTestCase
         /**
          * @var $em EntityManager
          */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getContainer()->get('doctrine')->getManager();
 
         $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
             array('externalUnitId' => 'SP1152-C')
@@ -871,5 +880,83 @@ class ImportCase extends BaseTestCase
         $this->assertTrue($unit->getProperty()->isSingle());
 
         $this->assertEquals(20, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
+    }
+
+    /**
+     * @test
+     * @depends importMultipleProperties
+     */
+    public function signUpFromImportedWaitingContract()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->logout();
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine')->getManager();
+
+        $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
+            array('externalUnitId' => 'NO813-C')
+        );
+        $this->assertNotNull($unitMapping);
+        $this->assertNotNull($unit = $unitMapping->getUnit());
+
+        $waitingContractParams = array(
+            'residentId' => 'ALDRICH,JOSHUA',
+            'firstName' => 'Daniel',
+            'lastName' => 'Price',
+            'property' => $unit->getProperty()->getId(),
+            'unit' => $unit->getId(),
+        );
+        /** @var ContractWaiting $waitingContract */
+        $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            $waitingContractParams
+        );
+        $this->assertNotNull($waitingContract);
+
+        $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+
+        $address = '813 West Nopal Place, Chandler, AZ 85225';
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-add'));
+        $this->fillForm(
+            $form,
+            array(
+                'property-search' => $address,
+            )
+        );
+        $propertySearch->click();
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
+        $this->session->wait($this->timeout, "$('#register').length > 0");
+
+        $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_tenanttype_first_name'                => "Daniel",
+                'rentjeeves_publicbundle_tenanttype_last_name'                 => "Price",
+                'rentjeeves_publicbundle_tenanttype_email'                     => 'dan.price@mail.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+            )
+        );
+        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $thisIsMyRental->click();
+        $this->assertNotNull($submit = $this->page->find('css', '#register'));
+        $submit->click();
+
+        $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            $waitingContractParams
+        );
+        $this->assertNull($waitingContract);
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array('email' => 'dan.price@mail.com')
+        );
+        $this->assertNotNull($tenant);
+        $this->assertEquals('Daniel', $tenant->getFirstName());
+        $this->assertEquals('Price', $tenant->getLastName());
     }
 }

@@ -39,47 +39,46 @@ class ContractProcess
         $unitName = null,
         ContractWaiting $contractWaiting = null
     ) {
-
-        if ($property->isSingle()) {
-            $propertyGroup = $contractWaiting? $contractWaiting->getGroup() : $property->getPropertyGroups()->first();
-            $contract = new Contract();
-            $contract->setTenant($tenant);
-            $contract->setHolding($propertyGroup->getHolding());
-            $contract->setGroup($propertyGroup);
-            $contract->setProperty($property);
-            $contract->setStatus(ContractStatus::PENDING);
-            $this->em->persist($contract);
-            $this->em->flush();
-            return;
-        }
-
-
-        if (!$unit = $property->searchUnit($unitName)) {
-            return $this->createContractForEachGroup($tenant, $property, $unitName);
-        }
-
         $contract = new Contract();
         $contract->setTenant($tenant);
-        $contract->setHolding($unit->getHolding());
-        $contract->setGroup($unit->getGroup());
-        $contract->setProperty($unit->getProperty());
+        $contract->setProperty($property);
         $contract->setStatus(ContractStatus::PENDING);
-        $contract->setUnit($unit);
-        $this->em->persist($contract);
+
         /**
          * @var $contractWaiting ContractWaiting
          */
         if (empty($contractWaiting)) {
+
+            if ($property->isSingle()) {
+                $propertyGroup = $property->getPropertyGroups()->first();
+                $contract->setHolding($propertyGroup->getHolding());
+                $contract->setGroup($propertyGroup);
+                $contract->setUnit($property->getSingleUnit());
+            } else {
+                if (!$unit = $property->searchUnit($unitName)) {
+                    return $this->createContractForEachGroup($tenant, $property, $unitName);
+                }
+
+                $contract->setHolding($unit->getHolding());
+                $contract->setGroup($unit->getGroup());
+                $contract->setUnit($unit);
+            }
+
+            $this->em->persist($contract);
             $this->em->flush();
+
             return;
         }
 
+        $contract->setHolding($contractWaiting->getGroup()->getHolding());
         $contract->setGroup($contractWaiting->getGroup());
+        $contract->setUnit($contractWaiting->getUnit());
         $contract->setStatus(ContractStatus::APPROVED);
         $contract->setStartAt($contractWaiting->getStartAt());
         $contract->setFinishAt($contractWaiting->getFinishAt());
         $contract->setIntegratedBalance($contractWaiting->getIntegratedBalance());
         $contract->setRent($contractWaiting->getRent());
+        $this->em->persist($contract);
 
         $group = $contractWaiting->getGroup();
         $hasResident = true;
