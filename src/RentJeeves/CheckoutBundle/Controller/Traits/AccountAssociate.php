@@ -81,10 +81,9 @@ trait AccountAssociate
         $paymentDetails->setRequest($request);
         $captureRequest = new CaptureRequest($paymentDetails);
 
-        if (method_exists($this, 'getConfigurationPool')) {
+        if (method_exists($this, 'getContainer')) {
             /** @var Payment $payment */
-            $payment = $this->getConfigurationPool()
-                ->getContainer()
+            $payment = $this->getContainer()
                 ->get('payum')
                 ->getPayment('heartland');
         } else {

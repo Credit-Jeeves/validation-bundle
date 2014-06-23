@@ -2,8 +2,6 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use RentJeeves\AdminBundle\Form\GroupSettings;
-use RentJeeves\DataBundle\Entity\DepositAccount;
-use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -12,12 +10,9 @@ use CreditJeeves\DataBundle\Enum\GroupType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use RentJeeves\CheckoutBundle\Controller\Traits\AccountAssociate;
 
 class RjGroupAdmin extends Admin
 {
-    use AccountAssociate;
-
     /**
      *
      * @var string
@@ -68,85 +63,6 @@ class RjGroupAdmin extends Admin
     public function prePersist($object)
     {
         $object->setType(GroupType::RENT);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function preUpdate($object)
-    {
-        $em = $this->getModelManager()->getEntityManager($this->getClass());
-        $oldDepositAccount = $object->getDepositAccount();
-        $newMerchantName = $oldDepositAccount->getMerchantName();
-
-        $oldMerchantName = $em->getUnitOfWork()
-            ->getOriginalEntityData($oldDepositAccount)['merchantName'];
-
-        /**
-         * If we're changing the merchant name, we must unlink the old deposit
-         * account from this group and create a new one.
-         */
-        if ($oldMerchantName != $newMerchantName) {
-
-            // keep the old name, we'll make a new one next
-            $oldDepositAccount->setMerchantName($oldMerchantName);
-
-            // if we've already created the new one, then get it
-            $newDepositAccount = $em->getRepository('RjDataBundle:DepositAccount')
-                ->findOneByMerchantName($newMerchantName);
-
-            // if not, create the new deposit account
-            if (!$newDepositAccount) {
-                $newDepositAccount = new DepositAccount();
-                $newDepositAccount->setMerchantName($newMerchantName);
-                $newDepositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
-                $em->persist($newDepositAccount);
-
-                // save it now because we need it to have a database id
-                $em->flush();
-            }
-
-            /**
-             * find all the payment accounts registered to the old deposit
-             * account *but* not the new one
-             */
-            $paymentAccountWorkingSet = $em
-                ->getRepository('RjDataBundle:PaymentAccount')
-                ->findByDepositAccountId($oldDepositAccount->getId());
-
-            /**
-             * Register each payment account with the new deposit account and
-             * merchant
-             */
-            foreach ($paymentAccountWorkingSet as $paymentAccount) {
-                if ($paymentAccount->getDepositAccounts()->contains($newDepositAccount)) {
-                    continue;
-                }
-
-                $this->registerTokenToAdditionalMerchant(
-                    $oldMerchantName,
-                    $newMerchantName,
-                    $paymentAccount->getToken()
-                );
-
-                $paymentAccount->addDepositAccount($newDepositAccount);
-                $em->persist($paymentAccount);
-
-                // flush each one because this could fail and we want to
-                $em->flush();
-            }
-
-            /**
-             * Remove the group from the old deposit account and add it to the
-             * new one
-             */
-            // finally associate the group to the new deposit account
-            $oldDepositAccount->setGroup(null);
-            $newDepositAccount->setGroup($object);
-            $em->persist($oldDepositAccount);
-            $em->persist($newDepositAccount);
-            $em->flush();
-        }
     }
 
     /**
