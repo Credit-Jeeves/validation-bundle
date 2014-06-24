@@ -38,7 +38,7 @@ class RenameMerchantCommand extends ContainerAwareCommand
         $oldMerchantName = $input->getArgument('from');
         $newMerchantName = $input->getArgument('to');
 
-        $this->_changeMerchantName($oldMerchantName, $newMerchantName);
+        $this->changeMerchantName($oldMerchantName, $newMerchantName);
         $output->writeln(
             sprintf(
                 "Merchant '%s' changed to '%s'",
@@ -55,7 +55,7 @@ class RenameMerchantCommand extends ContainerAwareCommand
      *
      * @return DepositAccount
      */
-    private function _getDepositAccount($merchantName)
+    private function getDepositAccount($merchantName)
     {
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
@@ -79,7 +79,7 @@ class RenameMerchantCommand extends ContainerAwareCommand
      *
      * @return DepositAccount
      */
-    private function _getOrCreateDepositAccount($merchantName)
+    private function getOrCreateDepositAccount($merchantName)
     {
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
@@ -111,7 +111,7 @@ class RenameMerchantCommand extends ContainerAwareCommand
      *
      * @return bool
      */
-    private function _registerAdditionalMerchant(
+    private function registerAdditionalMerchant(
         PaymentAccount $paymentAccount,
         DepositAccount $depositAccount,
         $oldMerchantName,
@@ -161,7 +161,7 @@ class RenameMerchantCommand extends ContainerAwareCommand
      *
      * @return bool
      */
-    private function _updatePaymentAccounts(
+    private function updatePaymentAccounts(
         DepositAccount $oldDepositAccount,
         DepositAccount $newDepositAccount,
         $oldMerchantName,
@@ -186,7 +186,7 @@ class RenameMerchantCommand extends ContainerAwareCommand
                 sprintf("Payment account %d of %d... ", $count, $setSize)
             );
 
-            $this->_registerAdditionalMerchant(
+            $this->registerAdditionalMerchant(
                 $paymentAccount,
                 $newDepositAccount,
                 $oldMerchantName,
@@ -207,13 +207,13 @@ class RenameMerchantCommand extends ContainerAwareCommand
      *
      * @return true
      */
-    private function _changeMerchantName($oldMerchantName, $newMerchantName)
+    private function changeMerchantName($oldMerchantName, $newMerchantName)
     {
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        $oldDa = $this->_getDepositAccount($oldMerchantName);
-        $newDa = $this->_getOrCreateDepositAccount($newMerchantName);
-        $this->_updatePaymentAccounts(
+        $oldDa = $this->getDepositAccount($oldMerchantName);
+        $newDa = $this->getOrCreateDepositAccount($newMerchantName);
+        $this->updatePaymentAccounts(
             $oldDa,
             $newDa,
             $oldMerchantName,

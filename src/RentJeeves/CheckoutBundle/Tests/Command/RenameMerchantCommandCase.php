@@ -12,14 +12,14 @@ class RenameMerchantCommandCase extends BaseTestCase
     /**
      * @var EntityManager
      */
-    private $_em;
+    private $em;
 
     protected function setUp()
     {
         $kernel = static::createKernel();
         $kernel->boot();
-        $this->_em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
-        $this->_em->beginTransaction();
+        $this->em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $this->em->beginTransaction();
     }
 
     /**
@@ -27,7 +27,7 @@ class RenameMerchantCommandCase extends BaseTestCase
      */
     public function tearDown()
     {
-        $this->_em->rollback();
+        $this->em->rollback();
     }
 
     /**
