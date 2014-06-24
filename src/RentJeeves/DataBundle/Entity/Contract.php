@@ -637,7 +637,7 @@ class Contract extends Base
         $dueDateFromStartAt = (int)$startAt->format('j');
         $paidTo = new DateTime();
         $paidTo->setDate($startAt->format('Y'), $startAt->format('n'), null);
-        if ($dueDateFromStartAt >= $this->getDueDate()) {
+        if ($dueDateFromStartAt > $this->getDueDate()) {
             $paidTo->modify("+1 month");
         }
         $paidTo->setDate(null, null, $this->getDueDate());
