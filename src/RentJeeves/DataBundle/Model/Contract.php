@@ -53,15 +53,13 @@ abstract class Contract
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="contracts"
+     *     inversedBy="contracts",
+     *     fetch="EAGER"
      * )
      * @ORM\JoinColumn(
      *     name="group_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\SerializedName("groupId")
-     * @Serializer\Accessor(getter="getGroupId")
-     * @Serializer\Groups({"payRent"})
      */
     protected $group;
 

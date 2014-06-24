@@ -82,6 +82,8 @@ abstract class Invite
      * @var string
      *
      * @ORM\Column(name="unit", type="string", length=50, nullable=true)
+     *
+     * @var Unit
      */
     protected $unit;
 

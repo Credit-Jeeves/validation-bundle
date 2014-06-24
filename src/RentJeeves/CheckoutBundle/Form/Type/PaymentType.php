@@ -33,12 +33,18 @@ class PaymentType extends AbstractType
     protected $paidFor = array();
 
     /**
+     * @var array
+     */
+    protected $dueDays = array();
+
+    /**
      * @param string $oneTimeUntilValue
      */
-    public function __construct($oneTimeUntilValue, array $paidFor)
+    public function __construct($oneTimeUntilValue, array $paidFor, $dueDays)
     {
         $this->oneTimeUntilValue = $oneTimeUntilValue;
         $this->paidFor = $paidFor;
+        $this->dueDays = $dueDays;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -174,21 +180,27 @@ class PaymentType extends AbstractType
                 )
             )
         );
-        $days = range(1, 31);
         $builder->add(
             'dueDate',
             'choice',
             array(
                 'label' => false,
-                'choices' => array_combine($days, $days),
+                'choices' => $this->dueDays,
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: payment.dueDate',
+                    'data-bind' => "options: payment.dueDates," .
+                        "value: payment.dueDate",
                     'box_attr' => array(
                         'data-bind' => 'visible: \'monthly\' == payment.frequency()'
                     )
                 ),
-                'invalid_message' => 'checkout.error.dueDate.invalid',
+//                'invalid_message' => 'checkout.error.dueDate.invalid', // TODO have bug in Symfony #6980
+                'invalid_message' => 'Your property manager only accepts payments between ' .
+                    '%OPEN_DATE% and %CLOSE_DATE%.',
+                'invalid_message_parameters' => array(
+                    '%OPEN_DATE%' => current($this->dueDays),
+                    '%CLOSE_DATE%' => end($this->dueDays)
+                )
             )
         );
         $months = array();
@@ -239,11 +251,12 @@ class PaymentType extends AbstractType
                 'format'          => 'MM/dd/yyyy',
                 'empty_data'      => '',
                 'attr'            => array(
-                    'class'     => 'datepicker-field',
+                    'class' => 'datepicker-field',
                     'row_attr'  => array(
                         'data-bind' => 'visible: \'one_time\' == payment.type()'
                     ),
-                    'data-bind' => 'value: payment.startDate',
+                    'data-bind' => 'datepicker: payment.startDate, ' .
+                        'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',
                     'html'      => '<div class="tooltip-box type3 pie-el">' .
                     '<h4 data-bind="i18n: {\'START\': payment.startDate, \'SETTLE\': settle}">' .
                     'checkout.one_time.tooltip.title-%START%-%SETTLE%' .

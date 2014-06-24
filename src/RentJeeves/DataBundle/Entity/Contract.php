@@ -121,6 +121,10 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupId")
+     * @Serializer\Groups({"payRent"})
+     *
      * @return int
      */
     public function getGroupId()
@@ -783,5 +787,18 @@ class Contract extends Base
     public function getDepositAccount()
     {
         return $this->getGroup()->getDepositAccount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupSetting")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\GroupSettings")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return GroupSettings
+     */
+    public function getSettings()
+    {
+        return $this->getGroup()->getGroupSettings();
     }
 }

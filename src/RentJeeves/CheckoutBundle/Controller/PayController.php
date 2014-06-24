@@ -54,10 +54,11 @@ class PayController extends Controller
                 ->getRepository('RjDataBundle:Contract')
                 ->findOneWithOperationsOrders($formData['contractId']);
         }
-
+        $dueDays = $contract->getSettings()->getDueDays();
         $formType = new PaymentType(
             $this->container->getParameter('payment_one_time_until_value'),
-            $this->container->get('checkout.paid_for')->getArray($contract)
+            $this->container->get('checkout.paid_for')->getArray($contract),
+            array_combine($dueDays, $dueDays)
         );
         if (!empty($paymentEntity) &&
             $paymentEntity->getPaymentAccount()->getUser()->getId() != $this->getUser()->getId()

@@ -170,7 +170,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.dueDate.invalid">
                 <source>checkout.error.dueDate.invalid</source>
-                <target>Type is invalid.</target>
+                <target>Your property manager only accepts payments between %OPEN_DATE% and %CLOSE_DATE%.</target>
             </trans-unit>
             <trans-unit id="checkout.recurring.monthly.tooltip.title">
                 <source>checkout.recurring.monthly.tooltip.title-%DUE_DAY%</source>
