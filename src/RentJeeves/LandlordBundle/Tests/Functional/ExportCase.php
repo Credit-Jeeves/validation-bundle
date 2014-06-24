@@ -159,7 +159,6 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($csvArr = str_getcsv($csvArr[3]));
         $this->assertEquals('AAABBB-7', $csvArr[1]);
         $this->assertEquals('1500.00', $csvArr[2]);
-        $this->assertEquals('Trans #456123 Batch #111555', $csvArr[3]);
         $this->assertEquals('FGDTRFG-44', $csvArr[4]);
     }
 }
