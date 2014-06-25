@@ -971,7 +971,7 @@ class ImportProcess
     protected function persistContract(ModelImport $import, Contract $contract)
     {
         $today = new DateTime();
-        if ($contract->getFinishAt() <= $today) { //set status of contract to finished...
+        if (($finishAt = $contract->getFinishAt()) && $finishAt <= $today) { //set status of contract to finished...
             $contract->setStatus(ContractStatus::FINISHED);
 
             if ($contract->getIntegratedBalance() > 0) {
