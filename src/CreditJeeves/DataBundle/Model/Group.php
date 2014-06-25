@@ -308,16 +308,17 @@ abstract class Group
     protected $contracts;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToOne(
      *     targetEntity="\RentJeeves\DataBundle\Entity\DepositAccount",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
+     *     orphanRemoval=true,
+     *     fetch="EAGER"
      * )
+     *
+     * @var DepositAccount
      */
-    protected $deposit_account;
+    protected $depositAccount;
 
     /**
      * @ORM\OneToMany(
@@ -341,7 +342,8 @@ abstract class Group
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\GroupSettings",
      *     mappedBy="group",
-     *     cascade={"persist", "remove", "merge"}
+     *     cascade={"persist", "remove", "merge"},
+     *     fetch="EAGER"
      * )
      */
     protected $groupSettings;
@@ -385,11 +387,6 @@ abstract class Group
      */
     public function getGroupSettings()
     {
-        if (empty($this->groupSettings)) {
-            $this->groupSettings = new GroupSettings();
-            $this->groupSettings->setGroup($this);
-        }
-
         return $this->groupSettings;
     }
 
@@ -830,7 +827,7 @@ abstract class Group
     }
 
     /**
-     * @return Holding
+     * @return \CreditJeeves\DataBundle\Entity\Holding
      */
     public function getHolding()
     {
@@ -889,7 +886,17 @@ abstract class Group
      */
     public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
     {
-        $this->group_properties[] = $property;
+        $hasProperty = false;
+        foreach ($this->group_properties as $groupProperty) {
+            if ($groupProperty == $property) {
+                $hasProperty = true;
+            }
+        }
+
+        if (!$hasProperty) {
+            $this->group_properties[] = $property;
+        }
+
         return $this;
     }
 
@@ -1045,7 +1052,7 @@ abstract class Group
 
     public function setDepositAccount($account)
     {
-        $this->deposit_account = $account;
+        $this->depositAccount = $account;
         return $this;
     }
 
@@ -1056,7 +1063,7 @@ abstract class Group
      */
     public function getDepositAccount()
     {
-        return $this->deposit_account;
+        return $this->depositAccount;
     }
 
     /**

@@ -40,6 +40,9 @@ class OperationAdmin extends Admin
             ->add('contract', null, array('route' => array('name' => 'show')))
             ->add('order', null, array('route' => array('name' => 'show')))
             ->add('order.created_at')
+            ->add('order.type')
+            ->add('order.status')
+            ->add('order.sum')
             ->add(
                 '_action',
                 'actions',
@@ -77,6 +80,7 @@ class OperationAdmin extends Admin
             ->add('type')
             ->add('amount', 'money')
             ->add('paidFor', 'date')
+            ->add('days_late')
             ->add('contract', null, array('route' => array('name' => 'show')))
             ->add('order', null, array('route' => array('name' => 'show')));
     }

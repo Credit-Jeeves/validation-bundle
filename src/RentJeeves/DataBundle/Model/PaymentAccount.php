@@ -18,14 +18,14 @@ abstract class PaymentAccount
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"basic"});
+     * @Serializer\Groups({"basic", "paymentAccounts"});
      */
     protected $id;
 
     /**
      * @ORM\ManyToOne(
      *      targetEntity="RentJeeves\DataBundle\Entity\Tenant",
-     *      inversedBy="payment_accounts",
+     *      inversedBy="paymentAccounts",
      *      cascade={"persist"}
      * )
      * @ORM\JoinColumn(
@@ -33,8 +33,6 @@ abstract class PaymentAccount
      *      referencedColumnName="id",
      *      nullable=false
      * )
-     *
-     * @Serializer\Exclude
      *
      * @var \RentJeeves\DataBundle\Entity\Tenant
      */
@@ -51,14 +49,14 @@ abstract class PaymentAccount
      *      inverseJoinColumns={@ORM\JoinColumn(name="deposit_account_id", referencedColumnName="id")}
      * )
      * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
-     * @Serializer\Groups({"details"});
+     * @Serializer\Groups({"details", "paymentAccounts"});
      */
     protected $depositAccounts;
 
     /**
      * @ORM\ManyToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
-     *      inversedBy="payment_accounts",
+     *      inversedBy="paymentAccounts",
      *      cascade={"persist"},
      *      fetch="EAGER"
      * )
@@ -70,7 +68,7 @@ abstract class PaymentAccount
      *
      * @Serializer\SerializedName("addressId")
      * @Serializer\Accessor(getter="getAddressId")
-     * @Serializer\Groups({"basic"});
+     * @Serializer\Groups({"basic", "paymentAccounts"});
      *
      * @var \CreditJeeves\DataBundle\Entity\Address
      */
@@ -88,7 +86,7 @@ abstract class PaymentAccount
      *          "bank"
      *      }
      * )
-     * @Serializer\Groups({"basic"});
+     * @Serializer\Groups({"basic", "paymentAccounts"});
      */
     protected $type;
 
@@ -104,7 +102,7 @@ abstract class PaymentAccount
      *          "save"
      *      }
      * )
-     * @Serializer\Groups({"basic"});
+     * @Serializer\Groups({"basic", "paymentAccounts"});
      */
     protected $name;
 
@@ -124,6 +122,7 @@ abstract class PaymentAccount
      *      type="date",
      *      nullable=true
      * )
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $ccExpiration;
 
@@ -162,9 +161,7 @@ abstract class PaymentAccount
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
-     *
-     * @Serializer\Exclude
-     *
+     * s
      * @var ArrayCollection
      */
     protected $payments;
@@ -201,23 +198,23 @@ abstract class PaymentAccount
     /**
      * Add deposit account
      *
-     * @param DepositAccount $deposit_account
+     * @param DepositAccount $depositAccount
      * @return PaymentAccount
      */
-    public function addDepositAccount(DepositAccount $deposit_account)
+    public function addDepositAccount(DepositAccount $depositAccount)
     {
-        $this->depositAccounts->add($deposit_account);
+        $this->depositAccounts->add($depositAccount);
         return $this;
     }
 
     /**
      * Remove deposit account
      *
-     * @param DepositAccount $deposit_account
+     * @param DepositAccount $depositAccount
      */
-    public function removeDepositAccount(DepositAccount $deposit_account)
+    public function removeDepositAccount(DepositAccount $depositAccount)
     {
-        $this->depositAccounts->removeElement($deposit_account);
+        $this->depositAccounts->removeElement($depositAccount);
     }
 
     /**

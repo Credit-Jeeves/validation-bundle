@@ -39,7 +39,10 @@ abstract class ContractHistory extends AbstractLogEntry
     protected $objectId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract", inversedBy="histories", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract",
+     *      inversedBy="histories",
+     *      cascade={"persist", "remove"}
+     * )
      * @ORM\JoinColumn(name="object_id", referencedColumnName="id")
      */
     protected $object;
@@ -174,35 +177,8 @@ abstract class ContractHistory extends AbstractLogEntry
      */
     protected $username;
 
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
-     *     mappedBy="contract",
-     *     cascade={"all"},
-     *     orphanRemoval=true
-     * )
-     * @Serializer\Exclude
-     * @var ArrayCollection
-     */
-    protected $operations;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Payment",
-     *     mappedBy="contract",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true,
-     *     fetch = "EAGER"
-     * )
-     * @Serializer\Exclude
-     * @var ArrayCollection
-     */
-    protected $payments;
-
     public function __construct()
     {
-        $this->operations = new ArrayCollection();
-        $this->payments = new ArrayCollection();
     }
 
     /**

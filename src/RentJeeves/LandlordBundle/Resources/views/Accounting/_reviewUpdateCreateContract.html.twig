@@ -5,6 +5,16 @@
     if: !is_skipped && ((contract.id && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)) || (!contract.id && tenant.id && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)))">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>
+    {% if isMultipleProperty == "true" %}
+            <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
+                <span data-bind="text: contract.property.full_address">
+                </span>
+            </td>
+            <td  class="errorField" data-bind="if: contract.property === null, visible: (contract.property === null)">
+                <span  data-bind="html: address, attr: {title: '{{ 'property.cannot.map'|trans }}'}"></span>
+            </td>
+    {% endif %}
+
     <td data-bind="
         attr:
         {
@@ -17,13 +27,27 @@
                 form.unit.name,
                 {"attr":
                     {
-                    "data-bind":
-                    "html: contract.unit.name"
+                        "data-bind": "html: $root.getUnitName($data)"
                     }
                 }
             )
         }}
+        {% if isMultipleProperty == "true" %}
+            {{
+                form_widget(
+                    form.isSingle,
+                        {"attr":
+                            {
+                                "class": "isSingle",
+                                "data-bind":"checked: contract.property.is_single, visible: contract.property.is_single"
+                            }
+                        }
+                )
+            }}
+        <label data-bind="visible: contract.property.is_single" class="single-property-chkbox">{{ 'import.property.single.checkbox_label'|trans }}</label>
+        {% endif %}
     </td>
+
     <td data-bind="
         attr:
         {
@@ -42,6 +66,20 @@
                 }
             )
         }}
+        {% if isMultipleProperty == 'true' %}
+            <hr />
+            {{
+                form_widget(
+                    form.unitMapping.externalUnitId,
+                    {"attr":
+                        {
+                            "data-bind":
+                            "html: unit_mapping.external_unit_id"
+                        }
+                    }
+                )
+            }}
+        {% endif %}
     </td>
     <td data-bind="text:tenant.first_name"></td>
     <td data-bind="text:tenant.last_name"></td>
@@ -92,7 +130,7 @@
                         'class': number+'_startAt import_contract_startAt datepicker '+$root.getErrorClass($data, 'import_contract_startAt'),
                         'title': $root.getErrorTitle($data, 'import_contract_startAt')
                     },
-                    datepicker: $root.formatDate(contract.startAt),
+                    datepickerOld: $root.formatDate(contract.startAt),
                     datepickerOptions: $root.getDatePickerOptions(),
                     datepickerFieldName: 'startAt'
                     ",
@@ -106,7 +144,7 @@
                 {
                 "data-bind":
                     "value: $root.formatDate(contract.finishAt),
-                     datepicker: $root.formatDate(contract.finishAt),
+                     datepickerOld: $root.formatDate(contract.finishAt),
                      datepickerOptions: $root.getDatePickerOptions(),
                      datepickerFieldName: 'finishAt',
                      attr: {
@@ -141,7 +179,7 @@
                     {
                         "data-bind":
                             "value: $root.formatDate(operation.paid_for),
-                             datepicker: $root.formatDate(operation.paid_for),
+                             datepickerOld: $root.formatDate(operation.paid_for),
                              datepickerOptions: $root.getDatePickerOptions(),
                              datepickerFieldName: 'paid_for',
                              attr: {

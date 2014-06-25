@@ -152,7 +152,7 @@ class PayCase extends BaseTestCase
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
-            $this->timeout+ 10000,
+            $this->timeout+ 45000,
             "!jQuery('#id-source-step').is(':visible')"
         );
 
@@ -165,6 +165,10 @@ class PayCase extends BaseTestCase
             $this->assertEquals('info.payment.date', $informationBox->getText());
         }
 
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(checkout.make_payment)').is(':visible')"
+        );
         $payPopup->pressButton('checkout.make_payment');
 
         $this->session->wait(
@@ -184,6 +188,40 @@ class PayCase extends BaseTestCase
             $this->assertNotNull($pay = $this->page->find('css', '#pay-popup'));
             $this->assertFalse($pay->isVisible());
         }
+
+        $this->logout();
+    }
+
+    /**
+     * Choose an existing payment account that is registered to another deposit
+     * account to make sure we can register the old token to a new merchant.
+     *
+     * @test
+     */
+    public function registerAccountToAdditionalMerchant()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('marion@rentrack.com', 'pass');
+
+        $this->page->pressButton('contract-pay-2');
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait($this->timeout, "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length");
+
+        // set date to 31 so we can always continue
+        $form->fillField('rentjeeves_checkoutbundle_paymenttype_dueDate', '31');
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "jQuery('#id-source-step:visible').length");
+        $this->page->find('css', '#id-source-step .payment-accounts label:nth-of-type(2)')->click();
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "jQuery('.pay-step:visible').length");
+        $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait($this->timeout, "!jQuery('#pay-popup:visible').length");
 
         $this->logout();
     }
@@ -311,9 +349,21 @@ class PayCase extends BaseTestCase
         $this->assertCount(3, $addresses);
         $this->assertEquals('New street, New city, NY 99999', $addresses[2]->getText());
 
-        $this->assertNotNull($existPaymentSource = $this->page->findField('ko_unique_2'));
-        $existPaymentSource->getParent()->click();
+        $existingPaymentSource = $this->page->find(
+            'css',
+            '#id-source-step .payment-accounts label:nth-of-type(2)'
+        );
+        $this->assertNotNull($existingPaymentSource);
+        $existingPaymentSource->click();
 
         $this->page->pressButton('pay_popup.step.next');
+    }
+
+    /**
+     * @test
+     */
+    public function oneTimePayment()
+    {
+        $this->markTestIncomplete('FINISH');
     }
 }

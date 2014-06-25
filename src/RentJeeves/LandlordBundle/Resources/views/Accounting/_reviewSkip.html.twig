@@ -2,15 +2,22 @@
 
 <tr data-bind="attr: {'class': $root.getClassLine($data)}, if: is_skipped || contract.status == 'finished' || !$root.isValidFieldsWhichNotContainsInForm($data)">
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
+    {% if isMultipleProperty == "true"  %}
+        <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
+            <div data-bind="text: contract.property.full_address"></div>
+        </td>
+        <td class="errorField" data-bind="if: contract.property === null, visible: (contract.property === null)">
+            <span data-bind="html: address, attr: {title: '{{ 'property.cannot.map'|trans }}'}"></span>
+        </td>
+    {% endif %}
     <td data-bind="
-        text:contract.unit.name,
+        text:$root.getUnitName($data),
         attr:
         {
             'class': $root.getErrorClass($data, ['import_new_user_with_contract_contract_unit_name', 'import_contract_unit_name']),
             'title': $root.getErrorTitle($data, ['import_new_user_with_contract_contract_unit_name', 'import_contract_unit_name'])
         }
     ">
-
     </td>
     <td data-bind="
         text:resident_mapping.resident_id,
@@ -39,7 +46,7 @@
                     "attr": {
                     "data-bind":
                         "value: $root.formatDate(move_out),
-                         datepicker: $root.formatDate(move_out),
+                         datepickerOld: $root.formatDate(move_out),
                          datepickerOptions: $root.getDatePickerOptions(),
                          datepickerFieldName: 'finishAt',
                          attr: {

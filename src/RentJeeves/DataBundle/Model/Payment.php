@@ -19,6 +19,7 @@ class Payment
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"payRent"})
      *
      * @var int
      */
@@ -35,7 +36,6 @@ class Payment
      *      referencedColumnName="id",
      *      nullable=false
      * )
-     * @Serializer\Exclude
      *
      * @var Contract
      */
@@ -54,6 +54,7 @@ class Payment
      * )
      * @Serializer\SerializedName("paymentAccountId")
      * @Serializer\Accessor(getter="getPaymentAccountId")
+     * @Serializer\Groups({"payRent"})
      *
      * @var PaymentAccount
      */
@@ -64,6 +65,7 @@ class Payment
      * @Assert\NotBlank(
      *      message="checkout.error.type.empty"
      * )
+     * @Serializer\Groups({"payRent"})
      *
      * @var PaymentType
      */
@@ -74,6 +76,7 @@ class Payment
      * @Assert\NotBlank(
      *      message="checkout.error.status.empty"
      * )
+     * @Serializer\Groups({"payRent"})
      *
      * @var PaymentStatus
      */
@@ -91,6 +94,7 @@ class Payment
      *      minMessage="checkout.error.amount.min",
      *      invalidMessage="checkout.error.amount.valid"
      * )
+     * @Serializer\Groups({"payRent"})
      *
      * @var double
      */
@@ -111,6 +115,7 @@ class Payment
      *      minMessage="checkout.error.total.min",
      *      invalidMessage="checkout.error.total.valid"
      * )
+     * @Serializer\Groups({"payRent"})
      *
      * @var double
      */
@@ -118,6 +123,9 @@ class Payment
 
     /**
      * @ORM\Column(name="paid_for", type="date", nullable=false)
+     * @Serializer\SerializedName("paidFor")
+     * @Serializer\Type("DateTime<'Y-m-d'>")
+     * @Serializer\Groups({"payRent"})
      *
      * @var DateTime
      */
@@ -129,6 +137,7 @@ class Payment
      *      message="checkout.error.dueDate.empty"
      * )
      * @Serializer\SerializedName("dueDate")
+     * @Serializer\Groups({"payRent"})
      *
      * @var int
      */
@@ -140,6 +149,7 @@ class Payment
      *      message="checkout.error.startMonth.empty"
      * )
      * @Serializer\SerializedName("startMonth")
+     * @Serializer\Groups({"payRent"})
      *
      * @var int
      */
@@ -151,6 +161,7 @@ class Payment
      *      message="checkout.error.startYear.empty"
      * )
      * @Serializer\SerializedName("startYear")
+     * @Serializer\Groups({"payRent"})
      *
      * @var int
      */
@@ -163,6 +174,7 @@ class Payment
      *      groups={"cancelled_on"}
      * )
      * @Serializer\SerializedName("endMonth")
+     * @Serializer\Groups({"payRent"})
      *
      * @var int
      */
@@ -175,6 +187,7 @@ class Payment
      *      groups={"cancelled_on"}
      * )
      * @Serializer\SerializedName("endYear")
+     * @Serializer\Groups({"payRent"})
      *
      * @var int
      */
@@ -183,7 +196,6 @@ class Payment
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
-     * @Serializer\Exclude
      *
      * @var DateTime
      */
@@ -192,7 +204,6 @@ class Payment
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
-     * @Serializer\Exclude
      *
      * @var DateTime
      */
@@ -200,7 +211,6 @@ class Payment
 
     /**
      * @ORM\OneToMany(targetEntity = "JobRelatedPayment", mappedBy = "payment")
-     * @Serializer\Exclude
      */
     protected $jobs;
 

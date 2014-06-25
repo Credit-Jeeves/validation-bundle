@@ -8,7 +8,7 @@ use RentJeeves\DataBundle\Model\DepositAccount as Base;
 
 /**
  * @ORM\Table(name="rj_deposit_account")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\DepositAccountRepository")
  */
 class DepositAccount extends Base
 {

@@ -51,7 +51,7 @@ class PaymentRepository extends EntityRepository
         );
         $query->setParameter('contractNotActiveStatuses', array(ContractStatus::DELETED, ContractStatus::FINISHED));
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('g.deposit_account', 'd');
+        $query->innerJoin('g.depositAccount', 'd');
         $query->leftJoin(
             'p.jobs',
             'j',

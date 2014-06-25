@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class ImportStorage
 {
+    const IS_MULTIPLE_PROPERTY = 'is_multiple_property';
+
     const IMPORT_FILE_PATH = 'importFileName';
 
     const IMPORT_PROPERTY_ID = 'importPropertyId';
@@ -51,6 +53,16 @@ class ImportStorage
         $this->session->set(self::IMPORT_DATE_FORMAT, $format);
     }
 
+    public function setIsMultipleProperty($isMultipleProperty = true)
+    {
+        $this->session->set(self::IS_MULTIPLE_PROPERTY, $isMultipleProperty);
+    }
+
+    public function isMultipleProperty()
+    {
+        return $this->session->get(self::IS_MULTIPLE_PROPERTY);
+    }
+
     public function getDateFormat()
     {
         return $this->session->get(self::IMPORT_DATE_FORMAT);
@@ -83,6 +95,9 @@ class ImportStorage
 
     public function getPropertyId()
     {
+        if ($this->isMultipleProperty()) {
+            return null;
+        }
         return $this->session->get(self::IMPORT_PROPERTY_ID);
     }
 
@@ -118,10 +133,13 @@ class ImportStorage
     {
         $data = array(
             self::IMPORT_FILE_PATH       => $this->session->get(self::IMPORT_FILE_PATH),
-            self::IMPORT_PROPERTY_ID     => $this->session->get(self::IMPORT_PROPERTY_ID),
             self::IMPORT_TEXT_DELIMITER  => $this->session->get(self::IMPORT_TEXT_DELIMITER),
             self::IMPORT_FIELD_DELIMITER => $this->session->get(self::IMPORT_FIELD_DELIMITER),
         );
+
+        if (!$this->isMultipleProperty()) {
+            $data[self::IMPORT_PROPERTY_ID] = $this->getPropertyId();
+        }
 
         foreach ($data as $key => $value) {
             if (empty($value)) {

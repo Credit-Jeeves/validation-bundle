@@ -298,7 +298,7 @@ fixtures:
             Hello!  <br /> <br />
         {% endif %}
         Your landlord, {{ fullNameLandlord }}, would like you to use RentTrack to pay your rent for
-        {{ address }} {{ unitName }}. RentTrack makes it easy to pay rent through secure electronic check transfers
+        {{ rentAddress }}. RentTrack makes it easy to pay rent through secure electronic check transfers
         and credit card payments - you get to choose. You also have the opportunity to build credit history by signing up for
         credit bureau payment reporting. Finally, <b>paying by electronic checks is completely free</b>.
         <br /> <br />

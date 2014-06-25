@@ -27,6 +27,7 @@ abstract class Address
      *     strategy="AUTO"
      * )
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $id;
 
@@ -61,6 +62,7 @@ abstract class Address
      *     nullable=true
      * )
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $unit;
 
@@ -73,6 +75,7 @@ abstract class Address
      *     nullable=true
      * )
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $number;
 
@@ -110,6 +113,7 @@ abstract class Address
      *     }
      * )
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $street;
 
@@ -145,6 +149,7 @@ abstract class Address
      *     }
      * )
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $zip;
 
@@ -158,6 +163,7 @@ abstract class Address
      *     nullable=true
      * )
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $district;
 
@@ -189,6 +195,7 @@ abstract class Address
      *     }
      * )
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $city;
 
@@ -214,6 +221,7 @@ abstract class Address
      *     }
      * )
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $area;
 
@@ -222,6 +230,7 @@ abstract class Address
      *
      * @ORM\Column(name="country", type="string", length=3, options={"default"="US"})
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $country = 'US';
 
@@ -230,6 +239,7 @@ abstract class Address
      *
      * @ORM\Column(name="is_default", type="boolean", options={"default"="0"})
      * @Serializer\Expose
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $isDefault = false;
     /**
@@ -260,11 +270,11 @@ abstract class Address
      *
      * @var ArrayCollection
      */
-    protected $payment_accounts;
+    protected $paymentAccounts;
 
     public function __construct()
     {
-        $this->payment_accounts = new ArrayCollection();
+        $this->paymentAccounts = new ArrayCollection();
     }
 
     /**

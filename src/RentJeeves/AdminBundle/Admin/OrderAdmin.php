@@ -63,7 +63,7 @@ class OrderAdmin extends Admin
             ->add('status', 'string', ['template' => 'AdminBundle:CRUD:payments_status_choice.html.twig'])
             ->add('heartland_transaction_ids')
             ->add('operation_type')
-            ->add('amount', 'money')
+            ->add('sum', 'money')
             ->add('group_name', 'string', ['template' => 'AdminBundle:CRUD:payments_group_landlords.html.twig'])
             ->add('user.full_name', 'string', ['template' => 'AdminBundle:CRUD:payments_show_tenant.html.twig'])
             ->add('user.email');
@@ -193,13 +193,11 @@ class OrderAdmin extends Admin
             ->add('user', null, array('route' => array('name' => 'show')))
             ->add('status')
             ->add('type')
-            ->add('amount')
-            ->add('days_late')
+            ->add('sum')
             ->add('created_at')
             ->add('updated_at')
             ->add('authorizes', null, array('route' => array('name' => 'show')))
             ->add('heartlands', null, array('route' => array('name' => 'show')))
-            // FIXME these do not work correctly, because need create Operation list
             ->add('operations', null, array('route' => array('name' => 'show')))
             ->add('jobs', null, array('route' => array('name' => 'show')));
     }

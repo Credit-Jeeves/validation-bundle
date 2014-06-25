@@ -71,7 +71,7 @@ abstract class ResidentMapping
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[A-Za-z_0-9]{1,128}$/",
+     *     pattern = "/^[\sA-Za-z_0-9,.-]{1,128}$/",
      *     message = "import.error.residentId",
      *     groups = {
      *         "import"

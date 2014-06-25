@@ -4,11 +4,13 @@ namespace RentJeeves\DataBundle\Entity;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="rj_payment")
@@ -112,6 +114,7 @@ class Payment extends Base
         } elseif (($currentDay == $this->getDueDate())
             && $lastPaymentDate
             && $lastPaymentDate->format('Ymd') == $now->format('Ymd')
+            && $this->type == PaymentType::RECURRING
         ) {
             $now->modify('first day of next month');
             $month = $now->format('m');
@@ -123,6 +126,13 @@ class Payment extends Base
         return $now->setDate($year, $month, $day);
     }
 
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("amountOther")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return float|null
+     */
     public function getOther()
     {
         return ((0 < $this->getTotal())?$this->getTotal() - $this->getAmount() : null);

@@ -431,14 +431,21 @@ class ContractRepository extends EntityRepository
         return $query->iterate();
     }
 
-    public function getImportContract($tenant, $unitName)
+    public function getImportContract($tenant, $unitName, $externalUnitId = null)
     {
         $query = $this->createQueryBuilder('contract');
-        $query->leftJoin('contract.unit', 'unit');
-        $query->leftJoin('contract.tenant', 'tenant');
+        $query->innerJoin('contract.unit', 'unit');
+        $query->innerJoin('contract.tenant', 'tenant');
         $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
         $query->andWhere('tenant.id = :tenantId');
-        $query->andWhere('unit.name = :unitName');
+        if (!empty($externalUnitId)) {
+            $query->innerJoin('unit.unitMapping', 'uMap');
+            $query->andWhere('uMap.externalUnitId = :externalUnit');
+            $query->setParameter('externalUnit', $externalUnitId);
+        } else {
+            $query->andWhere('unit.name = :unitName');
+            $query->setParameter('unitName', $unitName);
+        }
         // if 2 or more contract get contract with status current in first priority
         $query->addOrderBy('contract.status', "DESC");
         //If 2 or more contract, get last updated
@@ -447,7 +454,7 @@ class ContractRepository extends EntityRepository
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('invite', ContractStatus::INVITE);
         $query->setParameter('tenantId', $tenant);
-        $query->setParameter('unitName', $unitName);
+
         $query->setMaxResults(1);
         $query = $query->getQuery();
 
@@ -613,7 +620,7 @@ class ContractRepository extends EntityRepository
         $query->leftJoin('c.property', 'p');
         $query->leftJoin('c.unit', 'u');
         $query->leftJoin('c.group', 'g');
-        $query->leftJoin('g.deposit_account', 'da');
+        $query->leftJoin('g.depositAccount', 'da');
         $query->leftJoin('c.payments', 'pay');
         if (!empty($status)) {
             $query->andWhere('c.status NOT IN :statuses');

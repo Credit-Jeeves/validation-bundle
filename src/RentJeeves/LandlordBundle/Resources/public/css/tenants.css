@@ -165,7 +165,7 @@ height: 23px;
 .onFinishAt {
     float: left;
 }
-.fields-box input.datepicker-field {
+.fields-box input.datepicker-field, input.datepicker {
     width: 75px;
 }
 .finishAtLabel {

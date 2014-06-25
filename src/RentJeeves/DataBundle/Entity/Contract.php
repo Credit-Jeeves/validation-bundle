@@ -121,6 +121,10 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupId")
+     * @Serializer\Groups({"payRent"})
+     *
      * @return int
      */
     public function getGroupId()
@@ -155,6 +159,8 @@ class Contract extends Base
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("payToName")
+     * @Serializer\Groups({"payRent"})
+     *
      * @return string
      */
     public function getPayToName()
@@ -171,6 +177,7 @@ class Contract extends Base
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("payment")
      * @Serializer\Type("RentJeeves\DataBundle\Entity\Payment")
+     * @Serializer\Groups({"payRent"})
      *
      * @return Payment
      */
@@ -197,7 +204,12 @@ class Contract extends Base
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
         $result['dueDate'] = $this->getDueDate();
-        $result['balance'] = $this->getBalance();
+        if ($this->getGroup()->getGroupSettings()->getIsIntegrated()) {
+            $balance = $this->getIntegratedBalance();
+        } else {
+            $balance = $this->getBalance();
+        }
+        $result['balance'] = $balance;
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];
@@ -625,7 +637,7 @@ class Contract extends Base
         $dueDateFromStartAt = (int)$startAt->format('j');
         $paidTo = new DateTime();
         $paidTo->setDate($startAt->format('Y'), $startAt->format('n'), null);
-        if ($dueDateFromStartAt >= $this->getDueDate()) {
+        if ($dueDateFromStartAt > $this->getDueDate()) {
             $paidTo->modify("+1 month");
         }
         $paidTo->setDate(null, null, $this->getDueDate());
@@ -665,6 +677,7 @@ class Contract extends Base
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("isPidVerificationSkipped")
      * @Serializer\Type("boolean")
+     * @Serializer\Groups({"payRent"})
      *
      * @return boolean
      */
@@ -755,10 +768,6 @@ class Contract extends Base
         return $startAt->setDate(null, null, $this->getDueDate());
     }
 
-
-    /**
-     * FIXME find why does not work!!!
-     */
     public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
     {
         if (!$this->getStartAt() || !$this->getFinishAt()) {
@@ -767,5 +776,29 @@ class Contract extends Base
         if ($this->getFinishAt() < $this->getStartAt()) {
             $validatorContext->addViolationAt('finish', 'contract.error.is_end_later_than_start', array(), null);
         }
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("depositAccount")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\DepositAccount")
+     * @Serializer\Groups({"payRent"})
+     */
+    public function getDepositAccount()
+    {
+        return $this->getGroup()->getDepositAccount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupSetting")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\GroupSettings")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return GroupSettings
+     */
+    public function getSettings()
+    {
+        return $this->getGroup()->getGroupSettings();
     }
 }

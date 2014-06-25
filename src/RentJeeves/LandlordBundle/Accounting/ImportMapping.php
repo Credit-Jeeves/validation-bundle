@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting;
 
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -47,16 +48,36 @@ class ImportMapping
 
     const KEY_PAYMENT_DATE = 'payment_date';
 
-    protected $requiredKeys = array(
+    const KEY_STREET = 'street';
+
+    const KEY_CITY = 'city';
+
+    const KEY_STATE = 'state';
+
+    const KEY_ZIP = 'zip';
+
+    const KEY_MONTH_TO_MONTH = 'month_to_month';
+
+    const KEY_UNIT_ID = 'unit_id';
+
+    protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
-        self::KEY_UNIT,
         self::KEY_RESIDENT_ID,
         self::KEY_BALANCE,
         self::KEY_LEASE_END,
         self::KEY_MOVE_IN,
         self::KEY_MOVE_OUT,
         self::KEY_RENT,
-        self::KEY_TENANT_NAME
+        self::KEY_TENANT_NAME,
+        self::KEY_UNIT,
+    );
+
+    protected $requiredKeysMultipleProperty = array(
+        self::KEY_CITY,
+        self::KEY_STREET,
+        self::KEY_STATE,
+        self::KEY_ZIP,
+        self::KEY_UNIT_ID,
     );
 
     public static $mappingDates = array(
@@ -68,7 +89,8 @@ class ImportMapping
         'Y/m/d' => 'yyyy/mm/dd (1998/09/24)',
         'j/n/y' => 'd/m/yy (24/9/98)',
         'd/m/y' => 'dd/mm/yy  (24/09/98)',
-        'm/d/y' => 'mm/dd/yy  (09/24/98)',
+        'm/d/y' => 'm/d/yy  (9/24/98)',
+        'm/d/Y' => 'm/d/yyyy  (9/24/1998)',
         'm-d-y' => 'mm-dd-yy  (09-24-98)',
         'm-d-Y' => 'mm-dd-yyyy  (09-24-1998)',
         'n-j-Y' => 'm-d-yyyy  (9-24-1998)',
@@ -96,19 +118,23 @@ class ImportMapping
      */
     protected $reader;
 
+    protected $geocoder;
+
     /**
      * @InjectParams({
      *     "storage"          = @Inject("accounting.import.storage"),
-     *     "reader"           = @Inject("import.reader.csv")
+     *     "reader"           = @Inject("import.reader.csv"),
+     *     "geocoder"         = @Inject("bazinga_geocoder.geocoder")
      * })
      */
-    public function __construct(ImportStorage $storage, CsvFileReaderImport $reader)
+    public function __construct(ImportStorage $storage, CsvFileReaderImport $reader, $geocoder)
     {
         $this->storage  = $storage;
         $this->reader   = $reader;
         $data = $this->storage->getImportData();
         $this->reader->setDelimiter($data[ImportStorage::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[ImportStorage::IMPORT_TEXT_DELIMITER]);
+        $this->geocoder = $geocoder;
     }
 
     public function getFileData($offset = null, $rowCount = null)
@@ -166,6 +192,14 @@ class ImportMapping
             $data[self::KEY_RENT]
         );
 
+        if ($this->storage->isMultipleProperty()) {
+            if (empty($data[self::KEY_UNIT])) {
+                $data = $this->parseStreet($data);
+            } else {
+                $data = $this->parseUnit($data);
+            }
+        }
+
         return $data;
     }
 
@@ -182,9 +216,17 @@ class ImportMapping
             return $mappedData;
         }
 
-        foreach ($this->requiredKeys as $requiredKey) {
+        foreach ($this->requiredKeysDefault as $requiredKey) {
             if (!isset($mappedData[$requiredKey])) {
                 $mappedData[$requiredKey] = null;
+            }
+        }
+
+        if ($this->storage->isMultipleProperty()) {
+            foreach ($this->requiredKeysMultipleProperty as $requiredKey) {
+                if (!isset($mappedData[$requiredKey])) {
+                    $mappedData[$requiredKey] = null;
+                }
             }
         }
 
@@ -203,7 +245,7 @@ class ImportMapping
             throw new ImportMappingException('csv.file.too.small1');
         }
 
-        if (count($data[1]) < 8) {
+        if (!isset($data[1])) {
             throw new ImportMappingException('csv.file.too.small2');
         }
 
@@ -292,14 +334,18 @@ class ImportMapping
      *
      * @return ContractWaiting
      */
-    public function createContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
-    {
+    public function createContractWaiting(
+        Tenant $tenant,
+        Contract $contract,
+        ResidentMapping $residentMapping
+    ) {
         $waitingRoom = new ContractWaiting();
         $waitingRoom->setStartAt($contract->getStartAt());
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
         $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
         $waitingRoom->setUnit($contract->getUnit());
+        $waitingRoom->setProperty($contract->getProperty());
 
         $waitingRoom->setFirstName($tenant->getFirstName());
         $waitingRoom->setLastName($tenant->getLastName());
@@ -308,6 +354,63 @@ class ImportMapping
         $waitingRoom->setResidentId($residentMapping->getResidentId());
 
         return $waitingRoom;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return Property
+     */
+    public function createProperty($row)
+    {
+        $property = new Property();
+        $property->setCity($row[self::KEY_CITY]);
+        $property->setStreet($row[self::KEY_STREET]);
+        $property->setZip($row[self::KEY_ZIP]);
+        $property->setArea($row[self::KEY_STATE]);
+
+        $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return $property->parseGeocodeResponse($result);
+    }
+
+    protected function parseStreet($row)
+    {
+        preg_match('/(?:\#|unit)\s?([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
+
+        if (empty($matches)) {
+            return $row;
+        }
+        list($unitString, $unitNumber) = $matches;
+
+        $row[self::KEY_STREET] = str_replace($unitString, '', $row[self::KEY_STREET]);
+        $row[self::KEY_UNIT] = $unitNumber;
+
+        return $row;
+    }
+
+    /**
+     * @param $row
+     *
+     * @return array
+     */
+    protected function parseUnit($row)
+    {
+        preg_match('/(?:\#|unit)?\s?([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
+
+        if (empty($matches)) {
+            return $row;
+        }
+        list($unitString, $unitNumber) = $matches;
+
+        $row[self::KEY_STREET] = str_replace($unitString, '', $row[self::KEY_STREET]);
+        $row[self::KEY_UNIT] = $unitNumber;
+
+        return $row;
     }
 
     /**
