@@ -69,9 +69,12 @@ function Payment(parent, paidTo) {
             return this.startMonth() + '/' + dayInMonth + '/' + this.startYear();
         },
         write: function (value) {
-            var date = Date.parseExact(value,  "M/d/yyyy");
+            var date = new Date(value);
             if (!date) {
-                return;
+                date = Date.parseExact(value,  "M/d/yyyy");
+                if (!date) {
+                    return;
+                }
             }
 
             this.startMonth(date.getMonth()+1);

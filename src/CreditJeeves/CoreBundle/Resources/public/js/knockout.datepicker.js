@@ -56,7 +56,8 @@ ko.bindingHandlers.datepicker = {
             showOtherMonths: true,
             selectOtherMonths: true
         };
-        el.datepicker(jQuery.extend(defaultOptions, options));
+        options = jQuery.extend(defaultOptions, options);
+        el.datepicker(options);
 
         //handle the field changing
         ko.utils.registerEventHandler(element, "change", function () {
