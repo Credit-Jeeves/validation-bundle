@@ -1472,7 +1472,7 @@ label.error b {
   width:100px;
 }
 
-.fields-box input.datepicker-field {
+.fields-box input.datepicker-field, input.datepicker {
   width:82px;
   padding-right:27px;
 }
@@ -4193,7 +4193,8 @@ table.ui-datepicker-calendar tbody tr td a {
   text-decoration:none;
 }
 
-.ui-datepicker-calendar td.ui-datepicker-other-month a {
+.ui-datepicker-calendar td.ui-datepicker-other-month a,
+.ui-datepicker-calendar td.ui-state-disabled span {
   color:#aeaeae;
 }
 

@@ -314,7 +314,8 @@ abstract class Group
      *     targetEntity="\RentJeeves\DataBundle\Entity\DepositAccount",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
+     *     orphanRemoval=true,
+     *     fetch="EAGER"
      * )
      */
     protected $depositAccount;
@@ -341,7 +342,8 @@ abstract class Group
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\GroupSettings",
      *     mappedBy="group",
-     *     cascade={"persist", "remove", "merge"}
+     *     cascade={"persist", "remove", "merge"},
+     *     fetch="EAGER"
      * )
      */
     protected $groupSettings;

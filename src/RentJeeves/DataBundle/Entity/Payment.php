@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="rj_payment")
@@ -123,6 +124,13 @@ class Payment extends Base
         return $now->setDate($year, $month, $day);
     }
 
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("amountOther")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return float|null
+     */
     public function getOther()
     {
         return ((0 < $this->getTotal())?$this->getTotal() - $this->getAmount() : null);
