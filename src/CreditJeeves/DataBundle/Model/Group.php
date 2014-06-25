@@ -308,8 +308,6 @@ abstract class Group
     protected $contracts;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToOne(
      *     targetEntity="\RentJeeves\DataBundle\Entity\DepositAccount",
      *     mappedBy="group",
@@ -317,6 +315,8 @@ abstract class Group
      *     orphanRemoval=true,
      *     fetch="EAGER"
      * )
+     *
+     * @var DepositAccount
      */
     protected $depositAccount;
 
@@ -387,11 +387,6 @@ abstract class Group
      */
     public function getGroupSettings()
     {
-        if (empty($this->groupSettings)) {
-            $this->groupSettings = new GroupSettings();
-            $this->groupSettings->setGroup($this);
-        }
-
         return $this->groupSettings;
     }
 
