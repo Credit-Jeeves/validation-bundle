@@ -737,7 +737,7 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This optional activity helps establish or build credit history when you make your rent payments on-time.</target>
+                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This free and optional activity helps to establish or build credit history. Available after your first successful online payment.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
