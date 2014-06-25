@@ -58,6 +58,18 @@
                 <source>admin.report.notice</source>
                 <target>Data to report for %m%/%y% not found</target>
             </trans-unit>
+            <trans-unit id="admin.deposit_account.merchant_name">
+                <source>admin.deposit_account.merchant_name</source>
+                <target>Merchant Name</target>
+            </trans-unit>
+            <trans-unit id="admin.deposit_account.fee_cc">
+                <source>admin.deposit_account.fee_cc</source>
+                <target>CC Fee (%)</target>
+            </trans-unit>
+            <trans-unit id="admin.deposit_account.fee_ach">
+                <source>admin.deposit_account.fee_ach</source>
+                <target>ACH Fee ($)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
