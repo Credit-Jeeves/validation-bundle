@@ -585,9 +585,15 @@
             </trans-unit>
             <trans-unit id="common.default.due_date">
                 <source>common.default.due_date</source>
-                <target>
-                   Default Due Date
-                </target>
+                <target>Default Due Date</target>
+            </trans-unit>
+            <trans-unit id="common.default.open_date">
+                <source>common.default.open_date</source>
+                <target>Open Date</target>
+            </trans-unit>
+            <trans-unit id="common.default.close_date">
+                <source>common.default.close_date</source>
+                <target>Close Date</target>
             </trans-unit>
             <trans-unit id="paid_to">
                 <source>paid_to</source>
@@ -737,7 +743,7 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This optional activity helps establish or build credit history when you make your rent payments on-time.</target>
+                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This free and optional activity helps to establish or build credit history. Available after your first successful online payment.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
@@ -1111,7 +1117,7 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.free">
                 <source>popup.invite.tenant.free</source>
-                <target>Free</target>
+                <target>Free*</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.scoretrack">
                 <source>popup.invite.tenant.scoretrack</source>
@@ -1135,7 +1141,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.pay.e-check">
                 <source>popup.tenant.pay.e-check</source>
-                <target>Pay Rent by E-Check</target>
+                <target>Pay Rent by E-Check*</target>
             </trans-unit>
             <trans-unit id="popup.tenant.pay.credit-card">
                 <source>popup.tenant.pay.credit-card</source>
@@ -1171,7 +1177,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_3">
                 <source>popup.tenant.footer.note_3</source>
-                <target>*We charge a technology platform fee of %payment_percent% per credit card transaction.</target>
+                <target>*RentTrack charges a technology platform fee of  %payment_percent% per credit card transaction. Some property managers may set a different fee, and may pass eCheck fees to tenants. Any fees will be displayed when setting up your first payment.</target>
             </trans-unit>
             <!-- Landlord Invite Popup -->
             <trans-unit id="popup.landlord.title_1">
@@ -1317,7 +1323,7 @@
             </trans-unit>
             <trans-unit id="benefit.landlord.el.free">
                 <source>benefit.landlord.el.free</source>
-                <target>Electronic Checks are Free!</target>
+                <target>Pay by eChecks or Credit Cards!</target>
             </trans-unit>
             <!-- Public base -->
             <trans-unit id="public.base.title">
@@ -1362,7 +1368,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_7">
                 <source>public.base.pay.title_7</source>
-                <target>To make this easy, paying rent by e-check is absolutely free. Oh, the opt-in credit reporting is also free. Did we say free?</target>
+                <target>To make this easy, there is no additional charge to report rent payments in order to build credit history.</target>
             </trans-unit>
             <trans-unit id="select.status.all">
                 <source>select.status.all</source>

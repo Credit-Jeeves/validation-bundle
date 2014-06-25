@@ -128,16 +128,19 @@ class RjGroupAdmin extends Admin
                     )
                 )
                 ->add('name')
-                ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name'))
+            ->end()
+            ->with('Deposit Account')
+                // admin.deposit_account.merchant_name
+                ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name', 'required' => false))
                 ->add(
                     'depositAccount.feeCC',
                     'number',
-                    array('label' => 'CC Fee (%)', 'required' => false)
+                    array('label' => 'CC Fee (%)', 'required' => false) //admin.deposit_account.fee_cc
                 )
                 ->add(
                     'depositAccount.feeACH',
                     'number',
-                    array('label' => 'ACH Fee ($)', 'required' => false)
+                    array('label' => 'ACH Fee ($)', 'required' => false) //admin.deposit_account.fee_ach
                 )
             ->end()
             ->with('Group Phones')
