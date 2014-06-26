@@ -28,6 +28,7 @@ class ComponentController extends Controller
         $paymentType = $this->createForm(
             new PaymentType(
                 $this->container->getParameter('payment_one_time_until_value'),
+                array(),
                 array()
             )
         );

@@ -3,6 +3,7 @@ function Pay(parent, contractId) {
 
     var self = this;
     var contract = parent.getContractById(contractId);
+    this.contract = contract;
     var current = 0;
     this.isValidUser = ko.observable(true);
     this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
@@ -143,6 +144,14 @@ function Pay(parent, contractId) {
     this.payment.endYear(finishDate.getYear());
     var paidForArr = parent.getPaidForArrContractById(contractId);
     this.payment.paidForOptions(associativeArrayToOptions(paidForArr));
+    this.payment.dueDates(contract.groupSetting.dueDays);
+
+    this.isDueDay = function(date) {
+        if (-1 == contract.groupSetting.dueDays.indexOf(date.getDate())) {
+            return [false, ''];
+        }
+        return [true, ''];
+    };
 
     this.getPaidFor = ko.computed(function() {
         return paidForArr[self.payment.paidFor()];
@@ -221,7 +230,7 @@ function Pay(parent, contractId) {
         finishDate.setDate(1);
         finishDate.setMonth(this.payment.endMonth() - 1);
         finishDate.setYear(this.payment.endYear());
-        var daysInMonth = Date.getDaysInMonth(this.payment.endYear(), this.payment.endMonth() - 1);
+        var daysInMonth = Date.getDaysInMonth(parseInt(this.payment.endYear()), parseInt(this.payment.endMonth()) - 1);
         finishDate.setDate(
             this.payment.dueDate() > daysInMonth ?
                 daysInMonth :
@@ -516,16 +525,6 @@ function Pay(parent, contractId) {
             self.newUserAddress([new Address()]);
             jQuery("input.datepicker-field").datepicker("destroy");
         }
-    });
-
-    jQuery("input.datepicker-field").datepicker({
-        showOn: "both",
-        buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
-        buttonImageOnly: true,
-        showOtherMonths: true,
-        selectOtherMonths: true,
-        dateFormat: 'm/d/yy',
-        minDate: new Date()
     });
 
 //    jQuery("#vi-questions").parent().replaceWith(jQuery("#vi-questions"));

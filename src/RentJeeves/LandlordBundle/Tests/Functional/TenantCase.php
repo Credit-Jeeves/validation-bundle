@@ -189,7 +189,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#contract-remove-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
         $this->setDefaultSession('goutte');

@@ -172,7 +172,7 @@ class OrderListenerCase extends Base
             ),
             array(
                 $integratedBalanceMustBe = -500.00,
-                $balanceOrderMustBe = -500.00,
+                $balanceOrderMustBe = 0.00,
                 $orderAmount = 500.00,
                 $orderStatus = OrderStatus::COMPLETE,
                 $operationType = OperationType::RENT,

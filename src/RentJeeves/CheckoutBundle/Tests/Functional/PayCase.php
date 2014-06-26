@@ -358,4 +358,12 @@ class PayCase extends BaseTestCase
 
         $this->page->pressButton('pay_popup.step.next');
     }
+
+    /**
+     * @test
+     */
+    public function oneTimePayment()
+    {
+        $this->markTestIncomplete('FINISH');
+    }
 }

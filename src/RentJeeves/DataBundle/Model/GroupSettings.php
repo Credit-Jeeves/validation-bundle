@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -60,6 +60,44 @@ abstract class GroupSettings
     protected $group;
 
     /**
+     * @ORM\Column(
+     *      type="integer",
+     *      name="due_date",
+     *      options={
+     *          "default":1
+     *      },
+     *      nullable=false
+     * )
+     */
+    protected $dueDate = 1;
+
+    /**
+     * @ORM\Column(
+     *      type="integer",
+     *      name="open_date",
+     *      options={
+     *          "default":1
+     *      },
+     *      nullable=false
+     * )
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $openDate = 1;
+
+    /**
+     * @ORM\Column(
+     *      type="integer",
+     *      name="close_date",
+     *      options={
+     *          "default":31
+     *      },
+     *      nullable=false
+     * )
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $closeDate = 31;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -78,66 +116,6 @@ abstract class GroupSettings
      * @var DateTime
      */
     protected $updatedAt;
-
-    /**
-     * @ORM\Column(
-     *      type="integer",
-     *      name="due_date",
-     *      options={
-     *          "default":1
-     *      },
-     *      nullable=false
-     * )
-     */
-    protected $dueDate = 1;
-
-    /**
-     * @param integer $dueDate
-     */
-    public function setDueDate($dueDate)
-    {
-        $this->dueDate = $dueDate;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getDueDate()
-    {
-        return $this->dueDate;
-    }
-
-    /**
-     * @param DateTime $createdAt
-     */
-    public function setCreatedAt(DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param DateTime $updatedAt
-     */
-    public function setUpdatedAt(DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
 
     /**
      * @param boolean $pidVerification
@@ -193,5 +171,85 @@ abstract class GroupSettings
     public function getIsIntegrated()
     {
         return $this->isIntegrated;
+    }
+
+    /**
+     * @param integer $dueDate
+     */
+    public function setDueDate($dueDate)
+    {
+        $this->dueDate = $dueDate;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getDueDate()
+    {
+        return $this->dueDate;
+    }
+
+    /**
+     * @param integer $openDate
+     */
+    public function setOpenDate($openDate)
+    {
+        $this->openDate = $openDate;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getOpenDate()
+    {
+        return $this->openDate;
+    }
+
+    /**
+     * @param integer $closeDate
+     */
+    public function setCloseDate($closeDate)
+    {
+        $this->closeDate = $closeDate;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getCloseDate()
+    {
+        return $this->closeDate;
+    }
+
+    /**
+     * @param DateTime $createdAt
+     */
+    public function setCreatedAt(DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param DateTime $updatedAt
+     */
+    public function setUpdatedAt(DateTime $updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

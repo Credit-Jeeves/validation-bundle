@@ -11,7 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use JMS\Serializer\SerializationContext;
 use DateTime;
 
-
 class CreditTrackController extends Controller
 {
     /**

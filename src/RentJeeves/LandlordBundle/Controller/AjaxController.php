@@ -688,6 +688,7 @@ class AjaxController extends Controller
         $errors = array();
         $response = array();
         $translator = $this->get('translator');
+        /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         $contract = $request->request->all('contract');
         $details = $contract['contract'];
@@ -744,7 +745,8 @@ class AjaxController extends Controller
                 $landlord,
                 $contract
             );
-            $em->remove($contract);
+            $contract->setStatus(ContractStatus::DELETED);
+            $em->persist($contract);
             $em->flush();
             return new JsonResponse($response);
         }

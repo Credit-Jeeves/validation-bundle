@@ -41,8 +41,32 @@ class GroupSettings extends Base
                 'choices'           => $dueDate,
                 'error_bubbling'    => true,
                 'label'             => 'common.default.due_date',
-                'required'          => false,
+                'required'          => true,
                 'empty_data'        => 1,
+            )
+        );
+
+        $builder->add(
+            'openDate',
+            'choice',
+            array(
+                'choices'           => $dueDate,
+                'error_bubbling'    => true,
+                'label'             => 'common.default.open_date',
+                'required'          => true,
+                'empty_data'        => 1,
+            )
+        );
+
+        $builder->add(
+            'closeDate',
+            'choice',
+            array(
+                'choices'           => $dueDate,
+                'error_bubbling'    => true,
+                'label'             => 'common.default.close_date',
+                'required'          => true,
+                'empty_data'        => 31,
             )
         );
 

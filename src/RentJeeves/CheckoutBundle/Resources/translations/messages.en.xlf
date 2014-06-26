@@ -170,7 +170,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.dueDate.invalid">
                 <source>checkout.error.dueDate.invalid</source>
-                <target>Type is invalid.</target>
+                <target>Your property manager only accepts payments between %OPEN_DATE% and %CLOSE_DATE%.</target>
             </trans-unit>
             <trans-unit id="checkout.recurring.monthly.tooltip.title">
                 <source>checkout.recurring.monthly.tooltip.title-%DUE_DAY%</source>
@@ -370,7 +370,7 @@
             </trans-unit>
             <trans-unit id="checkout.fee.bank.note.help">
                 <source>checkout.fee.bank.note.help-%FEE%</source>
-                <target>Your landlord requires an additional fee of %FEE% when using E-Checks for payment. An final total will be shown on the Review &amp; Pay step.</target>
+                <target>Your landlord requires an additional fee of %FEE% when using E-Checks for payment. A final total will be shown on the Review &amp; Pay step.</target>
             </trans-unit>
             <trans-unit id="checkout.recurring_for">
                 <source>checkout.recurring_for</source>

@@ -5,6 +5,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use RentJeeves\DataBundle\Model\GroupSettings as Base;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Form\Exception\LogicException;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * GroupSettings
@@ -40,5 +41,22 @@ class GroupSettings extends Base
         if ($isIntegratedBefore && !$isIntegratedNew) {
             throw new LogicException("Once a client is set up as integrated, we not allow to turn off afterwards.");
         }
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("dueDays")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return array
+     */
+    public function getDueDays()
+    {
+        if ($this->getOpenDate() < $this->getCloseDate()) {
+            $return = range($this->getOpenDate(), $this->getCloseDate());
+        } else {
+            $return = array_merge(range($this->getOpenDate(), 31), range(1, $this->getCloseDate()));
+        }
+        return $return;
     }
 }

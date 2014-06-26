@@ -888,8 +888,6 @@ class ImportCase extends BaseTestCase
      */
     public function signUpFromImportedWaitingContract()
     {
-        $this->markTestSkipped('Double check this test. Manual rechecking works well.');
-
         $this->setDefaultSession('selenium2');
         $this->logout();
         /**
@@ -954,7 +952,7 @@ class ImportCase extends BaseTestCase
         );
         $this->assertNull($waitingContract);
         /** @var Tenant $tenant */
-        $tenant = $em->getRepository('DataBundle:Tenant')->findOneBy(
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array('email' => 'dan.price@mail.com')
         );
         $this->assertNotNull($tenant);

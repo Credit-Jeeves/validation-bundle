@@ -16,8 +16,8 @@ function Payment(parent, paidTo) {
             Translator.trans(
                 'info.payment.date',
                 {
-                    "%DAY_1%" : self.dueDate(),
-                    "%DAY_2%" : dayInMonth
+                    'DAY_1' : self.dueDate(),
+                    'DAY_2' : dayInMonth
                 }
             )
         );
@@ -37,13 +37,14 @@ function Payment(parent, paidTo) {
         if ('month_last_date' == newValue) {
             this.dueDate(31);
         } else {
-            this.dueDate(startDate.getDate());
+            this.dueDate(parent.contract.dueDate);
         }
     }, this);
 
     this.startMonth = ko.observable(paidTo.toString("M"));
     this.startYear = ko.observable(paidTo.toString("yyyy"));
     this.dueDate = ko.observable();
+    this.dueDates = ko.observable([]);
     this.dueDate.subscribe(function(newValue) {
         self.checkDueDate();
     });
@@ -68,9 +69,12 @@ function Payment(parent, paidTo) {
             return this.startMonth() + '/' + dayInMonth + '/' + this.startYear();
         },
         write: function (value) {
-            var date = Date.parseExact(value,  "M/d/yyyy");
+            var date = new Date(value);
             if (!date) {
-                return;
+                date = Date.parseExact(value,  "M/d/yyyy");
+                if (!date) {
+                    return;
+                }
             }
 
             this.startMonth(date.getMonth()+1);
@@ -98,22 +102,4 @@ function Payment(parent, paidTo) {
 
     this.endMonth = ko.observable(null);
     this.endYear = ko.observable(null);
-
-    /**
-     * Make sure month and year it integer, because library for work with date(datejs)
-     * show such error: Uncaught TypeError: 2026 is not a Number.
-     */
-    this.endMonth.subscribe(function(newValue) {
-        if (typeof newValue === 'number') {
-            return;
-        }
-        self.endMonth(parseInt(newValue));
-    });
-
-    this.endYear.subscribe(function(newValue) {
-        if (typeof newValue === 'number') {
-            return;
-        }
-        self.endYear(parseInt(newValue));
-    });
 }

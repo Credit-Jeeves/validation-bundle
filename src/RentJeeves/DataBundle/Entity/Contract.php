@@ -121,6 +121,10 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupId")
+     * @Serializer\Groups({"payRent"})
+     *
      * @return int
      */
     public function getGroupId()
@@ -200,7 +204,12 @@ class Contract extends Base
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
         $result['dueDate'] = $this->getDueDate();
-        $result['balance'] = $this->getBalance();
+        if ($this->getGroup()->getGroupSettings()->getIsIntegrated()) {
+            $balance = $this->getIntegratedBalance();
+        } else {
+            $balance = $this->getBalance();
+        }
+        $result['balance'] = $balance;
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];
@@ -634,7 +643,7 @@ class Contract extends Base
         $dueDateFromStartAt = (int)$startAt->format('j');
         $paidTo = new DateTime();
         $paidTo->setDate($startAt->format('Y'), $startAt->format('n'), null);
-        if ($dueDateFromStartAt >= $this->getDueDate()) {
+        if ($dueDateFromStartAt > $this->getDueDate()) {
             $paidTo->modify("+1 month");
         }
         $paidTo->setDate(null, null, $this->getDueDate());
@@ -784,5 +793,18 @@ class Contract extends Base
     public function getDepositAccount()
     {
         return $this->getGroup()->getDepositAccount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupSetting")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\GroupSettings")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return GroupSettings
+     */
+    public function getSettings()
+    {
+        return $this->getGroup()->getGroupSettings();
     }
 }
