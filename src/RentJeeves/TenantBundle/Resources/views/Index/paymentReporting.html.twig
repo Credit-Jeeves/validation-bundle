@@ -36,7 +36,7 @@
                 </p>
                 <br />
                 <center>
-                    <button class="button small" data-bind="click: openPopup">
+                    <button class="button small" data-bind="click: openPopup, enable: {% if hasAccessToOptInReporting %}true{% else %}false{% endif %}">
                         <span>{{ 'bureau.reporting.setup' | trans() }}</span>
                     </button>
                 </center>

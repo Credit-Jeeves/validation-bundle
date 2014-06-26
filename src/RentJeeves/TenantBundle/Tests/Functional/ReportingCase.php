@@ -24,7 +24,7 @@ class ReportingCase extends BaseTestCase
             $form,
             array(
                 'rep-experian'  => true,
-//                'rep-tu'    => true,
+                'rep-tu'    => true,
             )
         );
 
@@ -35,8 +35,8 @@ class ReportingCase extends BaseTestCase
         $this->assertNotNull($link = $this->page->find('css', 'a span.reporting-action'));
         $link->click();
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '.reporting-start input[type=checkbox]'));
-        $this->assertEquals(1, count($checkboxes));
+        $this->assertEquals(2, count($checkboxes));
         $this->assertTrue($checkboxes[0]->isChecked());
-//        $this->assertTrue($checkboxes[1]->isChecked());
+        $this->assertTrue($checkboxes[1]->isChecked());
     }
 }
