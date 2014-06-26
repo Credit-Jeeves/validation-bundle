@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
@@ -181,6 +182,14 @@ class Order extends BaseOrder
      */
     public function getPersonId()
     {
+        $residentMapping = $this->getContract()->getTenant()->getResidentsMapping();
+        /** @var ResidentMapping $mapping */
+        foreach ($residentMapping as $mapping) {
+            if ($mapping->getHolding()->getId() == $this->getContract()->getHolding()->getId()) {
+                return $mapping->getResidentId();
+            }
+        }
+
         return null;
     }
 
@@ -403,7 +412,11 @@ class Order extends BaseOrder
      */
     public function getTenantExternalId()
     {
-        return $this->getContract()->getTenant()->getResidentsMapping()->first()->getResidentId();
+        if ($residentMapping = $this->getContract()->getTenant()->getResidentsMapping()->first()) {
+            return $residentMapping->getResidentId();
+        }
+
+        return null;
     }
 
     /**

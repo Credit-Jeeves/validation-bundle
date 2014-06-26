@@ -58,6 +58,7 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($notes = $receipt->Notes);
         $this->assertNotNull($propertyId = $receipt->PropertyId);
         $this->assertNotNull($payerName = $receipt->PayerName);
+        $this->assertNotNull($personId = $receipt->PersonId);
         $this->assertNotNull($postMonth = $receipt->PostMonth);
         $this->assertNotNull($details = $receipt->Details->Detail);
         $this->assertNotNull($amount = $details->Amount);
@@ -72,6 +73,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 123456', (string) $checkNumber);
         $this->assertEquals('TIMOTHY APPLEGATE', (string) $payerName);
+        $this->assertEquals('FGDTRFG-44', (string) $personId);
         $this->assertEquals('1500.00', (string)$amount);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
 
