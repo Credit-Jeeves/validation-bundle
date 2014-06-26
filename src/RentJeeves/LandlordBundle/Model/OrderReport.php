@@ -13,7 +13,7 @@ class OrderReport
      * @Serializer\SerializedName("Receipts")
      * @Serializer\XmlList(inline = false, entry="Receipt")
      * @Serializer\XmlKeyValuePairs
-     * @Serializer\Groups({"xmlReport", "csvReport"})
+     * @Serializer\Groups({"xmlReport", "csvReport", "promasReport"})
      */
     protected $receipts = array();
 

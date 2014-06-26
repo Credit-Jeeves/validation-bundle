@@ -1,0 +1,5 @@
+model: RentJeeves\DataBundle\Entity\UnitMapping
+fixtures:
+    UnitMapping_1:
+        unit: Unit_1_7
+        externalUnitId: AAABBB-7

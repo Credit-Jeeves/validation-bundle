@@ -249,6 +249,37 @@ class OrderRepository extends EntityRepository
         return $query->execute();
     }
 
+    public function getOrdersForPromasReport(Group $group, $start, $end)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.tenant', 'ten');
+        $query->innerJoin('ten.residentsMapping', 'res');
+        $query->innerJoin('t.unit', 'unit');
+        $query->innerJoin('unit.unitMapping', 'uMap');
+        $query->innerJoin('o.heartlands', 'heartland');
+        $query->innerJoin('t.group', 'g');
+        $query->innerJoin('g.groupSettings', 'gs');
+        $query->where("o.updated_at BETWEEN :start AND :end");
+        $query->andWhere('o.status = :status');
+        $query->andWhere('o.type in (:orderType)');
+        $query->andWhere('g.id = :groupId');
+        $query->andWhere('gs.isIntegrated = 1');
+        $query->andWhere('res.holding = :holding');
+        $query->setParameter('end', $end);
+        $query->setParameter('start', $start);
+        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->setParameter('orderType', array(OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK));
+        $query->setParameter('groupId', $group->getId());
+        $query->setParameter('holding', $group->getHolding());
+        $query->orderBy('res.residentId', 'ASC');
+        $query->orderBy('heartland.batchId', 'ASC');
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
     public function getDepositedOrders(Group $group, $accountType, $page = 1, $limit = 100)
     {
         // get Batch Ids
