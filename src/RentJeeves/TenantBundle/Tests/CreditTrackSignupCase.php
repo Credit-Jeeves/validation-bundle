@@ -4,7 +4,7 @@ namespace RentJeeves\TenantBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-class SummaryCase extends BaseTestCase
+class CreditTrackSignupCase extends BaseTestCase
 {
     /**
      * @test
