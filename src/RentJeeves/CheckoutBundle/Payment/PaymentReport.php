@@ -14,6 +14,12 @@ use RuntimeException;
  */
 class PaymentReport
 {
+    const TRANSACTION_TYPE_PAYMENT = 'Payment';
+    const TRANSACTION_TYPE_PAYMENT_RETURN = 'Payment Return';   // with 1 space
+    const TRANSACTION_TYPE_PAYMENT__RETURN = 'Payment  Return'; // with 2 spaces
+    const TRANSACTION_TYPE_PAYMENT_REFUND = 'Payment  Refund';
+    const TRANSACTION_TYPE_PAYMENT_VOID = 'Payment  Void';
+
     protected $em;
     protected $repo;
     protected $fileReader;
@@ -55,16 +61,17 @@ class PaymentReport
 
         foreach ($data as $paymentData) {
             switch ($paymentData['TransactionType']) {
-                case 'Payment':
+                case self::TRANSACTION_TYPE_PAYMENT:
                     $this->processCompletePayment($paymentData, $data);
                     break;
-                case 'Payment  Return':
+                case self::TRANSACTION_TYPE_PAYMENT_RETURN:
+                case self::TRANSACTION_TYPE_PAYMENT__RETURN:
                     $this->processReturnedPayment($paymentData);
                     break;
-                case 'Payment  Refund':
+                case self::TRANSACTION_TYPE_PAYMENT_REFUND:
                     $this->processRefundedPayment($paymentData);
                     break;
-                case 'Payment  Void':
+                case self::TRANSACTION_TYPE_PAYMENT_VOID:
                     $this->processCancelledPayment($paymentData);
                     break;
             }
