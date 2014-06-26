@@ -18,7 +18,6 @@ abstract class DepositAccount
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"paymentSelect"});
      */
     protected $id;
 
@@ -32,8 +31,6 @@ abstract class DepositAccount
      *      referencedColumnName="id"
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
-     * @Serializer\Groups({"paymentSelect"});
-     * @Serializer\MaxDepth(3)
      */
     protected $group;
 

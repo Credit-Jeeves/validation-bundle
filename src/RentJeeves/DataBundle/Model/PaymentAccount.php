@@ -18,7 +18,7 @@ abstract class PaymentAccount
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"basic", "paymentSelect"});
+     * @Serializer\Groups({"basic", "paymentAccounts"});
      */
     protected $id;
 
@@ -49,11 +49,7 @@ abstract class PaymentAccount
      *      inverseJoinColumns={@ORM\JoinColumn(name="deposit_account_id", referencedColumnName="id")}
      * )
      * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
-<<<<<<< HEAD
-     * @Serializer\Groups({"paymentSelect"});
-=======
      * @Serializer\Groups({"details", "paymentAccounts"});
->>>>>>> origin/master
      */
     protected $depositAccounts;
 
@@ -72,11 +68,7 @@ abstract class PaymentAccount
      *
      * @Serializer\SerializedName("addressId")
      * @Serializer\Accessor(getter="getAddressId")
-<<<<<<< HEAD
-     * @Serializer\Groups({"basic", "paymentSelect"});
-=======
      * @Serializer\Groups({"basic", "paymentAccounts"});
->>>>>>> origin/master
      *
      * @var \CreditJeeves\DataBundle\Entity\Address
      */
@@ -94,11 +86,7 @@ abstract class PaymentAccount
      *          "bank"
      *      }
      * )
-<<<<<<< HEAD
-     * @Serializer\Groups({"basic", "paymentSelect"});
-=======
      * @Serializer\Groups({"basic", "paymentAccounts"});
->>>>>>> origin/master
      */
     protected $type;
 
@@ -114,11 +102,7 @@ abstract class PaymentAccount
      *          "save"
      *      }
      * )
-<<<<<<< HEAD
-     * @Serializer\Groups({"basic", "paymentSelect"});
-=======
      * @Serializer\Groups({"basic", "paymentAccounts"});
->>>>>>> origin/master
      */
     protected $name;
 
@@ -128,6 +112,7 @@ abstract class PaymentAccount
      *      type="string",
      *      length=255
      * )
+     * @Serializer\Groups({"basic"});
      */
     protected $token;
 
@@ -137,12 +122,7 @@ abstract class PaymentAccount
      *      type="date",
      *      nullable=true
      * )
-<<<<<<< HEAD
-     * @Serializer\Groups({"basic", "paymentSelect"});
-     * @Serializer\Type("DateTime<'Y-m-d'>")
-=======
      * @Serializer\Groups({"paymentAccounts"});
->>>>>>> origin/master
      */
     protected $ccExpiration;
 
@@ -161,7 +141,7 @@ abstract class PaymentAccount
      *     name="updated_at",
      *     type="datetime"
      * )
-     * @Serializer\Groups({"basic", "paymentSelect"});
+     * @Serializer\Groups({"basic"});
      */
     protected $updatedAt;
 

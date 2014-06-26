@@ -22,7 +22,7 @@ abstract class Group
      * @ORM\Id
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"paymentSelect"});
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $id;
 

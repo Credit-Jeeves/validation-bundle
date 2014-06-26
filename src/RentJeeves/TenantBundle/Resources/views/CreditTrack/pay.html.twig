@@ -24,7 +24,7 @@
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
             <div data-bind="visible: $root.notEmptyPaymentAccount" class="form-row clearfix" >
                 <label>{{ 'payment.account' | trans }}*</label>
-                <div class="fields-box">
+                <div class="fields-box payment-accounts">
                     <small ><b>*</b>{{ 'required' | trans }}</small>
                     <!-- ko foreach: paymentAccounts -->
                         <label class="checkbox radio" style="clear: left;">
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <div data-bind="visible: 'pay' == step()">
+        <div data-bind="visible: 'pay' == step()" id="id-pay-step">
             <h3 class="italic">
                 {{ 'credittrack.pay.confirm'|trans({'%amount%': credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents })|raw }}
             </h3>

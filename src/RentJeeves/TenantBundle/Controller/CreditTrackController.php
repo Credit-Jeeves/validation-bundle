@@ -32,12 +32,12 @@ class CreditTrackController extends Controller
         $paymentAccounts = $serializer->serialize(
             $paymentAccounts,
             'json',
-            SerializationContext::create()->setGroups(array('paymentSelect'))
+            SerializationContext::create()->setGroups(array('paymentAccounts'))
         );
         $group = $serializer->serialize(
             $group,
             'json',
-            SerializationContext::create()->setGroups(array('paymentSelect'))
+            SerializationContext::create()->setGroups(array('paymentAccounts'))
         );
 
         return array(
