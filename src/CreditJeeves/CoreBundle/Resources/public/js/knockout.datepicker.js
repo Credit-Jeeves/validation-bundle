@@ -57,12 +57,11 @@ ko.bindingHandlers.datepicker = {
             selectOtherMonths: true
         };
         options = jQuery.extend(defaultOptions, options);
-        el.datepicker(options);
 
         //handle the field changing
         ko.utils.registerEventHandler(element, "change", function () {
             var observable = valueAccessor();
-            observable(el.datepicker("getDate"));
+            observable(el.datepicker().val());
         });
 
         //handle disposal (if KO removes by the template binding)
@@ -70,9 +69,11 @@ ko.bindingHandlers.datepicker = {
             el.datepicker("destroy");
         });
 
+        el.datepicker(options);
     },
     update: function(element, valueAccessor) {
-        var value = ko.utils.unwrapObservable(valueAccessor());
+        var observable = valueAccessor();
+        var value = ko.utils.unwrapObservable(observable);
         var el = jQuery(element);
 
         //handle date data coming via json from Microsoft
@@ -83,7 +84,10 @@ ko.bindingHandlers.datepicker = {
         var current = el.datepicker("getDate");
 
         if (value - current !== 0) {
-            el.datepicker("setDate", value);
+            el.datepicker().val(value);
+            if (value != el.datepicker().val()) {
+                observable(el.datepicker().val());
+            }
         }
     }
 };
