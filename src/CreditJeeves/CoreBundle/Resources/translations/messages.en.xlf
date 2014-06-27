@@ -1488,6 +1488,10 @@
                 <source>login.error.msg</source>
                 <target>Email/Password combination not found. Please try again.</target>
             </trans-unit>
+            <trans-unit id="Bad credentials">
+                <source>Bad credentials</source>
+                <target>Email/Password combination not found. Please try again.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
