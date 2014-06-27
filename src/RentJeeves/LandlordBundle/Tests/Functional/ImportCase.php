@@ -12,8 +12,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Model\Unit;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping as Import;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
-use \DateTime;
-use \SimpleXMLElement;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -875,7 +874,9 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($waitingContract);
         $this->assertEquals(975, $waitingContract->getRent());
         $this->assertEquals(193, $waitingContract->getIntegratedBalance());
-        $this->assertEquals('2014-01-01', $waitingContract->getStartAt()->format('Y-m-d'));
+        $date = new DateTime();
+        $date->setDate(null, null, 1);
+        $this->assertEquals($date->format('Y-m-d'), $waitingContract->getStartAt()->format('Y-m-d'));
         $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->isSingle());
 
