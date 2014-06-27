@@ -432,8 +432,8 @@ class ImportProcess
             $startAt = new DateTime();
             if ($row[ImportMapping::KEY_BALANCE] <= 0) {
                 // snap to next month due date (default from group) for start_at
-                $month = (int)$today->format('n') + 1;
-                $startAt = $startAt->setDate(null, $month, $groupDueDate);
+                $startAt->modify('+1 month');
+                $startAt = $startAt->setDate(null, null, $groupDueDate);
             } else {
                 // snap to this month due date (default from group) for start_at
                 $startAt = $startAt->setDate(null, null, $groupDueDate);
