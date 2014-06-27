@@ -1,3 +1,5 @@
+{# FIXME split to 2 files for each popup & froms must be used #}
+
 <div id="contract-resolve">
     <!-- Resolve Popup Late -->
     <div id="contract-resolve-late" class="pricing-popup dashboard-popup properties-popup">
@@ -9,7 +11,11 @@
                 <ul class="type_checkbox">
                     <li>
                         <label class="checkbox radio">
-                            <input type="radio" name="ResolutionOptions" title="email" checked>
+                            <input type="radio"
+                                   name="ResolutionOptions"
+                                   value="email"
+                                   title="email"
+                                   data-bind="checked: resolveValue" />
                             <i></i>
                             <span>{{ 'conflict.resolve.email' | trans() }}</span>
                         </label>
@@ -17,7 +23,11 @@
                     </li>
                     <li>
                         <label class="checkbox radio">
-                            <input type="radio" name="ResolutionOptions" title="paid">
+                            <input type="radio"
+                                   name="ResolutionOptions"
+                                   title="paid"
+                                   value="paid"
+                                   data-bind="checked: resolve">
                             <i></i>
                             <span>{{ 'conflict.resolve.paid' | trans() }}</span>
                         </label>
@@ -25,7 +35,23 @@
                     </li>
                     <li>
                         <div class="amount-paid-label floatleft">{{ 'contract.paid.cash' | trans }}</div>
-                        <div class="amount-paid-input floatleft"><input type="text" id="amount-paid"></div>
+                        <div class="amount-paid-input floatleft">
+                            <input type="text" id="amount-paid" data-bind="checked: amount" />
+                        </div>
+                        <div class="clearboth"></div>
+                        <div class="row-10"></div>
+                    </li>
+                    <li>
+                        <label class="amount-paid-label floatleft" for="paid-for">
+                            {{ 'contract.paid.paid_for' | trans }}
+                        </label>
+                        <div class="amount-paid-input floatleft">
+                            <select id="paid-for"
+                                    class="original"
+                                    data-bind="options: paidForOptions, optionsText: 'text', optionsValue: 'value',
+                                        value: paidFor">
+                            </select>
+                        </div>
                         <div class="clearboth"></div>
                     </li>
                     <li>

@@ -656,10 +656,14 @@ class AjaxController extends Controller
             $searchText
         );
         $contracts = $query->getQuery()->execute();
+        $paidForArr = array();
+        /** @var Contract $contract */
         foreach ($contracts as $contract) {
             $contract->setStatusShowLateForce(true);
             $item = $contract->getItem();
             $items[] = $item;
+
+            $paidForArr[$contract->getId()] = $this->get('checkout.paid_for')->getArray($contract);
         }
         $total = $query->select('count(c)')
             ->setMaxResults(null)
@@ -668,6 +672,7 @@ class AjaxController extends Controller
             ->getSingleScalarResult();
         $result['actions'] = $items;
         $result['total'] = $total;
+        $result['paidForArr'] = $paidForArr;
         $result['pagination'] = $this->datagridPagination($total, $data['limit']);
         
         return new JsonResponse($result);

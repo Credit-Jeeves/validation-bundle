@@ -44,6 +44,8 @@ ko.bindingHandlers.datepickerOld = {
     }
 };
 
+// <input data-bind="datepicker: myDate, datepickerOptions: { minDate: new Date() }" />
+// @url http://jsfiddle.net/rniemeyer/NAgNV/
 ko.bindingHandlers.datepicker = {
     init: function(element, valueAccessor, allBindingsAccessor) {
         //initialize datepicker with some optional options

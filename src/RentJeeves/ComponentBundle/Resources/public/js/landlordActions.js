@@ -1,3 +1,5 @@
+//FIXME refactor. Move it to template. Replace
+
 var ActionsViewModel = new Actions();
 var ResolveViewModel = new Resolve();
 
