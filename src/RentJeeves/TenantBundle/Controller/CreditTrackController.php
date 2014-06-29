@@ -14,6 +14,8 @@ use DateTime;
 class CreditTrackController extends Controller
 {
     /**
+     * Render the credit track signup/pay dialog
+     *
      * @Template()
      * @return array
      */
