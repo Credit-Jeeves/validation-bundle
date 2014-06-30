@@ -27,10 +27,11 @@ class ExportCase extends BaseTestCase
 
         $this->page->pressButton('base.order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(5, count($errors));
+        $this->assertEquals(6, count($errors));
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
 
         $this->assertNotNull($propertyId = $this->page->find('css', '#base_order_report_type_propertyId'));
         $this->assertNotNull($accountId = $this->page->find('css', '#base_order_report_type_accountId'));
@@ -41,6 +42,7 @@ class ExportCase extends BaseTestCase
         $arAccountId->setValue(77);
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
+        $property->selectOption(1);
 
         $this->page->pressButton('base.order.report.download');
 
@@ -56,6 +58,7 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($notes = $receipt->Notes);
         $this->assertNotNull($propertyId = $receipt->PropertyId);
         $this->assertNotNull($payerName = $receipt->PayerName);
+        $this->assertNotNull($personId = $receipt->PersonId);
         $this->assertNotNull($postMonth = $receipt->PostMonth);
         $this->assertNotNull($details = $receipt->Details->Detail);
         $this->assertNotNull($amount = $details->Amount);
@@ -70,6 +73,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 123456', (string) $checkNumber);
         $this->assertEquals('TIMOTHY APPLEGATE', (string) $payerName);
+        $this->assertEquals('FGDTRFG-44', (string) $personId);
         $this->assertEquals('1500.00', (string)$amount);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
 
@@ -91,17 +95,19 @@ class ExportCase extends BaseTestCase
 
         $this->page->pressButton('base.order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(5, count($errors));
+        $this->assertEquals(6, count($errors));
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
         $type->selectOption('csv');
         $this->page->pressButton('base.order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(2, count($errors));
+        $this->assertEquals(3, count($errors));
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
+        $property->selectOption(1);
 
         $this->page->pressButton('base.order.report.download');
 
@@ -120,5 +126,41 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('APPLEGATE', $csvArr[5]);
         $this->assertEquals('PMTCRED', $csvArr[6]);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a PMTCRED 123456', $csvArr[7]);
+    }
+
+    /**
+     * @test
+     */
+    public function promasCsvFormat()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('promas');
+        $this->page->pressButton('base.order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(2, count($errors));
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+
+        $this->page->pressButton('base.order.report.download');
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\n", $csv);
+        $this->assertEquals(6, count($csvArr));
+        $header = 'Date,"UNIT ID",TotalAmount,Memo,"Tenant ID"';
+        $this->assertEquals($header, $csvArr[0]);
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[3]));
+        $this->assertEquals('AAABBB-7', $csvArr[1]);
+        $this->assertEquals('1500.00', $csvArr[2]);
+        $this->assertEquals('FGDTRFG-44', $csvArr[4]);
     }
 }

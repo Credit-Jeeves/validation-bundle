@@ -39,9 +39,14 @@ class IndexController extends Controller
     public function paymentReportingAction()
     {
         $tenant = $this->getUser();
-        $isReporting = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->countReporting($tenant);
+        $contractRepo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
+        $isReporting = $contractRepo->countReporting($tenant);
+        $hasAccessToOptInReporting = $contractRepo->countTenantContractsByStatus($tenant, ContractStatus::CURRENT) > 0;
 
-        return array('isReporting' => $isReporting);
+        return array(
+            'isReporting' => $isReporting,
+            'hasAccessToOptInReporting' => $hasAccessToOptInReporting,
+        );
     }
 
     /**

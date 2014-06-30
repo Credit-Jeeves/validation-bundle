@@ -289,7 +289,7 @@ class TransUnionReportRecord
 
     public function getAmountPastDue()
     {
-        return str_pad((int)$this->contract->getBalance(), 9, '0', STR_PAD_LEFT);
+        return str_pad((int)$this->getBalance(), 9, '0', STR_PAD_LEFT);
     }
 
     public function getOriginalChargeOffAmount()
@@ -395,7 +395,17 @@ class TransUnionReportRecord
         return str_pad($zip, 9, '0');
     }
 
-    private function getFormattedRentAmount()
+    protected function getBalance()
+    {
+        $isIntegratedGroup = $this->contract->getGroup()->getGroupSettings()->getIsIntegrated();
+        if ($isIntegratedGroup) {
+            return $this->contract->getIntegratedBalance();
+        }
+
+        return $this->contract->getBalance();
+    }
+
+    protected function getFormattedRentAmount()
     {
         $rent = (int)$this->contract->getRent();
 

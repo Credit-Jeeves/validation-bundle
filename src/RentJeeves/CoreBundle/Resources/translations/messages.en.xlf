@@ -1800,6 +1800,10 @@
                 <source>base.order.report.type.realpage</source>
                 <target>RealPage OneSite (CSV)</target>
             </trans-unit>
+            <trans-unit id="base.order.report.type.promas">
+                <source>base.order.report.type.promas</source>
+                <target>Promas (CSV)</target>
+            </trans-unit>
             <trans-unit id="base.order.report.download">
                 <source>base.order.report.download</source>
                 <target>Download Report</target>

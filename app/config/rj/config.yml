@@ -133,6 +133,3 @@ payum:
 bazinga_geocoder:
     providers:
         google_maps: ~
-        google_maps_business:
-            client_id: 'setup please'
-            api_key: 'setup please'
