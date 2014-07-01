@@ -698,7 +698,7 @@
                 <td align="center"   data-bind="text: last_payment"></td>
                 <td align="center"  data-bind="text: paid_to"></td>
                 <td class="type-box">
-                    <!-- ko if: 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status  || 'CONTRACT ENDED' == status-->
+                    <!-- ko if: 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status  || 'CONTRACT ENDED' == status || 'late' == status_name -->
                     <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
                      data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
@@ -711,7 +711,7 @@
                     >&nbsp;</a>
                     {% endif %}
                     <!-- /ko -->
-                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status || 'CONTRACT ENDED' == status -->
+                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status || 'CONTRACT ENDED' == status || 'late' == status_name -->
                     <a title="{{'review'|trans}}" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                 </td>

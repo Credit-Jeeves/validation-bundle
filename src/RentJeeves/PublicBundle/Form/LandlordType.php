@@ -2,6 +2,7 @@
 
 namespace RentJeeves\PublicBundle\Form;
 
+use RentJeeves\DataBundle\Validators\LandlordEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -20,12 +21,21 @@ class LandlordType extends AbstractType
             )
         );
         $builder->add('last_name');
+
+        $emailOptions = array(
+            'label' => 'Email',
+        );
+        if ($options['inviteEmail']) {
+            $emailOptions['constraints'] =  new LandlordEmail(
+                array(
+                    'groups'    => 'registration_tos'
+                )
+            );
+        }
         $builder->add(
             'email',
             null,
-            array(
-                'label' => 'Email',
-            )
+            $emailOptions
         );
         $builder->add(
             'phone',
@@ -85,6 +95,7 @@ class LandlordType extends AbstractType
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
                 'cascade_validation' => true,
+                'inviteEmail'        => false
             )
         );
     }

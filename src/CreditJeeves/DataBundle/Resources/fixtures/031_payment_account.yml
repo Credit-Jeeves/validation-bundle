@@ -54,4 +54,12 @@ fixtures:
         token: '13201893-2913-433C-8551-19DE6FA61655'
         createdAt: '-5 days'
         updatedAt: '-5 days'
+    PaymentAccount_12:
+        user: Tenant_10
+        group: RentGroup_1
+        type: bank
+        name: Bank account
+        token: '13201893-2913-433C-8551-19DE6FA61655'
+        createdAt: '2014-02-28'
+        updatedAt: '2014-02-28'
 

@@ -14,7 +14,7 @@ class TenantEmail extends Constraint
 {
     public $messageExistEmail = 'user.email.already.exist';
 
-    public $messageGetInvite = 'tenant.already.invited';
+    public $messageGetInvite = 'already.invited.error';
 
     public function validatedBy()
     {

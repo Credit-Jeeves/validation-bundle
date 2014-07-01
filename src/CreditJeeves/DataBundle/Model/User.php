@@ -323,6 +323,16 @@ abstract class User extends BaseUser
     protected $invite_code;
 
     /**
+     * @ORM\Column(
+     *      type="string",
+     *      name="resident_id",
+     *      length=128,
+     *      nullable=true
+     * )
+     */
+    protected $residentId;
+
+    /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="1"})
      */
     protected $score_changed_notification = true;
@@ -647,6 +657,23 @@ abstract class User extends BaseUser
         $this->refreshTokens = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
+
+    /**
+     * @param string $residentId
+     */
+    public function setResidentId($residentId)
+    {
+        $this->residentId = $residentId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResidentId()
+    {
+        return $this->residentId;
+    }
+
 
     /**
      * @param mixed $settings

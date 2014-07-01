@@ -15,7 +15,6 @@ use DateTime;
 class OrderListener
 {
     /**
-     * 
      * @var ContainerInterface
      */
     private $container;

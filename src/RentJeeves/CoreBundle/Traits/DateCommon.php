@@ -34,11 +34,11 @@ trait DateCommon
         return array($day);
     }
 
-    public function getDiffDays($date, $now = null)
+    public function getDiffDays(DateTime $date, DateTime $now = null)
     {
-        if (empty($now)) {
+        if (null === $now) {
             $now = new DateTime();
         }
-        return $interval = $date->diff($now)->format('%r%a');
+        return $date->diff($now)->format('%r%a');
     }
 }

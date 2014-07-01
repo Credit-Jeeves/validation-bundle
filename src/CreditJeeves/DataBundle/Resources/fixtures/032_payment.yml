@@ -50,4 +50,15 @@ fixtures:
         endDate: '+9 months'
         createdAt: '-50 days'
         updatedAt: '-50 days'
+    Payment_12:
+        contract: Contract_12
+        paymentAccount: PaymentAccount_12
+        type: recurring
+        status: active
+        amount: 2100
+        dueDate: 31
+        startMonth: 2
+        startYear: 2014
+        createdAt: '2014-02-27'
+        updatedAt: '2014-02-27'
 

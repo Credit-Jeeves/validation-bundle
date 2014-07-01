@@ -1,14 +1,19 @@
 <?php
 namespace RentJeeves\DataBundle\Tests\Entity;
 
+use RentJeeves\TestBundle\BaseTestCase;
 use \DateTime;
 use \PHPUnit_Framework_TestCase;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
  */
-class PaymentCase extends PHPUnit_Framework_TestCase
+class PaymentCase extends BaseTestCase
 {
     public function providerForgetNextPaymentDate()
     {
@@ -16,13 +21,9 @@ class PaymentCase extends PHPUnit_Framework_TestCase
             array(31, '2014-01-15', '2014-01-31'),
             array(30, '2014-02-27', '2014-02-28'),
             array(1, '2014-02-27', '2014-03-01'),
+            array(1, '2014-03-31', '2014-04-01'),
         );
     }
-
-    /**
-     * @test
-     * @dataProvider providerForgetNextPaymentDate
-     */
     public function getNextPaymentDate($dueDate, $now, $will)
     {
         /** @var Payment $payment */
@@ -39,5 +40,39 @@ class PaymentCase extends PHPUnit_Framework_TestCase
         $payment->setDueDate($dueDate);
 
         $this->assertEquals(new DateTime($will), $payment->getNextPaymentDate());
+    }
+
+    /**
+     * @test
+     */
+    public function prePersist()
+    {
+        $this->load(true);
+        static::$kernel = null;
+//        $this->startTransaction();
+        $doctrineManager = $this->getContainer()->get('doctrine')->getManager();
+        /** @var Contract $contract */
+        $contract = $doctrineManager->getRepository('RjDataBundle:Contract')
+            ->createQueryBuilder('c')
+            ->innerJoin('c.payments', 'p', Expr\Join::WITH, 'p.status = :paymentStatus')
+            ->setParameter(':paymentStatus', PaymentStatus::ACTIVE)
+            ->andWhere('c.status = :contractStatus')
+            ->setParameter('contractStatus', ContractStatus::APPROVED)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+        $this->assertNotNull($contract);
+        $this->assertNotNull($payment = $contract->getActivePayment());
+        $paymentId = $payment->getId();
+        $this->assertEquals(PaymentStatus::ACTIVE, $payment->getStatus());
+
+        $contract->setStatus(ContractStatus::DELETED);
+        $doctrineManager->persist($contract);
+        $doctrineManager->flush($contract);
+        static::$kernel = null;
+        $payment = $doctrineManager->getRepository('RjDataBundle:Payment')->findOneBy(array('id' => $paymentId));
+        $this->assertNotNull($payment);
+        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
+//        $this->rollbackTransaction();
     }
 }

@@ -11,7 +11,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 /**
  * Controls that only one payment account is active.
  *
- * @Service("billing_account.event_listener.doctrine")
+ * @Service("data.event_listener.billing_account")
  * @Tag(
  *     "doctrine.event_listener",
  *     attributes = {

@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "ffb885e6f2ea834e42da74e8d4ddf3c56bd07c03"
+                    "reference": "da0403d931c66c9c8fc22f52ce9edf38ee208ce4"
                 }
             }
         },
@@ -161,6 +161,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/validation-bundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/DoctrineExtensions.git"
         }
     ],
     "require": {
@@ -190,6 +194,7 @@
         "braincrafted/validation-bundle": "dev-ton as dev-master",
         "doctrine/orm": "2.4.*",
         "doctrine/doctrine-bundle": "dev-master",
+        "doctrine/doctrine-cache-bundle": "dev-master",
         "twig/twig": "dev-master",
         "twig/extensions": "1.*",
         "kriswallsmith/assetic": "1.1.*",
@@ -236,10 +241,11 @@
         "qunit": "v1",
         "envjs": "v1",
         "sinon": "1.5.0",
+        "behat/mink": "dev-master as 1.5.0",
         "behat/mink-bundle": "1.4.*",
         "behat/mink-selenium2-driver": "1.1.*",
         "behat/mink-zombie-driver": "dev-master",
-        "behat/mink-goutte-driver": "1.0.*",
+        "behat/mink-goutte-driver": "dev-master",
         "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
         "sensio/generator-bundle": "dev-master",

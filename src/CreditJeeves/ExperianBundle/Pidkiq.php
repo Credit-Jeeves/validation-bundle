@@ -28,7 +28,7 @@ require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/experian/
  * Precise ID.
  * Pidkiq is used for verifying user's identity.
  *
- * @DI\Service("experian.pidkiq")
+ * DI\Service("experian.pidkiq") It is deffined in services.yml
  */
 class Pidkiq extends \Pidkiq
 {
@@ -42,41 +42,30 @@ class Pidkiq extends \Pidkiq
 
     public function __construct()
     {
-        parent::__construct();
     }
 
     /**
-     *
-     * @DI\InjectParams({
-     *     "serverName"     = @DI\Inject("%server_name%"),
-     *     "em"             = @DI\Inject("doctrine.orm.default_entity_manager"),
-     *     "isLogging"      = @DI\Inject("%experian.logging%"),
-     *     "logPath"        = @DI\Inject("%kernel.logs_dir%"),
+     * DI\InjectParams({ It is deffined in services.yml
+     *     "config"     = DI\Inject("experian.config"),
+     *     "isLogging"  = DI\Inject("%experian.logging%"),
+     *     "logPath"    = DI\Inject("%kernel.logs_dir%"),
      *
      * })
      *
-     * @param string $serverName
-     * @param EntityManager $em
+     * @param ExperianConfig $config
+     * @param bool $isLogging
+     * @param string $logPath
      */
-    public function initConfigs($serverName, EntityManager $em, $isLogging, $logPath)
+    public function initConfigs($config, $isLogging, $logPath)
     {
         $this->isLogging = $isLogging;
         $this->logPath = $logPath;
-        \sfConfig::set('global_host', $serverName);
-        /** @var \CreditJeeves\DataBundle\Entity\Settings $settings */
-        $settings = $em->getRepository('DataBundle:Settings')->find(1);
-        if (empty($settings)) {
-            return;
-        }
-        \sfConfig::set('experian_pidkiq_userpwd', $settings->getPidkiqPassword());
-        $xmlRoot = \sfConfig::get('experian_pidkiq_XML_root');
-        $xmlRoot['EAI'] = $settings->getPidkiqEai();
-        \sfConfig::set('experian_pidkiq_XML_root', $xmlRoot);
+
+        parent::__construct();
     }
 
     public function execute()
     {
-        parent::__construct();
     }
 
     protected function getSerializer()
@@ -97,19 +86,21 @@ class Pidkiq extends \Pidkiq
 
     /**
      * @param User $user
+     * @param string $xsdRequestPath
      *
      * @return NetConnectResponse
      */
-    public function getObjectOnUserData($user)
+    public function getObjectOnUserData($user, $xsdRequestPath = null)
     {
         $userData = $this->modelToData($user);
-        $xml = $this->xml->userRequestXML($userData);
+        $xml = $this->xml->userRequestXML($userData, $xsdRequestPath);
         if ($this->isLogging) {
             file_put_contents(
                 $this->logPath . '/experian/' . str_replace('\\', '-', get_called_class()) . '.xml',
                 $xml
             );
         }
+
         $responce = $this->curl->sendPostRequest($this->composeRequest($xml));
         if ($this->isLogging) {
             file_put_contents(

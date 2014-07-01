@@ -104,7 +104,7 @@ class TenantEmailValidator extends ConstraintValidator
 
     protected function addError($message)
     {
-        $this->session->getFlashBag()->set(self::ERROR_NAME, $message);
+        $this->session->getFlashBag()->set(static::ERROR_NAME, $message);
         $this->context->addViolation('');
     }
 }

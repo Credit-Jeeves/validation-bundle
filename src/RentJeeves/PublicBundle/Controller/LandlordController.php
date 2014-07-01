@@ -5,11 +5,13 @@ namespace RentJeeves\PublicBundle\Controller;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\Invite;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\LandlordBundle\Registration\MerchantAccountModel;
 use RentJeeves\LandlordBundle\Registration\SAMLEnvelope;
 use RentJeeves\PublicBundle\Form\InviteLandlordType;
+use RentJeeves\PublicBundle\Services\ReminderInvite;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\LandlordAddressType;
@@ -26,7 +28,7 @@ class LandlordController extends Controller
     use PaymentProcess;
 
     /**
-     * @Route("/landlord/register/", name="landlord_register")
+     * @Route("/landlord/register/", name="landlord_register", options={"expose"=true})
      * @Template()
      *
      * @return array
@@ -34,7 +36,11 @@ class LandlordController extends Controller
     public function registerAction(Request $request)
     {
         $form = $this->createForm(
-            new LandlordAddressType()
+            new LandlordAddressType(),
+            null,
+            array(
+                'inviteEmail' => true
+            )
         );
 
         $form->handleRequest($request);
@@ -201,6 +207,38 @@ class LandlordController extends Controller
         return array(
             'code' => $code,
             'form' => $form->createView(),
+        );
+    }
+
+
+    /**
+     * @Route("/landlord/invite/resend/{landlordId}", name="landlord_invite_resend")
+     * @Template("RjPublicBundle:Public:resendInvite.html.twig")
+     *
+     */
+    public function resendInviteLandlordAction($landlordId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $landlord Landlord
+         */
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->find($landlordId);
+        if (empty($landlord)) {
+            throw new LogicException("Landlord which such id {$landlordId} does not exist");
+        }
+
+        /**
+         * @var $reminderInvite ReminderInvite
+         */
+        $reminderInvite = $this->get('reminder.invite');
+        if (!$reminderInvite->sendLandlord($landlord)) {
+            return array(
+                'error' => $reminderInvite->getError()
+            );
+        }
+
+        return array(
+            'error' => false,
         );
     }
 }

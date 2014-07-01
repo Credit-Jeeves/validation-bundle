@@ -228,7 +228,8 @@ abstract class Contract
      *     targetEntity="RentJeeves\DataBundle\Entity\Payment",
      *     mappedBy="contract",
      *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
+     *     orphanRemoval=true,
+     *     fetch="EAGER"
      * )
      * @Serializer\Exclude
      * @var ArrayCollection
@@ -247,11 +248,74 @@ abstract class Contract
      */
     protected $uncollectedBalance;
 
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=false,
+     *     name="balance",
+     *     options={
+     *          "default":"0.00"
+     *     }
+     * )
+     */
+    protected $balance = 0.00;
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=false,
+     *     name="imported_balance",
+     *     options={
+     *          "default":"0.00"
+     *     }
+     * )
+     */
+    protected $importedBalance = 0.00;
+
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
     }
+
+    /**
+     * @param float $balance
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    /**
+     * @param float $importedBalance
+     */
+    public function setImportedBalance($importedBalance)
+    {
+        $this->importedBalance = $importedBalance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getImportedBalance()
+    {
+        return $this->importedBalance;
+    }
+
 
     /**
      * @param float $uncollectedBalance

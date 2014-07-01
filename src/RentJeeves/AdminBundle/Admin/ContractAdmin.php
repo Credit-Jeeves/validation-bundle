@@ -17,6 +17,7 @@ class ContractAdmin extends Admin
      */
     public function createQuery($context = 'list')
     {
+        $this->getConfigurationPool()->getContainer()->get('soft.deleteable.control')->disable();
         $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();

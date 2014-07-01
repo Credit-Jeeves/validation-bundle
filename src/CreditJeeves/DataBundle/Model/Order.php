@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
@@ -82,6 +83,7 @@ abstract class Order
      * @ORM\Column(
      *     type="datetime"
      * )
+     * @Gedmo\Timestampable(on="create")
      */
     protected $created_at;
 
@@ -89,6 +91,7 @@ abstract class Order
      * @ORM\Column(
      *     type="datetime"
      * )
+     * @Gedmo\Timestampable(on="update")
      */
     protected $updated_at;
 
