@@ -244,7 +244,7 @@ class OrderListener
                  * @var $operation Operation
                  */
                 foreach ($operations as $operation) {
-                    if ($operation->getType() === OperationType::RENT && !$isIntegrated) {
+                    if ($operation->getType() === OperationType::RENT) {
                         $contract->setBalance($contract->getBalance() - $operation->getAmount());
                     }
 

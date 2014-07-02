@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
@@ -111,6 +112,37 @@ class Order extends BaseOrder
         return $this->getUpdatedAt()->format('Y-m-d\TH:m:n');
     }
 
+
+    /**
+     * Date time of actual payment transaction with Heartland
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Date")
+     * @Serializer\Groups({"promasReport"})
+     * @Serializer\Type("string")
+     *
+     * @return DateTime
+     */
+    public function getPaymentDateForPromas()
+    {
+        return $this->getCreatedAt()->format('Y-m-d');
+    }
+
+    /**
+     * External UNIT ID for Promas report
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UNIT ID")
+     * @Serializer\Groups({"promasReport"})
+     * @Serializer\Type("string")
+     *
+     * @return string
+     */
+    public function getExternalUnitId()
+    {
+        return $this->getContract()->getUnit()->getUnitMapping()->getExternalUnitId();
+    }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Id")
@@ -150,6 +182,14 @@ class Order extends BaseOrder
      */
     public function getPersonId()
     {
+        $residentMapping = $this->getContract()->getTenant()->getResidentsMapping();
+        /** @var ResidentMapping $mapping */
+        foreach ($residentMapping as $mapping) {
+            if ($mapping->getHolding()->getId() == $this->getContract()->getHolding()->getId()) {
+                return $mapping->getResidentId();
+            }
+        }
+
         return null;
     }
 
@@ -338,8 +378,8 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TotalAmount")
-     * @Serializer\Groups({"xmlReport", "csvReport"})
-     * @Serializer\Type("double")
+     * @Serializer\Groups({"xmlReport", "csvReport", "promasReport"})
+     * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
      * @return float
@@ -347,6 +387,36 @@ class Order extends BaseOrder
     public function getTotalAmount()
     {
         return number_format($this->getSum(), 2, '.', '');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Memo")
+     * @Serializer\Groups({"promasReport"})
+     * @Serializer\Type("string")
+     *
+     * @return string
+     */
+    public function getPromasMemo()
+    {
+        return sprintf('Trans #%s Batch #%s', $this->getHeartlandTransactionId(), $this->getHeartlandBatchId());
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Tenant ID")
+     * @Serializer\Groups({"promasReport"})
+     * @Serializer\Type("string")
+     *
+     * @return string
+     */
+    public function getTenantExternalId()
+    {
+        if ($residentMapping = $this->getContract()->getTenant()->getResidentsMapping()->first()) {
+            return $residentMapping->getResidentId();
+        }
+
+        return null;
     }
 
     /**
@@ -730,6 +800,16 @@ class Order extends BaseOrder
             $result = $heartlands->last()->getTransactionId();
         }
         return $result;
+    }
+
+    public function getHeartlandBatchId()
+    {
+        $heartlands = $this->getHeartlands();
+        if (count($heartlands) > 0) {
+            return $heartlands->last()->getBatchId();
+        }
+
+        return null;
     }
 
     public function getHeartlandErrorMessage()

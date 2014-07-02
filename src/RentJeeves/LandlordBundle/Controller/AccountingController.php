@@ -99,6 +99,7 @@ class AccountingController extends Controller
         if ($formBaseOrder->isValid()) {
 
             $data = $formBaseOrder->getData();
+            $data['group'] = $group;
             $baseReport = $this->get('accounting.export');
             $report = $baseReport->getReport($data);
 

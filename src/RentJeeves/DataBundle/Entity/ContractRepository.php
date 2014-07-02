@@ -278,6 +278,20 @@ class ContractRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    public function countTenantContractsByStatus(Tenant $tenant, $status = ContractStatus::CURRENT)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('count(c.id)');
+        $query->innerJoin('c.tenant', 't');
+        $query->where('t.id = :tenant');
+        $query->andWhere('c.status = :status');
+        $query->setParameter('tenant', $tenant->getId());
+        $query->setParameter('status', $status);
+        $query = $query->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
+
     /**
      * @param Landlord $landlord
      *

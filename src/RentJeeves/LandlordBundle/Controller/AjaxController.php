@@ -23,6 +23,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -661,9 +662,8 @@ class AjaxController extends Controller
         foreach ($contracts as $contract) {
             $contract->setStatusShowLateForce(true);
             $item = $contract->getItem();
+            $item['paidForArr'] = $this->get('checkout.paid_for')->getArray($contract);
             $items[] = $item;
-
-            $paidForArr[$contract->getId()] = $this->get('checkout.paid_for')->getArray($contract);
         }
         $total = $query->select('count(c)')
             ->setMaxResults(null)
@@ -788,10 +788,15 @@ class AjaxController extends Controller
         $amount = null;
         $data = $request->request->all('data');
         if (!isset($data['action'])) {
-            return new JsonResponse(array());
+            return new BadRequestHttpException('Empty input');
         }
         if (isset($data['amount'])) {
             $amount = $data['amount'];
+        }
+        try {
+            $paidFor = new DateTime($data['paid_for']);
+        } catch (Exception $e) {
+            return new BadRequestHttpException('Invalid input', $e);
         }
         /** @var Contract $contract */
         $contract = $this->getDoctrine()
@@ -806,23 +811,29 @@ class AjaxController extends Controller
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
-                // Create order
-                $order = new Order();
-                $order->setUser($tenant);
-                $order->setSum($contract->getRent());
-                $order->setStatus(OrderStatus::COMPLETE);
-                $order->setType(OrderType::CASH);
-                $em->persist($order);
-                // Create operation
-                $operation = new Operation();
-                $operation->setOrder($order);
-                $operation->setType(OperationType::RENT);
-                $operation->setContract($contract);
-                $operation->setAmount($contract->getRent());
-                $operation->setPaidFor($contract->getPaidTo());
-                $em->persist($operation);
+                if ($amount) {
+                    // Create order
+                    $order = new Order();
+                    $order->setUser($tenant);
+                    $order->setSum($amount);
+                    $order->setStatus(OrderStatus::COMPLETE);
+                    $order->setType(OrderType::CASH);
+                    $em->persist($order);
+                    // Create operation
+                    $operation = new Operation();
+                    $operation->setOrder($order);
+                    $operation->setType(OperationType::RENT);
+                    $operation->setContract($contract);
+                    $operation->setAmount($amount);
+                    $operation->setPaidFor($paidFor);
+                    $em->persist($operation);
+                    $contract->shiftPaidTo($amount);
+                    $contract->setBalance($contract->getBalance() - $amount);
+                    if ($contract->getSettings()->getIsIntegrated()) {
+                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
+                    }
+                }
                 // Change paid to date
-                $contract->shiftPaidTo($amount);
                 $contract->setStatus(ContractStatus::CURRENT);
                 $em->persist($contract);
                 $em->flush();
@@ -831,6 +842,7 @@ class AjaxController extends Controller
                 // @TODO Here will be report to Experian
                 break;
         }
+        // TODO blank page detection
         return new JsonResponse(array());
     }
 

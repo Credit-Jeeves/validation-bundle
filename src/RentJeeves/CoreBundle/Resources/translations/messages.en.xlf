@@ -823,6 +823,10 @@
                 <source>conflict.due.date</source>
                 <target>Original Due Date</target>
             </trans-unit>
+           <trans-unit id="conflict.balance">
+                <source>conflict.balance</source>
+                <target>Balance</target>
+            </trans-unit>
            <trans-unit id="conflict.resolve.options">
                 <source>conflict.resolve.options</source>
                 <target>Resolution options</target>
@@ -1783,6 +1787,10 @@
             <trans-unit id="base.order.report.type.realpage">
                 <source>base.order.report.type.realpage</source>
                 <target>RealPage OneSite (CSV)</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.type.promas">
+                <source>base.order.report.type.promas</source>
+                <target>Promas (CSV)</target>
             </trans-unit>
             <trans-unit id="base.order.report.download">
                 <source>base.order.report.download</source>

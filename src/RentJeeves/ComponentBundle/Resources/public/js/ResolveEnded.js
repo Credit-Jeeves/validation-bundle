@@ -1,42 +1,13 @@
 //FIXME refactor. Make view model for each popup
-function Resolve() {
+function ResolveEnded(parent, data) {
+    ko.cleanNode(jQuery('#contract-resolve-ended').get(0));
     var self = this;
-    this.details = ko.observable();
+    this.details = ko.observable(data);
     this.errorsEnded = ko.observableArray([]);
     this.resolutionOptionsEnded = ko.observable("monthToMonth");
     this.outstandingBalance= ko.observable(0);
-    this.endedContractDate = ko.observable();
-    this.resolveValue = ko.observable('email');
-    this.amount = ko.observable();
-    this.paidForOptions = ko.observableArray(null);
-    this.paidFor = ko.observable(null);
-    this.openForm = function(data) {
-        self.details(data);
-        if (data.status === 'CONTRACT ENDED') {
-            self.openFormContractEnded(data);
-            return;
-        }
-
-        $('#contract-resolve-late').dialog('open'); // FIXME replace by knockoutJS dialog handler
-        self.amount(data.amount);
-        self.paidForOptions({}/*associativeArrayToOptions(paidForArr)*/);
-        console.log(self.resolveValue());
-        console.log(self.amount());
-    };
-
-    this.openFormContractEnded = function(data) {
-        $(".datepicker").datepicker("disable"); // FIXME replace by knockoutJS datepicker handler
-        $('#contract-resolve-ended').dialog('open');
-        $(".datepicker").datepicker("enable");
-    };
-
-    this.closeForm = function() {
-        $('#contract-resolve-late').dialog('close');
-    };
-
-    this.closeFormEnded = function() {
-        $('#contract-resolve-ended').dialog('close');
-    };
+    this.endedContractDate = ko.observable("");
+    this.isDialogVisible = ko.observable(true);
 
     this.countErrorsEnded = function() {
         return parseInt(self.errorsEnded().length);
@@ -53,14 +24,11 @@ function Resolve() {
                     success: function (response) {
                         jQuery('#contract-resolve-ended').hideOverlay();
                         if (response.status !== 'successful') {
-                            self.errorsEnded(response.errors)
+                            self.errorsEnded(response.errors);
                             return;
                         }
-
-                        self.endedContractDate('');
-                        self.outstandingBalance(0);
-                        self.closeFormEnded();
-                        ActionsViewModel.ajaxAction();
+                        self.isDialogVisible(false);
+                        parent.ajaxAction();
                     }
                 });
                 break;
@@ -73,14 +41,11 @@ function Resolve() {
                     success: function (response) {
                         jQuery('#contract-resolve-ended').hideOverlay();
                         if (response.status !== 'successful') {
-                            self.errorsEnded(response.errors)
+                            self.errorsEnded(response.errors);
                             return;
                         }
-
-                        self.endedContractDate('');
-                        self.outstandingBalance(0);
-                        self.closeFormEnded();
-                        ActionsViewModel.ajaxAction();
+                        self.isDialogVisible(false);
+                        parent.ajaxAction();
                     }
                 });
                 break;
@@ -92,13 +57,14 @@ function Resolve() {
                     dataType: 'json',
                     success: function (response) {
                         jQuery('#contract-resolve-ended').hideOverlay();
-                        self.endedContractDate('');
-                        self.outstandingBalance(0);
-                        self.closeFormEnded();
-                        ActionsViewModel.ajaxAction();
+                        self.isDialogVisible(false);
+                        parent.ajaxAction();
                     }
                 });
                 break;
         }
     };
+
+
+    ko.applyBindings(this, $('#contract-resolve-ended').get(0));
 }
