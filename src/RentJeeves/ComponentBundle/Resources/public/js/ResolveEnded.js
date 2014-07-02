@@ -1,4 +1,3 @@
-//FIXME refactor. Make view model for each popup
 function ResolveEnded(parent, data) {
     ko.cleanNode(jQuery('#contract-resolve-ended').get(0));
     var self = this;
