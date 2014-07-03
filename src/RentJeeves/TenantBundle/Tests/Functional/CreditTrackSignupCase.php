@@ -57,7 +57,6 @@ class CreditTrackSignupCase extends BaseTestCase
 
     public function enterSignupFlow()
     {
-        self::$kernel = null;
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('marion@rentrack.com', 'pass');

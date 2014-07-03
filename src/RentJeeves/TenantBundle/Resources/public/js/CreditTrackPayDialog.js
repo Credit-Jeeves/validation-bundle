@@ -14,7 +14,7 @@ function CreditTrackPayDialog(options) {
 
     this.getCurrentStep = function() {
         return steps[current];
-    }
+    };
 
     this.previous = function() {
         window.formProcess.removeAllErrors('#credit-track-pay-popup');
@@ -23,8 +23,7 @@ function CreditTrackPayDialog(options) {
     };
 
     var forms = {
-        'source': 'rentjeeves_checkoutbundle_paymentaccounttype',
-        'details': 'rentjeeves_checkoutbundle_paymenttype'
+        'source': 'rentjeeves_checkoutbundle_paymentaccounttype'
     };
 
     var steps = ['source', 'pay'];
@@ -35,7 +34,7 @@ function CreditTrackPayDialog(options) {
 
     this.isPassed = function(step) {
         return this.passedSteps().indexOf(step) >= 0;
-    }
+    };
 
     this.step.subscribe(function(newValue) {
 
@@ -86,10 +85,7 @@ function CreditTrackPayDialog(options) {
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
 
     this.notEmptyPaymentAccount = ko.computed(function() {
-        if (self.paymentAccounts().length > 0) {
-            return true;
-        }
-        return false;
+        return self.paymentAccounts().length > 0;
     });
 
     this.isNewPaymentAccount = ko.computed(function() {
@@ -101,9 +97,14 @@ function CreditTrackPayDialog(options) {
         self.paymentSource.clear();
     };
 
-    this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
+    this.paymentSource = new PaymentSource(
+        this,
+        false,
+        this.propertyFullAddress,
+        'card' //Temporary #RT-529
+    );
+    jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_type_row').hide(); //Temporary #RT-529
     this.paymentSource.groupId(this.paymentGroup.id);
-
     this.getLastPaymentDay = 'no finish date';
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
@@ -161,7 +162,7 @@ function CreditTrackPayDialog(options) {
             case 'pay':
                 $('#credit-track-pay-popup').dialog('close');
                 jQuery('body').showOverlay();
-                window.location.reload();
+                window.location.href = Routing.generate('user_report');
                 return;
                 break;
         }
@@ -232,13 +233,21 @@ function CreditTrackPayDialog(options) {
 
     ko.applyBindings(this, $('#credit-track-pay-popup').get(0));
 
-    $('#credit-track-pay-popup').dialog({
+    $('#credit-track-pay-popup').dialog({ // TODO replace by knockout custom handler
         width: 650,
         modal: true,
         beforeClose: function( event, ui ) {
             self.paymentAccounts([{id: '', name: ''}]);
             self.newUserAddress([new Address()]);
         }
+    });
+    jQuery.each(forms, function(key, formName) {
+        jsfv[formName].addError = window.formProcess.addFormError;
+        jsfv[formName].removeErrors = function(field) {};
+        jQuery('#' + formName).submit(function() {
+            self.next();
+            return false;
+        });
     });
 
     window.formProcess.removeAllErrors('#credit-track-pay-popup');

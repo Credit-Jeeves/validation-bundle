@@ -1,7 +1,10 @@
-function PaymentSource(parent, isForceSave, newAddress) {
+function PaymentSource(parent, isForceSave, newAddress, defaultType) {
+    if (typeof(defaultType) == 'undefined') {
+        defaultType = 'bank';
+    }
     var self = this;
     this.id = ko.observable(null);
-    this.type = ko.observable('bank');
+    this.type = ko.observable(defaultType);
     this.name = ko.observable('');
     this.PayorName = ko.observable('');
     this.RoutingNumber = ko.observable('');
@@ -31,7 +34,7 @@ function PaymentSource(parent, isForceSave, newAddress) {
 
 
     this.clear = function() {
-        self.type('bank');
+        self.type(defaultType);
         self.name('');
         self.PayorName('');
         self.RoutingNumber('');

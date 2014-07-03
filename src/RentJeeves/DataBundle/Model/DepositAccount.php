@@ -190,15 +190,15 @@ abstract class DepositAccount
     }
 
     /**
-     * @return float
+     * @return double
      */
     public function getFeeACH()
     {
-        return $this->feeACH;
+        return (double)$this->feeACH;
     }
 
     /**
-     * @param float $feeCC
+     * @param double $feeCC
      */
     public function setFeeCC($feeCC)
     {
@@ -206,11 +206,11 @@ abstract class DepositAccount
     }
 
     /**
-     * @return float
+     * @return double
      */
     public function getFeeCC()
     {
-        return $this->feeCC;
+        return (double)$this->feeCC;
     }
 
     /**

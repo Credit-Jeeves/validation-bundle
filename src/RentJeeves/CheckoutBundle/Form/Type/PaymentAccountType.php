@@ -19,6 +19,8 @@ use Symfony\Component\Validator\Constraints\Valid;
 
 class PaymentAccountType extends AbstractType
 {
+    const NAME = 'rentjeeves_checkoutbundle_paymentaccounttype';
+
     /**
      * @var Tenant
      */
@@ -452,6 +454,6 @@ class PaymentAccountType extends AbstractType
 
     public function getName()
     {
-        return 'rentjeeves_checkoutbundle_paymentaccounttype';
+        return static::NAME;
     }
 }

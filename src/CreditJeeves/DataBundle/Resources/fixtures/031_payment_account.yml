@@ -80,3 +80,4 @@ fixtures:
         updatedAt: '-5 days'
         depositAccounts:
             - DepositAccount_3
+            - DepositAccount_RentTrackCorp

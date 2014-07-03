@@ -1,6 +1,11 @@
 <?php
 namespace RentJeeves\TenantBundle\Controller;
 
+use Payum\Request\BinaryMaskStatusRequest;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
+use RentJeeves\DataBundle\Model\PaymentAccount;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,6 +31,7 @@ class CreditTrackController extends Controller
         $em = $this->getDoctrine()->getManager();
         $group = $em->getRepository('DataBundle:Group')
             ->findOneByCode($rtMerchantName);
+        /** @var Tenant $user */
         $user = $this->getUser();
         $paymentAccounts = $user->getPaymentAccounts();
         $serializer = $this->get('jms_serializer');
@@ -52,8 +58,9 @@ class CreditTrackController extends Controller
      */
     public function execAction(Request $request)
     {
+        /** @var Tenant $user */
         $user = $this->getUser();
-        $params = $request->get('rentjeeves_checkoutbundle_paymentaccounttype');
+        $params = $request->get(PaymentAccountFromType::NAME);
         $paymentAccountId = $params['id'];
 
         $em = $this->getDoctrine()->getManager();
@@ -68,18 +75,32 @@ class CreditTrackController extends Controller
             );
         }
 
-        $settings = $user->getSettings();
-        $settings->setCreditTrackPaymentAccount($paymentAccount);
-        $settings->setCreditTrackEnabledAt(new DateTime('now'));
+        /** @var BinaryMaskStatusRequest $statusRequest */
+        $statusRequest = $this->get('payment.pay_credit_track')
+            ->executePaymentAccount($paymentAccount);
 
-        $em->persist($settings);
-        $em->flush();
+        if ($statusRequest->isSuccess()) {
+            $settings = $user->getSettings();
+            $settings->setCreditTrackPaymentAccount($paymentAccount);
+            $settings->setCreditTrackEnabledAt(new DateTime('now'));
 
-        return new JsonResponse(
-            array(
-                'success' => true
-            )
-        );
+            $em->persist($settings);
+            $em->flush();
+
+            return new JsonResponse(
+                array(
+                    'success' => true
+                )
+            );
+        } else {
+            return new JsonResponse(
+                array(
+                    PaymentAccountFromType::NAME => array(
+                        '_globals' => array($statusRequest->getModel()->getMessages())
+                    )
+                )
+            );
+        }
     }
 
     /**

@@ -8,10 +8,6 @@ fixtures:
     merchantName: Monticeto_Percent
     group: RentGroup_2
     status: complete
-  RentTrackCorp:
-    merchantName: RentTrackCorp
-    group: RentTrackCorp
-    status: complete
   DepositAccount_3:
     merchantName: WestPac
     group: RentGroup_3
@@ -19,3 +15,9 @@ fixtures:
   DepositAccount_4:
     group: RentGroup_4
     status: init
+  DepositAccount_RentTrackCorp:
+    merchantName: RentTrackCorp
+    group: RentTrackCorp
+    status: complete
+    feeCC: 0
+    feeACH: 0

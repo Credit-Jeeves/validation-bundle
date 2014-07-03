@@ -61,12 +61,6 @@
                 {{ 'credittrack.pay.confirm'|trans({'%amount%': credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents })|raw }}
             </h3>
 
-            <div class="information-box pie-el"
-                 data-bind="visible: 'one_time' == payment.type(), i18n: {'DATE': payment.startDate}"
-            >
-                checkout.one_time_payment.note
-            </div>
-
             <div class="clearfix halfs-box">
                 <div class="half-box left">
                     <h4>{{ 'checkout.your_payment' | trans }}</h4>

@@ -96,6 +96,9 @@ class OrderListener
         if ($entity instanceof Order) {
             /** @var Operation $operation */
             $operation = $entity->getOperations()->last();
+            if (!$operation) {
+                return;
+            }
             $save = false;
             switch ($operation->getType()) {
                 case OperationType::RENT:

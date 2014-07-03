@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class ReportController extends Controller
 {
     /**
-     * @Route("/report", name="user_report")
+     * @Route("/report", name="user_report", options={"expose"=true})
      * @Template()
      *
      * @return array
