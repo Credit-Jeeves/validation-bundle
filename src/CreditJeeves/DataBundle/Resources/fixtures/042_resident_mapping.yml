@@ -1,0 +1,6 @@
+model: RentJeeves\DataBundle\Entity\ResidentMapping
+fixtures:
+    ResidentMapping_1:
+        tenant: Tenant_1
+        holding: rjHolding_1
+        residentId: FGDTRFG-44

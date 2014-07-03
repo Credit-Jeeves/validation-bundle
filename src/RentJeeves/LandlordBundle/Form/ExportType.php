@@ -20,7 +20,7 @@ class ExportType extends AbstractType
     protected $validationGroups;
 
     protected $aviableValidationGroups = array(
-        'xml', 'csv'
+        'xml', 'csv', 'promas'
     );
 
     public function __construct($user, $group = null, $validationGroups = array('xml'))
@@ -61,14 +61,15 @@ class ExportType extends AbstractType
             array(
                 'choices'     => array(
                     'xml' => 'base.order.report.type.yardi',
-                    'csv' => 'base.order.report.type.realpage'
+                    'csv' => 'base.order.report.type.realpage',
+                    'promas' => 'base.order.report.type.promas'
                 ),
                 'required'    => true,
                 'attr'        => array(
                     'class' => 'original widthSelect'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv')))
+                    new NotBlank(array('groups' => array('xml', 'csv', 'promas')))
                 ),
             )
         );
@@ -79,6 +80,7 @@ class ExportType extends AbstractType
             array(
                 'class'          => 'RjDataBundle:Property',
                 'error_bubbling' => true,
+                'required'    => false,
                 'attr'           => array(
                     'class' => 'original widthSelect',
                 ),
@@ -193,8 +195,8 @@ class ExportType extends AbstractType
                     'force_row' => true
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv'))),
-                    new Date(array('groups' => array('xml', 'csv'))),
+                    new NotBlank(array('groups' => array('xml', 'csv', 'promas'))),
+                    new Date(array('groups' => array('xml', 'csv', 'promas'))),
                 )
             )
         );
@@ -211,8 +213,8 @@ class ExportType extends AbstractType
                     'class' => 'end calendar'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv'))),
-                    new Date(array('groups' => array('xml', 'csv'))),
+                    new NotBlank(array('groups' => array('xml', 'csv', 'promas'))),
+                    new Date(array('groups' => array('xml', 'csv', 'promas'))),
                 )
             )
         );

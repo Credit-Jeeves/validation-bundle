@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
@@ -113,6 +114,7 @@ class Payment extends Base
         } elseif (($currentDay == $this->getDueDate())
             && $lastPaymentDate
             && $lastPaymentDate->format('Ymd') == $now->format('Ymd')
+            && $this->type == PaymentType::RECURRING
         ) {
             $now->modify('first day of next month');
             $month = $now->format('m');
