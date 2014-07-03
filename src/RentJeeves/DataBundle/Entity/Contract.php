@@ -294,11 +294,11 @@ class Contract extends Base
             foreach ($operations as $operation) {
                 $order = $operation->getOrder();
                 if (OrderStatus::COMPLETE == $order->getStatus()) {
-                    $payments[] = $order->getCreatedAt()->format('M d, Y');
+                    $payments[$order->getCreatedAt()->format('Y-m-d H:i:s')] = $order->getCreatedAt()->format('M d, Y');
                 }
             }
-            arsort($payments);
-            return isset($payments[0]) ? $payments[0] : $result;
+            krsort($payments);
+            return count($payments) ? current($payments) : $result;
         }
     }
 
