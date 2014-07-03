@@ -266,6 +266,12 @@ class Contract extends Base
         $result['payment_setup'] = ($payment)? true : false;
         $result['search'] = $this->getSearch();
 
+        if ($setting = $tenant->getSettings()) {
+            $result['credit_track_enabled'] = !!$setting->getCreditTrackPaymentAccount();
+        } else {
+            $result['credit_track_enabled'] = false;
+        }
+
         return $result;
     }
 

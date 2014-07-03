@@ -120,6 +120,10 @@ fixtures:
     user: cjApplicant_22
     score: '550'
     created_date: '-1 days'
+  cjApplicant_8_1:
+    user: cjApplicant_8
+    score: '550'
+    created_date: '-1 days'
 # Score history for bad applicant
   cjApplicantScore_14_1:
     user: cjApplicant_14
@@ -141,4 +145,3 @@ fixtures:
     user: cjApplicant_14
     score: '200'
     created_date: '-100 days'
-    

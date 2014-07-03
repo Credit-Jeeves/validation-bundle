@@ -1119,9 +1119,13 @@
                 <source>popup.invite.tenant.free</source>
                 <target>Free*</target>
             </trans-unit>
-            <trans-unit id="popup.invite.tenant.scoretrack">
-                <source>popup.invite.tenant.scoretrack</source>
-                <target>ScoreTrack</target>
+            <trans-unit id="popup.invite.tenant.credittrack.title_2">
+                <source>popup.invite.tenant.credittrack.title_2</source>
+                <target>Build credit history while you pay rent. Introductory pricing.</target>
+            </trans-unit>
+            <trans-unit id="popup.invite.tenant.credittrack">
+                <source>popup.invite.tenant.credittrack</source>
+                <target>CreditTrack</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.per_month">
                 <source>popup.invite.tenant.per_month</source>
@@ -1134,6 +1138,10 @@
             <trans-unit id="popup.tenant.get.credit.score">
                 <source>popup.tenant.get.credit.score</source>
                 <target>Get Your Credit Score</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.view.experian">
+                <source>popup.tenant.view.experian</source>
+                <target>View Your Experian Credit Report</target>
             </trans-unit>
             <trans-unit id="popup.tenant.get.first.free">
                 <source>popup.tenant.get.first.free</source>
@@ -1151,6 +1159,10 @@
                 <source>popup.tenant.pay.auto</source>
                 <target>Set up Auto Payments</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.build.credit.history">
+                <source>popup.tenant.build.credit.history</source>
+                <target>Build Credit History</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
                 <target>Build Credit History (opt-in)</target>
@@ -1163,9 +1175,17 @@
                 <source>popup.tenant.safeguards</source>
                 <target>Rock-Solid Security Safeguards</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.prequalified.offers">
+                <source>popup.tenant.prequalified.offers</source>
+                <target>Pre-Qualified Credit Offers</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.footer.note_1">
                 <source>popup.tenant.footer.note_1</source>
                 <target>We’ll invite your landlord to join. Once they join and accept rent electronically, you can start building your credit.</target>
+            </trans-unit>
+            <trans-unit id="popup.signed.up.already">
+                <source>popup.signed.up.already</source>
+                <target>Your Current Plan</target>
             </trans-unit>
             <trans-unit id="popup.sign.up.today">
                 <source>popup.sign.up.today</source>
@@ -2080,6 +2100,26 @@
             <trans-unit id="info.payment.date">
                 <source>info.payment.date</source>
                 <target>Your payment scheduled for the %DAY_1%st will be executed on the %DAY_2%th due to the short month.</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.title">
+                <source>credittrack.pay.title</source>
+                <target>Sign up for CreditTrack</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.step.1">
+                <source>credittrack.pay.step.1</source>
+                <target>Payment Source</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.step.2">
+                <source>credittrack.pay.step.2</source>
+                <target>Review &amp; Pay</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.confirm">
+                <source>credittrack.pay.confirm</source>
+                <target>Bill me $%amount% each month for CreditTrack starting today until cancelled.</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.amount">
+                <source>credittrack.pay.amount</source>
+                <target>Amount</target>
             </trans-unit>
             <trans-unit id="tab.accounting">
                 <source>tab.accounting</source>

@@ -14,7 +14,7 @@ class ScoreController extends Controller
     public function indexAction($user)
     {
         $aScores = $user->getScores();
-        
+
         $chartData = array();
         foreach ($aScores as $score) {
             $nScore = $score->getScore();
@@ -30,7 +30,15 @@ class ScoreController extends Controller
         $nScore = ($nScore > 900) ? 900 : $nScore;
         $nFicoScore = $user->getScores()->last()->getFicoScore();
         $sDate = $user->getScores()->last()->getCreatedDate()->format('M d, Y');
+
+        if ($settings = $user->getSettings()) {
+            $creditTrackEnabled = !!$settings->getCreditTrackPaymentAccount();
+        } else {
+            $creditTrackEnabled = false;
+        }
+
         return array(
+            'creditTrackEnabled' => $creditTrackEnabled,
             'chartData' => $chartData,
             'nScore' => $nScore,
             'nFicoScore' => $nFicoScore,
