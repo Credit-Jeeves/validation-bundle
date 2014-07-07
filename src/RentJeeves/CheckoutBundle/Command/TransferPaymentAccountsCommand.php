@@ -11,94 +11,85 @@ use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use Exception;
 
-class RenameMerchantCommand extends ContainerAwareCommand
+class TransferPaymentAccountsCommand extends ContainerAwareCommand
 {
     use AccountAssociate;
 
     protected function configure()
     {
+        $description = 'Registers payment accounts belonging to one ' .
+            'deposit account with another deposit account';
+
         $this
-            ->setName('rj:merchant:rename')
-            ->setDescription('Set a new merchant name for a group')
+            ->setName('rj:transfer_payment_accounts')
+            ->setDescription($description)
             ->addArgument(
                 'from',
                 InputArgument::REQUIRED,
-                'Old merchant name'
+                'Old deposit account id'
             )
             ->addArgument(
                 'to',
                 InputArgument::REQUIRED,
-                'New merchant name'
+                'New deposit account id'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->outputInterface = $output;
-        $oldMerchantName = $input->getArgument('from');
-        $newMerchantName = $input->getArgument('to');
+        $oldDepositAccountId = $input->getArgument('from');
+        $newDepositAccountId = $input->getArgument('to');
 
-        $this->changeMerchantName($oldMerchantName, $newMerchantName);
+        $oldDepositAccount = $this->getDepositAccount($oldDepositAccountId);
+        $newDepositAccount = $this->getDepositAccount($newDepositAccountId);
+
+        $this->updatePaymentAccounts(
+            $oldDepositAccount,
+            $newDepositAccount
+        );
+
+        $finishMessage = "Payment accounts from deposit account '%s' " .
+            "registered to deposit account '%s'";
+
         $output->writeln(
             sprintf(
-                "Merchant '%s' changed to '%s'",
-                $oldMerchantName,
-                $newMerchantName
+                $finishMessage,
+                $oldDepositAccount->getId(),
+                $newDepositAccount->getid()
             )
         );
     }
 
     /**
-     * Get deposit account by merchant name or die
+     * Get deposit account by id, make sure it has a group or die
      *
-     * @param string $merchantName merchant name
+     * @param string $depositAccountId deposit account id
      *
      * @return DepositAccount
      */
-    private function getDepositAccount($merchantName)
+    private function getDepositAccount($depositAccountId)
     {
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
         $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')
-            ->findOneByMerchantName($merchantName);
+            ->findOneById($depositAccountId);
 
         if (!$depositAccount) {
             throw new Exception(
-                "Could not find deposit account for merchant '$merchantName'"
+                "Could not find deposit account with id '$depositAccountId'"
+            );
+        }
+
+        $group = $depositAccount->getGroup();
+
+        if (!$group) {
+            throw new Exception(
+                "Deposit account with id '$depositAccountId' has no group"
             );
         }
 
         return $depositAccount;
-    }
-
-    /**
-     * Get deposit account by merchant name or creates one if one does not
-     * exist
-     *
-     * @param string $merchantName merchant name
-     *
-     * @return DepositAccount
-     */
-    private function getOrCreateDepositAccount($merchantName)
-    {
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-
-        // if the new one exists already, then get it
-        $newDa = $em->getRepository('RjDataBundle:DepositAccount')
-            ->findOneByMerchantName($merchantName);
-
-        // if not, create the new deposit account
-        if (!$newDa) {
-            $newDa = new DepositAccount();
-            $newDa->setMerchantName($merchantName);
-            $newDa->setStatus(DepositAccountStatus::DA_COMPLETE);
-            $em->persist($newDa);
-
-            // save it now because we need it to have a database id
-            $em->flush();
-        }
-
-        return $newDa;
     }
 
     /**
@@ -156,16 +147,12 @@ class RenameMerchantCommand extends ContainerAwareCommand
      *
      * @param DepositAccount $oldDepositAccount old deposit account
      * @param DepositAccount $newDepositAccount new deposit account
-     * @param string         $oldMerchantName   old merchant name
-     * @param string         $newMerchantName   new merchant name
      *
      * @return bool
      */
     private function updatePaymentAccounts(
         DepositAccount $oldDepositAccount,
-        DepositAccount $newDepositAccount,
-        $oldMerchantName,
-        $newMerchantName
+        DepositAccount $newDepositAccount
     ) {
         // find all the payment accounts registered to the old deposit account
         $paymentAccountWorkingSet = $oldDepositAccount->getPaymentAccounts();
@@ -189,45 +176,12 @@ class RenameMerchantCommand extends ContainerAwareCommand
             $this->registerAdditionalMerchant(
                 $paymentAccount,
                 $newDepositAccount,
-                $oldMerchantName,
-                $newMerchantName
+                $oldDepositAccount->getMerchantName(),
+                $newDepositAccount->getMerchantName()
             );
 
             $count++;
         }
-
-        return true;
-    }
-
-    /**
-     * Manage the transition from one merchant name to another
-     *
-     * @param string $oldMerchantName old merchant name
-     * @param string $newMerchantName new merchant name
-     *
-     * @return true
-     */
-    private function changeMerchantName($oldMerchantName, $newMerchantName)
-    {
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-
-        $oldDa = $this->getDepositAccount($oldMerchantName);
-        $newDa = $this->getOrCreateDepositAccount($newMerchantName);
-        $this->updatePaymentAccounts(
-            $oldDa,
-            $newDa,
-            $oldMerchantName,
-            $newMerchantName
-        );
-
-        /**
-          * Remove the group from the old deposit account and add it to the
-          * new one
-          */
-        $group = $oldDa->getGroup();
-        $oldDa->setGroup(null);
-        $newDa->setGroup($group);
-        $em->flush();
 
         return true;
     }
