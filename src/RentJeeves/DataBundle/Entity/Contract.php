@@ -204,12 +204,7 @@ class Contract extends Base
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
         $result['dueDate'] = $this->getDueDate();
-        if ($this->getGroup()->getGroupSettings()->getIsIntegrated()) {
-            $balance = $this->getIntegratedBalance();
-        } else {
-            $balance = $this->getBalance();
-        }
-        $result['balance'] = $balance;
+        $result['balance'] = $this->getCurrentBalance();
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];
@@ -800,5 +795,14 @@ class Contract extends Base
     public function getSettings()
     {
         return $this->getGroup()->getGroupSettings();
+    }
+
+    public function getCurrentBalance()
+    {
+        if ($this->getSettings()->getIsIntegrated()) {
+            return $this->getIntegratedBalance();
+        } else {
+            return $this->getBalance();
+        }
     }
 }

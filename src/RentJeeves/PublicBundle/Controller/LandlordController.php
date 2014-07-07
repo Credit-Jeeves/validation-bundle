@@ -50,6 +50,12 @@ class LandlordController extends Controller
             $landlord = $this->get('landlord.registration')->register($form, $formData);
             $this->get('project.mailer')->sendRjCheckEmail($landlord);
 
+            // Init DepositAccount before redirecting to dashboard
+            $depositAccount = new DepositAccount($landlord->getCurrentGroup());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($depositAccount);
+            $em->flush();
+
             return $this->get('common.login.manager')->loginAndRedirect(
                 $landlord,
                 $this->generateUrl('landlord_tenants')
