@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use RentJeeves\AdminBundle\Form\GroupSettings;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -132,6 +133,15 @@ class RjGroupAdmin extends Admin
             ->with('Deposit Account')
                 // admin.deposit_account.merchant_name
                 ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name', 'required' => false))
+                ->add(
+                    'depositAccount.status',
+                    'choice',
+                    array(
+                        'label' => 'Status',
+                        'required' => false,
+                        'choices' => DepositAccountStatus::cachedTitles()
+                    )
+                )
                 ->add(
                     'depositAccount.feeCC',
                     'number',
