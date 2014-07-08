@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "89da3f3635c77302074c58fd214116fd",
+    "hash": "6699fe2869887317058d97c373bd3684",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -450,11 +450,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "cc5b6399f4fe9bdd26671cc9ec7c23f4a68c91ba"
+                "reference": "08f0d98af64ce57c98ade5a6a753c07b2658b607"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2014-07-01 12:21:42"
+            "time": "2014-07-03 21:12:42"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
