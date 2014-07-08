@@ -730,12 +730,13 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals(2, count($result));
         $td = $result[0]->findAll('css', 'td');
-        // startAt should be the first day of next month b/c this contract has no payments yet
-        $today = new DateTime('first day of next month');
-        $this->assertEquals($today->format('m/d/Y') . '<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
+
+        $today = new DateTime('first day of this month');
+        $this->assertEquals($today->format('n/j/Y') . '<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
         $datepicker = $result[1]->findAll('css', '.datepicker');
         $this->assertEquals(2, count($datepicker));
-        $this->assertEquals('11/09/2013', $datepicker[0]->getValue(), $datepicker[0]->getValue());
+        $today = new DateTime('first day of next month');
+        $this->assertEquals($today->format('m/d/Y'), $datepicker[0]->getValue(), $datepicker[0]->getValue());
         $this->assertEquals('11/08/2014', $datepicker[1]->getValue(), $datepicker[1]->getValue());
         $this->logout();
     }
