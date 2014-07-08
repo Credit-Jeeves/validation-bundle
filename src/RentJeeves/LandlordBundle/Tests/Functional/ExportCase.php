@@ -155,10 +155,8 @@ class ExportCase extends BaseTestCase
 
         $csv = $this->page->getContent();
         $csvArr = explode("\n", $csv);
-        $this->assertEquals(6, count($csvArr));
-        $header = 'Date,"UNIT ID",TotalAmount,Memo,"Tenant ID"';
-        $this->assertEquals($header, $csvArr[0]);
-        $this->assertNotNull($csvArr = str_getcsv($csvArr[3]));
+        $this->assertEquals(5, count($csvArr));
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[2]));
         $this->assertEquals('AAABBB-7', $csvArr[1]);
         $this->assertEquals('1500.00', $csvArr[2]);
         $this->assertEquals('FGDTRFG-44', $csvArr[4]);
