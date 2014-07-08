@@ -408,6 +408,7 @@ class IframeCase extends BaseTestCase
         $this->logout();
         $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
         $this->session->visit($this->getUrl() . 'public_iframe?af=CREDITCOM');
+        $this->session->wait($this->timeout, "$('#property-add').length > 0");
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#register').length > 0");
