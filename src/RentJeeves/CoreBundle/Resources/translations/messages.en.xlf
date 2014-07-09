@@ -1718,7 +1718,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.pay.text">
                 <source>iframe.item.pay.text</source>
-                <target>Want to "set it and forget it"? With RentTrack, you can set up automatic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
+                <target>Want to "set it and forget it"? With RentTrack, you can set up automatic electronic payments and never have to walk to the bank again.</target>
             </trans-unit>
             <trans-unit id="iframe.item.build.title">
                 <source>iframe.item.build.title</source>
@@ -1726,7 +1726,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.build.text">
                 <source>iframe.item.build.text</source>
-                <target>RentTrack is able to report your on-time rent payments to credit bureaus. This optional service helps you build the credit history you'll need to secure your financial future.</target>
+                <target>RentTrack is able to report your on-time rent payments to credit bureaus. This optional free service helps you build the credit history you'll need to secure your financial future.</target>
             </trans-unit>
             <trans-unit id="iframe.item.monitor.title">
                 <source>iframe.item.monitor.title</source>
