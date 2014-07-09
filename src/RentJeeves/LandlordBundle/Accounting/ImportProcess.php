@@ -34,7 +34,7 @@ use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\Form;
 use CreditJeeves\CoreBundle\Translation\Translator;
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use Symfony\Component\Form\FormFactory;
@@ -422,7 +422,25 @@ class ImportProcess
         //set data from csv file
         $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
-        $contract->setStartAt($this->getDateByField($row[ImportMapping::KEY_MOVE_IN]));
+
+        $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
+        $today = new DateTime();
+        if ($moveIn > $today) {
+            $startAt = $moveIn;
+        } else {
+            $groupDueDate = $this->group->getGroupSettings()->getDueDate();
+            $startAt = new DateTime();
+            if ($row[ImportMapping::KEY_BALANCE] <= 0) {
+                // snap to next month due date (default from group) for start_at
+                $startAt->modify('+1 month');
+                $startAt = $startAt->setDate(null, null, $groupDueDate);
+            } else {
+                // snap to this month due date (default from group) for start_at
+                $startAt = $startAt->setDate(null, null, $groupDueDate);
+            }
+        }
+
+        $contract->setStartAt($startAt);
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
