@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use \DateTime;
 use \SimpleXMLElement;
+use ZipArchive;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -160,5 +161,51 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('AAABBB-7', $csvArr[1]);
         $this->assertEquals('1500.00', $csvArr[2]);
         $this->assertEquals('FGDTRFG-44', $csvArr[4]);
+    }
+
+    /**
+     * @test
+     */
+    public function promasBatchReport()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('promas');
+        $this->page->pressButton('base.order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(2, count($errors));
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $makeZip->check();
+
+        ob_start();
+        $this->page->pressButton('base.order.report.download');
+        $csvZip = ob_get_contents();
+        ob_end_clean();
+
+        $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
+        file_put_contents($testFile, $csvZip);
+
+        $archive = new ZipArchive();
+        $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
+        $this->assertEquals(3, $archive->numFiles);
+        $file = $archive->getFromIndex(1);
+        $rows = explode("\n", trim($file));
+        $this->assertEquals(2, count($rows));
+        $columns = explode(",", $rows[0]);
+        $this->assertEquals('AAABBB-7', $columns[1]);
+        $this->assertEquals(1500, $columns[2]);
+        $this->assertEquals('"Trans #456123 Batch #111555"', $columns[3]);
+        $this->assertEquals("FGDTRFG-44", $columns[4]);
     }
 }

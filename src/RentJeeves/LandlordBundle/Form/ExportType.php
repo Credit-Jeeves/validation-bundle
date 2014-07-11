@@ -142,7 +142,7 @@ class ExportType extends AbstractType
                     'class' => 'int',
                     'data-bind' => 'value: propertyId',
                     'row_attr' => array(
-                        'data-bind' => 'visible: selectedType() == "xml"',
+                        'data-bind' => "visible: selectedType() == 'xml'",
                     )
                 ),
                 'constraints' => array(
@@ -167,7 +167,7 @@ class ExportType extends AbstractType
                     'class' => 'int',
                     'data-bind' => 'value: accountId',
                     'row_attr' => array(
-                        'data-bind' => 'visible: selectedType() == "xml"',
+                        'data-bind' => "visible: selectedType() == 'xml'",
                     )
                 ),
                 'constraints' => array(
@@ -192,7 +192,7 @@ class ExportType extends AbstractType
                     'class' => 'int',
                     'data-bind' => 'value: arAccountId',
                     'row_attr' => array(
-                        'data-bind' => 'visible: selectedType() == "xml"',
+                        'data-bind' => "visible: selectedType() == 'xm'",
                     )
                 ),
                 'constraints' => array(
@@ -247,15 +247,15 @@ class ExportType extends AbstractType
         );
 
         $builder->add(
-            'zipBatch',
+            'makeZip',
             'checkbox',
             array(
                 'label' => 'export.promas.make_zip',
                 'required' => false,
                 'attr' => array(
-                    'data-bind' => 'checked: zipBatch',
+                    'data-bind' => 'checked: makeZip',
                     'row_attr' => array(
-                        'data-bind' => 'visible: selectedType() == "promas"',
+                        'data-bind' => "visible: selectedType() == 'promas'",
                     )
                 ),
             )
