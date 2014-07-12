@@ -204,12 +204,7 @@ class Contract extends Base
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
         $result['dueDate'] = $this->getDueDate();
-        if ($this->getGroup()->getGroupSettings()->getIsIntegrated()) {
-            $balance = $this->getIntegratedBalance();
-        } else {
-            $balance = $this->getBalance();
-        }
-        $result['balance'] = $balance;
+        $result['balance'] = $this->getCurrentBalance();
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];
@@ -300,11 +295,11 @@ class Contract extends Base
             foreach ($operations as $operation) {
                 $order = $operation->getOrder();
                 if (OrderStatus::COMPLETE == $order->getStatus()) {
-                    $payments[] = $order->getCreatedAt()->format('M d, Y');
+                    $payments[$order->getCreatedAt()->format('Y-m-d H:i:s')] = $order->getCreatedAt()->format('M d, Y');
                 }
             }
-            arsort($payments);
-            return isset($payments[0]) ? $payments[0] : $result;
+            krsort($payments);
+            return count($payments) ? current($payments) : $result;
         }
     }
 
@@ -806,5 +801,14 @@ class Contract extends Base
     public function getSettings()
     {
         return $this->getGroup()->getGroupSettings();
+    }
+
+    public function getCurrentBalance()
+    {
+        if ($this->getSettings()->getIsIntegrated()) {
+            return $this->getIntegratedBalance();
+        } else {
+            return $this->getBalance();
+        }
     }
 }

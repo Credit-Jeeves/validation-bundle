@@ -47,19 +47,22 @@ class Export
             'content-type' => 'text/xml',
             'serializer'   => 'xml',
             'filename'     => 'Yardi_%s_%s.xml',
-            'group'        => 'xmlReport'
+            'group'        => 'xmlReport',
+            'use_header'   => false,
         ),
         'csv' => array(
             'content-type' => 'text/csv',
             'serializer'   => 'csv',
             'filename'     => 'OnePage_%s_%s.csv',
-            'group'        => 'csvReport'
+            'group'        => 'csvReport',
+            'use_header'   => true,
         ),
         'promas' => array(
             'content-type' => 'text/csv',
             'serializer'   => 'csv',
             'filename'     => 'Promas_%s_%s.csv',
             'group'        => 'promasReport',
+            'use_header'   => false,
         )
     );
 
@@ -142,6 +145,7 @@ class Export
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups($group);
+        $context->setAttribute('use_header', $this->mapping[$this->type]['use_header']);
         $content = $this->serializer->serialize($report, $serializer, $context);
 
         return $content;
