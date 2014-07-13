@@ -194,7 +194,7 @@ abstract class DepositAccount
      */
     public function getFeeACH()
     {
-        return (double)$this->feeACH;
+        return $this->feeACH;
     }
 
     /**
@@ -210,7 +210,7 @@ abstract class DepositAccount
      */
     public function getFeeCC()
     {
-        return (double)$this->feeCC;
+        return $this->feeCC;
     }
 
     /**
