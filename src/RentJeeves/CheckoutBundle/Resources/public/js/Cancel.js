@@ -4,7 +4,6 @@ function Cancel(id) {
         jQuery("#payment-account-cancel").dialog('close');
     };
 
-    console.log(id);
     this.cancelUrl = ko.computed(function() {
         return Routing.generate('checkout_pay_cancel', { id: id });
     }, self);

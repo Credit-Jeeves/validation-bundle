@@ -35,6 +35,7 @@ function PaymentSource(parent, isForceSave, newAddress, defaultType) {
 
     this.clear = function() {
         self.type(defaultType);
+        self.id(null);
         self.name('');
         self.PayorName('');
         self.RoutingNumber('');

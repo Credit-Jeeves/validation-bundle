@@ -133,10 +133,10 @@ class DepositAccountListener
         if (!$entity instanceof DepositAccount) {
             return;
         }
-        if (null == $entity->getFeeACH()) {
+        if (null === $entity->getFeeACH()) {
             $entity->setFeeACH((float)$this->feeACH);
         }
-        if (null == $entity->getFeeCC()) {
+        if (null === $entity->getFeeCC()) {
             $entity->setFeeCC((float)$this->feeCC);
         }
     }

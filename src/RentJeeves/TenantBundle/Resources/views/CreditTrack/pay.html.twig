@@ -32,7 +32,7 @@
                                 required="required"
                                 data-bind="
                                     value: $data.id,
-                                    checked: $parent.payment.paymentAccountId
+                                    checked: $parent.paymentSource.id
                                 " />
                             <i></i>
                             <span data-bind="text: $data.name"></span>
@@ -64,33 +64,13 @@
             <div class="clearfix halfs-box">
                 <div class="half-box left">
                     <h4>{{ 'checkout.your_payment' | trans }}</h4>
-                    <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
-                        <label>{{ 'checkout.starts_on' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: payment.startDate"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix" data-bind="visible: 'one_time' == payment.type()">
-                        <label>{{ 'checkout.sent_on' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: payment.startDate"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
-                        <label>{{ 'checkout.recurs_on' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value"
-                                  data-bind="text: 'checkout.day.' + payment.frequency() +'.each_month-%DAY%', i18n: {'DAY': payment.dueDate}">
-                            </span>
-                        </div>
-                    </div>
                     <div class="form-row clearfix">
                         <label>{{ 'credittrack.pay.amount' | trans }}</label>
                         <div class="fields-box">
                             <span class="value">{{ credittrack_payment_per_month }}</span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    {#<div class="form-row clearfix">
                         <label>{{ 'checkout.fee' | trans }}</label>
                         <div class="fields-box">
                             <span class="value">$0.00</span>
@@ -101,7 +81,7 @@
                         <div class="fields-box">
                             <span class="value" data-bind="text: getTotalAmount()"></span>
                         </div>
-                    </div>
+                    </div>#}
                 </div>
                 <div class="half-box right">
                     <h4>{{ 'checkout.how_paying' | trans }}</h4>
@@ -193,15 +173,10 @@
         <button class="button grey fixed" data-bind="visible: 'source' != step(), click: previous">
             <span>{{ 'pay_popup.step.previous' | trans }}</span>
         </button>
-        <button class="button fixed" data-bind="visible: 'pay' != step(), click: next">
-            <span>{{ 'pay_popup.step.next' | trans }}</span>
+        <button class="button fixed" data-bind="click: next">
+            <span data-bind="visible: 'pay' != step()">{{ 'pay_popup.step.next' | trans }}</span>
+            <span data-bind="visible: 'pay' == step()">{{ 'checkout.make_payment' | trans }}</span>
         </button>
-        <button class="button" data-bind="visible: 'pay' == step(), click: next">
-            <span>{{ 'checkout.make_payment' | trans }}</span>
-        </button>
-        <a href="#" class="link removePropertyConfirm" data-bind="visible: 'source' == step() && payment.id(), click: cancelDialog">
-            {{ 'checkout.payment.cancel' | trans | raw }}
-        </a>
         {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': false}) }}
     </div>
 </div>

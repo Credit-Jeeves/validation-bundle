@@ -74,13 +74,13 @@ class CreditTrackController extends Controller
                 "PaymentAccount with id '{$paymentAccountId}' not found for user"
             );
         }
+        $settings = $user->getSettings();
 
         /** @var BinaryMaskStatusRequest $statusRequest */
         $statusRequest = $this->get('payment.pay_credit_track')
             ->executePaymentAccount($paymentAccount);
 
         if ($statusRequest->isSuccess()) {
-            $settings = $user->getSettings();
             $settings->setCreditTrackPaymentAccount($paymentAccount);
             $settings->setCreditTrackEnabledAt(new DateTime('now'));
 

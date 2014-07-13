@@ -19,5 +19,5 @@ fixtures:
     merchantName: RentTrackCorp
     group: RentTrackCorp
     status: complete
-    feeCC: 0
-    feeACH: 0
+    feeCC: "0"
+    feeACH: "0"

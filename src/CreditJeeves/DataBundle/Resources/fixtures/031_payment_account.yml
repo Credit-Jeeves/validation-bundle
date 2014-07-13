@@ -80,4 +80,14 @@ fixtures:
         updatedAt: '-5 days'
         depositAccounts:
             - DepositAccount_3
+    PaymentAccount_14:
+        user: Tenant_1
+        address: rjAddress_1
+        type: card
+        name: RT Card
+        token: 'D5E0A348-A8E7-4B7B-AA3D-A75E90DFB9C2'
+        ccExpiration: 'last day of +3 month'
+        createdAt: '-5 days'
+        updatedAt: '-5 days'
+        depositAccounts:
             - DepositAccount_RentTrackCorp
