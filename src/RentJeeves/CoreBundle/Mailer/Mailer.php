@@ -155,7 +155,7 @@ class Mailer extends BaseMailer
     {
         $tenant = $order->getUser();
         $history = $order->getHeartlands()->last();
-        $fee = $order->wgetFee();
+        $fee = $order->getFee();
         $amount = $order->getSum();
         $total = $fee + $amount;
         $vars = array(
