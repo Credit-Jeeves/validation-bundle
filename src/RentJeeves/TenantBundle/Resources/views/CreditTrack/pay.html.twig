@@ -173,9 +173,11 @@
         <button class="button grey fixed" data-bind="visible: 'source' != step(), click: previous">
             <span>{{ 'pay_popup.step.previous' | trans }}</span>
         </button>
-        <button class="button fixed" data-bind="click: next">
-            <span data-bind="visible: 'pay' != step()">{{ 'pay_popup.step.next' | trans }}</span>
-            <span data-bind="visible: 'pay' == step()">{{ 'checkout.make_payment' | trans }}</span>
+        <button class="button fixed" data-bind="visible: 'pay' != step(), click: next">
+            <span>{{ 'pay_popup.step.next' | trans }}</span>
+        </button>
+        <button class="button" data-bind="visible: 'pay' == step(), click: next">
+            <span>{{ 'checkout.make_payment' | trans }}</span>
         </button>
         {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': false}) }}
     </div>
