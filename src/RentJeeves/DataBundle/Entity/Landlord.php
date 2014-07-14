@@ -5,7 +5,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Tests\ORM\Tools\Export\Group;
+use CreditJeeves\DataBundle\Entity\Group;
 
 /**
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\LandlordRepository")

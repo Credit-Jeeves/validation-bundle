@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\ContractRepository;
+use RentJeeves\DataBundle\Entity\Landlord;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -740,6 +741,12 @@ class AjaxController extends Controller
         if (in_array($details['status'], array(ContractStatus::APPROVED)) & empty($errors)) {
             $contract->setStatusApproved();
             $this->get('project.mailer')->sendContractApprovedToTenant($contract);
+        }
+
+        if ($contract->getSettings()->getIsIntegrated()) {
+            $contract->setIntegratedBalance($details['balance']);
+        } else {
+            $contract->setBalance($details['balance']);
         }
 
         if ($action == 'remove') {
