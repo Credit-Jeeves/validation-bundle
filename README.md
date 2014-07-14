@@ -108,5 +108,4 @@ Environment:
         fastcgi_buffer_size 128k;
         fastcgi_buffers 4 256k;
         fastcgi_busy_buffers_size 256k;
-5. Add files encryption to path: /etc/cj/mk,  /var/local/cj/rk. Add checking for that.
-
+        
