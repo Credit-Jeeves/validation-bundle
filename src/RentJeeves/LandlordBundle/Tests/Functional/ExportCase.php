@@ -205,7 +205,7 @@ class ExportCase extends BaseTestCase
         $columns = explode(",", $rows[0]);
         $this->assertEquals('AAABBB-7', $columns[1]);
         $this->assertEquals(1500, $columns[2]);
-        $this->assertEquals('"Trans #456123 Batch #111555"', $columns[3]);
+        $this->assertContains($columns[3], array('"Trans #456123 Batch #111555"', '"Trans #789789 Batch #111555"'));
         $this->assertEquals("FGDTRFG-44", $columns[4]);
     }
 }
