@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\ContractRepository;
-use RentJeeves\DataBundle\Entity\Landlord;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
