@@ -192,7 +192,7 @@ class ExportType extends AbstractType
                     'class' => 'int',
                     'data-bind' => 'value: arAccountId',
                     'row_attr' => array(
-                        'data-bind' => "visible: selectedType() == 'xm'",
+                        'data-bind' => "visible: selectedType() == 'xml'",
                     )
                 ),
                 'constraints' => array(
