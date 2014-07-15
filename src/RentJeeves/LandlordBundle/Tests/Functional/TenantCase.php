@@ -202,8 +202,10 @@ class TenantCase extends BaseTestCase
         $contract = reset($contracts);
         if ($isIntegrated) {
             $this->assertEquals(200.00, $contract->getIntegratedBalance(), 'Wrong balance');
+            $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
         } else {
             $this->assertEquals(200.00, $contract->getBalance(), 'Wrong balance');
+            $this->assertEquals(0, $contract->getIntegratedBalance(), 'Wrong balance');
         }
     }
 
