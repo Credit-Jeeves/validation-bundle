@@ -710,6 +710,7 @@ class AjaxController extends Controller
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
+
         /**
          * @var $contract Contract
          */
