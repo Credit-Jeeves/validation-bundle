@@ -74,7 +74,7 @@ trait AccountAssociate
     {
         $request = new RegisterTokenToAdditionalMerchantRequest();
         $request->setToken($token);
-        $request->getRegisterToMerchantCredential()->setMerchantName($merchantName);
+        $request->getRegisterToMerchantCredential()->setMerchantName($registerToMerchantName);
 
         $paymentDetails = new PaymentDetails();
         $paymentDetails->setMerchantName($merchantName);
