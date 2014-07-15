@@ -48,6 +48,17 @@ abstract class GroupSettings
     protected $isIntegrated = false;
 
     /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="is_pay_balance_only",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     */
+    protected $isPayBalanceOnly = false;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     inversedBy="groupSettings",
@@ -116,6 +127,22 @@ abstract class GroupSettings
      * @var DateTime
      */
     protected $updatedAt;
+
+    /**
+     * @param boolean $isPayBalanceOnly
+     */
+    public function setIsPayBalanceOnly($isPayBalanceOnly)
+    {
+        $this->isPayBalanceOnly = $isPayBalanceOnly;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsPayBalanceOnly()
+    {
+        return $this->isPayBalanceOnly;
+    }
 
     /**
      * @param boolean $pidVerification

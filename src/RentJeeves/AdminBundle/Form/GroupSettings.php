@@ -29,6 +29,16 @@ class GroupSettings extends Base
             )
         );
 
+        $builder->add(
+            'isPayBalanceOnly',
+            'checkbox',
+            array(
+                'error_bubbling'    => true,
+                'label'             => 'is.pay.balance.only',
+                'required'          => false,
+            )
+        );
+
         $dueDate = array();
         foreach (range(1, 31, 1) as $key => $value) {
             $dueDate[$value] = $value;

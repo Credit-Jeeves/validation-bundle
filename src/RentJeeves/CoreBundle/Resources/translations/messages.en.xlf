@@ -456,6 +456,10 @@
                 <source>tenant.found.match</source>
                 <target>Good news! We found a match.</target>
             </trans-unit>
+            <trans-unit id="is.pay.balance.only">
+                <source>is.pay.balance.only</source>
+                <target>Pay Balance Only?</target>
+            </trans-unit>
             <trans-unit id="result.search">
                 <source>result.search</source>
                 <target>
