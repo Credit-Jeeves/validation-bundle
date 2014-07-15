@@ -135,6 +135,9 @@ class DashboardCase extends BaseTestCase
 
         $this->assertNotNull($returned = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="returned"]'));
         $this->assertNotNull($refunded = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="refunded"]'));
+        /*
+         * Check returned Status
+         */
         $returned->click();
 
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
@@ -142,8 +145,12 @@ class DashboardCase extends BaseTestCase
 
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (1)', $title->getHtml());
+        /*
+         * Get first TD with status
+         */
+        $this->assertNotNull($td = $this->page->find('css', '#payments-block-tbody td'));
+        $this->assertEquals('order.status.text.returned', $td->getHtml());
+
 
         $this->logout();
     }
