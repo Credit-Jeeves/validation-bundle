@@ -3,7 +3,11 @@ namespace RentJeeves\AdminBundle\Form;
 
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use RentJeeves\DataBundle\Entity\GroupSettings as GroupSetting;
 
 class GroupSettings extends Base
 {
@@ -80,6 +84,23 @@ class GroupSettings extends Base
             )
         );
 
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+                // this would be entity, i.e. GroupSettings
+                /**
+                 * @var $groupSettings GroupSetting
+                 */
+                $groupSettings = $event->getData();
+
+                if (!$groupSettings->getIsIntegrated() && $groupSettings->getIsPayBalanceOnly()) {
+                    $form->get('isPayBalanceOnly')->addError(
+                        new FormError('is.pay.balance.only.error')
+                    );
+                }
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

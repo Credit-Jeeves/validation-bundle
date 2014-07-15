@@ -70,6 +70,10 @@
                 <source>admin.deposit_account.fee_ach</source>
                 <target>ACH Fee ($)</target>
             </trans-unit>
+            <trans-unit id="is.pay.balance.only.error">
+                <source>is.pay.balance.only.error</source>
+                <target>Pay Balance Only can be setup only for Integrated Group</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
