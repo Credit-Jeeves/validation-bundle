@@ -902,6 +902,14 @@
                 <source>processing</source>
                 <target>Processing</target>
             </trans-unit>
+            <trans-unit id="returned">
+                <source>returned</source>
+                <target>Returned</target>
+            </trans-unit>
+            <trans-unit id="refunded">
+                <source>refunded</source>
+                <target>Refunded</target>
+            </trans-unit>
             <trans-unit id="payments.total">
                 <source>payments.total</source>
                 <target>Payments Total</target>
