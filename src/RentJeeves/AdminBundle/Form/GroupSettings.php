@@ -41,7 +41,7 @@ class GroupSettings extends Base
         );
 
         $builder->add(
-            'isPayBalanceOnly',
+            'payBalanceOnly',
             'checkbox',
             array(
                 'error_bubbling'    => true,
@@ -102,7 +102,7 @@ class GroupSettings extends Base
                  */
                 $groupSettings = $event->getData();
 
-                if (!$groupSettings->getIsIntegrated() && $groupSettings->getIsPayBalanceOnly()) {
+                if (!$groupSettings->getIsIntegrated() && $groupSettings->getPayBalanceOnly()) {
                     $form->get('isPayBalanceOnly')->addError(
                         new FormError(
                             $self->translator->trans('is.pay.balance.only.error')

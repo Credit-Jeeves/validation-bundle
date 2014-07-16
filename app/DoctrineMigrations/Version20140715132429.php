@@ -15,7 +15,7 @@ class Version20140715132429 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_group_settings
-                ADD is_pay_balance_only TINYINT(1) DEFAULT '0' NOT NULL"
+                ADD pay_balance_only TINYINT(1) DEFAULT '0' NOT NULL"
         );
     }
 
@@ -28,7 +28,7 @@ class Version20140715132429 extends AbstractMigration
         
         $this->addSql(
             "ALTER TABLE rj_group_settings
-                DROP is_pay_balance_only"
+                DROP pay_balance_only"
         );
     }
 }

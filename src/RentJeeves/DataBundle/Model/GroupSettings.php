@@ -50,13 +50,13 @@ abstract class GroupSettings
     /**
      * @ORM\Column(
      *      type="boolean",
-     *      name="is_pay_balance_only",
+     *      name="pay_balance_only",
      *      options={
      *          "default":0
      *      }
      * )
      */
-    protected $isPayBalanceOnly = false;
+    protected $payBalanceOnly = false;
 
     /**
      * @ORM\OneToOne(
@@ -129,19 +129,19 @@ abstract class GroupSettings
     protected $updatedAt;
 
     /**
-     * @param boolean $isPayBalanceOnly
+     * @param boolean $payBalanceOnly
      */
-    public function setIsPayBalanceOnly($isPayBalanceOnly)
+    public function setPayBalanceOnly($payBalanceOnly)
     {
-        $this->isPayBalanceOnly = $isPayBalanceOnly;
+        $this->payBalanceOnly = $payBalanceOnly;
     }
 
     /**
      * @return boolean
      */
-    public function getIsPayBalanceOnly()
+    public function getPayBalanceOnly()
     {
-        return $this->isPayBalanceOnly;
+        return $this->payBalanceOnly;
     }
 
     /**
