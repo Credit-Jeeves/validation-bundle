@@ -13,17 +13,16 @@
   <div class="pod-middle pod-border pod-padding shadow">
     <section class="form-content">
        <form action="{{ path('accounting_export')}}" method="post" {{ form_enctype(formBaseOrder) }} id="baseOrderReport" >
-
             {{ form_widget(formBaseOrder) }}
            <button type="submit" class="button small submitBaseReport">
                     <span>
                         {{ 'base.order.report.download'|trans }}
                     </span>
            </button>
-           <div class="helpContainer">
+           <div class="helpContainer" data-bind="visible: selectedType() != 'promas'">
                Help:
-               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296770-how-to-import-payments-into-yardi" class="xml">{{ 'base.order.report.how_to.yardi'|trans }}</a>
-               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296772-how-do-i-import-payments-into-realpage-onesite-" class="csv none">{{ 'base.order.report.how_to.realpage'|trans }}</a>
+               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296770-how-to-import-payments-into-yardi" class="xml" data-bind="visible: selectedType() == 'xml'">{{ 'base.order.report.how_to.yardi'|trans }}</a>
+               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296772-how-do-i-import-payments-into-realpage-onesite-" class="csv" data-bind="visible: selectedType() == 'csv'">{{ 'base.order.report.how_to.realpage'|trans }}</a>
            </div>
         </form>
     </section>
@@ -32,8 +31,7 @@
 </div>
 <div class="col-box clearfix"></div>
 <script type="text/javascript">
-    $(function() {
-        //@TODO move too knockout
+
         $('.calendar').datepicker({
             showOn: "both",
             buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
@@ -41,35 +39,38 @@
             starts: 1,
             position: 'r'
         });
-
+        // @TODO move it to css
         function processFieldsFormReport(type)
         {
             if(type == 'xml') {
-                $('.int').parent().parent().show();
                 $('.type-date').css({'margin-top':'-175px'});
             }
             if (type == 'csv') {
-                $('.int').parent().parent().hide();
                 $('.type-date').css({'margin-top':'-70px'});
             }
             if (type == 'promas') {
-                $('.int').parent().parent().hide();
-                $('.type-date').css({'margin-top':'-70px'});
-                $('#base_order_report_type_property_label').hide();
-                $('#base_order_report_type_property_box').hide();
-                $('.type-date').css({'margin-top':'-38px'});
-                $('.helpContainer').hide();
+                $('.type-date').css({'margin-top':'-35px'});
             }
         }
 
-        $('#base_order_report_type_type').change(function(){
-            $('.helpContainer>a').hide();
-            $('.'+$(this).val()).show();
+        $('#base_order_report_type_type').change(function() {
             processFieldsFormReport($(this).val());
         });
 
         processFieldsFormReport($('#base_order_report_type_type option:selected').val());
-    });
+
+        $(document).ready(function() {
+            var viewModel = new ExportViewModel();
+            ko.applyBindings(viewModel);
+            {% for choice in formBaseOrder.type.vars['choices'] %}
+                var type = {'type': '{{ choice.value }}', 'typeName': '{{ choice.label|trans }}'};
+                viewModel.exportTypes.push(type);
+            {% endfor %}
+            {% for choice in formBaseOrder.property.vars['choices'] %}
+                var property = {'id': '{{ choice.value }}', 'name': '{{ choice.label }}'};
+                viewModel.properties.push(property);
+            {% endfor %}
+        });
 </script>
 {% endblock %}
 
@@ -80,4 +81,11 @@
     %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts  '@LandlordBundle/Resources/public/js/Export/ExportViewModel.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
