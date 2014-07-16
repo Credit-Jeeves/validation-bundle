@@ -22,9 +22,8 @@ use JMS\Serializer\JsonSerializationVisitor;
  */
 class SerializationListener implements EventSubscriberInterface
 {
-
     /**
-     * @Inject("accounting.export", required = true)
+     * @Inject("accounting.export.yardi", required = true)
      */
     public $reportOrder;
 
