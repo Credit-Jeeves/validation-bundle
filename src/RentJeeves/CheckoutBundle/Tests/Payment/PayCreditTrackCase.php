@@ -19,7 +19,7 @@ class PayCreditTrackCase extends BaseTestCase
         $group = $this->getContainer()
             ->get('doctrine')
             ->getRepository('DataBundle:Group')
-            ->findOneByCode('RentTrackCorp');
+            ->findOneByCode($this->getContainer()->getParameter('rt_merchant_name'));
 
         /** @var BinaryMaskStatusRequest $statusRequest */
         $statusRequest = $this->getContainer()

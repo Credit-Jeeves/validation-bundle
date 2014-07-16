@@ -2489,6 +2489,14 @@
                 <source>export.promas.make_zip</source>
                 <target>Separate By Batch Deposits (ZIP File with Multiple CSVs)</target>
             </trans-unit>
+            <trans-unit id="credittrack.teaser.link">
+                <source>credittrack.teaser.link</source>
+                <target>Enroll in &lt;span class="highlight"&gt;CreditTrack&lt;/span&gt; to get monthly updates.</target>
+            </trans-unit>
+            <trans-unit id="credittrack.active.message">
+                <source>credittrack.active.message</source>
+                <target>Enrolled in CreditTrack</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

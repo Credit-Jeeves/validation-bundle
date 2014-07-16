@@ -223,7 +223,7 @@ abstract class Order
     /**
      * Get type
      *
-     * @return double
+     * @return OrderType
      */
     public function getType()
     {

@@ -25,9 +25,28 @@ class PayCreditTrack extends Pay
     protected $amount;
 
     /**
+     * @var string
+     */
+    protected $rjGroupCode;
+
+    /**
+     * @DI\InjectParams({"rjGroupCode" = @DI\Inject("%rt_merchant_name%")})
+     *
+     * @param string $rjGroupCode
+     *
+     * @return $this
+     */
+    public function setRjGroupCode($rjGroupCode)
+    {
+        $this->rjGroupCode = $rjGroupCode;
+        return $this;
+    }
+
+    /**
      * @DI\InjectParams({"amount" = @DI\Inject("%credittrack_payment_per_month%")})
      *
      * @param string $amount
+     *
      * @return $this
      */
     public function setAmount($amount)
@@ -46,7 +65,7 @@ class PayCreditTrack extends Pay
         /** @var DepositAccount $depositAccount */
         $depositAccount = $this->em
             ->getRepository('DataBundle:Group')
-            ->findOneByCode('RentTrackCorp')
+            ->findOneByCode($this->rjGroupCode)
             ->getDepositAccount();
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
