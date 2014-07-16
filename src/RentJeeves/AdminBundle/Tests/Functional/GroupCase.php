@@ -34,7 +34,7 @@ class GroupCase extends BaseTestCase
         $menu[4]->click();
 
         $this->assertNotNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
-        $this->assertEquals('is.pay.balance.only.error', $error->getText());
+        $this->assertEquals('pay.balance.only.error', $error->getText());
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
         $this->assertCount(3, $checkbox);

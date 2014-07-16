@@ -2445,12 +2445,12 @@
                 <source>import.property.single.checkbox_label</source>
                 <target>Single Property (No Units)</target>
             </trans-unit>
-            <trans-unit id="is.pay.balance.only">
-                <source>is.pay.balance.only</source>
+            <trans-unit id="pay.balance.only">
+                <source>pay.balance.only</source>
                 <target>Pay Balance Only?</target>
             </trans-unit>
-            <trans-unit id="is.pay.balance.only.error">
-                <source>is.pay.balance.only.error</source>
+            <trans-unit id="pay.balance.only.error">
+                <source>pay.balance.only.error</source>
                 <target>Pay Balance Only can be setup only for Integrated Group</target>
             </trans-unit>
             <trans-unit id="export.promas.make_zip">
