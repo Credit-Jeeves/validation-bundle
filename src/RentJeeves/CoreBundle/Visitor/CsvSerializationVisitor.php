@@ -35,7 +35,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
 
     public function __construct()
     {
-        $this->fp = fopen('php://temp', 'r+');
+        $this->initOutput();
     }
 
     /**
@@ -192,7 +192,13 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
         rewind($this->fp);
         $data = fread($this->fp, 1048576);
         fclose($this->fp);
+        $this->initOutput();
 
         return $data;
+    }
+
+    protected function initOutput()
+    {
+        $this->fp = fopen('php://temp', 'r+');
     }
 }

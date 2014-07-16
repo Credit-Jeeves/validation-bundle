@@ -90,12 +90,28 @@ Selenium server (RC) version 2.33.0 does not work with Firefox 23.x
 STG
 ---
 Last DB 20130924_credit_jeeves_2_before_RT.sql
+http://stg.renttrack.com/
+http://stg2.creditjeeves.com/
+ATB - http://stg2.creditjeeves.com:8080/
 
+DEV
 ---
-For selenium server need mount folder
+http://dev2.creditjeeves.com/
+http://dev2.renttrack.com/
+http://dev.creditjeeves.com/phpMyAdmin/
+http://dev2.renttrack.com:81/ - JENKINS
 
+SELENIUM
+---
+For selenium server need to mount folder
 sudo sshfs -o allow_other -p 22 ec2-user@dev.creditjeeves.com:/var/www/dev2.creditjeeves.com/data/fixtures -o \
  IdentityFile=/home/ec2-user/alex /var/www/dev2.creditjeeves.com/data/fixtures
+
+ec2-user@54.243.130.78 - SELENIUM ssh user alex
+./screen.sh - run selenium for RT
+./screen2.sh - run selenium for sf1 CJ
+
+
 
 TODO
 ----
@@ -104,7 +120,9 @@ Environment:
 1. Make sure default time zone is correct value
 2. If XDebug is installed - need to do required check for nesting level
 3. Add check for encryption keys
-4. Add check for nginx buffer values
+    /etc/cj/mk
+    /var/local/cj/rk
+4. Add check for nginx buffer values (summary page requires)
         fastcgi_buffer_size 128k;
         fastcgi_buffers 4 256k;
         fastcgi_busy_buffers_size 256k;
