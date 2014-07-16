@@ -1,6 +1,6 @@
 function Info() {
     this.popup = ko.observable(false);
-    this.openPopupthis.openPopup = function () {
+    this.openPopup = function () {
         $('#reporting-popup').dialog('open');
     };
 }

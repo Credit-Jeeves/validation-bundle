@@ -67,7 +67,7 @@
                         </thead>
                         <tbody>
                         {% for item in addresses %}
-                            <tr id="user-address-row-{{ loop.revindex }}">
+                            <tr id="user-address-row-{{ loop.index }}">
                                 <td class="font-helvetica">
                                     {{ item.fullAddress }}
                                     {% if item.isDefault %}

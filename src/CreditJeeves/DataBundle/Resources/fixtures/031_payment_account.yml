@@ -2,7 +2,7 @@ model: RentJeeves\DataBundle\Entity\PaymentAccount
 fixtures:
     PaymentAccount_1:
         user: Tenant_1
-        address: rjAddress_1
+        address: TenantAddres_1
         type: card
         name: Card
         token: '1A41838C-00BB-444B-9FD3-887E136F0420'
@@ -82,7 +82,7 @@ fixtures:
             - DepositAccount_3
     PaymentAccount_14:
         user: Tenant_1
-        address: rjAddress_1
+        address: TenantAddres_1
         type: card
         name: RT Card
         token: 'D5E0A348-A8E7-4B7B-AA3D-A75E90DFB9C2'
