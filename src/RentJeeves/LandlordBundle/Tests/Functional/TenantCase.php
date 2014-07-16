@@ -16,7 +16,7 @@ class TenantCase extends BaseTestCase
     protected $timeout = 30000;
 
     /**
-     * @test
+     * test
      */
     public function approve()
     {
@@ -57,7 +57,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function sort()
     {
@@ -125,6 +125,10 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
+
+        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
+
         $this->page->pressButton('edit.Info');
         $this->session->evaluateScript(
             "$('.half-of-right').val(' ');"
@@ -210,7 +214,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function remove()
     {
@@ -241,7 +245,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function endContract()
     {
@@ -292,7 +296,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function search()
     {
@@ -315,7 +319,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function addTenantNoneExist()
     {
@@ -434,7 +438,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function addTenantExist()
     {
@@ -541,7 +545,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function checkNotifyLandlord()
     {
@@ -613,7 +617,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function checkReminder()
     {
@@ -685,7 +689,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      * @depends checkReminder
      */
     public function revoke()
