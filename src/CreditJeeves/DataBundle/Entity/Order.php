@@ -601,13 +601,11 @@ class Order extends BaseOrder
     }
 
     /**
-     * @throws RuntimeException
-     *
-     * @return Operation
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getRentOperation()
+    public function getRentOperations()
     {
-        $operationCollection = $this->getOperations()
+        return $this->getOperations()
             ->filter(
                 function (Operation $operation) {
                     if (OperationType::RENT == $operation->getType()) {
@@ -616,15 +614,11 @@ class Order extends BaseOrder
                     return false;
                 }
             );
-        if (1 < $operationCollection->count()) {
-            throw new RuntimeException("Order has more than ONE 'RENT' operation");
-        }
-        if (0 == $operationCollection->count()) {
-            return null;
-        }
-        return $operationCollection->last();
     }
 
+    /**
+     * @return Operation|null
+     */
     public function getOtherOperation()
     {
         $operationCollection = $this->getOperations()
@@ -644,6 +638,26 @@ class Order extends BaseOrder
         return $operationCollection->last();
     }
 
+    public function getRentAmount()
+    {
+        $result = 0;
+        foreach ($this->getRentOperations() as $operation) {
+            $result += $operation->getAmount();
+        }
+
+        return number_format($result, 2, '.', '');
+    }
+
+    public function getOtherAmount()
+    {
+        $result = 0;
+        if ($this->getOtherOperation()) {
+            $result = $this->getOtherOperation()->getAmount();
+        }
+
+        return number_format($result, 2, '.', '');
+    }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PostMonth")
@@ -655,7 +669,15 @@ class Order extends BaseOrder
      */
     public function getPostMonth()
     {
-        return $this->getRentOperation()?$this->getRentOperation()->getPaidFor()->format('Y-m-d\TH:m:n'):'';
+        $paidFor = null;
+        /** @var Operation $rentOperation */
+        foreach ($this->getRentOperations() as $rentOperation) {
+            if (!$paidFor || $paidFor < $rentOperation->getPaidFor()) {
+                $paidFor = $rentOperation->getPaidFor();
+            }
+        }
+
+        return $paidFor ? $paidFor->format('Y-m-d\TH:i:s') : '';
     }
 
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
@@ -747,11 +769,8 @@ class Order extends BaseOrder
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
         $result['property'] = $this->getContract()? $this->getContract()->getRentAddress() : 'N/A';
 
-        $rentOperation = $this->getRentOperation();
-        $otherOperation = $this->getOtherOperation();
-
-        $result['rent'] = $rentOperation? $rentOperation->getFormatedAmount() : '';
-        $result['other'] = $otherOperation? $otherOperation->getFormatedAmount() : '';
+        $result['rent'] = $this->getRentAmount();
+        $result['other'] = $this->getOtherAmount();
         $result['total'] = $this->getTotalAmount();
         $result['type'] = $this->getOrderTypes();
 
@@ -776,20 +795,6 @@ class Order extends BaseOrder
                 break;
         }
         return $result;
-    }
-
-    public function getOperationType()
-    {
-        $result = array();
-        $operations = $this->getOperations();
-        /** @var Operation $operation */
-        foreach ($operations as $operation) {
-            $type = $operation->getType();
-            if (!in_array($type, $result)) {
-                $result[] = $type;
-            }
-        }
-        return implode(', ', $result);
     }
 
     public function getHeartlandTransactionId()
