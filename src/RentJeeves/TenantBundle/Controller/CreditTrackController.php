@@ -33,7 +33,7 @@ class CreditTrackController extends Controller
             ->findOneByCode($rtMerchantName);
         /** @var Tenant $user */
         $user = $this->getUser();
-        $paymentAccounts = $user->getPaymentAccounts()->filter(function(PaymentAccount $paymentAccount) {
+        $paymentAccounts = $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) {
             if (PaymentAccountType::BANK == $paymentAccount->getType()) {//Temporary #RT-529
                 return false;
             }
