@@ -1,22 +1,22 @@
 <?php
-namespace RentJeeves\LandlordBundle\Tests\Functional;
+namespace RentJeeves\LandlordBundle\@tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Model\User;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\@testBundle\Functional\Base@testCase;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  */
-class TenantCase extends BaseTestCase
+class TenantCase extends Base@testCase
 {
     protected $timeout = 30000;
 
     /**
-     * test
+     * @test
      */
     public function approve()
     {
@@ -57,7 +57,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function sort()
     {
@@ -214,7 +214,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function remove()
     {
@@ -245,7 +245,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function endContract()
     {
@@ -296,7 +296,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function search()
     {
@@ -319,7 +319,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function addTenantNoneExist()
     {
@@ -343,7 +343,7 @@ class TenantCase extends BaseTestCase
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name'  => 'Sharamko',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'test@email.ru',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => '@test@email.ru',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_1' => true,
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_dueDate'   => 23,
@@ -423,7 +423,7 @@ class TenantCase extends BaseTestCase
          */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array(
-                'email' => 'test@email.ru',
+                'email' => '@test@email.ru',
             )
         );
 
@@ -438,7 +438,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function addTenantExist()
     {
@@ -545,7 +545,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function checkNotifyLandlord()
     {
@@ -583,8 +583,8 @@ class TenantCase extends BaseTestCase
         //Check created contracts
         $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
         $search->click();
-        $this->assertNotNull($inviteStatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
-        $inviteStatus->click();
+        $this->assertNotNull($invi@testatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
+        $invi@testatus->click();
 
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
@@ -617,7 +617,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function checkReminder()
     {
@@ -641,7 +641,7 @@ class TenantCase extends BaseTestCase
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name'  => 'Sharamko',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'test123@email.ru',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => '@test123@email.ru',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
             )
         );
@@ -677,7 +677,7 @@ class TenantCase extends BaseTestCase
         $doctrine = $this->getContainer()->get('doctrine');
         $em = $doctrine->getManager();
         /** @var $user User */
-        $user = $em->getRepository('DataBundle:User')->findOneBy(array('email' => 'test123@email.ru'));
+        $user = $em->getRepository('DataBundle:User')->findOneBy(array('email' => '@test123@email.ru'));
         if (empty($user)) {
             $this->assertFalse(true, 'User does not exist');
         }
@@ -689,7 +689,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      * @depends checkReminder
      */
     public function revoke()
@@ -703,8 +703,8 @@ class TenantCase extends BaseTestCase
         //Check created contracts
         $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
         $search->click();
-        $this->assertNotNull($inviteStatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
-        $inviteStatus->click();
+        $this->assertNotNull($invi@testatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
+        $invi@testatus->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
@@ -722,8 +722,8 @@ class TenantCase extends BaseTestCase
         //Check created contracts
         $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
         $search->click();
-        $this->assertNotNull($inviteStatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
-        $inviteStatus->click();
+        $this->assertNotNull($invi@testatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
+        $invi@testatus->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#contracts-block .notHaveData').length > 0");
