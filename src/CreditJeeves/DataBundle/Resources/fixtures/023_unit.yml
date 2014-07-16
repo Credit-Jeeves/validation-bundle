@@ -190,3 +190,17 @@ fixtures:
         name:      'SINGLE_PROPERTY'
         createdAt: '-1 day'
         updatedAt: '-1 day'
+    Unit_21:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_2
+        name:      1-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_22:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_2
+        name:      2-e
+        createdAt: '-60 days'
+        updatedAt: '-8 days'

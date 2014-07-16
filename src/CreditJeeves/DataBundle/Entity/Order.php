@@ -109,7 +109,7 @@ class Order extends BaseOrder
      */
     public function getActualPaymentTransactionDate()
     {
-        return $this->getUpdatedAt()->format('Y-m-d\TH:m:n');
+        return $this->getCreatedAt()->format('Y-m-d\TH:i:s');
     }
 
 

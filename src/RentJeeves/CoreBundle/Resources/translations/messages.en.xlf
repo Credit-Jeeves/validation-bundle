@@ -468,6 +468,10 @@
                     Edit Tenant Information
                 </target>
             </trans-unit>
+            <trans-unit id="edit.tenant">
+                <source>edit.tenant</source>
+                <target>Edit Tenant</target>
+            </trans-unit>
             <trans-unit id="are.you.sure.you.want.remove.property">
                 <source>are.you.sure.you.want.remove.property</source>
                 <target>
@@ -2480,6 +2484,10 @@
             <trans-unit id="import.property.single.checkbox_label">
                 <source>import.property.single.checkbox_label</source>
                 <target>Single Property (No Units)</target>
+            </trans-unit>
+            <trans-unit id="export.promas.make_zip">
+                <source>export.promas.make_zip</source>
+                <target>Separate By Batch Deposits (ZIP File with Multiple CSVs)</target>
             </trans-unit>
         </body>
     </file>
