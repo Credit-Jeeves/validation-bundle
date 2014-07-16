@@ -583,8 +583,8 @@ class TenantCase extends BaseTestCase
         //Check created contracts
         $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
         $search->click();
-        $this->assertNotNull($invistatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
-        $invistatus->click();
+        $this->assertNotNull($inviteStatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
+        $inviteStatus->click();
 
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
