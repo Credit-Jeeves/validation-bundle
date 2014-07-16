@@ -43,7 +43,7 @@
   -moz-box-shadow: inset 0px 0px 1px 1px #d7d7d7;
   box-shadow: inset 0px 0px 1px 1px #d7d7d7;
   padding: 3px 10px;
-  width: 350px;  
+  width: 350px !important;
 }
 
 .login-error {

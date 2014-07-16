@@ -1484,6 +1484,14 @@
                 <source>access.denied.description</source>
                 <target>It looks like you are trying to access the RentTrack application from a mobile device. We currently do not support mobile devices - please log in using a browser on your computer. We're sorry for the inconvenience!</target>
             </trans-unit>
+            <trans-unit id="login.error.msg">
+                <source>login.error.msg</source>
+                <target>Email/Password combination not found. Please try again.</target>
+            </trans-unit>
+            <trans-unit id="Bad credentials">
+                <source>Bad credentials</source>
+                <target>Email/Password combination not found. Please try again.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

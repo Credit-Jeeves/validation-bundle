@@ -9,6 +9,7 @@ use JMS\Serializer\SerializationContext;
 use \Exception;
 use RentJeeves\LandlordBundle\Model\OrderReport;
 use Symfony\Component\PropertyAccess\Exception\RuntimeException;
+use DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -39,16 +40,29 @@ class Export
 
     protected $softDeleteableControl;
 
+    protected $group;
+
     protected $mapping = array(
         'xml' => array(
             'content-type' => 'text/xml',
             'serializer'   => 'xml',
-            'group'        => 'xmlReport'
+            'filename'     => 'Yardi_%s_%s.xml',
+            'group'        => 'xmlReport',
+            'use_header'   => false,
         ),
         'csv' => array(
             'content-type' => 'text/csv',
             'serializer'   => 'csv',
-            'group'        => 'csvReport'
+            'filename'     => 'OnePage_%s_%s.csv',
+            'group'        => 'csvReport',
+            'use_header'   => true,
+        ),
+        'promas' => array(
+            'content-type' => 'text/csv',
+            'serializer'   => 'csv',
+            'filename'     => 'Promas_%s_%s.csv',
+            'group'        => 'promasReport',
+            'use_header'   => false,
         )
     );
 
@@ -80,11 +94,12 @@ class Export
         if (!$this->isInitialized) {
             throw new RuntimeException('Report data is not initialized');
         }
+        $beginDate = new DateTime($this->begin);
+        $endDate = new DateTime($this->end);
         return sprintf(
-            'report_%s_and_%s.%s',
-            $this->begin,
-            $this->end,
-            $this->type
+            $this->mapping[$this->type]['filename'],
+            $beginDate->format('Ymd'),
+            $endDate->format('Ymd')
         );
     }
 
@@ -97,6 +112,7 @@ class Export
         $this->propertyId = $dataFromForm['propertyId'];
         $this->arAccountId = $dataFromForm['arAccountId'];
         $this->accountId = $dataFromForm['accountId'];
+        $this->group = $dataFromForm['group'];
 
         if (!isset($this->mapping[$this->type])) {
             throw new RuntimeException('Report type is invalid');
@@ -108,7 +124,13 @@ class Export
     {
         $this->softDeleteableControl->disable();
         $orderRepository = $this->em->getRepository('DataBundle:Order');
-        return $orderRepository->getOrdersForReport($this->property->getId(), $this->begin, $this->end);
+        switch ($this->type) {
+            case 'xml':
+            case 'csv':
+                return $orderRepository->getOrdersForReport($this->property->getId(), $this->begin, $this->end);
+            case 'promas':
+                return $orderRepository->getOrdersForPromasReport($this->group, $this->begin, $this->end);
+        }
     }
 
     public function getReport($dataFromForm)
@@ -118,12 +140,13 @@ class Export
         $group = $this->mapping[$this->type]['group'];
         $serializer  = $this->mapping[$this->type]['serializer'];
 
-        $ysiTran = new OrderReport();
-        $ysiTran->setReceipt($this->getData());
+        $report = new OrderReport();
+        $report->setReceipt($this->getData());
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups($group);
-        $content = $this->serializer->serialize($ysiTran, $serializer, $context);
+        $context->setAttribute('use_header', $this->mapping[$this->type]['use_header']);
+        $content = $this->serializer->serialize($report, $serializer, $context);
 
         return $content;
     }
