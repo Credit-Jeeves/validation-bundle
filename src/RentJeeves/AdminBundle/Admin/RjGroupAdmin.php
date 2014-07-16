@@ -114,6 +114,8 @@ class RjGroupAdmin extends Admin
 
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $contrainer = $this->getConfigurationPool()->getContainer();
+        $translator = $contrainer->get('translator');
         $formMapper
             ->with('Details')
                 ->add(
@@ -199,7 +201,7 @@ class RjGroupAdmin extends Admin
             ->with('Settings')
                 ->add(
                     'groupSettings',
-                    new GroupSettings(),
+                    new GroupSettings($translator),
                     array(
                     ),
                     array(

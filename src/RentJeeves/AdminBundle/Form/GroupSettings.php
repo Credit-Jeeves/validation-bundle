@@ -11,6 +11,13 @@ use RentJeeves\DataBundle\Entity\GroupSettings as GroupSetting;
 
 class GroupSettings extends Base
 {
+    protected $translator;
+
+    public function __construct($translation)
+    {
+        $this->translator = $translation;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -84,11 +91,12 @@ class GroupSettings extends Base
             )
         );
 
+        $self = $this;
+
         $builder->addEventListener(
             FormEvents::SUBMIT,
-            function (FormEvent $event) {
+            function (FormEvent $event) use ($self) {
                 $form = $event->getForm();
-                // this would be entity, i.e. GroupSettings
                 /**
                  * @var $groupSettings GroupSetting
                  */
@@ -96,7 +104,9 @@ class GroupSettings extends Base
 
                 if (!$groupSettings->getIsIntegrated() && $groupSettings->getIsPayBalanceOnly()) {
                     $form->get('isPayBalanceOnly')->addError(
-                        new FormError('is.pay.balance.only.error')
+                        new FormError(
+                            $self->translator->trans('is.pay.balance.only.error')
+                        )
                     );
                 }
             }
