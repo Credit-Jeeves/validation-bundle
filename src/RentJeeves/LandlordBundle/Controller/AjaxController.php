@@ -710,6 +710,7 @@ class AjaxController extends Controller
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
+
         /**
          * @var $contract Contract
          */
@@ -740,6 +741,12 @@ class AjaxController extends Controller
         if (in_array($details['status'], array(ContractStatus::APPROVED)) & empty($errors)) {
             $contract->setStatusApproved();
             $this->get('project.mailer')->sendContractApprovedToTenant($contract);
+        }
+
+        if ($contract->getSettings()->getIsIntegrated()) {
+            $contract->setIntegratedBalance($details['balance']);
+        } else {
+            $contract->setBalance($details['balance']);
         }
 
         if ($action == 'remove') {
