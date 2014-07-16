@@ -1479,10 +1479,6 @@
                 <source>landlord.alert.pending-many.admin</source>
                 <target>There are %COUNT% new tenants pending your review in the %GROUP% group.</target>
             </trans-unit>
-            <trans-unit id="landlord.add_tenant.hover">
-                <source>landlord.add_tenant.hover</source>
-                <target>You will be able to add tenants once your merchant account is approved.</target>
-            </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
                 <target>You need to set up your merchant account. Call 866-841-9090.</target>
@@ -1633,7 +1629,7 @@
             </trans-unit>
             <trans-unit id="alert.tenant.verify_email">
                 <source>alert.tenant.verify_email</source>
-                <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="tenant">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
+                <target>Verify your email address.</target>
             </trans-unit>
             <trans-unit id="alert.tenant.first_payment">
                 <source>alert.tenant.first_payment</source>
@@ -1842,7 +1838,7 @@
             </trans-unit>
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>
-                <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="landlord">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
+                <target><![CDATA[Verify your email address. <a href="#" id="landlord-verify-email">Resend Verification Email</a> <span id="landlord-verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
             </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
@@ -1912,6 +1908,14 @@
                 <target>
                     Remove Contract Confirm
                 </target>
+            </trans-unit>
+            <trans-unit id="common.balance.due">
+                    <source>common.balance.due</source>
+                    <target>Balance Due</target>
+            </trans-unit>
+            <trans-unit id="common.balance.as.full">
+                    <source>common.balance.as.full</source>
+                    <target>Your property manager requires payment of balance in full</target>
             </trans-unit>
             <trans-unit id="outstanding.description">
                 <source>outstanding.description</source>
@@ -2464,6 +2468,10 @@
             <trans-unit id="pay.balance.only.error">
                 <source>pay.balance.only.error</source>
                 <target>Pay Balance Only can be setup only for Integrated Group</target>
+            </trans-unit>
+            <trans-unit id="pay.balance.only.reccuring_error">
+                <source>pay.balance.only.reccuring_error</source>
+                <target>Pay Balance Only can be setup only for Group which don't have reccuring payment</target>
             </trans-unit>
             <trans-unit id="export.promas.make_zip">
                 <source>export.promas.make_zip</source>

@@ -9,7 +9,7 @@ class GroupCase extends BaseTestCase
     /**
      * @test
      */
-    public function adminManageLandlords()
+    public function settingFirst()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -45,6 +45,37 @@ class GroupCase extends BaseTestCase
         $submit->click();
 
         $this->assertNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
+        $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function settingSecond()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
+
+        $tableBlock->clickLink('link_list');
+
+        $this->assertNotNull($edit = $this->page->findAll('css', 'a.edit_link'));
+        $edit[0]->click();
+
+        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
+        $menu[4]->click();
+
+        $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
+        $this->assertCount(6, $checkbox);
+        $checkbox[4]->check();  //Check is integrated
+        $checkbox[5]->check(); //Check pay balance only
+
+        $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
+        $submit->click();
+
+        $this->assertNotNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
+        $this->assertEquals('pay.balance.only.reccuring_error', $error->getText());
         $this->logout();
     }
 }

@@ -6,7 +6,10 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\Common\Collections\ArrayCollection;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
+use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
+use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Enum\PaymentType as PaymentEnumType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
@@ -37,29 +40,47 @@ class PayController extends Controller
 
     protected function createPaymentForm(Request $request)
     {
-        $formData = $request->get(PaymentType::NAME);
+        $contractId = $request->get('contract_id');
+        $contract = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('RjDataBundle:Contract')
+            ->findOneWithOperationsOrders($contractId);
+
+        if (empty($contract)) {
+            throw $this->createNotFoundException("Contract with '{$contractId}' not found");
+        }
+
+        $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
+        if ($payBalanceOnly) {
+            $formData = $request->get(PaymentBalanceOnlyType::NAME);
+        } else {
+            $formData = $request->get(PaymentType::NAME);
+        }
+
         /** @var Payment $paymentEntity */
         $paymentEntity = null;
-        $contract = null;
         if (!empty($formData['id'])) {
             $paymentEntity = $this->getDoctrine()
-                ->getManager()
-                ->getRepository('RjDataBundle:Payment')
-                ->findOneWithContractOrdersOperations($formData['id']);
+                    ->getManager()
+                    ->getRepository('RjDataBundle:Payment')
+                    ->findOneWithContractOrdersOperations($formData['id']);
             $contract = $paymentEntity->getContract();
         }
-        if (null == $contract) {
-            $contract = $this->getDoctrine()
-                ->getManager()
-                ->getRepository('RjDataBundle:Contract')
-                ->findOneWithOperationsOrders($formData['contractId']);
+
+        if ($payBalanceOnly) {
+            $formType = new PaymentBalanceOnlyType(
+                $this->container->getParameter('payment_one_time_until_value'),
+                array(),
+                array()
+            );
+        } else {
+            $dueDays = $contract->getSettings()->getDueDays();
+            $formType = new PaymentType(
+                $this->container->getParameter('payment_one_time_until_value'),
+                $this->container->get('checkout.paid_for')->getArray($contract),
+                array_combine($dueDays, $dueDays)
+            );
         }
-        $dueDays = $contract->getSettings()->getDueDays();
-        $formType = new PaymentType(
-            $this->container->getParameter('payment_one_time_until_value'),
-            $this->container->get('checkout.paid_for')->getArray($contract),
-            array_combine($dueDays, $dueDays)
-        );
         if (!empty($paymentEntity) &&
             $paymentEntity->getPaymentAccount()->getUser()->getId() != $this->getUser()->getId()
         ) {
@@ -227,6 +248,9 @@ class PayController extends Controller
         /** @var Payment $paymentEntity */
         $paymentEntity = $paymentType->getData();
 
+        /**
+         * @var Contract $contract
+         */
         if ($contract = $em->getRepository('RjDataBundle:Contract')
                 ->find($paymentType->get('contractId')->getData())
         ) {
@@ -244,9 +268,26 @@ class PayController extends Controller
         ) {
             $paymentEntity->setPaymentAccount($paymentAccount);
         }
-        if ('on' != $paymentType->get('ends')->getData()) {
+        $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
+        if (!$payBalanceOnly && 'on' != $paymentType->get('ends')->getData()) {
             $paymentEntity->setEndMonth(null);
             $paymentEntity->setEndYear(null);
+        }
+
+        if ($payBalanceOnly) {
+            $paymentEntity->setTotal($contract->getIntegratedBalance());
+            $paymentEntity->setAmount($contract->getIntegratedBalance());
+            if ($dueDate = $contract->getDueDate()) {
+                $paymentEntity->setDueDate($dueDate);
+            } else {
+                $paymentEntity->setDueDate(
+                    $contract->getGroup()->getGroupSettings()->getDueDate()
+                );
+            }
+            $startDate = $paymentType->get('start_date')->getData();
+            $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
+            $paymentEntity->setStartMonth($startDate->format('n'));
+            $paymentEntity->setStartYear($startDate->format('Y'));
         }
 
         $contract->setStatus(ContractStatus::APPROVED);

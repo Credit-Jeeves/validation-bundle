@@ -6,8 +6,8 @@ function Payment(parent, paidTo) {
             return null;
         }
         var dayInMonth = Date.getDaysInMonth(parseInt(self.startYear()), parseInt(self.startMonth()) - 1);
-
-        if (dayInMonth >= self.dueDate()) {
+        //We don't need show info message for pay balance only, because we don't use dueDate field
+        if (dayInMonth >= self.dueDate() || parent.contract.groupSetting.pay_balance_only) {
             parent.infoMessage(null);
             return;
         }
@@ -30,7 +30,11 @@ function Payment(parent, paidTo) {
     this.paidForOptions = ko.observableArray(null);
     this.paidFor = ko.observable(null);
     this.amountOther = ko.observable(null);
-    this.type = ko.observable('recurring');
+    if (!parent.contract.groupSetting.pay_balance_only) {
+        this.type = ko.observable('recurring');
+    } else {
+        this.type = ko.observable('one_time');
+    }
 
     this.frequency = ko.observable('monthly');
     this.frequency.subscribe(function(newValue) {
