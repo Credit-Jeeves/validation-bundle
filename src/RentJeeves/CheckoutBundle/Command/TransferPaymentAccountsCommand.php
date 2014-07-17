@@ -114,11 +114,16 @@ class TransferPaymentAccountsCommand extends ContainerAwareCommand
             return false;
         }
 
-        $this->registerTokenToAdditionalMerchant(
-            $oldMerchantName,
-            $newMerchantName,
-            $paymentAccount->getToken()
-        );
+        try {
+            $this->registerTokenToAdditionalMerchant(
+                $oldMerchantName,
+                $newMerchantName,
+                $paymentAccount->getToken()
+            );
+        } catch (Exception $e) {
+            $this->outputInterface->writeln('failed: ' . $e->getMessage());
+            return false;
+        }
 
         $paymentAccount->addDepositAccount($depositAccount);
         $em->persist($paymentAccount);
