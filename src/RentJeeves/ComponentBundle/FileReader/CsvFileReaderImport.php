@@ -31,7 +31,10 @@ class CsvFileReaderImport extends Base
             $offsetMax = $offset + $rowCount;
         }
 
-        $header = $this->readHeader($file);
+        $header = $this->fixHeaderDuplicatesValue(
+            $this->readHeader($file)
+        );
+
         while ($row = $file->current()) {
             if (is_null($offset) && is_null($rowCount)) {
                 $this->getLine($row, $header, $file, $result);
@@ -77,5 +80,29 @@ class CsvFileReaderImport extends Base
             $result[$file->key()][$header[$valueIndex]] = $value;
         }
         $file->next();
+    }
+
+    protected function fixHeaderDuplicatesValue($header)
+    {
+        $result = array();
+        $counter = array();
+        $valueUsed = array();
+        foreach ($header as $key => $value) {
+            if (!isset($valueUsed[$value])) {
+                $result[$key] = $value;
+                $counter[$value] = 1;
+                $valueUsed[$value] = $key;
+                continue;
+            }
+
+            if (isset($valueUsed[$value]) && $counter[$value] === 1) {
+                $result[$valueUsed[$value]] = $result[$valueUsed[$value]].'_'.$counter[$value];
+            }
+            
+            $counter[$value] += 1;
+            $result[$key] = $value.'_'.$counter[$value];
+        }
+
+        return $result;
     }
 }
