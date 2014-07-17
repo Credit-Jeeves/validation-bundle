@@ -133,8 +133,12 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($searchPaymentsStatus = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchPaymentsStatus->click();
 
-        $this->assertNotNull($returned = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="returned"]'));
-        $this->assertNotNull($refunded = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="refunded"]'));
+        $this->assertNotNull(
+            $returned = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="returned"]')
+        );
+        $this->assertNotNull(
+            $refunded = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="refunded"]')
+        );
         /*
          * Check returned Status
          */
@@ -154,5 +158,4 @@ class DashboardCase extends BaseTestCase
 
         $this->logout();
     }
-
 }
