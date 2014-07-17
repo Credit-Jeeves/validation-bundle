@@ -2445,6 +2445,14 @@
                 <source>import.property.single.checkbox_label</source>
                 <target>Single Property (No Units)</target>
             </trans-unit>
+            <trans-unit id="pay.balance.only">
+                <source>pay.balance.only</source>
+                <target>Pay Balance Only?</target>
+            </trans-unit>
+            <trans-unit id="pay.balance.only.error">
+                <source>pay.balance.only.error</source>
+                <target>Pay Balance Only can be setup only for Integrated Group</target>
+            </trans-unit>
             <trans-unit id="export.promas.make_zip">
                 <source>export.promas.make_zip</source>
                 <target>Separate By Batch Deposits (ZIP File with Multiple CSVs)</target>

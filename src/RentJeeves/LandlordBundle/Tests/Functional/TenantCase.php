@@ -125,6 +125,10 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
+
+        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
+
         $this->page->pressButton('edit.Info');
         $this->session->evaluateScript(
             "$('.half-of-right').val(' ');"
