@@ -120,8 +120,12 @@ class PaymentAccountType extends AbstractType
         );
         $builder->add(
             'AccountNumber',
-            'text',
+            'repeated',
             array(
+                'first_name' => 'AccountNumber',
+                'second_name' => 'AccountNumberAgain',
+                'invalid_message' => 'checkout.error.account_number.match',
+                'type' => 'text',
                 'mapped' => false,
                 'label' => 'checkout.account_number',
                 'constraints' => array(

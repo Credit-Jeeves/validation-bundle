@@ -296,6 +296,10 @@
                 <source>checkout.error.account_number.empty</source>
                 <target>Account Number is required.</target>
             </trans-unit>
+            <trans-unit id="checkout.error.account_number.match">
+                <source>checkout.error.account_number.match</source>
+                <target>The Account Number fields must match.</target>
+            </trans-unit>
             <trans-unit id="checkout.account_type">
                 <source>checkout.account_type</source>
                 <target>Account Type</target>

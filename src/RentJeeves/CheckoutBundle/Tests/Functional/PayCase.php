@@ -145,14 +145,15 @@ class PayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
-                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumberAgain' => '123245678',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
             )
         );
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
-            $this->timeout+ 45000,
+            $this->timeout+ 85000, // local need more time for passed test
             "!jQuery('#id-source-step').is(':visible')"
         );
 
