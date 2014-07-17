@@ -85,13 +85,22 @@ class CsvFileReaderImport extends Base
     protected function fixHeaderDuplicatesValue($header)
     {
         $result = array();
+        $counter = array();
+        $valueUsed = array();
         foreach ($header as $key => $value) {
-            if (!in_array($value, $result)) {
+            if (!isset($valueUsed[$value])) {
                 $result[$key] = $value;
+                $counter[$value] = 1;
+                $valueUsed[$value] = $key;
                 continue;
             }
 
-            $result[$key] = $value.'_'.$key;
+            if (isset($valueUsed[$value]) && $counter[$value] === 1) {
+                $result[$valueUsed[$value]] = $result[$valueUsed[$value]].'_'.$counter[$value];
+            }
+            
+            $counter[$value] += 1;
+            $result[$key] = $value.'_'.$counter[$value];
         }
 
         return $result;
