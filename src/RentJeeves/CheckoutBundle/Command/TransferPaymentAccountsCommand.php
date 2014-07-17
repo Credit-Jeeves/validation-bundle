@@ -62,7 +62,7 @@ class TransferPaymentAccountsCommand extends ContainerAwareCommand
     }
 
     /**
-     * Get deposit account by id, make sure it has a group or die
+     * Get deposit account by id, make sure it exists, or die
      *
      * @param string $depositAccountId deposit account id
      *
@@ -78,14 +78,6 @@ class TransferPaymentAccountsCommand extends ContainerAwareCommand
         if (!$depositAccount) {
             throw new Exception(
                 "Could not find deposit account with id '$depositAccountId'"
-            );
-        }
-
-        $group = $depositAccount->getGroup();
-
-        if (!$group) {
-            throw new Exception(
-                "Deposit account with id '$depositAccountId' has no group"
             );
         }
 
@@ -122,11 +114,16 @@ class TransferPaymentAccountsCommand extends ContainerAwareCommand
             return false;
         }
 
-        $this->registerTokenToAdditionalMerchant(
-            $oldMerchantName,
-            $newMerchantName,
-            $paymentAccount->getToken()
-        );
+        try {
+            $this->registerTokenToAdditionalMerchant(
+                $oldMerchantName,
+                $newMerchantName,
+                $paymentAccount->getToken()
+            );
+        } catch (Exception $e) {
+            $this->outputInterface->writeln('failed: ' . $e->getMessage());
+            return false;
+        }
 
         $paymentAccount->addDepositAccount($depositAccount);
         $em->persist($paymentAccount);
