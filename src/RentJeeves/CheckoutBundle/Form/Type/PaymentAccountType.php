@@ -124,6 +124,11 @@ class PaymentAccountType extends AbstractType
             array(
                 'first_name' => 'AccountNumber',
                 'second_name' => 'AccountNumberAgain',
+                'second_options' => array(
+                    'label_attr' => array(
+                        'class' => 'clear',
+                    ),
+                ),
                 'invalid_message' => 'checkout.error.account_number.match',
                 'type' => 'text',
                 'mapped' => false,

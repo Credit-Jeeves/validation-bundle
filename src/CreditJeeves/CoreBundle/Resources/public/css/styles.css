@@ -4348,3 +4348,7 @@ form label {
     margin-top: 16px;
 }
 
+.form-row.type-repeated {
+    margin: 0;
+    padding: 0 !important;
+}
