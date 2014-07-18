@@ -139,6 +139,30 @@ class PayCase extends BaseTestCase
         $this->assertCount(5, $errors);
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        /*
+         * Test for not match repeated value for Account Number
+         */
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumberAgain' => '123245687',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "(jQuery('#pay-popup .attention-box li').length < 5)");
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(1, $errors);
+        $this->assertEquals('checkout.error.account_number.match', $errors[0]->getHtml());
+
+        /*
+         * Continue test
+         */
         $this->fillForm(
             $form,
             array(
