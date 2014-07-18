@@ -906,6 +906,14 @@
                 <source>processing</source>
                 <target>Processing</target>
             </trans-unit>
+            <trans-unit id="returned">
+                <source>returned</source>
+                <target>Returned</target>
+            </trans-unit>
+            <trans-unit id="refunded">
+                <source>refunded</source>
+                <target>Refunded</target>
+            </trans-unit>
             <trans-unit id="payments.total">
                 <source>payments.total</source>
                 <target>Payments Total</target>
@@ -1621,7 +1629,7 @@
             </trans-unit>
             <trans-unit id="alert.tenant.verify_email">
                 <source>alert.tenant.verify_email</source>
-                <target>Verify your email address.</target>
+                <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="tenant">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
             </trans-unit>
             <trans-unit id="alert.tenant.first_payment">
                 <source>alert.tenant.first_payment</source>
@@ -1830,7 +1838,7 @@
             </trans-unit>
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>
-                <target><![CDATA[Verify your email address. <a href="#" id="landlord-verify-email">Resend Verification Email</a> <span id="landlord-verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
+                <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="landlord">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
             </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
