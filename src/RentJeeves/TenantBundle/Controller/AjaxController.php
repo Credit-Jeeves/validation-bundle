@@ -162,4 +162,22 @@ class AjaxController extends Controller
 
         return new JsonResponse(array('tenantPayments' => $orders, 'pages' => array($pages)));
     }
+
+    /**
+     * @Route(
+     *     "/verify/",
+     *     name="tenant_resend_verification",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function sendVerificationAction()
+    {
+        $tenant = $this->getUser();
+        $this->get('project.mailer')->sendRjCheckEmail($tenant);
+
+        return new JsonResponse();
+    }
 }

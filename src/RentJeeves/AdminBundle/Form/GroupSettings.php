@@ -3,10 +3,21 @@ namespace RentJeeves\AdminBundle\Form;
 
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use RentJeeves\DataBundle\Entity\GroupSettings as GroupSetting;
 
 class GroupSettings extends Base
 {
+    protected $translator;
+
+    public function __construct($translation)
+    {
+        $this->translator = $translation;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -25,6 +36,16 @@ class GroupSettings extends Base
             array(
                 'error_bubbling'    => true,
                 'label'             => 'is.integrated',
+                'required'          => false,
+            )
+        );
+
+        $builder->add(
+            'payBalanceOnly',
+            'checkbox',
+            array(
+                'error_bubbling'    => true,
+                'label'             => 'pay.balance.only',
                 'required'          => false,
             )
         );
@@ -70,6 +91,26 @@ class GroupSettings extends Base
             )
         );
 
+        $self = $this;
+
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($self) {
+                $form = $event->getForm();
+                /**
+                 * @var $groupSettings GroupSetting
+                 */
+                $groupSettings = $event->getData();
+
+                if (!$groupSettings->getIsIntegrated() && $groupSettings->getPayBalanceOnly()) {
+                    $form->get('payBalanceOnly')->addError(
+                        new FormError(
+                            $self->translator->trans('pay.balance.only.error')
+                        )
+                    );
+                }
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
