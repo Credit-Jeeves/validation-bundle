@@ -161,15 +161,37 @@ abstract class PaymentAccount
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
-     * s
      * @var ArrayCollection
      */
     protected $payments;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\UserSettings",
+     *     mappedBy="creditTrackPaymentAccount",
+     *     cascade={"persist", "merge"},
+     *     orphanRemoval=true
+     * )
+     * @var UserSettings
+     */
+    protected $creditTrackUserSetting;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\JobRelatedCreditTrack",
+     *     mappedBy="creditTrackPaymentAccount",
+     *     cascade={"persist", "merge"},
+     *     orphanRemoval=true
+     * )
+     * @var ArrayCollection
+     */
+    protected $creditTrackJobs;
 
     public function __construct()
     {
         $this->payments = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
+        $this->creditTrackJobs = new ArrayCollection();
     }
 
     /**

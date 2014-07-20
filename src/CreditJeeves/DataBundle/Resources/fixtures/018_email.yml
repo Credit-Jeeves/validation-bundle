@@ -74,3 +74,5 @@ fixtures:
       name: rjPendingOrder.html
   email_37:
       name: rjContractAmountChanged.html
+  email_38:
+      name: rjReceipt.html

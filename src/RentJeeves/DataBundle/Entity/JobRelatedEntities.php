@@ -10,7 +10,11 @@ use \DateTime;
  * @ORM\Table(name = "jms_job_related_entities")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="related_class", type="string")
- * @ORM\DiscriminatorMap({"payment" = "JobRelatedPayment", "order" = "JobRelatedOrder"})
+ * @ORM\DiscriminatorMap({
+ *      "payment" = "JobRelatedPayment",
+ *      "order" = "JobRelatedOrder",
+ *      "credit_track" = "JobRelatedCreditTrack"
+ * })
  */
 class JobRelatedEntities
 {
@@ -32,13 +36,6 @@ class JobRelatedEntities
      * @var Job
      */
     protected $job;
-
-    /**
-     * @ORM\ManyToOne(targetEntity = "Payment", inversedBy = "jobs", fetch = "EAGER")
-     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id", nullable=true)
-     * @var Payment
-     */
-    protected $payment;
 
     /**
      * @Gedmo\Timestampable(on="create")

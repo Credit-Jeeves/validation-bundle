@@ -29,7 +29,7 @@ abstract class UserSettings
     protected $user;
 
     /**
-     * @ORM\OneToOne(targetEntity="PaymentAccount")
+     * @ORM\OneToOne(targetEntity="PaymentAccount", inversedBy="creditTrackUserSetting")
      * @ORM\JoinColumn(name="credit_track_payment_account_id", referencedColumnName="id", nullable=true)
      */
     protected $creditTrackPaymentAccount;

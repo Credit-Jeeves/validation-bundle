@@ -1,0 +1,15 @@
+model: RentJeeves\DataBundle\Entity\UserSettings
+fixtures:
+    Landlord1Setting:
+      isBaseOrderReport: true
+      user: Landlord_1
+
+
+    Tenant9Setting:
+      user: Tenant_9
+      creditTrackPaymentAccount: PaymentAccount_13
+      creditTrackEnabledAt: -1 month
+    Tenant10Setting:
+      user: Tenant_10
+      creditTrackPaymentAccount: PaymentAccount_12
+      creditTrackEnabledAt: now

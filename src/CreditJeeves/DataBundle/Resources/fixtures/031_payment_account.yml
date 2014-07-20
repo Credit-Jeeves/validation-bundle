@@ -80,6 +80,7 @@ fixtures:
         updatedAt: '-5 days'
         depositAccounts:
             - DepositAccount_3
+            - DepositAccount_RentTrackCorp #it is fake connection
     PaymentAccount_14:
         user: Tenant_1
         address: TenantAddres_1

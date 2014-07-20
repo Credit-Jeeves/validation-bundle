@@ -370,8 +370,9 @@ class Mailer extends BaseMailer
         $dateShortFormat = $this->container->getParameter('date_short');
         return $this->sendEmail(
             $order->getUser(),
-            'receipt',
+            'rjReceipt',
             array(
+                'tenantName' => $order->getUser()->getFullName(),
                 'date' => $order->getCreatedAt()->format($dateShortFormat),
                 'amout' => $this->container->getParameter('credittrack_payment_per_month_currency') .
                     $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting

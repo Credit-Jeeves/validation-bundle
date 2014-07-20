@@ -41,41 +41,10 @@ class PayCommand extends ContainerAwareCommand
             throw new RuntimeException("Can not fid --jms-job-id={$jobId}");
         }
 
-        $date = new DateTime();
+        $paymentJobExecutor = $this->getContainer()->get('checkout.payment_job_executor');
+        $paymentJobExecutor->execute($job);
 
-        /** @var JobRelatedPayment $relatedPayment */
-        $relatedPayment = $job->findRelatedEntity('RentJeeves\DataBundle\Entity\JobRelatedPayment');
-
-        if (empty($relatedPayment)) {
-            throw new RuntimeException("Job ID:'{$jobId}' must have related payment");
-        }
-        $payment = $relatedPayment->getPayment();
-        $contract = $payment->getContract();
-
-        $filterClosure = function (Operation $operation) use ($date) {
-            if (($order = $operation->getOrder()) &&
-                $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
-                OrderStatus::ERROR != $order->getStatus()
-            ) {
-                return true;
-            }
-            return false;
-        };
-        if ($contract->getOperations()->filter($filterClosure)->count()) {
-            $output->writeln('Payment already executed.');
-            return 1;
-        }
-
-        /** @var PayRent $payRent */
-        $payRent = $this->getContainer()->get('payment.pay_rent');
-        $job->addRelatedEntity($payRent->getOrder());
-        $em->persist($job);
-        $statusRequest = $payRent->executePayment($payment);
-
-        if (!$statusRequest->isSuccess()) {
-            $output->writeln($statusRequest->getModel()->getMessages());
-            return 1;
-        }
-        $output->writeln('OK');
+        $output->writeln($paymentJobExecutor->getMessage());
+        return $paymentJobExecutor->getExitCode();
     }
 }
