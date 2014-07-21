@@ -34,7 +34,7 @@ class PaymentAccountRepository extends EntityRepository
         $date = new DateTime();
         $query = $this->createQueryBuilder('pa');
         $query->innerJoin('pa.creditTrackUserSetting', 'us');
-        $query->andWhere('DATE(us.creditTrackEnabledAt) < :date');
+        $query->andWhere('DATE(us.creditTrackEnabledAt) < :date'); //Payment which setup today must not be executed
         $query->setParameter('date', $date->format('Y-m-d'));
         $query->andWhere('DAY(us.creditTrackEnabledAt) IN (:dueDays)');
         $query->setParameter('dueDays', $this->getDueDays(0, $date));

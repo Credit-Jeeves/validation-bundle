@@ -6,8 +6,8 @@ fixtures:
 
 
     Tenant9Setting:
-      user: Tenant_9
-      creditTrackPaymentAccount: PaymentAccount_13
+      user: Tenant_1
+      creditTrackPaymentAccount: PaymentAccount_14
       creditTrackEnabledAt: -1 month
     Tenant10Setting:
       user: Tenant_10
