@@ -292,6 +292,10 @@
                 <source>checkout.account_number</source>
                 <target>Account Number</target>
             </trans-unit>
+            <trans-unit id="checkout.account_number_again">
+                <source>checkout.account_number_again</source>
+                <target>Account Number (Again)</target>
+            </trans-unit>
             <trans-unit id="checkout.error.account_number.empty">
                 <source>checkout.error.account_number.empty</source>
                 <target>Account Number is required.</target>

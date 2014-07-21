@@ -71,7 +71,11 @@ class BillingAccountType extends AbstractType
             array(
                 'first_name' => 'AccountNumber',
                 'second_name' => 'AccountNumberAgain',
+                'first_options'  => array(
+                    'label' => 'checkout.account_number'
+                ),
                 'second_options' => array(
+                    'label' => 'checkout.account_number_again',
                     'label_attr' => array(
                         'class' => 'clear',
                     ),
