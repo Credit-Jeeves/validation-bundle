@@ -2477,6 +2477,11 @@
                 <source>export.promas.make_zip</source>
                 <target>Separate By Batch Deposits (ZIP File with Multiple CSVs)</target>
             </trans-unit>
+            <trans-unit id="tenant.no_balance.alert">
+                <source>tenant.no_balance.alert</source>
+                <target>You do not have a balance to pay at this time.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
