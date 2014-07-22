@@ -1479,6 +1479,10 @@
                 <source>landlord.alert.pending-many.admin</source>
                 <target>There are %COUNT% new tenants pending your review in the %GROUP% group.</target>
             </trans-unit>
+            <trans-unit id="landlord.add_tenant.hover">
+                <source>landlord.add_tenant.hover</source>
+                <target>You will be able to add tenants once your merchant account is approved.</target>
+            </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
                 <target>You need to set up your merchant account. Call 866-841-9090.</target>
