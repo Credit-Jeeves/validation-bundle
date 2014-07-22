@@ -30,7 +30,7 @@ class ContractRepository extends EntityRepository
      *
      * In other cases, please use native names
      *
-     * @param Query $query
+     * @param QueryBuilder $query
      * @param string $searchField
      * @param string $searchString
      *
@@ -100,7 +100,7 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param Query $query
+     * @param QueryBuilder $query
      * @param string $sortField
      * @param string $sortOrder
      *
@@ -125,7 +125,7 @@ class ContractRepository extends EntityRepository
                 case 'tenant':
                 case 'first_name':
                     $query->orderBy('t.first_name', $sortOrder);
-                    $query->orderBy('t.last_name', $sortOrder);
+                    $query->addOrderBy('t.last_name', $sortOrder);
                     break;
                 case 'statusA':
                     $query->orderBy('c.status', $sortOrder);
@@ -142,8 +142,18 @@ class ContractRepository extends EntityRepository
                             as HIDDEN status_sort_order,
                          c"
                     );
-                    $query->orderBy('status_sort_order');
+                    $query->orderBy('status_sort_order', $sortOrder);
                     break;
+                case 'balance':
+                    $parameter = $query->getParameter('group');
+                    if (
+                        !is_null($parameter) &&
+                        ($group = $parameter->getValue()) &&
+                        ($group instanceof Group) &&
+                        $group->getGroupSettings()->getIsIntegrated()
+                    ) {
+                        $sortField = 'integratedBalance';
+                    }
                 default:
                     $sortField = 'c.'.$sortField;
                     $query->orderBy($sortField, $sortOrder);
@@ -158,8 +168,10 @@ class ContractRepository extends EntityRepository
      * Count records for Tenant Tab
      *
      * @param Group $group
-     * @param string $searchBy
-     * @param string $search
+     * @param string $searchField
+     * @param string $searchString
+     * @internal param string $searchBy
+     * @internal param string $search
      *
      * @return mixed
      */
@@ -198,6 +210,7 @@ class ContractRepository extends EntityRepository
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
+        /* @var QueryBuilder $query */
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');

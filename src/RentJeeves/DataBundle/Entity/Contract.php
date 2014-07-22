@@ -76,6 +76,11 @@ class Contract extends Base
     const CONTRACT_ENDED = 'CONTRACT ENDED';
 
     /**
+     * @const string
+     */
+    const CURRENT_ACTIVE = 'ACTIVE';
+
+    /**
      * @var string
      */
     const STATUS_PAY = 'auto';
@@ -250,7 +255,7 @@ class Contract extends Base
                 )
             ) {
                 $result['style'] = 'contract-pending';
-                $result['status'] = self::CONTRACT_ENDED;
+                $result['status'] = $result['status'] . ' (' . self::CONTRACT_ENDED . ')';
             }
             $result['finish'] = $finish->format('m/d/Y');
         }
@@ -309,6 +314,10 @@ class Contract extends Base
             $result['class'] = '';
             return $result;
         }
+        if (ContractStatus::CURRENT == $this->getStatus()) {
+            $result['status'] = self::CURRENT_ACTIVE;
+        }
+
         if ($date = $this->getPaidTo()) {
             $now = new DateTime();
             $interval = $now->diff($date);
@@ -332,7 +341,7 @@ class Contract extends Base
                 ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))
             ) {
-                $result['status'] = 'LATE ('.$interval->days.' days)';
+                $result['status'] = $result['status'] . ' (LATE by '.$interval->days.' days)';
                 $result['status_name'] = 'late';
                 $result['class'] = 'contract-late';
                 return $result;
