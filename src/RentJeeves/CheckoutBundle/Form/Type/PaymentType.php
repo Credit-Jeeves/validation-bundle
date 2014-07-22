@@ -262,7 +262,7 @@ class PaymentType extends AbstractType
                     '<h4 data-bind="i18n: {\'START\': payment.startDate, \'SETTLE\': settle}">' .
                     'checkout.one_time.tooltip.title-%START%-%SETTLE%' .
                     '</h4>' .
-                    '<p data-bind="i18n: {\'AMOUNT\': getAmount, \'START\': payment.startDate}">' .
+                    '<p data-bind="i18n: {\'AMOUNT\': getTotal, \'START\': payment.startDate}">' .
                     'checkout.one_time.tooltip.text-%AMOUNT%-%START%' .
                     '</p></div>',
                 ),
