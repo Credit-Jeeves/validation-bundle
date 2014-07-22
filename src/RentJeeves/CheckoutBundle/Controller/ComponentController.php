@@ -37,7 +37,8 @@ class ComponentController extends Controller
             new PaymentBalanceOnlyType(
                 $this->container->getParameter('payment_one_time_until_value'),
                 array(),
-                array()
+                array(),
+                $this->getDoctrine()->getManager()
             )
         );
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
