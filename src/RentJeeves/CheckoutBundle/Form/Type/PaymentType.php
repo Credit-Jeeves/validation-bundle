@@ -253,7 +253,8 @@ class PaymentType extends AbstractType
                 'attr'            => array(
                     'class' => 'datepicker-field',
                     'row_attr'  => array(
-                        'data-bind' => 'visible: \'one_time\' == payment.type()'
+                        'data-bind' => 'visible: \'one_time\' == payment.type()'.
+                                       '|| contract.groupSetting.pay_balance_only'
                     ),
                     'data-bind' => 'datepicker: payment.startDate, ' .
                         'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',

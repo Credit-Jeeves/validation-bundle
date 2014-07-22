@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * GroupSettings
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\GroupSettingsRepository")
  * @ORM\Table(name="rj_group_settings")
  * @ORM\HasLifecycleCallbacks
  */

@@ -201,8 +201,9 @@ abstract class Contract
      *         "import"
      *     }
      * )
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      * @Gedmo\Versioned
+     *
      */
     protected $integratedBalance = 0.00;
 
