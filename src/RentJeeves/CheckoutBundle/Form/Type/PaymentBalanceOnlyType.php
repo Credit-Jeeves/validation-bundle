@@ -2,13 +2,24 @@
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
+use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 
 class PaymentBalanceOnlyType extends PaymentType
 {
     const NAME = 'rentjeeves_checkoutbundle_paymentbalanceonlytype';
+
+    protected $em;
+
+    public function __construct($oneTimeUntilValue, array $paidFor, $dueDays, $em)
+    {
+        parent::__construct($oneTimeUntilValue, $paidFor, $dueDays);
+        $this->em = $em;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -48,6 +59,35 @@ class PaymentBalanceOnlyType extends PaymentType
         $builder->remove('ends');
         $builder->remove('endMonth');
         $builder->remove('endYear');
+
+        $self = $this;
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) use ($self) {
+
+                $contractId = $event->getForm()->get('contractId')->getData();
+                $contract = $self->em->getRepository('RjDataBundle:Contract')
+                    ->find($contractId);
+
+                $paymentEntity = $event->getForm()->getData();
+
+                $paymentEntity->setTotal($contract->getIntegratedBalance());
+                $paymentEntity->setAmount($contract->getIntegratedBalance());
+                if ($dueDate = $contract->getDueDate()) {
+                    $paymentEntity->setDueDate($dueDate);
+                } else {
+                    $paymentEntity->setDueDate(
+                        $contract->getGroup()->getGroupSettings()->getDueDate()
+                    );
+                }
+                $startDate = $event->getForm()->get('start_date')->getData();
+                $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
+                $paymentEntity->setStartMonth($startDate->format('n'));
+                $paymentEntity->setStartYear($startDate->format('Y'));
+
+                $event->setData($paymentEntity);
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

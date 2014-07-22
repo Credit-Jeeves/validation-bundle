@@ -71,7 +71,8 @@ class PayController extends Controller
             $formType = new PaymentBalanceOnlyType(
                 $this->container->getParameter('payment_one_time_until_value'),
                 array(),
-                array()
+                array(),
+                $this->getDoctrine()->getManager()
             );
         } else {
             $dueDays = $contract->getSettings()->getDueDays();
@@ -272,22 +273,6 @@ class PayController extends Controller
         if (!$payBalanceOnly && 'on' != $paymentType->get('ends')->getData()) {
             $paymentEntity->setEndMonth(null);
             $paymentEntity->setEndYear(null);
-        }
-
-        if ($payBalanceOnly) {
-            $paymentEntity->setTotal($contract->getIntegratedBalance());
-            $paymentEntity->setAmount($contract->getIntegratedBalance());
-            if ($dueDate = $contract->getDueDate()) {
-                $paymentEntity->setDueDate($dueDate);
-            } else {
-                $paymentEntity->setDueDate(
-                    $contract->getGroup()->getGroupSettings()->getDueDate()
-                );
-            }
-            $startDate = $paymentType->get('start_date')->getData();
-            $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
-            $paymentEntity->setStartMonth($startDate->format('n'));
-            $paymentEntity->setStartYear($startDate->format('Y'));
         }
 
         $contract->setStatus(ContractStatus::APPROVED);
