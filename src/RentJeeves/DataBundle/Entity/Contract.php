@@ -409,40 +409,41 @@ class Contract extends Base
         $orders = $repo->getContractHistory($this);
         /** @var Order $order */
         foreach ($orders as $order) {
-            $operation = $order->getRentOperation();
-            $paidFor = $operation->getPaidFor();
-            $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
-            $late = $operation->getDaysLate();
-            $nYear = $paidFor->format('Y');
-            $nMonth = $paidFor->format('m');
-            $interval = $currentDate->diff($paidFor)->format('%r%a');
-            $status = $order->getStatus();
-            switch ($status) {
-                case OrderStatus::NEWONE:
-                    $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
-                    $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
-                    break;
-                case OrderStatus::COMPLETE:
-                    if ($interval >= $lastDate) {
-                        $result['last_amount'] = $operation->getAmount();
-                        $result['last_date'] = $lastPaymentDate;
-                    }
-                    $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
-                    $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-                    if ($late >= 30) {
-                        $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                        $lateText = floor($late / 30) * 30;
-                        $payments[$nYear][$nMonth]['text'] = $lateText;
-                    }
-                    if (!isset($payments[$nYear][$nMonth]['amount'])) {
-                        $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
-                    } else {
-                        $payments[$nYear][$nMonth]['amount']+= $operation->getAmount();
-                    }
-                    break;
-                default:
-                    continue 2;
-                    break;
+            foreach ($order->getRentOperations() as $operation) {
+                $paidFor = $operation->getPaidFor();
+                $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
+                $late = $operation->getDaysLate();
+                $nYear = $paidFor->format('Y');
+                $nMonth = $paidFor->format('m');
+                $interval = $currentDate->diff($paidFor)->format('%r%a');
+                $status = $order->getStatus();
+                switch ($status) {
+                    case OrderStatus::NEWONE:
+                        $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
+                        $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
+                        break;
+                    case OrderStatus::COMPLETE:
+                        if ($interval >= $lastDate) {
+                            $result['last_amount'] = $operation->getAmount();
+                            $result['last_date'] = $lastPaymentDate;
+                        }
+                        $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
+                        $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
+                        if ($late >= 30) {
+                            $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
+                            $lateText = floor($late / 30) * 30;
+                            $payments[$nYear][$nMonth]['text'] = $lateText;
+                        }
+                        if (!isset($payments[$nYear][$nMonth]['amount'])) {
+                            $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
+                        } else {
+                            $payments[$nYear][$nMonth]['amount']+= $operation->getAmount();
+                        }
+                        break;
+                    default:
+                        continue 2;
+                        break;
+                }
             }
         }
         ksort($payments);

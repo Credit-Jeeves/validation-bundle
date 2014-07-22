@@ -25,13 +25,11 @@ class OrderCase extends BaseTestCase
         $operationOther->setType(OperationType::OTHER);
         $order->addOperation($operationOther);
 
-        $this->assertEquals('2014-02-04T00:02:2', $order->getPostMonth());
+        $this->assertEquals('2014-02-04T00:00:00', $order->getPostMonth());
     }
 
     /**
      * @test
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Order has more than ONE 'RENT' operation
      */
     public function getPostMonthException()
     {
@@ -39,13 +37,15 @@ class OrderCase extends BaseTestCase
 
         $operationRent = new Operation();
         $operationRent->setType(OperationType::RENT);
+        $operationRent->setPaidFor(new DateTime('2014-02-04'));
         $order->addOperation($operationRent);
 
         $operationRent2 = new Operation();
         $operationRent2->setType(OperationType::RENT);
+        $operationRent->setPaidFor(new DateTime('2014-03-04'));
         $order->addOperation($operationRent2);
 
-        $order->getPostMonth();
+        $this->assertEquals('2014-03-04T00:00:00', $order->getPostMonth());
     }
 
     /**

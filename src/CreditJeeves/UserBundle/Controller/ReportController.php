@@ -30,7 +30,7 @@ class ReportController extends Controller
         /** @var Order $Order */
         if ($Order = $User->getLastCompleteOrder()) {
             /** @var Operation $Operation */
-            if ($Operation = $User->getLastCompleteOperation(OperationType::REPORT)) {
+            if ($Operation = $User->getLastCompleteReportOperation()) {
                 $Report = $Operation->getReportD2c();
             } else {
                 throw $this->createNotFoundException('Operation does not found');

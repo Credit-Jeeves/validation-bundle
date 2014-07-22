@@ -166,8 +166,8 @@ class Mailer extends BaseMailer
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
-            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
-            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
+            'rentAmount' => $order->getRentAmount(),
+            'otherAmount' => $order->getOtherAmount(),
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
@@ -188,8 +188,8 @@ class Mailer extends BaseMailer
             'orderId' => $order->getId(),
             'error' => $order->getHeartlandErrorMessage(),
             'transactionId' => $order->getHeartlandTransactionId(),
-            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
-            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
+            'rentAmount' => $order->getRentAmount(),
+            'otherAmount' => $order->getOtherAmount(),
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
@@ -348,8 +348,8 @@ class Mailer extends BaseMailer
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
-            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
-            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
+            'rentAmount' => $order->getRentAmount(),
+            'otherAmount' => $order->getOtherAmount(),
         );
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
