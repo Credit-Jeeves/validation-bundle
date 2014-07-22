@@ -17,7 +17,7 @@ use RentJeeves\TestBundle\Command\BaseTestCase;
 class PaymentCommandsCase extends BaseTestCase
 {
     /**
-     * test
+     * @test
      */
     public function collectAndPay()
     {
