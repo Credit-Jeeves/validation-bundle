@@ -624,6 +624,12 @@ class Contract extends Base
         $result['amount'] = $this->getRent();
         $result['property'] = $this->getProperty()->getItem();
         $result['group_id'] = $this->getGroup()->getId();
+        $groupSettings = $this->getGroup()->getGroupSettings();
+        $isIntegrated = $groupSettings->getIsIntegrated();
+        $result['is_integrated'] = $isIntegrated;
+        $result['is_allowed_to_pay'] =
+            ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
+        $result['balance'] = $isIntegrated ? $this->getIntegratedBalance() : ''; // do not display general balance
         return $result;
     }
 

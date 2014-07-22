@@ -251,3 +251,6 @@ a.linkselect-link .linkselect-link-text {
 .properties-table-block.table-wrap {
     overflow: visible;
 }
+.layout-auto {
+    table-layout: auto;
+}
