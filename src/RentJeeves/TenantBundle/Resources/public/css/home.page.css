@@ -256,5 +256,5 @@ a.linkselect-link .linkselect-link-text {
 }
 
 .layout-auto, _:-moz-meter-optimum {
-    table-layout: auto;
+    table-layout: fixed;
 }
