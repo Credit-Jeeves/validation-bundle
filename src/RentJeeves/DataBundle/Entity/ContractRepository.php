@@ -146,12 +146,10 @@ class ContractRepository extends EntityRepository
                     break;
                 case 'balance':
                     $parameter = $query->getParameter('group');
-                    if (
-                        !is_null($parameter) &&
+                    if (!is_null($parameter) &&
                         ($group = $parameter->getValue()) &&
                         ($group instanceof Group) &&
-                        $group->getGroupSettings()->getIsIntegrated()
-                    ) {
+                        $group->getGroupSettings()->getIsIntegrated()) {
                         $sortField = 'integratedBalance';
                     }
                 default:
