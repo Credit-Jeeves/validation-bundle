@@ -1036,6 +1036,38 @@
                 <source>contract.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="contract.statuses.late">
+                <source>contract.statuses.late</source>
+                <target>{0} %status% (LATE)|{1} %status% (LATE by 1 day)|]1,Inf[ %status% (LATE by %count% days)</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.current">
+                <source>contract.statuses.current</source>
+                <target>ACTIVE</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.contract_ended">
+                <source>contract.statuses.contract_ended</source>
+                <target>%status% (CONTRACT ENDED)</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.approved">
+                <source>contract.statuses.approved</source>
+                <target>APPROVED</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.pending">
+                <source>contract.statuses.pending</source>
+                <target>PENDING</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.invite">
+                <source>contract.statuses.invite</source>
+                <target>INVITE</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.finished">
+                <source>contract.statuses.finished</source>
+                <target>FINISHED</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.deleted">
+                <source>contract.statuses.deleted</source>
+                <target>DELETED</target>
+            </trans-unit>
             <trans-unit id="contract.rent_amount">
                 <source>contract.rent_amount</source>
                 <target>Rent Amount</target>

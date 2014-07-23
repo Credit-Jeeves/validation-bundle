@@ -30,7 +30,7 @@ class TenantCase extends BaseTestCase
         $this->assertCount(3, $contractPendings, 'Wrong number of pending');
         $this->assertEquals('PENDING', $contractPendings[0]->getHtml());
         $this->assertEquals('PENDING', $contractPendings[1]->getHtml());
-        $this->assertEquals('CONTRACT ENDED', $contractPendings[2]->getHtml());
+        $this->assertContains('CONTRACT ENDED', $contractPendings[2]->getHtml());
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
         $this->page->pressButton('approve.tenant');
@@ -52,7 +52,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
         $this->assertCount(2, $contractPendings, 'Wrong number of pending');
         $this->assertEquals('PENDING', $contractPendings[0]->getHtml());
-        $this->assertEquals('CONTRACT ENDED', $contractPendings[1]->getHtml());
+        $this->assertContains('CONTRACT ENDED', $contractPendings[1]->getHtml());
         $this->logout();
     }
 
@@ -74,13 +74,13 @@ class TenantCase extends BaseTestCase
         $tenant->click();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($td = $this->page->findAll('css', 'td'));
-        $this->assertEquals('Connie Webster', $td[1]->getText(), 'Wrong text in field');
+        $this->assertEquals('William Johnson', $td[1]->getText(), 'Wrong text in field');
 
         $this->assertNotNull($tenant = $this->page->find('css', '#first_name'));
         $tenant->click();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($td = $this->page->findAll('css', 'td'));
-        $this->assertEquals('Timothy Applegate', $td[1]->getText(), 'Wrong text in field');
+        $this->assertEquals('Alex Jordan', $td[1]->getText(), 'Wrong text in field');
         $this->logout();
     }
 

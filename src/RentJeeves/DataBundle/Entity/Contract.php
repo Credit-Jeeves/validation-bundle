@@ -15,6 +15,7 @@ use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\CoreBundle\DateTime;
 use RuntimeException;
+use Symfony\Component\Translation\Translator;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -212,6 +213,7 @@ class Contract extends Base
         $result['balance'] = $this->getCurrentBalance();
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
+        $result['status_label'] = $status['status_label'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
@@ -255,7 +257,14 @@ class Contract extends Base
                 )
             ) {
                 $result['style'] = 'contract-pending';
-                $result['status'] = $result['status'] . ' (' . self::CONTRACT_ENDED . ')';
+                $result['status'] = self::CONTRACT_ENDED;
+                $result['status_label'] = [
+                    'label' => 'contract.statuses.contract_ended',
+                    'choice' => false,
+                    'params' => [
+                        'status' => strtoupper($result['status_name'])
+                    ],
+                ];
             }
             $result['finish'] = $finish->format('m/d/Y');
         }
@@ -304,7 +313,19 @@ class Contract extends Base
 
     public function getStatusArray()
     {
-        $result = array('status' => strtoupper($this->getStatus()), 'class' => '', 'status_name' => $this->getStatus());
+        $result = array(
+            'status' => strtoupper($this->getStatus()),
+            'class' => '',
+            'status_name' => $this->getStatus(),
+            'status_label' => [
+                'label' => 'contract.statuses.' . strtolower($this->getStatus()),
+                'choice' => false,
+                'params' => [],
+            ]
+        );
+        if (ContractStatus::CURRENT == $this->getStatus()) {
+            $result['status_name'] = self::CURRENT_ACTIVE;
+        }
         if (ContractStatus::PENDING == $this->getStatus()) {
             $result['class'] = 'contract-pending';
             return $result;
@@ -313,9 +334,6 @@ class Contract extends Base
             $result['status'] = strtoupper(ContractStatus::FINISHED);
             $result['class'] = '';
             return $result;
-        }
-        if (ContractStatus::CURRENT == $this->getStatus()) {
-            $result['status'] = self::CURRENT_ACTIVE;
         }
 
         if ($date = $this->getPaidTo()) {
@@ -341,7 +359,15 @@ class Contract extends Base
                 ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))
             ) {
-                $result['status'] = $result['status'] . ' (LATE by '.$interval->days.' days)';
+                $result['status_label'] = [
+                    'label' => 'contract.statuses.late',
+                    'choice' => true,
+                    'count' => $interval->days,
+                    'params' => [
+                        'status' => strtoupper($result['status_name']),
+                        'count' => $interval->days
+                    ]
+                ];
                 $result['status_name'] = 'late';
                 $result['class'] = 'contract-late';
                 return $result;

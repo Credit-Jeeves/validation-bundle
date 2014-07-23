@@ -152,6 +152,7 @@ class ContractRepository extends EntityRepository
                         $group->getGroupSettings()->getIsIntegrated()) {
                         $sortField = 'integratedBalance';
                     }
+                    // need continue without break;
                 default:
                     $sortField = 'c.'.$sortField;
                     $query->orderBy($sortField, $sortOrder);

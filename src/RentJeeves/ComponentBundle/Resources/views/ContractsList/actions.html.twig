@@ -219,8 +219,14 @@
                     <!-- ko if: countActions -->
                     <!-- ko foreach: { data: aActions } -->
                     <tr>
+                        <!-- ko if: status_label.choice == true -->
                         <td class="actions-status"
-                            data-bind="text: status, attr: {'class': 'actions-status '+style}"></td>
+                            data-bind="text: Translator.transChoice(status_label.label, status_label.count, status_label.params), attr: {'class': 'actions-status '+style}"></td>
+                        <!-- /ko -->
+                        <!-- ko ifnot: status_label.choice == true -->
+                        <td class="actions-status"
+                            data-bind="text: Translator.trans(status_label.label, status_label.params), attr: {'class': 'actions-status '+style}"></td>
+                        <!-- /ko -->
                         <td class="action-box">
                             <a href="#" class="action-alert pie-el" data-bind="click: $root.resolve.bind($data)">
                                 <i> </i>{{ 'resolve'|trans|upper }}

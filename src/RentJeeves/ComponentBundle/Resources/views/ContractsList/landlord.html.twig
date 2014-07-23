@@ -729,7 +729,12 @@
             <!-- ko foreach: { data: aContracts() } -->
             <tr>
                 <td data-bind="attr: {'class': 'actions-status '+style}">
-                    <div data-bind="text: status"></div>
+                    <!-- ko if: status_label.choice == true -->
+                        <div data-bind="text: Translator.transChoice(status_label.label, status_label.count, status_label.params) "></div>
+                    <!-- /ko -->
+                    <!-- ko ifnot: status_label.choice == true -->
+                        <div data-bind="text: Translator.trans(status_label.label, status_label.params)"></div>
+                    <!-- /ko -->
                 </td>
                 <td class="email-box ellipsis-box" data-bind="text: tenant"></td>
                 <td class="email-box ellipsis-box" data-bind="text: email"></td>
