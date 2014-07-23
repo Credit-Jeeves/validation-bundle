@@ -67,10 +67,11 @@ class OrderListener
             return;
         }
 
+        $this->updateBalanceContract($eventArgs);
+
         /** @var Operation $operation */
         foreach ($operations as $operation) {
             $contract = $operation->getContract();
-            $this->updateBalanceContract($eventArgs);
             $movePaidFor = null;
             switch ($entity->getStatus()) {
                 case OrderStatus::REFUNDED:
