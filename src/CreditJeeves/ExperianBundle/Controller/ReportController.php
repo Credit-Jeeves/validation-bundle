@@ -97,7 +97,7 @@ class ReportController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         if ($isD2c) {
-            $report = $this->getUser()->getLastCompleteOperation(OperationType::REPORT)->getReportD2c();
+            $report = $this->getUser()->getLastCompleteReportOperation()->getReportD2c();
         } else {
             $report = new ReportPrequal();
             $report->setUser($this->getUser());

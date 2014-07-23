@@ -101,18 +101,16 @@ class DepositAccountListener
         }
 
         $usersAdminList = $group->getHolding()->getHoldingAdmin();
-        $users = $group->getHolding()->getDealers();
+        $landlords = $group->getGroupAgents();
         /** @var Mailer $mail */
         $mail = $this->container->get('project.mailer');
 
-        if (empty($usersAdminList) && $users->count() <= 0) {
+        if (empty($usersAdminList) && $landlords->count() == 0) {
             return;
         }
 
-        if (empty($usersAdminList) && $users->count() > 0) {
-            $user = $users->first();
-            $mail->merchantNameSetuped($user, $group);
-            return;
+        foreach ($landlords as $landlord) {
+            $mail->merchantNameSetuped($landlord, $group);
         }
 
         foreach ($usersAdminList as $user) {
