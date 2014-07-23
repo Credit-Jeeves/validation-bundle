@@ -76,7 +76,8 @@ class PaymentBalanceOnlyType extends PaymentType
 
                 $startDate = $event->getForm()->get('start_date')->getData();
                 $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
-                $paymentEntity->setDueDate($startDate->format('j'));
+                $today = new DateTime();
+                $paymentEntity->setDueDate($today->format('j'));
                 $paymentEntity->setStartMonth($startDate->format('n'));
                 $paymentEntity->setStartYear($startDate->format('Y'));
 
