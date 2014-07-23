@@ -73,15 +73,10 @@ class PaymentBalanceOnlyType extends PaymentType
 
                 $paymentEntity->setTotal($contract->getIntegratedBalance());
                 $paymentEntity->setAmount($contract->getIntegratedBalance());
-                if ($dueDate = $contract->getDueDate()) {
-                    $paymentEntity->setDueDate($dueDate);
-                } else {
-                    $paymentEntity->setDueDate(
-                        $contract->getGroup()->getGroupSettings()->getDueDate()
-                    );
-                }
+
                 $startDate = $event->getForm()->get('start_date')->getData();
                 $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
+                $paymentEntity->setDueDate($startDate->format('j'));
                 $paymentEntity->setStartMonth($startDate->format('n'));
                 $paymentEntity->setStartYear($startDate->format('Y'));
 
