@@ -254,3 +254,7 @@ a.linkselect-link .linkselect-link-text {
 .layout-auto {
     table-layout: auto;
 }
+
+.layout-auto, _:-moz-meter-optimum {
+    table-layout: auto;
+}
