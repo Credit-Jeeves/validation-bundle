@@ -142,17 +142,8 @@ class ContractRepository extends EntityRepository
                             as HIDDEN status_sort_order,
                          c"
                     );
-                    $query->orderBy('status_sort_order', $sortOrder);
+                    $query->orderBy('status_sort_order');
                     break;
-                case 'balance':
-                    $parameter = $query->getParameter('group');
-                    if (!is_null($parameter) &&
-                        ($group = $parameter->getValue()) &&
-                        ($group instanceof Group) &&
-                        $group->getGroupSettings()->getIsIntegrated()) {
-                        $sortField = 'integratedBalance';
-                    }
-                    // need continue without break;
                 default:
                     $sortField = 'c.'.$sortField;
                     $query->orderBy($sortField, $sortOrder);
@@ -167,10 +158,8 @@ class ContractRepository extends EntityRepository
      * Count records for Tenant Tab
      *
      * @param Group $group
-     * @param string $searchField
-     * @param string $searchString
-     * @internal param string $searchBy
-     * @internal param string $search
+     * @param string $searchBy
+     * @param string $search
      *
      * @return mixed
      */
@@ -209,7 +198,6 @@ class ContractRepository extends EntityRepository
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
-        /* @var QueryBuilder $query */
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
