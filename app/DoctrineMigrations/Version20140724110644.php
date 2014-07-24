@@ -15,44 +15,44 @@ class Version20140724110644 extends AbstractMigration
         );
         $template = <<<EOT
 {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-{% block h1 %}Pay Rent. Built Credit.{% endblock %}
+{% block h1 %}Pay Rent. Built Credit History.{% endblock %}
 {% block email %}
-{% if nameTenant %}
-    Hi {{ nameTenant }}! <br />  <br />
-{% else %}
-    Hello!  <br /> <br />
-{% endif %}
-Your landlord, {{ fullNameLandlord }}, would like you to use RentTrack to pay your rent for
-{{ rentAddress }}. RentTrack makes it easy to pay rent through secure electronic check transfers
-and credit card payments - you get to choose. You also have the opportunity to build credit history by signing up for
-credit bureau payment reporting. Finally, <b>paying by electronic checks is completely free</b>.
-<br /> <br />
+  {% if nameTenant %}
+      Hi {{ nameTenant }}! <br />  <br />
+  {% else %}
+      Hello!  <br /> <br />
+  {% endif %}
+  Your landlord, {{ fullNameLandlord }}, would like you to use RentTrack to pay your rent or renew your contract for
+  {{ address }}{% if unitName != 'SINGLE_PROPERTY' %} {{unitName}}{%endif%}. RentTrack makes it easy to pay rent through secure electronic check transfers
+  and credit card payments - you get to choose. You also have the opportunity to build credit history by signing up for
+  credit bureau payment reporting.
+  <br /> <br />
 
-Ready to get something out of your rent payments?<br /> <br />
-<a id="payRentLink"
-{% if inviteCode %}
-  href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode, 'isImported': isImported }) }}"
-{% else %}
-  href="http://{{ serverName }}/"
-{% endif %}
-  style="
-                border: none;
-                padding: 2px 7px;
-                text-align: left;
-                color: white;
-                font-size: 14px;
-                text-shadow: 1px 1px 3px #636363;
-                filter: dropshadow(color=#636363, offx=1, offy=1);
-                cursor: pointer;
-                background-color: #669900;
-                -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#00ffffff)';
-                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff);
-                zoom: 1;
-                text-decoration: none;
-                -moz-border-radius: 4px;
-                -webkit-border-radius: 4px;
-                border-radius: 4px;
-        ">Pay Rent</a> Still have some questions? <a href="http://www.renttrack.com/how-it-works">Learn More</a>
+  Ready to get the most out of your rent payments?<br /> <br />
+  <a id="payRentLink"
+  {% if inviteCode %}
+    href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode, 'isImported': isImported }) }}"
+  {% else %}
+    href="http://{{ serverName }}/"
+  {% endif %}
+    style="
+                  border: none;
+                  padding: 2px 7px;
+                  text-align: left;
+                  color: white;
+                  font-size: 14px;
+                  text-shadow: 1px 1px 3px #636363;
+                  filter: dropshadow(color=#636363, offx=1, offy=1);
+                  cursor: pointer;
+                  background-color: #669900;
+                  -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#00ffffff)';
+                  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff);
+                  zoom: 1;
+                  text-decoration: none;
+                  -moz-border-radius: 4px;
+                  -webkit-border-radius: 4px;
+                  border-radius: 4px;
+          ">Pay Rent</a> Still have some questions? <a href="http://www.renttrack.com/how-it-works">Learn More</a>
 {% endblock %}
 
 EOT;
