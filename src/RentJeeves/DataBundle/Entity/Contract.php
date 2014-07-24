@@ -629,7 +629,8 @@ class Contract extends Base
         $result['is_integrated'] = $isIntegrated;
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
-        $result['balance'] = $isIntegrated ? $this->getIntegratedBalance() : ''; // do not display general balance
+        // display only integrated balance
+        $result['balance'] = $isIntegrated ? sprintf('$%s', $this->getIntegratedBalance()) : '';
         return $result;
     }
 

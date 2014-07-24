@@ -1055,7 +1055,7 @@
             </trans-unit>
             <trans-unit id="contract.error.unit">
                 <source>contract.error.unit</source>
-                <target>Unit for contract is not specified</target>
+                <target><![CDATA[Unit for contract is not specified. You need to Edit this contract and select a unit. If the unit is not listed, you need to add it. <a href="http://help.renttrack.com/knowledgebase/articles/275851-how-do-i-approve-a-tenant-so-they-can-pay-rent">See FAQ</a>.]]></target>
             </trans-unit>
             <trans-unit id="contract.status.pay">
                 <source>contract.status.pay</source>
@@ -1967,7 +1967,7 @@
             </trans-unit>
             <trans-unit id="payment.start_date.error.past">
                 <source>payment.start_date.error.past</source>
-                <target>Please check your dates. It appears you have set up a recurring payment to start in the past.</target>
+                <target>Please check your dates. It appears you have set up a payment to start in the past.</target>
             </trans-unit>
             <trans-unit id="payment.start_date.error.cutoff.time">
                 <source>payment.start_date.error.cutoff.time</source>

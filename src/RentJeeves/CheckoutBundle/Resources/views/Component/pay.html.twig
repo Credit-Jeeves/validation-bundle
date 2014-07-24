@@ -182,7 +182,7 @@
             </h3>
 
             <div class="information-box pie-el"
-                 data-bind="visible: 'one_time' == payment.type(), i18n: {'DATE': payment.startDate}"
+                 data-bind="visible: ('one_time' == payment.type() && !contract.groupSetting.pay_balance_only), i18n: {'DATE': payment.startDate}"
             >
                 checkout.one_time_payment.note
             </div>
