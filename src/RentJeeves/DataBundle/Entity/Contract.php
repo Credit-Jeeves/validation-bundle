@@ -76,6 +76,11 @@ class Contract extends Base
     const CONTRACT_ENDED = 'CONTRACT ENDED';
 
     /**
+     * @const string
+     */
+    const CURRENT_ACTIVE = 'ACTIVE';
+
+    /**
      * @var string
      */
     const STATUS_PAY = 'auto';
@@ -207,6 +212,7 @@ class Contract extends Base
         $result['balance'] = $this->getCurrentBalance();
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
+        $result['status_label'] = $status['status_label'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
@@ -251,6 +257,13 @@ class Contract extends Base
             ) {
                 $result['style'] = 'contract-pending';
                 $result['status'] = self::CONTRACT_ENDED;
+                $result['status_label'] = [
+                    'label' => 'contract.statuses.contract_ended',
+                    'choice' => false,
+                    'params' => [
+                        'status' => strtoupper($result['status_name'])
+                    ],
+                ];
             }
             $result['finish'] = $finish->format('m/d/Y');
         }
@@ -299,7 +312,19 @@ class Contract extends Base
 
     public function getStatusArray()
     {
-        $result = array('status' => strtoupper($this->getStatus()), 'class' => '', 'status_name' => $this->getStatus());
+        $result = array(
+            'status' => strtoupper($this->getStatus()),
+            'class' => '',
+            'status_name' => $this->getStatus(),
+            'status_label' => [
+                'label' => 'contract.statuses.' . strtolower($this->getStatus()),
+                'choice' => false,
+                'params' => [],
+            ]
+        );
+        if (ContractStatus::CURRENT == $this->getStatus()) {
+            $result['status_name'] = self::CURRENT_ACTIVE;
+        }
         if (ContractStatus::PENDING == $this->getStatus()) {
             $result['class'] = 'contract-pending';
             return $result;
@@ -332,7 +357,15 @@ class Contract extends Base
                 ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))
             ) {
-                $result['status'] = 'LATE ('.$interval->days.' days)';
+                $result['status_label'] = [
+                    'label' => 'contract.statuses.late',
+                    'choice' => true,
+                    'count' => $interval->days,
+                    'params' => [
+                        'status' => strtoupper($result['status_name']),
+                        'count' => $interval->days
+                    ]
+                ];
                 $result['status_name'] = 'late';
                 $result['class'] = 'contract-late';
                 return $result;
@@ -437,7 +470,7 @@ class Contract extends Base
                         if (!isset($payments[$nYear][$nMonth]['amount'])) {
                             $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
                         } else {
-                            $payments[$nYear][$nMonth]['amount']+= $operation->getAmount();
+                            $payments[$nYear][$nMonth]['amount'] += $operation->getAmount();
                         }
                         break;
                     default:
