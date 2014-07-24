@@ -28,9 +28,9 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
         $this->assertCount(3, $contractPendings, 'Wrong number of pending');
-        $this->assertEquals('PENDING', $contractPendings[0]->getHtml());
-        $this->assertEquals('PENDING', $contractPendings[1]->getHtml());
-        $this->assertContains('CONTRACT ENDED', $contractPendings[2]->getHtml());
+        $this->assertEquals('contract.statuses.pending', $contractPendings[0]->getHtml());
+        $this->assertEquals('contract.statuses.pending', $contractPendings[1]->getHtml());
+        $this->assertEquals('contract.statuses.contract_ended', $contractPendings[2]->getHtml());
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
         $this->page->pressButton('approve.tenant');
@@ -51,8 +51,8 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($propertiesTable = $this->page->find('css', '.properties-table'));
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
         $this->assertCount(2, $contractPendings, 'Wrong number of pending');
-        $this->assertEquals('PENDING', $contractPendings[0]->getHtml());
-        $this->assertContains('CONTRACT ENDED', $contractPendings[1]->getHtml());
+        $this->assertEquals('contract.statuses.pending', $contractPendings[0]->getHtml());
+        $this->assertEquals('contract.statuses.contract_ended', $contractPendings[1]->getHtml());
         $this->logout();
     }
 
