@@ -1055,7 +1055,7 @@
             </trans-unit>
             <trans-unit id="contract.error.unit">
                 <source>contract.error.unit</source>
-                <target>Unit for contract is not specified</target>
+                <target><![CDATA[Unit for contract is not specified. You need to Edit this contract and select a unit. If the unit is not listed, you need to add it. <a href="http://help.renttrack.com/knowledgebase/articles/275851-how-do-i-approve-a-tenant-so-they-can-pay-rent">See FAQ</a>.]]></target>
             </trans-unit>
             <trans-unit id="contract.status.pay">
                 <source>contract.status.pay</source>
