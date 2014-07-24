@@ -1046,7 +1046,12 @@ class ImportProcess
          * @var $contract Contract
          */
         foreach ($this->emailSendingQueue as $contract) {
-            $this->mailer->sendRjTenantInvite($contract->getTenant(), $this->user, $contract);
+            $this->mailer->sendRjTenantInvite(
+                $contract->getTenant(),
+                $this->user,
+                $contract,
+                $isImported = "1"
+            );
         }
 
         $this->emailSendingQueue = array();

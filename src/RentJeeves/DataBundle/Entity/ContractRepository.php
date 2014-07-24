@@ -445,10 +445,11 @@ class ContractRepository extends EntityRepository
         return $query->iterate();
     }
 
-    public function getImportContract($tenant, $unitName, $externalUnitId = null)
+    public function getImportContract($tenant, $unitName, $externalUnitId = null, $propertyId = null)
     {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
+        $query->innerJoin('contract.property', 'property');
         $query->innerJoin('contract.tenant', 'tenant');
         $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
         $query->andWhere('tenant.id = :tenantId');
@@ -459,6 +460,11 @@ class ContractRepository extends EntityRepository
         } else {
             $query->andWhere('unit.name = :unitName');
             $query->setParameter('unitName', $unitName);
+        }
+
+        if (!is_null($propertyId)) {
+            $query->andWhere('property.id = :propertyId');
+            $query->setParameter('propertyId', $propertyId);
         }
         // if 2 or more contract get contract with status current in first priority
         $query->addOrderBy('contract.status', "DESC");

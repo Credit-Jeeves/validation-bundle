@@ -1077,8 +1077,8 @@
                 <source>log_in</source>
                 <target>Log In</target>
             </trans-unit>
-            <trans-unit id="have.an.account">
-                <source>have.an.account</source>
+            <trans-unit id="user.invite.has_account">
+                <source>user.invite.has_account</source>
                 <target>Have an account</target>
             </trans-unit>
             <trans-unit id="change.your.basic">
