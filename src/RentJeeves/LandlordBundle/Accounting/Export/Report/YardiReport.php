@@ -71,7 +71,7 @@ class YardiReport extends ExportReport
         $propertyId = $settings['property']->getId();
         $orderRepository = $this->em->getRepository('DataBundle:Operation');
 
-        return $orderRepository->getOperationForXmlReport($propertyId, $beginDate, $endDate);
+        return $orderRepository->getOperationsForXmlReport($propertyId, $beginDate, $endDate);
     }
 
     public function getAccountId()

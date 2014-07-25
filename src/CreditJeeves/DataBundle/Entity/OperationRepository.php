@@ -82,7 +82,7 @@ class OperationRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
-    public function getOperationForXmlReport(
+    public function getOperationsForXmlReport(
         $propertyId,
         $start,
         $end

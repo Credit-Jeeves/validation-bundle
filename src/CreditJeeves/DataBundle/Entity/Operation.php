@@ -383,7 +383,7 @@ class Operation extends Base
 
         $unit = $contract->getUnit();
         $unitName = '';
-        if ($unit) {
+        if ($unit && !$property->isSingle()) {
             $unitName = ' #'.$unit->getName();
         }
         $address = $property->getFullAddress().$unitName;
@@ -402,14 +402,7 @@ class Operation extends Base
      */
     public function getPostMonth()
     {
-        $paidFor = null;
-        /** @var Operation $rentOperation */
-        foreach ($this->getOrder()->getRentOperations() as $rentOperation) {
-            if (!$paidFor || $paidFor < $rentOperation->getPaidFor()) {
-                $paidFor = $rentOperation->getPaidFor();
-            }
-        }
-
+        $paidFor = $this->getPaidFor();
         return $paidFor ? $paidFor->format('Y-m-d\TH:i:s') : '';
     }
 
