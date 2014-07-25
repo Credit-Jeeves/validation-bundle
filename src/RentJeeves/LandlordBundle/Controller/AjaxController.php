@@ -590,7 +590,6 @@ class AjaxController extends Controller
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
         $dataRequest = $request->request->all('data')['data'];
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();

@@ -200,11 +200,12 @@ class PayCommand extends ContainerAwareCommand
         $paidForCounter = 0;
 
         do {
+            $operationAmount = $paymentAmount >= $rent ? $rent : $paymentAmount;
             $operation = new Operation();
             $operation->setOrder($order);
             $operation->setType(OperationType::RENT);
             $operation->setContract($contract);
-            $operation->setAmount($rent);
+            $operation->setAmount($operationAmount);
 
             if (!isset($paidForDates[$paidForCounter])) {
                 throw new RuntimeException('Can not calculate paid_for');
@@ -213,7 +214,7 @@ class PayCommand extends ContainerAwareCommand
             $paidFor = new DateTime($paidForDates[$paidForCounter]);
             $operation->setPaidFor($paidFor);
 
-            $paymentAmount -= $rent;
+            $paymentAmount -= $operationAmount;
             $paidForCounter++;
         } while ($paymentAmount >= $rent);
 
