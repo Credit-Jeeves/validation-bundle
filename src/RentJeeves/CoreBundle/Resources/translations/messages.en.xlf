@@ -468,6 +468,10 @@
                     Edit Tenant Information
                 </target>
             </trans-unit>
+            <trans-unit id="edit.tenant">
+                <source>edit.tenant</source>
+                <target>Edit Tenant</target>
+            </trans-unit>
             <trans-unit id="are.you.sure.you.want.remove.property">
                 <source>are.you.sure.you.want.remove.property</source>
                 <target>
@@ -902,6 +906,14 @@
                 <source>processing</source>
                 <target>Processing</target>
             </trans-unit>
+            <trans-unit id="returned">
+                <source>returned</source>
+                <target>Returned</target>
+            </trans-unit>
+            <trans-unit id="refunded">
+                <source>refunded</source>
+                <target>Refunded</target>
+            </trans-unit>
             <trans-unit id="payments.total">
                 <source>payments.total</source>
                 <target>Payments Total</target>
@@ -1024,6 +1036,38 @@
                 <source>contract.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="contract.statuses.late">
+                <source>contract.statuses.late</source>
+                <target>{0} %status% (LATE)|{1} %status% (LATE by 1 day)|]1,Inf[ %status% (LATE by %count% days)</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.current">
+                <source>contract.statuses.current</source>
+                <target>ACTIVE</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.contract_ended">
+                <source>contract.statuses.contract_ended</source>
+                <target>%status% (CONTRACT ENDED)</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.approved">
+                <source>contract.statuses.approved</source>
+                <target>APPROVED</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.pending">
+                <source>contract.statuses.pending</source>
+                <target>PENDING</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.invite">
+                <source>contract.statuses.invite</source>
+                <target>INVITE</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.finished">
+                <source>contract.statuses.finished</source>
+                <target>FINISHED</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.deleted">
+                <source>contract.statuses.deleted</source>
+                <target>DELETED</target>
+            </trans-unit>
             <trans-unit id="contract.rent_amount">
                 <source>contract.rent_amount</source>
                 <target>Rent Amount</target>
@@ -1043,7 +1087,7 @@
             </trans-unit>
             <trans-unit id="contract.error.unit">
                 <source>contract.error.unit</source>
-                <target>Unit for contract is not specified</target>
+                <target><![CDATA[Unit for contract is not specified. You need to Edit this contract and select a unit. If the unit is not listed, you need to add it. <a href="http://help.renttrack.com/knowledgebase/articles/275851-how-do-i-approve-a-tenant-so-they-can-pay-rent">See FAQ</a>.]]></target>
             </trans-unit>
             <trans-unit id="contract.status.pay">
                 <source>contract.status.pay</source>
@@ -1466,6 +1510,10 @@
             <trans-unit id="landlord.alert.pending-many.admin">
                 <source>landlord.alert.pending-many.admin</source>
                 <target>There are %COUNT% new tenants pending your review in the %GROUP% group.</target>
+            </trans-unit>
+            <trans-unit id="landlord.add_tenant.hover">
+                <source>landlord.add_tenant.hover</source>
+                <target>You will be able to add tenants once your merchant account is approved.</target>
             </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
@@ -1897,6 +1945,14 @@
                     Remove Contract Confirm
                 </target>
             </trans-unit>
+            <trans-unit id="common.balance.due">
+                    <source>common.balance.due</source>
+                    <target>Balance Due</target>
+            </trans-unit>
+            <trans-unit id="common.balance.as.full">
+                    <source>common.balance.as.full</source>
+                    <target>Your property manager requires payment of balance in full</target>
+            </trans-unit>
             <trans-unit id="outstanding.description">
                 <source>outstanding.description</source>
                 <target>
@@ -1947,7 +2003,7 @@
             </trans-unit>
             <trans-unit id="payment.start_date.error.past">
                 <source>payment.start_date.error.past</source>
-                <target>Please check your dates. It appears you have set up a recurring payment to start in the past.</target>
+                <target>Please check your dates. It appears you have set up a payment to start in the past.</target>
             </trans-unit>
             <trans-unit id="payment.start_date.error.cutoff.time">
                 <source>payment.start_date.error.cutoff.time</source>
@@ -2441,6 +2497,27 @@
                 <source>import.property.single.checkbox_label</source>
                 <target>Single Property (No Units)</target>
             </trans-unit>
+            <trans-unit id="pay.balance.only">
+                <source>pay.balance.only</source>
+                <target>Pay Balance Only?</target>
+            </trans-unit>
+            <trans-unit id="pay.balance.only.error">
+                <source>pay.balance.only.error</source>
+                <target>Pay Balance Only can be setup only for Integrated Group</target>
+            </trans-unit>
+            <trans-unit id="pay.balance.only.reccuring_error">
+                <source>pay.balance.only.reccuring_error</source>
+                <target>Pay Balance Only can be setup only for Group which don't have reccuring payment</target>
+            </trans-unit>
+            <trans-unit id="export.promas.make_zip">
+                <source>export.promas.make_zip</source>
+                <target>Separate By Batch Deposits (ZIP File with Multiple CSVs)</target>
+            </trans-unit>
+            <trans-unit id="tenant.no_balance.alert">
+                <source>tenant.no_balance.alert</source>
+                <target>You do not have a balance to pay at this time.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

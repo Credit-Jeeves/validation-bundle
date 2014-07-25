@@ -253,7 +253,8 @@ class PaymentType extends AbstractType
                 'attr'            => array(
                     'class' => 'datepicker-field',
                     'row_attr'  => array(
-                        'data-bind' => 'visible: \'one_time\' == payment.type()'
+                        'data-bind' => 'visible: \'one_time\' == payment.type()'.
+                                       '|| contract.groupSetting.pay_balance_only'
                     ),
                     'data-bind' => 'datepicker: payment.startDate, ' .
                         'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',
@@ -261,7 +262,7 @@ class PaymentType extends AbstractType
                     '<h4 data-bind="i18n: {\'START\': payment.startDate, \'SETTLE\': settle}">' .
                     'checkout.one_time.tooltip.title-%START%-%SETTLE%' .
                     '</h4>' .
-                    '<p data-bind="i18n: {\'AMOUNT\': getAmount, \'START\': payment.startDate}">' .
+                    '<p data-bind="i18n: {\'AMOUNT\': getTotal, \'START\': payment.startDate}">' .
                     'checkout.one_time.tooltip.text-%AMOUNT%-%START%' .
                     '</p></div>',
                 ),

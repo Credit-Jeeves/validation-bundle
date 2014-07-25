@@ -103,7 +103,7 @@ function Actions() {
     this.resolve = function(data) {
         var dialogModel = null;
 
-        if ('CONTRACT ENDED' === data.status) {
+        if (data.status.indexOf('CONTRACT ENDED') !== -1) {
             dialogModel = new ResolveEnded(self, data);
         } else {
             dialogModel = new ResolveLate(self, data);

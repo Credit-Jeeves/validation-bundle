@@ -21,18 +21,50 @@ class PaymentAccountCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.add-accoun').is(':visible')");
         $this->page->clickLink('add.account');
         $this->assertNotNull($form = $this->page->find('css', '#billingAccountType'));
+
+        /*
+         * Test for not match repeated value for Account Number
+         */
         $this->fillForm(
             $form,
             array(
                 'billingAccountType_nickname'         => "mary",
                 'billingAccountType_PayorName'        => "mary stone",
-                'billingAccountType_AccountNumber'    => "123245678",
+                'billingAccountType_AccountNumber_AccountNumber'    => "123245678",
+                'billingAccountType_AccountNumber_AccountNumberAgain'    => "123245687",
                 'billingAccountType_RoutingNumber'    => "062202574",
                 'billingAccountType_ACHDepositType_0' => true,
                 'billingAccountType_isActive'         => true,
             )
         );
         $this->assertNotNull($save = $this->page->find('css', '#save_payment'));
+        $save->click();
+        $this->session->wait(
+            $this->timeout,
+            "$('#billing-account-edit .attention-box li').length"
+        );
+        $this->assertNotNull($errors = $this->page->findAll('css', '#billing-account-edit .attention-box li'));
+        $this->assertCount(1, $errors);
+        $this->assertEquals('checkout.error.account_number.match', $errors[0]->getHtml());
+
+
+
+
+        /*
+         * Continue Test
+         */
+        $this->fillForm(
+            $form,
+            array(
+                'billingAccountType_nickname'         => "mary",
+                'billingAccountType_PayorName'        => "mary stone",
+                'billingAccountType_AccountNumber_AccountNumber'    => "123245678",
+                'billingAccountType_AccountNumber_AccountNumberAgain'    => "123245678",
+                'billingAccountType_RoutingNumber'    => "062202574",
+                'billingAccountType_ACHDepositType_0' => true,
+                'billingAccountType_isActive'         => true,
+            )
+        );
         $save->click();
         $this->session->wait(
             $this->timeout + 20000,
@@ -51,7 +83,8 @@ class PaymentAccountCase extends BaseTestCase
             array(
                 'billingAccountType_nickname'         => "gary",
                 'billingAccountType_PayorName'        => "mary stone",
-                'billingAccountType_AccountNumber'    => "123245678",
+                'billingAccountType_AccountNumber_AccountNumber'    => "123245678",
+                'billingAccountType_AccountNumber_AccountNumberAgain'    => "123245678",
                 'billingAccountType_RoutingNumber'    => "062202574",
                 'billingAccountType_ACHDepositType_0' => true,
                 'billingAccountType_isActive'         => true,

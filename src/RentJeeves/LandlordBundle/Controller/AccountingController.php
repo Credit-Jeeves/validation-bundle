@@ -2,35 +2,26 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderType;
-use Doctrine\ORM\EntityManager;
-use JMS\Serializer\SerializerBuilder;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
-use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportProcess;
 use RentJeeves\LandlordBundle\Accounting\ImportStorage;
-use RentJeeves\LandlordBundle\Accounting\Permission;
+use RentJeeves\LandlordBundle\Accounting\AccountingPermission as Permission;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use RentJeeves\LandlordBundle\Form\ExportType;
-use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
 use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
-use RentJeeves\LandlordBundle\Form\ImportNewContractType;
-use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
-use RentJeeves\LandlordBundle\Form\ImportUpdateContractType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use \Exception;
+use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,16 +89,17 @@ class AccountingController extends Controller
         $formBaseOrder->handleRequest($this->get('request'));
         if ($formBaseOrder->isValid()) {
 
-            $data = $formBaseOrder->getData();
-            $data['group'] = $group;
-            $baseReport = $this->get('accounting.export');
-            $report = $baseReport->getReport($data);
+            $formData = $formBaseOrder->getData();
+            $formData['group'] = $group;
+            $accounting = $this->get('accounting.export');
+            /** @var ExportReport $report */
+            $report = $accounting->getReport($formData);
 
             $response = new Response();
-            $response->setContent($report);
+            $response->setContent($report->getContent($formData));
             $response->headers->set('Cache-Control', 'private');
-            $response->headers->set('Content-Type', $baseReport->getContentType());
-            $response->headers->set('Content-Disposition', 'attachment; filename='.$baseReport->getFileName());
+            $response->headers->set('Content-Type', $report->getContentType());
+            $response->headers->set('Content-Disposition', 'attachment; filename=' . $report->getFilename());
 
             return $response;
         }

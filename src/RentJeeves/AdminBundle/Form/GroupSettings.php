@@ -3,10 +3,37 @@ namespace RentJeeves\AdminBundle\Form;
 
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use RentJeeves\DataBundle\Entity\GroupSettings as GroupSetting;
+use JMS\DiExtraBundle\Annotation\Service;
+use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
 
+/**
+ * Class GroupSettings
+ * @Service("form.group_settings")
+ */
 class GroupSettings extends Base
 {
+    protected $translator;
+
+    protected $em;
+
+    /**
+     * @InjectParams({
+     *     "em"             = @Inject("doctrine.orm.entity_manager"),
+     *     "translator"     = @Inject("translator")
+     * })
+     */
+    public function __construct($em, $translator)
+    {
+        $this->translator = $translator;
+        $this->em = $em;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -25,6 +52,16 @@ class GroupSettings extends Base
             array(
                 'error_bubbling'    => true,
                 'label'             => 'is.integrated',
+                'required'          => false,
+            )
+        );
+
+        $builder->add(
+            'payBalanceOnly',
+            'checkbox',
+            array(
+                'error_bubbling'    => true,
+                'label'             => 'pay.balance.only',
                 'required'          => false,
             )
         );
@@ -70,6 +107,38 @@ class GroupSettings extends Base
             )
         );
 
+        $self = $this;
+
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($self) {
+                $form = $event->getForm();
+                /**
+                 * @var $groupSettings GroupSetting
+                 */
+                $groupSettings = $event->getData();
+
+                if (!$groupSettings->getIsIntegrated() && $groupSettings->getPayBalanceOnly()) {
+                    $form->get('payBalanceOnly')->addError(
+                        new FormError(
+                            $self->translator->trans('pay.balance.only.error')
+                        )
+                    );
+                }
+
+                $hasReccuringPayment = $self->em->getRepository('RjDataBundle:GroupSettings')->hasReccuringPayment(
+                    $groupSettings->getId()
+                );
+
+                if ($hasReccuringPayment && $groupSettings->getPayBalanceOnly()) {
+                    $form->get('payBalanceOnly')->addError(
+                        new FormError(
+                            $self->translator->trans('pay.balance.only.reccuring_error')
+                        )
+                    );
+                }
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -8,6 +8,7 @@ use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializationContext;
 use Payum\Request\CaptureRequest;
+use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
@@ -32,6 +33,14 @@ class ComponentController extends Controller
                 array()
             )
         );
+        $paymentBalanceOnlyType =  $this->createForm(
+            new PaymentBalanceOnlyType(
+                $this->container->getParameter('payment_one_time_until_value'),
+                array(),
+                array(),
+                $this->getDoctrine()->getManager()
+            )
+        );
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
         $questionsType = $this->createForm(
             new QuestionsType(
@@ -47,6 +56,7 @@ class ComponentController extends Controller
         );
         return array(
             'paymentType' => $paymentType->createView(),
+            'paymentBalanceOnlyType' => $paymentBalanceOnlyType->createView(),
             'userDetailsType' => $userDetailsType->createView(),
             'questionsType' => $questionsType->createView(),
         );
