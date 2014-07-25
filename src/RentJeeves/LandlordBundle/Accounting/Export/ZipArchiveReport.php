@@ -63,4 +63,4 @@ trait ZipArchiveReport
             $this->exportReport->getFileType()
         );
     }
-} 
+}
