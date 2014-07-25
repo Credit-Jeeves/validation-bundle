@@ -24,6 +24,22 @@ class Order extends BaseOrder
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
     /**
+     * @return DateTime
+     */
+    public function getPostMonth()
+    {
+        $paidFor = null;
+        /** @var Operation $rentOperation */
+        foreach ($this->getRentOperations() as $rentOperation) {
+            if (!$paidFor || $paidFor < $rentOperation->getPaidFor()) {
+                $paidFor = $rentOperation->getPaidFor();
+            }
+        }
+
+        return $paidFor ? $paidFor->format('Y-m-d\TH:i:s') : '';
+    }
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Property")
      * @Serializer\Groups({"csvReport"})

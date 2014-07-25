@@ -9,11 +9,12 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use Symfony\Component\Form\Form;
+use DateTime;
 
 class Detail
 {
     /**
-     * @return integer
+     * @var float
      */
     protected $amount = null;
 
@@ -82,10 +83,10 @@ class Detail
      */
     public function getNotesFormatted()
     {
-        return $this->notes->format('Y-m-d\TH:m:n');
+        return $this->notes->format('Y-m-d\TH:i:s');
     }
 
-    public function setNotes($notes)
+    public function setNotes(DateTime $notes)
     {
         $this->notes = $notes;
         return;
