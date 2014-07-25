@@ -16,9 +16,6 @@ use DateTime;
  */
 class YardiReport extends ExportReport
 {
-    protected $filename;
-    protected $type = 'xml';
-
     protected $propertyId;
     protected $arAccountId;
     protected $accountId;
@@ -39,11 +36,8 @@ class YardiReport extends ExportReport
         $this->em = $em;
         $this->serializer = $serializer;
         $this->softDeleteableControl = $softDeleteableControl;
-    }
-
-    public function getType()
-    {
-        return $this->type;
+        $this->type = 'yardi';
+        $this->fileType = 'xml';
     }
 
     public function getContent($settings)
@@ -69,9 +63,9 @@ class YardiReport extends ExportReport
         $beginDate = $settings['begin'].' 00:00:00';
         $endDate = $settings['end'].' 23:59:59';
         $propertyId = $settings['property']->getId();
-        $orderRepository = $this->em->getRepository('DataBundle:Operation');
+        $repository = $this->em->getRepository('DataBundle:Operation');
 
-        return $orderRepository->getOperationsForXmlReport($propertyId, $beginDate, $endDate);
+        return $repository->getOperationsForXmlReport($propertyId, $beginDate, $endDate);
     }
 
     public function getAccountId()
