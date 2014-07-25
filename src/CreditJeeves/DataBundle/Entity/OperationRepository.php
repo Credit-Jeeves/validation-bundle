@@ -81,4 +81,39 @@ class OperationRepository extends EntityRepository
 
         return $query->getOneOrNullResult();
     }
+
+    public function getOperationsForXmlReport(
+        $propertyId,
+        $start,
+        $end
+    ) {
+        $query = $this->createQueryBuilder('operation')->select(
+            'operation,
+             ord,
+             prop,
+             contract,
+             tenant,
+             unit'
+        );
+        $query->innerJoin("operation.order", "ord");
+        $query->innerJoin("operation.contract", "contract");
+        $query->innerJoin("contract.tenant", "tenant");
+        $query->innerJoin('contract.property', 'prop');
+        $query->innerJoin('contract.unit', 'unit');
+        $query->where("ord.updated_at BETWEEN :start AND :end");
+        $query->andWhere('prop.id = :propId');
+        $query->andWhere('ord.status = :status');
+        $query->andWhere('operation.type = :type1 OR operation.type = :type2');
+        $query->orderBy('ord.id', 'ASC');
+
+        $query->setParameter('end', $end);
+        $query->setParameter('type1', OperationType::RENT);
+        $query->setParameter('type2', OperationType::OTHER);
+        $query->setParameter('start', $start);
+        $query->setParameter('propId', $propertyId);
+        $query->setParameter('status', OrderStatus::COMPLETE);
+
+        $query = $query->getQuery();
+        return $query->execute();
+    }
 }
