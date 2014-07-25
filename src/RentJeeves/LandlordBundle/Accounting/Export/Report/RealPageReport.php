@@ -16,9 +16,6 @@ use DateTime;
  */
 class RealPageReport extends ExportReport
 {
-    protected $filename;
-    protected $type = 'csv';
-
     protected $em;
     protected $serializer;
     protected $softDeleteableControl;
@@ -35,11 +32,8 @@ class RealPageReport extends ExportReport
         $this->em = $em;
         $this->serializer = $serializer;
         $this->softDeleteableControl = $softDeleteableControl;
-    }
-
-    public function getType()
-    {
-        return $this->type;
+        $this->type = 'real_page';
+        $this->fileType = 'csv';
     }
 
     public function getContent($settings)

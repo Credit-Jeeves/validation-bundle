@@ -16,9 +16,6 @@ use DateTime;
  */
 class YardiReport extends ExportReport
 {
-    protected $filename;
-    protected $type = 'xml';
-
     protected $propertyId;
     protected $arAccountId;
     protected $accountId;
@@ -39,11 +36,8 @@ class YardiReport extends ExportReport
         $this->em = $em;
         $this->serializer = $serializer;
         $this->softDeleteableControl = $softDeleteableControl;
-    }
-
-    public function getType()
-    {
-        return $this->type;
+        $this->type = 'yardi';
+        $this->fileType = 'xml';
     }
 
     public function getContent($settings)

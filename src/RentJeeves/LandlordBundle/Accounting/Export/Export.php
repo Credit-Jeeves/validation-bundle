@@ -41,7 +41,11 @@ class Export
 
         switch ($this->type) {
             case 'xml':
-                $report = $this->container->get('accounting.export.yardi');
+                if ($dataFromForm['makeZip']) {
+                    $report = $this->container->get('accounting.export.yardi_archive');
+                } else {
+                    $report = $this->container->get('accounting.export.yardi');
+                }
                 break;
             case 'csv':
                 $report = $this->container->get('accounting.export.real_page');

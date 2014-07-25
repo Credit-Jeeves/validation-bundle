@@ -255,7 +255,7 @@ class ExportType extends AbstractType
                 'attr' => array(
                     'data-bind' => 'checked: makeZip',
                     'row_attr' => array(
-                        'data-bind' => "visible: selectedType() == 'promas'",
+                        'data-bind' => "visible: selectedType() != 'csv'",
                     )
                 ),
             )
