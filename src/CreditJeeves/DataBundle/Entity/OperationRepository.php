@@ -103,9 +103,12 @@ class OperationRepository extends EntityRepository
         $query->where("ord.updated_at BETWEEN :start AND :end");
         $query->andWhere('prop.id = :propId');
         $query->andWhere('ord.status = :status');
+        $query->andWhere('operation.type = :type1 OR operation.type = :type2');
         $query->orderBy('ord.id', 'ASC');
 
         $query->setParameter('end', $end);
+        $query->setParameter('type1', OperationType::RENT);
+        $query->setParameter('type2', OperationType::OTHER);
         $query->setParameter('start', $start);
         $query->setParameter('propId', $propertyId);
         $query->setParameter('status', OrderStatus::COMPLETE);
