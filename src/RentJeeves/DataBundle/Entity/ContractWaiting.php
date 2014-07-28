@@ -21,11 +21,14 @@ class ContractWaiting extends Base
         //Documentation about field: https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
         $data = array(
             'residentId'    => $this->getResidentId(),
-            'firstName'     => $this->getFirstName(),
-            'lastName'      => $this->getLastName(),
             'property'      => $this->getProperty()->getId(),
-            'unit'          => $this->getUnit()->getId(),
         );
+
+        if ($this->getProperty()->getIsSingle()) {
+            return $data;
+        }
+
+        $data['unit'] = $this->getUnit()->getId();
 
         return $data;
     }
