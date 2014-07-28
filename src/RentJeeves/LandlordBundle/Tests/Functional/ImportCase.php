@@ -1181,5 +1181,4 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
     }
-
 }
