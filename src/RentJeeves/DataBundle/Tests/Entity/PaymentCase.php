@@ -34,7 +34,7 @@ class PaymentCase extends BaseTestCase
             '',
             false
         );
-        $payment->expects($this->once())
+        $payment->expects($this->exactly(2))
             ->method('getNow')
             ->will($this->returnValue(new DateTime($now)));
         $payment->setDueDate($dueDate);
