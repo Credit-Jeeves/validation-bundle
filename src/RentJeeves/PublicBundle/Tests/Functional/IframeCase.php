@@ -294,7 +294,7 @@ class IframeCase extends BaseTestCase
         $this->clearEmail();
         $this->logout();
         $this->session->visit($this->getUrl() . 'iframe');
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
@@ -371,7 +371,7 @@ class IframeCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'iframe');
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#formNewUser').length > 0");
@@ -406,7 +406,7 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->clearEmail();
         $this->logout();
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->session->visit($this->getUrl() . 'public_iframe?af=CREDITCOM');
         $this->session->wait($this->timeout, "$('#property-add').length > 0");
         $this->fillGoogleAddress($fillAddress);
