@@ -28,10 +28,50 @@ use LogicException;
  *         "method"="postUpdate"
  *     }
  * )
- *
+ * @Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="postUpdate",
+ *         "method"="postUpdate"
+ *     }
+ * )
+ * @Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="prePersist",
+ *         "method"="prePersist"
+ *     }
+ * )
  */
 class PropertyListener
 {
+    public function prePersist(LifecycleEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof Property) {
+            return;
+        }
+
+        if ($entity->getId() !== null) {
+            return;
+        }
+
+        if ($entity->hasUnits() || $entity->hasGroups()) {
+            return;
+        }
+
+        if ($entity->getIsSingle() !== true) {
+            return;
+        }
+
+        $unit = new Unit();
+        $unit->setProperty($entity);
+        $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
+        $entity->addUnit($unit);
+        $eventArgs->getEntityManager()->persist($unit);
+    }
+
+
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();

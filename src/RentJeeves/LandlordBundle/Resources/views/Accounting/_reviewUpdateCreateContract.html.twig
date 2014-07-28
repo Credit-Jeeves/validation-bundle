@@ -2,25 +2,14 @@
 
 <tr data-bind="
     attr: {'class': $root.getClassLine($data)},
-    if: !is_skipped &&
+    if: !is_skipped
+        && contract.status != 'finished'
+        && $root.isValidFieldsWhichNotContainsInForm($data)
+        &&
         (
-            (
-                contract.id
-                && contract.status != 'finished'
-                && $root.isValidFieldsWhichNotContainsInForm($data)
-            )
+            tenant.id
             ||
-            (
-                !contract.id
-                && tenant.id
-                &&
-                contract.status != 'finished'
-                && $root.isValidFieldsWhichNotContainsInForm($data)
-            )
-            ||
-            (
-                has_contract_waiting
-            )
+            has_contract_waiting
         )">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>

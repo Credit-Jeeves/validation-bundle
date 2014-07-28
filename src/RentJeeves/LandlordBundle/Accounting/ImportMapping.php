@@ -344,9 +344,7 @@ class ImportMapping
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
         $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
-        if (!$contract->getProperty()->isSingle()) {
-            $waitingRoom->setUnit($contract->getUnit());
-        }
+        $waitingRoom->setUnit($contract->getUnit());
         $waitingRoom->setProperty($contract->getProperty());
 
         $waitingRoom->setFirstName($tenant->getFirstName());
@@ -370,7 +368,9 @@ class ImportMapping
         $property->setStreet($row[self::KEY_STREET]);
         $property->setZip($row[self::KEY_ZIP]);
         $property->setArea($row[self::KEY_STATE]);
-
+        if (empty($row[self::KEY_UNIT])) {
+            $property->setIsSingle(true);
+        }
         $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
 
         if (empty($result)) {

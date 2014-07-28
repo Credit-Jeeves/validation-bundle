@@ -351,8 +351,11 @@ class ImportProcess
      */
     protected function getUnit(array $row, Property $property = null)
     {
-        if (!is_null($property) && $property->isSingle()) {
+        if (is_null($property)) {
             return null;
+        }
+        if ($property->isSingle()) {
+            return $property->getSingleUnit();
         }
 
         if (empty($row[ImportMapping::KEY_UNIT])) {
@@ -366,6 +369,7 @@ class ImportProcess
         if ($this->group) {
             $params['group'] = $this->group;
         }
+
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
         } elseif ($this->storage->getPropertyId()) {
@@ -561,7 +565,7 @@ class ImportProcess
             || ($tenantId && empty($contractId))
             || $hasContractWaiting = $import->getHasContractWaiting()
         ) {
-            $isUseOperation = ($import->getOperation() === null || !$hasContractWaiting)? false : true;
+            $isUseOperation = ($import->getOperation() === null || $import->getHasContractWaiting())? false : true;
             $form = $this->getContractForm(
                 $tenant,
                 $residentMapping,
