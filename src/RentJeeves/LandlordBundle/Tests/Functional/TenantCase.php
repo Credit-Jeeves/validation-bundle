@@ -13,7 +13,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class TenantCase extends BaseTestCase
 {
-    protected $timeout = 30000;
+    protected $timeout = 1000;
 
     /**
      * @test
@@ -144,10 +144,16 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($start);
         $start->click();
 
+        $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
+
         $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
         $this->assertNotNull($today);
         $today->click();
         $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+
+        $endAtRadio = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabel');
+        $this->assertNotNull($endAtRadio);
+        $endAtRadio->click();
 
         $finish = $this->page->find('css', '#contractEditFinish');
         $this->assertNotNull($finish);
@@ -191,6 +197,31 @@ class TenantCase extends BaseTestCase
         $this->assertEquals($finish, $editFinish->getValue(), 'Wrong edit finish');
         $this->assertEquals(7677.00, $amount->getValue(), 'Wrong edit amount');
         $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong edit unit');
+
+        $this->page->pressButton('close');
+        $this->assertNotNull($edit = $this->page->find('css', '.edit'));
+        $edit->click();
+
+        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
+
+        $endAtRadio = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabelM2M');
+        $this->assertNotNull($endAtRadio);
+        $endAtRadio->click();
+        $this->page->pressButton('savechanges');
+        $this->session->reload();
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull($edit = $this->page->find('css', '.edit'));
+        $edit->click();
+
+        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
+
+        $this->session->evaluateScript('$(\'input[name="optionsFinishAtEdit"]\').show();');
+        $this->assertNotNUll($checkedMonth2Month = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabelM2M input'));
+        $this->assertEquals('monthToMonth', $checkedMonth2Month->getValue());
+        $this->assertEquals('true', $checkedMonth2Month->getAttribute('checked'));
+
         $this->logout();
 
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
