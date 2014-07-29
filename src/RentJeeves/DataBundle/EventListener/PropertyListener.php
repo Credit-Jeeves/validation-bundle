@@ -31,13 +31,6 @@ use LogicException;
  * @Tag(
  *     "doctrine.event_listener",
  *     attributes = {
- *         "event"="postUpdate",
- *         "method"="postUpdate"
- *     }
- * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
  *         "event"="prePersist",
  *         "method"="prePersist"
  *     }
@@ -49,10 +42,6 @@ class PropertyListener
     {
         $entity = $eventArgs->getEntity();
         if (!$entity instanceof Property) {
-            return;
-        }
-
-        if ($entity->getId() !== null) {
             return;
         }
 
