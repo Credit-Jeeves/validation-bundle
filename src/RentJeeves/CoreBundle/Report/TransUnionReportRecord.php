@@ -289,7 +289,9 @@ class TransUnionReportRecord
 
     public function getAmountPastDue()
     {
-        return str_pad((int)$this->getBalance(), 9, '0', STR_PAD_LEFT);
+        $amount = $this->getBalance() > 0 ? $this->getBalance() : 0;
+
+        return str_pad((int)$amount, 9, '0', STR_PAD_LEFT);
     }
 
     public function getOriginalChargeOffAmount()
