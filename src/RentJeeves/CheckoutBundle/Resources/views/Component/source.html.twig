@@ -20,7 +20,7 @@
     });
 
     window.paymentAccounts = [];
-    var payAccounts = JSON.parse('{{ payAccountsJson|raw }}');
+    var payAccounts = JSON.parse('{{ payAccountsJson|escape('js') }}');
     jQuery.each(payAccounts, function(key, val) {
         window.paymentAccounts.push(val);
     });
