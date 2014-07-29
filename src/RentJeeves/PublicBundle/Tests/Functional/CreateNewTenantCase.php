@@ -74,6 +74,5 @@ class CreateNewTenantCase extends BaseTestCase
         $this->fillGoogleAddress($fillAddress);
 
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
-   }
-
+    }
 }

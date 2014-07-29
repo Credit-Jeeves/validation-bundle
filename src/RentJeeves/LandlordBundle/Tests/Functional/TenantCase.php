@@ -13,7 +13,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class TenantCase extends BaseTestCase
 {
-    protected $timeout = 1000;
+    protected $timeout = 30000;
 
     /**
      * @test
@@ -217,8 +217,10 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
         $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
 
+        // for find and check radio need show it (default "display:none")
         $this->session->evaluateScript('$(\'input[name="optionsFinishAtEdit"]\').show();');
-        $this->assertNotNUll($checkedMonth2Month = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabelM2M input'));
+        $checkedMonth2Month = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabelM2M input');
+        $this->assertNotNUll($checkedMonth2Month);
         $this->assertEquals('monthToMonth', $checkedMonth2Month->getValue());
         $this->assertEquals('true', $checkedMonth2Month->getAttribute('checked'));
 
