@@ -1087,7 +1087,7 @@ class ImportCase extends BaseTestCase
     /**
      * @test
      */
-    public function checkMutchedWaitingContract()
+    public function matchWaitingContract()
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');

@@ -53,11 +53,7 @@ class PropertyListener
             return;
         }
 
-        $unit = new Unit();
-        $unit->setProperty($entity);
-        $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
-        $entity->addUnit($unit);
-        $eventArgs->getEntityManager()->persist($unit);
+        $this->createStandaloneUnit($eventArgs);
     }
 
 
@@ -77,11 +73,7 @@ class PropertyListener
         }
 
         if ($entity->getIsSingle() == true) {
-            $unit = new Unit();
-            $unit->setProperty($entity);
-            $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
-            $entity->addUnit($unit);
-            $eventArgs->getEntityManager()->persist($unit);
+            $this->createStandaloneUnit($eventArgs);
         }
     }
 
@@ -103,5 +95,15 @@ class PropertyListener
                 $eventArgs->getEntityManager()->flush($unit);
             }
         }
+    }
+
+    protected function createStandaloneUnit($eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+        $unit = new Unit();
+        $unit->setProperty($entity);
+        $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
+        $entity->addUnit($unit);
+        $eventArgs->getEntityManager()->persist($unit);
     }
 }
