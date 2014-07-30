@@ -65,7 +65,7 @@ class PaymentAccount
             $request->setAccountNumber($paymentAccountType->get('CardNumber')->getData());
             $request->setExpirationMonth($ccMonth);
             $request->setExpirationYear($ccYear);
-            $request->setPaymentMethod(TokenPaymentMethodd::CREDIT);
+            $request->setPaymentMethod(TokenPaymentMethod::CREDIT);
         } elseif (PaymentAccountTypeEnum::BANK == $paymentAccountEntity->getType()) {
 
             if ($paymentAccountEntity instanceof UserAwareInterface) {
