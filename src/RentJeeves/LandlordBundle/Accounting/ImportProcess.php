@@ -351,8 +351,11 @@ class ImportProcess
      */
     protected function getUnit(array $row, Property $property = null)
     {
-        if (!is_null($property) && $property->isSingle()) {
+        if (is_null($property)) {
             return null;
+        }
+        if ($property->isSingle()) {
+            return $property->getSingleUnit();
         }
 
         if (empty($row[ImportMapping::KEY_UNIT])) {
@@ -366,6 +369,7 @@ class ImportProcess
         if ($this->group) {
             $params['group'] = $this->group;
         }
+
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
         } elseif ($this->storage->getPropertyId()) {
@@ -559,8 +563,9 @@ class ImportProcess
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
+            || $hasContractWaiting = $import->getHasContractWaiting()
         ) {
-            $isUseOperation = ($import->getOperation() === null)? false : true;
+            $isUseOperation = ($import->getOperation() === null || $import->getHasContractWaiting())? false : true;
             $form = $this->getContractForm(
                 $tenant,
                 $residentMapping,
@@ -691,6 +696,17 @@ class ImportProcess
 
         $import->setResidentMapping($this->getResident($tenant, $row));
         $import->setUnitMapping($this->getUnitMapping($row));
+        $contractWaiting = $this->getContractWaiting(
+            $import->getTenant(),
+            $import->getContract(),
+            $import->getResidentMapping()
+        );
+
+        if ($contractWaiting->getId()) {
+            $import->setHasContractWaiting(true);
+            $tenant->setFirstName($contractWaiting->getFirstName());
+            $tenant->setLastName($contractWaiting->getLastName());
+        }
 
         if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
             $import->setForm($form);
@@ -899,6 +915,16 @@ class ImportProcess
                      * @var $contract Contract
                      */
                     $contract = $form->getData();
+                    if ($import->getHasContractWaiting()) {
+                        $waitingContract = $this->getContractWaiting(
+                            $contract->getTenant(),
+                            $contract,
+                            $import->getResidentMapping()
+                        );
+                        $this->em->persist($waitingContract);
+                        break;
+                    }
+
                     if ($this->storage->isMultipleProperty()) {
                         $isSingle = $form->get('isSingle')->getData();
                         $this->afterSubmitForm($contract, $isSingle);

@@ -19,6 +19,12 @@ class Import
     protected $isSkipped;
 
     /**
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $hasContractWaiting = false;
+
+    /**
      * @Serializer\Type("integer")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -90,6 +96,23 @@ class Import
     protected $email;
 
     protected $isMultipleProperty;
+
+    /**
+     * @param boolean $hasContractWaiting
+     */
+    public function setHasContractWaiting($hasContractWaiting)
+    {
+        $this->hasContractWaiting = $hasContractWaiting;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHasContractWaiting()
+    {
+        return $this->hasContractWaiting;
+    }
+
 
     /**
      * @param string $address
