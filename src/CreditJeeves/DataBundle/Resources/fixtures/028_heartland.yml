@@ -60,10 +60,8 @@ fixtures:
   rjCheckout_6_1:
     order:  rjOrder_6
     amount: 1500
-    transaction_id: 258258
-    isSuccessful: true
+    isSuccessful: false
     createdAt: '-2 days'
-    batchId: 125478
     batchDate: '-1 days'
     depositDate: '-1 days'
 # finished contract

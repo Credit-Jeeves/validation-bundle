@@ -13,6 +13,7 @@ use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Exception;
 use RuntimeException;
+use DateTime;
 use CreditJeeves\DataBundle\Enum\OrderType;
 
 /**
@@ -364,5 +365,17 @@ class Mailer extends BaseMailer
             'paymentAmount' => $payment->getAmount(),
         );
         return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendBatchDepositReport(Landlord $landlord, Group $group, DateTime $date, $batches)
+    {
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date->format('m/d/Y'),
+            'groupName' => $group->getName(),
+            'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
+            'batches' => $batches
+        ];
+        return $this->sendBaseLetter('rjBatchDepositReport', $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 }

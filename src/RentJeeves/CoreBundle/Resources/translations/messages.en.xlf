@@ -1535,6 +1535,10 @@
                 <source>select.rental</source>
                 <target>Please select your rental.</target>
             </trans-unit>
+            <trans-unit id="order.status">
+                <source>order.status</source>
+                <target>Status</target>
+            </trans-unit>
             <trans-unit id="order.status.text.new">
                 <source>order.status.text.new</source>
                 <target>PENDING</target>
@@ -1623,6 +1627,18 @@
                 <source>order.date.time</source>
                 <target>Date &amp; Time</target>
             </trans-unit>
+            <trans-unit id="order.resident">
+                <source>order.resident</source>
+                <target>Resident</target>
+            </trans-unit>
+            <trans-unit id="order.type.heartland_card">
+                <source>order.type.heartland_card</source>
+                <target>CC</target>
+            </trans-unit>
+            <trans-unit id="order.type.heartland_bank">
+                <source>order.type.heartland_bank</source>
+                <target>ACH</target>
+            </trans-unit>
             <trans-unit id="order.fee">
                 <source>order.fee</source>
                 <target>Fee</target>
@@ -1654,6 +1670,10 @@
             <trans-unit id="order.transaction.id">
                 <source>order.transaction.id</source>
                 <target>Transaction ID</target>
+            </trans-unit>
+            <trans-unit id="order.transaction.id_short">
+                <source>order.transaction.id_short</source>
+                <target>Trans.ID</target>
             </trans-unit>
             <trans-unit id="order.contact.us">
                 <source>order.contact.us</source>
@@ -2372,6 +2392,10 @@
             <trans-unit id="payment.date">
                 <source>payment.date</source>
                 <target>Date</target>
+            </trans-unit>
+            <trans-unit id="payment.date_initiated">
+                <source>payment.date_initiated</source>
+                <target>Date Initiated</target>
             </trans-unit>
             <trans-unit id="payment.property">
                 <source>payment.property</source>
