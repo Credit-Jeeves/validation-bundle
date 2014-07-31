@@ -20,7 +20,7 @@ class PaymentAccountCase extends BaseTestCase
      *
      * @return Form
      */
-    public function createForm($type, $data = null, array $options = array())
+    protected function createForm($type, $data = null, array $options = array())
     {
         return $this->getContainer()->get('form.factory')->create($type, $data, $options);
     }
@@ -28,7 +28,7 @@ class PaymentAccountCase extends BaseTestCase
     /**
      * @test
      */
-    public function correct()
+    public function createToken()
     {
         $payum = $this->getContainer()->get('payum');
         $paymentAccount = new PaymentAccount();
@@ -87,6 +87,8 @@ class PaymentAccountCase extends BaseTestCase
                 $merchantName = $group->getMerchantName()
             );
         } catch (RuntimeException $e) {
+            //if we go into this place, test must be failed and we must show
+            //about this on jenkins, because heartland is down.
             $this->assertTrue(false, $e->getMessage()."_".$e->getCode());
         }
 
