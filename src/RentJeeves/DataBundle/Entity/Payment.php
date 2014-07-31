@@ -108,7 +108,7 @@ class Payment extends Base
 
         if ($currentDay > $this->getDueDate()) { // 4. If payment day has already gone, we should take next month
             $now->modify('first day of next month');
-            $month = $now->format('m');
+            $month = $now->format('n');
             $year = $now->format('Y');
             // 5. If due date is today and payment has been made today, we should move to next month
         } elseif (($currentDay == $this->getDueDate())
@@ -123,6 +123,9 @@ class Payment extends Base
             $month = $currentMonth;
             $year = $currentYear;
         }
+        // modify and setDate do not work together, so we need to take non modified 'now'
+        $now = $this->getNow();
+
         return $now->setDate($year, $month, $day);
     }
 
