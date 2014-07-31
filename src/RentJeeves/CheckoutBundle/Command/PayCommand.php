@@ -197,6 +197,9 @@ class PayCommand extends ContainerAwareCommand
         $paymentAmount = $payment->getTotal();
         $rent = $contract->getRent();
         $paidForDates = array_keys($this->getContainer()->get('checkout.paid_for')->getArray($contract));
+        if (empty($paidForDates)) {
+            throw new RuntimeException('Can not calculate paid_for');
+        }
         $paidForCounter = 0;
 
         do {
@@ -208,7 +211,9 @@ class PayCommand extends ContainerAwareCommand
             $operation->setAmount($operationAmount);
 
             if (!isset($paidForDates[$paidForCounter])) {
-                throw new RuntimeException('Can not calculate paid_for');
+                $paidFor = new DateTime($paidForDates[$paidForCounter - 1]); // take previous paidFor
+                $paidFor->modify('+1 month');
+                $paidForDates[$paidForCounter] = $paidFor->format('Y-m-d');
             }
 
             $paidFor = new DateTime($paidForDates[$paidForCounter]);
