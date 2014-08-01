@@ -10,12 +10,18 @@
     {% endstylesheets %}
 {% endblock %}
 {% block head_javascripts %}
-     {% javascripts
-     '@UserBundle/Resources/public/js/jquery.reject.min.js'
-     '@UserBundle/Resources/public/js/reject.js'
-     %}
-     <script type="text/javascript" src="{{ asset_url }}"></script>
-     {% endjavascripts %}
+    {% if 'rj' == application %}
+        {{ include(
+        'RjComponentBundle:Blocks:reject.html.twig'
+        ) }}
+    {% else %}
+         {% javascripts
+         '@UserBundle/Resources/public/js/jquery.reject.min.js'
+         '@UserBundle/Resources/public/js/reject.js'
+         %}
+         <script type="text/javascript" src="{{ asset_url }}"></script>
+         {% endjavascripts %}
+    {% endif %}
 {% endblock %}
 
 {% block fos_user_content %}

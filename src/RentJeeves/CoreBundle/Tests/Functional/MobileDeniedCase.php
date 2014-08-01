@@ -11,6 +11,11 @@ class MobileDeniedCase extends BaseTestCase
      */
     public function index()
     {
+        //On task https://credit.atlassian.net/browse/RT-276
+        //was changed, currently we need allow ipad/mobile
+        $this->markTestSkipped(
+            'This test does not needed anymore.'
+        );
         $this->setDefaultSession('goutte');
         $this->session->setRequestHeader(
             'User-Agent',
