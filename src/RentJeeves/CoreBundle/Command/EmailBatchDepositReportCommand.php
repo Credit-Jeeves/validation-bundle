@@ -3,13 +3,11 @@
 namespace RentJeeves\CoreBundle\Command;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\DataBundle\Entity\HeartlandRepository;
 use RentJeeves\DataBundle\Entity\LandlordRepository;
 use RentJeeves\DataBundle\Entity\Landlord;
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\Group;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -53,31 +51,34 @@ class EmailBatchDepositReportCommand  extends ContainerAwareCommand
         $doctrine = $this->getContainer()->get('doctrine');
         /** @var LandlordRepository $repoLandlord */
         $repoLandlord = $doctrine->getRepository('RjDataBundle:Landlord');
-        /** @var OrderRepository $repoOrder */
-        $repoOrder = $doctrine->getRepository('DataBundle:Order');
-        $holdingAdmins = $repoLandlord->findBy(['is_super_admin' => true], ['email' => 'DESC']);
+        /** @var HeartlandRepository $repoHeartland */
+        $repoHeartland = $doctrine->getRepository('RjDataBundle:Heartland');
 
+        $holdingAdmins = $repoLandlord->findBy(['is_super_admin' => true], ['email' => 'DESC']);
         foreach ($holdingAdmins as $holdingAdmin) {
             /** @var Landlord $holdingAdmin */
+            $groups = [];
             foreach ($holdingAdmin->getGroups() as $group) {
                 /** @var Group $group */
-                $data = $repoOrder->getBatchDepositedInfo($group, $date->format('Y-m-d'));
-                $mailer->sendBatchDepositReport($holdingAdmin, $group, $date, $this->prepareData($data));
+                $data = $repoHeartland->getBatchDepositedInfo($group, $date->format('Y-m-d'));
+                $groups[] = [
+                    'groupName' => $group->getName(),
+                    'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
+                    'batches' => $this->prepareData($data)
+                ];
             }
+            $mailer->sendBatchDepositReport($holdingAdmin, $groups, $date);
         }
 
         $landlords = $repoLandlord->findBy(['is_super_admin' => false], ['email' => 'DESC']);
-
         foreach($landlords as $landlord) {
             /** @var Landlord $landlord */
             foreach ($landlord->getAgentGroups() as $group) {
                 /** @var Group $group */
-                $data = $repoOrder->getBatchDepositedInfo($group, $date->format('Y-m-d'));
+                $data = $repoHeartland->getBatchDepositedInfo($group, $date->format('Y-m-d'));
                 $mailer->sendBatchDepositReport($landlord, $group, $date, $this->prepareData($data));
             }
-
         }
-
     }
 
     protected function prepareData($data)

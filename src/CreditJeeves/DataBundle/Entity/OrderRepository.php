@@ -383,42 +383,4 @@ class OrderRepository extends EntityRepository
 
         return $query->getQuery()->getSingleScalarResult();
     }
-
-    /**
-     * @param Group $group
-     * @param null $date
-     * @return mixed
-     */
-    public function getBatchDepositedInfo($group, $date = null)
-    {
-        $query = $this->createQueryBuilder('o');
-        $query->select(
-            "h.batchId,
-            h.transactionId,
-            h.amount,
-            date_format(h.createdAt, '%m/%d/%Y') as dateInitiated,
-            o.type as paymentType,
-            o.status,
-            CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
-            CONCAT(prop.number, ' ', prop.street, ' #',unit.name) as property"
-        );
-        $query->orderBy('h.batchId', 'DESC');
-        $query->innerJoin('o.operations', 'p');
-        $query->innerJoin('p.contract', 't');
-        $query->innerJoin('o.heartlands', 'h');
-        $query->innerJoin('t.tenant', 'ten');
-        $query->innerJoin('t.property', 'prop');
-        $query->innerJoin('t.unit', 'unit');
-        if ($group instanceof Group) {
-            $query->where('t.group = :group');
-            $query->setParameter('group', $group);
-        }
-        $query->andWhere('h.batchId IS NOT NULL');
-        $query->andWhere('h.isSuccessful = 1');
-        if ($date) {
-            $query->andWhere('h.depositDate = DATE(:date)');
-            $query->setParameter('date', $date);
-        }
-        return $query->getQuery()->execute();
-    }
 }

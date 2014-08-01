@@ -75,4 +75,6 @@ fixtures:
   email_37:
       name: rjContractAmountChanged.html
   email_38:
-      name: rjBatchDepositReport.html
+      name: rjBatchDepositReportLandlord.html
+  email_39:
+      name: rjBatchDepositReportHolding.html

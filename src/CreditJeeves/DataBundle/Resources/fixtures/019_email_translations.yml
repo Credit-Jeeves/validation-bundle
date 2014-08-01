@@ -1122,7 +1122,7 @@ fixtures:
         {{ 'order.receipt.footer' | trans }}
       {% endblock %}
 
-# rjBatchDepositReport.html
+# rjBatchDepositReportLandlord.html
   translation_38_subject:
     translatable: email_38
     locale: %locale%
@@ -1140,11 +1140,11 @@ fixtures:
       Dear {{ landlordFirstName }}, <br />
       Your batch deposit report for <b>{{ date }}</b> for group <b>{{ groupName }}</b>
       {% if accountNumber %}(Account #{{ accountNumber }}){% endif %} is below:<br />
-      <br>
+      <br />
       {% if batches | length > 0 %}
         {% for batch in batches %}
-        Batch ID: {{ batch.batchId }}<br />
-        Payment Type: {{ batch.paymentType }}<br />
+        Batch ID: <b>{{ batch.batchId }}</b><br />
+        Payment Type: <b>{{ batch.paymentType }}</b><br />
         <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
           <thead>
             <tr>
@@ -1159,7 +1159,7 @@ fixtures:
           <tfoot>
             <tr>
                <td colspan="5" style="padding:3px;border: 1px solid #4E4E4E;" align="right"><b>{{ 'order.total' | trans }}:</b></td>
-               <td style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">${{ batch.paymentTotal }}</td>
+               <td style="padding:3px;border: 1px solid #4E4E4E;"><b>${{ batch.paymentTotal }}</b></td>
             </tr>
            </tfoot>
           <tbody>
@@ -1180,4 +1180,67 @@ fixtures:
       {% else %}
       There are no deposits to report.
       {% endif %}
+      {% endblock %}
+
+# rjBatchDepositReportHolding.html
+  translation_39_subject:
+    translatable: email_39
+    locale: %locale%
+    property: subject
+    value: Daily Batch Deposite Report
+
+  translation_39_body:
+    translatable: email_39
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Batch Deposit Report{% endblock %}
+      {% block email %}
+      Dear {{ landlordFirstName }}, <br />
+      Your batch deposit report for <b>{{ date }}</b> is below:
+      {% for group in groups %}
+      <br />
+      <br />For group <b>{{ group.groupName }}</b>{% if group.accountNumber %} (Account #{{ group.accountNumber }}){% endif %}:<br />
+      <br />
+        {% if group.batches | length > 0 %}
+          {% for batch in group.batches %}
+          Batch ID: <b>{{ batch.batchId }}</b><br />
+          Payment Type: <b>{{ batch.paymentType }}</b><br />
+          <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
+            <thead>
+              <tr>
+                <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>{{ 'order.transaction.id_short' | trans }}</th>
+                <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.status' | trans }}</th>
+                <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.resident' | trans }}</th>
+                <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'payment.property' | trans }}</th>
+                <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'payment.date_initiated' | trans }}</th>
+                <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'amount' | trans }}</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                 <td colspan="5" style="padding:3px;border: 1px solid #4E4E4E;" align="right"><b>{{ 'order.total' | trans }}:</b></td>
+                 <td style="padding:3px;border: 1px solid #4E4E4E;"><b>${{ batch.paymentTotal }}</b></td>
+              </tr>
+             </tfoot>
+            <tbody>
+              {% for transaction in batch.transactions %}
+              <tr>
+                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
+                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.status }}</td>
+                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
+                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.property }}</td>
+                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.dateInitiated }}</td>
+                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">${{ transaction.amount }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <br />
+          {% endfor %}
+        {% else %}
+        There are no deposits to report.
+        {% endif %}
+      {% endfor %}
       {% endblock %}
