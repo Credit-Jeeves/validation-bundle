@@ -70,12 +70,17 @@ class MobileDeniedListener
         }
     }
 
+    /**
+     * @deprecated
+     * @return bool
+     */
     protected function isMobile()
     {
         //On task https://credit.atlassian.net/browse/RT-276
         //was changed, currently we need allow ipad/mobile
         return false;
-/*        $userAgent = (isset($_SERVER['HTTP_USER_AGENT']))? $_SERVER['HTTP_USER_AGENT'] : null;
+
+        $userAgent = (isset($_SERVER['HTTP_USER_AGENT']))? $_SERVER['HTTP_USER_AGENT'] : null;
 
         if (!$userAgent) {
             return false;
@@ -90,6 +95,6 @@ class MobileDeniedListener
             return true;
         }
 
-        return false;*/
+        return false;
     }
 }
