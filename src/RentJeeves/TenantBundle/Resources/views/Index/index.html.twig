@@ -3,6 +3,7 @@
 {% block stylesheets %}
     {{ parent() }}
         {% stylesheets '@CoreBundle/Resources/public/css/styles.css'
+                       '@CoreBundle/Resources/public/css/pricing-popup.css'
                        '@TenantBundle/Resources/public/css/isPidVerificationSkipped.css'
         %}
              <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />

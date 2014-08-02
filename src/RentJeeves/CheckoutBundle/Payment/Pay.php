@@ -50,6 +50,16 @@ abstract class Pay
     }
 
     /**
+     * @return $this
+     */
+    public function newOrder()
+    {
+        $this->order = null;
+        $this->paymentDetails = null;
+        return $this;
+    }
+
+    /**
      * @return Order
      */
     public function getOrder()

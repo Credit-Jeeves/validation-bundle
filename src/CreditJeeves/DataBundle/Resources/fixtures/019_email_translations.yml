@@ -306,7 +306,7 @@ fixtures:
         Ready to get something out of your rent payments?<br /> <br />
         <a id="payRentLink"
         {% if inviteCode %}
-          href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode }) }}"
+          href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode, 'isImported': isImported }) }}"
         {% else %}
           href="http://{{ serverName }}/"
         {% endif %}

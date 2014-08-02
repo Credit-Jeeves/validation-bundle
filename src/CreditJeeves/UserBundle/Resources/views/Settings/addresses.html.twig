@@ -18,7 +18,9 @@
 
     {% else %}
         {# TODO fix it for CJ #}
-        {% stylesheets '@CoreBundle/Resources/public/css/styles.css' %}
+        {% stylesheets  '@CoreBundle/Resources/public/css/styles.css'
+                        '@CoreBundle/Resources/public/css/pricing-popup.css'
+        %}
             <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
         {% endstylesheets %}
 

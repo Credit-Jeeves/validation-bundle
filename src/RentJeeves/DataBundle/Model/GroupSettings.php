@@ -44,6 +44,7 @@ abstract class GroupSettings
      *          "default":0
      *      }
      * )
+     * @Serializer\Groups({"payRent"})
      */
     protected $isIntegrated = false;
 
@@ -55,6 +56,7 @@ abstract class GroupSettings
      *          "default":0
      *      }
      * )
+     * @Serializer\Groups({"payRent"})
      */
     protected $payBalanceOnly = false;
 

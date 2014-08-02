@@ -43,7 +43,7 @@ class OrderListener
     {
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $this->chargePartner($entity, $eventArgs->getEntityManager());
+            $this->chargePartner($entity);
         }
     }
 
@@ -62,29 +62,34 @@ class OrderListener
             return;
         }
         
-        $operation = $entity->getRentOperation();
-        if (!$operation || !$eventArgs->hasChangedField('status')) {
+        $operations = $entity->getRentOperations();
+        if ($operations->count() == 0 || !$eventArgs->hasChangedField('status')) {
             return;
         }
-        $contract = $operation->getContract();
-        $this->updateBalanceContract($eventArgs);
-        $movePaidFor = null;
-        switch ($entity->getStatus()) {
-            case OrderStatus::REFUNDED:
-            case OrderStatus::CANCELLED:
-            case OrderStatus::RETURNED:
-                $contract->unshiftPaidTo($operation->getAmount());
-                $movePaidFor = '-1';
-                break;
-            case OrderStatus::COMPLETE:
-                $contract->shiftPaidTo($operation->getAmount());
-                $movePaidFor = '+1';
-                break;
-        }
 
-        if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
-            $date = new DateTime($payment->getPaidFor()->format('c'));
-            $payment->setPaidFor($date->modify($movePaidFor . ' month'));
+        $this->updateBalanceContract($eventArgs);
+
+        /** @var Operation $operation */
+        foreach ($operations as $operation) {
+            $contract = $operation->getContract();
+            $movePaidFor = null;
+            switch ($entity->getStatus()) {
+                case OrderStatus::REFUNDED:
+                case OrderStatus::CANCELLED:
+                case OrderStatus::RETURNED:
+                    $contract->unshiftPaidTo($operation->getAmount());
+                    $movePaidFor = '-1';
+                    break;
+                case OrderStatus::COMPLETE:
+                    $contract->shiftPaidTo($operation->getAmount());
+                    $movePaidFor = '+1';
+                    break;
+            }
+
+            if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
+                $date = new DateTime($payment->getPaidFor()->format('c'));
+                $payment->setPaidFor($date->modify($movePaidFor . ' month'));
+            }
         }
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
     }
@@ -143,9 +148,9 @@ class OrderListener
         }
     }
 
-    private function chargePartner(Order $order, EntityManager $em)
+    private function chargePartner(Order $order)
     {
-        $operation = $order->getRentOperation();
+        $operation = $order->getRentOperations()->first();
         if ($operation) {
             /** @var User $user */
             $user = $order->getUser();
@@ -200,16 +205,22 @@ class OrderListener
             return;
         }
 
+        $rentOperations = $order->getRentOperations();
         /**
-         * @var $operation Operation
+         * Start_at can be updated only if order contains RENT operations
          */
-        $operation = $order->getOperations()->first();
-        $paidFor = $operation->getPaidFor();
-        if (empty($paidFor)) {
+        if (!$rentOperations->count()) {
             return;
         }
+        /** @var Operation $earliestOperation */
+        $earliestOperation = $rentOperations->first();
+        foreach ($rentOperations as $rent) {
+            if ($earliestOperation->getPaidFor() > $rent->getPaidFor()) {
+                $earliestOperation = $rent;
+            }
+        }
 
-        $contract->setStartAt($paidFor);
+        $contract->setStartAt($earliestOperation->getPaidFor());
         $em->flush($contract);
     }
 

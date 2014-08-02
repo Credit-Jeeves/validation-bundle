@@ -2,6 +2,7 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Lead;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -9,7 +10,10 @@ class ScoreController extends Controller
 {
     /**
      * @Template()
-     * @param \CreditJeeves\DataBundle\Entity\Lead $Lead
+     *
+     * @param Tenant $user
+     *
+     * @return array
      */
     public function indexAction($user)
     {

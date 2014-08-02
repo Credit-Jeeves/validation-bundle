@@ -73,7 +73,7 @@ class SourcesCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function editTheSame()
     {
@@ -125,7 +125,7 @@ class SourcesCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function del()
     {

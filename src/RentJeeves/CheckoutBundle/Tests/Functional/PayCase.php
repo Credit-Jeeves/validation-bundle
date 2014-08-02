@@ -1,8 +1,10 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
+use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 
@@ -14,13 +16,14 @@ class PayCase extends BaseTestCase
     public function provider()
     {
         return array(
-            array($summary = true, $skipVerification = false, $infoMessage = false),
-            array($summary = false, $skipVerification = false, $infoMessage = false),
-            array($summary = null, $skipVerification = true, $infoMessage = true),
+            array($summary = true, $skipVerification = false, $infoMessage = false, $payBalanceOnly = false),
+            array($summary = false, $skipVerification = false, $infoMessage = false, $payBalanceOnly = false),
+            array($summary = null, $skipVerification = true, $infoMessage = true, $payBalanceOnly = false),
+            array($summary = null, $skipVerification = true, $infoMessage = false, $payBalanceOnly = true),
         );
     }
 
-    protected function updateGroupSettings()
+    protected function updateGroupSettings($payBalanceOnly)
     {
         self::$kernel = null;
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -36,6 +39,12 @@ class PayCase extends BaseTestCase
             $group = $contract->getGroup();
             $groupSetting = $group->getGroupSettings();
             $groupSetting->setIsPidVerificationSkipped(true);
+            if ($payBalanceOnly) {
+                $groupSetting->setPayBalanceOnly($payBalanceOnly);
+                $groupSetting->setIsIntegrated(true);
+                $contract->setIntegratedBalance(1000);
+                $em->persist($contract);
+            }
             $em->persist($groupSetting);
         }
         $em->flush();
@@ -45,12 +54,12 @@ class PayCase extends BaseTestCase
      * @dataProvider provider
      * @test
      */
-    public function recurring($summary, $skipVerification, $infoMessage)
+    public function recurring($summary, $skipVerification, $infoMessage, $payBalanceOnly)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
         if ($skipVerification) {
-            $this->updateGroupSettings();
+            $this->updateGroupSettings($payBalanceOnly);
         }
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
@@ -71,19 +80,34 @@ class PayCase extends BaseTestCase
 
         $this->page->pressButton('contract-pay-2');
 
-        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        if ($payBalanceOnly) {
+            $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentbalanceonlytype');
+            $startDate = new DateTime();
+            $startDate->modify('+1 month');
+            $this->fillForm(
+                $form,
+                array(
+                    'rentjeeves_checkoutbundle_paymentbalanceonlytype_start_date' => $startDate->format('m/d/Y'),
+                )
+            );
+        } else {
+            $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
 
-        $this->session->wait($this->timeout, "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length");
-        $this->fillForm(
-            $form,
-            array(
-                'rentjeeves_checkoutbundle_paymenttype_amount' => '0',
-                'rentjeeves_checkoutbundle_paymenttype_type'    => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
-                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
-                'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1
-            )
-        );
+            $this->session->wait(
+                $this->timeout,
+                "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+            );
+            $this->fillForm(
+                $form,
+                array(
+                    'rentjeeves_checkoutbundle_paymenttype_amount' => '0',
+                    'rentjeeves_checkoutbundle_paymenttype_type'    => PaymentTypeEnum::RECURRING,
+                    'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                    'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+                    'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1
+                )
+            );
+        }
         if ($infoMessage) {
             $this->fillForm(
                 $form,
@@ -96,30 +120,31 @@ class PayCase extends BaseTestCase
             $this->assertEquals('info.payment.date', $informationBox->getText());
         }
 
-        $this->page->pressButton('pay_popup.step.next');
+        if (!$payBalanceOnly) {
+            $this->page->pressButton('pay_popup.step.next');
+            $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
 
-        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+            $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+            $this->assertCount(2, $errors);
+            $this->assertEquals('checkout.error.amount.min', $errors[1]->getText());
 
-        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-        $this->assertCount(2, $errors);
-        $this->assertEquals('checkout.error.amount.min', $errors[1]->getText());
-
-        if (!$infoMessage) {
-            $dueDate = cal_days_in_month(CAL_GREGORIAN, date('n'), date('Y'));
-            $this->fillForm(
-                $form,
-                array(
-                    'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
-                    'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
-                )
-            );
-        } else {
-            $this->fillForm(
-                $form,
-                array(
-                    'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
-                )
-            );
+            if (!$infoMessage) {
+                $dueDate = cal_days_in_month(CAL_GREGORIAN, date('n'), date('Y'));
+                $this->fillForm(
+                    $form,
+                    array(
+                        'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                        'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                    )
+                );
+            } else {
+                $this->fillForm(
+                    $form,
+                    array(
+                        'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                    )
+                );
+            }
         }
 
         $this->page->pressButton('pay_popup.step.next');
@@ -131,28 +156,53 @@ class PayCase extends BaseTestCase
 
         $this->page->clickLink('payment.account.new');
 
-
-
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
         $this->assertCount(5, $errors);
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        /*
+         * Test for not match repeated value for Account Number
+         */
         $this->fillForm(
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
-                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumberAgain' => '123245687',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
             )
         );
         $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "(jQuery('#pay-popup .attention-box li').length < 5)");
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(1, $errors);
+        $this->assertEquals('checkout.error.account_number.match', $errors[0]->getHtml());
+
+        /*
+         * Continue test
+         */
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumberAgain' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
+            )
+        );
+
+
+        $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
-            $this->timeout+ 45000,
+            $this->timeout+ 85000, // local need more time for passed test
             "!jQuery('#id-source-step').is(':visible')"
         );
 
@@ -187,6 +237,17 @@ class PayCase extends BaseTestCase
         } else {
             $this->assertNotNull($pay = $this->page->find('css', '#pay-popup'));
             $this->assertFalse($pay->isVisible());
+        }
+
+        if ($payBalanceOnly) {
+            $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+            $payment = $em->getRepository('RjDataBundle:Payment')->findBy(
+                array(
+                    'type' => PaymentType::ONE_TIME,
+                    'total'=> 1000.00,
+                )
+            );
+            $this->assertEquals(1, count($payment));
         }
 
         $this->logout();

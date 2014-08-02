@@ -8,14 +8,30 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use RentJeeves\DataBundle\Entity\GroupSettings as GroupSetting;
+use JMS\DiExtraBundle\Annotation\Service;
+use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
 
+/**
+ * Class GroupSettings
+ * @Service("form.group_settings")
+ */
 class GroupSettings extends Base
 {
     protected $translator;
 
-    public function __construct($translation)
+    protected $em;
+
+    /**
+     * @InjectParams({
+     *     "em"             = @Inject("doctrine.orm.entity_manager"),
+     *     "translator"     = @Inject("translator")
+     * })
+     */
+    public function __construct($em, $translator)
     {
-        $this->translator = $translation;
+        $this->translator = $translator;
+        $this->em = $em;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -106,6 +122,18 @@ class GroupSettings extends Base
                     $form->get('payBalanceOnly')->addError(
                         new FormError(
                             $self->translator->trans('pay.balance.only.error')
+                        )
+                    );
+                }
+
+                $hasReccuringPayment = $self->em->getRepository('RjDataBundle:GroupSettings')->hasReccuringPayment(
+                    $groupSettings->getId()
+                );
+
+                if ($hasReccuringPayment && $groupSettings->getPayBalanceOnly()) {
+                    $form->get('payBalanceOnly')->addError(
+                        new FormError(
+                            $self->translator->trans('pay.balance.only.reccuring_error')
                         )
                     );
                 }

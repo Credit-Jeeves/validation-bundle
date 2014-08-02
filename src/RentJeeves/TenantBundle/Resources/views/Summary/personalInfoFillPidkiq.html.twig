@@ -4,11 +4,11 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {% stylesheets
-    '@TenantBundle/Resources/public/css/personalInfoFillPidkiq.css'
-    '@CoreBundle/Resources/public/css/styles.css'
+    {% stylesheets  '@TenantBundle/Resources/public/css/personalInfoFillPidkiq.css'
+                    '@CoreBundle/Resources/public/css/styles.css'
+                    '@CoreBundle/Resources/public/css/pricing-popup.css'
     %}
-    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
     {% endstylesheets %}
 {% endblock %}
 

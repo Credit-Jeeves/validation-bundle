@@ -1036,6 +1036,38 @@
                 <source>contract.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="contract.statuses.late">
+                <source>contract.statuses.late</source>
+                <target>{0} %status% (LATE)|{1} %status% (LATE by 1 day)|]1,Inf[ %status% (LATE by %count% days)</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.current">
+                <source>contract.statuses.current</source>
+                <target>ACTIVE</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.contract_ended">
+                <source>contract.statuses.contract_ended</source>
+                <target>%status% (CONTRACT ENDED)</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.approved">
+                <source>contract.statuses.approved</source>
+                <target>APPROVED</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.pending">
+                <source>contract.statuses.pending</source>
+                <target>PENDING</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.invite">
+                <source>contract.statuses.invite</source>
+                <target>INVITE</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.finished">
+                <source>contract.statuses.finished</source>
+                <target>FINISHED</target>
+            </trans-unit>
+            <trans-unit id="contract.statuses.deleted">
+                <source>contract.statuses.deleted</source>
+                <target>DELETED</target>
+            </trans-unit>
             <trans-unit id="contract.rent_amount">
                 <source>contract.rent_amount</source>
                 <target>Rent Amount</target>
@@ -1055,7 +1087,7 @@
             </trans-unit>
             <trans-unit id="contract.error.unit">
                 <source>contract.error.unit</source>
-                <target>Unit for contract is not specified</target>
+                <target><![CDATA[Unit for contract is not specified. You need to Edit this contract and select a unit. If the unit is not listed, you need to add it. <a href="http://help.renttrack.com/knowledgebase/articles/275851-how-do-i-approve-a-tenant-so-they-can-pay-rent">See FAQ</a>.]]></target>
             </trans-unit>
             <trans-unit id="contract.status.pay">
                 <source>contract.status.pay</source>
@@ -1077,8 +1109,8 @@
                 <source>log_in</source>
                 <target>Log In</target>
             </trans-unit>
-            <trans-unit id="have.an.account">
-                <source>have.an.account</source>
+            <trans-unit id="user.invite.has_account">
+                <source>user.invite.has_account</source>
                 <target>Have an account</target>
             </trans-unit>
             <trans-unit id="change.your.basic">
@@ -1210,6 +1242,14 @@
             <trans-unit id="popup.sign.up.today">
                 <source>popup.sign.up.today</source>
                 <target>Sign Up Today</target>
+            </trans-unit>
+            <trans-unit id="popup.cancel">
+                <source>popup.cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="popup.edit">
+                <source>popup.edit</source>
+                <target>Edit</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_2">
                 <source>popup.tenant.footer.note_2</source>
@@ -1498,6 +1538,10 @@
             <trans-unit id="landlord.alert.pending-many.admin">
                 <source>landlord.alert.pending-many.admin</source>
                 <target>There are %COUNT% new tenants pending your review in the %GROUP% group.</target>
+            </trans-unit>
+            <trans-unit id="landlord.add_tenant.hover">
+                <source>landlord.add_tenant.hover</source>
+                <target>You will be able to add tenants once your merchant account is approved.</target>
             </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
@@ -1858,7 +1902,7 @@
             </trans-unit>
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>
-                <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="landlord">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
+                <target><![CDATA[Verify your email address. <a href="#" id="landlord-verify-email">Resend Verification Email</a> <span id="landlord-verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
             </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
@@ -1929,6 +1973,14 @@
                     Remove Contract Confirm
                 </target>
             </trans-unit>
+            <trans-unit id="common.balance.due">
+                    <source>common.balance.due</source>
+                    <target>Balance Due</target>
+            </trans-unit>
+            <trans-unit id="common.balance.as.full">
+                    <source>common.balance.as.full</source>
+                    <target>Your property manager requires payment of balance in full</target>
+            </trans-unit>
             <trans-unit id="outstanding.description">
                 <source>outstanding.description</source>
                 <target>
@@ -1979,7 +2031,7 @@
             </trans-unit>
             <trans-unit id="payment.start_date.error.past">
                 <source>payment.start_date.error.past</source>
-                <target>Please check your dates. It appears you have set up a recurring payment to start in the past.</target>
+                <target>Please check your dates. It appears you have set up a payment to start in the past.</target>
             </trans-unit>
             <trans-unit id="payment.start_date.error.cutoff.time">
                 <source>payment.start_date.error.cutoff.time</source>
@@ -2501,6 +2553,10 @@
                 <source>pay.balance.only.error</source>
                 <target>Pay Balance Only can be setup only for Integrated Group</target>
             </trans-unit>
+            <trans-unit id="pay.balance.only.reccuring_error">
+                <source>pay.balance.only.reccuring_error</source>
+                <target>Pay Balance Only can be setup only for Group which don't have reccuring payment</target>
+            </trans-unit>
             <trans-unit id="export.promas.make_zip">
                 <source>export.promas.make_zip</source>
                 <target>Separate By Batch Deposits (ZIP File with Multiple CSVs)</target>
@@ -2513,6 +2569,64 @@
                 <source>credittrack.active.message</source>
                 <target>Enrolled in CreditTrack</target>
             </trans-unit>
+            <trans-unit id="tenant.no_balance.alert">
+                <source>tenant.no_balance.alert</source>
+                <target>You do not have a balance to pay at this time.</target>
+            </trans-unit>
+            <trans-unit id="settings.plans">
+                <source>settings.plans</source>
+                <target>My Plans</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.title">
+                <source>settings.plans.title</source>
+                <target>My Plans</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.head">
+                <source>settings.plans.head</source>
+                <target>My Plans</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.comment">
+                <source>settings.plans.comment</source>
+                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in report your payments to earn credit.</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.label">
+                <source>settings.plans.label</source>
+                <target>Plan type:</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.free">
+                <source>settings.plans.free</source>
+                <target>Free</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.paid">
+                <source>settings.plans.paid</source>
+                <target><![CDATA[
+                    Credit Track TM - Track your credit monthly as you build credit history.<br />
+                    <span class="bold">Payment Account:</span> "%PAYMENT_ACCOUNT%"
+                ]]></target>
+            </trans-unit>
+            <trans-unit id="settings.plans.update">
+                <source>settings.plans.update</source>
+                <target>Update plan</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.cancel.title">
+                <source>settings.plans.cancel.title</source>
+                <target>Cancel Payment</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.cancel.text">
+                <source>settings.plans.cancel.text</source>
+                <target>
+                    Are you sure want to cancel this payment?
+                </target>
+            </trans-unit>
+            <trans-unit id="settings.plans.cancel.yes">
+                <source>settings.plans.cancel.yes</source>
+                <target>Yes, Cancel Payment</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.cancel.no">
+                <source>settings.plans.cancel.no</source>
+                <target>No, Do Nothing</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

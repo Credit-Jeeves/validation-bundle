@@ -118,7 +118,11 @@ class Landlord extends User
 
     public function getAddress()
     {
-        return $this->getAddresses()->last();
+        $address = $this->getAddresses()->last();
+
+        $address || $address = $this->getDefaultAddress();
+
+        return $address;
     }
 
     public function hasMerchant()

@@ -123,6 +123,34 @@ class CreditTrackController extends Controller
      */
     public function pricingAction()
     {
-        return array();
+        /** @var Tenant $user */
+        $user = $this->getUser();
+
+        if ($settings = $user->getSettings()) {
+            $creditTrackEnabled = !!$settings->getCreditTrackPaymentAccount();
+        } else {
+            $creditTrackEnabled = false;
+        }
+        return array(
+            'creditTrackEnabled' => $creditTrackEnabled
+        );
+    }
+
+    /**
+     * @Route("/credittrack/cancel", name="credittrack_cancel", options={"expose"=true})
+     */
+    public function cancelAction()
+    {
+        /** @var Tenant $user */
+        $user = $this->getUser();
+        if ($settings = $user->getSettings()) {
+            $settings->setCreditTrackPaymentAccount(null);
+            $settings->setCreditTrackEnabledAt(null);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($settings);
+            $em->flush();
+        }
+        return $this->redirect($this->generateUrl('user_plans'));
     }
 }

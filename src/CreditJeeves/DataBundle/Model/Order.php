@@ -127,11 +127,6 @@ abstract class Order
      *     cascade={"all"}
      * )
      *
-     * @Serializer\SerializedName("Details")
-     * @Serializer\XmlList(inline = false, entry="Detail")
-     * @Serializer\XmlKeyValuePairs
-     * @Serializer\Groups({"xmlReport"})
-     *
      * @var ArrayCollection
      */
     protected $operations;

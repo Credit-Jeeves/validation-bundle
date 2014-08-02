@@ -58,6 +58,14 @@
                 <source>login.remember</source>
                 <target>Remember My Email</target>
             </trans-unit>
+            <trans-unit id="login.new_user_question">
+                <source>login.new_user_question</source>
+                <target>New User?</target>
+            </trans-unit>
+            <trans-unit id="login.create_user">
+                <source>login.create_user</source>
+                <target>Create Account</target>
+            </trans-unit>
 
             <trans-unit id="resetting.title">
                 <source>resetting.title</source>

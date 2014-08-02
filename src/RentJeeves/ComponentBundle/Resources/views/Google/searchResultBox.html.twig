@@ -1,7 +1,7 @@
 <div class="search-result-box clearfix pie-el">
   <div class="search-result-text-box">
     <div id="search-result-text" class="search-result-text">
-      {% if property %}
+      {% if property.id %}
         <h4 class="titleSearch">
            {{ 'result.search'|trans({'%count%': countPropery, '%city%': property.city, '%area%': property.area}) }}
         </h4>

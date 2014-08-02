@@ -32,12 +32,12 @@ abstract class UserSettings
      * @ORM\OneToOne(targetEntity="PaymentAccount", inversedBy="creditTrackUserSetting")
      * @ORM\JoinColumn(name="credit_track_payment_account_id", referencedColumnName="id", nullable=true)
      */
-    protected $creditTrackPaymentAccount;
+    protected $creditTrackPaymentAccount = null;
 
     /**
      * @ORM\Column(type="datetime", name="credit_track_enabled_at", nullable=true)
      */
-    protected $creditTrackEnabledAt;
+    protected $creditTrackEnabledAt = null;
 
     /**
      * @return mixed
@@ -82,7 +82,7 @@ abstract class UserSettings
     /**
      * @param PaymentAccount $paymentAccount
      */
-    public function setCreditTrackPaymentAccount($paymentAccount)
+    public function setCreditTrackPaymentAccount($paymentAccount = null)
     {
         $this->creditTrackPaymentAccount = $paymentAccount;
     }
@@ -98,7 +98,7 @@ abstract class UserSettings
     /**
      * @param DateTime $datetime
      */
-    public function setCreditTrackEnabledAt(DateTime $datetime)
+    public function setCreditTrackEnabledAt(DateTime $datetime = null)
     {
         $this->creditTrackEnabledAt = $datetime;
     }

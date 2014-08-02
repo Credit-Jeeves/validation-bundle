@@ -39,7 +39,9 @@
                         </label>
                     <!-- /ko -->
                     <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
-                        <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus"><span></span>{{ 'payment.account.new' | trans }}</a>
+                        <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus">
+                            <span></span>{{ 'payment.account.new' | trans }}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -154,7 +156,9 @@
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.expiration' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.ExpirationMonth() + '/' + paymentSource.ExpirationYear()"></span>
+                                <span class="value"
+                                      data-bind="text: paymentSource.ExpirationMonth() + '/' + paymentSource.ExpirationYear()">
+                                </span>
                             </div>
                         </div>
                         <div class="form-row clearfix">

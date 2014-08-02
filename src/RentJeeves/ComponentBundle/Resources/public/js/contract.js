@@ -13,7 +13,8 @@ function Contract() {
     this.unitsList = ko.observableArray([]);
     this.currentPropertyId = ko.observable();
     this.currentUnitId = ko.observable();
-    this.optionsFinishAt = ko.observable('finishAt');
+    this.optionsFinishAtEdit = ko.observable('finishAt');
+    this.optionsFinishAtApprove = ko.observable('finishAt');
     this.contract = ko.observable();
     this.approve = ko.observable(false);
     this.review = ko.observable(false);
@@ -88,9 +89,9 @@ function Contract() {
         }
 
         if (self.contract().finish.length > 0) {
-            self.optionsFinishAt('finishAt');
+            self.optionsFinishAtEdit('finishAt');
         } else {
-            self.optionsFinishAt('monthToMonth');
+            self.optionsFinishAtEdit('monthToMonth');
         }
 
         self.currentPropertyId(self.contract().property_id);
@@ -266,9 +267,16 @@ function Contract() {
             contract.property_id = self.currentPropertyId();
         }
 
-        if (self.optionsFinishAt() === 'monthToMonth') {
-            contract.finish = null;
+        if (self.edit()) {
+            if (self.optionsFinishAtEdit() === 'monthToMonth') {
+                contract.finish = null;
+            }
+        } else {
+            if (self.optionsFinishAtApprove() === 'monthToMonth') {
+                contract.finish = null;
+            }
         }
+
 
         self.contract(contract);
         $.ajax({

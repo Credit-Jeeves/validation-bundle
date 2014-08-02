@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Payum\Payment as Payum;
-use DateTime;
 use RuntimeException;
 
 class PayCommand extends ContainerAwareCommand

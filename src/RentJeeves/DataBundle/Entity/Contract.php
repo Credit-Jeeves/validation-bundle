@@ -76,6 +76,11 @@ class Contract extends Base
     const CONTRACT_ENDED = 'CONTRACT ENDED';
 
     /**
+     * @const string
+     */
+    const CURRENT_ACTIVE = 'ACTIVE';
+
+    /**
      * @var string
      */
     const STATUS_PAY = 'auto';
@@ -207,6 +212,7 @@ class Contract extends Base
         $result['balance'] = $this->getCurrentBalance();
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
+        $result['status_label'] = $status['status_label'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
@@ -251,6 +257,13 @@ class Contract extends Base
             ) {
                 $result['style'] = 'contract-pending';
                 $result['status'] = self::CONTRACT_ENDED;
+                $result['status_label'] = [
+                    'label' => 'contract.statuses.contract_ended',
+                    'choice' => false,
+                    'params' => [
+                        'status' => strtoupper($result['status_name'])
+                    ],
+                ];
             }
             $result['finish'] = $finish->format('m/d/Y');
         }
@@ -305,7 +318,19 @@ class Contract extends Base
 
     public function getStatusArray()
     {
-        $result = array('status' => strtoupper($this->getStatus()), 'class' => '', 'status_name' => $this->getStatus());
+        $result = array(
+            'status' => strtoupper($this->getStatus()),
+            'class' => '',
+            'status_name' => $this->getStatus(),
+            'status_label' => [
+                'label' => 'contract.statuses.' . strtolower($this->getStatus()),
+                'choice' => false,
+                'params' => [],
+            ]
+        );
+        if (ContractStatus::CURRENT == $this->getStatus()) {
+            $result['status_name'] = self::CURRENT_ACTIVE;
+        }
         if (ContractStatus::PENDING == $this->getStatus()) {
             $result['class'] = 'contract-pending';
             return $result;
@@ -338,7 +363,15 @@ class Contract extends Base
                 ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))
             ) {
-                $result['status'] = 'LATE ('.$interval->days.' days)';
+                $result['status_label'] = [
+                    'label' => 'contract.statuses.late',
+                    'choice' => true,
+                    'count' => $interval->days,
+                    'params' => [
+                        'status' => strtoupper($result['status_name']),
+                        'count' => $interval->days
+                    ]
+                ];
                 $result['status_name'] = 'late';
                 $result['class'] = 'contract-late';
                 return $result;
@@ -415,40 +448,41 @@ class Contract extends Base
         $orders = $repo->getContractHistory($this);
         /** @var Order $order */
         foreach ($orders as $order) {
-            $operation = $order->getRentOperation();
-            $paidFor = $operation->getPaidFor();
-            $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
-            $late = $operation->getDaysLate();
-            $nYear = $paidFor->format('Y');
-            $nMonth = $paidFor->format('m');
-            $interval = $currentDate->diff($paidFor)->format('%r%a');
-            $status = $order->getStatus();
-            switch ($status) {
-                case OrderStatus::NEWONE:
-                    $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
-                    $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
-                    break;
-                case OrderStatus::COMPLETE:
-                    if ($interval >= $lastDate) {
-                        $result['last_amount'] = $operation->getAmount();
-                        $result['last_date'] = $lastPaymentDate;
-                    }
-                    $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
-                    $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-                    if ($late >= 30) {
-                        $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                        $lateText = floor($late / 30) * 30;
-                        $payments[$nYear][$nMonth]['text'] = $lateText;
-                    }
-                    if (!isset($payments[$nYear][$nMonth]['amount'])) {
-                        $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
-                    } else {
-                        $payments[$nYear][$nMonth]['amount']+= $operation->getAmount();
-                    }
-                    break;
-                default:
-                    continue 2;
-                    break;
+            foreach ($order->getRentOperations() as $operation) {
+                $paidFor = $operation->getPaidFor();
+                $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
+                $late = $operation->getDaysLate();
+                $nYear = $paidFor->format('Y');
+                $nMonth = $paidFor->format('m');
+                $interval = $currentDate->diff($paidFor)->format('%r%a');
+                $status = $order->getStatus();
+                switch ($status) {
+                    case OrderStatus::NEWONE:
+                        $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
+                        $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
+                        break;
+                    case OrderStatus::COMPLETE:
+                        if ($interval >= $lastDate) {
+                            $result['last_amount'] = $operation->getAmount();
+                            $result['last_date'] = $lastPaymentDate;
+                        }
+                        $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
+                        $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
+                        if ($late >= 30) {
+                            $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
+                            $lateText = floor($late / 30) * 30;
+                            $payments[$nYear][$nMonth]['text'] = $lateText;
+                        }
+                        if (!isset($payments[$nYear][$nMonth]['amount'])) {
+                            $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
+                        } else {
+                            $payments[$nYear][$nMonth]['amount'] += $operation->getAmount();
+                        }
+                        break;
+                    default:
+                        continue 2;
+                        break;
+                }
             }
         }
         ksort($payments);
@@ -629,6 +663,13 @@ class Contract extends Base
         $result['amount'] = $this->getRent();
         $result['property'] = $this->getProperty()->getItem();
         $result['group_id'] = $this->getGroup()->getId();
+        $groupSettings = $this->getGroup()->getGroupSettings();
+        $isIntegrated = $groupSettings->getIsIntegrated();
+        $result['is_integrated'] = $isIntegrated;
+        $result['is_allowed_to_pay'] =
+            ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
+        // display only integrated balance
+        $result['balance'] = $isIntegrated ? sprintf('$%s', $this->getIntegratedBalance()) : '';
         return $result;
     }
 

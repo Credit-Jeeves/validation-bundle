@@ -10,16 +10,22 @@
     {% endstylesheets %}
 {% endblock %}
 {% block head_javascripts %}
-     {% javascripts
-     '@UserBundle/Resources/public/js/jquery.reject.min.js'
-     '@UserBundle/Resources/public/js/reject.js'
-     %}
-     <script type="text/javascript" src="{{ asset_url }}"></script>
-     {% endjavascripts %}
+    {% if 'rj' == application %}
+        {{ include(
+        'RjComponentBundle:Blocks:reject.html.twig'
+        ) }}
+    {% else %}
+         {% javascripts
+         '@UserBundle/Resources/public/js/jquery.reject.min.js'
+         '@UserBundle/Resources/public/js/reject.js'
+         %}
+         <script type="text/javascript" src="{{ asset_url }}"></script>
+         {% endjavascripts %}
+    {% endif %}
 {% endblock %}
 
 {% block fos_user_content %}
-    <div class="form-login pod-border shadow floatleft" {% if 'rj' == application %} style="width: 690px"{% endif %}>
+    <div class="form-login pod-border shadow floatleft{% if 'rj' == application %} login-block"  style="width: 650px"{% else %}"{% endif %}>
         <h1>{{ 'login.title' | trans }}</h1>
             {% for flashMessage in app.session.flashbag.get('notice') %}
             <div class="row-20"></div>
@@ -90,6 +96,12 @@
             </table>
         </form>
     </div>
+    {% if 'rj' == application %}
+    <div class="create-block-logins floatleft">
+        <h2>{{ 'login.new_user_question' | trans }}</h2>
+        <a id="create-user" href="{{ path('iframe_new') }}">» {{ 'login.create_user' | trans }} </a>
+    </div>
+    {% endif %}
     {% if 'cj' == application %}
     <div class="business-logins floatleft">
         <h2>Business Logins:</h2>

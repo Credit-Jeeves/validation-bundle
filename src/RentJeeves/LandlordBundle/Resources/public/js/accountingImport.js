@@ -106,7 +106,7 @@ function accountingImport() {
             return Translator.trans('conflict.resolve.action');
         }
 
-        if (data.contract.id !== null) {
+        if (data.contract.id !== null || data.has_contract_waiting) {
             return Translator.trans('import.status.match');
         }
 

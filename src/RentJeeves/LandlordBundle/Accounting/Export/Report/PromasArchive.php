@@ -8,8 +8,8 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface;
-use RentJeeves\LandlordBundle\Model\OrderReport;
 use DateTime;
+use RentJeeves\LandlordBundle\Accounting\Export\ZipArchiveReport;
 use ZipArchive;
 
 /**
@@ -17,10 +17,7 @@ use ZipArchive;
  */
 class PromasArchive extends ExportReport
 {
-    protected $type = 'promas_zip';
-
-    protected $exportReport;
-    protected $serializer;
+    use ZipArchiveReport;
 
     /**
      * @InjectParams({
@@ -30,13 +27,8 @@ class PromasArchive extends ExportReport
      */
     public function __construct(ExportReport $exportReport, ExportSerializerInterface $serializer)
     {
-        $this->exportReport = $exportReport;
-        $this->serializer = $serializer;
-    }
-
-    public function getType()
-    {
-        return $this->type;
+        $this->useReport($exportReport);
+        $this->useSerializer($serializer);
     }
 
     public function getContent($settings)
@@ -44,11 +36,7 @@ class PromasArchive extends ExportReport
         $this->validateSettings($settings);
         $this->generateFilename($settings);
 
-        $zipArchive = new ZipArchive();
-        $tmpZipName = $this->getTempZipFilename();
-        if ($zipArchive->open($tmpZipName, ZipArchive::CREATE) !== true) {
-            throw new ExportException('Can not create zip archive');
-        }
+        $zipArchive = $this->openZipArchive();
 
         $orders = $this->getData($settings);
         /** @var Order $order */
@@ -57,9 +45,7 @@ class PromasArchive extends ExportReport
             $filename = $this->getBatchFilename($batchId, $settings);
             $zipArchive->addFromString($filename, $content);
         }
-        $zipArchive->close();
-        $result = readfile($tmpZipName);
-        unlink($tmpZipName);
+        $result = $this->readZipArchive($zipArchive);
 
         return $result;
     }
@@ -85,19 +71,6 @@ class PromasArchive extends ExportReport
     protected function generateFilename($params)
     {
         $this->filename = 'batch_report.zip';
-    }
-
-    protected function getBatchFilename($batchNumber, $params)
-    {
-        $beginDate = new DateTime($params['begin']);
-        $endDate = new DateTime($params['end']);
-
-        return sprintf('Promas_%s_%s_%s.csv', $beginDate->format('Ymd'), $endDate->format('Ymd'), $batchNumber);
-    }
-
-    protected function getTempZipFilename()
-    {
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR. 'report.zip';
     }
 
     protected function validateSettings($settings)

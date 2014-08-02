@@ -289,14 +289,14 @@
                     <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
-                        <label class="checkbox radio">
-                            <input type="radio" name="optionsFinishAt" value="monthToMonth" data-bind="checked: $root.optionsFinishAt" >
+                        <label class="checkbox radio finishAtLabelM2M">
+                            <input type="radio" name="optionsFinishAtEdit" value="monthToMonth" data-bind="checked: $root.optionsFinishAtEdit" >
                             <i></i>
                             <span>{{ 'when.cancelled' | trans }}</span>
                             <div class="clearboth"></div>
                         </label>
                         <label class="checkbox radio finishAtLabel">
-                            <input type="radio" name="optionsFinishAt" value="finishAt" data-bind="checked: $root.optionsFinishAt" >
+                            <input type="radio" name="optionsFinishAtEdit" value="finishAt" data-bind="checked: $root.optionsFinishAtEdit" >
                             <i></i>
                             <span class="onFinishAt">{{ 'on' | trans }}</span>
                             <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
@@ -413,13 +413,13 @@
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractApproveStart">
                         <label class="checkbox radio">
-                            <input type="radio" name="optionsFinishAt" value="monthToMonth" data-bind="checked: $root.optionsFinishAt" >
+                            <input type="radio" name="optionsFinishAtApprove" value="monthToMonth" data-bind="checked: $root.optionsFinishAtApprove" >
                             <i></i>
                             <span>{{ 'when.cancelled' | trans }}</span>
                             <div class="clearboth"></div>
                         </label>
                         <label class="checkbox radio finishAtLabel">
-                            <input type="radio" name="optionsFinishAt" value="finishAt" data-bind="checked: $root.optionsFinishAt" >
+                            <input type="radio" name="optionsFinishAtApprove" value="finishAt" data-bind="checked: $root.optionsFinishAtApprove" >
                             <i></i>
                             <span class="onFinishAt">{{ 'on' | trans }}</span>
                             <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractApproveFinish">
@@ -683,7 +683,7 @@
                         <span>{{ 'add.tenant'|trans }}</span>
                     </button>
                 {% else %}
-                    <button class="button small grey">
+                    <button class="button small grey" title="{{ 'landlord.add_tenant.hover'|trans }}">
                         <span>{{ 'add.tenant'|trans }}</span>
                     </button>
                 {% endif %}
@@ -729,7 +729,12 @@
             <!-- ko foreach: { data: aContracts() } -->
             <tr>
                 <td data-bind="attr: {'class': 'actions-status '+style}">
-                    <div data-bind="text: status"></div>
+                    <!-- ko if: status_label.choice == true -->
+                        <div data-bind="text: Translator.transChoice(status_label.label, status_label.count, status_label.params) "></div>
+                    <!-- /ko -->
+                    <!-- ko ifnot: status_label.choice == true -->
+                        <div data-bind="text: Translator.trans(status_label.label, status_label.params)"></div>
+                    <!-- /ko -->
                 </td>
                 <td class="email-box ellipsis-box">
                   <div data-bind="if: credit_track_enabled">

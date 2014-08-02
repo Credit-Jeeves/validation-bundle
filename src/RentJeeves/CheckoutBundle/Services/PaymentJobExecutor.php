@@ -137,6 +137,7 @@ class PaymentJobExecutor
             return false;
         }
 
+        $this->payRent->newOrder();
         $this->job->addRelatedEntity($this->payRent->getOrder());
         $this->em->persist($this->job);
         return $this->processStatus($this->payRent->executePayment($payment));

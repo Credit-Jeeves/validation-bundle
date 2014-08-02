@@ -2,50 +2,55 @@
 namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Payum\Heartland\Soap\Base\BillTransaction;
 use Payum\Heartland\Soap\Base\MakePaymentRequest;
+use RentJeeves\CheckoutBundle\Services\PaidFor;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use JMS\DiExtraBundle\Annotation as DI;
+use RuntimeException;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @DI\Service("payment.pay_rent")
  */
 class PayRent extends Pay
 {
+    /**
+     * @var PaidFor
+     */
+    protected $paidFor;
+
+    /**
+     * @DI\InjectParams({"paidFor" = @DI\Inject("checkout.paid_for")})
+     *
+     * @param PaidFor $paidFor
+     *
+     * @return $this
+     */
+    public function setPaidFor(PaidFor $paidFor)
+    {
+        $this->paidFor = $paidFor;
+        return $this;
+    }
+
     public function executePayment(Payment $payment)
     {
+        $order = $this->getOrder();
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
-        $order = $this->getOrder();
         $order->setSum($payment->getAmount() + $payment->getOther());
         $order->setUser($paymentAccount->getUser());
         $order->setStatus(OrderStatus::NEWONE);
 
-        if ($amount = $payment->getAmount()) {
-            $operation = new Operation();
-            $operation->setOrder($order);
-            $operation->setType(OperationType::RENT);
-            $operation->setContract($contract);
-            $operation->setAmount($amount);
-            $operation->setPaidFor($payment->getPaidFor());
-            $this->em->persist($operation);
-        }
-        if ($amount = $payment->getOther()) {
-            $operation = new Operation();
-            $operation->setOrder($order);
-            $operation->setType(OperationType::OTHER);
-            $operation->setContract($contract);
-            $operation->setAmount($amount);
-            $operation->setPaidFor($payment->getPaidFor());
-            $this->em->persist($operation);
-        }
+        $this->createOperations($payment, $order);
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
             $order->setFee(round($order->getSum() * ($contract->getDepositAccount()->getFeeCC() / 100), 2));
@@ -102,5 +107,82 @@ class PayRent extends Pay
         $this->em->clear();
 
         return $statusRequest;
+    }
+
+    protected function createOperations(Payment $payment, Order $order)
+    {
+        $contract = $payment->getContract();
+        $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
+
+        if ($payBalanceOnly) {
+            $this->createBalanceBasedOperations($payment, $order);
+        } else {
+            $this->createRegularOperations($payment, $order);
+        }
+    }
+
+    protected function createBalanceBasedOperations(Payment $payment, Order $order)
+    {
+        $contract = $payment->getContract();
+
+        $paymentAmount = $payment->getTotal();
+        $rent = $contract->getRent();
+        $paidForDates = array_keys($this->paidFor->getArray($contract));
+        if (empty($paidForDates)) {
+            throw new RuntimeException('Can not calculate paid_for');
+        }
+        $paidForCounter = 0;
+
+        do {
+            $operationAmount = $paymentAmount >= $rent ? $rent : $paymentAmount;
+            $operation = new Operation();
+            $operation->setOrder($order);
+            $operation->setType(OperationType::RENT);
+            $operation->setContract($contract);
+            $operation->setAmount($operationAmount);
+
+            if (!isset($paidForDates[$paidForCounter])) {
+                $paidFor = new DateTime($paidForDates[$paidForCounter - 1]); // take previous paidFor
+                $paidFor->modify('+1 month');
+                $paidForDates[$paidForCounter] = $paidFor->format('Y-m-d');
+            }
+
+            $paidFor = new DateTime($paidForDates[$paidForCounter]);
+            $operation->setPaidFor($paidFor);
+
+            $paymentAmount -= $operationAmount;
+            $paidForCounter++;
+        } while ($paymentAmount >= $rent);
+
+        if ($paymentAmount > 0) {
+            $operation = new Operation();
+            $operation->setOrder($order);
+            $operation->setType(OperationType::OTHER);
+            $operation->setContract($contract);
+            $operation->setAmount($paymentAmount);
+            $operation->setPaidFor($paidFor);
+        }
+    }
+
+    protected function createRegularOperations(Payment $payment, Order $order)
+    {
+        $contract = $payment->getContract();
+
+        if ($amount = $payment->getAmount()) {
+            $operation = new Operation();
+            $operation->setOrder($order);
+            $operation->setType(OperationType::RENT);
+            $operation->setContract($contract);
+            $operation->setAmount($amount);
+            $operation->setPaidFor($payment->getPaidFor());
+        }
+        if ($amount = $payment->getOther()) {
+            $operation = new Operation();
+            $operation->setOrder($order);
+            $operation->setType(OperationType::OTHER);
+            $operation->setContract($contract);
+            $operation->setAmount($amount);
+            $operation->setPaidFor($payment->getPaidFor());
+        }
     }
 }
