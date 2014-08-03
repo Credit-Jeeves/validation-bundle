@@ -16,8 +16,6 @@ use DateTime;
  */
 class PromasReport extends ExportReport
 {
-    protected $type = 'csv';
-
     protected $em;
     protected $serializer;
     protected $softDeleteableControl;
@@ -34,6 +32,8 @@ class PromasReport extends ExportReport
         $this->em = $em;
         $this->serializer = $serializer;
         $this->softDeleteableControl = $softDeleteableControl;
+        $this->type = 'promas';
+        $this->fileType = 'csv';
     }
 
     public function getType()

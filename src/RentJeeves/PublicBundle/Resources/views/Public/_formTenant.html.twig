@@ -8,7 +8,12 @@
       <h4>{{ 'setup.your.rent'|trans }}
           {% if inviteCodeLandlord is defined %}
               <span class="haveAccount">
-                {{ 'have.an.account'|trans }}? <a href="{{ path('fos_user_security_login_invite', {'inviteCode':inviteCodeLandlord})}}">{{ 'log_in'|trans }}</a>
+                {{ 'user.invite.has_account'|trans }}? <a href="{{ path('fos_user_security_login_invite', {'inviteCode':inviteCodeLandlord})}}">{{ 'log_in'|trans }}</a>
+              </span>
+          {% endif %}
+          {% if isImported is defined and isImported %}
+              <span class="haveAccount">
+                {{ 'user.invite.has_account'|trans }}? <a href="{{ path('fos_user_security_login_invite', {'inviteCode':inviteCodeTenant})}}">{{ 'log_in'|trans }}</a>
               </span>
           {% endif %}
       </h4>
