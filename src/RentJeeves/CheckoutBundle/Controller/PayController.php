@@ -102,14 +102,33 @@ class PayController extends Controller
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
+        //NEED REMOVE IT AS SOON AS POSSIBLE
+        $contractId = $request->get('contract_id');
+        $contract = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('RjDataBundle:Contract')
+            ->findOneWithOperationsOrders($contractId);
+        $groupId = $contract->getGroup()->getId();
 
+        if (in_array($groupId, array(110,113))) {
+            return new JsonResponse(
+                array(
+                    $paymentType->getName() => array(
+                        '_globals' => array(
+                            'Your property manager is not accepting payments at this time.'
+                        )
+                    )
+                )
+            );
+        }
+        //FINISH
         return new JsonResponse(
             array(
                 'success' => true
             )
         );
     }
-
+    
     /**
      * @Route("/source_existing", name="checkout_pay_existing_source", options={"expose"=true})
      * @Method({"POST"})
