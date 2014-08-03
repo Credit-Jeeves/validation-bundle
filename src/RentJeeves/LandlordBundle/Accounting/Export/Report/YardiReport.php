@@ -42,10 +42,7 @@ class YardiReport extends ExportReport
 
     public function getContent($settings)
     {
-        $this->validateSettings($settings);
-        $this->setYardiParams($settings);
         $this->generateFilename($settings);
-
         $reportData = $this->getData($settings);
 
         return $this->serializer->serialize($reportData);
@@ -59,6 +56,9 @@ class YardiReport extends ExportReport
     public function getData($settings)
     {
         $this->softDeleteableControl->disable();
+
+        $this->validateSettings($settings);
+        $this->setYardiParams($settings);
 
         $beginDate = $settings['begin'].' 00:00:00';
         $endDate = $settings['end'].' 23:59:59';
