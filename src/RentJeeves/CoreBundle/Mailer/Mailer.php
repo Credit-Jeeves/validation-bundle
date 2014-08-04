@@ -369,30 +369,49 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Group|Group[] $group
+     * @param array $groups
+     * @param DateTime $date
+     * @return bool
+     */
+    public function sendBatchDepositReportHolding(Landlord $landlord, $groups, DateTime $date)
+    {
+        print_r($groups);
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date,
+            'groups' => $groups
+        ];
+
+        return $this->sendBaseLetter(
+            'rjBatchDepositReportHolding',
+            $vars,
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param Group $group
      * @param DateTime $date
      * @param array $batches
      * @return bool
      */
-    public function sendBatchDepositReport(Landlord $landlord, $group, DateTime $date, $batches = [])
+    public function sendBatchDepositReportLandlord(Landlord $landlord, Group $group, DateTime $date, $batches)
     {
-        if (is_array($group)) {
-            $vars = [
-                'landlordFirstName' => $landlord->getFirstName(),
-                'date' => $date->format('m/d/Y'),
-                'groups' => $group
-            ];
-            $this->sendBaseLetter('rjBatchDepositReportHolding', $vars, $landlord->getEmail(), $landlord->getCulture());
-        } else {
-            $vars = [
-                'landlordFirstName' => $landlord->getFirstName(),
-                'date' => $date->format('m/d/Y'),
-                'groupName' => $group->getName(),
-                'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
-                'batches' => $batches
-            ];
-            return $this->sendBaseLetter('rjBatchDepositReportLandlord', $vars, $landlord->getEmail(), $landlord->getCulture());
-        }
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date,
+            'groupName' => $group->getName(),
+            'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
+            'batches' => $batches
+        ];
 
+        return $this->sendBaseLetter(
+            'rjBatchDepositReportLandlord',
+            $vars,
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
     }
 }

@@ -5,9 +5,6 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 class Version20140801214633 extends AbstractMigration
 {
     public function up(Schema $schema)
@@ -29,17 +26,17 @@ class Version20140801214633 extends AbstractMigration
 {% block h1 %}Batch Deposit Report{% endblock %}
 {% block email %}
 Dear {{ landlordFirstName }}, <br />
-Your batch deposit report for <b>{{ date }}</b> for group <b>{{ groupName }}</b>
+Your batch deposit report for <b>{{ date | date("m/d/Y") }}</b> for group <b>{{ groupName }}</b>
 {% if accountNumber %}(Account #{{ accountNumber }}){% endif %} is below:<br />
 <br />
-{% if batches | length > 0 %}
+{% if batches %}
 {% for batch in batches %}
 Batch ID: <b>{{ batch.batchId }}</b><br />
-Payment Type: <b>{{ batch.paymentType }}</b><br />
+Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
 <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
   <thead>
     <tr>
-      <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>{{ 'order.transaction.id_short' | trans }}</th>
+      <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>{{ 'order.transaction.id.short' | trans }}</th>
       <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.status' | trans }}</th>
       <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.resident' | trans }}</th>
       <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'payment.property' | trans }}</th>
@@ -57,10 +54,12 @@ Payment Type: <b>{{ batch.paymentType }}</b><br />
     {% for transaction in batch.transactions %}
     <tr>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.status }}</td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
-      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.property }}</td>
-      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.dateInitiated }}</td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+      {{ transaction.property }}{% if not transaction.isSingle %}{{ ' #' ~ transaction.unitName }}{% endif %}
+      </td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.dateInitiated | date("m/d/Y") }}</td>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">\${{ transaction.amount }}</td>
     </tr>
     {% endfor %}
@@ -84,6 +83,14 @@ EOT;
         );
 
         $this->addSql(
+            "INSERT INTO email_translation
+            SET translatable_id = (SELECT id FROM email WHERE name = 'rjBatchDepositReportLandlord.html'),
+            locale = 'en',
+            property = 'subject',
+            value = 'Daily Batch Deposit Report'"
+        );
+
+        $this->addSql(
             "INSERT INTO email
                 SET name = 'rjBatchDepositReportHolding.html',
                     createdAt = now(),
@@ -95,19 +102,19 @@ EOT;
 {% block h1 %}Batch Deposit Report{% endblock %}
 {% block email %}
 Dear {{ landlordFirstName }}, <br />
-Your batch deposit report for <b>{{ date }}</b> is below:
+Your batch deposit report for <b>{{ date | date("m/d/Y") }}</b> is below:
 {% for group in groups %}
 <br />
 <br />For group <b>{{ group.groupName }}</b>{% if group.accountNumber %} (Account #{{ group.accountNumber }}){% endif %}:<br />
 <br />
-{% if group.batches | length > 0 %}
+{% if group.batches %}
   {% for batch in group.batches %}
   Batch ID: <b>{{ batch.batchId }}</b><br />
-  Payment Type: <b>{{ batch.paymentType }}</b><br />
+  Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
   <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
     <thead>
       <tr>
-        <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>{{ 'order.transaction.id_short' | trans }}</th>
+        <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>{{ 'order.transaction.id.short' | trans }}</th>
         <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.status' | trans }}</th>
         <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.resident' | trans }}</th>
         <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'payment.property' | trans }}</th>
@@ -125,10 +132,12 @@ Your batch deposit report for <b>{{ date }}</b> is below:
       {% for transaction in batch.transactions %}
       <tr>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.status }}</td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
-        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.property }}</td>
-        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.dateInitiated }}</td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+          {{ transaction.property }}{% if not transaction.isSingle %}{{ ' #' ~ transaction.unitName }}{% endif %}
+        </td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.dateInitiated | date("m/d/Y") }}</td>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">\${{ transaction.amount }}</td>
       </tr>
       {% endfor %}
@@ -152,6 +161,13 @@ EOT;
             value = '{$template}'"
         );
 
+        $this->addSql(
+            "INSERT INTO email_translation
+            SET translatable_id = (SELECT id FROM email WHERE name = 'rjBatchDepositReportHolding.html'),
+            locale = 'en',
+            property = 'subject',
+            value = 'Daily Batch Deposit Report'"
+        );
     }
 
     public function down(Schema $schema)

@@ -5,9 +5,6 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 class Version20140731174428 extends AbstractMigration
 {
     public function up(Schema $schema)
@@ -19,7 +16,8 @@ class Version20140731174428 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_deposit_account
-                ADD account_number VARCHAR(255) DEFAULT NULL AFTER merchant_name"
+                ADD account_number INT(11) DEFAULT NULL AFTER merchant_name,
+                ADD UNIQUE INDEX (account_number)"
         );
 
     }

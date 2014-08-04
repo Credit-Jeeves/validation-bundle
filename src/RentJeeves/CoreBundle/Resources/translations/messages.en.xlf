@@ -1671,8 +1671,8 @@
                 <source>order.transaction.id</source>
                 <target>Transaction ID</target>
             </trans-unit>
-            <trans-unit id="order.transaction.id_short">
-                <source>order.transaction.id_short</source>
+            <trans-unit id="order.transaction.id.short">
+                <source>order.transaction.id.short</source>
                 <target>Trans.ID</target>
             </trans-unit>
             <trans-unit id="order.contact.us">

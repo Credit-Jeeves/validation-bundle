@@ -15,36 +15,18 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use DateTime;
 
-class EmailBatchDepositReportCommand  extends ContainerAwareCommand
+class EmailBatchDepositReportCommand extends ContainerAwareCommand
 {
-    /**
-     * @const sting
-     */
-    const OPTION_DATE = 'date';
-
     protected function configure()
     {
-        $description = 'Send daily batch deposit report by email for landlords and holding admins';
         $this
             ->setName('Email:batchDeposit:report')
-            ->setDescription($description)
-            ->addOption(
-                self::OPTION_DATE,
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Select date for report, default today'
-            )
-        ;
+            ->setDescription('Send daily batch deposit report for landlords and holding admins');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dateString = $input->getOption(self::OPTION_DATE);
-        if ($dateString) {
-            $date = new DateTime($dateString);
-        } else {
-            $date = new DateTime();
-        }
+        $date = new DateTime('2014-07-14');
         /** @var Mailer $mailer */
         $mailer = $this->getContainer()->get('project.mailer');
         /** @var Registry $doctrine */
@@ -60,54 +42,50 @@ class EmailBatchDepositReportCommand  extends ContainerAwareCommand
             $groups = [];
             foreach ($holdingAdmin->getGroups() as $group) {
                 /** @var Group $group */
-                $data = $repoHeartland->getBatchDepositedInfo($group, $date->format('Y-m-d'));
+                $data = $repoHeartland->getBatchDepositedInfo($group, $date);
                 $groups[] = [
                     'groupName' => $group->getName(),
                     'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
-                    'batches' => $this->prepareData($data)
+                    'batches' => $this->prepareBatchReportData($data)
                 ];
             }
-            $mailer->sendBatchDepositReport($holdingAdmin, $groups, $date);
+            $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date);
         }
 
         $landlords = $repoLandlord->findBy(['is_super_admin' => false], ['email' => 'DESC']);
-        foreach($landlords as $landlord) {
+        foreach ($landlords as $landlord) {
             /** @var Landlord $landlord */
             foreach ($landlord->getAgentGroups() as $group) {
                 /** @var Group $group */
-                $data = $repoHeartland->getBatchDepositedInfo($group, $date->format('Y-m-d'));
-                $mailer->sendBatchDepositReport($landlord, $group, $date, $this->prepareData($data));
+                $data = $repoHeartland->getBatchDepositedInfo($group, $date);
+                $mailer->sendBatchDepositReportLandlord($landlord, $group, $date, $this->prepareBatchReportData($data));
             }
         }
     }
 
-    protected function prepareData($data)
+    protected function prepareBatchReportData($data)
     {
-        $translator = $this->getContainer()->get('translator.default');
         $preparedData = [];
         $count = count($data);
         $transactions = [];
         $paymentTotal = 0;
         for ($i = 0; $i < $count; $i++) {
-            if ($data[$i]['status'] == OrderStatus::COMPLETE) {
-                $paymentTotal += $data[$i]['amount'];
-            }
-            $data[$i]['status'] = $translator->trans('order.status.text.'.$data[$i]['status']);
-            $paymentType = $translator->trans('order.type.'.$data[$i]['paymentType']);
+            $paymentTotal += $data[$i]['amount'];
             $transactions[] = $data[$i];
-            $tmpArr = [
-                'batchId' => $data[$i]['batchId'],
-                'paymentType' => $paymentType,
-                'transactions' => $transactions,
-                'paymentTotal' => $paymentTotal
-            ];
 
+            /** Need check that next.batch_id != current.batch_id, also check that next exists */
             if (($i+1) == $count || $data[$i]['batchId'] != $data[$i+1]['batchId']) {
+                $preparedData[] = [
+                    'batchId' => $data[$i]['batchId'],
+                    'paymentType' => $data[$i]['paymentType'],
+                    'transactions' => $transactions,
+                    'paymentTotal' => $paymentTotal
+                ];
                 $transactions = [];
-                $preparedData[] = $tmpArr;
                 $paymentTotal = 0;
             }
         }
+
         return $preparedData;
     }
 }

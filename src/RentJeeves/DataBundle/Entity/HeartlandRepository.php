@@ -4,15 +4,16 @@ namespace RentJeeves\DataBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use DateTime;
 
 class HeartlandRepository extends EntityRepository
 {
     /**
      * @param Group $group
-     * @param null $date
+     * @param DateTime $date
      * @return mixed
      */
-    public function getBatchDepositedInfo($group, $date = null)
+    public function getBatchDepositedInfo($group, DateTime $date)
     {
         $query = $this->createQueryBuilder('h');
         $query->select(
@@ -23,7 +24,9 @@ class HeartlandRepository extends EntityRepository
             o.type as paymentType,
             o.status,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
-            CONCAT(prop.number, ' ', prop.street, ' #',unit.name) as property"
+            CONCAT_WS(' ', prop.number, prop.street) as property,
+            prop.isSingle,
+            unit.name as unitName"
         );
         $query->orderBy('h.batchId', 'DESC');
         $query->innerJoin('h.order', 'o');
@@ -32,10 +35,13 @@ class HeartlandRepository extends EntityRepository
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
         $query->innerJoin('t.unit', 'unit');
-        if ($group instanceof Group) {
-            $query->where('t.group = :group');
-            $query->setParameter('group', $group);
-        }
+
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+
+        $query->andWhere('h.depositDate = DATE(:date)');
+        $query->setParameter('date', $date);
+
         $query->andWhere('h.batchId IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
 
@@ -43,10 +49,6 @@ class HeartlandRepository extends EntityRepository
         $query->andWhere('o.status = :status');
         $query->setParameter('status', OrderStatus::COMPLETE);
 
-        if ($date) {
-            $query->andWhere('h.depositDate = DATE(:date)');
-            $query->setParameter('date', $date);
-        }
         return $query->getQuery()->execute();
     }
 }

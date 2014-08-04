@@ -48,9 +48,9 @@ abstract class DepositAccount
     /**
      * @ORM\Column(
      *      name="account_number",
-     *      type="string",
-     *      length=255,
-     *      nullable=true
+     *      type="integer",
+     *      nullable=true,
+     *      unique=true
      * )
      * @Serializer\SerializedName("accountNumber")
      */
