@@ -17,6 +17,9 @@ use Symfony\Component\Validator\Constraints\Callback;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use DateTime;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class PaymentType extends AbstractType
 {
@@ -38,13 +41,34 @@ class PaymentType extends AbstractType
     protected $dueDays = array();
 
     /**
+     * @var integer
+     */
+    protected $openDay;
+
+    /**
+     * @var integer
+     */
+    protected $closeDay;
+
+    protected $translator;
+
+    /**
      * @param string $oneTimeUntilValue
      */
-    public function __construct($oneTimeUntilValue, array $paidFor, $dueDays)
-    {
+    public function __construct(
+        $oneTimeUntilValue,
+        array $paidFor,
+        $dueDays,
+        $openDay,
+        $closeDay,
+        $translator
+    ) {
         $this->oneTimeUntilValue = $oneTimeUntilValue;
         $this->paidFor = $paidFor;
         $this->dueDays = $dueDays;
+        $this->openDay = $openDay;
+        $this->closeDay = $closeDay;
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -385,6 +409,36 @@ class PaymentType extends AbstractType
                     'data-bind' => 'value: payment.id',
                 )
             )
+        );
+
+        $self = $this;
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($self) {
+                $form = $event->getForm();
+                $startDate = $form->get('start_date')->getNormData();
+                if (!$startDate) {
+                    return;
+                }
+
+                $day = $startDate->format('j');
+
+                if ($self->openDay <= $day && $day <= $self->closeDay) {
+                    return;
+                }
+
+                $form->get('start_date')->addError(
+                    new FormError(
+                        $self->translator->trans(
+                            'payment_form.start_date.error_range',
+                            array(
+                                '%OPEN_DAY%'      => $self->openDay,
+                                '%CLOSE_DAY%'     => $self->closeDay
+                            )
+                        )
+                    )
+                );
+            }
         );
     }
 
