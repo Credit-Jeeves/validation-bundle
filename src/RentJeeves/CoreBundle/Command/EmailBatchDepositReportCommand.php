@@ -26,7 +26,10 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $date = new DateTime('2014-07-14');
+        $date = new DateTime();
+
+        $output->writeln('Start prepare daily batch deposit report by ' . $date->format('m/d/Y'));
+
         /** @var Mailer $mailer */
         $mailer = $this->getContainer()->get('project.mailer');
         /** @var Registry $doctrine */
