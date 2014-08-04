@@ -46,7 +46,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 $groups[] = [
                     'groupName' => $group->getName(),
                     'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
-                    'batches' => $this->prepareBatchReportData($data)
+                    'batches' => $this->prepareBatchReportData($data),
                 ];
             }
             $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date);
@@ -79,7 +79,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                     'batchId' => $data[$i]['batchId'],
                     'paymentType' => $data[$i]['paymentType'],
                     'transactions' => $transactions,
-                    'paymentTotal' => $paymentTotal
+                    'paymentTotal' => $paymentTotal,
                 ];
                 $transactions = [];
                 $paymentTotal = 0;

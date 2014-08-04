@@ -375,11 +375,10 @@ class Mailer extends BaseMailer
      */
     public function sendBatchDepositReportHolding(Landlord $landlord, $groups, DateTime $date)
     {
-        print_r($groups);
         $vars = [
             'landlordFirstName' => $landlord->getFirstName(),
             'date' => $date,
-            'groups' => $groups
+            'groups' => $groups,
         ];
 
         return $this->sendBaseLetter(
@@ -404,7 +403,7 @@ class Mailer extends BaseMailer
             'date' => $date,
             'groupName' => $group->getName(),
             'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
-            'batches' => $batches
+            'batches' => $batches,
         ];
 
         return $this->sendBaseLetter(
