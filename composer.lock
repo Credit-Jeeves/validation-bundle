@@ -415,7 +415,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "3a8fccacc524063f970a1abdc59fc5ffba0a0d4b"
+                "reference": "8b754ed746da35a14ec78492af34dcaa5fa6ef53"
             },
             "require": {
                 "doctrine/dbal": "~2.4",
