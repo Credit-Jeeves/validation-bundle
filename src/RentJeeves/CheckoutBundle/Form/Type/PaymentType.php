@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
+use RentJeeves\CheckoutBundle\Constraint\DayRange;
 use RentJeeves\CheckoutBundle\Constraint\StartDate;
 use RentJeeves\CheckoutBundle\Form\DataTransformer\DateTimeToStringTransformer;
 use RentJeeves\CoreBundle\Form\Type\ViewHiddenType;
@@ -313,6 +314,17 @@ class PaymentType extends AbstractType
                             'oneTimeUntilValue' => $this->oneTimeUntilValue,
                         )
                     ),
+                    new DayRange(
+                        array(
+                            'groups'            => array(
+                                'recurring',
+                                'one_time'
+                            ),
+                            'translator' => $this->translator,
+                            'openDay'    => $this->openDay,
+                            'closeDay'   => $this->closeDay
+                        )
+                    ),
                     new Callback(
                         array(
                             'groups'  => array('one_time'),
@@ -409,36 +421,6 @@ class PaymentType extends AbstractType
                     'data-bind' => 'value: payment.id',
                 )
             )
-        );
-
-        $self = $this;
-        $builder->addEventListener(
-            FormEvents::SUBMIT,
-            function (FormEvent $event) use ($self) {
-                $form = $event->getForm();
-                $startDate = $form->get('start_date')->getNormData();
-                if (!$startDate) {
-                    return;
-                }
-
-                $day = $startDate->format('j');
-
-                if ($self->openDay <= $day && $day <= $self->closeDay) {
-                    return;
-                }
-
-                $form->get('start_date')->addError(
-                    new FormError(
-                        $self->translator->trans(
-                            'payment_form.start_date.error_range',
-                            array(
-                                '%OPEN_DAY%'      => $self->openDay,
-                                '%CLOSE_DAY%'     => $self->closeDay
-                            )
-                        )
-                    )
-                );
-            }
         );
     }
 
