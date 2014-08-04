@@ -18,9 +18,6 @@ use Symfony\Component\Validator\Constraints\Callback;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use DateTime;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 class PaymentType extends AbstractType
 {
