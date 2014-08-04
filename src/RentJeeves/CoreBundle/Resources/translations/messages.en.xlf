@@ -2517,7 +2517,13 @@
                 <source>tenant.no_balance.alert</source>
                 <target>You do not have a balance to pay at this time.</target>
             </trans-unit>
-
+            <trans-unit id="payment_form.start_date.error_range">
+                <source>payment_form.start_date.error_range</source>
+                <target>
+                    Your property manager is not accepting payments at this time.
+                    Please select a day of month between %OPEN_DAY% and %CLOSE_DAY%.
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

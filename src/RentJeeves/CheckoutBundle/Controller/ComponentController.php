@@ -30,7 +30,10 @@ class ComponentController extends Controller
             new PaymentType(
                 $this->container->getParameter('payment_one_time_until_value'),
                 array(),
-                array()
+                array(),
+                0,
+                0,
+                $this->get('translator')
             )
         );
         $paymentBalanceOnlyType =  $this->createForm(
@@ -38,7 +41,10 @@ class ComponentController extends Controller
                 $this->container->getParameter('payment_one_time_until_value'),
                 array(),
                 array(),
-                $this->getDoctrine()->getManager()
+                $this->getDoctrine()->getManager(),
+                0,
+                0,
+                $this->get('translator')
             )
         );
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());

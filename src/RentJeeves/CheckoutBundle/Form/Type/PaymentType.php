@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
+use RentJeeves\CheckoutBundle\Constraint\DayRange;
 use RentJeeves\CheckoutBundle\Constraint\StartDate;
 use RentJeeves\CheckoutBundle\Form\DataTransformer\DateTimeToStringTransformer;
 use RentJeeves\CoreBundle\Form\Type\ViewHiddenType;
@@ -38,13 +39,34 @@ class PaymentType extends AbstractType
     protected $dueDays = array();
 
     /**
+     * @var integer
+     */
+    protected $openDay;
+
+    /**
+     * @var integer
+     */
+    protected $closeDay;
+
+    protected $translator;
+
+    /**
      * @param string $oneTimeUntilValue
      */
-    public function __construct($oneTimeUntilValue, array $paidFor, $dueDays)
-    {
+    public function __construct(
+        $oneTimeUntilValue,
+        array $paidFor,
+        $dueDays,
+        $openDay,
+        $closeDay,
+        $translator
+    ) {
         $this->oneTimeUntilValue = $oneTimeUntilValue;
         $this->paidFor = $paidFor;
         $this->dueDays = $dueDays;
+        $this->openDay = $openDay;
+        $this->closeDay = $closeDay;
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -287,6 +309,17 @@ class PaymentType extends AbstractType
                                 'one_time'
                             ),
                             'oneTimeUntilValue' => $this->oneTimeUntilValue,
+                        )
+                    ),
+                    new DayRange(
+                        array(
+                            'groups'            => array(
+                                'recurring',
+                                'one_time'
+                            ),
+                            'translator' => $this->translator,
+                            'openDay'    => $this->openDay,
+                            'closeDay'   => $this->closeDay
                         )
                     ),
                     new Callback(

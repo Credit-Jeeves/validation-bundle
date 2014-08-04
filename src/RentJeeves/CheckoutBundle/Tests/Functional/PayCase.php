@@ -51,6 +51,60 @@ class PayCase extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    public function dayRange()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        self::$kernel = null;
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(array('email' => 'tenant11@example.com'));
+        $contracts = $tenant->getContracts();
+        $today = new DateTime();
+        $today->modify("-1 day");
+        /**
+         * @var $contract Contract
+         */
+        foreach ($contracts as $contract) {
+            $group = $contract->getGroup();
+            $groupSetting = $group->getGroupSettings();
+            $groupSetting->setOpenDate($today->format('j'));
+            $groupSetting->setCloseDate($today->format('j'));
+            $em->persist($groupSetting);
+        }
+        $em->flush();
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->pressButton('contract-pay-2');
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $today = new DateTime();
+        $today->modify('+5 day');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_type'      => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date'=> $today->format('n/j/Y'),
+            )
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(1, $errors);
+        $this->assertEquals('payment_form.start_date.error_range', $errors[0]->getText());
+        $this->logout();
+    }
+
+    /**
      * @dataProvider provider
      * @test
      */
