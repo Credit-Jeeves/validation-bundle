@@ -9,7 +9,6 @@ use RentJeeves\CoreBundle\Command\EmailBatchDepositReportCommand;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use DateTime;
 
-
 class EmailBatchDepositReportCommandCase extends BaseTestCase
 {
     /**
