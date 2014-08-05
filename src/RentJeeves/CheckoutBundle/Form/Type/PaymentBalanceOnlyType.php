@@ -15,9 +15,23 @@ class PaymentBalanceOnlyType extends PaymentType
 
     protected $em;
 
-    public function __construct($oneTimeUntilValue, array $paidFor, $dueDays, $em)
-    {
-        parent::__construct($oneTimeUntilValue, $paidFor, $dueDays);
+    public function __construct(
+        $oneTimeUntilValue,
+        array $paidFor,
+        $dueDays,
+        $em,
+        $openDay,
+        $closeDay,
+        $translator
+    ) {
+        parent::__construct(
+            $oneTimeUntilValue,
+            $paidFor,
+            $dueDays,
+            $openDay,
+            $closeDay,
+            $translator
+        );
         $this->em = $em;
     }
 

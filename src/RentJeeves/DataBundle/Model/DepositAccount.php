@@ -47,6 +47,17 @@ abstract class DepositAccount
 
     /**
      * @ORM\Column(
+     *      name="account_number",
+     *      type="integer",
+     *      nullable=true,
+     *      unique=true
+     * )
+     * @Serializer\SerializedName("accountNumber")
+     */
+    protected $accountNumber;
+
+    /**
+     * @ORM\Column(
      *      type="DepositAccountStatus",
      *      options={
      *         "default"="init"
@@ -134,6 +145,25 @@ abstract class DepositAccount
     public function getMerchantName()
     {
         return $this->merchantName;
+    }
+
+    /**
+     * @param string $accountNumber
+     * @return DepositAccount
+     */
+    public function setAccountNumber($accountNumber)
+    {
+        $this->accountNumber = $accountNumber;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountNumber()
+    {
+        return $this->accountNumber;
     }
 
     /**
