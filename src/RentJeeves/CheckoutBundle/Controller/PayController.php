@@ -72,14 +72,20 @@ class PayController extends Controller
                 $this->container->getParameter('payment_one_time_until_value'),
                 array(),
                 array(),
-                $this->getDoctrine()->getManager()
+                $this->getDoctrine()->getManager(),
+                $contract->getGroup()->getGroupSettings()->getOpenDate(),
+                $contract->getGroup()->getGroupSettings()->getCloseDate(),
+                $this->get('translator')
             );
         } else {
             $dueDays = $contract->getSettings()->getDueDays();
             $formType = new PaymentType(
                 $this->container->getParameter('payment_one_time_until_value'),
                 $this->container->get('checkout.paid_for')->getArray($contract),
-                array_combine($dueDays, $dueDays)
+                array_combine($dueDays, $dueDays),
+                $contract->getGroup()->getGroupSettings()->getOpenDate(),
+                $contract->getGroup()->getGroupSettings()->getCloseDate(),
+                $this->get('translator')
             );
         }
         if (!empty($paymentEntity) &&
