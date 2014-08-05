@@ -1143,7 +1143,7 @@ fixtures:
       <br />
       {% if batches %}
         {% for batch in batches %}
-        Batch ID: <b>{{ batch.batchId }}</b><br />
+        Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
         Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
         <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
           <thead>
@@ -1207,7 +1207,7 @@ fixtures:
       <br />
         {% if group.batches %}
           {% for batch in group.batches %}
-          Batch ID: <b>{{ batch.batchId }}</b><br />
+          Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
           Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
           <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
             <thead>
