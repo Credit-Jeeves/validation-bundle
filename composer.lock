@@ -3502,7 +3502,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/Heartland.git",
+                "url": "git@github.com:Credit-Jeeves/Heartland.git",
                 "reference": "0df39e515d53eb1a242e6fe161ea98a11894e71c"
             },
             "require": {
@@ -3537,7 +3537,7 @@
                 }
             ],
             "description": "Heartland pro checkout",
-            "homepage": "https://github.com/66Ton99/Heartland",
+            "homepage": "https://github.com/Credit-Jeeves/Heartland",
             "keywords": [
                 "heartland",
                 "library",
