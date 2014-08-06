@@ -87,6 +87,7 @@ class PaymentCommandsCase extends BaseTestCase
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
+        $this->assertNotNull($order->getHeartlandBatchId());
         $operations = $order->getOperations();
         $this->assertCount(3, $operations);
 
@@ -138,6 +139,7 @@ class PaymentCommandsCase extends BaseTestCase
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
+        $this->assertNotNull($order->getHeartlandBatchId());
         $operations = $order->getOperations();
         $this->assertCount(1, $operations);
 
