@@ -13,7 +13,7 @@ class HeartlandRepository extends EntityRepository
      * @param DateTime $date
      * @return mixed
      */
-    public function getBatchDepositedInfo($group, DateTime $date)
+    public function getBatchDepositedInfo(Group $group, DateTime $date)
     {
         $query = $this->createQueryBuilder('h');
         $query->select(

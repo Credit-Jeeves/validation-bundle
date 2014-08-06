@@ -95,13 +95,17 @@ class AccountingController extends Controller
             /** @var ExportReport $report */
             $report = $accounting->getReport($formData);
 
-            $response = new Response();
-            $response->setContent($report->getContent($formData));
-            $response->headers->set('Cache-Control', 'private');
-            $response->headers->set('Content-Type', $report->getContentType());
-            $response->headers->set('Content-Disposition', 'attachment; filename=' . $report->getFilename());
+            if ($content = $report->getContent($formData)) {
+                $response = new Response();
+                $response->setContent($content);
+                $response->headers->set('Cache-Control', 'private');
+                $response->headers->set('Content-Type', $report->getContentType());
+                $response->headers->set('Content-Disposition', 'attachment; filename=' . $report->getFilename());
 
-            return $response;
+                return $response;
+            } else {
+                $this->get('session')->getFlashBag()->add('notice', $this->get('translator')->trans('export.no.data'));
+            }
         }
 
         return array(

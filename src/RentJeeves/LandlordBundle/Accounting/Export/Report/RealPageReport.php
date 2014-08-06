@@ -42,6 +42,10 @@ class RealPageReport extends ExportReport
         $this->generateFilename($settings);
         $reportData = $this->getData($settings);
 
+        if (empty($reportData)) {
+            return null;
+        }
+
         return $this->serializer->serialize($reportData);
     }
 
