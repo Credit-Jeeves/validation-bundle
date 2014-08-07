@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -16,6 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RuntimeException;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 
 class OrderListener
 {
@@ -68,6 +71,7 @@ class OrderListener
         }
 
         $this->updateBalanceContract($eventArgs);
+        $this->updateBatchDetails($entity);
 
         /** @var Operation $operation */
         foreach ($operations as $operation) {
@@ -296,6 +300,19 @@ class OrderListener
                     }
                 }
                 break;
+        }
+    }
+
+    protected function updateBatchDetails(Order $order)
+    {
+        if (OrderStatus::COMPLETE == $order->getStatus() && OrderType::HEARTLAND_CARD == $order->getType()) {
+            /** @var Heartland $transaction */
+            $transaction = $order->getHeartlands()->first(); // complete CC payment may have only one transaction
+            $batchDate = new DateTime();
+            $transaction->setBatchDate($batchDate);
+            /** @var BusinessDaysCalculator $businessDaysCalc */
+            $businessDaysCalc = $this->container->get('business_days_calculator');
+            $transaction->setDepositDate($businessDaysCalc->getCreditCardBusinessDate($batchDate));
         }
     }
 }

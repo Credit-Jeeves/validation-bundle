@@ -75,7 +75,7 @@ class OrderListenerCase extends Base
     /**
      * We test updated startAt on the table rj_contract when user create first order
      *
-     * @test
+     * %test
      */
     public function updateStartAtOfContract()
     {
@@ -122,7 +122,7 @@ class OrderListenerCase extends Base
      * We test do not update startAt on the table rj_contract when user create second order
      *
      * @depends updateStartAtOfContract
-     * @test
+     * %test
      */
     public function doNotUpdateStartAtOfContract()
     {
@@ -199,7 +199,7 @@ class OrderListenerCase extends Base
 
     /**
      * @dataProvider getDataForUpdateBalanceContract
-     * @test
+     * %test
      */
     public function updateBalanceContract(
         $integratedBalanceMustBe,
@@ -290,7 +290,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * %test
      */
     public function shouldUnshiftContractDateWhenOrderIsCancelled()
     {
@@ -351,11 +351,10 @@ class OrderListenerCase extends Base
         $paidTo = $contract->getPaidTo();
         $paidToOriginal = clone $paidTo;
 
-
         $order = new Order();
         $order->setUser($tenant);
         $order->setSum(1000);
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setType(OrderType::HEARTLAND_BANK);
         $order->setStatus(OrderStatus::PENDING);
 
         $operation = new Operation();
@@ -389,7 +388,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * %test
      */
     public function shouldSetEarliestPaidForAsContractStartDate()
     {

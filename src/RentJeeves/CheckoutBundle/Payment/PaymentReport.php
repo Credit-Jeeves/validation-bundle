@@ -20,6 +20,8 @@ class PaymentReport
     const TRANSACTION_TYPE_PAYMENT_REFUND = 'Payment  Refund';
     const TRANSACTION_TYPE_PAYMENT_VOID = 'Payment  Void';
 
+    const PAYMENT_METHOD_ACH = 'ACH';
+
     protected $em;
     protected $repo;
     protected $fileReader;
@@ -86,33 +88,34 @@ class PaymentReport
 
     protected function processCompletePayment($paymentData, $data)
     {
-        $reversedPayment = array_filter(
-            $data,
-            function ($transaction) use ($paymentData) {
-                if ($transaction['OriginalTransactionID'] == $paymentData['TransactionID'] &&
-                    $transaction['TransactionType'] != $paymentData['TransactionType']
-                ) {
-                    return true;
+        // only ACH payments may go to complete from this report
+        if (self::PAYMENT_METHOD_ACH == $paymentData['PaymentMethod']) {
+            $reversedPayment = array_filter(
+                $data,
+                function ($transaction) use ($paymentData) {
+                    if ($transaction['OriginalTransactionID'] == $paymentData['TransactionID'] &&
+                        $transaction['TransactionType'] != $paymentData['TransactionType']
+                    ) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        );
-        if (!$reversedPayment) {
+            );
+            if (!$reversedPayment) {
 
-            $transaction = $this->findTransaction($paymentData['TransactionID']);
+                $transaction = $this->findTransaction($paymentData['TransactionID']);
 
-            if ($transaction && $batchId = $paymentData['BatchID']) {
-                $transaction->setBatchId($batchId);
+                if ($transaction && $batchId = $paymentData['BatchID']) {
+                    $transaction->setBatchDate($this->batchDate);
 
-                $transaction->setBatchDate($this->batchDate);
+                    $depositDate = $this->getDepositDate($transaction);
+                    $transaction->setDepositDate($depositDate);
 
-                $depositDate = $this->getDepositDate($transaction);
-                $transaction->setDepositDate($depositDate);
+                    $order = $transaction->getOrder();
+                    $order->setStatus(OrderStatus::COMPLETE);
 
-                $order = $transaction->getOrder();
-                $order->setStatus(OrderStatus::COMPLETE);
-
-                $this->em->flush();
+                    $this->em->flush();
+                }
             }
         }
     }
@@ -145,13 +148,26 @@ class PaymentReport
 
     protected function processCancelledPayment($paymentData)
     {
-        $transaction = $this->findTransaction($paymentData['OriginalTransactionID']);
+        /** @var HeartlandTransaction $originalTransaction */
+        $originalTransaction = $this->findTransaction($paymentData['OriginalTransactionID']);
 
         // @TODO: process 'else' case in future
-        if ($transaction) {
-            $order = $transaction->getOrder();
+        if ($originalTransaction) {
+            $order = $originalTransaction->getOrder();
             $order->setStatus(OrderStatus::CANCELLED);
 
+            $voidTransaction = new HeartlandTransaction();
+            $voidTransaction->setTransactionId($paymentData['TransactionID']);
+            $voidTransaction->setOrder($order);
+            $voidTransaction->setAmount($paymentData['AmountAppliedToBill']);
+            $voidTransaction->setBatchId($paymentData['BatchID']);
+            $voidTransaction->setIsSuccessful(true);
+            // if payment method is CC (not ACH)
+            if (self::PAYMENT_METHOD_ACH != $paymentData['PaymentMethod']) {
+                $originalTransaction->setDepositDate(null);
+            }
+
+            $this->em->persist($voidTransaction);
             $this->em->flush();
         }
     }

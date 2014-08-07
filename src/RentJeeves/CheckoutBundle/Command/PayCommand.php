@@ -156,9 +156,10 @@ class PayCommand extends ContainerAwareCommand
         $order->addHeartland($paymentDetails);
         $message = 'OK';
         if ($statusRequest->isSuccess()) {
-            $order->setStatus(OrderStatus::PENDING);
-            $status = $contract->getStatus();
-            if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
+            $orderStatus = $this->getSuccessfulOrderStatus($order);
+            $order->setStatus($orderStatus);
+            $contractStatus = $contract->getStatus();
+            if (in_array($contractStatus, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
                 $contract->setStatus(ContractStatus::CURRENT);
             }
         } else {
@@ -176,6 +177,15 @@ class PayCommand extends ContainerAwareCommand
         if ('OK' != $message) {
             return 1;
         }
+    }
+
+    protected function getSuccessfulOrderStatus(Order $order)
+    {
+        if (OrderType::HEARTLAND_CARD == $order->getType()) {
+            return OrderStatus::COMPLETE;
+        }
+
+        return OrderStatus::PENDING;
     }
 
     protected function createOperations(Payment $payment, Order $order)
