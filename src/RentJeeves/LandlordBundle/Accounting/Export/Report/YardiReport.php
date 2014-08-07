@@ -72,7 +72,8 @@ class YardiReport extends ExportReport
             $beginDate,
             $endDate,
             $holdingId
-        );    }
+        );
+    }
 
     public function getAccountId()
     {
