@@ -4,6 +4,7 @@
             <h3>{{ 'rj.footer.title' | trans }}</h3>
             <p>{{ 'rj.footer.comment' | trans }}</p>
               {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': true}) }}
+              {{ include('RjCoreBundle::bbbseal.html.twig', {'pad': false}) }}
           </div>
           <nav>
             <ul class="navigation clearfix">
