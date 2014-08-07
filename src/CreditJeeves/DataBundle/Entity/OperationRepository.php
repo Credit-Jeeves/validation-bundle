@@ -85,7 +85,8 @@ class OperationRepository extends EntityRepository
     public function getOperationsForXmlReport(
         $propertyId,
         $start,
-        $end
+        $end,
+        $holdingId
     ) {
         $query = $this->createQueryBuilder('operation')->select(
             'operation,
@@ -98,15 +99,19 @@ class OperationRepository extends EntityRepository
         $query->innerJoin("operation.order", "ord");
         $query->innerJoin("operation.contract", "contract");
         $query->innerJoin("contract.tenant", "tenant");
+        $query->innerJoin("tenant.residentsMapping", "resident");
+        $query->innerJoin("resident", "holding");
         $query->innerJoin('contract.property', 'prop');
         $query->innerJoin('contract.unit', 'unit');
         $query->where("ord.updated_at BETWEEN :start AND :end");
         $query->andWhere('prop.id = :propId');
+        $query->andWhere('holding.id = :holdingId');
         $query->andWhere('ord.status = :status');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
         $query->orderBy('ord.id', 'ASC');
 
         $query->setParameter('end', $end);
+        $query->setParameter('holdingId', $holdingId);
         $query->setParameter('type1', OperationType::RENT);
         $query->setParameter('type2', OperationType::OTHER);
         $query->setParameter('start', $start);
