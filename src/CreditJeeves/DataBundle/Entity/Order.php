@@ -9,6 +9,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
@@ -42,7 +43,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Property")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"csvReport", "rentTrackReport"})
      *
      * @return string
      */
@@ -63,21 +64,60 @@ class Order extends BaseOrder
     }
 
     /**
+     * @return null | Unit
+     */
+    public function getUnit()
+    {
+        $contract = $this->getContract();
+
+        if (!$contract) {
+            return null;
+        }
+
+        $unit = $contract->getUnit();
+
+        return $unit;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Unit ID")
+     * @Serializer\Groups({"rentTrackReport"})
+     *
+     * @return string
+     */
+    public function getUnitId()
+    {
+        $unit = $this->getUnit();
+
+        if (!$unit) {
+            return null;
+        }
+
+        $group = $unit->getGroup();
+
+        if ($group && $group->getGroupSettings()->getIsIntegrated()) {
+            $unitMapping = $unit->getUnitMapping();
+            return $unitMapping ? $unitMapping->getExternalUnitId() : null;
+        }
+
+        return $unit->getId();
+    }
+
+
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Unit")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"csvReport", "rentTrackReport"})
      *
      * @return string
      */
     public function getUnitName()
     {
         $unitName = '';
-        $contract = $this->getContract();
-        if (!$contract) {
-            return $unitName;
-        }
 
-        $unit = $contract->getUnit();
+        $unit = $this->getUnit();
 
         if ($unit) {
             $unitName = $unit->getName();
@@ -91,7 +131,7 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"csvReport", "rentTrackReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -130,13 +170,18 @@ class Order extends BaseOrder
      */
     public function getExternalUnitId()
     {
-        return $this->getContract()->getUnit()->getUnitMapping()->getExternalUnitId();
+        $unit = $this->getUnit();
+        if ($unit) {
+            return $unit->getUnitMapping()->getExternalUnitId();
+        }
+
+        return null;
     }
 
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TotalAmount")
-     * @Serializer\Groups({"csvReport", "promasReport"})
+     * @Serializer\Groups({"csvReport", "promasReport", "rentTrackReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -145,6 +190,79 @@ class Order extends BaseOrder
     public function getTotalAmount()
     {
         return number_format($this->getSum(), 2, '.', '');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Transaction ID")
+     * @Serializer\Groups({"rentTrackReport"})
+     *
+     * @return int
+     */
+    public function getTransactionId()
+    {
+        return $this->getHeartlandTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Batch ID")
+     * @Serializer\Groups({"rentTrackReport"})
+     *
+     */
+    public function getBatchId()
+    {
+        return $this->getHeartlandBatchId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Status")
+     * @Serializer\Groups({"rentTrackReport"})
+     */
+    public function getOrderStatus()
+    {
+        return $this->getStatus();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Tenant Name")
+     * @Serializer\Groups({"rentTrackReport"})
+     */
+    public function getTenantName()
+    {
+        $this->getCjApplicantId();
+        return $this->getFirstNameTenant() . ' ' . $this->getLastNameTenant();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Tenant ID")
+     * @Serializer\Groups({"rentTrackReport"})
+     */
+    public function getTenantId()
+    {
+        $contract = $this->getContract();
+
+        if (!$contract) {
+            return null;
+        }
+
+        $tenant = $contract->getTenant();
+
+        if (!$tenant) {
+            return null;
+        }
+
+        $group = $contract->getGroup();
+
+        if ($group && $group->getGroupSettings()->getIsIntegrated()) {
+            $tMap = $tenant->getResidentsMapping()->first();
+            return $tMap ? $tMap->getResidentId() : null;
+        } else {
+            return $tenant->getId();
+        }
     }
 
     /**
@@ -424,6 +542,13 @@ class Order extends BaseOrder
         return $result;
     }
 
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Payment Type")
+     * @Serializer\Groups({"rentTrackReport"})
+     *
+     * @return string
+     */
     public function getOrderTypes()
     {
         $type = $this->getType();
@@ -521,6 +646,10 @@ class Order extends BaseOrder
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Group Name")
+     * @Serializer\Groups({"rentTrackReport"})
+     *
      * @return string|null
      */
     public function getGroupName()
@@ -554,5 +683,25 @@ class Order extends BaseOrder
                 break;
         }
         return $fee;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Deposit Account")
+     * @Serializer\Groups({"rentTrackReport"})
+     *
+     * @return null|int
+     */
+    public function getDepositAccountNumber()
+    {
+        $contract = $this->getContract();
+
+        if (!$contract) {
+            return null;
+        }
+
+        $depositAccount = $contract->getDepositAccount();
+
+        return $depositAccount ? $depositAccount->getAccountNumber() : null;
     }
 }

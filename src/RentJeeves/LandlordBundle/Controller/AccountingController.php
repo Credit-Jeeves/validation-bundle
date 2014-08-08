@@ -90,7 +90,7 @@ class AccountingController extends Controller
         if ($formBaseOrder->isValid()) {
 
             $formData = $formBaseOrder->getData();
-            $formData['group'] = $group;
+            $formData['landlord'] = $this->get('core.session.landlord');
             $accounting = $this->get('accounting.export');
             /** @var ExportReport $report */
             $report = $accounting->getReport($formData);
@@ -103,9 +103,8 @@ class AccountingController extends Controller
                 $response->headers->set('Content-Disposition', 'attachment; filename=' . $report->getFilename());
 
                 return $response;
-            } else {
-                $this->get('session')->getFlashBag()->add('notice', $this->get('translator')->trans('export.no.data'));
             }
+            $this->get('session')->getFlashBag()->add('notice', $this->get('translator')->trans('export.no_data'));
         }
 
         return array(

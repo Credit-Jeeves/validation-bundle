@@ -22,13 +22,13 @@
             {{ form_widget(formBaseOrder) }}
            <button type="submit" class="button small submitBaseReport">
                     <span>
-                        {{ 'base.order.report.download'|trans }}
+                        {{ 'order.report.download'|trans }}
                     </span>
            </button>
-           <div class="helpContainer" data-bind="visible: selectedType() != 'promas'">
+           <div class="helpContainer" data-bind="visible: (selectedType() == 'csv') && (selectedType() == 'xml')">
                Help:
-               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296770-how-to-import-payments-into-yardi" class="xml" data-bind="visible: selectedType() == 'xml'">{{ 'base.order.report.how_to.yardi'|trans }}</a>
-               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296772-how-do-i-import-payments-into-realpage-onesite-" class="csv" data-bind="visible: selectedType() == 'csv'">{{ 'base.order.report.how_to.realpage'|trans }}</a>
+               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296770-how-to-import-payments-into-yardi" class="xml" data-bind="visible: selectedType() == 'xml'">{{ 'order.report.how_to.yardi'|trans }}</a>
+               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296772-how-do-i-import-payments-into-realpage-onesite-" class="csv" data-bind="visible: selectedType() == 'csv'">{{ 'order.report.how_to.realpage'|trans }}</a>
            </div>
         </form>
     </section>
@@ -45,25 +45,6 @@
             starts: 1,
             position: 'r'
         });
-        // @TODO move it to css
-        function processFieldsFormReport(type)
-        {
-            if(type == 'xml') {
-                $('.type-date').css({'margin-top':'-175px'});
-            }
-            if (type == 'csv') {
-                $('.type-date').css({'margin-top':'-70px'});
-            }
-            if (type == 'promas') {
-                $('.type-date').css({'margin-top':'-35px'});
-            }
-        }
-
-        $('#base_order_report_type_type').change(function() {
-            processFieldsFormReport($(this).val());
-        });
-
-        processFieldsFormReport($('#base_order_report_type_type option:selected').val());
 
         $(document).ready(function() {
             var viewModel = new ExportViewModel();

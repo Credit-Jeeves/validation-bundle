@@ -26,7 +26,7 @@ class ExportCase extends BaseTestCase
         $beginD->modify('-1 year');
         $endD = new DateTime();
 
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(6, count($errors));
 
@@ -45,7 +45,7 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
 
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
 
         $xml = $this->page->getContent();
         $doc = new SimpleXMLElement($xml);
@@ -93,13 +93,13 @@ class ExportCase extends BaseTestCase
         $beginD->modify('-1 year');
         $endD = new DateTime();
 
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(6, count($errors));
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
         $type->selectOption('csv');
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(3, count($errors));
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
@@ -109,7 +109,7 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
 
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
         $csvArr = explode("\n", $csv);
@@ -143,7 +143,7 @@ class ExportCase extends BaseTestCase
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
         $type->selectOption('promas');
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(2, count($errors));
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
@@ -151,7 +151,7 @@ class ExportCase extends BaseTestCase
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
 
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
         $csvArr = explode("\n", $csv);
@@ -177,7 +177,7 @@ class ExportCase extends BaseTestCase
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
         $type->selectOption('promas');
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(2, count($errors));
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
@@ -188,7 +188,7 @@ class ExportCase extends BaseTestCase
         $makeZip->check();
 
         ob_start();
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
         $csvZip = ob_get_contents();
         ob_end_clean();
 
@@ -240,7 +240,7 @@ class ExportCase extends BaseTestCase
         $makeZip->check();
 
         ob_start();
-        $this->page->pressButton('base.order.report.download');
+        $this->page->pressButton('order.report.download');
         $csvZip = ob_get_contents();
         ob_end_clean();
 
@@ -269,5 +269,92 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('FGDTRFG-44', (string) $personId);
         $this->assertEquals('1500.00', (string)$amount);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
+    }
+
+    /**
+     * @test
+     */
+    public function rentTrackCsvFormat()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('renttrack');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(2, count($errors));
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
+
+        $this->assertEquals($notice->getText(), 'export.no_data');
+
+        $beginD->modify('-1 year');
+        $begin->setValue($beginD->format('m/d/Y'));
+
+        $this->page->pressButton('order.report.download');
+
+
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\n", $csv);
+        $this->assertEquals(13, count($csvArr));
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[12]));
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $csvArr[0]);
+        $this->assertEquals('AAABBB-7', $csvArr[1]);
+        $this->assertEquals('147147', $csvArr[5]);
+        $this->assertEquals('FGDTRFG-44', $csvArr[9]);
+        $this->assertEquals('15235678', $csvArr[12]);
+    }
+
+    /**
+     * @test
+     */
+    public function rentTrackBatchReport()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('renttrack');
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
+
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $makeZip->check();
+
+        ob_start();
+        $this->page->pressButton('order.report.download');
+        $csvZip = ob_get_contents();
+        ob_end_clean();
+
+        $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
+        file_put_contents($testFile, $csvZip);
+
+        $archive = new ZipArchive();
+        $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
+        $this->assertEquals(3, $archive->numFiles);
+        $file = $archive->getFromIndex(1);
+        $rows = explode("\n", trim($file));
+        $this->assertEquals(3, count($rows));
+        $columns = str_getcsv($rows[1]);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $columns[0]);
+        $this->assertEquals('15235678', $columns[12]);
     }
 }
