@@ -308,6 +308,10 @@ function accountingImport() {
     };
 
     this.isValidFieldsWhichNotContainsInForm = function(data) {
+        if (data.contract.property === null) {
+            return false;
+        }
+
         var isValid = true;
 
         if (!self.getErrorsList(data)) {
