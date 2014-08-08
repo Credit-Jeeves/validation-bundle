@@ -95,7 +95,12 @@ class ContractListener
         if (!$eventArgs->hasChangedField('rent')) {
             return;
         }
-
+        /**
+         * Need double check because:
+         * 500 - string
+         * 500.00 - double
+         * value the same but contract will close.
+         */
         $oldValue = $eventArgs->getNewValue('rent');
         $newValue = $eventArgs->getOldValue('rent');
 
