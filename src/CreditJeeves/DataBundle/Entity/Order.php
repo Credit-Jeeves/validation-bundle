@@ -573,4 +573,9 @@ class Order extends BaseOrder
         }
         return $fee;
     }
+
+    public function getReversalDescription()
+    {
+        return '';
+    }
 }

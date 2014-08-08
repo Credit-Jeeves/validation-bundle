@@ -2,20 +2,28 @@
 
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
+use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Entity\Heartland as HeartlandTransaction;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\DataBundle\Entity\Tenant;
 
 class PaymentReportCase extends BaseTestCase
 {
     /**
      * @test
-     * @dataProvider provide
+     * @dataProvider provideReversal
      */
-    public function shouldSynchronizeDBOrdersWithReport($transactionId, $firstStatus, $secondStatus)
+    public function shouldSynchronizeDBOrdersWithReversalReport($transactionId, $firstStatus, $secondStatus)
     {
         $this->load(true);
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $paymentReport = $this->getContainer()->get('payment.report');
+        $paymentReport = $this->getContainer()->get('payment.reversal_report');
 
         $repo = $em->getRepository('RjDataBundle:Heartland');
         $transaction = $repo->findOneBy(array('transactionId' => $transactionId));
@@ -23,19 +31,12 @@ class PaymentReportCase extends BaseTestCase
 
         $this->assertEquals($firstStatus, $order->getStatus());
 
-        $this->clearEmail();
-        $count = $paymentReport->synchronize();
-        $this->assertEquals(7, $count);
-
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($emails = $this->page->findAll('css', 'a'));
-        $this->assertCount(4, $emails);
+        $paymentReport->synchronize();
 
         $this->assertEquals($secondStatus, $order->getStatus());
     }
 
-    public function provide()
+    public function provideReversal()
     {
         return array(
             array('369369', 'complete', 'returned'),
@@ -43,5 +44,85 @@ class PaymentReportCase extends BaseTestCase
             array('123123', 'complete', 'refunded'),
             array('456456', 'complete', 'cancelled'),
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSynchronizeDBOrdersWithDepositReport()
+    {
+        $this->load(true);
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
+        $transactionId = 5355372;
+        $this->createOrder($transactionId);
+
+        $paymentReport = $this->getContainer()->get('payment.deposit_report');
+        $paymentReport->synchronize();
+
+        $repo = $em->getRepository('RjDataBundle:Heartland');
+        /** @var HeartlandTransaction $resultTransaction */
+        $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));
+        $this->assertNotNull($batchDate = $resultTransaction->getBatchDate());
+        $this->assertNotNull($depositDate = $resultTransaction->getDepositDate());
+        $this->assertEquals('8/1/2014', $batchDate->format('n/j/Y'));
+        $this->assertEquals('8/3/2014', $depositDate->format('n/j/Y'));
+        $this->assertNotNull($resultOrder = $resultTransaction->getOrder());
+        $this->assertEquals(OrderStatus::COMPLETE, $resultOrder->getStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSynchronizeDBOrdersWithDepositReportAndNotSetDepositDate()
+    {
+        $this->load(true);
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
+        $transactionId = 5355373;
+        $this->createOrder($transactionId);
+
+        $paymentReport = $this->getContainer()->get('payment.deposit_report');
+        $paymentReport->synchronize();
+
+        $repo = $em->getRepository('RjDataBundle:Heartland');
+        /** @var HeartlandTransaction $resultTransaction */
+        $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));
+        $this->assertNotNull($batchDate = $resultTransaction->getBatchDate());
+        $this->assertEquals(null, $resultTransaction->getDepositDate());
+        $this->assertNotNull($resultOrder = $resultTransaction->getOrder());
+        $this->assertNotEquals(OrderStatus::COMPLETE, $resultOrder->getStatus());
+    }
+
+    protected function createOrder($transactionId)
+    {
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
+        $order = new Order();
+        $order->setStatus(OrderStatus::PENDING);
+        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setSum(999);
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(array('email' => 'tenant11@example.com'));
+        $order->setUser($tenant);
+
+        $operation = new Operation();
+        $operation->setAmount(999);
+        $operation->setType(OperationType::RENT);
+        $operation->setOrder($order);
+        $operation->setPaidFor(new DateTime('8/1/2014'));
+        $operation->setContract($tenant->getContracts()->last());
+
+        $transaction = new HeartlandTransaction();
+        $transaction->setIsSuccessful(true);
+        $transaction->setOrder($order);
+        $transaction->setTransactionId($transactionId);
+        $transaction->setAmount(999);
+        $transaction->setMerchantName('MrchntNm');
+
+        $em->persist($order);
+        $em->persist($operation);
+        $em->persist($transaction);
+        $em->flush();
     }
 }
