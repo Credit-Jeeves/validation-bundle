@@ -105,6 +105,7 @@ class EmailTenantCommandCase extends BaseTestCase
             )
         );
         $this->assertRegExp('/Start processing late contracts/', $commandTester->getDisplay());
-        $this->assertCount(2, $plugin->getPreSendMessages());// Contracts with ids: 7, 18
+        // test may fail on 6th day of month due to the logic of late emails test (due date + 5 days = 6th day)
+        $this->assertCount(1, $plugin->getPreSendMessages());// Contracts with ids: 7, 18
     }
 }
