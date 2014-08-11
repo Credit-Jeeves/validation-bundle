@@ -1096,7 +1096,7 @@ class ImportProcess
         }
 
         $property = $this->mapping->createProperty($row);
-        if (empty($property) || !$property->getNumber()) {
+        if (empty($property) || !$property->getNumber() || !$property->getStreet()) {
             return null;
         }
 
