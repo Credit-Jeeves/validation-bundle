@@ -925,10 +925,12 @@ class ImportProcess
                      */
                     $contract = $form->getData();
                     if ($import->getHasContractWaiting()) {
+                        $sendInvite = $form->get('sendInvite')->getNormData();
                         $this->processContractWaiting(
                             $import->getTenant(),
                             $contract,
-                            $import->getResidentMapping()
+                            $import->getResidentMapping(),
+                            $sendInvite
                         );
                         break;
                     }
@@ -996,10 +998,17 @@ class ImportProcess
         return false;
     }
 
+    /**
+     * @param Tenant $tenant
+     * @param Contract $contract
+     * @param ResidentMapping $residentMapping
+     * @param boolean $sendInvite
+     */
     protected function processContractWaiting(
         Tenant $tenant,
         Contract $contract,
-        ResidentMapping $residentMapping
+        ResidentMapping $residentMapping,
+        $sendInvite
     ) {
         $waitingContract = $this->getContractWaiting(
             $tenant,
@@ -1015,7 +1024,9 @@ class ImportProcess
             $contract = $this->contractProcess->createContractFromWaiting($contract, $waitingContract);
             $contract->setStatus(ContractStatus::INVITE);
             $this->em->persist($contract);
-            $this->emailSendingQueue[] = $contract; //Do we need send invite for it? Not sure.
+            if ($sendInvite) {
+                $this->emailSendingQueue[] = $contract;
+            }
         } else {
             $this->em->persist($waitingContract);
         }

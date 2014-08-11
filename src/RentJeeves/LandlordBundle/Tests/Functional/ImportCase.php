@@ -1181,4 +1181,122 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
     }
+
+    /**
+     * @test
+     */
+    public function matchWaitingContractWithMoveContract()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('ChandlerClubFileToImport.csv');
+        $attFile->attachFile($filePath);
+        $this->setProperty();
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $mapFile = array(
+            '1' => Import::KEY_UNIT,
+            '2' => Import::KEY_RESIDENT_ID,
+            '3' => Import::KEY_TENANT_NAME,
+            '4' => Import::KEY_RENT,
+            '5' => Import::KEY_MOVE_IN,
+            '6' => Import::KEY_LEASE_END,
+            '7' => Import::KEY_MOVE_OUT,
+            '8' => Import::KEY_BALANCE,
+            '9' => Import::KEY_EMAIL,
+        );
+        for ($i = 1; $i <= 15; $i++) {
+            if (isset($mapFile[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $choice->selectOption($mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs['import.status.new']), "New contract is wrong number");
+        $this->assertNotNull($email = $this->page->find('css', 'input.0_email'));
+        $email->setValue('');
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        //after that check mathced status
+        $this->page->clickLink('tab.accounting');
+
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('ChandlerClubFileToImport.csv');
+        $attFile->attachFile($filePath);
+        $this->setProperty();
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $mapFile = array(
+            '1' => Import::KEY_UNIT,
+            '2' => Import::KEY_RESIDENT_ID,
+            '3' => Import::KEY_TENANT_NAME,
+            '4' => Import::KEY_RENT,
+            '5' => Import::KEY_MOVE_IN,
+            '6' => Import::KEY_LEASE_END,
+            '7' => Import::KEY_MOVE_OUT,
+            '8' => Import::KEY_BALANCE,
+            '9' => Import::KEY_EMAIL,
+        );
+        for ($i = 1; $i <= 15; $i++) {
+            if (isset($mapFile[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $choice->selectOption($mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
+            array(
+                'integratedBalance' => '-29.80',
+            )
+        );
+        $this->assertEquals(1, count($contracts));
+    }
 }
