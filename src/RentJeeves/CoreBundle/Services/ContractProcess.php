@@ -33,16 +33,38 @@ class ContractProcess
         $this->em = $em;
     }
 
+    /**
+     * @param Tenant $tenant
+     * @param Property $property
+     *
+     * @return Contract
+     */
+    public function createDefaultContract(Tenant $tenant, Property $property)
+    {
+        $contract = new Contract();
+        $contract->setTenant($tenant);
+        $contract->setProperty($property);
+        $contract->setStatus(ContractStatus::PENDING);
+
+        return $contract;
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param Property $property
+     * @param null $unitName
+     * @param ContractWaiting $contractWaiting
+     *
+     * @return Contract|void
+     */
     public function createContractFromTenantSide(
         Tenant $tenant,
         Property $property,
         $unitName = null,
         ContractWaiting $contractWaiting = null
     ) {
-        $contract = new Contract();
-        $contract->setTenant($tenant);
-        $contract->setProperty($property);
-        $contract->setStatus(ContractStatus::PENDING);
+
+        $contract = $this->createDefaultContract($tenant, $property);
 
         /**
          * @var $contractWaiting ContractWaiting
@@ -67,9 +89,21 @@ class ContractProcess
             $this->em->persist($contract);
             $this->em->flush();
 
-            return;
+            return $contract;
         }
 
+        return $this->createContractFromWaiting($contract, $contractWaiting);
+    }
+
+    /**
+     * @param Contract $contract
+     * @param ContractWaiting $contractWaiting
+     *
+     * @return Contract
+     */
+    public function createContractFromWaiting(Contract $contract, ContractWaiting $contractWaiting)
+    {
+        $tenant = $contract->getTenant();
         $contract->setHolding($contractWaiting->getGroup()->getHolding());
         $contract->setGroup($contractWaiting->getGroup());
         $contract->setUnit($contractWaiting->getUnit());
@@ -102,7 +136,10 @@ class ContractProcess
 
         $this->em->remove($contractWaiting);
         $this->em->flush();
+
+        return $contract;
     }
+
 
     /**
      * @param Tenant $tenant
