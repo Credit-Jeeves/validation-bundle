@@ -2347,7 +2347,7 @@
             </trans-unit>
             <trans-unit id="import.error.residentId">
               <source>import.error.residentId</source>
-              <target><![CDATA[Resident ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
+              <target><![CDATA[Resident ID is invalid, it should contain only A-Za-z_0-9-&' and not be blank.]]></target>
             </trans-unit>
             <trans-unit id="import.error.propertyId">
               <source>import.error.propertyId</source>

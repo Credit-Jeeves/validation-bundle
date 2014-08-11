@@ -344,8 +344,13 @@ class ImportMapping
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
         $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
-        $waitingRoom->setUnit($contract->getUnit());
-        $waitingRoom->setProperty($contract->getProperty());
+        /**
+         * Property can be null because it can be not valid
+         */
+        if ($property = $contract->getProperty()) {
+            $waitingRoom->setUnit($contract->getUnit());
+            $waitingRoom->setProperty($property);
+        }
 
         $waitingRoom->setFirstName($tenant->getFirstName());
         $waitingRoom->setLastName($tenant->getLastName());
