@@ -730,6 +730,9 @@ class ImportProcess
             $residentMapping
         );
 
+        if (!$contractWaiting->getProperty()) {
+            return $contractWaiting;
+        }
         /**
          * @var $contractWaitingInDb ContractWaiting
          */

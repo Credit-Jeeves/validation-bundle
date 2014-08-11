@@ -108,14 +108,14 @@ class PayController extends Controller
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
-
+        
         return new JsonResponse(
             array(
                 'success' => true
             )
         );
     }
-
+    
     /**
      * @Route("/source_existing", name="checkout_pay_existing_source", options={"expose"=true})
      * @Method({"POST"})
