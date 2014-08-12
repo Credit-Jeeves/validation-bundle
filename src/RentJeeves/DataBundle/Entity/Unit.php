@@ -5,6 +5,7 @@ use RentJeeves\DataBundle\Model\Unit as Base;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventArgs;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Property
@@ -26,6 +27,16 @@ class Unit extends Base
             return '';
         }
         return $name;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("name")
+     * @Serializer\Groups({"AdminUnit"})
+     */
+    public function getNameWithSingle()
+    {
+        return $this->name;
     }
 
     public function __toString()

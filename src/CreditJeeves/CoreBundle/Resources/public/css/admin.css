@@ -35,3 +35,12 @@
 .sonata-ba-list-field {
     word-break: break-all;
 }
+.overlay {
+    background-color: #000;
+    background-image: url('../images/processing.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    opacity: 0.2;
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity = 20);
+    z-index: 50;
+}

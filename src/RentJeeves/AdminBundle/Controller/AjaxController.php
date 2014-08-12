@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\DataBundle\Model\Group;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
@@ -15,12 +16,81 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Exception;
+use JMS\Serializer\SerializationContext;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/")
  */
 class AjaxController extends Controller
 {
+
+    protected function makeJsonResponse($data, $groups = array('AdminProperty'))
+    {
+        $serializer = $this->get('jms_serializer');
+        $context = new SerializationContext();
+        $context->setGroups($groups);
+
+        if (empty($data)) {
+            return new Response($serializer->serialize(
+                    array(),
+                    $format = 'json',
+                    $context
+                )
+            );
+        }
+
+        return new Response($serializer->serialize(
+                $data,
+                $format = 'json',
+                $context
+            )
+        );
+    }
+
+    /**
+     * @Route(
+     *     "/rj/group/properties",
+     *     name="admin_rj_group_properties",
+     *     options={"expose"=true}
+     * )
+     */
+    public function propertyAction(Request $request)
+    {
+        $groupId = $request->request->get('groupId');
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var Group
+         */
+        $group = $em->getRepository('DataBundle:Group')->find($groupId);
+        $properties = $group->getGroupProperties();
+
+        return $this->makeJsonResponse($properties);
+
+    }
+
+    /**
+     * @Route(
+     *     "/rj/properties/unit",
+     *     name="admin_rj_group_unit",
+     *     options={"expose"=true}
+     * )
+     */
+    public function unitAction(Request $request)
+    {
+        $id = $request->request->get('id');
+        $groupId = $request->request->get('groupId');
+        $em = $this->getDoctrine()->getManager();
+        $units = $em->getRepository('RjDataBundle:Unit')->findBy(
+           array(
+               'group'      => $groupId,
+               'property'   => $id
+           )
+        );
+
+        return $this->makeJsonResponse($units, array("AdminUnit"));
+    }
+
     /**
      * @Route(
      *     "/rj/group/{id}/terminal",

@@ -17,7 +17,7 @@ abstract class Property
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport","AdminProperty"})
      */
     protected $id;
 
