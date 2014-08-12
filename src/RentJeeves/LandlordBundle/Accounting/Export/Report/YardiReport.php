@@ -3,10 +3,10 @@
 namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 
 use Doctrine\ORM\EntityManager;
-use CreditJeeves\DataBundle\Entity\Group;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\CoreBundle\Session\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface as ExportSerializer;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
@@ -68,7 +68,8 @@ class YardiReport extends ExportReport
         $beginDate = $settings['begin'].' 00:00:00';
         $endDate = $settings['end'].' 23:59:59';
         $property = $settings['property'];
-        $holding = $settings['group']->getHolding();
+        $holding = $settings['landlord']->getUser()->getHolding();
+
         $repository = $this->em->getRepository('DataBundle:Operation');
 
         return $repository->getOperationsForXmlReport(
@@ -104,7 +105,7 @@ class YardiReport extends ExportReport
     protected function validateSettings($settings)
     {
         if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
-            !isset($settings['group']) || !($settings['group'] instanceof Group) ||
+            !isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
             !isset($settings['propertyId']) || !isset($settings['arAccountId']) || !isset($settings['accountId']) ||
             !isset($settings['begin']) || !isset($settings['end'])) {
             throw new ExportException('Not enough parameters for Yardi report');
