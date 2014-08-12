@@ -127,7 +127,24 @@ class ContractWaitingAdmin extends Admin
                 $group = $contractWaiting->getGroup();
                 $property = $contractWaiting->getProperty();
                 $unit = $contractWaiting->getUnit();
-                //@TODO add checking for residentId
+
+                $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')
+                    ->checkDuplicate(
+                        $group->getHolding(),
+                        $contractWaiting->getResidentId(),
+                        $self->email
+                    );
+
+                if ($residentMapping) {
+                    $form->get('residentId')->addError(
+                        new FormError(
+                            $translation->trans(
+                                'admin.form.contract_waiting.error.residentId'
+                            )
+                        )
+                    );
+                }
+
                 if (!$group->getGroupProperties()->contains($property)) {
                     $form->get('property')->addError(
                         new FormError(

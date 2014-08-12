@@ -78,6 +78,10 @@
                 <source>admin.form.contract_waiting.error.unit</source>
                 <target>This unit not connected to such property</target>
             </trans-unit>
+            <trans-unit id="admin.form.contract_waiting.error.residentId">
+                <source>admin.form.contract_waiting.error.residentId</source>
+                <target>This residentId will duplicate</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
