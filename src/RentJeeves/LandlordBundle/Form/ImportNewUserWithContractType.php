@@ -78,7 +78,8 @@ class ImportNewUserWithContractType extends AbstractType
                 $this->unit,
                 $token = false,
                 $useOperation = false,
-                $this->isMultipleProperty
+                $this->isMultipleProperty,
+                $sendInvite = false
             ),
             array()
         );

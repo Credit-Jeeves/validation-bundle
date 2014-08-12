@@ -16,6 +16,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -117,6 +118,11 @@ class ImportProcess
     protected $googleService;
 
     /**
+     * @var ContractProcess
+     */
+    protected $contractProcess;
+
+    /**
      * @InjectParams({
      *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
      *     "translator"       = @Inject("translator"),
@@ -129,6 +135,7 @@ class ImportProcess
      *     "mapping"          = @Inject("accounting.import.mapping"),
      *     "validator"        = @Inject("validator"),
      *     "googleService"    = @Inject("google"),
+     *     "contractProcess"  = @Inject("contract.process"),
      *     "locale"           = @Inject("%kernel.default_locale%")
      * })
      */
@@ -144,6 +151,7 @@ class ImportProcess
         ImportMapping $mapping,
         Validator $validator,
         Google $googleService,
+        ContractProcess $contractProcess,
         $locale
     ) {
         $this->em               = $em;
@@ -158,6 +166,7 @@ class ImportProcess
         $this->validator        = $validator;
         $this->locale           = $locale;
         $this->googleService    = $googleService;
+        $this->contractProcess  = $contractProcess;
     }
 
     /**
@@ -919,12 +928,13 @@ class ImportProcess
                      */
                     $contract = $form->getData();
                     if ($import->getHasContractWaiting()) {
-                        $waitingContract = $this->getContractWaiting(
-                            $contract->getTenant(),
+                        $sendInvite = $form->get('sendInvite')->getNormData();
+                        $this->processContractWaiting(
+                            $import->getTenant(),
                             $contract,
-                            $import->getResidentMapping()
+                            $import->getResidentMapping(),
+                            $sendInvite
                         );
-                        $this->em->persist($waitingContract);
                         break;
                     }
 
@@ -989,6 +999,38 @@ class ImportProcess
         }
 
         return false;
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param Contract $contract
+     * @param ResidentMapping $residentMapping
+     * @param boolean $sendInvite
+     */
+    protected function processContractWaiting(
+        Tenant $tenant,
+        Contract $contract,
+        ResidentMapping $residentMapping,
+        $sendInvite
+    ) {
+        $waitingContract = $this->getContractWaiting(
+            $tenant,
+            $contract,
+            $residentMapping
+        );
+
+        if ($tenant->getEmail()) {
+            $tenant->removeContract($contract); //Remove contract because we get duplicate contract
+            $this->em->persist($tenant);
+            $contract = $this->contractProcess->createContractFromWaiting($tenant, $waitingContract);
+            $contract->setStatus(ContractStatus::INVITE);
+            $this->em->persist($contract);
+            if ($sendInvite) {
+                $this->emailSendingQueue[] = $contract;
+            }
+        } else {
+            $this->em->persist($waitingContract);
+        }
     }
 
     /**
