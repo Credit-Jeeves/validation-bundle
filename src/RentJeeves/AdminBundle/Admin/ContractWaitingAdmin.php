@@ -2,8 +2,12 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Enum\GroupType;
+use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -13,11 +17,12 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\Email;
+use RentJeeves\CoreBundle\Services\ContractProcess;
 
 class ContractWaitingAdmin extends Admin
 {
 
-    protected $email;
+    protected $email = '';
 
     protected function configureDatagridFilters(DatagridMapper $datagrid)
     {
@@ -106,12 +111,12 @@ class ContractWaitingAdmin extends Admin
             ->add('finishAt');
 
         $self = $this;
-        //@todo add event for pre set data for is single
         $formMapper->getFormBuilder()->addEventListener(
             FormEvents::SUBMIT,
             function (FormEvent $event) use ($self) {
                 $container = $this->getConfigurationPool()->getContainer();
                 $translation = $container->get('translator');
+                $em = $container->get('doctrine.orm.default_entity_manager');
 
                 $form = $event->getForm();
                 $self->email = $form->get('email')->getNormData();
@@ -122,21 +127,21 @@ class ContractWaitingAdmin extends Admin
                 $group = $contractWaiting->getGroup();
                 $property = $contractWaiting->getProperty();
                 $unit = $contractWaiting->getUnit();
-
+                //@TODO add checking for residentId
                 if (!$group->getGroupProperties()->contains($property)) {
                     $form->get('property')->addError(
                         new FormError(
-                            $self->translator->trans(
+                            $translation->trans(
                                 'admin.form.contract_waiting.error.property'
                             )
                         )
                     );
                 }
 
-                if (!$property->getIsSingle() && !$property->getUnits()->contains($unit)) {
+                if ($property && $unit && !$property->getUnits()->contains($unit)) {
                     $form->get('unit')->addError(
                         new FormError(
-                            $self->translator->trans('admin.form.contract_waiting.error.unit')
+                            $translation->trans('admin.form.contract_waiting.error.unit')
                         )
                     );
                 }
@@ -147,12 +152,72 @@ class ContractWaitingAdmin extends Admin
     /**
      * @param ContractWaiting $contractWaiting
      */
+    public function postPersist($contractWaiting)
+    {
+        $this->moveContract($contractWaiting);
+    }
+
+    /**
+     * @param ContractWaiting $contractWaiting
+     */
     public function postUpdate($contractWaiting)
     {
-        if (!$this->email) {
+        $this->moveContract($contractWaiting);
+    }
+
+
+    public function moveContract($contractWaiting)
+    {
+        if (empty($this->email)) {
             return;
         }
 
         $container = $this->getConfigurationPool()->getContainer();
+        $mailer = $container->get('project.mailer');
+        $em = $container->get('doctrine.orm.default_entity_manager');
+
+        $tenant = $em->getRepository("RjDataBundle:Tenant")->findOneBy(
+            array(
+                'email' => $this->email,
+            )
+        );
+        /**
+         * @var $promcess ContractProcess
+         */
+        $process = $container->get("contract.process");
+
+        if (!$tenant) {
+            $tenant = new Tenant();
+            $tenant->setFirstName($contractWaiting->getFirstName());
+            $tenant->setLastName($contractWaiting->getLastName());
+            $tenant->setEmail($this->email);
+            $tenant->setEmailCanonical($this->email);
+            $tenant->setPassword(md5(md5(1)));
+            $tenant->setCulture($container->getParameter('kernel.default_locale'));
+            $em->persist($tenant);
+        }
+
+        $contract = $process->createContractFromWaiting(
+            $tenant,
+            $contractWaiting
+        );
+        $contract->setStatus(ContractStatus::INVITE);
+        $em->persist($contract);
+        $em->remove($contractWaiting);
+
+        foreach ($contract->getGroup()->getHolding()->getUsers() as $user) {
+            if ($user->getType() === UserType::LANDLORD) {
+                $landlord = $user;
+                break;
+            }
+        }
+
+        $mailer->sendRjTenantInvite(
+            $tenant,
+            $landlord,
+            $contract,
+            $isImported = "1"
+        );
+        $em->flush();
     }
 }

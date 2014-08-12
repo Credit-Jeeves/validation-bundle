@@ -34,4 +34,9 @@ class Holding extends BaseHolding
 
         return $usersAdmin;
     }
+
+    public function getUsers()
+    {
+        return $this->users;
+    }
 }

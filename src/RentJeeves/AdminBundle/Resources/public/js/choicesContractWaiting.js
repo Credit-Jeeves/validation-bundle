@@ -4,63 +4,61 @@ $( document ).ready(function() {
     var property = $($('select').get(1));
     var unit = $($('select').get(2));
 
-    function choice(parent, child, route, callback)
+    function choice(object, route, callback)
     {
         $(".tab-content").showOverlay();
-        var idSelected = child.val();
-        child.html('');
         jQuery.ajax({
             url: Routing.generate(route),
             type: 'POST',
             dataType: 'json',
             data: {
-                id: parent.val(),
+                id: object.val(),
                 groupId: group.val()
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 window.location.reload();
             },
             success: function(data, textStatus, jqXHR) {
-                callback(data, idSelected);
+                callback(data);
                 $(".tab-content").hideOverlay();
             }
         });
     }
 
-    var groupCallback = function(data, idSelected)
+    var groupCallback = function(data)
     {
-
+        var propertyId = property.val();
+        property.html(" ")
         $.each(data, function( index, value ) {
             var option = $('<option/>');
             option.attr({ 'value': value.id }).text(value.full_address);
-            if (idSelected == value.id) {
-                option.attr({ 'value': 'selected' });
+            if (propertyId == value.id) {
+                option.attr({ 'selected': true });
                 isSingle = value.is_single;
             }
             property.append(option);
         });
-
+        runProperty()
     }
 
-    var propertyCallback = function(data, idSelected)
+    var propertyCallback = function(data)
     {
-        $(".tab-content").showOverlay();
+        var unitId = unit.val();
+        unit.html(" ");
         $.each(data, function( index, value ) {
             var option = $('<option/>');
             option.attr({ 'value': value.id }).text(value.name);
-            if (idSelected == value.id) {
-                option.attr({ 'value': 'selected' })
+            if (unitId == value.id) {
+                option.attr({ 'selected': true })
             }
             unit.append(option);
         });
-        $(".tab-content").hideOverlay();
     }
 
     function runGroup()
     {
         choice(
             group,
-            property,
             'admin_rj_group_properties',
             groupCallback
         );
@@ -70,7 +68,6 @@ $( document ).ready(function() {
     {
         choice(
             property,
-            unit,
             'admin_rj_group_unit',
             propertyCallback
         );
