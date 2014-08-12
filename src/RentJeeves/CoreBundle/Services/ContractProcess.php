@@ -36,22 +36,6 @@ class ContractProcess
     /**
      * @param Tenant $tenant
      * @param Property $property
-     *
-     * @return Contract
-     */
-    public function createDefaultContract(Tenant $tenant, Property $property)
-    {
-        $contract = new Contract();
-        $contract->setTenant($tenant);
-        $contract->setProperty($property);
-        $contract->setStatus(ContractStatus::PENDING);
-
-        return $contract;
-    }
-
-    /**
-     * @param Tenant $tenant
-     * @param Property $property
      * @param null $unitName
      * @param ContractWaiting $contractWaiting
      *
@@ -64,7 +48,10 @@ class ContractProcess
         ContractWaiting $contractWaiting = null
     ) {
 
-        $contract = $this->createDefaultContract($tenant, $property);
+        $contract = new Contract();
+        $contract->setTenant($tenant);
+        $contract->setProperty($property);
+        $contract->setStatus(ContractStatus::PENDING);
 
         /**
          * @var $contractWaiting ContractWaiting
@@ -92,7 +79,7 @@ class ContractProcess
             return $contract;
         }
 
-        return $this->createContractFromWaiting($contract, $contractWaiting);
+        return $this->createContractFromWaiting($tenant, $contractWaiting);
     }
 
     /**
@@ -101,8 +88,11 @@ class ContractProcess
      *
      * @return Contract
      */
-    public function createContractFromWaiting(Contract $contract, ContractWaiting $contractWaiting)
+    public function createContractFromWaiting(Tenant $tenant, ContractWaiting $contractWaiting)
     {
+        $contract = new Contract();
+        $contract->setTenant($tenant);
+        $contract->setProperty($contractWaiting->getProperty());
         $tenant = $contract->getTenant();
         $contract->setHolding($contractWaiting->getGroup()->getHolding());
         $contract->setGroup($contractWaiting->getGroup());

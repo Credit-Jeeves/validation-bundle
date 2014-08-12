@@ -1016,12 +1016,10 @@ class ImportProcess
             $residentMapping
         );
 
-        if ($waitingContract->getId() && !$tenant->getId() && $tenant->getEmail()) {
+        if ($tenant->getEmail()) {
             $tenant->removeContract($contract); //Remove contract because we get duplicate contract
             $this->em->persist($tenant);
-            $property = $contract->getProperty();
-            $contract = $this->contractProcess->createDefaultContract($tenant, $property);
-            $contract = $this->contractProcess->createContractFromWaiting($contract, $waitingContract);
+            $contract = $this->contractProcess->createContractFromWaiting($tenant, $waitingContract);
             $contract->setStatus(ContractStatus::INVITE);
             $this->em->persist($contract);
             if ($sendInvite) {

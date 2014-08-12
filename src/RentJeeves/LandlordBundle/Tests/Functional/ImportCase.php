@@ -1195,7 +1195,7 @@ class ImportCase extends BaseTestCase
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('ChandlerClubFileToImport.csv');
+        $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->setProperty();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
@@ -1245,7 +1245,7 @@ class ImportCase extends BaseTestCase
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('ChandlerClubFileToImport.csv');
+        $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->setProperty();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
