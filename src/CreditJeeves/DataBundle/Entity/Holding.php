@@ -41,7 +41,7 @@ class Holding extends BaseHolding
     {
         $landlords = new ArrayCollection();
         foreach ($this->users as $user) {
-            if ($user->getType() === UserTypee::LANDLORD) {
+            if ($user->getType() === UserType::LANDLORD) {
                 $landlords->add($user);
             }
         }

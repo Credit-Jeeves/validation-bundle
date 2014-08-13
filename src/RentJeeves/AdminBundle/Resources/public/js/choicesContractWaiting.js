@@ -3,6 +3,7 @@ $( document ).ready(function() {
     var group = $($('select').get(0));
     var property = $($('select').get(1));
     var unit = $($('select').get(2));
+    var email = $($('input').get(2))
 
     function choice(object, route, callback)
     {
@@ -72,6 +73,16 @@ $( document ).ready(function() {
         );
     }
 
+    function checkEmail()
+    {
+        var createButton = $('.form-actions .btn-primary');
+        if (email.val().length > 0) {
+            createButton.hide();
+        } else {
+            createButton.show();
+        }
+    }
+
     group.change(function() {
         runGroup();
     });
@@ -81,4 +92,10 @@ $( document ).ready(function() {
     });
 
     runGroup();
+
+    email.keyup(function( event ) {
+        checkEmail();
+    });
+
+    checkEmail();
 });
