@@ -283,7 +283,18 @@ class Order extends BaseOrder
         );
     }
 
+    /**
+     * @return string|null
+     */
+    public function getGroupName()
+    {
+        $contract = $this->getContract();
+        if ($contract && ($group = $contract->getGroup())) {
+            return $group->getName();
+        }
 
+        return null;
+    }
 
     /**
      * @return \Doctrine\Common\Collections\Collection
