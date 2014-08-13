@@ -50,7 +50,13 @@ class ContractWaitingAdmin extends Admin
             ->add('finishAt')
             ->add(
                 '_action',
-                'actions'
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                        'delete' => array(),
+                    )
+                )
             );
     }
 
