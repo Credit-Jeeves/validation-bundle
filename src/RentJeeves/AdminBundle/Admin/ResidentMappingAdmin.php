@@ -19,8 +19,6 @@ class ResidentMappingAdmin extends Admin
     protected function configureDatagridFilters(DatagridMapper $datagrid)
     {
         $datagrid
-            ->add('holding')
-            ->add('tenant')
             ->add('residentId');
     }
 
