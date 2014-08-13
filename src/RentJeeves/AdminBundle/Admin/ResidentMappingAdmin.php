@@ -75,7 +75,7 @@ class ResidentMappingAdmin extends Admin
                     'query_builder' => function (EntityRepository $er) {
                             return $er->createQueryBuilder('tenant')
                                 ->orderBy('tenant.last_name', 'ASC');
-                        }
+                    }
                 )
             )
             ->add('residentId');
