@@ -52,8 +52,8 @@ class AjaxController extends Controller
 
     /**
      * @Route(
-     *     "/rj/group/property",
-     *     name="admin_rj_group_property",
+     *     "/rj/group/properties",
+     *     name="admin_rj_group_properties",
      *     options={"expose"=true}
      * )
      */
@@ -73,8 +73,8 @@ class AjaxController extends Controller
 
     /**
      * @Route(
-     *     "/rj/property/unit",
-     *     name="admin_rj_group_unit",
+     *    "/rj/property/units",
+     *     name="admin_rj_group_units",
      *     options={"expose"=true}
      * )
      */

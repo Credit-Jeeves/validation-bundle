@@ -59,7 +59,7 @@ $( document ).ready(function() {
     {
         choice(
             group,
-            'admin_rj_group_property',
+            'admin_rj_group_properties',
             groupCallback
         );
     }
@@ -68,7 +68,7 @@ $( document ).ready(function() {
     {
         choice(
             property,
-            'admin_rj_group_unit',
+            'admin_rj_group_units',
             propertyCallback
         );
     }

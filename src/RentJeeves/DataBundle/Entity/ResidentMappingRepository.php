@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 
 class ResidentMappingRepository extends EntityRepository
 {
-    public function residentMappingDuplicate(Holding $holding, $residentId, $email)
+    public function checkResidentMappingDuplicate(Holding $holding, $residentId, $email)
     {
         $query = $this->createQueryBuilder('mapping');
         $query->innerJoin('mapping.tenant', 'tenant');
