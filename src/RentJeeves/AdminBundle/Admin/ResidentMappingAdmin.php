@@ -72,7 +72,7 @@ class ResidentMappingAdmin extends Admin
                     'class' => 'RjDataBundle:Tenant',
                     'query_builder' => function (EntityRepository $er) {
                             return $er->createQueryBuilder('tenant')
-                                ->orderBy('tenant.last_name', 'ASC');
+                                ->orderBy('tenant.first_name', 'ASC');
                     }
                 )
             )
