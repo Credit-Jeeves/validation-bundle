@@ -221,7 +221,7 @@ class ContractWaitingAdmin extends Admin
         $em->remove($contractWaiting);
         $em->flush();
 
-        $landlord = $contract->getGroup()->getHolding()->getLandlords()->first()
+        $landlord = $contract->getGroup()->getHolding()->getLandlords()->first();
 
         if (empty($landlord)) {
             throw new Exception("We can't find landlord for group with id " . $contract->getGroup()->getId());
