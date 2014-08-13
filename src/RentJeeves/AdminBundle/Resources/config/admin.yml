@@ -152,7 +152,8 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-   sonata.admin.contract_waiting:
+
+    sonata.admin.contract_waiting:
         class: RentJeeves\AdminBundle\Admin\ContractWaitingAdmin
         tags:
             - { name: sonata.admin, manager_type: orm, group: admin, label: "Contract Waiting" }
@@ -163,7 +164,8 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
             - [ setTemplate, [edit, AdminBundle:CRUD:form_contract_waiting.html.twig]] 
-   sonata.admin.resident_mapping:
+
+    sonata.admin.resident_mapping:
         class: RentJeeves\AdminBundle\Admin\ResidentMappingAdmin
         tags:
             - { name: sonata.admin, manager_type: orm, group: admin, label: "Resident Mapping" }
