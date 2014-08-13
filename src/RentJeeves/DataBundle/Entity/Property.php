@@ -286,7 +286,7 @@ class Property extends Base
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("full_address")
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "AdminProperty"})
      */
     public function getFullAddress()
     {

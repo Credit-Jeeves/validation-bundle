@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ResidentMapping
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\ResidentMappingRepository")
  * @ORM\Table(
  *      name="rj_resident_mapping",
  *      uniqueConstraints={
