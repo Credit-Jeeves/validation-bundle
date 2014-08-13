@@ -34,7 +34,7 @@ class Unit extends Base
      * @Serializer\SerializedName("name")
      * @Serializer\Groups({"AdminUnit"})
      */
-    public function getNameWithSingle()
+    public function getActualName()
     {
         return $this->name;
     }

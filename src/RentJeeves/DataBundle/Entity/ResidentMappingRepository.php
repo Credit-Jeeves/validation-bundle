@@ -4,13 +4,9 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 
-/**
- * Class ResidentMappingRepository
- * @package RentJeeves\DataBundle\Entity
- */
 class ResidentMappingRepository extends EntityRepository
 {
-    public function checkDuplicate(Holding $holding, $residentId, $email)
+    public function residentMappingDuplicate(Holding $holding, $residentId, $email)
     {
         $query = $this->createQueryBuilder('mapping');
         $query->innerJoin('mapping.tenant', 'tenant');

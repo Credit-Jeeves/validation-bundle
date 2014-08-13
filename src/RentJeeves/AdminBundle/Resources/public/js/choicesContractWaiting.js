@@ -34,7 +34,6 @@ $( document ).ready(function() {
             option.attr({ 'value': value.id }).text(value.full_address);
             if (propertyId == value.id) {
                 option.attr({ 'selected': true });
-                isSingle = value.is_single;
             }
             property.append(option);
         });
@@ -59,7 +58,7 @@ $( document ).ready(function() {
     {
         choice(
             group,
-            'admin_rj_group_properties',
+            'admin_rj_group_property',
             groupCallback
         );
     }

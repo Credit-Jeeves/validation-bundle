@@ -72,15 +72,15 @@
             </trans-unit>
             <trans-unit id="admin.form.contract_waiting.error.property">
                 <source>admin.form.contract_waiting.error.property</source>
-                <target>This property not connected to such group</target>
+                <target>This property does not belong to this group.</target>
             </trans-unit>
             <trans-unit id="admin.form.contract_waiting.error.unit">
                 <source>admin.form.contract_waiting.error.unit</source>
-                <target>This unit not connected to such property</target>
+                <target>This unit does not belong to this property.</target>
             </trans-unit>
             <trans-unit id="admin.form.contract_waiting.error.residentId">
                 <source>admin.form.contract_waiting.error.residentId</source>
-                <target>This residentId will duplicate</target>
+                <target>This residentId already exists.</target>
             </trans-unit>
         </body>
     </file>

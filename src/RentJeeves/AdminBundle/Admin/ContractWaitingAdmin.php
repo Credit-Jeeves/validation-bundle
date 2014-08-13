@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\Email;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use Exception;
 
 class ContractWaitingAdmin extends Admin
 {
@@ -31,8 +32,7 @@ class ContractWaitingAdmin extends Admin
             ->add('firstName')
             ->add('lastName')
             ->add('residentId')
-            ->add('integratedBalance')
-        ;
+            ->add('integratedBalance');
     }
 
     public function configureListFields(ListMapper $listMapper)
@@ -50,12 +50,7 @@ class ContractWaitingAdmin extends Admin
             ->add('finishAt')
             ->add(
                 '_action',
-                'actions',
-                array(
-                    'actions' => array(
-                        'edit' => array(),                        ),
-                        'delete' => array(),
-                    )
+                'actions'
             );
     }
 
@@ -77,16 +72,16 @@ class ContractWaitingAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('group',
+            ->add(
+                'group',
                 'entity',
                 array(
                     'class' => 'DataBundle:Group',
-                    'query_builder' => function(EntityRepository $er) {
-                        return $er->createQueryBuilder('gr')
-                            ->where('gr.type = :typeGroup')
-                            ->orderBy('gr.id', 'ASC')
-                            ->setParameter('typeGroup', GroupType::RENT)
-                            ;
+                    'query_builder' => function (EntityRepository $er) {
+                            return $er->createQueryBuilder('gr')
+                                ->where('gr.type = :typeGroup')
+                                ->orderBy('gr.name', 'ASC')
+                                ->setParameter('typeGroup', GroupType::RENT);
                     }
                 )
             )
@@ -94,11 +89,12 @@ class ContractWaitingAdmin extends Admin
             ->add('unit')
             ->add('rent')
             ->add('residentId')
-            ->add('email',
+            ->add(
+                'email',
                 'text',
                 array(
-                    'mapped'    => false,
-                    'required'  => false,
+                    'mapped' => false,
+                    'required' => false,
                     'constraints' => array(
                         new Email(),
                     )
@@ -129,7 +125,7 @@ class ContractWaitingAdmin extends Admin
                 $unit = $contractWaiting->getUnit();
 
                 $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')
-                    ->checkDuplicate(
+                    ->residentMappingDuplicate(
                         $group->getHolding(),
                         $contractWaiting->getResidentId(),
                         $self->email
@@ -182,8 +178,10 @@ class ContractWaitingAdmin extends Admin
         $this->moveContract($contractWaiting);
     }
 
-
-    public function moveContract($contractWaiting)
+    /**
+     * @param ContractWaiting $contractWaiting
+     */
+    public function moveContract(ContractWaiting $contractWaiting)
     {
         if (empty($this->email)) {
             return;
@@ -199,7 +197,7 @@ class ContractWaitingAdmin extends Admin
             )
         );
         /**
-         * @var $promcess ContractProcess
+         * @var $process ContractProcess
          */
         $process = $container->get("contract.process");
 
@@ -221,12 +219,12 @@ class ContractWaitingAdmin extends Admin
         $contract->setStatus(ContractStatus::INVITE);
         $em->persist($contract);
         $em->remove($contractWaiting);
+        $em->flush();
 
-        foreach ($contract->getGroup()->getHolding()->getUsers() as $user) {
-            if ($user->getType() === UserType::LANDLORD) {
-                $landlord = $user;
-                break;
-            }
+        $landlord = $contract->getGroup()->getHolding()->getLandlords()->first()
+
+        if (empty($landlord)) {
+            throw new Exception("We can't find landlord for group with id " . $contract->getGroup()->getId());
         }
 
         $mailer->sendRjTenantInvite(
@@ -235,6 +233,5 @@ class ContractWaitingAdmin extends Admin
             $contract,
             $isImported = "1"
         );
-        $em->flush();
     }
 }

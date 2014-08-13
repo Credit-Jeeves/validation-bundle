@@ -1,7 +1,9 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\Holding as BaseHolding;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,8 +37,15 @@ class Holding extends BaseHolding
         return $usersAdmin;
     }
 
-    public function getUsers()
+    public function getLandlords()
     {
-        return $this->users;
+        $landlords = new ArrayCollection();
+        foreach ($this->users as $user) {
+            if ($user->getType() === UserTypee::LANDLORD) {
+                $landlords->add($user);
+            }
+        }
+
+        return $landlords;
     }
 }

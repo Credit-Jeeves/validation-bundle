@@ -32,7 +32,8 @@ class AjaxController extends Controller
         $context->setGroups($groups);
 
         if (empty($data)) {
-            return new Response($serializer->serialize(
+            return new Response(
+                $serializer->serialize(
                     array(),
                     $format = 'json',
                     $context
@@ -40,7 +41,8 @@ class AjaxController extends Controller
             );
         }
 
-        return new Response($serializer->serialize(
+        return new Response(
+            $serializer->serialize(
                 $data,
                 $format = 'json',
                 $context
@@ -50,8 +52,8 @@ class AjaxController extends Controller
 
     /**
      * @Route(
-     *     "/rj/group/properties",
-     *     name="admin_rj_group_properties",
+     *     "/rj/group/property",
+     *     name="admin_rj_group_property",
      *     options={"expose"=true}
      * )
      */
@@ -59,10 +61,10 @@ class AjaxController extends Controller
     {
         $groupId = $request->request->get('groupId');
         $em = $this->getDoctrine()->getManager();
-        /**
-         * @var Group
-         */
         $group = $em->getRepository('DataBundle:Group')->find($groupId);
+        if (empty($group)) {
+            throw new Exception("Group not found.");
+        }
         $properties = $group->getGroupProperties();
 
         return $this->makeJsonResponse($properties);
@@ -71,21 +73,21 @@ class AjaxController extends Controller
 
     /**
      * @Route(
-     *     "/rj/properties/unit",
+     *     "/rj/property/unit",
      *     name="admin_rj_group_unit",
      *     options={"expose"=true}
      * )
      */
     public function unitAction(Request $request)
     {
-        $id = $request->request->get('id');
+        $propertyId = $request->request->get('id');
         $groupId = $request->request->get('groupId');
         $em = $this->getDoctrine()->getManager();
         $units = $em->getRepository('RjDataBundle:Unit')->findBy(
-           array(
-               'group'      => $groupId,
-               'property'   => $id
-           )
+            array(
+                'group' => $groupId,
+                'property' => $propertyId
+            )
         );
 
         return $this->makeJsonResponse($units, array("AdminUnit"));
