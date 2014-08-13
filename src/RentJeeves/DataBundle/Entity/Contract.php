@@ -336,9 +336,10 @@ class Contract extends Base
         }
         if ($date = $this->getPaidTo()) {
             $now = new DateTime();
-            $interval = $now->diff($date);
-            $sign = $interval->format('%r');
-            if (!$sign) {
+            $interval = $date->diff($now);
+            $sign = $interval->format('%r%a');
+
+            if ($sign <= 0) {
                 return $result;
             }
             $lastPayment = $this->getLastPayment();
