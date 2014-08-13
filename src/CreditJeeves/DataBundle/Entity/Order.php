@@ -43,7 +43,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Property")
-     * @Serializer\Groups({"csvReport", "rentTrackReport"})
+     * @Serializer\Groups({"csvReport"})
      *
      * @return string
      */
@@ -81,35 +81,8 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Unit ID")
-     * @Serializer\Groups({"rentTrackReport"})
-     *
-     * @return string
-     */
-    public function getUnitId()
-    {
-        $unit = $this->getUnit();
-
-        if (!$unit) {
-            return null;
-        }
-
-        $group = $unit->getGroup();
-
-        if ($group && $group->getGroupSettings()->getIsIntegrated()) {
-            $unitMapping = $unit->getUnitMapping();
-            return $unitMapping ? $unitMapping->getExternalUnitId() : null;
-        }
-
-        return $unit->getId();
-    }
-
-
-
-    /**
-     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Unit")
-     * @Serializer\Groups({"csvReport", "rentTrackReport"})
+     * @Serializer\Groups({"csvReport"})
      *
      * @return string
      */
@@ -131,7 +104,7 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"csvReport", "rentTrackReport"})
+     * @Serializer\Groups({"csvReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -181,7 +154,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TotalAmount")
-     * @Serializer\Groups({"csvReport", "promasReport", "rentTrackReport"})
+     * @Serializer\Groups({"csvReport", "promasReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -190,79 +163,6 @@ class Order extends BaseOrder
     public function getTotalAmount()
     {
         return number_format($this->getSum(), 2, '.', '');
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Transaction ID")
-     * @Serializer\Groups({"rentTrackReport"})
-     *
-     * @return int
-     */
-    public function getTransactionId()
-    {
-        return $this->getHeartlandTransactionId();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Batch ID")
-     * @Serializer\Groups({"rentTrackReport"})
-     *
-     */
-    public function getBatchId()
-    {
-        return $this->getHeartlandBatchId();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Status")
-     * @Serializer\Groups({"rentTrackReport"})
-     */
-    public function getOrderStatus()
-    {
-        return $this->getStatus();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Tenant Name")
-     * @Serializer\Groups({"rentTrackReport"})
-     */
-    public function getTenantName()
-    {
-        $this->getCjApplicantId();
-        return $this->getFirstNameTenant() . ' ' . $this->getLastNameTenant();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Tenant ID")
-     * @Serializer\Groups({"rentTrackReport"})
-     */
-    public function getTenantId()
-    {
-        $contract = $this->getContract();
-
-        if (!$contract) {
-            return null;
-        }
-
-        $tenant = $contract->getTenant();
-
-        if (!$tenant) {
-            return null;
-        }
-
-        $group = $contract->getGroup();
-
-        if ($group && $group->getGroupSettings()->getIsIntegrated()) {
-            $tMap = $tenant->getResidentsMapping()->first();
-            return $tMap ? $tMap->getResidentId() : null;
-        } else {
-            return $tenant->getId();
-        }
     }
 
     /**
@@ -501,6 +401,27 @@ class Order extends BaseOrder
         return $result;
     }
 
+    public function getOrderTypes()
+    {
+        $type = $this->getType();
+        switch ($type) {
+            case OrderType::HEARTLAND_CARD:
+                $result = 'credit-card';
+                break;
+            case OrderType::HEARTLAND_BANK:
+                $result = 'e-check';
+                break;
+            case OrderType::CASH:
+                $result = 'cash';
+                break;
+            default:
+                $result = '';
+                break;
+        }
+
+        return $result;
+    }
+
     protected function getOrderStatusStyle()
     {
         switch ($this->getStatus()) {
@@ -539,33 +460,6 @@ class Order extends BaseOrder
         $result['total'] = $this->getTotalAmount();
         $result['type'] = $this->getOrderTypes();
 
-        return $result;
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Payment Type")
-     * @Serializer\Groups({"rentTrackReport"})
-     *
-     * @return string
-     */
-    public function getOrderTypes()
-    {
-        $type = $this->getType();
-        switch ($type) {
-            case OrderType::HEARTLAND_CARD:
-                $result = 'credit-card';
-                break;
-            case OrderType::HEARTLAND_BANK:
-                $result = 'e-check';
-                break;
-            case OrderType::CASH:
-                $result = 'cash';
-                break;
-            default:
-                $result = '';
-                break;
-        }
         return $result;
     }
 
@@ -645,22 +539,6 @@ class Order extends BaseOrder
         return false;
     }
 
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Group Name")
-     * @Serializer\Groups({"rentTrackReport"})
-     *
-     * @return string|null
-     */
-    public function getGroupName()
-    {
-        if ($contract = $this->getContract()) {
-            return $contract->getGroup()->getName();
-        }
-
-        return null;
-    }
-
     public function getAvailableOrderStatuses()
     {
         return OrderStatus::getManualAvailableToSet($this->getStatus());
@@ -683,25 +561,5 @@ class Order extends BaseOrder
                 break;
         }
         return $fee;
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Deposit Account")
-     * @Serializer\Groups({"rentTrackReport"})
-     *
-     * @return null|int
-     */
-    public function getDepositAccountNumber()
-    {
-        $contract = $this->getContract();
-
-        if (!$contract) {
-            return null;
-        }
-
-        $depositAccount = $contract->getDepositAccount();
-
-        return $depositAccount ? $depositAccount->getAccountNumber() : null;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 
-use CreditJeeves\DataBundle\Entity\OrderRepository;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Session\Landlord;
+use RentJeeves\DataBundle\Entity\HeartlandRepository;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface as ExportSerializer;
 use JMS\DiExtraBundle\Annotation\Inject;
@@ -55,10 +55,10 @@ class RentTrackReport extends ExportReport
         } else {
             $groups = [$landlord->getGroup()];
         }
-        /** @var OrderRepository $orderRepository */
-        $orderRepository = $this->em->getRepository('DataBundle:Order');
+        /** @var HeartlandRepository $repo */
+        $repo = $this->em->getRepository('RjDataBundle:Heartland');
 
-        return $orderRepository->getOrdersForRentTrackReport($groups, $beginDate, $endDate);
+        return $repo->getTransactionsForRentTrackReport($groups, $beginDate, $endDate);
     }
 
     protected function validateSettings($settings)

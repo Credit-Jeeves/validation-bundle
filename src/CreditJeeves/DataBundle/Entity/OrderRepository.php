@@ -251,49 +251,6 @@ class OrderRepository extends EntityRepository
         return $query->execute();
     }
 
-    /**
-     * @param Group[] $groups
-     * @param $start
-     * @param $end
-     * @return mixed
-     */
-    public function getOrdersForRentTrackReport($groups, $start, $end)
-    {
-        $query = $this->createQueryBuilder('o');
-        $query->innerJoin('o.operations', 'p');
-        $query->innerJoin('p.contract', 't');
-        $query->innerJoin('t.tenant', 'ten');
-        $query->leftJoin('ten.residentsMapping', 'res');
-        $query->innerJoin('t.unit', 'unit');
-        $query->leftJoin('unit.unitMapping', 'uMap');
-        $query->innerJoin('o.heartlands', 'heartland');
-        $query->innerJoin('t.group', 'g');
-        $query->innerJoin('g.groupSettings', 'gs');
-        $query->where("o.created_at BETWEEN :start AND :end");
-        $query->andWhere('o.status in (:statuses)');
-        $query->andWhere('o.type in (:orderTypes)');
-        $query->andWhere('g.id in (:groups)');
-        $query->setParameter('end', $end);
-        $query->setParameter('start', $start);
-        $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-        $query->setParameter('orderTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
-        $query->setParameter('groups', $this->getGroupIds($groups));
-        $query->orderBy('o.created_at', 'ASC');
-        $query = $query->getQuery();
-
-        return $query->execute();
-    }
-
-    protected function getGroupIds($groups)
-    {
-        $groupIds = [];
-        foreach ($groups as $group) {
-            $groupIds[] = $group->getId();
-        }
-
-        return $groupIds;
-    }
-
     public function getOrdersForPromasReport(Group $group, $start, $end)
     {
         $query = $this->createQueryBuilder('o');
