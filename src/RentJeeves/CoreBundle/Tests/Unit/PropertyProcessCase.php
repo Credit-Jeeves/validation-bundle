@@ -5,7 +5,6 @@ use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Entity\Property;
 
-
 class PropertyProcessCase extends BaseTestCase
 {
     /**
@@ -29,6 +28,7 @@ class PropertyProcessCase extends BaseTestCase
         $propertyFirst->setZip('48823');
         $propertyFirst->setLatitude('42.7723043');
         $propertyFirst->setLongtitude('-84.4863972');
+        $propertyFirst->setCountry('US');
 
         $propertySecond = clone $propertyFirst;
         $propertySecond->setLatitude('42.772304');

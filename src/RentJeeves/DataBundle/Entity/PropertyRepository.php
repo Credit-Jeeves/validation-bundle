@@ -5,6 +5,36 @@ use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
+    public function getPropetiesWhichDuplicate()
+    {
+        $query = $this->createQueryBuilder('property')
+                ->select(
+                    '
+                    property.id,
+                    property.zip,
+                    property.number,
+                    property.street,
+                    COUNT(property.street) AS street_c,
+                    COUNT(property.number) AS number_c,
+                    COUNT(property.zip) AS zip_c
+                    '
+                )
+                ->groupBy(
+                    'property.street',
+                    'property.number',
+                    'property.zip'
+                )
+                ->having(
+                    'street_c > 1
+                    AND number_c > 1
+                    AND zip_c > 1'
+                );
+
+        $query = $query->getQuery();
+
+        return $query->iterate();
+    }
+
     public function getPropetiesAll($group)
     {
         $query = $this->createQueryBuilder('p');
