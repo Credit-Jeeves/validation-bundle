@@ -133,7 +133,7 @@ class PropertyProcess
      */
     public function saveToGoogle(Property $property)
     {
-        if ($this->isValidProperty($property)) {
+        if (!$this->isValidProperty($property)) {
             throw new Exception("Can't save to google not valid property");
         }
         $this->google->savePlace($property);
@@ -147,7 +147,7 @@ class PropertyProcess
     public function isValidProperty(Property $property)
     {
         foreach ($this->validProperties as $propertyValid) {
-            if ($property->getFullAddress() === $propertyValid->getFullAddress()) {
+            if ($property  === $propertyValid) {
                 return true;
             }
         }
