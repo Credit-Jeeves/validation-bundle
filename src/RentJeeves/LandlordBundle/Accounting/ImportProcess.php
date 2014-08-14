@@ -13,10 +13,10 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -115,7 +115,7 @@ class ImportProcess
     /**
      * @var Google
      */
-    protected $googleService;
+    protected $propertyProcess;
 
     /**
      * @var ContractProcess
@@ -134,7 +134,7 @@ class ImportProcess
      *     "storage"          = @Inject("accounting.import.storage"),
      *     "mapping"          = @Inject("accounting.import.mapping"),
      *     "validator"        = @Inject("validator"),
-     *     "googleService"    = @Inject("google"),
+     *     "propertyProcess"  = @Inject("property.process"),
      *     "contractProcess"  = @Inject("contract.process"),
      *     "locale"           = @Inject("%kernel.default_locale%")
      * })
@@ -150,7 +150,7 @@ class ImportProcess
         ImportStorage $storage,
         ImportMapping $mapping,
         Validator $validator,
-        Google $googleService,
+        PropertyProcess $propertyProcess,
         ContractProcess $contractProcess,
         $locale
     ) {
@@ -165,7 +165,7 @@ class ImportProcess
         $this->storage          = $storage;
         $this->validator        = $validator;
         $this->locale           = $locale;
-        $this->googleService    = $googleService;
+        $this->propertyProcess  = $propertyProcess;
         $this->contractProcess  = $contractProcess;
     }
 
@@ -1137,26 +1137,18 @@ class ImportProcess
             return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
         }
 
-        $property = $this->mapping->createProperty($row);
-        if (empty($property) || !$property->getNumber() || !$property->getStreet()) {
+        $isValid = $this->propertyProcess->isValidProperty(
+            $property =  $this->mapping->createProperty($row)
+        );
+
+        if (!$isValid) {
             return null;
         }
 
-        $params = array(
-            'jb'        => $property->getJb(),
-            'kb'        => $property->getKb(),
-            'number'    => $property->getNumber(),
+        return $this->propertyProcess->checkPropertyDuplicate(
+            $property,
+            $saveToGoogle = true
         );
-
-        $propertyInDataBase = $this->em->getRepository('RjDataBundle:Property')->findOneBy($params);
-
-        if ($propertyInDataBase) {
-            return $propertyInDataBase;
-        }
-
-        $this->googleService->savePlace($property);
-
-        return $property;
     }
 
     /**

@@ -118,23 +118,19 @@ class ImportMapping
      */
     protected $reader;
 
-    protected $geocoder;
-
     /**
      * @InjectParams({
      *     "storage"          = @Inject("accounting.import.storage"),
      *     "reader"           = @Inject("import.reader.csv"),
-     *     "geocoder"         = @Inject("bazinga_geocoder.geocoder")
      * })
      */
-    public function __construct(ImportStorage $storage, CsvFileReaderImport $reader, $geocoder)
+    public function __construct(ImportStorage $storage, CsvFileReaderImport $reader)
     {
         $this->storage  = $storage;
         $this->reader   = $reader;
         $data = $this->storage->getImportData();
         $this->reader->setDelimiter($data[ImportStorage::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[ImportStorage::IMPORT_TEXT_DELIMITER]);
-        $this->geocoder = $geocoder;
     }
 
     public function getFileData($offset = null, $rowCount = null)
@@ -376,13 +372,7 @@ class ImportMapping
         if (empty($row[self::KEY_UNIT])) {
             $property->setIsSingle(true);
         }
-        $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
-
-        if (empty($result)) {
-            return null;
-        }
-
-        return $property->parseGeocodeResponse($result);
+        return $property;
     }
 
     protected function parseStreet($row)
