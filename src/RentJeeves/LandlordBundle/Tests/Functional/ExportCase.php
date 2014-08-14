@@ -306,14 +306,21 @@ class ExportCase extends BaseTestCase
 
 
         $csv = $this->page->getContent();
-        $csvArr = explode("\n", $csv);
-        $this->assertEquals(23, count($csvArr));
-        $this->assertNotNull($csvArr = str_getcsv($csvArr[22]));
+        $csvFullArr = explode("\n", $csv);
+        $this->assertEquals(10, count($csvFullArr));
+        /** check Last */
+        $this->assertNotNull($csvArr = str_getcsv($csvFullArr[9]));
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $csvArr[1]);
         $this->assertEquals('AAABBB-7', $csvArr[2]);
         $this->assertEquals('147147', $csvArr[7]);
+        $this->assertEquals('325698', $csvArr[8]);
         $this->assertEquals('FGDTRFG-44', $csvArr[4]);
         $this->assertEquals('15235678', $csvArr[13]);
+        /** check Refunded */
+        $this->assertNotNull($csvArr = str_getcsv($csvFullArr[6]));
+        $this->assertEquals('-700', $csvArr[6]);
+        $this->assertEquals('651232652', $csvArr[7]);
+        $this->assertEquals('3444666', $csvArr[8]);
     }
 
     /**
@@ -349,10 +356,10 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(4, $archive->numFiles);
+        $this->assertEquals(5, $archive->numFiles);
         $file = $archive->getFromIndex(1);
         $rows = explode("\n", trim($file));
-        $this->assertEquals(2, count($rows));
+        $this->assertEquals(3, count($rows));
         $columns = str_getcsv($rows[1]);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $columns[1]);
         $this->assertEquals('15235678', $columns[13]);

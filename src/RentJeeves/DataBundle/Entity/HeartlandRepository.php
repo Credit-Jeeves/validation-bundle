@@ -74,12 +74,15 @@ class HeartlandRepository extends EntityRepository
         $query->innerJoin('g.groupSettings', 'gs');
         $query->where("o.created_at BETWEEN :start AND :end");
         $query->andWhere('o.status in (:statuses)');
-        $query->andWhere('o.type in (:orderTypes)');
+        $query->andWhere('o.type in (:paymentTypes)');
         $query->andWhere('g.id in (:groups)');
+        $query->andWhere('h.isSuccessful = 1');
+        $query->andWhere('h.transactionId IS NOT NULL');
+        $query->andWhere('h.depositDate IS NOT NULL');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
         $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-        $query->setParameter('orderTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->setParameter('paymentTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
         $query->setParameter('groups', $this->getGroupIds($groups));
         $query->orderBy('h.createdAt', 'ASC');
         $query = $query->getQuery();
