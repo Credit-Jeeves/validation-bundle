@@ -135,6 +135,8 @@ class PropertyProcess
             if ($propertyInDB && $saveToGoogle) {
                 $this->saveToGoogle($propertyInDB);
                 return $propertyInDB;
+            } elseif ($propertyInDB) {
+                return $propertyInDB;
             }
         }
 
