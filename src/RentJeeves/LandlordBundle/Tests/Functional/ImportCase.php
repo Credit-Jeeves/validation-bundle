@@ -1360,5 +1360,4 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(1, count($contracts));
         $this->logout();
     }
-
 }
