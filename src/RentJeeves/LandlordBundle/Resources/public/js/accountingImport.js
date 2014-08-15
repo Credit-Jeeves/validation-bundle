@@ -3,7 +3,8 @@ function accountingImport() {
     this.isMultipleProperty = ko.observable(false);
     this.fieldsWhichNotContaintInForm = [
         "import_new_user_with_contract_contract_residentMapping_residentId",
-        "import_contract_residentMapping_residentId"
+        "import_contract_residentMapping_residentId",
+        "resident_id",
     ];
 
     this.unitName = [
@@ -212,6 +213,11 @@ function accountingImport() {
         //use jquery, because knockout function can't get key of array/object - just value
         jQuery.each(data, function(keys1, values1) {
             jQuery.each(values1, function(keys2, values2) {
+                if ($.type(values2) === "string") {
+                    result[keys2] = values2;
+                    return;
+                }
+
                 if (values2 instanceof Array) {
                     result[keys2] = values2;
                     return;

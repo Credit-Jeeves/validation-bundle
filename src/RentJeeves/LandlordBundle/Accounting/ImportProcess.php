@@ -53,6 +53,11 @@ class ImportProcess
     const ROW_ON_PAGE = 10;
 
     /**
+     * @var array
+     */
+    protected $usedResidentsIds = array();
+
+    /**
      * @var EntityManager
      */
     protected $em;
@@ -292,6 +297,33 @@ class ImportProcess
     }
 
     /**
+     * @param string $residentId
+     */
+    protected function addResidentId($residentId)
+    {
+        if (!isset($this->usedResidentsIds[$residentId])) {
+            $this->usedResidentsIds[$residentId] = 1;
+        } else {
+            $this->usedResidentsIds[$residentId]++;
+        }
+    }
+
+    protected function clearResidentIds()
+    {
+        $this->usedResidentsIds = array();
+    }
+
+    /**
+     * @param ResidentMapping $residentMapping
+     * @return bool
+     */
+    public function isUsedResidentId(ResidentMapping $residentMapping)
+    {
+        $id = $residentMapping->getResidentId();
+        return (isset($this->usedResidentsIds[$id]) && $this->usedResidentsIds[$id] > 1)? true : false;
+    }
+
+    /**
      * @param Tenant $tenant
      * @param array $row
      *
@@ -303,6 +335,7 @@ class ImportProcess
         $residentMapping->setTenant($tenant);
         $residentMapping->setHolding($this->user->getHolding());
         $residentMapping->setResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
+        $this->addResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
 
         return $residentMapping;
     }
@@ -642,7 +675,7 @@ class ImportProcess
 
         $residentMapping = $import->getResidentMapping();
         $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0) {
+        if (count($errors) > 0 || $this->isUsedResidentId($residentMapping)) {
             return false;
         }
 
@@ -722,7 +755,13 @@ class ImportProcess
         }
 
         if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
-            $import->setErrors($this->runFormValidation($form, $lineNumber, $token));
+            $errors = $this->runFormValidation($form, $lineNumber, $token);
+            if ($this->isUsedResidentId($import->getResidentMapping())) {
+                $errors[$lineNumber][$form->getName()][ImportMapping::KEY_RESIDENT_ID] = $this->translator->trans(
+                    'error.residentId.already.use'
+                );
+            }
+            $import->setErrors($errors);
         }
 
         return $import;
@@ -818,6 +857,7 @@ class ImportProcess
             $import->setNumber($key);
             $collection->add($import);
         }
+        $this->clearResidentIds();
         return $collection;
     }
 

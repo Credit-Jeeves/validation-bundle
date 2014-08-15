@@ -186,11 +186,13 @@ class ImportMapping
      */
     protected function specificProcessingFields($data)
     {
-        $data[self::KEY_RENT] = str_replace(
-            array(',',' '),
-            '',
-            $data[self::KEY_RENT]
-        );
+        foreach (array(self::KEY_RENT, self::KEY_BALANCE) as $key) {
+            $data[$key] = str_replace(
+                array(',',' '),
+                '',
+                $data[$key]
+            );
+        }
 
         if ($this->storage->isMultipleProperty()) {
             if (empty($data[self::KEY_UNIT])) {
