@@ -5,7 +5,7 @@ use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
-    public function getPropetiesWhichDuplicate()
+    public function getDuplicateProperties()
     {
         $query = $this->createQueryBuilder('property')
                 ->select(

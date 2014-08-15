@@ -13,7 +13,7 @@ class PropertyCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function index()
+    public function checkDuplicateProperty()
     {
         $this->load(true);
         $container = $this->getContainer();

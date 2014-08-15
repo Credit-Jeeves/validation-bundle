@@ -23,7 +23,7 @@ class PropertyCommand extends ContainerAwareCommand
     {
         $doctrine = $this->getContainer()->get('doctrine');
         $propertyRepository = $doctrine->getRepository('RjDataBundle:Property');
-        $iterableProperty = $propertyRepository->getPropetiesWhichDuplicate();
+        $iterableProperty = $propertyRepository->getDuplicateProperties();
 
         foreach ($iterableProperty as $row) {
             $number = $row[0]['number'];

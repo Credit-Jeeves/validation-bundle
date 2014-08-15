@@ -72,27 +72,17 @@ class PropertyProcess
             return null;
         }
 
-        $property = $this->em->getRepository(
+        return $this->em->getRepository(
             'RjDataBundle:Property'
         )->findOneBy($params);
-
-        if ($property) {
-            return $property;
-        }
-
-        return null;
     }
 
     /**
      * @param Property $property
-     * @param bool $isSaveToGoogle
-     *
      * @return null|Property
      */
-    public function checkPropertyDuplicate(
-        Property $property,
-        $isSaveToGoogle = false
-    ) {
+    public function checkByMinimalArgs(Property $property)
+    {
         $params = array(
             'jb'        => $property->getJb(),
             'kb'        => $property->getKb(),
@@ -107,6 +97,15 @@ class PropertyProcess
             return null;
         }
 
+        return $property;
+    }
+
+    /**
+     * @param Property $property
+     * @return null|Property
+     */
+    public function checkByAllArgs(Property $property)
+    {
         $params = array(
             'number'    => $property->getNumber(),
             'city'      => $property->getCity(),
@@ -120,11 +119,28 @@ class PropertyProcess
             return $propertyInDataBase;
         }
 
-        if ($isSaveToGoogle) {
-            $this->saveToGoogle($property);
+        return $property;
+    }
+
+    /**
+     * @param Property $property
+     * @param bool $saveToGoogle
+     *
+     * @return null|Property
+     */
+    public function checkPropertyDuplicate(
+        Property $property,
+        $saveToGoogle = false
+    ) {
+        foreach (array('checkByMinimalArgs', 'checkByAllArgs') as $method) {
+            $propertyResult = $this->$method($property);
+            if ($saveToGoogle && $propertyResult) {
+                $this->saveToGoogle($propertyResult);
+                return $propertyResult;
+            }
         }
 
-        return $property;
+        return null;
     }
 
     /**
@@ -159,7 +175,7 @@ class PropertyProcess
         }
 
         $property->parseGeocodeResponse($result);
-        if (!$this->isRequiredFieldsPropertyFill($property)) {
+        if (!$this->isSetRequiredFields($property)) {
             return false;
         }
 
@@ -172,7 +188,7 @@ class PropertyProcess
      * @param Property $property
      * @return bool
      */
-    protected function isRequiredFieldsPropertyFill(Property $property)
+    protected function isSetRequiredFields(Property $property)
     {
         $fields = array(
             'number',
