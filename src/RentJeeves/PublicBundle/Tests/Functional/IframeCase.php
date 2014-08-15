@@ -35,7 +35,7 @@ class IframeCase extends BaseTestCase
     public function provideGoogleAddress()
     {
         return array(
-            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', null, 40.699021, -73.993744),
+            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', 'Brooklyn', 40.699021, -73.993744),
             array('13 Greenwich St, Manhattan, New York, NY 10013', 'New York', 'Manhattan', 40.7218084, -74.0097316),
         );
     }
