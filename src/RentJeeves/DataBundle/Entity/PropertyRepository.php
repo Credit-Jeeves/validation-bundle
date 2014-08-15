@@ -32,8 +32,31 @@ class PropertyRepository extends EntityRepository
 
         $query = $query->getQuery();
 
-        return $query->iterate();
+        return $query->execute();
     }
+
+    public function getDublicatePropertiesWithContract()
+    {
+        $sql = <<< EOT
+        SELECT (COUNT(property.id) - count(distinct(property.id))) as difference,
+        property.id AS property_id, property.zip AS zip,
+        property.number AS number, property.street AS street,
+        contract.id as contract_id,
+        COUNT(contract.id) as count_contract
+        FROM rj_property property
+        INNER JOIN rj_contract contract
+        ON property.id = contract.property_id
+        GROUP BY property.street, property.number, property.zip
+        HAVING difference = 0
+
+EOT;
+        $stmt = $this->getEntityManager()
+            ->getConnection()
+            ->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
 
     public function getPropetiesAll($group)
     {

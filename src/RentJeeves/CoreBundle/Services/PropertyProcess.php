@@ -89,15 +89,7 @@ class PropertyProcess
             'number'    => $property->getNumber(),
         );
 
-        if ($propertyInDataBase = $this->getPropertyFromDB($params)) {
-            return $propertyInDataBase;
-        }
-
-        if (!$this->isValidProperty($property)) {
-            return null;
-        }
-
-        return $property;
+        return $this->getPropertyFromDB($params);
     }
 
     /**
@@ -115,11 +107,17 @@ class PropertyProcess
             'country'   => $property->getCountry(),
         );
 
-        if ($propertyInDataBase = $this->getPropertyFromDB($params)) {
-            return $propertyInDataBase;
+        $property = $this->getPropertyFromDB($params);
+        if ($property) {
+            return $property;
         }
 
-        return $property;
+        $street = $params['street'];
+        if (substr($street, -3, 3) === " Rd") {
+            $params['street'] = str_replace(" Rd", " Road", $street);
+        }
+
+        return $this->getPropertyFromDB($params);
     }
 
     /**
@@ -133,14 +131,22 @@ class PropertyProcess
         $saveToGoogle = false
     ) {
         foreach (array('checkByMinimalArgs', 'checkByAllArgs') as $method) {
-            $propertyResult = $this->$method($property);
-            if ($saveToGoogle && $propertyResult) {
-                $this->saveToGoogle($propertyResult);
-                return $propertyResult;
+            $propertyInDB = $this->$method($property);
+            if ($propertyInDB && $saveToGoogle) {
+                $this->saveToGoogle($propertyInDB);
+                return $propertyInDB;
             }
         }
 
-        return null;
+        if (!$this->isValidProperty($property)) {
+            return null;
+        }
+
+        if ($saveToGoogle) {
+            $this->saveToGoogle($property);
+        }
+
+        return $property;
     }
 
     /**
@@ -163,7 +169,7 @@ class PropertyProcess
     public function isValidProperty(Property $property)
     {
         foreach ($this->validProperties as $propertyValid) {
-            if ($property  === $propertyValid) {
+            if ($property === $propertyValid) {
                 return true;
             }
         }

@@ -12,23 +12,45 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PropertyCommand extends ContainerAwareCommand
 {
+    /**
+     * @var string
+     */
+    const ONLY_WITH_CONTRACT = 'only-with-contract';
+
+    /**
+     * var boolean
+     */
+    const ONLY_WITH_CONTRACT_DEFAULT = false;
+
     protected function configure()
     {
         $this
             ->setName('property:duplicate')
-            ->setDescription('Show duplicate property in DB');
+            ->setDescription('Show duplicate property in DB')
+            ->addOption(
+                self::ONLY_WITH_CONTRACT,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Only property which have contract, can set 1 or 0',
+                self::ONLY_WITH_CONTRACT_DEFAULT
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $onlyWithContract = $input->getOption(self::ONLY_WITH_CONTRACT);
         $doctrine = $this->getContainer()->get('doctrine');
         $propertyRepository = $doctrine->getRepository('RjDataBundle:Property');
-        $iterableProperty = $propertyRepository->getDuplicateProperties();
-
-        foreach ($iterableProperty as $row) {
-            $number = $row[0]['number'];
-            $zip = $row[0]['zip'];
-            $street = $row[0]['street'];
+        if ($onlyWithContract) {
+            $properties = $propertyRepository->getDublicatePropertiesWithContract();
+        } else {
+            $properties = $propertyRepository->getDuplicateProperties();
+        }
+        foreach ($properties as $row) {
+            $number = $row['number'];
+            $zip = $row['zip'];
+            $street = $row['street'];
+            $contractId = (isset($row['contract_id']))? $row['contract_id']: null;
             $properties = $propertyRepository->findBy(
                 array(
                     'zip'    => $zip,
@@ -40,7 +62,12 @@ class PropertyCommand extends ContainerAwareCommand
              * @var $property Property
              */
             foreach ($properties as $property) {
-                $output->writeln($property->getFullAddress().' || ID:'.$property->getId());
+                $message = $property->getFullAddress().' || PROPERTY_ID:'.$property->getId();
+                if ($onlyWithContract) {
+                    $message .= ' CONTRACT_ID:'.$contractId;
+                }
+
+                $output->writeln($message);
             }
         }
     }
