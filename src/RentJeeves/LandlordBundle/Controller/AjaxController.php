@@ -265,12 +265,9 @@ class AjaxController extends Controller
         $property = array();
         $itsNewProperty = false;
         $data = $request->request->all('address');
-        $addGroup = $request->request->all('addGroup');
+        $addGroup = (int)$request->request->all('addGroup');
         $data = json_decode($data['data'], true);
-        $addGroup = (!isset($data['addGroup'])
-                     || (isset($data['addGroup']) && $data['addGroup'] == 1)
-                    )?  true : false;
-
+        $addGroup = (isset($data['addGroup']) && $data['addGroup'] === 1)?  true : false;
         /**
          * @var $propertyProcess PropertyProcess
          */
@@ -290,9 +287,6 @@ class AjaxController extends Controller
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
         /** @var Property $property */
         $property = $propertyProcess->getPropertyFromDB($propertySearch);
-        if ($property && $request->request->has('isSingle')) {
-            $property->setIsSingle($request->request->get('isSingle') == 'true');
-        }
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
@@ -301,6 +295,10 @@ class AjaxController extends Controller
             $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
             $property->fillPropertyData($propertyData);
             $itsNewProperty = true;
+        }
+
+        if ($request->request->has('isSingle') && is_null($property->getIsSingle())) {
+            $property->setIsSingle($request->request->get('isSingle') == 'true');
         }
 
         if (!$propertyProcess->isValidProperty($property)) {

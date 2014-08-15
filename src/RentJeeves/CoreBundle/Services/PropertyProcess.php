@@ -194,7 +194,7 @@ class PropertyProcess
             'number',
             'jb',
             'kb',
-            'street'
+            'street',
         );
 
         foreach ($fields as $field) {
