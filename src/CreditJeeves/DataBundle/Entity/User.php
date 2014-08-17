@@ -392,6 +392,7 @@ abstract class User extends BaseUser
      */
     public function getDBO()
     {
-        return parent::getDateOfBirth()->format('mdY');
+        $dbo = parent::getDateOfBirth();
+        return $dbo?$dbo->format('mdY'):'';
     }
 }
