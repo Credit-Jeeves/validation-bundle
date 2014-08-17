@@ -40,6 +40,37 @@ class Pidkiq extends \Pidkiq
 
     protected $lastResponse;
 
+    /**
+     * @see Experian::userToData
+     * @var array
+     */
+    protected $userToData = array(
+        'Name' => array(
+            'Surname' => 'getLastName',
+            'First' => 'getFirstName',
+            'Middle' => 'getMiddleInitial',
+            'Gen' => '',
+        ),
+        'SSN' => 'getSsn',
+        'CurrentAddress' => array(
+            'Street' => 'getStreetAddress1',
+            'City' => 'getCity',
+            'State' => 'getState',
+            'Zip' => 'getZip',
+        ),
+        'PreviousAddress' => '',
+        'Phone' => array(
+            'Number' => 'getPhone',
+            'Type' => '',
+        ),
+        'Employment' => '',
+        'Age' => '',
+        'DOB' => 'getDBO', // date_of_birth
+        'YOB' => '',
+        'MothersMaidenName' => '',
+        'EmailAddress' => '', // email
+    );
+
     public function __construct()
     {
     }

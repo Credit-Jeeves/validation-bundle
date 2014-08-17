@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\True;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
@@ -40,7 +41,7 @@ abstract class User extends BaseUser
     public function prePersist()
     {
         $this->enabled = 1;
-        $this->updated_at = new \DateTime();
+        $this->updated_at = new DateTime();
         if (!$this->getInviteCode()) {
             $this->setInviteCode(strtoupper(base_convert(uniqid(), 16, 36)));
         }
@@ -58,7 +59,7 @@ abstract class User extends BaseUser
      */
     public function preUpdate()
     {
-        $this->updated_at = new \DateTime();
+        $this->updated_at = new DateTime();
     }
 
     /**
@@ -383,5 +384,13 @@ abstract class User extends BaseUser
         $nFicoScore = round(10 * (($score - 483.06) / 11.079) + 490);
         $nFicoScore = $nFicoScore > 850 ? 850 : $nFicoScore;
         return $score ? $nFicoScore: 0;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDBO()
+    {
+        return parent::getDateOfBirth()->format('mdY');
     }
 }
