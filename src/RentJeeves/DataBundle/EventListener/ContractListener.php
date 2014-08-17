@@ -92,14 +92,32 @@ class ContractListener
      */
     public function monitoringContractAmount(Contract $contract, PreUpdateEventArgs $eventArgs)
     {
-        if ($eventArgs->hasChangedField('rent')) {
-            if (($payment = $contract->getActivePayment()) && $payment->getAmount() != $contract->getRent()) {
-
-                $this->hasToClosePayment = true;
-
-                $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
-            }
+        if (!$eventArgs->hasChangedField('rent')) {
+            return;
         }
+        /**
+         * Need double check because:
+         * 500 - string
+         * 500.00 - double
+         * value the same but contract will close.
+         */
+        $oldValue = $eventArgs->getNewValue('rent');
+        $newValue = $eventArgs->getOldValue('rent');
+
+        if ($oldValue === $newValue) {
+            return;
+        }
+
+        if (!($payment = $contract->getActivePayment())) {
+            return;
+        }
+
+        if ($payment->getAmount() === $contract->getRent()) {
+            return;
+        }
+
+        $this->hasToClosePayment = true;
+        $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
     }
 
     public function preUpdate(PreUpdateEventArgs $eventArgs)

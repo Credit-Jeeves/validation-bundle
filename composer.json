@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "08f0d98af64ce57c98ade5a6a753c07b2658b607"
+                    "reference": "3ea88fc5e6191508c47f0c6d43d41b732af595ce"
                 }
             }
         },
@@ -108,7 +108,7 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/Heartland.git"
+            "url": "git@github.com:Credit-Jeeves/Heartland.git"
         },
         {
             "type": "git",

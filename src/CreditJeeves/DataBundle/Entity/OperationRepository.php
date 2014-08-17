@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use \DateTime;
 
@@ -83,7 +84,8 @@ class OperationRepository extends EntityRepository
     }
 
     public function getOperationsForXmlReport(
-        $propertyId,
+        Property $property,
+        Holding $holding,
         $start,
         $end
     ) {
@@ -98,19 +100,22 @@ class OperationRepository extends EntityRepository
         $query->innerJoin("operation.order", "ord");
         $query->innerJoin("operation.contract", "contract");
         $query->innerJoin("contract.tenant", "tenant");
+        $query->innerJoin("tenant.residentsMapping", "resident");
         $query->innerJoin('contract.property', 'prop');
         $query->innerJoin('contract.unit', 'unit');
         $query->where("ord.updated_at BETWEEN :start AND :end");
-        $query->andWhere('prop.id = :propId');
+        $query->andWhere('contract.property = :property');
+        $query->andWhere('resident.holding = :holding');
         $query->andWhere('ord.status = :status');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
         $query->orderBy('ord.id', 'ASC');
 
         $query->setParameter('end', $end);
+        $query->setParameter('holding', $holding);
         $query->setParameter('type1', OperationType::RENT);
         $query->setParameter('type2', OperationType::OTHER);
         $query->setParameter('start', $start);
-        $query->setParameter('propId', $propertyId);
+        $query->setParameter('property', $property);
         $query->setParameter('status', OrderStatus::COMPLETE);
 
         $query = $query->getQuery();

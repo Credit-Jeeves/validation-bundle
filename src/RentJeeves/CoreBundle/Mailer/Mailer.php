@@ -13,6 +13,7 @@ use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Exception;
 use RuntimeException;
+use DateTime;
 use CreditJeeves\DataBundle\Enum\OrderType;
 
 /**
@@ -364,6 +365,53 @@ class Mailer extends BaseMailer
             'paymentAmount' => $payment->getAmount(),
         );
         return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param array $groups
+     * @param DateTime $date
+     * @return bool
+     */
+    public function sendBatchDepositReportHolding(Landlord $landlord, $groups, DateTime $date)
+    {
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date,
+            'groups' => $groups,
+        ];
+
+        return $this->sendBaseLetter(
+            'rjBatchDepositReportHolding',
+            $vars,
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param Group $group
+     * @param DateTime $date
+     * @param array $batches
+     * @return bool
+     */
+    public function sendBatchDepositReportLandlord(Landlord $landlord, Group $group, DateTime $date, $batches)
+    {
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date,
+            'groupName' => $group->getName(),
+            'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
+            'batches' => $batches,
+        ];
+
+        return $this->sendBaseLetter(
+            'rjBatchDepositReportLandlord',
+            $vars,
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
     }
 
     public function sendReportReceipt(Order $order)

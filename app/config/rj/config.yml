@@ -88,6 +88,7 @@ sonata_admin:
                 - sonata.admin.rj_group
                 - sonata.admin.landlord
                 - sonata.admin.tenant
+                - sonata.admin.contract_waiting
 
 twig:
     globals:

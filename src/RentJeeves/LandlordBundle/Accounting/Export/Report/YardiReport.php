@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 
 use Doctrine\ORM\EntityManager;
+use CreditJeeves\DataBundle\Entity\Group;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -42,10 +43,7 @@ class YardiReport extends ExportReport
 
     public function getContent($settings)
     {
-        $this->validateSettings($settings);
-        $this->setYardiParams($settings);
         $this->generateFilename($settings);
-
         $reportData = $this->getData($settings);
 
         return $this->serializer->serialize($reportData);
@@ -60,12 +58,21 @@ class YardiReport extends ExportReport
     {
         $this->softDeleteableControl->disable();
 
+        $this->validateSettings($settings);
+        $this->setYardiParams($settings);
+
         $beginDate = $settings['begin'].' 00:00:00';
         $endDate = $settings['end'].' 23:59:59';
-        $propertyId = $settings['property']->getId();
+        $property = $settings['property'];
+        $holding = $settings['group']->getHolding();
         $repository = $this->em->getRepository('DataBundle:Operation');
 
-        return $repository->getOperationsForXmlReport($propertyId, $beginDate, $endDate);
+        return $repository->getOperationsForXmlReport(
+            $property,
+            $holding,
+            $beginDate,
+            $endDate
+        );
     }
 
     public function getAccountId()
@@ -93,6 +100,7 @@ class YardiReport extends ExportReport
     protected function validateSettings($settings)
     {
         if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
+            !isset($settings['group']) || !($settings['group'] instanceof Group) ||
             !isset($settings['propertyId']) || !isset($settings['arAccountId']) || !isset($settings['accountId']) ||
             !isset($settings['begin']) || !isset($settings['end'])) {
             throw new ExportException('Not enough parameters for Yardi report');

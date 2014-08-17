@@ -39,15 +39,6 @@ abstract class Heartland extends PaymentDetails
 
     /**
      * @ORM\Column(
-     *     name="batch_id",
-     *     type="bigint",
-     *     nullable=true
-     * )
-     */
-    protected $batchId;
-
-    /**
-     * @ORM\Column(
      *     name="batch_date",
      *     type="date",
      *     nullable=true
@@ -63,22 +54,6 @@ abstract class Heartland extends PaymentDetails
      * )
      */
     protected $depositDate;
-
-
-//     /**
-//      * @ORM\Column(
-//      *     type="text",
-//      *     nullable=true
-//      * )
-//      */
-//     protected $message;
-
-//     /**
-//      * @ORM\Column(
-//      *     type="boolean"
-//      * )
-//      */
-//     protected $is_successfull = true;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -111,58 +86,6 @@ abstract class Heartland extends PaymentDetails
     {
         return $this->order;
     }
-
-    /**
-     * @param mixed $batchId
-     */
-    public function setBatchId($batchId)
-    {
-        $this->batchId = $batchId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBatchId()
-    {
-        return $this->batchId;
-    }
-
-//     /**
-//      * @param text $message
-//      * @return Heartland
-//      */
-//     public function setMessage($message = null)
-//     {
-//         $this->message = $message;
-//         return $this;
-//     }
-
-//     /**
-//      * @return text
-//      */
-//     public function getMessage()
-//     {
-//         return $this->message;
-//     }
-
-//     /**
-//      * @param smallInt $isSuccesfull
-//      * @return Heartland
-//      */
-//     public function setIsSuccessfull($isSuccessfull)
-//     {
-//         $this->is_successfull = $isSuccessfull;
-//         return $this;
-//     }
-
-//     /**
-//      * @return smallint
-//      */
-//     public function getIsSuccessfull()
-//     {
-//         return $this->is_successfull;
-//     }
 
     /**
      * Set createdAt
