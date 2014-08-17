@@ -139,7 +139,6 @@ abstract class Holding
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
     }
-
     /**
      * @param PropertyMapping $propertyMapping
      */

@@ -13,6 +13,7 @@ use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Exception;
 use RuntimeException;
+use DateTime;
 use CreditJeeves\DataBundle\Enum\OrderType;
 
 /**
@@ -51,7 +52,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-    public function sendRjTenantInvite($tenant, $landlord, $contract, $sTemplate = 'rjTenantInvite')
+    public function sendRjTenantInvite($tenant, $landlord, $contract, $isImported = null, $sTemplate = 'rjTenantInvite')
     {
         $unit = $contract->getUnit();
         $vars = array(
@@ -61,6 +62,7 @@ class Mailer extends BaseMailer
             'rentAddress'           => $contract->getRentAddress(),
             'unitName'              => $unit ? $unit->getName() : '',
             'inviteCode'            => $tenant->getInviteCode(),
+            'isImported'            => $isImported,
         );
 
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -166,8 +168,8 @@ class Mailer extends BaseMailer
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
-            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
-            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
+            'rentAmount' => $order->getRentAmount(),
+            'otherAmount' => $order->getOtherAmount(),
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
@@ -188,8 +190,8 @@ class Mailer extends BaseMailer
             'orderId' => $order->getId(),
             'error' => $order->getHeartlandErrorMessage(),
             'transactionId' => $order->getHeartlandTransactionId(),
-            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
-            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
+            'rentAmount' => $order->getRentAmount(),
+            'otherAmount' => $order->getOtherAmount(),
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
@@ -348,8 +350,8 @@ class Mailer extends BaseMailer
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
-            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
-            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
+            'rentAmount' => $order->getRentAmount(),
+            'otherAmount' => $order->getOtherAmount(),
         );
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
@@ -363,5 +365,52 @@ class Mailer extends BaseMailer
             'paymentAmount' => $payment->getAmount(),
         );
         return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param array $groups
+     * @param DateTime $date
+     * @return bool
+     */
+    public function sendBatchDepositReportHolding(Landlord $landlord, $groups, DateTime $date)
+    {
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date,
+            'groups' => $groups,
+        ];
+
+        return $this->sendBaseLetter(
+            'rjBatchDepositReportHolding',
+            $vars,
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param Group $group
+     * @param DateTime $date
+     * @param array $batches
+     * @return bool
+     */
+    public function sendBatchDepositReportLandlord(Landlord $landlord, Group $group, DateTime $date, $batches)
+    {
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date,
+            'groupName' => $group->getName(),
+            'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
+            'batches' => $batches,
+        ];
+
+        return $this->sendBaseLetter(
+            'rjBatchDepositReportLandlord',
+            $vars,
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
     }
 }

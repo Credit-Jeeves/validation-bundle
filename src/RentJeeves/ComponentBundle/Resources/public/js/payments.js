@@ -200,6 +200,7 @@ $(document).ready(function(){
     $('#searchPayments').linkselect("destroy");
     $('#searchPayments').linkselect({
     change: function(li, value, text){
+        PaymentsViewModel.current(1);
         PaymentsViewModel.searchText('');
         PaymentsViewModel.searchCollum(value);
     }

@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "cc5b6399f4fe9bdd26671cc9ec7c23f4a68c91ba"
+                    "reference": "3ea88fc5e6191508c47f0c6d43d41b732af595ce"
                 }
             }
         },
@@ -108,7 +108,7 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/Heartland.git"
+            "url": "git@github.com:Credit-Jeeves/Heartland.git"
         },
         {
             "type": "git",
@@ -191,6 +191,7 @@
         "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*",
+        "egeloen/ordered-form-bundle": "~1.0",
         "credit-jeeves/credit-jeeves": "dev-master",
         "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",

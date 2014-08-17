@@ -12,8 +12,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Model\Unit;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping as Import;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
-use \DateTime;
-use \SimpleXMLElement;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -66,7 +65,7 @@ class ImportCase extends BaseTestCase
         );
 
         $this->session->wait(
-            10000,
+            15000,
             "$('.overlay-trigger').length <= 0"
         );
 
@@ -260,7 +259,9 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(ContractStatus::INVITE, $contract->getStatus());
         $this->assertEquals('1200', $contract->getRent());
         $this->assertEquals('0', $contract->getIntegratedBalance());
-        $this->assertEquals('11/09/2013', $contract->getStartAt()->format('m/d/Y'));
+        // startAt should be the first day of next month b/c this contract has no payments yet
+        $today = new DateTime('first day of next month');
+        $this->assertEquals($today->format('m/d/Y'), $contract->getStartAt()->format('m/d/Y'));
         $this->assertEquals('11/08/2014', $contract->getFinishAt()->format('m/d/Y'));
 
         /**
@@ -292,7 +293,7 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals('1190', $contractMatch->getRent());
         $this->assertEquals('0', $contractMatch->getIntegratedBalance());
-        $this->assertEquals('04/22/2010', $contractMatch->getStartAt()->format('m/d/Y'));
+        $this->assertEquals($today->format('m/d/Y'), $contractMatch->getStartAt()->format('m/d/Y'));
         $this->assertEquals('10/21/2016', $contractMatch->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractMatch->getStatus());
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
@@ -312,7 +313,7 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals('950', $contractNew->getRent());
         $this->assertEquals('0', $contractNew->getIntegratedBalance());
-        $this->assertEquals('03/18/2011', $contractNew->getStartAt()->format('m/d/Y'));
+        $this->assertEquals($today->format('m/d/Y'), $contractNew->getStartAt()->format('m/d/Y'));
         $this->assertEquals('03/31/2015', $contractNew->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
     }
@@ -729,10 +730,13 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals(2, count($result));
         $td = $result[0]->findAll('css', 'td');
-        $this->assertEquals('12/29/2012<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
+
+        $today = new DateTime('first day of this month');
+        $this->assertEquals($today->format('n/j/Y') . '<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
         $datepicker = $result[1]->findAll('css', '.datepicker');
         $this->assertEquals(2, count($datepicker));
-        $this->assertEquals('11/09/2013', $datepicker[0]->getValue(), $datepicker[0]->getValue());
+        $today = new DateTime('first day of next month');
+        $this->assertEquals($today->format('m/d/Y'), $datepicker[0]->getValue(), $datepicker[0]->getValue());
         $this->assertEquals('11/08/2014', $datepicker[1]->getValue(), $datepicker[1]->getValue());
         $this->logout();
     }
@@ -875,7 +879,9 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($waitingContract);
         $this->assertEquals(975, $waitingContract->getRent());
         $this->assertEquals(193, $waitingContract->getIntegratedBalance());
-        $this->assertEquals('2014-01-01', $waitingContract->getStartAt()->format('Y-m-d'));
+        $date = new DateTime();
+        $date->setDate(null, null, 1);
+        $this->assertEquals($date->format('Y-m-d'), $waitingContract->getStartAt()->format('Y-m-d'));
         $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->isSingle());
 
@@ -958,5 +964,339 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($tenant);
         $this->assertEquals('Daniel', $tenant->getFirstName());
         $this->assertEquals('Price', $tenant->getLastName());
+    }
+
+    /**
+     * @test
+     */
+    public function alreadyHaveAccount()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import_one_user.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/Y');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        for ($i = 1; $i <= 14; $i++) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            if (isset($this->mapFile[$i])) {
+                $choice->selectOption($this->mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.errorField').length > 0"
+        );
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->logout();
+        //Check notify tenant invite for new user
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
+        $link->click();
+
+        $this->assertNotNull($haveAccount = $this->page->find('css', '.haveAccount>a'));
+        $haveAccount->click();
+        $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
+        $this->assertCount(5, $payButtons);
+        $this->logout();
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+            array(
+                'rent'               => 777666.00,
+                'integratedBalance'  => 1277.00
+            )
+        );
+
+        $this->assertNotNull($contract);
+        $this->assertEquals('tenant11@example.com', $contract->getTenant()->getEmail());
+    }
+
+    /**
+     * @test
+     * @depends alreadyHaveAccount
+     */
+    public function checkMutchedUser()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import_one_user.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/Y');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        for ($i = 1; $i <= 14; $i++) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            if (isset($this->mapFile[$i])) {
+                $choice->selectOption($this->mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
+    }
+
+    /**
+     * @test
+     */
+    public function matchWaitingContract()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $mapFile = array(
+            '1' => Import::KEY_RESIDENT_ID,
+            '2' => Import::KEY_TENANT_NAME,
+            '3' => Import::KEY_RENT,
+            '4' => Import::KEY_BALANCE,
+            '5' => Import::KEY_UNIT_ID,
+            '6' => Import::KEY_STREET,
+            '7' => Import::KEY_CITY,
+            '8' => Import::KEY_STATE,
+            '9' => Import::KEY_ZIP,
+            '10'=> Import::KEY_MOVE_IN,
+            '11'=> Import::KEY_LEASE_END,
+            '12'=> Import::KEY_MOVE_OUT,
+            '14'=> Import::KEY_EMAIL,
+        );
+        for ($i = 1; $i <= 15; $i++) {
+            if (isset($mapFile[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $choice->selectOption($mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs['import.status.waiting']), "Waiting contract is wrong number");
+        $this->assertNotNull($firstName1 = $this->page->find('css', 'input.0_first_name'));
+        $firstName1->setValue('Logan');
+        $this->assertNotNull($lastName1 = $this->page->find('css', 'input.0_last_name'));
+        $lastName1->setValue('Cooper');
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        //after that check mathced status
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        for ($i = 1; $i <= 15; $i++) {
+            if (isset($mapFile[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $choice->selectOption($mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->session->wait(
+            6000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+    }
+
+    /**
+     * @test
+     */
+    public function matchWaitingContractWithMoveContract()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
+        $attFile->attachFile($filePath);
+        $this->setProperty();
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $mapFile = array(
+            '1' => Import::KEY_UNIT,
+            '2' => Import::KEY_RESIDENT_ID,
+            '3' => Import::KEY_TENANT_NAME,
+            '4' => Import::KEY_RENT,
+            '5' => Import::KEY_MOVE_IN,
+            '6' => Import::KEY_LEASE_END,
+            '7' => Import::KEY_MOVE_OUT,
+            '8' => Import::KEY_BALANCE,
+            '9' => Import::KEY_EMAIL,
+        );
+        for ($i = 1; $i <= 15; $i++) {
+            if (isset($mapFile[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $choice->selectOption($mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs['import.status.new']), "New contract is wrong number");
+        $this->assertNotNull($email = $this->page->find('css', 'input.0_email'));
+        $email->setValue('');
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        //after that check mathced status
+        $this->page->clickLink('tab.accounting');
+
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
+        $attFile->attachFile($filePath);
+        $this->setProperty();
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $mapFile = array(
+            '1' => Import::KEY_UNIT,
+            '2' => Import::KEY_RESIDENT_ID,
+            '3' => Import::KEY_TENANT_NAME,
+            '4' => Import::KEY_RENT,
+            '5' => Import::KEY_MOVE_IN,
+            '6' => Import::KEY_LEASE_END,
+            '7' => Import::KEY_MOVE_OUT,
+            '8' => Import::KEY_BALANCE,
+            '9' => Import::KEY_EMAIL,
+        );
+        for ($i = 1; $i <= 15; $i++) {
+            if (isset($mapFile[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $choice->selectOption($mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
+            array(
+                'integratedBalance' => '-29.80',
+            )
+        );
+        $this->assertEquals(1, count($contracts));
     }
 }

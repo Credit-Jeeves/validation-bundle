@@ -16,12 +16,16 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class TenantController extends Controller
 {
     /**
-     * @Route("/tenant/invite/{code}", name="tenant_invite")
+     * @Route(
+     *  "/tenant/invite/{code}/{isImported}",
+     *  defaults={"isImported" = null},
+     *  name="tenant_invite"
+     * )
      * @Template()
      *
      * @return array
      */
-    public function tenantInviteAction($code)
+    public function tenantInviteAction($code, $isImported = null)
     {
         $tenant  = $this->getDoctrine()->getRepository('RjDataBundle:Tenant')->findOneBy(array('invite_code' => $code));
 
@@ -53,6 +57,7 @@ class TenantController extends Controller
         return array(
             'code'              => $code,
             'form'              => $form->createView(),
+            'isImported'        => (empty($isImported))? false : true,
         );
     }
 

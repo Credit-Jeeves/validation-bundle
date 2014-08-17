@@ -4,7 +4,6 @@ namespace RentJeeves\CoreBundle\Visitor;
 
 use JMS\Serializer\AbstractVisitor;
 use JMS\Serializer\Context;
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -12,10 +11,9 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
-use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\scalar;
 use JMS\Serializer\VisitorInterface;
-use JMS\Serializer\Util\Writer;
+use PhpOption;
 
 /**
  * @Service("jms_serializer.csv_serialization_visitor")
@@ -37,7 +35,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
 
     public function __construct()
     {
-        $this->fp = fopen('php://temp', 'r+');
+        $this->initOutput();
     }
 
     /**
@@ -114,6 +112,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
 
     /**
      * Called before the properties of the object are being visited.
+     * Sets headerFlag to true in order to not show the header if corresponding parameter use_header is passed.
      *
      * @param ClassMetadata $metadata
      * @param mixed $data
@@ -123,6 +122,10 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
      */
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
+        $useHeader = $context->attributes->get('use_header');
+        if ($useHeader instanceof PhpOption\Some && $useHeader->get() === false) {
+            $this->headerFlag = true;
+        }
     }
 
     /**
@@ -135,7 +138,6 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
     {
         $name  = $metadata->serializedName ?: $metadata->name;
         $value = $metadata->getValue($data);
-        $type  = $metadata->type;
 
         $this->currentLine[$name] = $this->navigator->accept($value, $metadata->type, $context);
     }
@@ -190,7 +192,13 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
         rewind($this->fp);
         $data = fread($this->fp, 1048576);
         fclose($this->fp);
+        $this->initOutput();
 
         return $data;
+    }
+
+    protected function initOutput()
+    {
+        $this->fp = fopen('php://temp', 'r+');
     }
 }

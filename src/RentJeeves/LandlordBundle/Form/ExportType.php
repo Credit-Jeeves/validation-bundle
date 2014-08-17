@@ -59,14 +59,19 @@ class ExportType extends AbstractType
             'type',
             'choice',
             array(
-                'choices'     => array(
+                'choices' => array(
                     'xml' => 'base.order.report.type.yardi',
                     'csv' => 'base.order.report.type.realpage',
-                    'promas' => 'base.order.report.type.promas'
+                    'promas' => 'base.order.report.type.promas',
                 ),
                 'required'    => true,
                 'attr'        => array(
-                    'class' => 'original widthSelect'
+                    'class' => 'original widthSelect',
+                    'data-bind' => '
+                        options: exportTypes,
+                        optionsText: "typeName",
+                        optionsValue: "type",
+                        value: selectedType'
                 ),
                 'constraints' => array(
                     new NotBlank(array('groups' => array('xml', 'csv', 'promas')))
@@ -83,6 +88,15 @@ class ExportType extends AbstractType
                 'required'    => false,
                 'attr'           => array(
                     'class' => 'original widthSelect',
+                    'force_row' => true,
+                    'data-bind' => '
+                        options: properties,
+                        optionsText: "name",
+                        optionsValue: "id",
+                        value: selectedProperty',
+                    'row_attr' => array(
+                        'data-bind' => "visible: selectedType() != 'promas'",
+                    )
                 ),
                 'constraints'    => array(
                     new NotBlank(array('groups' => array('xml', 'csv'))),
@@ -126,6 +140,10 @@ class ExportType extends AbstractType
                 'required'    => false,
                 'attr'        => array(
                     'class' => 'int',
+                    'data-bind' => 'value: propertyId',
+                    'row_attr' => array(
+                        'data-bind' => "visible: selectedType() == 'xml'",
+                    )
                 ),
                 'constraints' => array(
                     new Regex(
@@ -139,7 +157,6 @@ class ExportType extends AbstractType
             )
         );
 
-
         $builder->add(
             'accountId',
             'text',
@@ -148,6 +165,10 @@ class ExportType extends AbstractType
                 'required'    => false,
                 'attr'        => array(
                     'class' => 'int',
+                    'data-bind' => 'value: accountId',
+                    'row_attr' => array(
+                        'data-bind' => "visible: selectedType() == 'xml'",
+                    )
                 ),
                 'constraints' => array(
                     new Regex(
@@ -169,6 +190,10 @@ class ExportType extends AbstractType
                 'required'    => false,
                 'attr'        => array(
                     'class' => 'int',
+                    'data-bind' => 'value: arAccountId',
+                    'row_attr' => array(
+                        'data-bind' => "visible: selectedType() == 'xml'",
+                    )
                 ),
                 'constraints' => array(
                     new Regex(
@@ -192,7 +217,8 @@ class ExportType extends AbstractType
                 'format'      => 'MM/dd/yyyy',
                 'attr'        => array(
                     'class'     => 'begin calendar',
-                    'force_row' => true
+                    'force_row' => true,
+                    'data-bind' => 'datepicker: begin'
                 ),
                 'constraints' => array(
                     new NotBlank(array('groups' => array('xml', 'csv', 'promas'))),
@@ -210,12 +236,28 @@ class ExportType extends AbstractType
                 'widget'      => 'single_text',
                 'format'      => 'MM/dd/yyyy',
                 'attr'        => array(
-                    'class' => 'end calendar'
+                    'class' => 'end calendar',
+                    'data-bind' => 'datepicker: end'
                 ),
                 'constraints' => array(
                     new NotBlank(array('groups' => array('xml', 'csv', 'promas'))),
                     new Date(array('groups' => array('xml', 'csv', 'promas'))),
                 )
+            )
+        );
+
+        $builder->add(
+            'makeZip',
+            'checkbox',
+            array(
+                'label' => 'export.promas.make_zip',
+                'required' => false,
+                'attr' => array(
+                    'data-bind' => 'checked: makeZip',
+                    'row_attr' => array(
+                        'data-bind' => "visible: selectedType() != 'csv'",
+                    )
+                ),
             )
         );
     }

@@ -117,4 +117,45 @@ class DashboardCase extends BaseTestCase
 
         $this->logout();
     }
+
+    /**
+     * @test
+     */
+    public function returnedRefundedFilter()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+
+        $this->assertNotNull($searchPaymentsStatus = $this->page->find('css', '#searchPaymentsStatus_link'));
+        $searchPaymentsStatus->click();
+
+        $this->assertNotNull(
+            $returned = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="returned"]')
+        );
+        $this->assertNotNull(
+            $refunded = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="refunded"]')
+        );
+        /*
+         * Check returned Status
+         */
+        $returned->click();
+
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
+        $searchSubmit->click();
+
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        /*
+         * Get first TD with status
+         */
+        $this->assertNotNull($td = $this->page->find('css', '#payments-block-tbody td'));
+        $this->assertEquals('order.status.text.returned', $td->getHtml());
+
+
+        $this->logout();
+    }
 }

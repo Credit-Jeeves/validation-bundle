@@ -1,7 +1,12 @@
+{# FIXME split to 3 files for each popup and list & froms must be used for submited data #}
+
 <div id="contract-resolve">
     <!-- Resolve Popup Late -->
-    <div id="contract-resolve-late" class="pricing-popup dashboard-popup properties-popup">
+    <div data-bind="dialog: {autoOpen:true, resizable:false, modal:true, width:'520px'}, dialogVisible: isDialogVisible"
+         id="contract-resolve-late"
+         class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'conflict.resolve.title' | trans() }}</h1>
+
         <div class="clearfix halfs-box">
             {% include 'RjComponentBundle:ContractsList:_tenantInfoBlock.html.twig' %}
             <div class="half-box right">
@@ -9,23 +14,50 @@
                 <ul class="type_checkbox">
                     <li>
                         <label class="checkbox radio">
-                            <input type="radio" name="ResolutionOptions" title="email" checked>
+                            <input type="radio"
+                                   name="ResolutionOptions"
+                                   value="email"
+                                   title="email"
+                                   data-bind="checked: resolveValue"/>
                             <i></i>
                             <span>{{ 'conflict.resolve.email' | trans() }}</span>
                         </label>
+
                         <div class="row-10"></div>
                     </li>
                     <li>
                         <label class="checkbox radio">
-                            <input type="radio" name="ResolutionOptions" title="paid">
+                            <input type="radio"
+                                   name="ResolutionOptions"
+                                   title="paid"
+                                   value="paid"
+                                   data-bind="checked: resolveValue">
                             <i></i>
                             <span>{{ 'conflict.resolve.paid' | trans() }}</span>
                         </label>
+
                         <div class="row-10"></div>
                     </li>
                     <li>
                         <div class="amount-paid-label floatleft">{{ 'contract.paid.cash' | trans }}</div>
-                        <div class="amount-paid-input floatleft"><input type="text" id="amount-paid"></div>
+                        <div class="amount-paid-input floatleft">
+                            <input type="text" id="amount-paid" data-bind="value: amount"/>
+                        </div>
+                        <div class="clearboth"></div>
+                        <div class="row-10"></div>
+                    </li>
+                    <li>
+                        <label class="amount-paid-label floatleft" for="paid-for">
+                            {{ 'contract.paid.paid_for' | trans }}
+                        </label>
+
+                        <div class="amount-paid-input floatleft">
+                            <select id="paid-for"
+                                    class="original"
+                                    data-bind="options: paidForOptions, optionsText: 'text', optionsValue: 'value',
+                                        value: paidFor">
+                            </select>
+                        </div>
                         <div class="clearboth"></div>
                     </li>
                     <li>
@@ -40,7 +72,7 @@
                 <button class="button buttonFix" data-bind="click: resolve">
                     <span>{{ 'conflict.resolve.action' | trans() }}</span>
                 </button>
-                <button class="button grey buttonFix" data-bind="click: closeForm">
+                <button class="button grey buttonFix" data-bind="click: function(){this.isDialogVisible(false)}">
                     <span>{{ 'cancel' | trans() }}</span>
                 </button>
             </div>
@@ -49,8 +81,11 @@
     <!-- End Resolve Popup Late -->
 
     <!-- Resolve Popup Ended -->
-    <div id="contract-resolve-ended" class="pricing-popup dashboard-popup properties-popup">
+    <div data-bind="dialog: {autoOpen:true, resizable:false, modal:true, width:'520px'}, dialogVisible: isDialogVisible"
+         id="contract-resolve-ended"
+         class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'conflict.resolve.ended' | trans() }}</h1>
+
         <div class="clearfix halfs-box">
             <div class="attention-box pie-el" data-bind="visible: countErrorsEnded() > 0">
                 <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
@@ -65,34 +100,46 @@
                 <ul class="type_checkbox">
                     <li>
                         <label class="checkbox radio">
-                            <input type="radio" name="ResolutionOptionsEnded" value="monthToMonth" data-bind="checked: resolutionOptionsEnded" title='{{ 'month.to.month'|trans }}' checked>
+                            <input type="radio" name="ResolutionOptionsEnded" value="monthToMonth" autofocus
+                                   data-bind="checked: resolutionOptionsEnded" title='{{ 'month.to.month'|trans }}'
+                                   checked>
                             <i></i>
                             <span>{{ 'month.to.month' | trans() }}</span>
                         </label>
+
                         <div class="row-10"></div>
                     </li>
                     <li class="resolutionRadio">
                         <label class="checkbox radio">
-                            <input type="radio" name="ResolutionOptionsEnded" value="changeDate" data-bind="checked: resolutionOptionsEnded"  title='{{ 'change.end.date'|trans()  }}'>
+                            <input type="radio" name="ResolutionOptionsEnded" value="changeDate"
+                                   data-bind="checked: resolutionOptionsEnded" title='{{ 'change.end.date'|trans() }}'>
                             <i></i>
                             <span>{{ 'change.end.date' | trans() }}</span>
+
                             <div class="clearboth"></div>
                             <div class="input-end-contract floatleft">
-                                <input type="text" name="endDate" class="half-of-right datepicker" placeholder="mm/dd/YYYY" value="" data-bind="value: endedContractDate" />
+                                <input type="text" name="endDate" class="half-of-right datepicker"
+                                       placeholder="mm/dd/YYYY" value=""
+                                       data-bind="datepicker: endedContractDate, datepickerOptions: {minDate: new Date(), dateFormat: 'm/d/yy'}"
+                                />
                             </div>
                         </label>
+
                         <div class="row-20"></div>
                     </li>
                     <li class="resolutionRadio">
                         <label class="checkbox radio">
-                            <input type="radio" name="ResolutionOptionsEnded" value="markFinished" data-bind="checked: resolutionOptionsEnded"  title='{{ 'mark.as.finished' | trans }}'>
+                            <input type="radio" name="ResolutionOptionsEnded" value="markFinished"
+                                   data-bind="checked: resolutionOptionsEnded" title='{{ 'mark.as.finished' | trans }}'>
                             <i></i>
                             <span>{{ 'mark.as.finished' | trans }}</span>
+
                             <div class="clearboth"></div>
                             <div class="input-end-contract floatleft">
                                 <input type="text" value="" data-bind="value: outstandingBalance" class="half-of-right">
                             </div>
                         </label>
+
                         <div class="row-20"></div>
                     </li>
                     <li>
@@ -107,7 +154,7 @@
                 <button class="button buttonFix" data-bind="click: resolveEnded">
                     <span>{{ 'conflict.resolve.action' | trans() }}</span>
                 </button>
-                <button class="button grey buttonFix" data-bind="click: closeFormEnded">
+                <button class="button grey buttonFix" data-bind="click: function(){this.isDialogVisible(false)}">
                     <span>{{ 'cancel' | trans() }}</span>
                 </button>
             </div>
@@ -117,91 +164,102 @@
 </div>
 <div id="actions-block" class="landrord-box contracts-block">
     <div class="title-box clearfix">
-      <h2 data-bind="text: '{{'action.required'|trans}} (' + $root.total() + ')'"></h2>
-      <div class="fiter-box">
-        <label>{{ 'filter.by'|trans }}</label>
-        <select id="searchActions"class="select custom-select blue-arrow selectBox">
-            <option value="property">{{ 'property'|trans }}</option>
-            <option value="tenant">{{ 'tenant'|trans }}</option>
-            <option value="amount">{{ 'amount'|trans }}</option>
-        </select>
-        <div class="finder-box">
-          <input type="text" id="searsh-field-actions" name="searsh-field" data-bind="value: searchText">
-          <a href="#" style="display:block;" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
-          <button type="submit" id="search-submit" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
+        <h2 data-bind="text: '{{ 'action.required'|trans }} (' + $root.total() + ')'"></h2>
+
+        <div class="fiter-box">
+            <label>{{ 'filter.by'|trans }}</label>
+            <select id="searchActions" class="select custom-select blue-arrow selectBox">
+                <option value="property">{{ 'property'|trans }}</option>
+                <option value="tenant">{{ 'tenant'|trans }}</option>
+                <option value="amount">{{ 'amount'|trans }}</option>
+            </select>
+
+            <div class="finder-box">
+                <input type="text" id="searsh-field-actions" name="searsh-field" data-bind="value: searchText">
+                <a href="#" style="display:block;"
+                   data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete"
+                   class="pie-el">x</a>
+                <button type="submit" id="search-submit" data-bind="click: search"
+                        class="pie-el">{{ 'search' }}</button>
+            </div>
         </div>
-      </div>
     </div>
     <div class="content-box">
-      <div class="properties-table-block table-wrap">
-        <div class="table-margin">
-          <table class="properties-table zebra-grid"
-          data-bind="style: { display: processActions() ? 'none ' :  'table' }"
-            style="display:none;"
-          >
-            <thead>
-              <tr class="properties-th">
-                <th class="pie-el" colspan="2">
-                  <span class="sort" id="statusA" data-bind="click: sortIt" >{{ 'filter.status'|trans }}<i> </i></span>
-                </th>
-                <th class="pie-el">
-                  <span class="sort"  id="due_dateA" data-bind="click: sortIt">{{ 'paid_to'|trans }}<i> </i>
+        <div class="properties-table-block table-wrap">
+            <div class="table-margin">
+                <table class="properties-table zebra-grid"
+                       data-bind="style: { display: processActions() ? 'none ' :  'table' }"
+                       style="display:none;"
+                        >
+                    <thead>
+                    <tr class="properties-th">
+                        <th class="pie-el" colspan="2">
+                            <span class="sort" id="statusA" data-bind="click: sortIt">{{ 'filter.status'|trans }}
+                                <i> </i></span>
+                        </th>
+                        <th class="pie-el">
+                  <span class="sort" id="due_dateA" data-bind="click: sortIt">{{ 'paid_to'|trans }}<i> </i>
                   </span>
-                </th>
-                <th class="pie-el">
+                        </th>
+                        <th class="pie-el">
                   <span class="sort" id="propertyA" data-bind="click: sortIt">{{ 'property'|trans }}<i> </i>
                   </span>
-                </th>
-                <th class="pie-el">
+                        </th>
+                        <th class="pie-el">
                   <span id="tenantA" data-bind="click: sortIt" class="sort">{{ 'tenant'|trans }}<i> </i>
                   </span>
-                </th>
-                <th class="pie-el">
-                  <span  id="amountA" data-bind="click: sortIt" class="sort">{{ 'amount'|trans }}<i> </i>
+                        </th>
+                        <th class="pie-el">
+                  <span id="amountA" data-bind="click: sortIt" class="sort">{{ 'amount'|trans }}<i> </i>
                   </span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-            <!-- ko if: countActions -->
-              <!-- ko foreach: { data: aActions } -->
-              <tr>
-                <td class="actions-status" data-bind="text: status, attr: {'class': 'actions-status '+style}"></td>
-                <td class="action-box">
-                  <a href="#" class="action-alert pie-el"  data-bind="click: $root.Resolve">
-                    <i> </i>{{'resolve'|trans|upper}}
-                  </a>
-                </td>
-                <td data-bind="text: late_date"></td>
-                <td data-bind="text: address"></td>
-                <td data-bind="text: tenant"></td>
-                <td data-bind="text: amount"></td>
-              </tr>
-              <!-- /ko -->
-              <!-- /ko -->
-            </tbody>
-          </table>
-              <!-- ko if: notHaveResult()  -->
-              <div class="no-data-row">
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- ko if: countActions -->
+                    <!-- ko foreach: { data: aActions } -->
+                    <tr>
+                        <!-- ko if: status_label.choice == true -->
+                        <td class="actions-status"
+                            data-bind="text: Translator.transChoice(status_label.label, status_label.count, status_label.params), attr: {'class': 'actions-status '+style}"></td>
+                        <!-- /ko -->
+                        <!-- ko ifnot: status_label.choice == true -->
+                        <td class="actions-status"
+                            data-bind="text: Translator.trans(status_label.label, status_label.params), attr: {'class': 'actions-status '+style}"></td>
+                        <!-- /ko -->
+                        <td class="action-box">
+                            <a href="#" class="action-alert pie-el" data-bind="click: $root.resolve.bind($data)">
+                                <i> </i>{{ 'resolve'|trans|upper }}
+                            </a>
+                        </td>
+                        <td data-bind="text: late_date"></td>
+                        <td data-bind="text: address"></td>
+                        <td data-bind="text: tenant"></td>
+                        <td data-bind="text: amount"></td>
+                    </tr>
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    </tbody>
+                </table>
+                <div data-bind="visible: notHaveResult" class="no-data-row" style="display: none;">
                     <h3 class="notHaveData">{{ 'donthavedata'|trans }}</h3>
-                    </div>
-              <!-- /ko -->
-
-          <img src="/bundles/core/images/img_loading.gif" class="processPayment" data-bind="style: { display: processActions() ? 'block' : 'none' }">
+                </div>
+                <img src="/bundles/core/images/img_loading.gif" class="processPayment"
+                     data-bind="style: { display: processActions() ? 'block' : 'none' }">
+            </div>
         </div>
-      </div>
     </div>
     <div class="clearboth"></div>
     <!-- ko if: pages().length -->
     <nav class="pagination-box floatright">
         <ul>
             <!-- ko foreach: pages() -->
-                <!-- ko if: $data == $root.current() -->
-                <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
-                <!-- /ko -->
-                <!-- ko ifnot: $data == $root.current() -->
-                <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
-                <!-- /ko -->
+            <!-- ko if: $data == $root.current() -->
+            <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
+            <!-- /ko -->
+            <!-- ko ifnot: $data == $root.current() -->
+            <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
+            <!-- /ko -->
             <!-- /ko -->
         </ul>
     </nav>
@@ -210,3 +268,8 @@
     <div class="row-20"></div>
     <!-- /ko -->
 </div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        ko.applyBindings(new Actions(), $('#actions-block').get(0));
+    });
+</script>

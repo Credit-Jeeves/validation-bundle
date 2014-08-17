@@ -13,7 +13,7 @@ class Builder extends ContainerAware
     {
         /** @var User $user */
         $user = $this->container->get('core.session.tenant')->getUser();
-        $isCompleteOrder = $user->getLastCompleteOperation(OperationType::REPORT);
+        $isCompleteOrder = $user->getLastCompleteReportOperation();
         $sRoute = $this->container->get('request')->get('_route');
 
         $menu = $factory->createItem('root');

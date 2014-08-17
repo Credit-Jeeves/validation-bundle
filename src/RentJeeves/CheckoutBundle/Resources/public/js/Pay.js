@@ -25,7 +25,9 @@ function Pay(parent, contractId) {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
         'source': 'rentjeeves_checkoutbundle_paymentaccounttype',
         'user': 'rentjeeves_checkoutbundle_userdetailstype',
-        'questions': 'questions'
+        'questions': 'questions',
+        'balance_only': 'rentjeeves_checkoutbundle_paymentbalanceonlytype',
+        'pay': 'rentjeeves_checkoutbundle_paymenttype'
     };
 
     var steps = ['details', 'source', 'user', 'questions', 'pay'];
@@ -158,6 +160,10 @@ function Pay(parent, contractId) {
     });
 
     this.total = ko.computed(function() { // It will display to user
+        if (self.contract.groupSetting.pay_balance_only) {
+            return self.contract.integrated_balance;
+        }
+
         return total = (self.payment.amount()?parseFloat(self.payment.amount()):0) +
             (self.payment.amountOther()?parseFloat(self.payment.amountOther()):0);
     });
@@ -246,7 +252,11 @@ function Pay(parent, contractId) {
     this.questions = ko.observable(parent.questions);
 
     this.getAmount = ko.computed(function() {
-        return Format.money(this.payment.amount());
+        if (self.contract.groupSetting.pay_balance_only) {
+            return Format.money(self.contract.integrated_balance);
+        } else {
+            return Format.money(this.payment.amount());
+        }
     }, this);
     this.getOtherAmount = ko.computed(function() {
         return Format.money(this.payment.amountOther());
@@ -416,8 +426,12 @@ function Pay(parent, contractId) {
 //        }
         jQuery('#pay-popup').showOverlay();
 
-        var data = jQuery('#' + formId).serializeArray();
-
+        var formData = jQuery('#' + formId);
+        var data = formData.serializeArray();
+        data.push({
+            'name': 'contract_id',
+            'value': self.contract.id
+        });
         jQuery.ajax({
             url: url,
             type: 'POST',
@@ -453,7 +467,11 @@ function Pay(parent, contractId) {
         var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'details':
-                sendData(Routing.generate('checkout_pay_payment'), forms[currentStep]);
+                if (contract.groupSetting.pay_balance_only) {
+                    sendData(Routing.generate('checkout_pay_payment'), forms['balance_only']);
+                } else {
+                    sendData(Routing.generate('checkout_pay_payment'), forms[currentStep]);
+                }
                 break;
             case 'source':
                 if (!self.payment.paymentAccountId() && !self.newPaymentAccount()) {
@@ -497,7 +515,11 @@ function Pay(parent, contractId) {
                 //User is invalid so we don't do any think and live error
                 break;
             case 'pay':
-                sendData(Routing.generate('checkout_pay_exec'), forms['details']);
+                if (contract.groupSetting.pay_balance_only) {
+                    sendData(Routing.generate('checkout_pay_exec'), forms['balance_only']);
+                } else {
+                    sendData(Routing.generate('checkout_pay_exec'), forms[currentStep]);
+                }
                 break;
         }
 

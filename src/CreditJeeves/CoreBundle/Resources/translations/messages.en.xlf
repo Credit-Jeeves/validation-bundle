@@ -58,6 +58,14 @@
                 <source>login.remember</source>
                 <target>Remember My Email</target>
             </trans-unit>
+            <trans-unit id="login.new_user_question">
+                <source>login.new_user_question</source>
+                <target>New User?</target>
+            </trans-unit>
+            <trans-unit id="login.create_user">
+                <source>login.create_user</source>
+                <target>Create Account</target>
+            </trans-unit>
 
             <trans-unit id="resetting.title">
                 <source>resetting.title</source>
@@ -1483,6 +1491,14 @@
             <trans-unit id="access.denied.description">
                 <source>access.denied.description</source>
                 <target>It looks like you are trying to access the RentTrack application from a mobile device. We currently do not support mobile devices - please log in using a browser on your computer. We're sorry for the inconvenience!</target>
+            </trans-unit>
+            <trans-unit id="login.error.msg">
+                <source>login.error.msg</source>
+                <target>Email/Password combination not found. Please try again.</target>
+            </trans-unit>
+            <trans-unit id="Bad credentials">
+                <source>Bad credentials</source>
+                <target>Email/Password combination not found. Please try again.</target>
             </trans-unit>
         </body>
     </file>

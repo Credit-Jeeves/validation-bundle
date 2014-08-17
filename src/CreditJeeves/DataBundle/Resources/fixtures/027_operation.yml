@@ -335,4 +335,25 @@ fixtures:
     paidFor: '2014-04-01'
     createdAt: '2014-05-05'
 
+  rjOperation_10_1:
+    order: rjOrder_10
+    contract: Contract_21
+    type: rent
+    amount: 500
+    paidFor: 'now'
+    createdAt: 'now'
+  rjOperation_10_2:
+    order: rjOrder_10
+    contract: Contract_21
+    type: rent
+    amount: 500
+    paidFor: '+1 months'
+    createdAt: 'now'
+  rjOperation_10_3:
+    order: rjOrder_10
+    contract: Contract_21
+    type: other
+    amount: 111
+    paidFor: 'now'
+    createdAt: 'now'
 

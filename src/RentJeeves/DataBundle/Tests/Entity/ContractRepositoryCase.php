@@ -24,7 +24,7 @@ class ContractRepositoryCase extends BaseTestCase
     public function dataForGetPotentialLateContract()
     {
         return array(
-            //When we don't have payment at all and dueDate today
+            //#0 When we don't have payment at all and dueDate today
             //We must send email
             array(
                 $startAtOfContract = new DateTime("-1 month"),
@@ -36,7 +36,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $typePayment =  null,
                 $isSendEmail = true,
             ),
-            //When we have payment but payment in the past started and don't have finishAt
+            //#1 When we have payment but payment in the past started and don't have finishAt
             //We don't need send email
             array(
                 $startAtOfContract = new DateTime("-1 month"),
@@ -48,7 +48,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $typePayment =  PaymentType::RECURRING,
                 $isSendEmail = false,
             ),
-            //When we have payment but payment in the past started and finishAt in future
+            //#2 When we have payment but payment in the past started and finishAt in future
             //We don't need send email
             array(
                 $startAtOfContract = new DateTime("-1 month"),
@@ -60,7 +60,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $typePayment =  PaymentType::RECURRING,
                 $isSendEmail = false,
             ),
-            //When we have payment but payment will started in future and don't have finish date
+            //#3 When we have payment but payment will started in future and don't have finish date
             //We must send email
             array(
                 $startAtOfContract = new DateTime("-1 month"),
@@ -72,7 +72,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $typePayment =  PaymentType::IMMEDIATE,
                 $isSendEmail =  true,
             ),
-            //When we have payment but payment will started in few days and don't have finish date
+            //#4 When we have payment but payment will started in few days and don't have finish date
             //We don't need send email
             // FIXME potential problems when due date of payment after due date of contract
             // https://credit.atlassian.net/browse/RT-490#comment-12526
@@ -86,7 +86,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $typePayment =  PaymentType::RECURRING,
                 $isSendEmail =  false,
             ),
-            //When we have payment but payment in the past started and finished
+            //#4 When we have payment but payment in the past started and finished
             //We must send email
             array(
                 $startAtOfContract = new DateTime("-1 month"),
@@ -98,7 +98,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $typePayment =  PaymentType::RECURRING,
                 $isSendEmail = true,
             ),
-            //When we have payment but payment will started in future and  have finish date in future
+            //#6 When we have payment but payment will started in future and  have finish date in future
             //We must send email
             array(
                 $startAtOfContract = new DateTime("-1 month"),

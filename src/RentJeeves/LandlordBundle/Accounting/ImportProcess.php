@@ -16,6 +16,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -34,7 +35,7 @@ use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\Form;
 use CreditJeeves\CoreBundle\Translation\Translator;
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use Symfony\Component\Form\FormFactory;
@@ -117,6 +118,11 @@ class ImportProcess
     protected $googleService;
 
     /**
+     * @var ContractProcess
+     */
+    protected $contractProcess;
+
+    /**
      * @InjectParams({
      *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
      *     "translator"       = @Inject("translator"),
@@ -129,6 +135,7 @@ class ImportProcess
      *     "mapping"          = @Inject("accounting.import.mapping"),
      *     "validator"        = @Inject("validator"),
      *     "googleService"    = @Inject("google"),
+     *     "contractProcess"  = @Inject("contract.process"),
      *     "locale"           = @Inject("%kernel.default_locale%")
      * })
      */
@@ -144,6 +151,7 @@ class ImportProcess
         ImportMapping $mapping,
         Validator $validator,
         Google $googleService,
+        ContractProcess $contractProcess,
         $locale
     ) {
         $this->em               = $em;
@@ -158,6 +166,7 @@ class ImportProcess
         $this->validator        = $validator;
         $this->locale           = $locale;
         $this->googleService    = $googleService;
+        $this->contractProcess  = $contractProcess;
     }
 
     /**
@@ -351,8 +360,11 @@ class ImportProcess
      */
     protected function getUnit(array $row, Property $property = null)
     {
-        if (!is_null($property) && $property->isSingle()) {
+        if (is_null($property)) {
             return null;
+        }
+        if ($property->isSingle()) {
+            return $property->getSingleUnit();
         }
 
         if (empty($row[ImportMapping::KEY_UNIT])) {
@@ -366,6 +378,7 @@ class ImportProcess
         if ($this->group) {
             $params['group'] = $this->group;
         }
+
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
         } elseif ($this->storage->getPropertyId()) {
@@ -422,7 +435,25 @@ class ImportProcess
         //set data from csv file
         $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
-        $contract->setStartAt($this->getDateByField($row[ImportMapping::KEY_MOVE_IN]));
+
+        $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
+        $today = new DateTime();
+        if ($moveIn > $today) {
+            $startAt = $moveIn;
+        } else {
+            $groupDueDate = $this->group->getGroupSettings()->getDueDate();
+            $startAt = new DateTime();
+            if ($row[ImportMapping::KEY_BALANCE] <= 0) {
+                // snap to next month due date (default from group) for start_at
+                $startAt->modify('+1 month');
+                $startAt = $startAt->setDate(null, null, $groupDueDate);
+            } else {
+                // snap to this month due date (default from group) for start_at
+                $startAt = $startAt->setDate(null, null, $groupDueDate);
+            }
+        }
+
+        $contract->setStartAt($startAt);
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
@@ -541,8 +572,9 @@ class ImportProcess
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
+            || $hasContractWaiting = $import->getHasContractWaiting()
         ) {
-            $isUseOperation = ($import->getOperation() === null)? false : true;
+            $isUseOperation = ($import->getOperation() === null || $import->getHasContractWaiting())? false : true;
             $form = $this->getContractForm(
                 $tenant,
                 $residentMapping,
@@ -673,6 +705,17 @@ class ImportProcess
 
         $import->setResidentMapping($this->getResident($tenant, $row));
         $import->setUnitMapping($this->getUnitMapping($row));
+        $contractWaiting = $this->getContractWaiting(
+            $import->getTenant(),
+            $import->getContract(),
+            $import->getResidentMapping()
+        );
+
+        if ($contractWaiting->getId()) {
+            $import->setHasContractWaiting(true);
+            $tenant->setFirstName($contractWaiting->getFirstName());
+            $tenant->setLastName($contractWaiting->getLastName());
+        }
 
         if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
             $import->setForm($form);
@@ -696,6 +739,9 @@ class ImportProcess
             $residentMapping
         );
 
+        if (!$contractWaiting->getProperty()) {
+            return $contractWaiting;
+        }
         /**
          * @var $contractWaitingInDb ContractWaiting
          */
@@ -881,6 +927,17 @@ class ImportProcess
                      * @var $contract Contract
                      */
                     $contract = $form->getData();
+                    if ($import->getHasContractWaiting()) {
+                        $sendInvite = $form->get('sendInvite')->getNormData();
+                        $this->processContractWaiting(
+                            $import->getTenant(),
+                            $contract,
+                            $import->getResidentMapping(),
+                            $sendInvite
+                        );
+                        break;
+                    }
+
                     if ($this->storage->isMultipleProperty()) {
                         $isSingle = $form->get('isSingle')->getData();
                         $this->afterSubmitForm($contract, $isSingle);
@@ -942,6 +999,38 @@ class ImportProcess
         }
 
         return false;
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param Contract $contract
+     * @param ResidentMapping $residentMapping
+     * @param boolean $sendInvite
+     */
+    protected function processContractWaiting(
+        Tenant $tenant,
+        Contract $contract,
+        ResidentMapping $residentMapping,
+        $sendInvite
+    ) {
+        $waitingContract = $this->getContractWaiting(
+            $tenant,
+            $contract,
+            $residentMapping
+        );
+
+        if ($tenant->getEmail()) {
+            $tenant->removeContract($contract); //Remove contract because we get duplicate contract
+            $this->em->persist($tenant);
+            $contract = $this->contractProcess->createContractFromWaiting($tenant, $waitingContract);
+            $contract->setStatus(ContractStatus::INVITE);
+            $this->em->persist($contract);
+            if ($sendInvite) {
+                $this->emailSendingQueue[] = $contract;
+            }
+        } else {
+            $this->em->persist($waitingContract);
+        }
     }
 
     /**
@@ -1028,7 +1117,12 @@ class ImportProcess
          * @var $contract Contract
          */
         foreach ($this->emailSendingQueue as $contract) {
-            $this->mailer->sendRjTenantInvite($contract->getTenant(), $this->user, $contract);
+            $this->mailer->sendRjTenantInvite(
+                $contract->getTenant(),
+                $this->user,
+                $contract,
+                $isImported = "1"
+            );
         }
 
         $this->emailSendingQueue = array();
@@ -1044,7 +1138,7 @@ class ImportProcess
         }
 
         $property = $this->mapping->createProperty($row);
-        if (empty($property) || !$property->getNumber()) {
+        if (empty($property) || !$property->getNumber() || !$property->getStreet()) {
             return null;
         }
 

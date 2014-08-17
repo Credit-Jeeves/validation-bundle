@@ -1,0 +1,84 @@
+<?php
+
+namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
+
+use Doctrine\ORM\EntityManager;
+use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
+use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface as ExportSerializer;
+use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
+use DateTime;
+
+/**
+ * @Service("accounting.export.real_page")
+ */
+class RealPageReport extends ExportReport
+{
+    protected $em;
+    protected $serializer;
+    protected $softDeleteableControl;
+
+    /**
+     * @InjectParams({
+     *     "em" = @Inject("doctrine.orm.default_entity_manager"),
+     *     "serializer" = @Inject("export.serializer.real_page"),
+     *     "softDeleteableControl" = @Inject("soft.deleteable.control")
+     * })
+     */
+    public function __construct(EntityManager $em, ExportSerializer $serializer, $softDeleteableControl)
+    {
+        $this->em = $em;
+        $this->serializer = $serializer;
+        $this->softDeleteableControl = $softDeleteableControl;
+        $this->type = 'real_page';
+        $this->fileType = 'csv';
+    }
+
+    public function getContent($settings)
+    {
+        $this->validateSettings($settings);
+        $this->generateFilename($settings);
+        $reportData = $this->getData($settings);
+
+        return $this->serializer->serialize($reportData);
+    }
+
+    public function getContentType()
+    {
+        return $this->serializer->getContentType();
+    }
+
+    public function getData($settings)
+    {
+        $this->softDeleteableControl->disable();
+
+        $beginDate = $settings['begin'].' 00:00:00';
+        $endDate = $settings['end'].' 23:59:59';
+        $propertyId = $settings['property']->getId();
+        $orderRepository = $this->em->getRepository('DataBundle:Order');
+
+        return $orderRepository->getOrdersForReport($propertyId, $beginDate, $endDate);
+    }
+
+    protected function validateSettings($settings)
+    {
+        if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
+            !isset($settings['begin']) || !isset($settings['end'])) {
+            throw new ExportException('Not enough parameters for OnePage report');
+        }
+    }
+
+    protected function generateFilename($params)
+    {
+        $beginDate = new DateTime($params['begin']);
+        $endDate = new DateTime($params['end']);
+
+        $this->filename = sprintf(
+            'OnePage_%s_%s.csv',
+            $beginDate->format('Ymd'),
+            $endDate->format('Ymd')
+        );
+    }
+}

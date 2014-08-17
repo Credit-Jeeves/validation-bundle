@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\DataBundle\Entity\ContractRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -23,6 +24,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -588,10 +590,10 @@ class AjaxController extends Controller
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
         $dataRequest = $request->request->all('data')['data'];
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
+        /** @var ContractRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
         $total = $repo->countContracts($group, $dataRequest['searchCollum'], $dataRequest['searchText']);
         $total = count($total);
@@ -606,6 +608,7 @@ class AjaxController extends Controller
                 $dataRequest['searchCollum'],
                 $dataRequest['searchText']
             );
+            /** @var Contract $contract */
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();
                 $items[] = $item;
@@ -656,9 +659,12 @@ class AjaxController extends Controller
             $searchText
         );
         $contracts = $query->getQuery()->execute();
+        $paidForArr = array();
+        /** @var Contract $contract */
         foreach ($contracts as $contract) {
             $contract->setStatusShowLateForce(true);
             $item = $contract->getItem();
+            $item['paidForArr'] = $this->get('checkout.paid_for')->getArray($contract);
             $items[] = $item;
         }
         $total = $query->select('count(c)')
@@ -668,6 +674,7 @@ class AjaxController extends Controller
             ->getSingleScalarResult();
         $result['actions'] = $items;
         $result['total'] = $total;
+        $result['paidForArr'] = $paidForArr;
         $result['pagination'] = $this->datagridPagination($total, $data['limit']);
         
         return new JsonResponse($result);
@@ -702,6 +709,7 @@ class AjaxController extends Controller
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
+
         /**
          * @var $contract Contract
          */
@@ -732,6 +740,12 @@ class AjaxController extends Controller
         if (in_array($details['status'], array(ContractStatus::APPROVED)) & empty($errors)) {
             $contract->setStatusApproved();
             $this->get('project.mailer')->sendContractApprovedToTenant($contract);
+        }
+
+        if ($contract->getSettings()->getIsIntegrated()) {
+            $contract->setIntegratedBalance($details['balance']);
+        } else {
+            $contract->setBalance($details['balance']);
         }
 
         if ($action == 'remove') {
@@ -783,10 +797,15 @@ class AjaxController extends Controller
         $amount = null;
         $data = $request->request->all('data');
         if (!isset($data['action'])) {
-            return new JsonResponse(array());
+            return new BadRequestHttpException('Empty input');
         }
         if (isset($data['amount'])) {
             $amount = $data['amount'];
+        }
+        try {
+            $paidFor = new DateTime($data['paid_for']);
+        } catch (Exception $e) {
+            return new BadRequestHttpException('Invalid input', $e);
         }
         /** @var Contract $contract */
         $contract = $this->getDoctrine()
@@ -801,23 +820,29 @@ class AjaxController extends Controller
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
-                // Create order
-                $order = new Order();
-                $order->setUser($tenant);
-                $order->setSum($contract->getRent());
-                $order->setStatus(OrderStatus::COMPLETE);
-                $order->setType(OrderType::CASH);
-                $em->persist($order);
-                // Create operation
-                $operation = new Operation();
-                $operation->setOrder($order);
-                $operation->setType(OperationType::RENT);
-                $operation->setContract($contract);
-                $operation->setAmount($contract->getRent());
-                $operation->setPaidFor($contract->getPaidTo());
-                $em->persist($operation);
+                if ($amount) {
+                    // Create order
+                    $order = new Order();
+                    $order->setUser($tenant);
+                    $order->setSum($amount);
+                    $order->setStatus(OrderStatus::COMPLETE);
+                    $order->setType(OrderType::CASH);
+                    $em->persist($order);
+                    // Create operation
+                    $operation = new Operation();
+                    $operation->setOrder($order);
+                    $operation->setType(OperationType::RENT);
+                    $operation->setContract($contract);
+                    $operation->setAmount($amount);
+                    $operation->setPaidFor($paidFor);
+                    $em->persist($operation);
+                    $contract->shiftPaidTo($amount);
+                    $contract->setBalance($contract->getBalance() - $amount);
+                    if ($contract->getSettings()->getIsIntegrated()) {
+                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
+                    }
+                }
                 // Change paid to date
-                $contract->shiftPaidTo($amount);
                 $contract->setStatus(ContractStatus::CURRENT);
                 $em->persist($contract);
                 $em->flush();
@@ -826,6 +851,7 @@ class AjaxController extends Controller
                 // @TODO Here will be report to Experian
                 break;
         }
+        // TODO blank page detection
         return new JsonResponse(array());
     }
 

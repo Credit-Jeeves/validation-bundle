@@ -9,17 +9,13 @@ use \DOMDocument;
 
 class SAMLEnvelopeCase extends BaseTestCase
 {
-    protected static $user;
+    protected static $user = null;
 
     public function setUp()
     {
         if (!self::$user) {
             $this->load(true);
-            //@TODO Its hack, becouse after use load function, for load fixtures, we have problem.
-            static::$kernel = null;
-            //end hack
-            $container = static::getContainer();
-            $em = $container->get('doctrine.orm.entity_manager');
+            $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
             self::$user = $em->getRepository('RjDataBundle:Landlord')->findOneBy(
                 array(

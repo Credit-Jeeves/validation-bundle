@@ -41,7 +41,7 @@ class ReportController extends Controller
     protected function isReportLoadAllowed($isD2c = false)
     {
         if ($isD2c) {
-            return $this->getUser()->getLastCompleteOperation(OperationType::REPORT);
+            return $this->getUser()->getLastCompleteReportOperation();
         }
         return !$this->getUser()->getReportsPrequal()->last();
     }
@@ -97,7 +97,7 @@ class ReportController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         if ($isD2c) {
-            $report = $this->getUser()->getLastCompleteOperation(OperationType::REPORT)->getReportD2c();
+            $report = $this->getUser()->getLastCompleteReportOperation()->getReportD2c();
         } else {
             $report = new ReportPrequal();
             $report->setUser($this->getUser());

@@ -35,12 +35,15 @@
     <div class="row-20"></div>
     <div class="properties-table-block table-wrap">
         <div class="table-margin">
-            <table class="properties-table zebra-grid contracts-table">
+            <table class="properties-table zebra-grid contracts-table layout-auto">
                 <thead>
                     <tr class="contracts">
                         <th class="font-helvetica" style="width: 50px">{{ 'contract.rent_amount' | trans() }}</th>
-                        <th class="font-helvetica" style="width: 75px">{{ 'contract.payment.next' | trans() }}</th>
-                        <th class="font-helvetica" style="width: 350px">{{ 'contract.property' | trans() }}</th>
+                        {% if hasIntegratedBalance %}
+                            <th class="font-helvetica">{{ 'common.balance' | trans }}</th>
+                        {% endif %}
+                        <th class="font-helvetica">{{ 'contract.payment.next' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'contract.property' | trans() }}</th>
                         <th class="font-helvetica" style="width: 100px">{{ 'contract.status' | trans() }}</th>
                         <th style="width: 150px;"></th>
                     </tr>
@@ -49,6 +52,9 @@
                 {% for contract in contracts %}
                     <tr class="contracts">
                         <td class="font-helvetica">{{ contract.rent }}</td>
+                        {% if hasIntegratedBalance %}
+                            <td class="font-helvetica">{{ contract.balance }}</td>
+                        {% endif %}
                         <td class="font-helvetica">{{ contract.payment_next }}</td>
                         <td class="font-helvetica">{{ contract.full_address }}</td>
                         <td class="font-helvetica">
@@ -94,7 +100,11 @@
                                     <button class="button small button-contract-pay floatleft"
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
                                             id="contract-pay-{{ loop.revindex }}"
-                                            {% if contract.payment_status == 'processing' %} disabled{% endif %}
+                                            {% if contract.payment_status == 'processing' %}
+                                                disabled
+                                            {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
+                                                title="{{ 'tenant.no_balance.alert'|trans }}" disabled
+                                            {% endif %}
                                     >
 
                                         <span>{{ buttonText }}</span>
@@ -108,7 +118,11 @@
                                     <button class="button small button-contract-pay floatleft"
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
                                             id="contract-pay-{{ loop.revindex }}"
-                                            {% if contract.payment_status == 'processing' %} disabled{% endif %}
+                                            {% if contract.payment_status == 'processing' %}
+                                                disabled
+                                            {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
+                                                title="{{ 'tenant.no_balance.alert'|trans }}" disabled
+                                            {% endif %}
                                             >
                                         <span>{{ buttonText }}</span>
                                     </button>

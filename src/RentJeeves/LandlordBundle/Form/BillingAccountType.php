@@ -67,8 +67,21 @@ class BillingAccountType extends AbstractType
 
         $builder->add(
             'AccountNumber',
-            'text',
+            'repeated',
             array(
+                'first_name' => 'AccountNumber',
+                'second_name' => 'AccountNumberAgain',
+                'first_options'  => array(
+                    'label' => 'checkout.account_number'
+                ),
+                'second_options' => array(
+                    'label' => 'checkout.account_number_again',
+                    'label_attr' => array(
+                        'class' => 'clear',
+                    ),
+                ),
+                'invalid_message' => 'checkout.error.account_number.match',
+                'type' => 'text',
                 'mapped' => false,
                 'label' => 'checkout.account_number',
                 'attr' => array(

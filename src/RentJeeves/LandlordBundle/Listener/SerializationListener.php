@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Listener;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
@@ -22,9 +23,8 @@ use JMS\Serializer\JsonSerializationVisitor;
  */
 class SerializationListener implements EventSubscriberInterface
 {
-
     /**
-     * @Inject("accounting.export", required = true)
+     * @Inject("accounting.export.yardi", required = true)
      */
     public $reportOrder;
 
@@ -36,29 +36,10 @@ class SerializationListener implements EventSubscriberInterface
         return array(
             array(
                 'event'  => 'serializer.pre_serialize',
-                'class'  => 'CreditJeeves\DataBundle\Entity\Order',
-                'method' => 'onPreSerializeOrder'
-            ),
-            array(
-                'event'  => 'serializer.pre_serialize',
                 'class'  => 'CreditJeeves\DataBundle\Entity\Operation',
                 'method' => 'onPreSerializeOperation'
             ),
         );
-    }
-
-    public function onPreSerializeOrder(ObjectEvent $event)
-    {
-        $context = $event->getContext();
-        $groups = $context->attributes->values();
-        $format = $context->getFormat();
-
-        if ($format != 'xml' || !in_array('xmlReport', $groups[0])) {
-            return;
-        }
-
-        $order = $event->getObject();
-        $order->setPropertyId($this->reportOrder->getPropertyId());
     }
 
     public function onPreSerializeOperation(ObjectEvent $event)
@@ -70,10 +51,15 @@ class SerializationListener implements EventSubscriberInterface
         if ($format != 'xml' || !in_array('xmlReport', $groups[0])) {
             return;
         }
-
+        /**
+         * @var $operation Operation
+         */
         $operation = $event->getObject();
+        $operation->initDetails(
+            $this->reportOrder->getPropertyId(),
+            $this->reportOrder->getAccountId(),
+            $this->reportOrder->getArAccountId()
+        );
         $operation->setPropertyId($this->reportOrder->getPropertyId());
-        $operation->setAccountId($this->reportOrder->getAccountId());
-        $operation->setArAccountId($this->reportOrder->getArAccountId());
     }
 }

@@ -60,7 +60,7 @@ class EmailLandlordCommandCase extends BaseTestCase
                 '--type' => 'pending'
             )
         );
-        $this->assertCount(3, $plugin->getPreSendMessages());
+        $this->assertCount(4, $plugin->getPreSendMessages());
         $this->assertRegExp('/Story-2042/', $commandTester->getDisplay());
     }
 

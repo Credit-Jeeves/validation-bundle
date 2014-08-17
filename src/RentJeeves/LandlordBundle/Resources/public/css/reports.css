@@ -30,6 +30,7 @@
 }
 #base_order_report_type_begin_row {
     padding-left: 25px;
+    margin-top: -175px;
 }
 .submitBaseReport {
     margin-left: 130px;
@@ -51,4 +52,15 @@
     float: right !important;
     margin-right: 140px;
     margin-top: -175px;
+}
+label.checkbox {
+    padding-left: 0;
+    width: 350px;
+}
+label.checkbox span {
+    display: inline;
+}
+label.checkbox input {
+    width: 14px;
+    margin-left: 0;
 }

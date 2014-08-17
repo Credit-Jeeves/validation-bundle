@@ -43,6 +43,8 @@ class ImportContractType extends AbstractType
 
     protected $isMultipleProperty;
 
+    protected $sendInvite;
+
     /**
      * @param Tenant $tenant
      * @param EntityManager $em
@@ -58,7 +60,8 @@ class ImportContractType extends AbstractType
         Unit $unit = null,
         $token = true,
         $operation = true,
-        $isMultipleProperty = false
+        $isMultipleProperty = false,
+        $sendInvite = true
     ) {
         $this->isUseToken =  $token;
         $this->isUseOperation = $operation;
@@ -69,6 +72,7 @@ class ImportContractType extends AbstractType
         $this->residentMapping = $residentMapping;
         $this->unitMapping = $unitMapping;
         $this->isMultipleProperty = $isMultipleProperty;
+        $this->sendInvite = $sendInvite;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -115,6 +119,18 @@ class ImportContractType extends AbstractType
                 'mapped'    => false,
             )
         );
+
+        if ($this->sendInvite) {
+            $builder->add(
+                'sendInvite',
+                'checkbox',
+                array(
+                    'data'      => true,
+                    'required'  => false,
+                    'mapped'    => false,
+                )
+            );
+        }
 
         /**
          * we must show this flag only for multiple property

@@ -1,5 +1,7 @@
 {% form_theme paymentType 'RjCoreBundle::form.html.twig' %}
+{% form_theme paymentBalanceOnlyType 'RjCoreBundle::form.html.twig' %}
 {% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
+
 
 <div id="payment-account-cancel" class="pricing-popup dashboard-popup properties-popup">
     <h1>{{ 'checkout.payment.cancel.title' | trans() }}</h1>
@@ -64,9 +66,29 @@
                     <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
             </div>
-            <form {{ form_enctype(paymentType) }} novalidate method="post">
+            <div class="form-row clearfix" data-bind="visible: contract.groupSetting.is_integrated">
+                <label>{{ 'common.balance' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value big left" data-bind="text: '$'+contract.integrated_balance"></span>
+                </div>
+                <div class="tooltip-box type3 pie-el" data-bind="visible: contract.groupSetting.pay_balance_only">
+                    <h4>{{ 'common.balance.due'|trans }}</h4>
+                    <p>{{ 'common.balance.as.full'|trans }}</p>
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="visible: contract.groupSetting.pay_balance_only">
+                <label>{{ 'checkout.total' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value big left" data-bind="text: '$'+contract.integrated_balance"></span>
+                </div>
+            </div>
+            <form data-bind="if: !contract.groupSetting.pay_balance_only" {{ form_enctype(paymentType) }} novalidate method="post">
                 {{ form_widget(paymentType) }}
                 {{ JSFV(paymentType) }}
+            </form>
+            <form data-bind="if: contract.groupSetting.pay_balance_only" {{ form_enctype(paymentBalanceOnlyType) }} novalidate method="post">
+                {{ form_widget(paymentBalanceOnlyType) }}
+                {{ JSFV(paymentBalanceOnlyType) }}
             </form>
             <script type="text/html" id="paidFor-html">
                 <div class="tooltip-box type3 pie-el">
@@ -160,7 +182,7 @@
             </h3>
 
             <div class="information-box pie-el"
-                 data-bind="visible: 'one_time' == payment.type(), i18n: {'DATE': payment.startDate}"
+                 data-bind="visible: ('one_time' == payment.type() && !contract.groupSetting.pay_balance_only), i18n: {'DATE': payment.startDate}"
             >
                 checkout.one_time_payment.note
             </div>

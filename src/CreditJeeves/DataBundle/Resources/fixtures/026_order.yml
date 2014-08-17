@@ -350,3 +350,11 @@ fixtures:
     created_at: '2014-05-05'
     updated_at: '2014-05-05'
 
+  rjOrder_10:
+    user: Tenant_16
+    status: complete
+    type: heartland_card
+    sum: 1111
+    created_at: '-1 days'
+    updated_at: '-1 days'
+
