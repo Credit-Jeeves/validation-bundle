@@ -83,4 +83,3 @@ class PidkiqCase extends BaseTestCase
         $this->assertEquals($this->userData, $this->objInstance->modelToData($this->getAplicant()));
     }
 }
-
