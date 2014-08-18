@@ -230,7 +230,6 @@ function accountingImport() {
         //use jquery, because knockout function can't get key of array/object - just value
         jQuery.each(data, function(key, value) {
             var result = self.result;
-            console.info(result);
             if ($.type(value) === 'array') {
                 result[key] = value[0];
             } else if ($.type(value) === "string") {
