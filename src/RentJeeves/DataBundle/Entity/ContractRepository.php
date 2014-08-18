@@ -437,7 +437,7 @@ class ContractRepository extends EntityRepository
     /**
      * @param Holding $holding
      * @param array $status
-     * @return IterableResult
+     * @return ArrayCollection
      */
     public function getAllLateContractsByHolding(
         Holding $holding,
@@ -463,7 +463,7 @@ class ContractRepository extends EntityRepository
     /**
      * @param ArrayCollection $groups
      * @param array $status
-     * @return IterableResult
+     * @return ArrayCollection
      */
     public function getAllLateContractsByGroups($groups, $status = [ContractStatus::CURRENT, ContractStatus::APPROVED])
     {
