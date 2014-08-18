@@ -2,7 +2,6 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OrderType;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -55,7 +54,7 @@ class HeartlandRepository extends EntityRepository
     }
 
     /**
-     * @param ArrayCollection $groups
+     * @param \Doctrine\Common\Collections\ArrayCollection $groups
      * @param $start
      * @param $end
      * @return mixed
@@ -91,7 +90,7 @@ class HeartlandRepository extends EntityRepository
     }
 
     /**
-     * @param ArrayCollection $groups
+     * @param \Doctrine\Common\Collections\ArrayCollection $groups
      * @return array
      */
     protected function getGroupIds($groups)

@@ -274,6 +274,6 @@ class Heartland extends Base
             return null;
         }
 
-        return $depositAccount ? $depositAccount->getAccountNumber() : null;
+        return $depositAccount->getAccountNumber();
     }
 }
