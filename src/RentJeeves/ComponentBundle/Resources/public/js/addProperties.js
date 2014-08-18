@@ -47,6 +47,8 @@ function addProperties()
         }
 
         self.singlePropertyErrorMessage('');
+        var googleData = self.google().data;
+        googleData.addGroup = 1;
         jQuery.ajax({
             url: Routing.generate('landlord_property_add'),
             type: 'POST',

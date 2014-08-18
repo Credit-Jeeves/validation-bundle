@@ -68,6 +68,9 @@ class Property extends Base
         $this->setArea($response->getRegionCode());
         $this->setCountry($response->getCountryCode());
         $this->setCity($response->getCity());
+        if (!$this->getCity()) {
+            $this->setCity($response->getCityDistrict());
+        }
         $this->setNumber($response->getStreetNumber());
         $this->setStreet($response->getStreetName());
         $this->setDistrict($response->getCityDistrict());
