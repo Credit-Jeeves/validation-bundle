@@ -122,7 +122,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function withoutPayment()
     {
@@ -319,7 +319,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function withPayment()
     {
@@ -447,7 +447,7 @@ class ImportCase extends BaseTestCase
     }
     
     /**
-     * test
+     * @test
      */
     public function waitingRoom()
     {
@@ -508,8 +508,8 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * depends waitingRoom
-     * test
+     * @depends waitingRoom
+     * @test
      */
     public function createContractFromWaiting()
     {
@@ -608,8 +608,8 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * depends createContractFromWaiting
-     * test
+     * @depends createContractFromWaiting
+     * @test
      */
     public function checkFindingUserByResidentId()
     {
@@ -681,7 +681,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function checkFormatDate()
     {
@@ -759,7 +759,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function importMultipleProperties()
     {
@@ -889,8 +889,8 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
-     * depends importMultipleProperties
+     * @test
+     * @depends importMultipleProperties
      */
     public function signUpFromImportedWaitingContract()
     {
@@ -967,7 +967,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function alreadyHaveAccount()
     {
@@ -1047,8 +1047,8 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
-     * depends alreadyHaveAccount
+     * @test
+     * @depends alreadyHaveAccount
      */
     public function checkMutchedUser()
     {
@@ -1085,7 +1085,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function matchWaitingContract()
     {
@@ -1183,7 +1183,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function matchWaitingContractWithMoveContract()
     {
@@ -1303,7 +1303,7 @@ class ImportCase extends BaseTestCase
     /**
      * @test
      */
-    public function residentIdDuplicateMustBeErrorAndSkip()
+    public function duplicateResidentIdShouldBeSkippedWithError()
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
