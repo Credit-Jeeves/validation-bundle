@@ -126,7 +126,7 @@ class ContractListener
             return;
         }
 
-        $newValue = $eventArgs->getOldValue('status');
+        $newValue = $eventArgs->getNewValue('status');
 
         if ($newValue !== ContractStatus::CURRENT) {
             return;
