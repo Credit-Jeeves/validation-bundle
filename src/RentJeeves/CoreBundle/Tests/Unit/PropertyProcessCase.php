@@ -7,12 +7,10 @@ use RentJeeves\DataBundle\Entity\Property;
 
 class PropertyProcessCase extends BaseTestCase
 {
-    protected function getContainerRefresh()
+    public function getContainer()
     {
         static::$kernel = null;
-        $kernel = $this->getKernel();
-        $container = $kernel->getContainer();
-        return $container;
+        return parent::getContainer();
     }
 
     /**
@@ -21,7 +19,7 @@ class PropertyProcessCase extends BaseTestCase
     public function checkDuplicate()
     {
         $this->load(true);
-        $container = $this->getContainerRefresh();
+        $container = $this->getContainer();
         /**
          * @var $propertyProcess PropertyProcess
          */
@@ -30,7 +28,7 @@ class PropertyProcessCase extends BaseTestCase
         $propertyFirst = new Property();
         $propertyFirst->setArea('MI');
         $propertyFirst->setCity('East Lansing');
-        $propertyFirst->setStreet('Coleman Rd');
+        $propertyFirst->setStreet('Coleman Road');
         $propertyFirst->setNumber('3850');
         $propertyFirst->setZip('48823');
         $propertyFirst->setLatitude(42.7723043);
@@ -53,7 +51,7 @@ class PropertyProcessCase extends BaseTestCase
         $this->assertNotEmpty($propertyFirst->getId());
         //END checking first property
 
-        $container = $this->getContainerRefresh();
+        $container = $this->getContainer();
         /**
          * @var $propertyProcess PropertyProcess
          */

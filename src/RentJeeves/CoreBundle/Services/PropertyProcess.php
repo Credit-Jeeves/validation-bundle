@@ -107,16 +107,6 @@ class PropertyProcess
             'country'   => $property->getCountry(),
         );
 
-        $property = $this->getPropertyFromDB($params);
-        if ($property) {
-            return $property;
-        }
-
-        $street = $params['street'];
-        if (substr($street, -3, 3) === " Rd") {
-            $params['street'] = str_replace(" Rd", " Road", $street);
-        }
-
         return $this->getPropertyFromDB($params);
     }
 
@@ -158,7 +148,7 @@ class PropertyProcess
     public function saveToGoogle(Property $property)
     {
         if (!$this->isValidProperty($property)) {
-            throw new Exception("Can't save to google not valid property");
+            throw new Exception("Can't save invalid property to google");
         }
         $this->google->savePlace($property);
     }
