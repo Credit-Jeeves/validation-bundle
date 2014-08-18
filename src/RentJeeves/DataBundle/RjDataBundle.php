@@ -26,6 +26,7 @@ class RjDataBundle extends Bundle
             Type::addType('PaymentType', 'RentJeeves\DataBundle\Enum\PaymentType');
             Type::addType('DepositAccountStatus', 'RentJeeves\DataBundle\Enum\DepositAccountStatus');
             Type::addType('DisputeCode', 'RentJeeves\DataBundle\Enum\DisputeCode');
+            Type::addType('TransactionStatus', 'RentJeeves\DataBundle\Enum\TransactionStatus');
             Type::overrideType(Type::DATETIME, 'RentJeeves\DataBundle\DBAL\Types\DateTimeType');
             Type::overrideType(Type::DATE, 'RentJeeves\DataBundle\DBAL\Types\DateType');
 

@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Heartland as HeartlandTransaction;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
  * @DI\Service("payment.reversal_report")
@@ -176,6 +177,7 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
         $transaction->setOrder($order);
         $transaction->setAmount($paymentData['AmountAppliedToBill']);
         $transaction->setIsSuccessful(true);
+        $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setMessages($paymentData['ReversalCodeDescription']);
         if ($paymentData['BatchID']) {
             $transaction->setBatchId($paymentData['BatchID']);

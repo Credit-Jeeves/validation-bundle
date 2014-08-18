@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CheckoutBundle\Command\PaymentReportCommand;
@@ -30,11 +31,12 @@ class PaymentReportCase extends BaseTestCase
         $commandTester->execute(
             array(
                 'command' => $command->getName(),
+                'type' => 'reversal'
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
         $this->assertCount(4, $count);
-        $this->assertContains('Amount of synchronized payments: 7', $commandTester->getDisplay());
+        $this->assertContains('Amount of synchronized reversal payments: 7', $commandTester->getDisplay());
     }
 
     /**
@@ -56,5 +58,6 @@ class PaymentReportCase extends BaseTestCase
         $this->assertEquals(0, $originalTransaction->getAmount() + $voidTransaction->getAmount());
         $this->assertSame($originalTransaction->getOrder(), $voidTransaction->getOrder());
         $this->assertEquals(OrderStatus::CANCELLED, $originalTransaction->getOrder()->getStatus());
+        $this->assertEquals(TransactionStatus::REVERSED, $voidTransaction->getStatus());
     }
 }
