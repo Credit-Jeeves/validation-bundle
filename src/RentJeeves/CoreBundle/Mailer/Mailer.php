@@ -398,7 +398,7 @@ class Mailer extends BaseMailer
      * @param array $batches
      * @return bool
      */
-    public function sendBatchDepositReportLandlord(Landlord $landlord, Group $group, DateTime $date, $batches)
+    public function sendBatchDepositReportLandlord(Landlord $landlord, Group $group, DateTime $date, $batches, $returns)
     {
         $vars = [
             'landlordFirstName' => $landlord->getFirstName(),
@@ -406,6 +406,7 @@ class Mailer extends BaseMailer
             'groupName' => $group->getName(),
             'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
             'batches' => $batches,
+            'returns' => $returns,
         ];
 
         return $this->sendBaseLetter(

@@ -85,10 +85,8 @@ class HeartlandRepository extends EntityRepository
         $query->setParameter('groups', $this->getGroupIds($groups));
         $query->orderBy('h.createdAt', 'ASC');
         $query = $query->getQuery();
-
         return $query->execute();
     }
-
     /**
      * @param \Doctrine\Common\Collections\ArrayCollection $groups
      * @return array
@@ -100,7 +98,43 @@ class HeartlandRepository extends EntityRepository
             /** @var Group $group */
             $groupIds[] = $group->getId();
         }
-
         return $groupIds;
+    }
+
+    public function getReversalDepositedInfo($group, DateTime $date)
+    {
+        $query = $this->createQueryBuilder('h');
+        $query->select(
+            "h.transactionId,
+            h.amount,
+            date_format(h.createdAt, '%m/%d/%Y') as reversalDate,
+            date_format(o.created_at, '%m/%d/%Y') as originDate,
+            o.type as paymentType,
+            o.status,
+            CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
+            CONCAT_WS(' ', prop.number, prop.street) as property,
+            prop.isSingle,
+            unit.name as unitName"
+        );
+
+        $query->innerJoin('h.order', 'o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.tenant', 'ten');
+        $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('t.unit', 'unit');
+
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+
+        $query->andWhere('h.depositDate = DATE(:date)');
+        $query->setParameter('date', $date);
+
+        $query->andWhere('h.isSuccessful = 1');
+
+        $query->andWhere('o.status in (:statuses)');
+        $query->setParameter('statuses', array(OrderStatus::REFUNDED, OrderStatus::RETURNED));
+
+        return $query->getQuery()->execute();
     }
 }

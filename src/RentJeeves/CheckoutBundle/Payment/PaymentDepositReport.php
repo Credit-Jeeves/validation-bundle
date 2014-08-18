@@ -66,4 +66,4 @@ class PaymentDepositReport implements PaymentSynchronizerInterface
             $this->em->flush();
         }
     }
-} 
+}

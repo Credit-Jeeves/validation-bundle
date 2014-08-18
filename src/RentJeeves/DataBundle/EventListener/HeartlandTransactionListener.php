@@ -19,7 +19,7 @@ use RentJeeves\DataBundle\Entity\Heartland as HeartlandTransaction;
  *     }
  * )
  */
-class HeartlandTransactionListener 
+class HeartlandTransactionListener
 {
     /**
      * @DI\Inject("service_container", required = true)
@@ -45,4 +45,4 @@ class HeartlandTransactionListener
             $transaction->setDepositDate($businessDaysCalc->getCreditCardBusinessDate($batchDate));
         }
     }
-} 
+}

@@ -67,6 +67,33 @@ Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
 </table>
 <br />
 {% endfor %}
+{% elseif group.returns %}
+<table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
+  <thead>
+    <tr>
+      <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>{{ 'order.transaction.id.short' | trans }}</th>
+      <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.status' | trans }}</th>
+      <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.resident' | trans }}</th>
+      <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'payment.property' | trans }}</th>
+      <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'payment.date_initiated' | trans }}</th>
+      <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'amount' | trans }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for transaction in group.returns %}
+    <tr>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+      {{ transaction.property }}{% if not transaction.isSingle %}{{ ' #' ~ transaction.unitName }}{% endif %}
+      </td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.reversalDate | date("m/d/Y") }}</td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">\${{ transaction.amount }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% else %}
 There are no deposits to report.
 {% endif %}
@@ -145,6 +172,33 @@ Your batch deposit report for <b>{{ date | date("m/d/Y") }}</b> is below:
   </table>
   <br />
   {% endfor %}
+{% elseif group.returns %}
+  <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
+    <thead>
+      <tr>
+        <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>{{ 'order.transaction.id.short' | trans }}</th>
+        <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.status' | trans }}</th>
+        <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'order.resident' | trans }}</th>
+        <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'payment.property' | trans }}</th>
+        <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'payment.date_initiated' | trans }}</th>
+        <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">{{ 'amount' | trans }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for transaction in group.returns %}
+      <tr>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+        {{ transaction.property }}{% if not transaction.isSingle %}{{ ' #' ~ transaction.unitName }}{% endif %}
+        </td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.reversalDate | date("m/d/Y") }}</td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">\${{ transaction.amount }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% else %}
 There are no deposits to report.
 {% endif %}
