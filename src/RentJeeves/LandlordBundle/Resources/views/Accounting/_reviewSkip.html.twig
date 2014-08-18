@@ -1,6 +1,6 @@
 {% form_theme form "LandlordBundle::form_import.html.twig" %}
 
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: is_skipped || contract.status == 'finished' || !$root.isValidFieldsWhichNotContainsInForm($data)">
+<tr  data-bind="attr: {'class': $root.getClassLine($data)}, if: is_skipped || contract.status == 'finished' || !$root.isValidFieldsWhichNotContainsInForm($data)">
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
     {% if isMultipleProperty == "true"  %}
         <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
@@ -23,8 +23,8 @@
         text:resident_mapping.resident_id,
         attr:
         {
-            'class': $root.getErrorClass($data, ['import_new_user_with_contract_contract_residentMapping_residentId', 'import_contract_residentMapping_residentId']),
-            'title': $root.getErrorTitle($data, ['import_new_user_with_contract_contract_residentMapping_residentId', 'import_contract_residentMapping_residentId'])
+            'class': $root.getErrorClass($data, ['import_new_user_with_contract_contract_residentMapping_residentId', 'import_contract_residentMapping_residentId', 'resident_id']),
+            'title': $root.getErrorTitle($data, ['import_new_user_with_contract_contract_residentMapping_residentId', 'import_contract_residentMapping_residentId', 'resident_id'])
         }
     ">
 

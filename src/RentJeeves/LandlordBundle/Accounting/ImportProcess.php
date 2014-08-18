@@ -13,10 +13,10 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -51,6 +51,11 @@ class ImportProcess
     use FormErrors;
 
     const ROW_ON_PAGE = 10;
+
+    /**
+     * @var array
+     */
+    protected $usedResidentsIds = array();
 
     /**
      * @var EntityManager
@@ -115,7 +120,7 @@ class ImportProcess
     /**
      * @var Google
      */
-    protected $googleService;
+    protected $propertyProcess;
 
     /**
      * @var ContractProcess
@@ -134,7 +139,7 @@ class ImportProcess
      *     "storage"          = @Inject("accounting.import.storage"),
      *     "mapping"          = @Inject("accounting.import.mapping"),
      *     "validator"        = @Inject("validator"),
-     *     "googleService"    = @Inject("google"),
+     *     "propertyProcess"  = @Inject("property.process"),
      *     "contractProcess"  = @Inject("contract.process"),
      *     "locale"           = @Inject("%kernel.default_locale%")
      * })
@@ -150,7 +155,7 @@ class ImportProcess
         ImportStorage $storage,
         ImportMapping $mapping,
         Validator $validator,
-        Google $googleService,
+        PropertyProcess $propertyProcess,
         ContractProcess $contractProcess,
         $locale
     ) {
@@ -165,7 +170,7 @@ class ImportProcess
         $this->storage          = $storage;
         $this->validator        = $validator;
         $this->locale           = $locale;
-        $this->googleService    = $googleService;
+        $this->propertyProcess  = $propertyProcess;
         $this->contractProcess  = $contractProcess;
     }
 
@@ -292,6 +297,33 @@ class ImportProcess
     }
 
     /**
+     * @param string $residentId
+     */
+    protected function addResidentId($residentId)
+    {
+        if (!isset($this->usedResidentsIds[$residentId])) {
+            $this->usedResidentsIds[$residentId] = 1;
+        } else {
+            $this->usedResidentsIds[$residentId]++;
+        }
+    }
+
+    protected function clearResidentIds()
+    {
+        $this->usedResidentsIds = array();
+    }
+
+    /**
+     * @param ResidentMapping $residentMapping
+     * @return bool
+     */
+    public function isUsedResidentId(ResidentMapping $residentMapping)
+    {
+        $id = $residentMapping->getResidentId();
+        return (isset($this->usedResidentsIds[$id]) && $this->usedResidentsIds[$id] > 1)? true : false;
+    }
+
+    /**
      * @param Tenant $tenant
      * @param array $row
      *
@@ -303,6 +335,7 @@ class ImportProcess
         $residentMapping->setTenant($tenant);
         $residentMapping->setHolding($this->user->getHolding());
         $residentMapping->setResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
+        $this->addResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
 
         return $residentMapping;
     }
@@ -642,7 +675,7 @@ class ImportProcess
 
         $residentMapping = $import->getResidentMapping();
         $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0) {
+        if (count($errors) > 0 || $this->isUsedResidentId($residentMapping)) {
             return false;
         }
 
@@ -722,7 +755,13 @@ class ImportProcess
         }
 
         if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
-            $import->setErrors($this->runFormValidation($form, $lineNumber, $token));
+            $errors = $this->runFormValidation($form, $lineNumber, $token);
+            if ($this->isUsedResidentId($import->getResidentMapping())) {
+                $errors[$lineNumber][$form->getName()][ImportMapping::KEY_RESIDENT_ID] = $this->translator->trans(
+                    'error.residentId.already_use'
+                );
+            }
+            $import->setErrors($errors);
         }
 
         return $import;
@@ -818,6 +857,7 @@ class ImportProcess
             $import->setNumber($key);
             $collection->add($import);
         }
+        $this->clearResidentIds();
         return $collection;
     }
 
@@ -1137,26 +1177,18 @@ class ImportProcess
             return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
         }
 
-        $property = $this->mapping->createProperty($row);
-        if (empty($property) || !$property->getNumber() || !$property->getStreet()) {
+        $isValid = $this->propertyProcess->isValidProperty(
+            $property =  $this->mapping->createProperty($row)
+        );
+
+        if (!$isValid) {
             return null;
         }
 
-        $params = array(
-            'jb'        => $property->getJb(),
-            'kb'        => $property->getKb(),
-            'number'    => $property->getNumber(),
+        return $this->propertyProcess->checkPropertyDuplicate(
+            $property,
+            $saveToGoogle = true
         );
-
-        $propertyInDataBase = $this->em->getRepository('RjDataBundle:Property')->findOneBy($params);
-
-        if ($propertyInDataBase) {
-            return $propertyInDataBase;
-        }
-
-        $this->googleService->savePlace($property);
-
-        return $property;
     }
 
     /**

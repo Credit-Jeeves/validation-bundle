@@ -2,24 +2,26 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 
-use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface;
+use DateTime;
 use RentJeeves\LandlordBundle\Accounting\Export\ZipArchiveReport;
 
 /**
- * @Service("accounting.export.yardi_archive")
+ * @Service("accounting.export.renttrack_archive")
  */
-class YardiArchive extends ExportReport
+class RentTrackArchive extends ExportReport
 {
     use ZipArchiveReport;
+
     /**
      * @InjectParams({
-     *     "exportReport" = @Inject("accounting.export.yardi"),
-     *     "serializer" = @Inject("export.serializer.yardi"),
+     *     "exportReport" = @Inject("accounting.export.renttrack"),
+     *     "serializer" = @Inject("export.serializer.renttrack"),
      * })
      */
     public function __construct(ExportReport $exportReport, ExportSerializerInterface $serializer)
@@ -33,16 +35,16 @@ class YardiArchive extends ExportReport
         $this->validateSettings($settings);
         $this->generateFilename($settings);
 
-        $data = $this->getData($settings);
+        $orders = $this->getData($settings);
 
-        if (empty($data)) {
+        if (empty($orders)) {
             return null;
         }
 
         $zipArchive = $this->openZipArchive();
 
-        foreach ($data as $batchId => $batchedData) {
-            $content = $this->serializer->serialize($batchedData);
+        foreach ($orders as $batchId => $batchedOrders) {
+            $content = $this->serializer->serialize($batchedOrders);
             $filename = $this->getBatchFilename($batchId, $settings);
             $zipArchive->addFromString($filename, $content);
         }
@@ -59,11 +61,11 @@ class YardiArchive extends ExportReport
     public function getData($settings)
     {
         $result = array();
-        $operations = $this->exportReport->getData($settings);
-        /** @var Operation $operation */
-        foreach ($operations as $operation) {
-            $transactionBatchId = $operation->getOrder()->getHeartlandBatchId();
-            $result[$transactionBatchId][] = $operation;
+        $orders = $this->exportReport->getData($settings);
+        /** @var Order $order */
+        foreach ($orders as $order) {
+            $transactionBatchId = $order->getHeartlandBatchId();
+            $result[$transactionBatchId][] = $order;
         }
 
         return $result;

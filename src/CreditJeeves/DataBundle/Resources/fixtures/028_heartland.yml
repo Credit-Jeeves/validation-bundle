@@ -290,4 +290,55 @@ fixtures:
     transaction_id: 45465161984
     isSuccessful: true
     createdAt: '-2 month'
-
+#Origin Transaction for rjOrder_3_refunded
+  rjCheckout_9_1_1:
+    order:  rjOrder_3_refunded
+    amount: 700
+    transaction_id: 551232652
+    batch_id: 2344665
+    isSuccessful: true
+    createdAt: '-30 days'
+    depositDate: '-28 days'
+#Refunded Transaction for rjOrder_3_refunded
+  rjCheckout_9_1_2:
+    order:  rjOrder_3_refunded
+    amount: -700
+    transaction_id: 651232652
+    batch_id: 3444666
+    isSuccessful: true
+    createdAt: '-29 days'
+    depositDate: '-27 days'
+#Origin Transaction for rjOrder_3_returned
+  rjCheckout_9_2_1:
+    order:  rjOrder_3_returned
+    amount: 750
+    transaction_id: 561232653
+    batch_id: 2344665
+    isSuccessful: true
+    createdAt: '-30 days'
+    depositDate: '-28 days'
+#Returned Transaction for rjOrder_3_returned
+  rjCheckout_9_2_2:
+    order:  rjOrder_3_returned
+    amount: -750
+    transaction_id: 661232653
+    batch_id: 3444666
+    isSuccessful: true
+    createdAt: '-29 days'
+    depositDate: '-27 days'
+#Origin Transaction for rjOrder_3_returned_1
+  rjCheckout_9_3_1:
+    order:  rjOrder_3_returned_1
+    amount: 800
+    transaction_id: 571232654
+    batch_id: 2344665
+    isSuccessful: true
+    createdAt: '-30 days'
+#Returned Transaction for rjOrder_3_returned_1
+  rjCheckout_9_3_2:
+    order:  rjOrder_3_returned_1
+    amount: -800
+    transaction_id: 671232654
+    batch_id: 3444666
+    isSuccessful: true
+    createdAt: '-29 days'

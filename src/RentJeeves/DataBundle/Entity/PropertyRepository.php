@@ -5,6 +5,59 @@ use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
+    public function getDuplicateProperties()
+    {
+        $query = $this->createQueryBuilder('property')
+                ->select(
+                    '
+                    property.id,
+                    property.zip,
+                    property.number,
+                    property.street,
+                    COUNT(property.street) AS street_c,
+                    COUNT(property.number) AS number_c,
+                    COUNT(property.zip) AS zip_c
+                    '
+                )
+                ->groupBy(
+                    'property.street',
+                    'property.number',
+                    'property.zip'
+                )
+                ->having(
+                    'street_c > 1
+                    AND number_c > 1
+                    AND zip_c > 1'
+                );
+
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    public function getDublicatePropertiesWithContract()
+    {
+        $sql = <<< EOT
+        SELECT (COUNT(property.id) - count(distinct(property.id))) as difference,
+        property.id AS property_id, property.zip AS zip,
+        property.number AS number, property.street AS street,
+        contract.id as contract_id,
+        COUNT(contract.id) as count_contract
+        FROM rj_property property
+        INNER JOIN rj_contract contract
+        ON property.id = contract.property_id
+        GROUP BY property.street, property.number, property.zip
+        HAVING difference = 0
+
+EOT;
+        $stmt = $this->getEntityManager()
+            ->getConnection()
+            ->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+
     public function getPropetiesAll($group)
     {
         $query = $this->createQueryBuilder('p');
