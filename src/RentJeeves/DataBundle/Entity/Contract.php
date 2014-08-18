@@ -337,9 +337,9 @@ class Contract extends Base
         if ($date = $this->getPaidTo()) {
             $now = new DateTime();
             $interval = $date->diff($now);
-            $sign = $interval->format('%r%a');
+            $unpaidDays = $interval->format('%r%a');
 
-            if ($sign <= 0) {
+            if ($unpaidDays <= 0) {
                 return $result;
             }
             $lastPayment = $this->getLastPayment();

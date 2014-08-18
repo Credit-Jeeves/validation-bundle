@@ -439,7 +439,10 @@ class ContractRepository extends EntityRepository
      * @param array $status
      * @return IterableResult
      */
-    public function getAllLateContractsByHolding(Holding $holding, $status = [ContractStatus::CURRENT, ContractStatus::APPROVED])
+    public function getAllLateContractsByHolding(
+        Holding $holding,
+        $status = [ContractStatus::CURRENT, ContractStatus::APPROVED]
+    )
     {
         $query = $this->createQueryBuilder('c');
         $query->leftJoin('c.operations', 'op');
