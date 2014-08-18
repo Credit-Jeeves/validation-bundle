@@ -758,7 +758,7 @@ class ImportProcess
             $errors = $this->runFormValidation($form, $lineNumber, $token);
             if ($this->isUsedResidentId($import->getResidentMapping())) {
                 $errors[$lineNumber][$form->getName()][ImportMapping::KEY_RESIDENT_ID] = $this->translator->trans(
-                    'error.residentId.already.use'
+                    'error.residentId.already_use'
                 );
             }
             $import->setErrors($errors);
