@@ -41,13 +41,13 @@ class PropertyRepository extends EntityRepository
 SELECT (
 COUNT( property.id ) - COUNT(DISTINCT(property.id))) AS difference,
 property.id AS property_id, property.zip AS zip, property.number AS number, property.street AS street, contract.id AS contract_id, COUNT( contract.id ) AS count_contract, COUNT( property.zip ) AS count_zip, COUNT( property.number ) AS count_number, COUNT( property.street ) AS count_street
-FROM property
-INNER JOIN contract ON property.id = contract.property_id
+FROM rj_property as property
+INNER JOIN rj_contract as contract ON property.id = contract.property_id
 GROUP BY property.street, property.number, property.zip
 HAVING count_street > 1
 AND count_number > 1
 AND count_zip > 1
-AND difference =0
+AND difference = 0
 
 EOT;
         $stmt = $this->getEntityManager()
