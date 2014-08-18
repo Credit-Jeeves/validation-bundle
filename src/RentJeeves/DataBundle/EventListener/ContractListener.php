@@ -120,6 +120,24 @@ class ContractListener
         $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
     }
 
+    public function updateBalanceForCurrentStatus(Contract $contract, PreUpdateEventArgs $eventArgs)
+    {
+        if (!$eventArgs->hasChangedField('status')) {
+            return;
+        }
+
+        $newValue = $eventArgs->getOldValue('status');
+
+        if ($newValue !== ContractStatus::CURRENT) {
+            return;
+        }
+
+        $contract->setBalance($contract->getRent());
+        $eventArgs->getEntityManager()->persist($contract);
+        $eventArgs->getEntityManager()->flush();
+    }
+
+
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
@@ -128,6 +146,7 @@ class ContractListener
         }
         $this->monitoringContractAmount($entity, $eventArgs);
         $this->checkContract($entity);
+        $this->updateBalanceForCurrentStatus($entity, $eventArgs);
     }
 
     public function postUpdate(LifecycleEventArgs $eventArgs)
