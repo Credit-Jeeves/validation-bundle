@@ -156,7 +156,7 @@ class Mailer extends BaseMailer
     public function sendRentReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderReceipt')
     {
         $tenant = $order->getUser();
-        $history = $order->getHeartlands()->last();
+        $history = $order->getCompleteTransaction();
         $fee = $order->getFee();
         $amount = $order->getSum();
         $total = $fee + $amount;
@@ -311,7 +311,7 @@ class Mailer extends BaseMailer
             'orderStatus' => $order->getStatus(),
             'rentAmount' => $order->getSum(),
             'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
-            'reversalDescription' => $order->getReversalDescription(),
+            'reversalDescription' => $order->getHeartlandErrorMessage(),
         );
 
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -326,7 +326,7 @@ class Mailer extends BaseMailer
             'rentAmount' => $order->getSum(),
             'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'tenantName' => $tenant->getFullName(),
-            'reversalDescription' => $order->getReversalDescription(),
+            'reversalDescription' => $order->getHeartlandErrorMessage(),
         );
 
         $group = $order->getContract()->getGroup();
@@ -340,14 +340,14 @@ class Mailer extends BaseMailer
     public function sendPendingInfo(Order $order, $template = 'rjPendingOrder')
     {
         $tenant = $order->getContract()->getTenant();
-        $history = $order->getHeartlands()->last();
+        $transaction = $order->getCompleteTransaction();
         $amount = $order->getSum();
         $fee = $order->getFee();
         $total = $fee + $amount;
         $vars = array(
             'tenantName' => $tenant->getFullName(),
             'orderTime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
-            'transactionID' => $history ? $history->getTransactionId() : 'N/A',
+            'transactionID' => $transaction ? $transaction->getTransactionId() : 'N/A',
             'amount' => $amount,
             'fee' => $fee,
             'total' => $total,

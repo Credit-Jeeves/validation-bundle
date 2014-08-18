@@ -101,7 +101,7 @@ class HeartlandRepository extends EntityRepository
         return $groupIds;
     }
 
-    public function getReversalDepositedInfo($group, DateTime $date)
+    public function getReversalDepositedInfo(Group $group, DateTime $date)
     {
         $query = $this->createQueryBuilder('h');
         $query->select(
