@@ -9,4 +9,4 @@ class TransactionStatus extends Enum
     const COMPLETE = 'complete';
 
     const REVERSED = 'reversed';
-} 
+}

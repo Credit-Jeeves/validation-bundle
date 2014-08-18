@@ -479,8 +479,8 @@ class Order extends BaseOrder
     {
         if (OrderStatus::RETURNED == $this->getStatus() ||
             OrderStatus::REFUNDED == $this->getStatus() ||
-            OrderStatus::CANCELLED == $this->getStatus()
-        ){
+            OrderStatus::CANCELLED == $this->getStatus())
+        {
             $transaction = $this->getReversedTransaction();
         } else {
             $transaction = $this->getCompleteTransaction();
@@ -496,7 +496,7 @@ class Order extends BaseOrder
     public function getHeartlandTransactionId()
     {
         if ($transaction = $this->getHeartlandTransaction()) {
-            return $transaction->getId();
+            return $transaction->getTransactionId();
         }
 
         return null;
@@ -504,26 +504,29 @@ class Order extends BaseOrder
 
     public function getCompleteTransaction()
     {
-        return $this->getHeartlands()->filter(
-            function(Heartland $transaction) {
-                if (TransactionStatus::COMPLETE == $transaction->getStatus()) {
-                    return true;
+        return $this->getHeartlands()
+            ->filter(
+                function(Heartland $transaction) {
+                    if (TransactionStatus::COMPLETE == $transaction->getStatus()) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        )->first();
+            )->first();
     }
 
     public function getReversedTransaction()
     {
-        return $this->getHeartlands()->filter(
-            function(Heartland $transaction) {
-                if (TransactionStatus::REVERSED == $transaction->getStatus()) {
-                    return true;
+        return $this->getHeartlands()
+            ->filter(
+                function(Heartland $transaction)
+                {
+                    if (TransactionStatus::REVERSED == $transaction->getStatus()) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        )->first();
+            )->first();
     }
 
     public function getHeartlandBatchId()

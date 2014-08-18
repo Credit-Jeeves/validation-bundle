@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -63,6 +64,7 @@ class OrderListener
         }
 
         $this->updateBalanceContract($eventArgs);
+        $this->syncTransactions($entity);
 
         /** @var Operation $operation */
         foreach ($operations as $operation) {
@@ -133,6 +135,7 @@ class OrderListener
                 // changes to contract are made in preUpdate since only there we can check whether the order
                 // status has been changed. But those changes aren't flushed. So the flush is here.
                 $eventArgs->getEntityManager()->flush($operation->getContract());
+                $eventArgs->getEntityManager()->flush($entity->getCompleteTransaction());
                 if ($payment = $operation->getContract()->getActivePayment()) {
                     $eventArgs->getEntityManager()->flush($payment);
                 }
@@ -291,6 +294,21 @@ class OrderListener
                     }
                 }
                 break;
+        }
+    }
+
+    protected function syncTransactions(Order $order)
+    {
+        $transaction = $order->getCompleteTransaction();
+
+        if ($transaction && $transaction->getIsSuccessful() &&
+            OrderType::HEARTLAND_CARD == $order->getType() &&
+            OrderStatus::COMPLETE == $order->getStatus()
+        ) {
+            $batchDate = new DateTime();
+            $transaction->setBatchDate($batchDate);
+            $businessDaysCalc = $this->container->get('business_days_calculator');
+            $transaction->setDepositDate($businessDaysCalc->getCreditCardBusinessDate($batchDate));
         }
     }
 }

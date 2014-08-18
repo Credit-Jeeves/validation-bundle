@@ -72,7 +72,7 @@ class ExportCase extends BaseTestCase
 
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
-        $this->assertEquals('PMTCRED 123456', (string) $checkNumber);
+        $this->assertEquals('PMTCRED 123123', (string) $checkNumber);
         $this->assertEquals('FGDTRFG-44', (string) $personId);
         $this->assertEquals('1500.00', (string)$amount);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
@@ -125,7 +125,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('TIMOTHY', $csvArr[4]);
         $this->assertEquals('APPLEGATE', $csvArr[5]);
         $this->assertEquals('PMTCRED', $csvArr[6]);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a PMTCRED 123456', $csvArr[7]);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a PMTCRED 123123', $csvArr[7]);
     }
 
     /**
@@ -204,7 +204,7 @@ class ExportCase extends BaseTestCase
         $columns = explode(",", $rows[0]);
         $this->assertEquals('AAABBB-7', $columns[1]);
         $this->assertEquals(1500, $columns[2]);
-        $this->assertContains($columns[3], array('"Trans #456123 Batch #111555"', '"Trans #789789 Batch #111555"'));
+        $this->assertContains($columns[3], array('"Trans #456456 Batch #325698"', '"Trans #789789 Batch #111555"'));
         $this->assertEquals("FGDTRFG-44", $columns[4]);
     }
 
@@ -249,7 +249,7 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(3, $archive->numFiles);
+        $this->assertEquals(4, $archive->numFiles);
         $file = $archive->getFromIndex(1);
 
         $doc = new SimpleXMLElement($file);
@@ -303,9 +303,8 @@ class ExportCase extends BaseTestCase
 
         $this->page->pressButton('order.report.download');
 
-
-
         $csv = $this->page->getContent();
+
         $csvFullArr = explode("\n", $csv);
         $this->assertEquals(10, count($csvFullArr));
         /** check Last */
