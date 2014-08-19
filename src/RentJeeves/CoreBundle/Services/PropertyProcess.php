@@ -61,7 +61,7 @@ class PropertyProcess
         $this->geocoder = $geocoder;
         $this->em = $em;
         $this->google = $google;
-        $this->exceptionCatcher = $exceptionCatcher
+        $this->exceptionCatcher = $exceptionCatcher;
     }
 
     /**
