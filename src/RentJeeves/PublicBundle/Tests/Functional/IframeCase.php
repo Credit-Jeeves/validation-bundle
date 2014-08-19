@@ -41,8 +41,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
-     * dataProvider provideGoogleAddress
+     * @test
+     * @dataProvider provideGoogleAddress
      */
     public function parseGoogleAddress($address, $city, $district, $jb, $kb)
     {
@@ -61,7 +61,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function iframeInviteLandlord()
     {
@@ -125,7 +125,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function iframeNotFound()
     {
@@ -227,8 +227,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
-     * depends iframeNotFound
+     * @test
+     * @depends iframeNotFound
      */
     public function checkEmailIframeNotFound()
     {
@@ -249,8 +249,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
-     * depends checkEmailIframeNotFound
+     * @test
+     * @depends checkEmailIframeNotFound
      */
     public function checkInviteIframeNotFound()
     {
@@ -325,7 +325,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function iframeFound()
     {
@@ -335,8 +335,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
-     * depends iframeFound
+     * @test
+     * @depends iframeFound
      */
     public function iframeFoundCheckEmail()
     {
@@ -365,7 +365,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function checkNotFoundNew()
     {
@@ -399,7 +399,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function publicIframe()
     {
@@ -492,7 +492,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function resendInviteIframeFound()
     {
@@ -504,8 +504,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * test
-     * depends resendInviteIframeFound
+     * @test
+     * @depends resendInviteIframeFound
      */
     public function resendInviteIframeNotFound()
     {
