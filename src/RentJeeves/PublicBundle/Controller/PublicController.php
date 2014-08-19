@@ -5,6 +5,7 @@ namespace RentJeeves\PublicBundle\Controller;
 use FOS\UserBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
@@ -107,18 +108,25 @@ class PublicController extends Controller
     public function checkSearchAction($propertyId)
     {
         $em = $this->get('doctrine.orm.entity_manager');
-        $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        /**
+         * @var $property Property
+         */
+        $property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
         
-        if (!$Property) {
+        if (!$property) {
             return $this->redirect($this->generateUrl("iframe"));
         }
      
-        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
 
         if ($countGroup > 0) {
-            $google = $this->container->get('google');
-            $google->savePlace($Property);
-            
+            /**
+             * @var $propertyProcess PropertyProcess
+             */
+            $propertyProcess = $this->container->get('property.process');
+            if (!$property->getGoogleReference() && $propertyProcess->isValidProperty($property)) {
+                $propertyProcess->saveToGoogle($property);
+            }
             return $this->redirect($this->generateUrl("iframe_new", array('propertyId'=>$propertyId)));
         }
 
@@ -175,12 +183,20 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/user/new/{propertyId}", name="iframe_new", options={"expose"=true})
+     * @Route(
+     *      "/user/new/{propertyId}/{holdingId}",
+     *      name="iframe_new",
+     *      defaults={
+     *          "propertyId"=null,
+     *          "holdingId"=null
+     *      },
+     *      options={"expose"=true}
+     * )
      * @Template()
      *
      * @return array
      */
-    public function newAction($propertyId = null)
+    public function newAction($propertyId = null, $holdingId = null)
     {
         $request = $this->get('request');
         $em = $this->getDoctrine()->getManager();

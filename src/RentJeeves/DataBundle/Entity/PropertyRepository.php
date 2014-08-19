@@ -167,12 +167,17 @@ EOT;
         return $count;
     }
 
-    public function findOneWithUnitAndAlphaNumericSort($propertyId)
+    public function findOneWithUnitAndAlphaNumericSort($propertyId, $holdingId = null)
     {
         $query = $this->createQueryBuilder('p')
                       ->select('LENGTH(u.name) as co,p,u');
         $query->leftJoin('p.units', 'u');
         $query->where('p.id = :propertyId');
+        if ($holdingId) {
+            $query->leftJoin('p.property_groups', 'group');
+            $query->andWhere('group.holding_id = :holdingId');
+            $query->setParameter('holdingId', $holdingId);
+        }
         $query->setParameter('propertyId', $propertyId);
         $query->addOrderBy('co', 'ASC');
         $query->addOrderBy('u.name', 'ASC');

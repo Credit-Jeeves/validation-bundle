@@ -66,7 +66,8 @@
 
     {% endjavascripts %}
     <script type="text/javascript">
-        propertyId = "{{ app.request.attributes.get('propertyId') }}";
+        var propertyId = "{{ app.request.attributes.get('propertyId') }}";
+        var holdingId = "{{ app.request.attributes.get('holdingId') }}";
     </script>
 {% endblock %}
 
