@@ -96,7 +96,7 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
      *
      * @param array $paymentData
      */
-    protected function processReturnedPayment($paymentData)
+    protected function processReturnedPayment(array $paymentData)
     {
         /** @var HeartlandTransaction $originalTransaction */
         $originalTransaction = $this->findTransaction($paymentData['OriginalTransactionID']);

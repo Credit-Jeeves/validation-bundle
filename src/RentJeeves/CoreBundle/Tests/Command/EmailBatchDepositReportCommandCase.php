@@ -16,6 +16,8 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
      */
     public function executeReport()
     {
+        $this->markTestSkipped('Requires additional params to the query.');
+
         $this->load(true);
 
         /**

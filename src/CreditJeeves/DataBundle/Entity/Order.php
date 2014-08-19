@@ -479,8 +479,7 @@ class Order extends BaseOrder
     {
         if (OrderStatus::RETURNED == $this->getStatus() ||
             OrderStatus::REFUNDED == $this->getStatus() ||
-            OrderStatus::CANCELLED == $this->getStatus())
-        {
+            OrderStatus::CANCELLED == $this->getStatus()) {
             $transaction = $this->getReversedTransaction();
         } else {
             $transaction = $this->getCompleteTransaction();
@@ -506,7 +505,7 @@ class Order extends BaseOrder
     {
         return $this->getHeartlands()
             ->filter(
-                function(Heartland $transaction) {
+                function (Heartland $transaction) {
                     if (TransactionStatus::COMPLETE == $transaction->getStatus()) {
                         return true;
                     }
@@ -519,8 +518,7 @@ class Order extends BaseOrder
     {
         return $this->getHeartlands()
             ->filter(
-                function(Heartland $transaction)
-                {
+                function (Heartland $transaction) {
                     if (TransactionStatus::REVERSED == $transaction->getStatus()) {
                         return true;
                     }

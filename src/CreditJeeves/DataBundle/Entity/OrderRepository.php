@@ -296,10 +296,11 @@ class OrderRepository extends EntityRepository
         $query->setParameter('group', $group);
         $query->andWhere('h.depositDate IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
-        $query->andWhere('(h.batchId IS NOT NULL AND o.status = :completeOrder) OR
-            (h.batchId IS NULL AND o.status IN (:reversalStatuses))');
-        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
-        $query->setParameter('reversalStatuses', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
+        $query->andWhere(
+            '(h.batchId IS NOT NULL AND o.status = :complete) OR (h.batchId IS NULL AND o.status IN (:reversal))'
+        );
+        $query->setParameter('complete', OrderStatus::COMPLETE);
+        $query->setParameter('reversal', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         if ($accountType) {
             $query->andWhere('o.type = :type');
             $query->setParameter('type', $accountType);
@@ -337,14 +338,15 @@ class OrderRepository extends EntityRepository
             $ordersQuery->setParameter('batchId', $batchId);
         } else {
             $ordersQuery->andWhere('h.batchId is null');
+            $ordersQuery->andWhere('h.depositDate = :depositDate');
+            $ordersQuery->setParameter('depositDate', $depositDate);
         }
 
-        $ordersQuery->andWhere('h.depositDate = :depositDate');
-        $ordersQuery->andWhere('(h.batchId IS NOT NULL AND o.status = :completeOrder) OR
-            (h.batchId IS NULL AND o.status IN (:reversalStatuses))');
-        $ordersQuery->setParameter('completeOrder', OrderStatus::COMPLETE);
-        $ordersQuery->setParameter('reversalStatuses', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-        $ordersQuery->setParameter('depositDate', $depositDate);
+        $ordersQuery->andWhere(
+            '(h.batchId IS NOT NULL AND o.status = :complete) OR (h.batchId IS NULL AND o.status IN (:reversal))'
+        );
+        $ordersQuery->setParameter('complete', OrderStatus::COMPLETE);
+        $ordersQuery->setParameter('reversal', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         $ordersQuery->setParameter('group', $group);
         if ($accountType) {
             $ordersQuery->andWhere('o.type = :type');
@@ -364,11 +366,11 @@ class OrderRepository extends EntityRepository
         $query->where('t.group = :group');
         $query->andWhere('h.depositDate IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
-        $query->andWhere('(h.batchId IS NOT NULL AND o.status = :completeOrder) OR
-            (h.batchId IS NULL AND o.status IN (:reversalStatuses))');
-        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
-        $query->setParameter('reversalStatuses', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-//        and ((h.batch_id is not null and o.status = 'complete') OR (h.batch_id is null and o.status in ('returned', 'refunded')))
+        $query->andWhere(
+            '(h.batchId IS NOT NULL AND o.status = :complete) OR (h.batchId IS NULL AND o.status IN (:reversal))'
+        );
+        $query->setParameter('complete', OrderStatus::COMPLETE);
+        $query->setParameter('reversal', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         $query->setParameter('group', $group);
         $query->groupBy('batch');
 
