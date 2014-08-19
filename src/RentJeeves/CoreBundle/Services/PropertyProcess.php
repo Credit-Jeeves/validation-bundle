@@ -10,7 +10,7 @@ use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\DataBundle\Entity\Property;
 use Geocoder\Geocoder;
 use Exception;
-use Fp\BadaBoomBundle\ExceptionCatcher\ExceptionCatcher;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -161,7 +161,7 @@ class PropertyProcess
         }
         try {
             $this->google->savePlace($property);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
         }
     }
@@ -181,7 +181,7 @@ class PropertyProcess
 
         try {
             $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             return false;
         }
