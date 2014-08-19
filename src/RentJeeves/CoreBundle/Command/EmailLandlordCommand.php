@@ -210,8 +210,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
         Mailer $mailer,
         Serializer $serializer,
         $holdingAdmin = true
-    )
-    {
+    ) {
         /** @var LandlordRepository $repoLandlord */
         $repoLandlord = $doctrine->getRepository('RjDataBundle:Landlord');
         /** @var ContractRepository $repoContract */
