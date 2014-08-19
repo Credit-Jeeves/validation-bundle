@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
@@ -174,7 +175,7 @@ EOT;
         $query->leftJoin('p.units', 'unit');
         $query->where('p.id = :propertyId');
         if ($holdingId) {
-            $query->leftJoin('p.property_groups', 'p_group');
+            $query->innerJoin('p.property_groups', 'p_group');
             $query->andWhere('p_group.holding_id = :holdingId');
             $query->andWhere('unit.holding = :holdingId');
             $query->setParameter('holdingId', $holdingId);
@@ -191,13 +192,21 @@ EOT;
         return null;
     }
 
-    public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb)
+    public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb, Holding $holding = null)
     {
         $query = $this->createQueryBuilder('p')
             ->select('LENGTH(u.name) as co,p,u');
         $query->leftJoin('p.units', 'u');
         $query->where('p.jb = :jb');
         $query->andWhere('p.kb = :kb');
+
+        if ($holding) {
+             $query->innerJoin('p.property_groups', 'p_group');
+             $query->andWhere('p_group.holding_id = :holdingId');
+             $query->andWhere('u.holding = :holdingId');
+             $query->setParameter('holdingId', $holding->getId());
+        }
+
         $query->setParameter('jb', $jb);
         $query->setParameter('kb', $kb);
         $query->addOrderBy('co', 'ASC');

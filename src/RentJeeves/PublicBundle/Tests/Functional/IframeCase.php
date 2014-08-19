@@ -41,8 +41,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
-     * @dataProvider provideGoogleAddress
+     * test
+     * dataProvider provideGoogleAddress
      */
     public function parseGoogleAddress($address, $city, $district, $jb, $kb)
     {
@@ -61,7 +61,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function iframeInviteLandlord()
     {
@@ -125,7 +125,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function iframeNotFound()
     {
@@ -227,8 +227,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
-     * @depends iframeNotFound
+     * test
+     * depends iframeNotFound
      */
     public function checkEmailIframeNotFound()
     {
@@ -249,8 +249,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
-     * @depends checkEmailIframeNotFound
+     * test
+     * depends checkEmailIframeNotFound
      */
     public function checkInviteIframeNotFound()
     {
@@ -325,7 +325,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function iframeFound()
     {
@@ -335,8 +335,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
-     * @depends iframeFound
+     * test
+     * depends iframeFound
      */
     public function iframeFoundCheckEmail()
     {
@@ -365,7 +365,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function checkNotFoundNew()
     {
@@ -399,7 +399,7 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function publicIframe()
     {
@@ -491,9 +491,8 @@ class IframeCase extends BaseTestCase
         $this->assertCount(1, $email, 'Wrong number of emails');
     }
 
-
     /**
-     * @test
+     * test
      */
     public function resendInviteIframeFound()
     {
@@ -505,8 +504,8 @@ class IframeCase extends BaseTestCase
     }
 
     /**
-     * @test
-     * @depends resendInviteIframeFound
+     * test
+     * depends resendInviteIframeFound
      */
     public function resendInviteIframeNotFound()
     {
@@ -531,5 +530,74 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $this->checkResendInvite();
+    }
+
+    /**
+     * @test
+     */
+    public function checkHoldingSelectForNew()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $doctrine = $this->getContainer()->get('doctrine');
+        $em = $doctrine->getManager();
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+            array(
+                'jb' => '40.7308443',
+                'kb' => '-73.9913642'
+            )
+        );
+        $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(
+            array(
+                'name' => 'Rent Holding'
+            )
+        );
+
+        $holdingSecond = $em->getRepository('DataBundle:Holding')->findOneBy(
+            array(
+                'name' => 'Estate Holding'
+            )
+        );
+
+        $this->assertNotNull($property);
+        $this->assertNotNull($holdingFirst);
+        $this->assertNotNull($holdingSecond);
+
+        $link1 = $this->getContainer()->get('router')
+            ->generate('iframe_new',
+                array(
+                    'propertyId' => $property->getId(),
+                    'holdingId'  => $holdingFirst->getId()
+                )
+        );
+        $link2 = $this->getContainer()->get('router')
+            ->generate('iframe_new',
+                array(
+                    'propertyId' => $property->getId(),
+                    'holdingId'  => $holdingSecond->getId()
+                )
+        );
+        $link3 = $this->getContainer()->get('router')->
+            generate('iframe_new',
+            array(
+                'propertyId' => $property->getId(),
+            )
+        );
+        $link =  substr($this->getUrl(), 0, -1);
+        $link1 = $link.$link1;
+        $link2 = $link.$link2;
+        $link3 = $link.$link3;
+        $this->session->visit($link1);
+        $this->assertNotNull($options = $this->page->findAll('css', '#idUnit1 option'));
+        $this->assertEquals(15, count($options));
+
+        $this->session->visit($link2);
+        $this->assertNotNull($options = $this->page->findAll('css', '#idUnit1 option'));
+        $this->assertEquals(2, count($options));
+
+        $this->session->visit($link3);
+        $this->assertNotNull($options = $this->page->findAll('css', '#idUnit1 option'));
+        $this->assertEquals(16, count($options));
+
     }
 }

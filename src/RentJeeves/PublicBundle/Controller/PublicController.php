@@ -188,7 +188,7 @@ class PublicController extends Controller
      *      name="iframe_new",
      *      defaults={
      *          "propertyId"=null,
-     *          "holdingId"=null
+     *          "holdingId"=0
      *      },
      *      options={"expose"=true}
      * )
@@ -196,7 +196,7 @@ class PublicController extends Controller
      *
      * @return array
      */
-    public function newAction($propertyId = null, $holdingId = null)
+    public function newAction($propertyId, $holdingId)
     {
         $request = $this->get('request');
         $em = $this->getDoctrine()->getManager();
@@ -207,7 +207,7 @@ class PublicController extends Controller
                 $propertyId,
                 $holdingId
             );
-
+        $holding = $em->getRepository("DataBundle:Holding")->find($holdingId);
         $tenant = new Tenant();
         $form = $this->createForm(
             $tenantType = new TenantType($this->getDoctrine()->getManager()),
@@ -257,7 +257,10 @@ class PublicController extends Controller
         $propertyList = [];
 
         if ($property) {
-            $propertyList = $google->searchPropertyInRadius($property);
+            $propertyList = $google->searchPropertyInRadius(
+                $property,
+                $holding
+            );
 
             if (isset($propertyList[$property->getId()])) {
                 unset($propertyList[$property->getId()]);

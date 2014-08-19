@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\Service;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use JMS\DiExtraBundle\Annotation as DI;
 
 use RentJeeves\DataBundle\Entity\Property;
@@ -106,6 +107,7 @@ class Google
     */
     public function searchPropertyInRadius (
         Property $property,
+        Holding $holding = null,
         $name = self::DEFAULT_NAME,
         $radius = self::DEFAULT_RADIUS
     ) {
@@ -132,7 +134,7 @@ class Google
                 $jb = $value['geometry']['location']['lat'];
                 $kb = $value['geometry']['location']['lng'];
 
-                $nearProperty = $propertyRepository->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb);
+                $nearProperty = $propertyRepository->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb, $holding);
 
                 if (empty($nearProperty)) {
                     continue;
