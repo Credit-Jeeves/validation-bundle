@@ -91,7 +91,7 @@ class PayRent extends Pay
         $statusRequest = $this->execute();
 
         if ($statusRequest->isSuccess()) {
-            $order->setStatus(OrderStatus::PENDING);
+            $order->setStatus($this->getSuccessfulOrderStatus($order));
             $status = $contract->getStatus();
             if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
                 $contract->setStatus(ContractStatus::CURRENT);
@@ -184,5 +184,14 @@ class PayRent extends Pay
             $operation->setAmount($amount);
             $operation->setPaidFor($payment->getPaidFor());
         }
+    }
+
+    protected function getSuccessfulOrderStatus(Order $order)
+    {
+        if (OrderType::HEARTLAND_CARD == $order->getType()) {
+            return OrderStatus::COMPLETE;
+        }
+
+        return OrderStatus::PENDING;
     }
 }
