@@ -203,7 +203,10 @@ class PublicController extends Controller
         $google = $this->get('google');
 
         $property = $em->getRepository('RjDataBundle:Property')
-            ->findOneWithUnitAndAlphaNumericSort($propertyId);
+            ->findOneWithUnitAndAlphaNumericSort(
+                $propertyId,
+                $holdingId
+            );
 
         $tenant = new Tenant();
         $form = $this->createForm(
