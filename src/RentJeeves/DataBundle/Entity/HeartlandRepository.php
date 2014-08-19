@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -13,7 +14,7 @@ class HeartlandRepository extends EntityRepository
      * @param DateTime $date
      * @return mixed
      */
-    public function getBatchDepositedInfo($group, DateTime $date)
+    public function getBatchDepositedInfo(Group $group, DateTime $date)
     {
         $query = $this->createQueryBuilder('h');
         $query->select(
@@ -48,6 +49,91 @@ class HeartlandRepository extends EntityRepository
         /** Now we select only completed transaction */
         $query->andWhere('o.status = :status');
         $query->setParameter('status', OrderStatus::COMPLETE);
+
+        return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $groups
+     * @param $start
+     * @param $end
+     * @return mixed
+     */
+    public function getTransactionsForRentTrackReport($groups, $start, $end)
+    {
+        $query = $this->createQueryBuilder('h');
+        $query->innerJoin('h.order', 'o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.tenant', 'ten');
+        $query->leftJoin('ten.residentsMapping', 'res');
+        $query->innerJoin('t.unit', 'unit');
+        $query->leftJoin('unit.unitMapping', 'uMap');
+        $query->innerJoin('t.group', 'g');
+        $query->innerJoin('g.groupSettings', 'gs');
+        $query->where("o.created_at BETWEEN :start AND :end");
+        $query->andWhere('o.status in (:statuses)');
+        $query->andWhere('o.type in (:paymentTypes)');
+        $query->andWhere('g.id in (:groups)');
+        $query->andWhere('h.isSuccessful = 1');
+        $query->andWhere('h.transactionId IS NOT NULL');
+        $query->andWhere('h.depositDate IS NOT NULL');
+        $query->setParameter('end', $end);
+        $query->setParameter('start', $start);
+        $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
+        $query->setParameter('paymentTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->setParameter('groups', $this->getGroupIds($groups));
+        $query->orderBy('h.createdAt', 'ASC');
+        $query = $query->getQuery();
+        return $query->execute();
+    }
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $groups
+     * @return array
+     */
+    protected function getGroupIds($groups)
+    {
+        $groupIds = [];
+        foreach ($groups as $group) {
+            /** @var Group $group */
+            $groupIds[] = $group->getId();
+        }
+        return $groupIds;
+    }
+
+    public function getReversalDepositedInfo(Group $group, DateTime $date)
+    {
+        $query = $this->createQueryBuilder('h');
+        $query->select(
+            "h.transactionId,
+            h.amount,
+            date_format(h.createdAt, '%m/%d/%Y') as reversalDate,
+            date_format(o.created_at, '%m/%d/%Y') as originDate,
+            o.type as paymentType,
+            o.status,
+            CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
+            CONCAT_WS(' ', prop.number, prop.street) as property,
+            prop.isSingle,
+            unit.name as unitName"
+        );
+
+        $query->innerJoin('h.order', 'o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.tenant', 'ten');
+        $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('t.unit', 'unit');
+
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+
+        $query->andWhere('h.depositDate = DATE(:date)');
+        $query->setParameter('date', $date);
+
+        $query->andWhere('h.isSuccessful = 1');
+
+        $query->andWhere('o.status in (:statuses)');
+        $query->setParameter('statuses', array(OrderStatus::REFUNDED, OrderStatus::RETURNED));
 
         return $query->getQuery()->execute();
     }

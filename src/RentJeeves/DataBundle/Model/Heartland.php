@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Payum\Heartland\Bridge\Doctrine\Entity\PaymentDetails;
@@ -54,6 +55,16 @@ abstract class Heartland extends PaymentDetails
      * )
      */
     protected $depositDate;
+
+    /**
+     * @ORM\Column(
+     *      type="TransactionStatus",
+     *      options={
+     *         "default"="complete"
+     *      }
+     * )
+     */
+    protected $status = TransactionStatus::COMPLETE;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -139,5 +150,21 @@ abstract class Heartland extends PaymentDetails
     public function getDepositDate()
     {
         return $this->depositDate;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

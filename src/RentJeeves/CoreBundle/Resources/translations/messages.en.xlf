@@ -856,7 +856,11 @@
                 <source>error.email.already.use</source>
                 <target>Email already use in the system.</target>
             </trans-unit>
-           <trans-unit id="error.start.empty">
+            <trans-unit id="error.residentId.already_use">
+                <source>error.residentId.already_use</source>
+                <target>ResidentId is already used.</target>
+            </trans-unit>
+            <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
                 <target>Specify a start date.</target>
             </trans-unit>
@@ -1725,7 +1729,7 @@
             </trans-unit>
             <trans-unit id="fill.full.address">
                 <source>fill.full.address</source>
-                <target>Please fill full address and try again. It's very short.</target>
+                <target>Please fill full address and try again. It's very short or invalid.</target>
             </trans-unit>
             <trans-unit id="tenant.wants.unit">
                 <source>tenant.wants.unit</source>
@@ -1876,32 +1880,32 @@
                 <source>tabs.reports</source>
                 <target>Reports</target>
             </trans-unit>
-            <trans-unit id="base.order.report.type.yardi">
-                <source>base.order.report.type.yardi</source>
+            <trans-unit id="order.report.type.yardi">
+                <source>order.report.type.yardi</source>
                 <target>Yardi Voyager (XML)</target>
             </trans-unit>
-            <trans-unit id="base.order.report.type.realpage">
-                <source>base.order.report.type.realpage</source>
+            <trans-unit id="order.report.type.realpage">
+                <source>order.report.type.realpage</source>
                 <target>RealPage OneSite (CSV)</target>
             </trans-unit>
-            <trans-unit id="base.order.report.type.promas">
-                <source>base.order.report.type.promas</source>
+            <trans-unit id="order.report.type.promas">
+                <source>order.report.type.promas</source>
                 <target>Promas (CSV)</target>
             </trans-unit>
-            <trans-unit id="base.order.report.download">
-                <source>base.order.report.download</source>
+            <trans-unit id="order.report.download">
+                <source>order.report.download</source>
                 <target>Download Report</target>
             </trans-unit>
             <trans-unit id="help">
                 <source>help</source>
                 <target>Help</target>
             </trans-unit>
-            <trans-unit id="base.order.report.how_to.yardi">
-                <source>base.order.report.how_to.yardi</source>
+            <trans-unit id="order.report.how_to.yardi">
+                <source>order.report.how_to.yardi</source>
                 <target>How to Import into Yardi</target>
             </trans-unit>
-            <trans-unit id="base.order.report.how_to.realpage">
-                <source>base.order.report.how_to.realpage</source>
+            <trans-unit id="order.report.how_to.realpage">
+                <source>order.report.how_to.realpage</source>
                 <target>How to Import into RealPage OneSite</target>
             </trans-unit>
             <trans-unit id="landlord.hps.processing_message">
@@ -2584,6 +2588,18 @@
             <trans-unit id="export.promas.make_zip">
                 <source>export.promas.make_zip</source>
                 <target>Separate By Batch Deposits (ZIP File with Multiple CSVs)</target>
+            </trans-unit>
+            <trans-unit id="export.no_data">
+                <source>export.no_data</source>
+                <target>No data to export</target>
+            </trans-unit>
+            <trans-unit id="order.report.type.renttrack">
+                <source>order.report.type.renttrack</source>
+                <target>Standard Export(CSV)</target>
+            </trans-unit>
+            <trans-unit id="export.renttrack.include_all_groups">
+                <source>export.renttrack.include_all_groups</source>
+                <target>Include Transactions from All Groups</target>
             </trans-unit>
             <trans-unit id="credittrack.teaser.link">
                 <source>credittrack.teaser.link</source>

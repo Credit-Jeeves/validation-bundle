@@ -20,7 +20,7 @@ class ExportType extends AbstractType
     protected $validationGroups;
 
     protected $aviableValidationGroups = array(
-        'xml', 'csv', 'promas'
+        'xml', 'csv', 'promas', 'renttrack'
     );
 
     public function __construct($user, $group = null, $validationGroups = array('xml'))
@@ -56,16 +56,57 @@ class ExportType extends AbstractType
         }
 
         $builder->add(
+            'begin',
+            'date',
+            array(
+                'required'    => true,
+                'input'       => 'string',
+                'widget'      => 'single_text',
+                'format'      => 'MM/dd/yyyy',
+                'attr'        => array(
+                    'class'     => 'begin calendar',
+                    'data-bind' => 'datepicker: begin'
+                ),
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('xml', 'csv', 'promas', 'renttrack'))),
+                    new Date(array('groups' => array('xml', 'csv', 'promas', 'renttrack'))),
+                )
+            )
+        );
+
+        $builder->add(
+            'end',
+            'date',
+            array(
+                'input'       => 'string',
+                'required'    => true,
+                'widget'      => 'single_text',
+                'format'      => 'MM/dd/yyyy',
+                'attr'        => array(
+                    'class' => 'end calendar',
+                    'data-bind' => 'datepicker: end'
+                ),
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('xml', 'csv', 'promas', 'renttrack'))),
+                    new Date(array('groups' => array('xml', 'csv', 'promas', 'renttrack'))),
+                )
+            )
+        );
+
+
+        $builder->add(
             'type',
             'choice',
             array(
                 'choices' => array(
-                    'xml' => 'base.order.report.type.yardi',
-                    'csv' => 'base.order.report.type.realpage',
-                    'promas' => 'base.order.report.type.promas',
+                    'xml' => 'order.report.type.yardi',
+                    'csv' => 'order.report.type.realpage',
+                    'promas' => 'order.report.type.promas',
+                    'renttrack' => 'order.report.type.renttrack',
                 ),
                 'required'    => true,
                 'attr'        => array(
+                    'force_row' => true,
                     'class' => 'original widthSelect',
                     'data-bind' => '
                         options: exportTypes,
@@ -74,7 +115,7 @@ class ExportType extends AbstractType
                         value: selectedType'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv', 'promas')))
+                    new NotBlank(array('groups' => array('xml', 'csv', 'promas', 'renttrack')))
                 ),
             )
         );
@@ -95,7 +136,7 @@ class ExportType extends AbstractType
                         optionsValue: "id",
                         value: selectedProperty',
                     'row_attr' => array(
-                        'data-bind' => "visible: selectedType() != 'promas'",
+                        'data-bind' => "visible: (selectedType() != 'promas') && (selectedType() != 'renttrack') ",
                     )
                 ),
                 'constraints'    => array(
@@ -208,45 +249,6 @@ class ExportType extends AbstractType
         );
 
         $builder->add(
-            'begin',
-            'date',
-            array(
-                'required'    => true,
-                'input'       => 'string',
-                'widget'      => 'single_text',
-                'format'      => 'MM/dd/yyyy',
-                'attr'        => array(
-                    'class'     => 'begin calendar',
-                    'force_row' => true,
-                    'data-bind' => 'datepicker: begin'
-                ),
-                'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv', 'promas'))),
-                    new Date(array('groups' => array('xml', 'csv', 'promas'))),
-                )
-            )
-        );
-
-        $builder->add(
-            'end',
-            'date',
-            array(
-                'input'       => 'string',
-                'required'    => true,
-                'widget'      => 'single_text',
-                'format'      => 'MM/dd/yyyy',
-                'attr'        => array(
-                    'class' => 'end calendar',
-                    'data-bind' => 'datepicker: end'
-                ),
-                'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv', 'promas'))),
-                    new Date(array('groups' => array('xml', 'csv', 'promas'))),
-                )
-            )
-        );
-
-        $builder->add(
             'makeZip',
             'checkbox',
             array(
@@ -256,6 +258,21 @@ class ExportType extends AbstractType
                     'data-bind' => 'checked: makeZip',
                     'row_attr' => array(
                         'data-bind' => "visible: selectedType() != 'csv'",
+                    )
+                ),
+            )
+        );
+
+        $builder->add(
+            'includeAllGroups',
+            'checkbox',
+            array(
+                'label' => 'export.renttrack.include_all_groups',
+                'required' => false,
+                'attr' => array(
+                    'data-bind' => 'checked: includeAllGroups',
+                    'row_attr' => array(
+                        'data-bind' => "visible: selectedType() == 'renttrack'",
                     )
                 ),
             )

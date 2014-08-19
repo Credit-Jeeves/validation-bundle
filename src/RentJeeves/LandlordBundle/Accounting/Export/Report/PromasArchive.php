@@ -36,9 +36,13 @@ class PromasArchive extends ExportReport
         $this->validateSettings($settings);
         $this->generateFilename($settings);
 
-        $zipArchive = $this->openZipArchive();
-
         $orders = $this->getData($settings);
+
+        if (empty($orders)) {
+            return null;
+        }
+
+        $zipArchive = $this->openZipArchive();
         /** @var Order $order */
         foreach ($orders as $batchId => $batchedOrders) {
             $content = $this->serializer->serialize($batchedOrders);

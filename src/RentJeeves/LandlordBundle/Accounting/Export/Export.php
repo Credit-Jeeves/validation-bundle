@@ -41,7 +41,7 @@ class Export
 
         switch ($this->type) {
             case 'xml':
-                if ($dataFromForm['makeZip']) {
+                if ($this->makeZip) {
                     $report = $this->container->get('accounting.export.yardi_archive');
                 } else {
                     $report = $this->container->get('accounting.export.yardi');
@@ -51,10 +51,17 @@ class Export
                 $report = $this->container->get('accounting.export.real_page');
                 break;
             case 'promas':
-                if ($dataFromForm['makeZip']) {
+                if ($this->makeZip) {
                     $report = $this->container->get('accounting.export.promas_archive');
                 } else {
                     $report = $this->container->get('accounting.export.promas');
+                }
+                break;
+            case 'renttrack':
+                if ($this->makeZip) {
+                    $report = $this->container->get('accounting.export.renttrack_archive');
+                } else {
+                    $report = $this->container->get('accounting.export.renttrack');
                 }
                 break;
             default:
