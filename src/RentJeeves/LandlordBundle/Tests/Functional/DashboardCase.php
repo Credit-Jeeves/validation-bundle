@@ -113,7 +113,7 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
         // the test should check payments.batch_deposits, but selenium doesn't know about this text
         // the main goal is to check the amount
-        $this->assertEquals('payments.total (5)', $title->getHtml());
+        $this->assertEquals('payments.total (8)', $title->getHtml());
 
         $this->logout();
     }
