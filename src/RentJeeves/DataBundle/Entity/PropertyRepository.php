@@ -40,7 +40,10 @@ class PropertyRepository extends EntityRepository
         $sql = <<< EOT
 SELECT (
 COUNT( property.id ) - COUNT(DISTINCT(property.id))) AS difference,
-property.id AS property_id, property.zip AS zip, property.number AS number, property.street AS street, contract.id AS contract_id, COUNT( contract.id ) AS count_contract, COUNT( property.zip ) AS count_zip, COUNT( property.number ) AS count_number, COUNT( property.street ) AS count_street
+property.id AS property_id, property.zip AS zip, property.number AS number,
+property.street AS street, contract.id AS contract_id,
+COUNT( contract.id ) AS count_contract, COUNT( property.zip ) AS count_zip,
+COUNT( property.number ) AS count_number, COUNT( property.street ) AS count_street
 FROM rj_property as property
 INNER JOIN rj_contract as contract ON property.id = contract.property_id
 GROUP BY property.street, property.number, property.zip
