@@ -34,8 +34,11 @@ class YardiXmlSerializer implements ExportSerializerInterface
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('xmlReport');
-        $context->setAttribute('use_header', false);
-        $content = $this->serializer->serialize($report, 'xml', $context);
+
+        $context->setAttribute('use_skip_tag', true);
+        $context->setAttribute('skip_tag_compare', 'N/A');
+
+        $content = $this->serializer->serialize($report, 'yardi', $context);
 
         return $content;
     }
