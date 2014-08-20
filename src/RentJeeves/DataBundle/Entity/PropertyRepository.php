@@ -168,18 +168,12 @@ EOT;
         return $count;
     }
 
-    public function findOneWithUnitAndAlphaNumericSort($propertyId, $holdingId = null)
+    public function findOneWithUnitAndAlphaNumericSort($propertyId)
     {
         $query = $this->createQueryBuilder('p')
                       ->select('LENGTH(unit.name) as co,p,unit');
         $query->leftJoin('p.units', 'unit');
         $query->where('p.id = :propertyId');
-        if ($holdingId) {
-            $query->innerJoin('p.property_groups', 'p_group');
-            $query->andWhere('p_group.holding_id = :holdingId');
-            $query->andWhere('unit.holding = :holdingId');
-            $query->setParameter('holdingId', $holdingId);
-        }
         $query->setParameter('propertyId', $propertyId);
         $query->addOrderBy('co', 'ASC');
         $query->addOrderBy('unit.name', 'ASC');
@@ -192,21 +186,13 @@ EOT;
         return null;
     }
 
-    public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb, Holding $holding = null)
+    public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb)
     {
         $query = $this->createQueryBuilder('p')
             ->select('LENGTH(u.name) as co,p,u');
         $query->leftJoin('p.units', 'u');
         $query->where('p.jb = :jb');
         $query->andWhere('p.kb = :kb');
-
-        if ($holding) {
-             $query->innerJoin('p.property_groups', 'p_group');
-             $query->andWhere('p_group.holding_id = :holdingId');
-             $query->andWhere('u.holding = :holdingId');
-             $query->setParameter('holdingId', $holding->getId());
-        }
-
         $query->setParameter('jb', $jb);
         $query->setParameter('kb', $kb);
         $query->addOrderBy('co', 'ASC');
@@ -219,5 +205,27 @@ EOT;
         }
 
         return null;
+    }
+
+    public function findByHoldingAndAlphaNumericSort(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('LENGTH(unit.name) as co,p,unit');
+        $query->innerJoin('p.property_groups', 'p_group');
+        $query->leftJoin('p.units', 'unit');
+        $query->where('p_group.holding_id = :holdingId');
+        $query->andWhere('unit.holding = :holdingId');
+        $query->andWhere('p.jb IS NOT NULL AND p.kb IS NOT NULL');
+        $query->setParameter('holdingId', $holding->getId());
+        $query->addOrderBy('co', 'ASC');
+        $query->addOrderBy('unit.name', 'ASC');
+        $query = $query->getQuery();
+        $result = $query->getResult();
+
+        if (!empty($result)) {
+            $result = array_map('current', $result);
+        }
+
+        return $result;
     }
 }

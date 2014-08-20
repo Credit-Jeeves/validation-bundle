@@ -15,7 +15,7 @@ class IframeController extends Controller
 {
     /**
      * @Route(
-     *      "/management/{propertyId}/{holdingId}",
+     *      "/management/{holdingId}",
      *      name="management_login",
      *      defaults={
      *          "propertyId"=null,
@@ -24,7 +24,7 @@ class IframeController extends Controller
      * )
      * @Template()
      */
-    public function indexAction($propertyId, $holdingId)
+    public function indexAction($holdingId)
     {
         $form = $this->createForm(
             new LoginType(),

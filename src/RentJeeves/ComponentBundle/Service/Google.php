@@ -107,7 +107,6 @@ class Google
     */
     public function searchPropertyInRadius (
         Property $property,
-        Holding $holding = null,
         $name = self::DEFAULT_NAME,
         $radius = self::DEFAULT_RADIUS
     ) {
@@ -134,7 +133,7 @@ class Google
                 $jb = $value['geometry']['location']['lat'];
                 $kb = $value['geometry']['location']['lng'];
 
-                $nearProperty = $propertyRepository->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb, $holding);
+                $nearProperty = $propertyRepository->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb);
 
                 if (empty($nearProperty)) {
                     continue;
