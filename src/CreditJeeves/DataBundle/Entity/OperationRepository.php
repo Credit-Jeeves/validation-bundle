@@ -103,11 +103,11 @@ class OperationRepository extends EntityRepository
         $query->innerJoin("tenant.residentsMapping", "resident");
         $query->innerJoin('contract.property', 'prop');
         $query->innerJoin('contract.unit', 'unit');
-        $query->leftJoin('ord.heartlands', 'heartland');
+        $query->innerJoin('ord.heartlands', 'heartland');
         $query->where("ord.updated_at BETWEEN :start AND :end");
         $query->andWhere('contract.property = :property');
         $query->andWhere('resident.holding = :holding');
-        $query->andWhere('heartland.id IS NULL OR (heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL)');
+        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
         $query->andWhere('ord.status IN (:statuses)');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
         $query->orderBy('ord.id', 'ASC');
@@ -119,7 +119,6 @@ class OperationRepository extends EntityRepository
         $query->setParameter('start', $start);
         $query->setParameter('property', $property);
         $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-        $query->groupBy('operation.id');
 
         $query = $query->getQuery();
         return $query->execute();

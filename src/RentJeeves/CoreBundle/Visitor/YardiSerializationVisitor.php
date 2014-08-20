@@ -3,11 +3,10 @@
 namespace RentJeeves\CoreBundle\Visitor;
 
 use JMS\Serializer\Context;
-use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 use JMS\DiExtraBundle\Annotation as DI;
-use PhpOption;
 
 /**
  * @DI\Service("jms_serializer.yardi_serialization_visitor")
@@ -15,10 +14,6 @@ use PhpOption;
  */
 class YardiSerializationVisitor extends XmlSerializationVisitor
 {
-    protected $useSkipTag = false;
-
-    protected $skipCompare = '';
-
     /**
      * @DI\InjectParams({
      *     "namingStrategy" = @DI\Inject("jms_serializer.naming_strategy")
@@ -29,45 +24,14 @@ class YardiSerializationVisitor extends XmlSerializationVisitor
         parent::__construct($namingStrategy);
     }
 
-    public function visitSimpleString($data, array $type, Context $context)
+    public function visitProperty(PropertyMetadata $metadata, $object, Context $context)
     {
-        if ($this->checkIsVisiting($data, $type, $context)) {
-            return parent::visitSimpleString($data, $type, $context);
-        }
-        return;
-    }
+        $exclusionStrategy = $context->getExclusionStrategy();
 
-    public function visitString($data, array $type, Context $context)
-    {
-        if ($this->checkIsVisiting($data, $type, $context)) {
-            return parent::visitString($data, $type, $context);
-        }
-        return;
-    }
-
-    protected function checkIsVisiting($data, array $type, Context $context)
-    {
-        if ($this->useSkipTag && $data === $this->skipCompare) {
-            return false;
+        if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($metadata, $context, $object)) {
+            return;
         }
 
-        return true;
-    }
-
-    public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
-    {
-        $useSkipTag = $context->attributes->get('use_skip_tag');
-        $skipCompare = $context->attributes->get('skip_tag_compare');
-
-        if ($useSkipTag instanceof PhpOption\Some) {
-            $this->useSkipTag =  $useSkipTag->get();
-        }
-
-        if ($skipCompare instanceof PhpOption\Some) {
-            $this->skipCompare = $skipCompare->get();
-        }
-
-        parent::startVisitingObject($metadata, $data, $type, $context);
+        parent::visitProperty($metadata, $object, $context);
     }
 }
- 
