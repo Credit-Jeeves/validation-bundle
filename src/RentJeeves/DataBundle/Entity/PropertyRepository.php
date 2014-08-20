@@ -39,16 +39,19 @@ class PropertyRepository extends EntityRepository
     public function getDublicatePropertiesWithContract()
     {
         $sql = <<< EOT
-        SELECT (COUNT(property.id) - count(distinct(property.id))) as difference,
-        property.id AS property_id, property.zip AS zip,
-        property.number AS number, property.street AS street,
-        contract.id as contract_id,
-        COUNT(contract.id) as count_contract
-        FROM rj_property property
-        INNER JOIN rj_contract contract
-        ON property.id = contract.property_id
-        GROUP BY property.street, property.number, property.zip
-        HAVING difference = 0
+SELECT (
+COUNT( property.id ) - COUNT(DISTINCT(property.id))) AS difference,
+property.id AS property_id, property.zip AS zip, property.number AS number,
+property.street AS street, contract.id AS contract_id,
+COUNT( contract.id ) AS count_contract, COUNT( property.zip ) AS count_zip,
+COUNT( property.number ) AS count_number, COUNT( property.street ) AS count_street
+FROM rj_property as property
+INNER JOIN rj_contract as contract ON property.id = contract.property_id
+GROUP BY property.street, property.number, property.zip
+HAVING count_street > 1
+AND count_number > 1
+AND count_zip > 1
+AND difference = 0
 
 EOT;
         $stmt = $this->getEntityManager()

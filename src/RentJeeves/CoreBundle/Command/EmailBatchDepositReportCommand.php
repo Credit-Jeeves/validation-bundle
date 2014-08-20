@@ -45,11 +45,13 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
             $groups = [];
             foreach ($holdingAdmin->getGroups() as $group) {
                 /** @var Group $group */
-                $data = $repoHeartland->getBatchDepositedInfo($group, $date);
+                $batchData = $repoHeartland->getBatchDepositedInfo($group, $date);
+                $reversalData = $repoHeartland->getReversalDepositedInfo($group, $date);
                 $groups[] = [
                     'groupName' => $group->getName(),
                     'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
-                    'batches' => $this->prepareBatchReportData($data),
+                    'batches' => $this->prepareBatchReportData($batchData),
+                    'returns' => $reversalData,
                 ];
             }
             $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date);
@@ -60,8 +62,15 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
             /** @var Landlord $landlord */
             foreach ($landlord->getAgentGroups() as $group) {
                 /** @var Group $group */
-                $data = $repoHeartland->getBatchDepositedInfo($group, $date);
-                $mailer->sendBatchDepositReportLandlord($landlord, $group, $date, $this->prepareBatchReportData($data));
+                $batchData = $repoHeartland->getBatchDepositedInfo($group, $date);
+                $reversalData = $repoHeartland->getReversalDepositedInfo($group, $date);
+                $mailer->sendBatchDepositReportLandlord(
+                    $landlord,
+                    $group,
+                    $date,
+                    $this->prepareBatchReportData($batchData),
+                    $reversalData
+                );
             }
         }
     }

@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RuntimeException;
 
 /**
@@ -474,21 +475,63 @@ class Order extends BaseOrder
         return $result;
     }
 
+    public function getHeartlandTransaction()
+    {
+        if (OrderStatus::RETURNED == $this->getStatus() ||
+            OrderStatus::REFUNDED == $this->getStatus() ||
+            OrderStatus::CANCELLED == $this->getStatus()) {
+            $transaction = $this->getReversedTransaction();
+        } else {
+            $transaction = $this->getCompleteTransaction();
+        }
+
+        if ($transaction) {
+            return $transaction;
+        }
+
+        return null;
+    }
+
     public function getHeartlandTransactionId()
     {
-        $result = 0;
-        $heartlands = $this->getHeartlands();
-        if (count($heartlands) > 0) {
-            $result = $heartlands->last()->getTransactionId();
+        if ($transaction = $this->getHeartlandTransaction()) {
+            return $transaction->getTransactionId();
         }
-        return $result;
+
+        return null;
+    }
+
+    public function getCompleteTransaction()
+    {
+        return $this->getHeartlands()
+            ->filter(
+                function (Heartland $transaction) {
+                    if (TransactionStatus::COMPLETE == $transaction->getStatus()) {
+                        return true;
+                    }
+                    return false;
+                }
+            )->first();
+    }
+
+    public function getReversedTransaction()
+    {
+        return $this->getHeartlands()
+            ->filter(
+                function (Heartland $transaction) {
+                    if (TransactionStatus::REVERSED == $transaction->getStatus()) {
+                        return true;
+                    }
+                    return false;
+                }
+            )->first();
     }
 
     public function getHeartlandBatchId()
     {
-        $heartlands = $this->getHeartlands();
-        if (count($heartlands) > 0) {
-            return $heartlands->last()->getBatchId();
+        /** @var Heartland $transaction */
+        if ($transaction = $this->getHeartlandTransaction()) {
+            return $transaction->getBatchId();
         }
 
         return null;
@@ -496,12 +539,12 @@ class Order extends BaseOrder
 
     public function getHeartlandErrorMessage()
     {
-        $result = '';
-        $heartlands = $this->getHeartlands();
-        if (count($heartlands) > 0) {
-            $result = $heartlands->last()->getMessages();
+        /** @var Heartland $transaction */
+        if ($transaction = $this->getReversedTransaction()) {
+            return $transaction->getMessages();
         }
-        return $result;
+
+        return '';
     }
 
     /**
