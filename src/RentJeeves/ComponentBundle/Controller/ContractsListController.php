@@ -36,12 +36,14 @@ class ContractsListController extends Controller
         $start = $date->format('m/d/Y');
         $date->modify('+1 year');
         $end = $date->format('m/d/Y');
+
         return array(
-            'form'      => $form,
-            'Group'     => $Group,
-            'canInvite' => $canInvite,
-            'start'     => $start,
-            'end'       => $end
+            'form'          => $form,
+            'Group'         => $Group,
+            'canInvite'     => $canInvite,
+            'start'         => $start,
+            'end'           => $end,
+            'isIntegrated'  => $Group->getGroupSettings()->getIsIntegrated(),
         );
     }
 

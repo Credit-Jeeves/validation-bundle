@@ -233,7 +233,14 @@ class PaymentCommandsCase extends BaseTestCase
     protected function createPayment(Contract $contract, $amount)
     {
         $tenant = $contract->getTenant();
-        $paymentAccount = $tenant->getPaymentAccounts()->first();
+        $paymentAccount = $tenant->getPaymentAccounts()->filter(
+            function ($paymentAccount) {
+                if (PaymentAccountType::BANK == $paymentAccount->getType()) {
+                    return true;
+                }
+                return false;
+            }
+        )->first();
 
         $payment = new Payment();
         $payment->setAmount($amount);
@@ -280,10 +287,6 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertCount(0, $jobs);
     }
 
-    /**
-     * @param $em
-     * @return array
-     */
     protected function getContract($em)
     {
         $rentAmount = 987;
