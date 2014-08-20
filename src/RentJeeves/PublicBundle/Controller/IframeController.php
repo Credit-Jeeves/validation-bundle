@@ -15,15 +15,16 @@ class IframeController extends Controller
 {
     /**
      * @Route(
-     *      "/management/{holdingId}",
+     *      "/management/{id}/{type}",
      *      name="management_login",
      *      defaults={
-     *          "holdingId"=null
+     *          "id"=null,
+     *          "type"="property"
      *      }
      * )
      * @Template()
      */
-    public function indexAction($holdingId)
+    public function indexAction($id, $type)
     {
         $form = $this->createForm(
             new LoginType(),
@@ -40,6 +41,8 @@ class IframeController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'id'   => $id,
+            'type' => $type,
         );
     }
 }
