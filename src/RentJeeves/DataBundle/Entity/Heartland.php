@@ -102,12 +102,11 @@ class Heartland extends Base
             return null;
         }
 
-        if ($this->getIsIntegratedGroup()) {
-            $unitMapping = $unit->getUnitMapping();
-            return $unitMapping ? $unitMapping->getExternalUnitId() : null;
+        if ($this->getIsIntegratedGroup() && $unitMapping = $unit->getUnitMapping()) {
+            return $unitMapping->getExternalUnitId();
         }
 
-        return $unit->getId();
+        return null;
     }
 
 
@@ -143,12 +142,11 @@ class Heartland extends Base
             return null;
         }
 
-        if ($this->getIsIntegratedGroup()) {
-            $tenantMapping = $tenant->getResidentsMapping()->first();
-            return $tenantMapping ? $tenantMapping->getResidentId() : null;
+        if ($this->getIsIntegratedGroup() && $tenantMapping = $tenant->getResidentsMapping()->first()) {
+            return $tenantMapping->getResidentId();
         }
 
-        return $tenant->getId();
+        return null;
     }
 
     /**
