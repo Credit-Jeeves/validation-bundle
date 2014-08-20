@@ -3503,7 +3503,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Heartland.git",
-                "reference": "af466b3595b5ae17e2777e3c6fe6364082f0589b"
+                "reference": "f620ade587328972eb37f990d2b1a49b4a962e6d"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",

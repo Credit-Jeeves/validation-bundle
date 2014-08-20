@@ -180,8 +180,10 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($unitEdit = $this->page->find('css', '.dueDateEdit'));
         $unitEdit->selectOption('14'); //
 
-        $this->assertNotNull($balanceField = $this->page->find('css', '.balance-field'));
-        $balanceField->setValue("200.00");
+        if ($isIntegrated) {
+            $this->assertNotNull($balanceField = $this->page->find('css', '.balance-field'));
+            $balanceField->setValue("200.00");
+        }
 
         $this->page->pressButton('savechanges');
         $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup').is(':visible')");
@@ -241,7 +243,7 @@ class TenantCase extends BaseTestCase
             $this->assertEquals(200.00, $contract->getIntegratedBalance(), 'Wrong balance');
             $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
         } else {
-            $this->assertEquals(200.00, $contract->getBalance(), 'Wrong balance');
+            $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
             $this->assertEquals(0, $contract->getIntegratedBalance(), 'Wrong balance');
         }
     }

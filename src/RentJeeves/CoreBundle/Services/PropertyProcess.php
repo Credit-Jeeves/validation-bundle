@@ -10,6 +10,7 @@ use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\DataBundle\Entity\Property;
 use Geocoder\Geocoder;
 use Exception;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -39,20 +40,28 @@ class PropertyProcess
     protected $validProperties = array();
 
     /**
+     * @var ExceptionCatcher
+     */
+    protected $exceptionCatcher;
+
+    /**
      * @InjectParams({
      *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
      *     "google"           = @Inject("google"),
-     *     "geocoder"         = @Inject("bazinga_geocoder.geocoder")
+     *     "geocoder"         = @Inject("bazinga_geocoder.geocoder"),
+     *     "exceptionCatcher" = @Inject( "fp_badaboom.exception_catcher")
      * })
      */
     public function __construct(
         EntityManager $em,
         Google $google,
-        Geocoder $geocoder
+        Geocoder $geocoder,
+        ExceptionCatcher $exceptionCatcher
     ) {
         $this->geocoder = $geocoder;
         $this->em = $em;
         $this->google = $google;
+        $this->exceptionCatcher = $exceptionCatcher;
     }
 
     /**
@@ -150,7 +159,11 @@ class PropertyProcess
         if (!$this->isValidProperty($property)) {
             throw new Exception("Can't save invalid property to google");
         }
-        $this->google->savePlace($property);
+        try {
+            $this->google->savePlace($property);
+        } catch (Exception $e) {
+            $this->exceptionCatcher->handleException($e);
+        }
     }
 
     /**
@@ -166,8 +179,12 @@ class PropertyProcess
             }
         }
 
-        $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
-
+        try {
+            $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
+        } catch (Exception $e) {
+            $this->exceptionCatcher->handleException($e);
+            return false;
+        }
         if (empty($result)) {
             return false;
         }
