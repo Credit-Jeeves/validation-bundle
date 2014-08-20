@@ -375,7 +375,7 @@ class Operation extends Base
      */
     public function getNotes()
     {
-        if ($this->getIsReverseOrderStatus()) {
+        if ($this->isReversalOrderStatus()) {
             return sprintf('Reverse for Trans ID %d', $this->getHeartlandTransactionId());
         }
 
@@ -410,7 +410,7 @@ class Operation extends Base
      */
     public function getReturnType()
     {
-        if (!$this->getIsReverseOrderStatus()) {
+        if (!$this->isReversalOrderStatus()) {
             return self::NOT_AVAILABLE;
         }
 
@@ -418,7 +418,7 @@ class Operation extends Base
             case OrderStatus::REFUNDED:
                 return 'Reverse';
             case OrderStatus::RETURNED:
-                return 'NFS';
+                return 'NSF';
         }
 
         return self::NOT_AVAILABLE;
@@ -435,7 +435,7 @@ class Operation extends Base
      */
     public function getBatchId()
     {
-        if (!$this->getIsReverseOrderStatus()) {
+        if (!$this->isReversalOrderStatus()) {
             return self::NOT_AVAILABLE;
         }
 
@@ -453,7 +453,7 @@ class Operation extends Base
      */
     public function getOriginalReceiptDate()
     {
-        if (!$this->getIsReverseOrderStatus()) {
+        if (!$this->isReversalOrderStatus()) {
             return self::NOT_AVAILABLE;
         }
 
@@ -534,18 +534,18 @@ class Operation extends Base
         return $days;
     }
 
-    private $reverseOrderTypes = [
+    protected $reversalOrderTypes = [
         OrderStatus::RETURNED,
         OrderStatus::REFUNDED,
     ];
     /**
      * return bool
      */
-    protected function getIsReverseOrderStatus()
+    protected function isReversalOrderStatus()
     {
         $order = $this->getOrder();
 
-        if (!$order || !in_array($order->getStatus(), $this->reverseOrderTypes)) {
+        if (!$order || !in_array($order->getStatus(), $this->reversalOrderTypes)) {
             return false;
         }
 
@@ -557,14 +557,11 @@ class Operation extends Base
         $order = $this->getOrder();
 
         if ($order) {
-            $heartlands = $order->getHeartlands();
-            if (count($heartlands) > 0) {
-                if ($original && $this->getIsReverseOrderStatus()) {
-                    return $heartlands->first()->getTransactionId();
-                }
-
-                return $heartlands->last()->getTransactionId();
+            if ($original && $trans = $order->getCompleteTransaction()) {
+                return  $trans->getTransactionId();
             }
+
+            return $order->getHeartlandTransactionId();
         }
 
         return null;

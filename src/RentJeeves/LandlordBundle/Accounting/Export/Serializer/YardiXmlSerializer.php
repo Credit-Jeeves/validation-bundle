@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Export\Serializer;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\SerializationContext;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -35,8 +36,13 @@ class YardiXmlSerializer implements ExportSerializerInterface
         $context->setSerializeNull(true);
         $context->setGroups('xmlReport');
 
-        $context->setAttribute('use_skip_tag', true);
-        $context->setAttribute('skip_tag_compare', 'N/A');
+        $strategy = new SkipPropertyExclusionStrategy(
+            ['BatchId', 'ReturnType', 'OriginalReceiptDate'],
+            true,
+            Operation::NOT_AVAILABLE
+        );
+
+        $context->addExclusionStrategy($strategy);
 
         $content = $this->serializer->serialize($report, 'yardi', $context);
 
