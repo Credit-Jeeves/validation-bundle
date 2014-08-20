@@ -131,7 +131,7 @@ class PublicController extends Controller
             if (!$property->getGoogleReference() && $propertyProcess->isValidProperty($property)) {
                 $propertyProcess->saveToGoogle($property);
             }
-            return $this->redirect($this->generateUrl("iframe_new", array('propertyId'=>$propertyId)));
+            return $this->redirect($this->generateUrl("iframe_new", array('id'=>$propertyId)));
         }
 
         return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
@@ -297,6 +297,8 @@ class PublicController extends Controller
             'property'          => (isset($property) && $property) ? $property : new Property(),
             'propertyList'      => $propertyList,
             'countPropery'      => count($propertyList),
+            'id'                => $id,
+            'type'              => $type,
         );
     }
 
