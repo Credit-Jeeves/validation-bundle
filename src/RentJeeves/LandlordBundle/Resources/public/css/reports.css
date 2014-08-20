@@ -15,9 +15,6 @@
 .form-row {
     width: 200px;
 }
-#base_order_report_type_type_row, #base_order_report_type_begin_row {
-    width: 335px;
-}
 
 #base_order_report_type_begin_row>label{
     clear: none;
@@ -30,6 +27,7 @@
 }
 #base_order_report_type_begin_row {
     padding-left: 25px;
+    margin-top: -175px;
 }
 .submitBaseReport {
     margin-left: 130px;
@@ -39,9 +37,10 @@
 .form-content {
     height: auto;
 }
-.helpContainer{
-    margin-left: 286px;
-    margin-top: -25px;
+.helpContainer {
+    margin-left: 20px;
+    margin-top: 28px;
+    float: left;
 }
 .int {
     width: 50px !important;
@@ -51,4 +50,34 @@
     float: right !important;
     margin-right: 140px;
     margin-top: -175px;
+}
+label.checkbox {
+    padding-left: 0;
+    width: 350px;
+}
+label.checkbox span {
+    display: inline;
+}
+label.checkbox input {
+    width: 14px;
+    margin-left: 0;
+}
+
+#base_order_report_type .type-date {
+    margin-top: 0;
+    margin-right: 130px;
+}
+
+div#base_order_report_type .form-row {
+    float: left;
+    width: 500px;
+}
+
+#base_order_report_type_type_row, #base_order_report_type_begin_row {
+    width: 335px !important;
+}
+
+
+form#base_order_report_type button {
+    float: left;
 }

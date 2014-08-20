@@ -180,7 +180,7 @@ class PublicController extends Controller
      *
      * @return array
      */
-    public function newAction($propertyId)
+    public function newAction($propertyId = null)
     {
         $request = $this->get('request');
         $em = $this->getDoctrine()->getManager();
@@ -188,11 +188,6 @@ class PublicController extends Controller
 
         $property = $em->getRepository('RjDataBundle:Property')
             ->findOneWithUnitAndAlphaNumericSort($propertyId);
-
-
-        if (!$property) {
-            return $this->redirect($this->generateUrl("iframe"));
-        }
 
         $tenant = new Tenant();
         $form = $this->createForm(
@@ -240,23 +235,27 @@ class PublicController extends Controller
             return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
         }
 
-        $propertyList = $google->searchPropertyInRadius($property);
-        
-        if (isset($propertyList[$property->getId()])) {
-            unset($propertyList[$property->getId()]);
-        }
+        $propertyList = [];
 
-        $propertyList = array_merge(array($property), $propertyList);
+        if ($property) {
+            $propertyList = $google->searchPropertyInRadius($property);
 
-        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
+            if (isset($propertyList[$property->getId()])) {
+                unset($propertyList[$property->getId()]);
+            }
 
-        if ($countGroup <= 0) {
-            return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
+            $propertyList = array_merge(array($property), $propertyList);
+
+            $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
+
+            if ($countGroup <= 0) {
+                return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
+            }
         }
 
         return array(
             'form'              => $form->createView(),
-            'property'          => $property,
+            'property'          => $property ? $property : new Property(),
             'propertyList'      => $propertyList,
             'countPropery'      => count($propertyList),
         );

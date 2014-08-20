@@ -6,15 +6,11 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use Doctrine\ORM\EntityManager;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\CoreBundle\DateTime;
-use RuntimeException;
 use RentJeeves\DataBundle\Entity\Contract;
 
 class OrderListener
@@ -43,7 +39,7 @@ class OrderListener
     {
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $this->chargePartner($entity, $eventArgs->getEntityManager());
+            $this->chargePartner($entity);
         }
     }
 
@@ -62,29 +58,35 @@ class OrderListener
             return;
         }
         
-        $operation = $entity->getRentOperation();
-        if (!$operation || !$eventArgs->hasChangedField('status')) {
+        $operations = $entity->getRentOperations();
+        if ($operations->count() == 0 || !$eventArgs->hasChangedField('status')) {
             return;
         }
-        $contract = $operation->getContract();
-        $this->updateBalanceContract($eventArgs);
-        $movePaidFor = null;
-        switch ($entity->getStatus()) {
-            case OrderStatus::REFUNDED:
-            case OrderStatus::CANCELLED:
-            case OrderStatus::RETURNED:
-                $contract->unshiftPaidTo($operation->getAmount());
-                $movePaidFor = '-1';
-                break;
-            case OrderStatus::COMPLETE:
-                $contract->shiftPaidTo($operation->getAmount());
-                $movePaidFor = '+1';
-                break;
-        }
 
-        if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
-            $date = new DateTime($payment->getPaidFor()->format('c'));
-            $payment->setPaidFor($date->modify($movePaidFor . ' month'));
+        $this->updateBalanceContract($eventArgs);
+        $this->syncTransactions($entity);
+
+        /** @var Operation $operation */
+        foreach ($operations as $operation) {
+            $contract = $operation->getContract();
+            $movePaidFor = null;
+            switch ($entity->getStatus()) {
+                case OrderStatus::REFUNDED:
+                case OrderStatus::CANCELLED:
+                case OrderStatus::RETURNED:
+                    $contract->unshiftPaidTo($operation->getAmount());
+                    $movePaidFor = '-1';
+                    break;
+                case OrderStatus::COMPLETE:
+                    $contract->shiftPaidTo($operation->getAmount());
+                    $movePaidFor = '+1';
+                    break;
+            }
+
+            if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
+                $date = new DateTime($payment->getPaidFor()->format('c'));
+                $payment->setPaidFor($date->modify($movePaidFor . ' month'));
+            }
         }
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
     }
@@ -133,6 +135,7 @@ class OrderListener
                 // changes to contract are made in preUpdate since only there we can check whether the order
                 // status has been changed. But those changes aren't flushed. So the flush is here.
                 $eventArgs->getEntityManager()->flush($operation->getContract());
+                $eventArgs->getEntityManager()->flush($entity->getCompleteTransaction());
                 if ($payment = $operation->getContract()->getActivePayment()) {
                     $eventArgs->getEntityManager()->flush($payment);
                 }
@@ -140,9 +143,9 @@ class OrderListener
         }
     }
 
-    private function chargePartner(Order $order, EntityManager $em)
+    private function chargePartner(Order $order)
     {
-        $operation = $order->getRentOperation();
+        $operation = $order->getRentOperations()->first();
         if ($operation) {
             /** @var User $user */
             $user = $order->getUser();
@@ -197,16 +200,22 @@ class OrderListener
             return;
         }
 
+        $rentOperations = $order->getRentOperations();
         /**
-         * @var $operation Operation
+         * Start_at can be updated only if order contains RENT operations
          */
-        $operation = $order->getOperations()->first();
-        $paidFor = $operation->getPaidFor();
-        if (empty($paidFor)) {
+        if (!$rentOperations->count()) {
             return;
         }
+        /** @var Operation $earliestOperation */
+        $earliestOperation = $rentOperations->first();
+        foreach ($rentOperations as $rent) {
+            if ($earliestOperation->getPaidFor() > $rent->getPaidFor()) {
+                $earliestOperation = $rent;
+            }
+        }
 
-        $contract->setStartAt($paidFor);
+        $contract->setStartAt($earliestOperation->getPaidFor());
         $em->flush($contract);
     }
 
@@ -285,6 +294,21 @@ class OrderListener
                     }
                 }
                 break;
+        }
+    }
+
+    protected function syncTransactions(Order $order)
+    {
+        $transaction = $order->getCompleteTransaction();
+
+        if ($transaction && $transaction->getIsSuccessful() &&
+            OrderType::HEARTLAND_CARD == $order->getType() &&
+            OrderStatus::COMPLETE == $order->getStatus()
+        ) {
+            $batchDate = new DateTime();
+            $transaction->setBatchDate($batchDate);
+            $businessDaysCalc = $this->container->get('business_days_calculator');
+            $transaction->setDepositDate($businessDaysCalc->getCreditCardBusinessDate($batchDate));
         }
     }
 }

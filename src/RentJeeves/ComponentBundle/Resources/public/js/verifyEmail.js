@@ -1,15 +1,16 @@
 $(function() {
-    $('#landlord-verify-email').click(function()
+    $('#verify-email').click(function()
         {
             var self = this;
+            var userType = $(this).data('userType');
             $.ajax({
-                url: Routing.generate('landlord_resend_verification'),
+                url: Routing.generate(userType + '_resend_verification'),
                 type: 'POST',
                 dataType: 'json',
                 data: {},
                 success: function() {
                     $(self).hide();
-                    $('#landlord-verify-resent').show();
+                    $('#verify-resent').show();
                 }
             });
 

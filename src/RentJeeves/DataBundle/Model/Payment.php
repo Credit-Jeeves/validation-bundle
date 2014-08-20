@@ -122,7 +122,7 @@ class Payment
     protected $total;
 
     /**
-     * @ORM\Column(name="paid_for", type="date", nullable=false)
+     * @ORM\Column(name="paid_for", type="date", nullable=true)
      * @Serializer\SerializedName("paidFor")
      * @Serializer\Type("DateTime<'Y-m-d'>")
      * @Serializer\Groups({"payRent"})

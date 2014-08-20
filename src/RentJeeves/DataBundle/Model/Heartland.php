@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Payum\Heartland\Bridge\Doctrine\Entity\PaymentDetails;
@@ -38,15 +39,6 @@ abstract class Heartland extends PaymentDetails
 
     /**
      * @ORM\Column(
-     *     name="batch_id",
-     *     type="bigint",
-     *     nullable=true
-     * )
-     */
-    protected $batchId;
-
-    /**
-     * @ORM\Column(
      *     name="batch_date",
      *     type="date",
      *     nullable=true
@@ -63,21 +55,15 @@ abstract class Heartland extends PaymentDetails
      */
     protected $depositDate;
 
-
-//     /**
-//      * @ORM\Column(
-//      *     type="text",
-//      *     nullable=true
-//      * )
-//      */
-//     protected $message;
-
-//     /**
-//      * @ORM\Column(
-//      *     type="boolean"
-//      * )
-//      */
-//     protected $is_successfull = true;
+    /**
+     * @ORM\Column(
+     *      type="TransactionStatus",
+     *      options={
+     *         "default"="complete"
+     *      }
+     * )
+     */
+    protected $status = TransactionStatus::COMPLETE;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -110,58 +96,6 @@ abstract class Heartland extends PaymentDetails
     {
         return $this->order;
     }
-
-    /**
-     * @param mixed $batchId
-     */
-    public function setBatchId($batchId)
-    {
-        $this->batchId = $batchId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBatchId()
-    {
-        return $this->batchId;
-    }
-
-//     /**
-//      * @param text $message
-//      * @return Heartland
-//      */
-//     public function setMessage($message = null)
-//     {
-//         $this->message = $message;
-//         return $this;
-//     }
-
-//     /**
-//      * @return text
-//      */
-//     public function getMessage()
-//     {
-//         return $this->message;
-//     }
-
-//     /**
-//      * @param smallInt $isSuccesfull
-//      * @return Heartland
-//      */
-//     public function setIsSuccessfull($isSuccessfull)
-//     {
-//         $this->is_successfull = $isSuccessfull;
-//         return $this;
-//     }
-
-//     /**
-//      * @return smallint
-//      */
-//     public function getIsSuccessfull()
-//     {
-//         return $this->is_successfull;
-//     }
 
     /**
      * Set createdAt
@@ -215,5 +149,21 @@ abstract class Heartland extends PaymentDetails
     public function getDepositDate()
     {
         return $this->depositDate;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

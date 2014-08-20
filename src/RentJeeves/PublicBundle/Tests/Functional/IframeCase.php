@@ -35,7 +35,7 @@ class IframeCase extends BaseTestCase
     public function provideGoogleAddress()
     {
         return array(
-            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', null, 40.699021, -73.993744),
+            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', 'Brooklyn', 40.699021, -73.993744),
             array('13 Greenwich St, Manhattan, New York, NY 10013', 'New York', 'Manhattan', 40.7218084, -74.0097316),
         );
     }
@@ -294,7 +294,7 @@ class IframeCase extends BaseTestCase
         $this->clearEmail();
         $this->logout();
         $this->session->visit($this->getUrl() . 'iframe');
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
@@ -371,7 +371,7 @@ class IframeCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'iframe');
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#formNewUser').length > 0");
@@ -406,8 +406,9 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->clearEmail();
         $this->logout();
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->session->visit($this->getUrl() . 'public_iframe?af=CREDITCOM');
+        $this->session->wait($this->timeout, "$('#property-add').length > 0");
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#register').length > 0");

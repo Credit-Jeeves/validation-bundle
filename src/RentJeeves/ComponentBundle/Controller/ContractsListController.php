@@ -36,12 +36,14 @@ class ContractsListController extends Controller
         $start = $date->format('m/d/Y');
         $date->modify('+1 year');
         $end = $date->format('m/d/Y');
+
         return array(
-            'form'      => $form,
-            'Group'     => $Group,
-            'canInvite' => $canInvite,
-            'start'     => $start,
-            'end'       => $end
+            'form'          => $form,
+            'Group'         => $Group,
+            'canInvite'     => $canInvite,
+            'start'         => $start,
+            'end'           => $end,
+            'isIntegrated'  => $Group->getGroupSettings()->getIsIntegrated(),
         );
     }
 
@@ -81,6 +83,7 @@ class ContractsListController extends Controller
         $activeContracts = array();
         $paidForArr = array();
         $isNewUser = false;
+        $hasIntegratedBalance = false;
         if ($contracts && 1 == count($contracts) && $contracts[0]->getStatus() == ContractStatus::INVITE) {
             $isNewUser = true;
         }
@@ -90,6 +93,9 @@ class ContractsListController extends Controller
             if (!in_array($contract->getStatus(), array(ContractStatus::FINISHED, ContractStatus::PENDING))) {
                 $activeContracts[] = $contract;
                 $paidForArr[$contract->getId()] = $this->get('checkout.paid_for')->getArray($contract);
+            }
+            if (!$hasIntegratedBalance && $contract->getGroup()->getGroupSettings()->getIsIntegrated() === true) {
+                $hasIntegratedBalance = true;
             }
         }
 
@@ -105,6 +111,7 @@ class ContractsListController extends Controller
             'paidForArr'    => $paidForArr,
             'user'          => $tenant,
             'isNewUser'     => $isNewUser,
+            'hasIntegratedBalance' => $hasIntegratedBalance,
         );
     }
 }

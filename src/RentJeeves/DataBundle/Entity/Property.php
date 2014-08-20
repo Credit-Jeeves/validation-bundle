@@ -68,6 +68,9 @@ class Property extends Base
         $this->setArea($response->getRegionCode());
         $this->setCountry($response->getCountryCode());
         $this->setCity($response->getCity());
+        if (!$this->getCity()) {
+            $this->setCity($response->getCityDistrict());
+        }
         $this->setNumber($response->getStreetNumber());
         $this->setStreet($response->getStreetName());
         $this->setDistrict($response->getCityDistrict());
@@ -286,7 +289,7 @@ class Property extends Base
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("full_address")
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "AdminProperty"})
      */
     public function getFullAddress()
     {

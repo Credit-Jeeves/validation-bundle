@@ -97,6 +97,7 @@ class PropertiesCase extends BaseTestCase
         $propertySearch->setValue($fillAddress);
         $searchSubmit->click();
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
+        $this->session->wait($this->timeout, "$('.grey').length === 3");
         $this->assertNotNull($numberOfUnit = $this->page->find('css', '#numberOfUnit'));
         $numberOfUnit->setValue(5);
         $this->assertNotNull($addUnit = $this->page->find('css', '#addUnitToNewProperty>span'));

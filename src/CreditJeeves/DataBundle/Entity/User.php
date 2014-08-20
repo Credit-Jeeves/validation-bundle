@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\User as BaseUser;
@@ -171,7 +172,7 @@ abstract class User extends BaseUser
     /**
      * @param \CreditJeeves\DataBundle\Enum\OperationType $type
      */
-    public function getLastCompleteOperation($type)
+    public function getLastCompleteReportOperation()
     {
         $orders = array_reverse((array)$this->getOrders()->getIterator());
 
@@ -180,7 +181,7 @@ abstract class User extends BaseUser
             if (OrderStatus::COMPLETE == $order->getStatus()) {
                 /** @var Operation $operation */
                 foreach ($order->getOperations() as $operation) {
-                    if ($operation->getType() == $type) {
+                    if ($operation->getType() == OperationType::REPORT) {
                         return $operation;
                     }
                 }

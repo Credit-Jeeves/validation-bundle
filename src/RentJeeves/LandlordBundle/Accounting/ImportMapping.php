@@ -118,23 +118,19 @@ class ImportMapping
      */
     protected $reader;
 
-    protected $geocoder;
-
     /**
      * @InjectParams({
      *     "storage"          = @Inject("accounting.import.storage"),
      *     "reader"           = @Inject("import.reader.csv"),
-     *     "geocoder"         = @Inject("bazinga_geocoder.geocoder")
      * })
      */
-    public function __construct(ImportStorage $storage, CsvFileReaderImport $reader, $geocoder)
+    public function __construct(ImportStorage $storage, CsvFileReaderImport $reader)
     {
         $this->storage  = $storage;
         $this->reader   = $reader;
         $data = $this->storage->getImportData();
         $this->reader->setDelimiter($data[ImportStorage::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[ImportStorage::IMPORT_TEXT_DELIMITER]);
-        $this->geocoder = $geocoder;
     }
 
     public function getFileData($offset = null, $rowCount = null)
@@ -186,11 +182,13 @@ class ImportMapping
      */
     protected function specificProcessingFields($data)
     {
-        $data[self::KEY_RENT] = str_replace(
-            array(',',' '),
-            '',
-            $data[self::KEY_RENT]
-        );
+        foreach (array(self::KEY_RENT, self::KEY_BALANCE) as $key) {
+            $data[$key] = str_replace(
+                array(',',' '),
+                '',
+                $data[$key]
+            );
+        }
 
         if ($this->storage->isMultipleProperty()) {
             if (empty($data[self::KEY_UNIT])) {
@@ -344,8 +342,13 @@ class ImportMapping
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
         $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
-        $waitingRoom->setUnit($contract->getUnit());
-        $waitingRoom->setProperty($contract->getProperty());
+        /**
+         * Property can be null because it can be not valid
+         */
+        if ($property = $contract->getProperty()) {
+            $waitingRoom->setUnit($contract->getUnit());
+            $waitingRoom->setProperty($property);
+        }
 
         $waitingRoom->setFirstName($tenant->getFirstName());
         $waitingRoom->setLastName($tenant->getLastName());
@@ -368,14 +371,10 @@ class ImportMapping
         $property->setStreet($row[self::KEY_STREET]);
         $property->setZip($row[self::KEY_ZIP]);
         $property->setArea($row[self::KEY_STATE]);
-
-        $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
-
-        if (empty($result)) {
-            return null;
+        if (empty($row[self::KEY_UNIT])) {
+            $property->setIsSingle(true);
         }
-
-        return $property->parseGeocodeResponse($result);
+        return $property;
     }
 
     protected function parseStreet($row)

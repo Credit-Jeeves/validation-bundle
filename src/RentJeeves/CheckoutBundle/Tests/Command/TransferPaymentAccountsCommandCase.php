@@ -4,10 +4,10 @@ namespace RentJeeves\CheckoutBundle\Tests\Command;
 use RentJeeves\DataBundle\Entity\Job;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use RentJeeves\CheckoutBundle\Command\RenameMerchantCommand;
+use RentJeeves\CheckoutBundle\Command\TransferPaymentAccountsCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
-class RenameMerchantCommandCase extends BaseTestCase
+class TransferPaymentAccountsCommandCase extends BaseTestCase
 {
     /**
      * @var EntityManager
@@ -33,17 +33,17 @@ class RenameMerchantCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function renameCase()
+    public function registerToNewDepositAccountCase()
     {
         $this->load(true);
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
         $application = new Application($this->getKernel());
-        $application->add(new RenameMerchantCommand());
+        $application->add(new TransferPaymentAccountsCommand());
 
         $oldMerchantName = 'Monticeto_Percent';
-        $newMerchantName = 'RentTrackCorp';
+        $newMerchantName = 'WestPac';
 
         $depositAccountRepository = $this
             ->getContainer()
@@ -52,7 +52,8 @@ class RenameMerchantCommandCase extends BaseTestCase
 
         $oldDepositAccount = $depositAccountRepository
             ->findOneByMerchantName($oldMerchantName);
-        $group = $oldDepositAccount->getGroup();
+        $newDepositAccount = $depositAccountRepository
+            ->findOneByMerchantName($newMerchantName);
 
         $paymentAccounts = $oldDepositAccount->getPaymentAccounts();
 
@@ -60,28 +61,16 @@ class RenameMerchantCommandCase extends BaseTestCase
         $paymentAccountCount = $paymentAccounts->count();
         $this->assertGreaterThan(0, $paymentAccountCount);
 
-        // new deposit account doesn't exist
-        $this->assertEquals(
-            null,
-            $depositAccountRepository->findOneByMerchantName($newMerchantName)
-        );
-
-        $command = $application->find('rj:merchant:rename');
+        $command = $application->find('rj:transfer_payment_accounts');
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
             array(
                 'command' => $command->getName(),
-                'from' => $oldMerchantName,
-                'to' => $newMerchantName
+                'from' => $oldDepositAccount->getId(),
+                'to' => $newDepositAccount->getId()
             )
         );
-
-        $newDepositAccount = $depositAccountRepository
-            ->findOneByMerchantName($newMerchantName);
-
-        // new deposit account exists now
-        $this->assertGreaterThan(0, $newDepositAccount->getId());
 
         // all the payment accounts are associated to the new deposit account
         foreach ($paymentAccounts as $paymentAccount) {
@@ -91,11 +80,5 @@ class RenameMerchantCommandCase extends BaseTestCase
                     ->contains($newDepositAccount)
             );
         }
-
-        // new deposit account has the group
-        $this->assertEquals(
-            $newDepositAccount,
-            $group->getDepositAccount()
-        );
     }
 }

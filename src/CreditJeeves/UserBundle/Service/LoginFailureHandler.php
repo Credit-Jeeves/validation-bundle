@@ -72,7 +72,7 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
         } else {
             $this->container->get('session')->getFlashBag()->add(
                 'error',
-                sprintf('No user with email "%s" was found.', $username)
+                $this->container->get('translator')->trans('login.error.msg')
             );
         }
         $url = $this->container->get('router')->generate('fos_user_security_login');

@@ -43,7 +43,7 @@
   -moz-box-shadow: inset 0px 0px 1px 1px #d7d7d7;
   box-shadow: inset 0px 0px 1px 1px #d7d7d7;
   padding: 3px 10px;
-  width: 350px;  
+  width: 350px !important;
 }
 
 .login-error {
@@ -63,6 +63,19 @@
     margin-top: 85px;
 }
 
-.business-logins a {
+.create-block-logins a, .business-logins a {
     font-size: 18px;
+}
+
+.create-block-logins {
+    margin-left: 40px;
+    margin-top: 120px;
+}
+
+.form-login.login-block {
+    margin-left: 20px;
+}
+
+.form-login.login-block input {
+    width: 400px !important;
 }

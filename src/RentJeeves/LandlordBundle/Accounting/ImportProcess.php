@@ -13,9 +13,10 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -34,7 +35,7 @@ use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\Form;
 use CreditJeeves\CoreBundle\Translation\Translator;
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use Symfony\Component\Form\FormFactory;
@@ -50,6 +51,11 @@ class ImportProcess
     use FormErrors;
 
     const ROW_ON_PAGE = 10;
+
+    /**
+     * @var array
+     */
+    protected $usedResidentsIds = array();
 
     /**
      * @var EntityManager
@@ -114,7 +120,12 @@ class ImportProcess
     /**
      * @var Google
      */
-    protected $googleService;
+    protected $propertyProcess;
+
+    /**
+     * @var ContractProcess
+     */
+    protected $contractProcess;
 
     /**
      * @InjectParams({
@@ -128,7 +139,8 @@ class ImportProcess
      *     "storage"          = @Inject("accounting.import.storage"),
      *     "mapping"          = @Inject("accounting.import.mapping"),
      *     "validator"        = @Inject("validator"),
-     *     "googleService"    = @Inject("google"),
+     *     "propertyProcess"  = @Inject("property.process"),
+     *     "contractProcess"  = @Inject("contract.process"),
      *     "locale"           = @Inject("%kernel.default_locale%")
      * })
      */
@@ -143,7 +155,8 @@ class ImportProcess
         ImportStorage $storage,
         ImportMapping $mapping,
         Validator $validator,
-        Google $googleService,
+        PropertyProcess $propertyProcess,
+        ContractProcess $contractProcess,
         $locale
     ) {
         $this->em               = $em;
@@ -157,7 +170,8 @@ class ImportProcess
         $this->storage          = $storage;
         $this->validator        = $validator;
         $this->locale           = $locale;
-        $this->googleService    = $googleService;
+        $this->propertyProcess  = $propertyProcess;
+        $this->contractProcess  = $contractProcess;
     }
 
     /**
@@ -283,6 +297,33 @@ class ImportProcess
     }
 
     /**
+     * @param string $residentId
+     */
+    protected function addResidentId($residentId)
+    {
+        if (!isset($this->usedResidentsIds[$residentId])) {
+            $this->usedResidentsIds[$residentId] = 1;
+        } else {
+            $this->usedResidentsIds[$residentId]++;
+        }
+    }
+
+    protected function clearResidentIds()
+    {
+        $this->usedResidentsIds = array();
+    }
+
+    /**
+     * @param ResidentMapping $residentMapping
+     * @return bool
+     */
+    public function isUsedResidentId(ResidentMapping $residentMapping)
+    {
+        $id = $residentMapping->getResidentId();
+        return (isset($this->usedResidentsIds[$id]) && $this->usedResidentsIds[$id] > 1)? true : false;
+    }
+
+    /**
      * @param Tenant $tenant
      * @param array $row
      *
@@ -294,6 +335,7 @@ class ImportProcess
         $residentMapping->setTenant($tenant);
         $residentMapping->setHolding($this->user->getHolding());
         $residentMapping->setResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
+        $this->addResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
 
         return $residentMapping;
     }
@@ -351,8 +393,11 @@ class ImportProcess
      */
     protected function getUnit(array $row, Property $property = null)
     {
-        if (!is_null($property) && $property->isSingle()) {
+        if (is_null($property)) {
             return null;
+        }
+        if ($property->isSingle()) {
+            return $property->getSingleUnit();
         }
 
         if (empty($row[ImportMapping::KEY_UNIT])) {
@@ -366,6 +411,7 @@ class ImportProcess
         if ($this->group) {
             $params['group'] = $this->group;
         }
+
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
         } elseif ($this->storage->getPropertyId()) {
@@ -422,7 +468,25 @@ class ImportProcess
         //set data from csv file
         $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
-        $contract->setStartAt($this->getDateByField($row[ImportMapping::KEY_MOVE_IN]));
+
+        $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
+        $today = new DateTime();
+        if ($moveIn > $today) {
+            $startAt = $moveIn;
+        } else {
+            $groupDueDate = $this->group->getGroupSettings()->getDueDate();
+            $startAt = new DateTime();
+            if ($row[ImportMapping::KEY_BALANCE] <= 0) {
+                // snap to next month due date (default from group) for start_at
+                $startAt->modify('+1 month');
+                $startAt = $startAt->setDate(null, null, $groupDueDate);
+            } else {
+                // snap to this month due date (default from group) for start_at
+                $startAt = $startAt->setDate(null, null, $groupDueDate);
+            }
+        }
+
+        $contract->setStartAt($startAt);
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
@@ -541,8 +605,9 @@ class ImportProcess
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
+            || $hasContractWaiting = $import->getHasContractWaiting()
         ) {
-            $isUseOperation = ($import->getOperation() === null)? false : true;
+            $isUseOperation = ($import->getOperation() === null || $import->getHasContractWaiting())? false : true;
             $form = $this->getContractForm(
                 $tenant,
                 $residentMapping,
@@ -610,7 +675,7 @@ class ImportProcess
 
         $residentMapping = $import->getResidentMapping();
         $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0) {
+        if (count($errors) > 0 || $this->isUsedResidentId($residentMapping)) {
             return false;
         }
 
@@ -673,13 +738,30 @@ class ImportProcess
 
         $import->setResidentMapping($this->getResident($tenant, $row));
         $import->setUnitMapping($this->getUnitMapping($row));
+        $contractWaiting = $this->getContractWaiting(
+            $import->getTenant(),
+            $import->getContract(),
+            $import->getResidentMapping()
+        );
+
+        if ($contractWaiting->getId()) {
+            $import->setHasContractWaiting(true);
+            $tenant->setFirstName($contractWaiting->getFirstName());
+            $tenant->setLastName($contractWaiting->getLastName());
+        }
 
         if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
             $import->setForm($form);
         }
 
         if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
-            $import->setErrors($this->runFormValidation($form, $lineNumber, $token));
+            $errors = $this->runFormValidation($form, $lineNumber, $token);
+            if ($this->isUsedResidentId($import->getResidentMapping())) {
+                $errors[$lineNumber][$form->getName()][ImportMapping::KEY_RESIDENT_ID] = $this->translator->trans(
+                    'error.residentId.already_use'
+                );
+            }
+            $import->setErrors($errors);
         }
 
         return $import;
@@ -696,6 +778,9 @@ class ImportProcess
             $residentMapping
         );
 
+        if (!$contractWaiting->getProperty()) {
+            return $contractWaiting;
+        }
         /**
          * @var $contractWaitingInDb ContractWaiting
          */
@@ -772,6 +857,7 @@ class ImportProcess
             $import->setNumber($key);
             $collection->add($import);
         }
+        $this->clearResidentIds();
         return $collection;
     }
 
@@ -881,6 +967,17 @@ class ImportProcess
                      * @var $contract Contract
                      */
                     $contract = $form->getData();
+                    if ($import->getHasContractWaiting()) {
+                        $sendInvite = $form->get('sendInvite')->getNormData();
+                        $this->processContractWaiting(
+                            $import->getTenant(),
+                            $contract,
+                            $import->getResidentMapping(),
+                            $sendInvite
+                        );
+                        break;
+                    }
+
                     if ($this->storage->isMultipleProperty()) {
                         $isSingle = $form->get('isSingle')->getData();
                         $this->afterSubmitForm($contract, $isSingle);
@@ -942,6 +1039,38 @@ class ImportProcess
         }
 
         return false;
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param Contract $contract
+     * @param ResidentMapping $residentMapping
+     * @param boolean $sendInvite
+     */
+    protected function processContractWaiting(
+        Tenant $tenant,
+        Contract $contract,
+        ResidentMapping $residentMapping,
+        $sendInvite
+    ) {
+        $waitingContract = $this->getContractWaiting(
+            $tenant,
+            $contract,
+            $residentMapping
+        );
+
+        if ($tenant->getEmail()) {
+            $tenant->removeContract($contract); //Remove contract because we get duplicate contract
+            $this->em->persist($tenant);
+            $contract = $this->contractProcess->createContractFromWaiting($tenant, $waitingContract);
+            $contract->setStatus(ContractStatus::INVITE);
+            $this->em->persist($contract);
+            if ($sendInvite) {
+                $this->emailSendingQueue[] = $contract;
+            }
+        } else {
+            $this->em->persist($waitingContract);
+        }
     }
 
     /**
@@ -1028,7 +1157,12 @@ class ImportProcess
          * @var $contract Contract
          */
         foreach ($this->emailSendingQueue as $contract) {
-            $this->mailer->sendRjTenantInvite($contract->getTenant(), $this->user, $contract);
+            $this->mailer->sendRjTenantInvite(
+                $contract->getTenant(),
+                $this->user,
+                $contract,
+                $isImported = "1"
+            );
         }
 
         $this->emailSendingQueue = array();
@@ -1043,26 +1177,18 @@ class ImportProcess
             return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
         }
 
-        $property = $this->mapping->createProperty($row);
-        if (empty($property) || !$property->getNumber()) {
+        $isValid = $this->propertyProcess->isValidProperty(
+            $property =  $this->mapping->createProperty($row)
+        );
+
+        if (!$isValid) {
             return null;
         }
 
-        $params = array(
-            'jb'        => $property->getJb(),
-            'kb'        => $property->getKb(),
-            'number'    => $property->getNumber(),
+        return $this->propertyProcess->checkPropertyDuplicate(
+            $property,
+            $saveToGoogle = true
         );
-
-        $propertyInDataBase = $this->em->getRepository('RjDataBundle:Property')->findOneBy($params);
-
-        if ($propertyInDataBase) {
-            return $propertyInDataBase;
-        }
-
-        $this->googleService->savePlace($property);
-
-        return $property;
     }
 
     /**

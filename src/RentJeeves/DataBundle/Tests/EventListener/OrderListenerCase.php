@@ -326,4 +326,119 @@ class OrderListenerCase extends Base
         $this->assertNotEquals($expectedPaidTo, $actualPaidTo);
         $this->assertEquals($newPaidToDate, $contract->getPaidTo());
     }
+
+    /**
+     * @test
+     */
+    public function shouldSetCorrectPaidToForOrderWith2RentOperations()
+    {
+        $this->load(true);
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        /** @var $tenant Tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email'  => 'linda@rentrack.com'
+            )
+        );
+
+        $this->assertNotNull($tenant);
+        $this->assertEquals(1, $tenant->getContracts()->count());
+
+        /** @var Contract $contract */
+        $contract = $tenant->getContracts()->first();
+        $paidTo = $contract->getPaidTo();
+        $paidToOriginal = clone $paidTo;
+
+        $order = new Order();
+        $order->setUser($tenant);
+        $order->setSum(1000);
+        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setStatus(OrderStatus::PENDING);
+
+        $operation = new Operation();
+        $operation->setContract($contract);
+        $operation->setAmount(500);
+        $operation->setGroup($contract->getGroup());
+        $operation->setType(OperationType::RENT);
+        $paidFor1 = clone $paidTo;
+        $operation->setPaidFor($paidFor1);
+        $operation->setOrder($order);
+
+        $operation2 = new Operation();
+        $operation2->setContract($contract);
+        $operation2->setAmount(500);
+        $operation2->setGroup($contract->getGroup());
+        $operation2->setType(OperationType::RENT);
+        $paidFor2 = clone $paidTo;
+        $paidFor2->modify('+1 months');
+        $operation2->setPaidFor($paidFor2);
+        $operation2->setOrder($order);
+
+        $em->persist($order);
+        $em->persist($operation);
+        $em->persist($operation2);
+        $em->flush();
+        $em->refresh($contract);
+        $order->setStatus(OrderStatus::COMPLETE);
+        $em->flush($order);
+
+        $this->assertEquals($paidToOriginal->modify('+2 months')->format('mdY'), $contract->getPaidTo()->format('mdY'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetEarliestPaidForAsContractStartDate()
+    {
+        $this->load(true);
+        $startAt = new DateTime();
+        $startAt->modify('-5 month');
+        $finishAt = new DateTime();
+        $finishAt->modify('+24 month');
+        /**
+         * @var $contract Contract
+         */
+        $contract = $this->getContract($startAt, $finishAt);
+        $operations = $contract->getOperations();
+        $this->assertTrue(($operations->count() === 0));
+        $this->assertTrue(($contract->getStartAt() === $startAt));
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $order = new Order();
+        $order->setUser($contract->getTenant());
+        $order->setSum(500);
+        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setStatus(OrderStatus::COMPLETE);
+
+        $operation = new Operation();
+        $operation->setContract($contract);
+        $operation->setAmount(500);
+        $operation->setGroup($contract->getGroup());
+        $operation->setType(OperationType::RENT);
+        $paidFor = new DateTime();
+        $operation->setPaidFor($paidFor);
+        $operation->setOrder($order);
+
+        $operation2 = new Operation();
+        $operation2->setContract($contract);
+        $operation2->setAmount(500);
+        $operation2->setGroup($contract->getGroup());
+        $operation2->setType(OperationType::RENT);
+        $paidFor2 = clone $paidFor;
+        $paidFor2->modify('+1 months');
+        $operation2->setPaidFor($paidFor2);
+        $operation2->setOrder($order);
+
+        $em->persist($operation);
+        $em->persist($operation2);
+        $em->persist($order);
+        $em->flush();
+        $em->refresh($contract);
+        $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
+    }
 }

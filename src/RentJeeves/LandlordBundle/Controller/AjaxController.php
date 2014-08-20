@@ -7,6 +7,8 @@ use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\DataBundle\Entity\ContractRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -263,11 +265,13 @@ class AjaxController extends Controller
         $property = array();
         $itsNewProperty = false;
         $data = $request->request->all('address');
-        $addGroup = $request->request->all('addGroup');
+        $addGroup = (int)$request->request->all('addGroup');
         $data = json_decode($data['data'], true);
-        $addGroup = (!isset($data['addGroup'])
-                     || (isset($data['addGroup']) && $data['addGroup'] == 1)
-                    )?  true : false;
+        $addGroup = (isset($data['addGroup']) && $data['addGroup'] === 1)?  true : false;
+        /**
+         * @var $propertyProcess PropertyProcess
+         */
+        $propertyProcess = $this->container->get('property.process');
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
         $propertyDataLocation = $property->parseGoogleLocation($data);
@@ -279,12 +283,10 @@ class AjaxController extends Controller
                 )
             );
         }
+
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
         /** @var Property $property */
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
-        if ($property && $request->request->has('isSingle')) {
-            $property->setIsSingle($request->request->get('isSingle') == 'true');
-        }
+        $property = $propertyProcess->getPropertyFromDB($propertySearch);
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
@@ -293,6 +295,19 @@ class AjaxController extends Controller
             $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
             $property->fillPropertyData($propertyData);
             $itsNewProperty = true;
+        }
+
+        if ($request->request->has('isSingle') && is_null($property->getIsSingle())) {
+            $property->setIsSingle($request->request->get('isSingle') == 'true');
+        }
+
+        if (!$propertyProcess->isValidProperty($property)) {
+            return new JsonResponse(
+                array(
+                    'status'  => 'ERROR',
+                    'message' => $this->get('translator')->trans('fill.full.address')
+                )
+            );
         }
 
         if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
@@ -328,8 +343,7 @@ class AjaxController extends Controller
         }
 
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
-            $google = $this->container->get('google');
-            $google->savePlace($property);
+            $propertyProcess->saveToGoogle($property);
         }
 
         $securityContext = $this->container->get('security.context');
@@ -589,10 +603,10 @@ class AjaxController extends Controller
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
         $dataRequest = $request->request->all('data')['data'];
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
+        /** @var ContractRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
         $total = $repo->countContracts($group, $dataRequest['searchCollum'], $dataRequest['searchText']);
         $total = count($total);
@@ -607,6 +621,7 @@ class AjaxController extends Controller
                 $dataRequest['searchCollum'],
                 $dataRequest['searchText']
             );
+            /** @var Contract $contract */
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();
                 $items[] = $item;
@@ -707,6 +722,7 @@ class AjaxController extends Controller
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
+
         /**
          * @var $contract Contract
          */
@@ -737,6 +753,12 @@ class AjaxController extends Controller
         if (in_array($details['status'], array(ContractStatus::APPROVED)) & empty($errors)) {
             $contract->setStatusApproved();
             $this->get('project.mailer')->sendContractApprovedToTenant($contract);
+        }
+
+        if ($contract->getSettings()->getIsIntegrated()) {
+            $contract->setIntegratedBalance($details['balance']);
+        } else {
+            $contract->setBalance($details['balance']);
         }
 
         if ($action == 'remove') {

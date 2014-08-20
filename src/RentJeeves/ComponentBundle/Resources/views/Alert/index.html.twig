@@ -1,3 +1,10 @@
+{% block head_javascripts %}
+    {% javascripts '@RjComponentBundle/Resources/public/js/verifyEmail.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
 {% if alerts | length > 0 %}
     <div class="landlord-alert">
         <div class="landlord-alert-left floatleft">

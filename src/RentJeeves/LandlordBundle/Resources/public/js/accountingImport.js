@@ -3,7 +3,8 @@ function accountingImport() {
     this.isMultipleProperty = ko.observable(false);
     this.fieldsWhichNotContaintInForm = [
         "import_new_user_with_contract_contract_residentMapping_residentId",
-        "import_contract_residentMapping_residentId"
+        "import_contract_residentMapping_residentId",
+        "resident_id",
     ];
 
     this.unitName = [
@@ -106,7 +107,7 @@ function accountingImport() {
             return Translator.trans('conflict.resolve.action');
         }
 
-        if (data.contract.id !== null) {
+        if (data.contract.id !== null || data.has_contract_waiting) {
             return Translator.trans('import.status.match');
         }
 
@@ -206,31 +207,42 @@ function accountingImport() {
         return true;
     };
 
-    //TODO find out better way
-    this.getErrorsFields = function(data){
-        var result = {};
+    /**
+     * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
+     * @param obj1
+     * @param obj2
+     * @returns obj3 a new object based on obj1 and obj2
+     */
+    this.mergeObject = function(obj1,obj2){
+        var obj3 = {};
+        for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+        for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+        return obj3;
+    }
+
+    this.getErrorsFields = function(data, result){
+        if ($.type(result) !== 'object') {
+            this.result = {};
+        } else {
+            this.result = result;
+        }
+        var self = this;
         //use jquery, because knockout function can't get key of array/object - just value
-        jQuery.each(data, function(keys1, values1) {
-            jQuery.each(values1, function(keys2, values2) {
-                if (values2 instanceof Array) {
-                    result[keys2] = values2;
-                    return;
-                }
+        jQuery.each(data, function(key, value) {
+            var result = self.result;
+            if ($.type(value) === 'array') {
+                result[key] = value[0];
+            } else if ($.type(value) === "string") {
+                result[key] = value;
+            } else {
+                var result2 = self.getErrorsFields(value, result);
+                var result = self.mergeObject(result, result2);
+            }
 
-                jQuery.each(values2, function (fieldName, errors) {
-                    if (errors instanceof Array) {
-                        result[fieldName] = errors;
-                        return;
-                    }
-
-                    jQuery.each(errors, function (fieldName2, errors2) {
-                        result[fieldName2] = errors2;
-                        return;
-                    });
-                });
-            })
+            self.result = result;
         });
-        return result;
+
+        return this.result;
     }
 
     this.getErrorsList = function(data) {
@@ -304,10 +316,14 @@ function accountingImport() {
             return '';
         }
 
-        return errorList[nameField][0];
+        return errorList[nameField];
     };
 
     this.isValidFieldsWhichNotContainsInForm = function(data) {
+        if (data.contract.property === null) {
+            return false;
+        }
+
         var isValid = true;
 
         if (!self.getErrorsList(data)) {

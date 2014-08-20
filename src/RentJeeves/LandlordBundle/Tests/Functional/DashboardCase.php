@@ -59,7 +59,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (39)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (40)', $allh2->getText(), 'Wrong count');
 
         $this->assertNotNull($searchPayments_link = $this->page->find('css', '#searchPayments_link'));
         $searchPayments_link->click();
@@ -82,7 +82,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (39)', $allh2->getHtml(), 'Wrong count');
+        $this->assertEquals('payments.total (40)', $allh2->getHtml(), 'Wrong count');
 
         $this->logout();
     }
@@ -113,7 +113,48 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
         // the test should check payments.batch_deposits, but selenium doesn't know about this text
         // the main goal is to check the amount
-        $this->assertEquals('payments.total (3)', $title->getHtml());
+        $this->assertEquals('payments.total (8)', $title->getHtml());
+
+        $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function returnedRefundedFilter()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+
+        $this->assertNotNull($searchPaymentsStatus = $this->page->find('css', '#searchPaymentsStatus_link'));
+        $searchPaymentsStatus->click();
+
+        $this->assertNotNull(
+            $returned = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="returned"]')
+        );
+        $this->assertNotNull(
+            $refunded = $this->page->find('css', '#searchPaymentsStatus_list li[data-value="refunded"]')
+        );
+        /*
+         * Check returned Status
+         */
+        $returned->click();
+
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
+        $searchSubmit->click();
+
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        /*
+         * Get first TD with status
+         */
+        $this->assertNotNull($td = $this->page->find('css', '#payments-block-tbody td'));
+        $this->assertEquals('order.status.text.returned', $td->getHtml());
+
 
         $this->logout();
     }

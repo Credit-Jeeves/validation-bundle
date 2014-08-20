@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
+use DateTime;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
@@ -286,56 +287,92 @@ class OrderRepository extends EntityRepository
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
         $query->select(
-            "h.batchId, sum(o.sum) as order_amount, date_format(h.depositDate, '%m/%d/%Y') as depositDate"
+            "IF(h.batchId is null, h.depositDate, h.batchId) as batch, sum(p.amount) as order_amount, h.depositDate"
         );
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('o.heartlands', 'h');
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
-        $query->andWhere('h.batchId IS NOT NULL');
+        $query->andWhere('h.depositDate IS NOT NULL');
+        $query->andWhere('h.isSuccessful = 1');
+        $query->andWhere(
+            '(h.batchId IS NOT NULL AND o.status = :complete) OR (h.batchId IS NULL AND o.status IN (:reversal))'
+        );
+        $query->setParameter('complete', OrderStatus::COMPLETE);
+        $query->setParameter('reversal', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         if ($accountType) {
             $query->andWhere('o.type = :type');
             $query->setParameter('type', $accountType);
         }
-        $query->groupBy('h.batchId');
+        $query->groupBy('batch');
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query->orderBy('h.depositDate', 'DESC');
         $query = $query->getQuery();
         $deposits = $query->getScalarResult();
 
-        // get orders for each batch
+        foreach ($deposits as $key => $deposit) {
+            $batchId = is_numeric($deposit['batch']) ? $deposit['batch'] : null;
+
+            $ordersQuery = $this->getDepositedOrdersQuery($group, $accountType, $batchId, $deposit['depositDate']);
+
+            $deposits[$key]['orders'] = $ordersQuery->getQuery()->execute();
+            $depositDate = new DateTime($deposit['depositDate']);
+            $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
+            $deposits[$key]['isDeposit'] = $batchId ? true : false;
+        }
+
+        return $deposits;
+    }
+
+    protected function getDepositedOrdersQuery($group, $accountType, $batchId, $depositDate)
+    {
         $ordersQuery = $this->createQueryBuilder('o');
         $ordersQuery->innerJoin('o.operations', 'p');
         $ordersQuery->innerJoin('p.contract', 't');
         $ordersQuery->innerJoin('o.heartlands', 'h');
         $ordersQuery->where('t.group = :group');
-        $ordersQuery->andWhere('h.batchId = :batchId');
+        if ($batchId) {
+            $ordersQuery->andWhere('h.batchId = :batchId');
+            $ordersQuery->setParameter('batchId', $batchId);
+        } else {
+            $ordersQuery->andWhere('h.batchId is null');
+            $ordersQuery->andWhere('h.depositDate = :depositDate');
+            $ordersQuery->setParameter('depositDate', $depositDate);
+        }
+
+        $ordersQuery->andWhere(
+            '(h.batchId IS NOT NULL AND o.status = :complete) OR (h.batchId IS NULL AND o.status IN (:reversal))'
+        );
+        $ordersQuery->setParameter('complete', OrderStatus::COMPLETE);
+        $ordersQuery->setParameter('reversal', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         $ordersQuery->setParameter('group', $group);
         if ($accountType) {
             $ordersQuery->andWhere('o.type = :type');
             $ordersQuery->setParameter('type', $accountType);
         }
 
-        foreach ($deposits as $key => $deposit) {
-            $ordersQuery->setParameter('batchId', $deposit['batchId']);
-            $deposits[$key]['orders'] = $ordersQuery->getQuery()->execute();
-        }
-
-        return $deposits;
+        return $ordersQuery;
     }
 
     public function getCountDeposits(Group $group, $accountType)
     {
         $query = $this->createQueryBuilder('o');
-        $query->select('count(distinct h.batchId)');
+        $query->select('IF(h.batchId is null, h.depositDate, h.batchId) as batch');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('o.heartlands', 'h');
         $query->where('t.group = :group');
+        $query->andWhere('h.depositDate IS NOT NULL');
+        $query->andWhere('h.isSuccessful = 1');
+        $query->andWhere(
+            '(h.batchId IS NOT NULL AND o.status = :complete) OR (h.batchId IS NULL AND o.status IN (:reversal))'
+        );
+        $query->setParameter('complete', OrderStatus::COMPLETE);
+        $query->setParameter('reversal', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         $query->setParameter('group', $group);
-        $query->andWhere('h.batchId IS NOT NULL');
+        $query->groupBy('batch');
 
         if ($accountType) {
             $query->andWhere('o.type = :type');
@@ -344,7 +381,7 @@ class OrderRepository extends EntityRepository
 
         $query = $query->getQuery();
 
-        return $query->getSingleScalarResult();
+        return count($query->getScalarResult());
     }
 
     public function getTenantPayments(Tenant $tenant, $page = 1, $contractId = null, $limit = 20)
