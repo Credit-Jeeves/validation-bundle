@@ -18,7 +18,6 @@ class IframeController extends Controller
      *      "/management/{holdingId}",
      *      name="management_login",
      *      defaults={
-     *          "propertyId"=null,
      *          "holdingId"=null
      *      }
      * )

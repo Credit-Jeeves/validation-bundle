@@ -541,12 +541,7 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $doctrine = $this->getContainer()->get('doctrine');
         $em = $doctrine->getManager();
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
-                'jb' => '40.7308443',
-                'kb' => '-73.9913642'
-            )
-        );
+
         $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(
             array(
                 'name' => 'Rent Holding'
@@ -559,45 +554,35 @@ class IframeCase extends BaseTestCase
             )
         );
 
-        $this->assertNotNull($property);
         $this->assertNotNull($holdingFirst);
         $this->assertNotNull($holdingSecond);
 
         $link1 = $this->getContainer()->get('router')
-            ->generate('iframe_new',
+            ->generate(
+                'iframe_new',
                 array(
-                    'propertyId' => $property->getId(),
-                    'holdingId'  => $holdingFirst->getId()
+                    'id'  => $holdingFirst->getId(),
+                    'type'=> 'holding'
                 )
-        );
+            );
         $link2 = $this->getContainer()->get('router')
-            ->generate('iframe_new',
+            ->generate(
+                'iframe_new',
                 array(
-                    'propertyId' => $property->getId(),
-                    'holdingId'  => $holdingSecond->getId()
+                    'id'  => $holdingSecond->getId(),
+                    'type'=> 'holding'
                 )
-        );
-        $link3 = $this->getContainer()->get('router')->
-            generate('iframe_new',
-            array(
-                'propertyId' => $property->getId(),
-            )
-        );
+            );
         $link =  substr($this->getUrl(), 0, -1);
         $link1 = $link.$link1;
         $link2 = $link.$link2;
-        $link3 = $link.$link3;
+
         $this->session->visit($link1);
-        $this->assertNotNull($options = $this->page->findAll('css', '#idUnit1 option'));
-        $this->assertEquals(15, count($options));
+        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
+        $this->assertEquals(4, count($thisIsMyRental));
 
         $this->session->visit($link2);
-        $this->assertNotNull($options = $this->page->findAll('css', '#idUnit1 option'));
-        $this->assertEquals(2, count($options));
-
-        $this->session->visit($link3);
-        $this->assertNotNull($options = $this->page->findAll('css', '#idUnit1 option'));
-        $this->assertEquals(16, count($options));
-
+        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
+        $this->assertEquals(1, count($thisIsMyRental));
     }
 }
