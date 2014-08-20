@@ -96,7 +96,7 @@ class ImportCase extends BaseTestCase
         $trs = $this->getParsedTrsByStatus();
 
         $this->assertNotNull(
-            $finishAt = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_contract_finishAt')
+            $finishAt = $trs['import.status.new'][1]->find('css', '.import_new_user_with_contract_contract_finishAt')
         );
         $finishAt->setValue('03/31/2014');
 
@@ -111,12 +111,12 @@ class ImportCase extends BaseTestCase
         $lastName->setValue('Sophia');
 
         $this->assertNotNull(
-            $finishAt = $trs['import.status.new'][2]->find('css', '.import_new_user_with_contract_contract_finishAt')
+            $finishAt = $trs['import.status.new'][3]->find('css', '.import_new_user_with_contract_contract_finishAt')
         );
         $finishAt->setValue('03/31/2014');
 
         $this->assertNotNull(
-            $lastName = $trs['import.status.new'][3]->find('css', '.import_new_user_with_contract_tenant_last_name')
+            $lastName = $trs['import.status.new'][4]->find('css', '.import_new_user_with_contract_tenant_last_name')
         );
         $lastName->setValue('Jr');
     }
