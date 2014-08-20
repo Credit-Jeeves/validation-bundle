@@ -70,4 +70,3 @@ class YardiSerializationVisitor extends XmlSerializationVisitor
         parent::startVisitingObject($metadata, $data, $type, $context);
     }
 }
- 
