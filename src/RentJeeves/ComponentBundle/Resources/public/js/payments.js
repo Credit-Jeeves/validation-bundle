@@ -155,14 +155,14 @@ function Payments() {
   };
 
   this.togglePayments = function(deposit) {
-      if ($('.toggled-' + deposit.batchId).first().is(':visible')) {
-          $('.toggled-' + deposit.batchId).hide();
-          $('#title-show-' + deposit.batchId).show();
-          $('#title-hide-' + deposit.batchId).hide();
+      if ($('.toggled-' + deposit.batch).first().is(':visible')) {
+          $('.toggled-' + deposit.batch).hide();
+          $('#title-show-' + deposit.batch).show();
+          $('#title-hide-' + deposit.batch).hide();
       } else {
-          $('.toggled-' + deposit.batchId).show();
-          $('#title-show-' + deposit.batchId).hide();
-          $('#title-hide-' + deposit.batchId).show();
+          $('.toggled-' + deposit.batch).show();
+          $('#title-show-' + deposit.batch).hide();
+          $('#title-hide-' + deposit.batch).show();
       }
   };
 
@@ -182,6 +182,24 @@ function Payments() {
       var amount = deposit.orders.length;
       return Translator.transChoice('payments.batched_amount', amount, {"count": amount});
   };
+
+  this.getOrderStatusText = function(isDeposit, order) {
+      if (isDeposit) {
+          return Translator.trans('order.status.text.complete');
+      }
+
+      return Translator.trans(order.status);
+  }
+
+  this.getOrderAmount = function(isDeposit, order) {
+      if (!isDeposit) {
+          return '-' + order.amount;
+      }
+
+      return order.amount;
+  }
+
+
 
   this.haveData = ko.computed(function() {
       if (self.deposits().length == 0 && self.payments().length == 0 && !self.processPayment()) {
