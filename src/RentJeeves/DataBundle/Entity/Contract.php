@@ -336,9 +336,10 @@ class Contract extends Base
         }
         if ($date = $this->getPaidTo()) {
             $now = new DateTime();
-            $interval = $now->diff($date);
-            $sign = $interval->format('%r');
-            if (!$sign) {
+            $interval = $date->diff($now);
+            $unpaidDays = $interval->format('%r%a');
+
+            if ($unpaidDays <= 0) {
                 return $result;
             }
             $lastPayment = $this->getLastPayment();
@@ -845,5 +846,53 @@ class Contract extends Base
         } else {
             return $this->getBalance();
         }
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("name")
+     * @Serializer\Groups({"lateEmailReport"})
+     *
+     * @return string| null
+     */
+    public function getTenantFullName()
+    {
+        return $this->getTenant() ? $this->getTenant()->getFullName() : null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("email")
+     * @Serializer\Groups({"lateEmailReport"})
+     *
+     * @return string| null
+     */
+    public function getTenantEmail()
+    {
+        return $this->getTenant() ? $this->getTenant()->getEmail() : null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("address")
+     * @Serializer\Groups({"lateEmailReport"})
+     *
+     * @return string| null
+     */
+    public function getTenantRentAddress()
+    {
+        return $this->getRentAddress($this->getProperty(), $this->getUnit());
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("late")
+     * @Serializer\Groups({"lateEmailReport"})
+     *
+     * @return int
+     */
+    public function getTenantLateDays()
+    {
+        return $this->getPaidTo()->diff(new DateTime())->format('%d');
     }
 }
