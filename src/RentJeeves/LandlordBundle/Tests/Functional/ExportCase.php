@@ -167,9 +167,6 @@ class ExportCase extends BaseTestCase
      */
     public function promasBatchReport()
     {
-        $this->markTestSkipped(
-            'Need find solution for right download file.'
-        ); // TODO Find Solution for download file for test
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -190,10 +187,9 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $makeZip->check();
 
-        ob_start();
         $this->page->pressButton('order.report.download');
-        $csvZip = ob_get_contents();
-        ob_end_clean();
+
+        $csvZip = $this->session->getDriver()->getContent();
 
         $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
         file_put_contents($testFile, $csvZip);
@@ -216,9 +212,6 @@ class ExportCase extends BaseTestCase
      */
     public function yardiBatchReport()
     {
-        $this->markTestSkipped(
-            'Need find solution for right download file.'
-        );
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -245,13 +238,11 @@ class ExportCase extends BaseTestCase
         $property->selectOption(1);
         $makeZip->check();
 
-        ob_start();
         $this->page->pressButton('order.report.download');
-        $csvZip = ob_get_contents();
-        ob_end_clean();
+        $xmlsZip = $this->session->getDriver()->getContent();
 
         $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
-        file_put_contents($testFile, $csvZip);
+        file_put_contents($testFile, $xmlsZip);
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
@@ -333,9 +324,6 @@ class ExportCase extends BaseTestCase
      */
     public function rentTrackBatchReport()
     {
-        $this->markTestSkipped(
-            'Need find solution for right download file.'
-        );
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -354,10 +342,8 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $makeZip->check();
 
-        ob_start();
         $this->page->pressButton('order.report.download');
-        $csvZip = ob_get_contents();
-        ob_end_clean();
+        $csvZip = $this->session->getDriver()->getContent();
 
         $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
         file_put_contents($testFile, $csvZip);
