@@ -136,4 +136,5 @@ bazinga_geocoder:
             adapter:  geocode_cache_adapter
             provider: google_maps
         google_maps:
-            api_key:  2222 #%google_maps_key%
+            api_key:  %google_maps_key%
+            use_ssl:  true
