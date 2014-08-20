@@ -5,6 +5,7 @@ namespace RentJeeves\PublicBundle\Controller;
 use FOS\UserBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
@@ -26,6 +27,10 @@ use Symfony\Component\Validator\Validator;
 
 class PublicController extends Controller
 {
+    const TYPE_PROPERTY = 'property';
+
+    const TYPE_HOLDING = 'holding';
+
     /**
      * @Route("/iframe", name="iframe")
      * @Template()
@@ -107,19 +112,26 @@ class PublicController extends Controller
     public function checkSearchAction($propertyId)
     {
         $em = $this->get('doctrine.orm.entity_manager');
-        $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        /**
+         * @var $property Property
+         */
+        $property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
         
-        if (!$Property) {
+        if (!$property) {
             return $this->redirect($this->generateUrl("iframe"));
         }
      
-        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
 
         if ($countGroup > 0) {
-            $google = $this->container->get('google');
-            $google->savePlace($Property);
-            
-            return $this->redirect($this->generateUrl("iframe_new", array('propertyId'=>$propertyId)));
+            /**
+             * @var $propertyProcess PropertyProcess
+             */
+            $propertyProcess = $this->container->get('property.process');
+            if (!$property->getGoogleReference() && $propertyProcess->isValidProperty($property)) {
+                $propertyProcess->saveToGoogle($property);
+            }
+            return $this->redirect($this->generateUrl("iframe_new", array('id'=>$propertyId)));
         }
 
         return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
@@ -175,19 +187,38 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/user/new/{propertyId}", name="iframe_new", options={"expose"=true})
+     * @Route(
+     *      "/user/new/{id}/{type}",
+     *      name="iframe_new",
+     *      defaults={
+     *          "id"=null,
+     *          "type"="property"
+     *      },
+     *      options={"expose"=true}
+     * )
      * @Template()
      *
      * @return array
      */
-    public function newAction($propertyId = null)
+    public function newAction($id, $type)
     {
+        if (!in_array($type, array(self::TYPE_HOLDING, self::TYPE_PROPERTY))) {
+            return $this->createNotFoundException("Undefined type {$type}");
+        }
+
         $request = $this->get('request');
         $em = $this->getDoctrine()->getManager();
         $google = $this->get('google');
 
-        $property = $em->getRepository('RjDataBundle:Property')
-            ->findOneWithUnitAndAlphaNumericSort($propertyId);
+
+        if (self::TYPE_PROPERTY === $type) {
+            $property = $em->getRepository('RjDataBundle:Property')
+                ->findOneWithUnitAndAlphaNumericSort(
+                    $id
+                );
+        } else {
+            $holding = $em->getRepository("DataBundle:Holding")->find($id);
+        }
 
         $tenant = new Tenant();
         $form = $this->createForm(
@@ -237,8 +268,10 @@ class PublicController extends Controller
 
         $propertyList = [];
 
-        if ($property) {
-            $propertyList = $google->searchPropertyInRadius($property);
+        if (self::TYPE_PROPERTY === $type && $property) {
+            $propertyList = $google->searchPropertyInRadius(
+                $property
+            );
 
             if (isset($propertyList[$property->getId()])) {
                 unset($propertyList[$property->getId()]);
@@ -249,15 +282,23 @@ class PublicController extends Controller
             $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
 
             if ($countGroup <= 0) {
-                return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
+                return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$id)));
             }
+        }
+
+
+        if (self::TYPE_HOLDING === $type && $holding) {
+            $propertyList = $em->getRepository('RjDataBundle:Property')->findByHoldingAndAlphaNumericSort($holding);
+            $property = (!empty($propertyList))? current($propertyList) : null;
         }
 
         return array(
             'form'              => $form->createView(),
-            'property'          => $property ? $property : new Property(),
+            'property'          => (isset($property) && $property) ? $property : new Property(),
             'propertyList'      => $propertyList,
             'countPropery'      => count($propertyList),
+            'id'                => $id,
+            'type'              => $type,
         );
     }
 

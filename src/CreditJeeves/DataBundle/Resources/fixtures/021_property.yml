@@ -4,6 +4,7 @@ fixtures:
         property_groups:
             - RentGroup_1
             - RentGroup_2
+            - RentGroup_6
         country:        US
         area:           NY
         city:           New York

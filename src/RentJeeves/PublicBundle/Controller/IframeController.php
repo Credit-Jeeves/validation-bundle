@@ -15,15 +15,16 @@ class IframeController extends Controller
 {
     /**
      * @Route(
-     *     "/management/{propertyId}",
-     *     name="management_login",
+     *      "/management/{id}/{type}",
+     *      name="management_login",
      *      defaults={
-     *          "propertyId"=null
+     *          "id"=null,
+     *          "type"="property"
      *      }
      * )
      * @Template()
      */
-    public function indexAction($propertyId)
+    public function indexAction($id, $type)
     {
         $form = $this->createForm(
             new LoginType(),
@@ -40,6 +41,8 @@ class IframeController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'id'   => $id,
+            'type' => $type,
         );
     }
 }

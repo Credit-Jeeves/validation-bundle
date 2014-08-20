@@ -491,7 +491,6 @@ class IframeCase extends BaseTestCase
         $this->assertCount(1, $email, 'Wrong number of emails');
     }
 
-
     /**
      * @test
      */
@@ -531,5 +530,59 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $this->checkResendInvite();
+    }
+
+    /**
+     * @test
+     */
+    public function checkHoldingSelectForNew()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $doctrine = $this->getContainer()->get('doctrine');
+        $em = $doctrine->getManager();
+
+        $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(
+            array(
+                'name' => 'Rent Holding'
+            )
+        );
+
+        $holdingSecond = $em->getRepository('DataBundle:Holding')->findOneBy(
+            array(
+                'name' => 'Estate Holding'
+            )
+        );
+
+        $this->assertNotNull($holdingFirst);
+        $this->assertNotNull($holdingSecond);
+
+        $link1 = $this->getContainer()->get('router')
+            ->generate(
+                'iframe_new',
+                array(
+                    'id'  => $holdingFirst->getId(),
+                    'type'=> 'holding'
+                )
+            );
+        $link2 = $this->getContainer()->get('router')
+            ->generate(
+                'iframe_new',
+                array(
+                    'id'  => $holdingSecond->getId(),
+                    'type'=> 'holding'
+                )
+            );
+        $link =  substr($this->getUrl(), 0, -1);
+        $link1 = $link.$link1;
+        $link2 = $link.$link2;
+
+        $this->session->visit($link1);
+        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
+        $this->assertEquals(4, count($thisIsMyRental));
+
+        $this->session->visit($link2);
+        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
+        $this->assertEquals(1, count($thisIsMyRental));
     }
 }
