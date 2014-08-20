@@ -1230,7 +1230,7 @@ fixtures:
       Your batch deposit report for <b>{{ date | date("m/d/Y") }}</b> is below:
       {% for group in groups %}
       <br />
-      <br />For group <b>{{ group.groupName }}</b>{% if group.accountNumber %} (Account #{{ group.accountNumber }}){% endif %}:<br />
+      <br />For group <b class="group-name">{{ group.groupName }}</b>{% if group.accountNumber %} (Account #{{ group.accountNumber }}){% endif %}:<br />
       <br />
         {% if group.batches %}
           {% for batch in group.batches %}

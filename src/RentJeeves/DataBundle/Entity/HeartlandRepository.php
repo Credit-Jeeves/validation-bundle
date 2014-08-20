@@ -51,6 +51,8 @@ class HeartlandRepository extends EntityRepository
         $query->andWhere('o.status = :status');
         $query->setParameter('status', OrderStatus::COMPLETE);
 
+        $query->groupBy('o.id');
+
         return $query->getQuery()->execute();
     }
 
@@ -63,6 +65,7 @@ class HeartlandRepository extends EntityRepository
     public function getTransactionsForRentTrackReport($groups, $start, $end)
     {
         $query = $this->createQueryBuilder('h');
+
         $query->innerJoin('h.order', 'o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
@@ -72,21 +75,26 @@ class HeartlandRepository extends EntityRepository
         $query->leftJoin('unit.unitMapping', 'uMap');
         $query->innerJoin('t.group', 'g');
         $query->leftJoin('g.groupSettings', 'gs');
+
         $query->where("o.created_at BETWEEN :start AND :end");
-        $query->andWhere('o.status in (:statuses)');
-        $query->andWhere('o.type in (:paymentTypes)');
-        $query->andWhere('g.id in (:groups)');
-        $query->andWhere('h.isSuccessful = 1');
-        $query->andWhere('h.transactionId IS NOT NULL');
-        $query->andWhere('h.depositDate IS NOT NULL');
-        $query->setParameter('end', $end);
         $query->setParameter('start', $start);
+        $query->setParameter('end', $end);
+
+        $query->andWhere('o.status in (:statuses)');
         $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
+
+        $query->andWhere('o.type in (:paymentTypes)');
         $query->setParameter('paymentTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+
+        $query->andWhere('g.id in (:groups)');
         $query->setParameter('groups', $this->getGroupIds($groups));
+
+        $query->andWhere('h.isSuccessful = 1 AND h.transactionId IS NOT NULL AND h.depositDate IS NOT NULL');
+
         $query->orderBy('h.createdAt', 'ASC');
-        $query = $query->getQuery();
-        return $query->execute();
+        $query->groupBy('o.id');
+
+        return $query->getQuery()->execute();
     }
     /**
      * @param \Doctrine\Common\Collections\ArrayCollection $groups
@@ -135,6 +143,8 @@ class HeartlandRepository extends EntityRepository
 
         $query->andWhere('o.status in (:statuses)');
         $query->setParameter('statuses', array(OrderStatus::REFUNDED, OrderStatus::RETURNED));
+
+        $query->groupBy('o.id');
 
         return $query->getQuery()->execute();
     }
