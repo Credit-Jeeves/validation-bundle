@@ -187,10 +187,9 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $makeZip->check();
 
-        ob_start();
         $this->page->pressButton('order.report.download');
-        $csvZip = ob_get_contents();
-        ob_end_clean();
+
+        $csvZip = $this->session->getDriver()->getContent();
 
         $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
         file_put_contents($testFile, $csvZip);
@@ -239,13 +238,11 @@ class ExportCase extends BaseTestCase
         $property->selectOption(1);
         $makeZip->check();
 
-        ob_start();
         $this->page->pressButton('order.report.download');
-        $csvZip = ob_get_contents();
-        ob_end_clean();
+        $xmlsZip = $this->session->getDriver()->getContent();
 
         $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
-        file_put_contents($testFile, $csvZip);
+        file_put_contents($testFile, $xmlsZip);
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
@@ -345,10 +342,8 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $makeZip->check();
 
-        ob_start();
         $this->page->pressButton('order.report.download');
-        $csvZip = ob_get_contents();
-        ob_end_clean();
+        $csvZip = $this->session->getDriver()->getContent();
 
         $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
         file_put_contents($testFile, $csvZip);

@@ -48,7 +48,7 @@ class SerializationListener implements EventSubscriberInterface
         $groups = $context->attributes->values();
         $format = $context->getFormat();
 
-        if ($format != 'xml' || !in_array('xmlReport', $groups[0])) {
+        if ($format != 'yardi' || !in_array('xmlReport', $groups[0])) {
             return;
         }
         /**

@@ -70,7 +70,7 @@ class HeartlandRepository extends EntityRepository
         $query->innerJoin('t.unit', 'unit');
         $query->leftJoin('unit.unitMapping', 'uMap');
         $query->innerJoin('t.group', 'g');
-        $query->innerJoin('g.groupSettings', 'gs');
+        $query->leftJoin('g.groupSettings', 'gs');
         $query->where("o.created_at BETWEEN :start AND :end");
         $query->andWhere('o.status in (:statuses)');
         $query->andWhere('o.type in (:paymentTypes)');
