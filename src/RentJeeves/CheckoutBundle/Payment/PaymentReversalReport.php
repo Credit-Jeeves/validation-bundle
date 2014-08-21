@@ -179,6 +179,7 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
         $transaction->setIsSuccessful(true);
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setMessages($paymentData['ReversalCodeDescription']);
+        $transaction->setMerchantName($paymentData['MerchantName']);
         if ($paymentData['BatchID']) {
             $transaction->setBatchId($paymentData['BatchID']);
         }
