@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use DateTime;
 
@@ -136,5 +137,77 @@ class HeartlandRepository extends EntityRepository
         $query->setParameter('statuses', array(OrderStatus::REFUNDED, OrderStatus::RETURNED));
 
         return $query->getQuery()->execute();
+    }
+
+    public function getCountDeposits(Group $group, $accountType)
+    {
+        $query = $this->createQueryBuilder('h');
+        $query->select('IF(h.batchId is null, h.depositDate, h.batchId) as batch');
+        $query->innerJoin('h.order', 'o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->where('t.group = :group');
+        $query->andWhere('h.depositDate IS NOT NULL');
+        $query->andWhere('h.isSuccessful = 1');
+
+        $query->setParameter('group', $group);
+        $query->groupBy('batch');
+
+        if ($accountType) {
+            $query->andWhere('o.type = :type');
+            $query->setParameter('type', $accountType);
+        }
+
+        $query = $query->getQuery();
+
+        return count($query->getScalarResult());
+    }
+
+    /**
+     * TODO: get result without using Orders repository
+     */
+    public function getDepositedOrders(Group $group, $accountType, OrderRepository $ordersRepo, $page = 1, $limit = 100)
+    {
+        // get Batch Ids
+        $offset = ($page - 1) * $limit;
+        $query = $this->createQueryBuilder('h');
+        $query->select(
+            "IF(h.batchId is null, h.depositDate, h.batchId) as batch, sum(p.amount) as order_amount, h.depositDate"
+        );
+        $query->innerJoin('h.order', 'o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+        $query->andWhere('h.depositDate IS NOT NULL');
+        $query->andWhere('h.isSuccessful = 1');
+        if ($accountType) {
+            $query->andWhere('o.type = :type');
+            $query->setParameter('type', $accountType);
+        }
+        $query->groupBy('batch');
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        $query->orderBy('h.depositDate', 'DESC');
+        $query = $query->getQuery();
+        $deposits = $query->getScalarResult();
+
+        foreach ($deposits as $key => $deposit) {
+            $batchId = is_numeric($deposit['batch']) ? $deposit['batch'] : null;
+
+            $ordersQuery = $ordersRepo->getDepositedOrdersQuery(
+                $group,
+                $accountType,
+                $batchId,
+                $deposit['depositDate']
+            );
+
+            $deposits[$key]['orders'] = $ordersQuery->getQuery()->execute();
+            $depositDate = new DateTime($deposit['depositDate']);
+            $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
+            $deposits[$key]['isDeposit'] = $batchId ? true : false;
+        }
+
+        return $deposits;
     }
 }
