@@ -133,8 +133,6 @@ class ContractListener
         }
 
         $contract->setBalance($contract->getRent());
-        $eventArgs->getEntityManager()->persist($contract);
-        $eventArgs->getEntityManager()->flush();
     }
 
 
