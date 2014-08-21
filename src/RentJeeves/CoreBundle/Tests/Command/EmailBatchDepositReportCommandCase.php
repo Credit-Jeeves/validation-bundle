@@ -60,11 +60,11 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $commandTester->execute([ 'command' => $command->getName() ]);
 
         $this->assertRegExp('/Start prepare daily batch deposit report by/', $commandTester->getDisplay());
-        $this->assertCount(5, $plugin->getPreSendMessages());
+        $this->assertCount(6, $plugin->getPreSendMessages());
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($emails = $this->page->findAll('css', 'a'));
-        $this->assertCount(5, $emails, 'Wrong number of emails');
+        $this->assertCount(6, $emails, 'Wrong number of emails');
         $emails[4]->click(); // Holding Admin Email
         $this->page->clickLink('text/html');
 
@@ -82,7 +82,7 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
 
         $query->where('g.name IN (:groupNames)');
         $groupNames = array_map(
-            function(NodeElement $value) {
+            function (NodeElement $value) {
                 return $value->getText();
             },
             $groupNames
@@ -102,7 +102,7 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $query->setParameter('status', OrderStatus::COMPLETE);
 
         $batches = array_map(
-            function($value) {
+            function ($value) {
                 return $value['batchId'];
             },
             $query->getQuery()->getScalarResult()

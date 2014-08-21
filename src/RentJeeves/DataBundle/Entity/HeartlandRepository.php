@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use DateTime;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 class HeartlandRepository extends EntityRepository
 {
@@ -47,11 +48,14 @@ class HeartlandRepository extends EntityRepository
         $query->andWhere('h.batchId IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
 
+        $query->andWhere('h.status = :transactionStatus');
+        $query->setParameter('transactionStatus', TransactionStatus::COMPLETE);
+
         /** Now we select only completed transaction */
         $query->andWhere('o.status = :status');
         $query->setParameter('status', OrderStatus::COMPLETE);
 
-        $query->groupBy('o.id');
+        $query->groupBy('h.id'); // for show all transactions
 
         return $query->getQuery()->execute();
     }
@@ -92,7 +96,8 @@ class HeartlandRepository extends EntityRepository
         $query->andWhere('h.isSuccessful = 1 AND h.transactionId IS NOT NULL AND h.depositDate IS NOT NULL');
 
         $query->orderBy('h.createdAt', 'ASC');
-        $query->groupBy('o.id');
+
+        $query->groupBy('h.id'); // for show all transactions
 
         return $query->getQuery()->execute();
     }
@@ -120,6 +125,7 @@ class HeartlandRepository extends EntityRepository
             date_format(o.created_at, '%m/%d/%Y') as originDate,
             o.type as paymentType,
             o.status,
+            h.messages,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
             CONCAT_WS(' ', prop.number, prop.street) as property,
             prop.isSingle,
@@ -141,10 +147,13 @@ class HeartlandRepository extends EntityRepository
 
         $query->andWhere('h.isSuccessful = 1');
 
+        $query->andWhere('h.status = :transactionStatus');
+        $query->setParameter('transactionStatus', TransactionStatus::REVERSED);
+
         $query->andWhere('o.status in (:statuses)');
         $query->setParameter('statuses', array(OrderStatus::REFUNDED, OrderStatus::RETURNED));
 
-        $query->groupBy('o.id');
+        $query->groupBy('h.id'); // for show all transactions
 
         return $query->getQuery()->execute();
     }
