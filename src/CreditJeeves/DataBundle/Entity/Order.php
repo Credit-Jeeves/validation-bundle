@@ -501,6 +501,9 @@ class Order extends BaseOrder
         return null;
     }
 
+    /**
+     * @return boolean|Heartland
+     */
     public function getCompleteTransaction()
     {
         return $this->getHeartlands()
