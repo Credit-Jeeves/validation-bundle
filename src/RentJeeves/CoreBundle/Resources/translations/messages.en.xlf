@@ -462,6 +462,12 @@
                     %count% rentals in %city%, %area%:
                 </target>
             </trans-unit>
+            <trans-unit id="result.search2">
+                <source>result.search2</source>
+                <target>
+                    %count% Rentals Found:
+                </target>
+            </trans-unit>
             <trans-unit id="edit.tenant.info">
                 <source>edit.tenant.info</source>
                 <target>

@@ -5,6 +5,10 @@
         <h4 class="titleSearch">
            {{ 'result.search'|trans({'%count%': countPropery, '%city%': property.city, '%area%': property.area}) }}
         </h4>
+      {% elseif countPropery > 0 %}
+          <h4 class="titleSearch">
+              {{ 'result.search2'|trans({'%count%': countPropery}) }}
+          </h4>
       {% endif %}
       <h4 class="titleNotFound">
         {{ 'notfoundrentalmessage'|trans|raw }}
