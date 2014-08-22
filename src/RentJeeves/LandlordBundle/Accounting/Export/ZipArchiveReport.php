@@ -26,7 +26,7 @@ trait ZipArchiveReport
     public function readZipArchive(ZipArchive $zipArchive, $close = true)
     {
         $zipArchive->close();
-        $result = readfile($this->getTempZipFilename());
+        $result = file_get_contents($this->getTempZipFilename());
         if ($close) {
             unlink($this->getTempZipFilename());
         }
