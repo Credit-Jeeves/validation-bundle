@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tobur
- * Date: 8/22/14
- * Time: 5:53 PM
- */
 
 namespace CreditJeeves\UserBundle\Service;
 
