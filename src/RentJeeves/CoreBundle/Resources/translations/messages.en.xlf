@@ -2393,6 +2393,10 @@
                 <source>payment.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="payment.status_message">
+                <source>payment.status_message</source>
+                <target>Status Message</target>
+            </trans-unit>
             <trans-unit id="payment.date">
                 <source>payment.date</source>
                 <target>Date</target>
@@ -2400,6 +2404,10 @@
             <trans-unit id="payment.date_initiated">
                 <source>payment.date_initiated</source>
                 <target>Date Initiated</target>
+            </trans-unit>
+            <trans-unit id="payment.date_reversal">
+                <source>payment.date_reversal</source>
+                <target>Reversal Date</target>
             </trans-unit>
             <trans-unit id="payment.property">
                 <source>payment.property</source>
