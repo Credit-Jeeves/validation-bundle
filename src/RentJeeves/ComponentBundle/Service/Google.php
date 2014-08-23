@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\Service;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use JMS\DiExtraBundle\Annotation as DI;
 
 use RentJeeves\DataBundle\Entity\Property;

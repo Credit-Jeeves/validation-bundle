@@ -2,9 +2,11 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Model\Holding;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -433,18 +435,69 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getAllLateContracts($holding, $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED))
-    {
+    /**
+     * @param Holding $holding
+     * @param array $status
+     * @return ArrayCollection
+     */
+    public function getAllLateContractsByHolding(
+        Holding $holding,
+        $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED)
+    ) {
         $query = $this->createQueryBuilder('c');
+        $query->leftJoin('c.operations', 'op');
+        $query->leftJoin('op.order', 'o');
         $query->where('c.holding = :holding');
         $query->andWhere('c.status IN (:status)');
-        $query->andWhere('c.paidTo < :date');
+        $query->andWhere('c.paidTo < DATE(:date)');
+        $query->andWhere('o.status <> :orderPendingStatus OR o.status IS NULL');
         $query->setParameter('holding', $holding);
         $query->setParameter('status', $status);
+        $query->setParameter('orderPendingStatus', OrderStatus::PENDING);
         $query->setParameter('date', new DateTime());
         $query = $query->getQuery();
-        return $query->iterate();
+
+        return $query->execute();
     }
+
+    /**
+     * @param ArrayCollection $groups
+     * @param array $status
+     * @return ArrayCollection
+     */
+    public function getAllLateContractsByGroups($groups, $status = [ContractStatus::CURRENT, ContractStatus::APPROVED])
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->leftJoin('c.operations', 'op');
+        $query->leftJoin('op.order', 'o');
+        $query->where('c.group IN (:groups)');
+        $query->andWhere('c.status IN (:status)');
+        $query->andWhere('c.paidTo < :date');
+        $query->andWhere('o.status <> :orderPendingStatus OR o.status IS NULL');
+        $query->setParameter('groups', $this->getGroupIds($groups));
+        $query->setParameter('status', $status);
+        $query->setParameter('orderPendingStatus', OrderStatus::PENDING);
+        $query->setParameter('date', new DateTime());
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param ArrayCollection $groups
+     * @return array
+     */
+    protected function getGroupIds($groups)
+    {
+        $groupIds = [];
+        foreach ($groups as $group) {
+            /** @var Group $group */
+            $groupIds[] = $group->getId();
+        }
+
+        return $groupIds;
+    }
+
 
     public function getImportContract($tenant, $unitName, $externalUnitId = null, $propertyId = null)
     {

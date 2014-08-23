@@ -169,7 +169,7 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
 
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(1, $tr);
+        $this->assertCount(2, $tr);
         $this->assertNotNull($edit = $tr[0]->find('css', '.property-edit'));
         $this->assertFalse($edit->isVisible());
         $this->assertNotNull($remove = $tr[0]->find('css', '.delete'));
@@ -180,7 +180,7 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(0, $tr);
+        $this->assertCount(1, $tr);
         $this->logout();
     }
 

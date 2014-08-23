@@ -1,8 +1,14 @@
 <?php
 namespace RentJeeves\CoreBundle\Command;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\LandlordRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,7 +22,6 @@ use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Entity\Order;
-use \DateTime;
 
 class EmailLandlordCommand extends ContainerAwareCommand
 {
@@ -83,7 +88,6 @@ class EmailLandlordCommand extends ContainerAwareCommand
         $this->getContainer()->get('soft.deleteable.control')->disable();
         
         $type = $input->getOption('type');
-        $date = new DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
         $doctrine = $this->getContainer()->get('doctrine');
         $translator = $this->getContainer()->get('translator.default');
@@ -187,40 +191,51 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 $output->writeln('daily report');
                 break;
             case self::OPTION_TYPE_LATE:
-                $repo = $doctrine->getRepository('RjDataBundle:Contract');
-                $contracts = $repo->getRentHoldings();
-                $output->write('Late contracts');
-                foreach ($contracts as $row) {
-                    $contract = $row[0];
-                    $holding = $contract->getHolding();
-                    $group = $contract->getGroup();
-                    //RT-92
-                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
-                    $late = $repo->getAllLateContracts($holding);
-                    $tenants = array();
-                    foreach ($late as $object) {
-                        $item = array();
-                        $object = $object[0];
-                        $tenant = $object->getTenant();
-                        $paidTo = $object->getPaidTo();
-                        $diff = $paidTo->diff($date);
-                        $item['name'] = $tenant->getFullName();
-                        $item['email'] = $tenant->getEmail();
-                        $item['address'] = $object->getRentAddress($object->getProperty(), $object->getUnit());
-                        $item['late'] = $diff->format('%d');
-                        $tenants[] = $item;
-                    }
+                $output->writeln('Late contracts');
+                $serializer = $this->getContainer()->get('jms_serializer');
+                $output->writeln('Send to holding admins');
+                $this->sendLateEmails($output, $doctrine, $mailer, $serializer);
 
-                    if (count($tenants) > 0) {
-                        foreach ($landlords as $landlord) {
-                            $mailer->sendListLateContracts($landlord, $tenants);
-                        }
-                    }
-                    $output->write('.');
-                }
+                $output->writeln('Send to landlords');
+                $this->sendLateEmails($output, $doctrine, $mailer, $serializer, false);
+
                 $output->writeln('OK');
                 break;
         }
+    }
+
+    protected function sendLateEmails(
+        OutputInterface $output,
+        Registry $doctrine,
+        Mailer $mailer,
+        Serializer $serializer,
+        $holdingAdmin = true
+    ) {
+        /** @var LandlordRepository $repoLandlord */
+        $repoLandlord = $doctrine->getRepository('RjDataBundle:Landlord');
+        /** @var ContractRepository $repoContract */
+        $repoContract = $doctrine->getRepository('RjDataBundle:Contract');
+
+        $landlords = $repoLandlord->findBy(['is_super_admin' => $holdingAdmin], ['email' => 'DESC']);
+        foreach ($landlords as $landlord) {
+            /** @var Landlord $landlord */
+            if ($holdingAdmin) {
+                $lateContracts = $repoContract->getAllLateContractsByHolding($landlord->getHolding());
+            } else {
+                $lateContracts = $repoContract->getAllLateContractsByGroups($landlord->getAgentGroups());
+            }
+
+            $tenants = $serializer->serialize(
+                $lateContracts,
+                'array',
+                SerializationContext::create()->setGroups(['lateEmailReport'])
+            );
+            if (count($tenants) > 0) {
+                $mailer->sendListLateContracts($landlord, $tenants);
+            }
+            $output->write('.');
+        }
+        $output->writeln('.');
     }
 
     private function getLandlordByHoldingAndGroup($holding, $group)

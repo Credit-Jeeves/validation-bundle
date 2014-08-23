@@ -133,6 +133,15 @@ payum:
                 api:
                     options: %authorize_net%
 
+services:
+    geocode_cache_adapter:
+        class: "Doctrine\\Common\\Cache\\ApcCache"
+
 bazinga_geocoder:
     providers:
-        google_maps: ~
+        cache:
+            adapter:  geocode_cache_adapter
+            provider: google_maps
+        google_maps:
+            api_key:  %google_maps_key%
+            use_ssl:  true

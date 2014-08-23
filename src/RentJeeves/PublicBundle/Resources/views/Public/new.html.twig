@@ -27,7 +27,7 @@
              'RjComponentBundle:Google:searchResultBox.html.twig',
              { 'property': property, 'countPropery':countPropery, 'propertyList': propertyList }
              ) }}
-            <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}"
+            <form id="formNewUser" action="{{ path('iframe_new', {"id": id, 'type': type }) }}"
                   method="post" {{ form_enctype(form) }}>
                 {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
                 {{ form_rest(form) }}

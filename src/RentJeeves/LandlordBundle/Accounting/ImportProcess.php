@@ -50,7 +50,7 @@ class ImportProcess
 {
     use FormErrors;
 
-    const ROW_ON_PAGE = 10;
+    const ROW_ON_PAGE = 9;
 
     /**
      * @var array

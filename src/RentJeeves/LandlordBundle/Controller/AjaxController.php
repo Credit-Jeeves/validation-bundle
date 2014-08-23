@@ -661,6 +661,7 @@ class AjaxController extends Controller
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
+        /** @var ContractRepository $repo */
         $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
         $query = $repo->getActionsRequiredPageQuery(
             $group,

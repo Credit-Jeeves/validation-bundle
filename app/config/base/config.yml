@@ -6,7 +6,7 @@ parameters:
     email_admins:
         - darryl@creditjeeves.com
     experian.logging: false
-    login.attempts: 5
+    login.attempts: 6
     login.delay: 30
 
 simulation:

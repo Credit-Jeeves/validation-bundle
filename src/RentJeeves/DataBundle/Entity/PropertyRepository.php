@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
@@ -173,12 +174,12 @@ EOT;
     public function findOneWithUnitAndAlphaNumericSort($propertyId)
     {
         $query = $this->createQueryBuilder('p')
-                      ->select('LENGTH(u.name) as co,p,u');
-        $query->leftJoin('p.units', 'u');
+                      ->select('LENGTH(unit.name) as co,p,unit');
+        $query->leftJoin('p.units', 'unit');
         $query->where('p.id = :propertyId');
         $query->setParameter('propertyId', $propertyId);
         $query->addOrderBy('co', 'ASC');
-        $query->addOrderBy('u.name', 'ASC');
+        $query->addOrderBy('unit.name', 'ASC');
         $query = $query->getQuery();
         $result = $query->getResult();
 
@@ -207,5 +208,27 @@ EOT;
         }
 
         return null;
+    }
+
+    public function findByHoldingAndAlphaNumericSort(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('LENGTH(unit.name) as co,p,unit');
+        $query->innerJoin('p.property_groups', 'p_group');
+        $query->leftJoin('p.units', 'unit');
+        $query->where('p_group.holding_id = :holdingId');
+        $query->andWhere('unit.holding = :holdingId');
+        $query->andWhere('p.jb IS NOT NULL AND p.kb IS NOT NULL');
+        $query->setParameter('holdingId', $holding->getId());
+        $query->addOrderBy('co', 'ASC');
+        $query->addOrderBy('unit.name', 'ASC');
+        $query = $query->getQuery();
+        $result = $query->getResult();
+
+        if (!empty($result)) {
+            $result = array_map('current', $result);
+        }
+
+        return $result;
     }
 }

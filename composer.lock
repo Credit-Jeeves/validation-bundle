@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "23fcc9362af17ed76a80a981e0898c12",
+    "hash": "4f436e271c848efe0b520dddbb1a7903",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -442,7 +442,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2014-05-12 09:53:00"
+            "time": "2014-07-31 16:06:16"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -454,7 +454,7 @@
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2014-07-03 21:12:42"
+            "time": "2014-08-07 19:11:44"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -3545,7 +3545,7 @@
                 "payment",
                 "src"
             ],
-            "time": "2014-05-13 13:57:42"
+            "time": "2014-08-19 14:02:29"
         },
         {
             "name": "payum/payum",
@@ -5068,23 +5068,23 @@
         },
         {
             "name": "willdurand/geocoder-bundle",
-            "version": "3.0.2",
+            "version": "dev-master",
             "target-dir": "Bazinga/Bundle/GeocoderBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geocoder-php/BazingaGeocoderBundle.git",
-                "reference": "57cd0af17229de1e097bcbe6f4b36ec0482b18a4"
+                "reference": "dd2a605c87c338f35cf40bcb50c8f5cb1d7b6409"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geocoder-php/BazingaGeocoderBundle/zipball/57cd0af17229de1e097bcbe6f4b36ec0482b18a4",
-                "reference": "57cd0af17229de1e097bcbe6f4b36ec0482b18a4",
+                "url": "https://api.github.com/repos/geocoder-php/BazingaGeocoderBundle/zipball/dd2a605c87c338f35cf40bcb50c8f5cb1d7b6409",
+                "reference": "dd2a605c87c338f35cf40bcb50c8f5cb1d7b6409",
                 "shasum": ""
             },
             "require": {
                 "symfony/console": "~2.1",
                 "symfony/framework-bundle": "~2.1",
-                "willdurand/geocoder": "~2.3"
+                "willdurand/geocoder": "~2.5"
             },
             "require-dev": {
                 "doctrine/cache": "~1.3",
@@ -5095,7 +5095,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.1-dev"
                 }
             },
             "autoload": {
@@ -5110,8 +5110,7 @@
             "authors": [
                 {
                     "name": "William Durand",
-                    "email": "william.durand1@gmail.com",
-                    "homepage": "http://www.willdurand.fr"
+                    "email": "william.durand1@gmail.com"
                 }
             ],
             "description": "Integration of Geocoder into Symfony2",
@@ -5119,7 +5118,7 @@
                 "geocoder",
                 "geocoding"
             ],
-            "time": "2014-05-12 16:14:13"
+            "time": "2014-08-01 08:41:03"
         },
         {
             "name": "willdurand/js-translation-bundle",
@@ -6032,6 +6031,7 @@
         "doctrine/doctrine-migrations-bundle": 20,
         "apy/jsfv-bundle": 20,
         "willdurand/js-translation-bundle": 20,
+        "willdurand/geocoder-bundle": 20,
         "beberlei/doctrineextensions": 20,
         "jms/job-queue-bundle": 20,
         "pagerfanta/pagerfanta": 20,
@@ -6044,6 +6044,7 @@
         "khepin/yaml-fixtures-bundle": 20,
         "comfortablynumb/backup-restore-bundle": 20
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.4.12,<5.5.0",
         "ext-curl": "*",
