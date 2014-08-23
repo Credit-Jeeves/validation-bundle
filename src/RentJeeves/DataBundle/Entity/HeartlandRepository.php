@@ -25,7 +25,8 @@ class HeartlandRepository extends EntityRepository
             h.amount,
             date_format(h.createdAt, '%m/%d/%Y') as dateInitiated,
             o.type as paymentType,
-            o.status,
+            o.status as orderStatus,
+            h.status as transactionStatus,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
             CONCAT_WS(' ', prop.number, prop.street) as property,
             prop.isSingle,
@@ -51,9 +52,8 @@ class HeartlandRepository extends EntityRepository
         $query->andWhere('h.status = :transactionStatus');
         $query->setParameter('transactionStatus', TransactionStatus::COMPLETE);
 
-        /** Now we select only completed transaction */
-        $query->andWhere('o.status = :status');
-        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->andWhere('o.status in (:status)');
+        $query->setParameter('status', [OrderStatus::COMPLETE, OrderStatus::RETURNED, OrderStatus::REFUNDED]);
 
         $query->groupBy('h.id'); // for show all transactions
 
@@ -84,6 +84,7 @@ class HeartlandRepository extends EntityRepository
         $query->setParameter('start', $start);
         $query->setParameter('end', $end);
 
+        // order may be deposited and returned the same day, so we should count complete and reversal types
         $query->andWhere('o.status in (:statuses)');
         $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
 
@@ -124,7 +125,8 @@ class HeartlandRepository extends EntityRepository
             date_format(h.createdAt, '%m/%d/%Y') as reversalDate,
             date_format(o.created_at, '%m/%d/%Y') as originDate,
             o.type as paymentType,
-            o.status,
+            o.status as orderStatus,
+            h.status as transactionStatus,
             h.messages,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
             CONCAT_WS(' ', prop.number, prop.street) as property,
