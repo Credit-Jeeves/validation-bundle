@@ -54,7 +54,7 @@ Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
     {% for transaction in batch.transactions %}
     <tr>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('transaction.status.text.' ~ transaction.transactionStatus) | trans }}</td>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
       {{ transaction.property }}{% if not transaction.isSingle %}{{ ' #' ~ transaction.unitName }}{% endif %}
@@ -86,7 +86,7 @@ Reversals (Each will be Debited Separately)
     {% for transaction in returns %}
     <tr>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+      <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.orderStatus) | trans }}</td>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.messages }}</td>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
       <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
@@ -164,7 +164,7 @@ Your batch deposit report for <b>{{ date | date("m/d/Y") }}</b> is below:
       {% for transaction in batch.transactions %}
       <tr>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('transaction.status.text.' ~ transaction.transactionStatus) | trans }}</td>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
           {{ transaction.property }}{% if not transaction.isSingle %}{{ ' #' ~ transaction.unitName }}{% endif %}
@@ -196,7 +196,7 @@ Your batch deposit report for <b>{{ date | date("m/d/Y") }}</b> is below:
       {% for transaction in group.returns %}
       <tr>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+        <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.orderStatus) | trans }}</td>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.messages }}</td>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
         <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">

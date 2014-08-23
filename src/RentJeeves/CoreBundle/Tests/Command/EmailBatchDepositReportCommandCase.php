@@ -97,9 +97,8 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $query->andWhere('h.transactionId IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
 
-        /** Now we select only completed transaction */
-        $query->andWhere('o.status = :status');
-        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->andWhere('o.status in (:status)');
+        $query->setParameter('status', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
 
         $batches = array_map(
             function ($value) {

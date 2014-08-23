@@ -2578,6 +2578,14 @@
                     Please come back between days %OPEN_DAY% and %CLOSE_DAY%.
                 </target>
             </trans-unit>
+            <trans-unit id="transaction.status.text.complete">
+                <source>transaction.status.text.complete</source>
+                <target>PAID</target>
+            </trans-unit>
+            <trans-unit id="transaction.status.text.reversed">
+                <source>transaction.status.text.reversed</source>
+                <target>REVERSED</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

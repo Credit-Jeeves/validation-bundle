@@ -1166,7 +1166,7 @@ fixtures:
             {% for transaction in batch.transactions %}
             <tr>
               <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-              <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+              <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('transaction.status.text.' ~ transaction.transactionStatus) | trans }}</td>
               <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
               <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
               {{ transaction.property }}{% if not transaction.isSingle %}{{ ' #' ~ transaction.unitName }}{% endif %}
@@ -1198,7 +1198,7 @@ fixtures:
             {% for transaction in returns %}
             <tr>
               <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-              <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+              <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.orderStatus) | trans }}</td>
               <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.messages }}</td>
               <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
               <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
@@ -1262,7 +1262,7 @@ fixtures:
               {% for transaction in batch.transactions %}
               <tr>
                 <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('transaction.status.text.' ~ transaction.transactionStatus) | trans }}</td>
                 <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
                 <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
                   {{ transaction.property }}{% if not transaction.isSingle %}{{ ' #' ~ transaction.unitName }}{% endif %}
@@ -1294,7 +1294,7 @@ fixtures:
               {% for transaction in group.returns %}
               <tr>
                 <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.transactionId }}</td>
-                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.status) | trans }}</td>
+                <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ ('order.status.text.' ~ transaction.orderStatus) | trans }}</td>
                 <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.messages }}</td>
                 <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">{{ transaction.resident }}</td>
                 <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
