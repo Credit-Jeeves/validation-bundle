@@ -13,6 +13,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\Request;
 
 class ResidentMappingAdmin extends Admin
 {
@@ -50,6 +51,24 @@ class ResidentMappingAdmin extends Admin
 
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $container = $this->getConfigurationPool()->getContainer();
+        /**
+         * @var $request Request
+         */
+        $request = $container->get('request');
+        $params = $request->request->all();
+        $uniqid = $request->query->get('uniqid');
+
+        if (isset($params[$uniqid]['holding'])) {
+            $holding = $params[$uniqid]['holding'];
+        } elseif ($id = $request->get('id')) {
+            $em = $container->get('doctrine.orm.default_entity_manager');
+            $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->find($id);
+            $holding = ($residentMapping)? $residentMapping->getHolding()->getId() : null;
+        } else {
+            $holding = null;
+        }
+
         $formMapper
             ->add(
                 'holding',
@@ -70,9 +89,8 @@ class ResidentMappingAdmin extends Admin
                 'entity',
                 array(
                     'class' => 'RjDataBundle:Tenant',
-                    'query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('tenant')
-                                ->orderBy('tenant.first_name', 'ASC');
+                    'query_builder' => function (EntityRepository $er) use ($holding) {
+                            return $er->findByHolding($holding);
                     }
                 )
             )

@@ -174,4 +174,5 @@ services:
             - RentJeeves\DataBundle\Entity\ResidentMapping
             - 'SonataAdminBundle:CRUD'
         calls:
+            - [ setTemplate, [edit, AdminBundle:CRUD:form_resident_mapping.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
