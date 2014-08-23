@@ -95,6 +95,26 @@ class AjaxController extends Controller
 
     /**
      * @Route(
+     *    "/rj/residentMapping/tenants",
+     *     name="admin_rj_residentMapping_tenants",
+     *     options={"expose"=true}
+     * )
+     */
+    public function tenantsAction(Request $request)
+    {
+        $holdingId = $request->request->get('holdingId');
+        $em = $this->getDoctrine()->getManager();
+        $tenants = $em->getRepository('RjDataBundle:Tenant')->findByHolding(
+            $holdingId
+        )->getQuery()->getResult();
+
+        return $this->makeJsonResponse(
+            $tenants,
+            array("AdminResidentMapping")
+        );
+    }
+    /**
+     * @Route(
      *     "/rj/group/{id}/terminal",
      *     name="admin_rj_group_terminal",
      *     options={"expose"=true}
