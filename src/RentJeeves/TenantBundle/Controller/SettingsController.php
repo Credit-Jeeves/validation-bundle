@@ -27,7 +27,7 @@ class SettingsController extends Controller
                     array('%PAYMENT_ACCOUNT%' => (string)$paymentAccount)
                 );
             } else {
-                $paymentPlan = $this->get('translator')->trans('settings.plans.none');;
+                $paymentPlan = $this->get('translator')->trans('settings.plans.none');
             }
         }
         return array(

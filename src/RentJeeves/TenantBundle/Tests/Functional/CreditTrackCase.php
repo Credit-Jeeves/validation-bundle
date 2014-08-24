@@ -39,12 +39,12 @@ class CreditTrackCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'New test payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'John Adams',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
-                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
+                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '432',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => date('n'),
-                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 1,
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 2,
             )
         );
         $this->assertNotNull(
