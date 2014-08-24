@@ -7,7 +7,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 /**
  * Tests CreditTrack code from the tenant's perspective
  */
-class CreditTrackSignupCase extends BaseTestCase
+class CreditTrackCase extends BaseTestCase
 {
     protected function enterSignupFlow()
     {
