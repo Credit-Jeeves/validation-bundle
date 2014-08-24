@@ -9,8 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 class JobRelatedPayment extends JobRelatedEntities
 {
     /**
-     * @ORM\ManyToOne(targetEntity = "Payment", inversedBy = "jobs", fetch = "EAGER")
-     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity = "Payment", inversedBy = "jobs", fetch = "EAGER", cascade={"remove"})
+     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      * @var Payment
      */
     protected $payment;

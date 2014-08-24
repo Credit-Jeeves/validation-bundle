@@ -35,14 +35,9 @@ class ScoreController extends Controller
         $nFicoScore = $user->getScores()->last()->getFicoScore();
         $sDate = $user->getScores()->last()->getCreatedDate()->format('M d, Y');
 
-        if ($settings = $user->getSettings()) {
-            $creditTrackEnabled = !!$settings->getCreditTrackPaymentAccount();
-        } else {
-            $creditTrackEnabled = false;
-        }
 
         return array(
-            'creditTrackEnabled' => $creditTrackEnabled,
+            'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
             'chartData' => $chartData,
             'nScore' => $nScore,
             'nFicoScore' => $nFicoScore,

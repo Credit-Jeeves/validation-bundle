@@ -33,18 +33,8 @@ class CreditTrackSignupCase extends BaseTestCase
         $this->assertEquals('component.credit.summary', $title->getText());
     }
 
-    /**
-     * Creates a new payment account and uses it to sign up for CreditTrack
-     *
-     * @test
-     *
-     * @return void
-     */
-    public function newAccountSignup()
+    protected function makeNew()
     {
-        $this->enterSignupFlow();
-        $this->page->clickLink('payment.account.new');
-
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
         $this->fillForm(
             $form,
@@ -63,9 +53,26 @@ class CreditTrackSignupCase extends BaseTestCase
         $addresses[0]->click();
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout * 3, "$('#id-pay-step').is(':visible')");
+    }
+
+    /**
+     * Creates a new payment account and uses it to sign up for CreditTrack
+     *
+     * @test
+     *
+     * @return void
+     */
+    public function newAccountSignup()
+    {
+        $this->enterSignupFlow();
+        $this->page->clickLink('payment.account.new');
+
+        $this->makeNew();
+
         $this->page->pressButton('checkout.make_payment');
 
         $this->checkReport();
+
     }
 
     /**
@@ -86,5 +93,60 @@ class CreditTrackSignupCase extends BaseTestCase
         $this->page->pressButton('checkout.make_payment');
 
         $this->checkReport();
+    }
+
+    /**
+     * @test
+     * @depends existingAccountSignup
+     */
+    public function edit()
+    {
+        $this->page->clickLink('tabs.rent');
+        $this->page->clickLink('rent.sources');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
+        $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
+        $this->assertCount(2, $rows);
+
+        $rows[0]->clickLink('delete');
+        $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
+        $this->page->clickLink('payment_account.delete.yes');
+        $this->session->wait($this->timeout, "1 == jQuery('#payment-account-table tbody tr').length");
+
+        $rows[0]->clickLink('delete');
+        $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
+        $this->page->clickLink('payment_account.delete.yes');
+        $this->session->wait($this->timeout, "1 == jQuery('#payment-account-table tbody tr').length");
+
+        $this->page->clickLink('common.account');
+        $this->page->clickLink('settings.plans');
+        $this->page->clickLink('settings.plans.update');
+        $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
+
+        $this->page->pressButton('popup.edit');
+        $this->session->wait($this->timeout, "$('#id-source-step').is(':visible')");
+
+        $this->makeNew();
+        $this->page->pressButton('credittrack.pay.save');
+        $this->session->wait($this->timeout, "jQuery('.flash-notice:visible').length");
+
+        $this->assertNotNull($flash = $this->page->find('css', '.flash-notice'));
+        $this->assertEquals('credittrack.pay.saved', $flash->getText());
+
+    }
+
+    /**
+     * @test
+     * @depends edit
+     */
+    public function chooseFree()
+    {
+        $this->page->clickLink('settings.plans.update');
+        $this->page->pressButton('popup.cancel');
+        $this->page->clickLink('settings.plans.cancel.yes');
+//        $this->session->wait($this->timeout, "jQuery('#current-plan:visible').text() = 'settings.plans.free'");
+
+        $this->assertNotNull($plan = $this->page->find('css', '#current-plan'));
+        $this->assertEquals('settings.plans.free', $plan->getText());
     }
 }

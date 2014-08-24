@@ -29,8 +29,19 @@ abstract class UserSettings
     protected $user;
 
     /**
-     * @ORM\OneToOne(targetEntity="PaymentAccount", inversedBy="creditTrackUserSetting")
-     * @ORM\JoinColumn(name="credit_track_payment_account_id", referencedColumnName="id", nullable=true)
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *      inversedBy="creditTrackUserSetting",
+     *      cascade={"persist", "remove"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="credit_track_payment_account_id",
+     *      referencedColumnName="id",
+     *      nullable=true,
+     *      onDelete="SET NULL"
+     * )
+     *
+     * @var PaymentAccount
      */
     protected $creditTrackPaymentAccount = null;
 

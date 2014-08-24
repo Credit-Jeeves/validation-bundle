@@ -24,12 +24,12 @@
             <li>
                 <div class="table-cell th-cell">{{ 'popup.tenant.get.credit.score' | trans() }}</div>
                 <div class="table-cell th">{{ 'popup.tenant.get.first.free' | trans() }}</div>
-                <div class="table-cell th">{{ 'monthly' | trans() }}</div>
+                <div class="table-cell th">{{ 'popup.tenant.credittrack.monthly' | trans() }}</div>
             </li>
             <li>
                 <div class="table-cell th-cell">{{ 'popup.tenant.view.experian' | trans() }}</div>
                 <div class="table-cell th"></div>
-                <div class="table-cell th">{{ 'monthly' | trans() }}</div>
+                <div class="table-cell th">{{ 'popup.tenant.credittrack.monthly' | trans() }}</div>
             </li>
             <li>
                 <div class="table-cell th-cell">{{ 'popup.tenant.pay.e-check' | trans() }}</div>
@@ -99,6 +99,9 @@
             </li>
         </ul>
     </div>
+    <p class="note">
+        {{ 'popup.tenant.footer.note_3' | trans({"%payment_percent%": payment_card_fee, "%payment_dollars%": payment_dollars}) }}
+    </p>
 </div>
 <script type="text/javascript">
 $(function(){

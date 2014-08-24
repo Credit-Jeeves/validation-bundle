@@ -39,21 +39,6 @@ abstract class PaymentAccount
     protected $user;
 
     /**
-     * @ORM\ManyToMany(
-     *      targetEntity="DepositAccount",
-     *      inversedBy="paymentAccounts"
-     * )
-     * @ORM\JoinTable(
-     *      name="rj_payment_account_deposit_account",
-     *      joinColumns={@ORM\JoinColumn(name="payment_account_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="deposit_account_id", referencedColumnName="id")}
-     * )
-     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
-     * @Serializer\Groups({"details", "paymentAccounts"});
-     */
-    protected $depositAccounts;
-
-    /**
      * @ORM\ManyToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
      *      inversedBy="paymentAccounts",
@@ -156,21 +141,43 @@ abstract class PaymentAccount
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Payment",
-     *     mappedBy="paymentAccount",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
+     *      targetEntity="RentJeeves\DataBundle\Entity\Payment",
+     *      mappedBy="paymentAccount",
+     *      cascade={"persist", "remove", "merge"},
+     *      orphanRemoval=true
      * )
      * @var ArrayCollection
      */
     protected $payments;
 
     /**
+     * // FIXME need to add cascade={"remove"} but it remove DepositAccount too
+     * @ORM\ManyToMany(
+     *      targetEntity="DepositAccount",
+     *      inversedBy="paymentAccounts"
+     * )
+     * @ORM\JoinTable(
+     *      name="rj_payment_account_deposit_account",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="payment_account_id", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="deposit_account_id", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
+     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
+     * @Serializer\Groups({"details", "paymentAccounts"});
+     *
+     * @var ArrayCollection
+     */
+    protected $depositAccounts;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\UserSettings",
      *     mappedBy="creditTrackPaymentAccount",
-     *     cascade={"persist", "merge"},
-     *     orphanRemoval=true
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=false
      * )
      * @var UserSettings
      */
@@ -432,6 +439,16 @@ abstract class PaymentAccount
     }
 
     /**
+     * Get deletedAt
+     *
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
      * Add Payment
      *
      * @param \RentJeeves\DataBundle\Entity\Payment $payment
@@ -461,5 +478,15 @@ abstract class PaymentAccount
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * Get UserSettings
+     *
+     * @return UserSettings
+     */
+    public function getCreditTrackUserSetting()
+    {
+        return $this->creditTrackUserSetting;
     }
 }

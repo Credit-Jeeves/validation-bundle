@@ -1,5 +1,13 @@
 body {
-  line-height: normal;
+    line-height: normal;
+    color: #333333;
+    font-family: "Helvetica Neue", HelveticaNeue, helvetica-neue, helvetica, arial, sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+table {
+    width: inherit;
 }
 
 .credittrack-promo-box {

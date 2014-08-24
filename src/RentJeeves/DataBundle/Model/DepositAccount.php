@@ -103,7 +103,8 @@ abstract class DepositAccount
     /**
      * @ORM\ManyToMany(
      *      targetEntity="PaymentAccount",
-     *      mappedBy="depositAccounts"
+     *      mappedBy="depositAccounts",
+     *      cascade={"remove"}
      * )
      * @Serializer\SerializedName("paymentAccounts")
      */

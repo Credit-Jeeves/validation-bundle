@@ -3,7 +3,7 @@
     class="pricing-popup dashboard-popup properties-popup payments-popup verify-min"
     data-payment-accounts="{{ paymentAccountsJson }}"
     data-payment-group="{{ paymentGroupJson }}">
-    <h1>{{ 'credittrack.pay.title' | trans }}</h1>
+    <h1>{{ (creditTrackEnabled ? 'credittrack.pay.edit.title' : 'credittrack.pay.title') | trans }}</h1>
     <div class="clearfix col-box attention-container">
 
         <ul class="steps clearfix">
@@ -11,7 +11,9 @@
                 <span class="step"><span style="width:258px">{{ 'credittrack.pay.step.1' | trans }}</span></span>
             </li>
             <li class="step2" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
-                <span class="step"><span style="width:245px">{{ 'credittrack.pay.step.2' | trans }}</span></span>
+                <span class="step"><span style="width:245px">
+                    {{ (creditTrackEnabled ? 'credittrack.pay.step.2.edit' : 'credittrack.pay.step.2') | trans }}
+                </span></span>
             </li>
         </ul>
 
@@ -84,6 +86,16 @@
                             <span class="value" data-bind="text: getTotalAmount()"></span>
                         </div>
                     </div>#}
+                    <div class="form-row clearfix">
+                        <label>{{ 'credittrack.pay.charged_on' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value">
+                                {{ 'credittrack.pay.charged_day' | trans({ '%DAY%': chargeDay }) }}
+                            </span>
+                        </div>
+                    </div>
+                    <h4>{{ 'note' | trans }}</h4>
+                    <p>{{ 'credittrack.pay.note' | trans }}</p>
                 </div>
                 <div class="half-box right">
                     <h4>{{ 'checkout.how_paying' | trans }}</h4>
@@ -181,7 +193,7 @@
             <span>{{ 'pay_popup.step.next' | trans }}</span>
         </button>
         <button class="button" data-bind="visible: 'pay' == step(), click: next">
-            <span>{{ 'checkout.make_payment' | trans }}</span>
+            <span>{{ (creditTrackEnabled ? 'credittrack.pay.save' : 'checkout.make_payment') | trans }}</span>
         </button>
         {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': false}) }}
     </div>

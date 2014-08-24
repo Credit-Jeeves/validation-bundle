@@ -66,9 +66,6 @@ function CreditTrackPayDialog(options) {
         return self.paymentAccounts().length > 0;
     });
 
-    this.isNewPaymentAccount = ko.computed(function() {
-        return this.newPaymentAccount() && !self.paymentSource.id();
-    }, self);
     this.addNewPaymentAccount = function() {
         self.newPaymentAccount(true);
         self.paymentSource.clear();
@@ -80,6 +77,11 @@ function CreditTrackPayDialog(options) {
         this.propertyFullAddress,
         'card' //Temporary #RT-529
     );
+
+    this.isNewPaymentAccount = ko.computed(function() {
+        return this.newPaymentAccount() && !self.paymentSource.id();
+    }, self);
+
     jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_type_row').hide(); //Temporary #RT-529
     this.paymentSource.groupId(this.paymentGroup.id);
     this.getLastPaymentDay = 'no finish date';
@@ -132,7 +134,7 @@ function CreditTrackPayDialog(options) {
             case 'pay':
                 $('#credit-track-pay-popup').dialog('close');
                 jQuery('body').showOverlay();
-                window.location.href = Routing.generate('user_report');
+                window.location.href = data.url;
                 return;
                 break;
         }

@@ -20,11 +20,15 @@ class SettingsController extends Controller
 
         $paymentPlan = $this->get('translator')->trans('settings.plans.free');
 
-        if (($settings = $user->getSettings()) && ($paymentAccount = $settings->getCreditTrackPaymentAccount())) {
-            $paymentPlan = $this->get('translator')->trans(
-                'settings.plans.paid',
-                array('%PAYMENT_ACCOUNT%' => (string)$paymentAccount)
-            );
+        if ($user->getSettings()->isCreditTrack()) {
+            if ($paymentAccount = $user->getSettings()->getCreditTrackPaymentAccount()) {
+                $paymentPlan = $this->get('translator')->trans(
+                    'settings.plans.paid',
+                    array('%PAYMENT_ACCOUNT%' => (string)$paymentAccount)
+                );
+            } else {
+                $paymentPlan = $this->get('translator')->trans('settings.plans.none');;
+            }
         }
         return array(
             'paymentPlan' => $paymentPlan,

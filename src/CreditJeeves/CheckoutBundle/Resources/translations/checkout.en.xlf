@@ -167,11 +167,13 @@
             </trans-unit>
             <trans-unit id="credittrack.buy.link">
                 <source>credittrack.buy.link</source>
-                <target>Sign Up</target>
+                <target>Learn More</target>
             </trans-unit>
             <trans-unit id="credittrack.promo.amount">
                 <source>credittrack.promo.amount</source>
-                <target><![CDATA[Only <span class="integer">$%dollars%</span><span class="decimal">%cents%</span>/mo]]></target>
+                <target>
+                    <![CDATA[Only <span class="integer">$%dollars%</span><span class="decimal">%cents%</span>/mo]]>
+                </target>
             </trans-unit>
             <trans-unit id="credittrack.box.note">
                 <source>credittrack.box.note</source>

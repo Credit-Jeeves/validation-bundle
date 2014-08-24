@@ -6,6 +6,10 @@
                 <source>project_name</source>
                 <target>RentTrack</target>
             </trans-unit>
+            <trans-unit id="note">
+                <source>note</source>
+                <target>Note</target>
+            </trans-unit>
             <trans-unit id="email_rj.creditjeeves.team">
                 <source>email_rj.creditjeeves.team</source>
                 <target>The RentTrack Team</target>
@@ -1177,7 +1181,11 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.credittrack.title_2">
                 <source>popup.invite.tenant.credittrack.title_2</source>
-                <target>Build credit history while you pay rent. Introductory pricing.</target>
+                <target>Build credit history while you pay rent.</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.credittrack.monthly">
+                <source>popup.tenant.credittrack.monthly</source>
+                <target>Updated Monthly</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.credittrack">
                 <source>popup.invite.tenant.credittrack</source>
@@ -1249,7 +1257,7 @@
             </trans-unit>
             <trans-unit id="popup.cancel">
                 <source>popup.cancel</source>
-                <target>Cancel</target>
+                <target>Choose</target>
             </trans-unit>
             <trans-unit id="popup.edit">
                 <source>popup.edit</source>
@@ -2201,6 +2209,10 @@
                 <source>credittrack.pay.title</source>
                 <target>Sign up for CreditTrack</target>
             </trans-unit>
+            <trans-unit id="credittrack.pay.edit.title">
+                <source>credittrack.pay.edit.title</source>
+                <target>Edit CreditTrack Setup</target>
+            </trans-unit>
             <trans-unit id="credittrack.pay.step.1">
                 <source>credittrack.pay.step.1</source>
                 <target>Payment Source</target>
@@ -2209,6 +2221,10 @@
                 <source>credittrack.pay.step.2</source>
                 <target>Review &amp; Pay</target>
             </trans-unit>
+            <trans-unit id="credittrack.pay.step.2.edit">
+                <source>credittrack.pay.step.2.edit</source>
+                <target>Review &amp; Save</target>
+            </trans-unit>
             <trans-unit id="credittrack.pay.confirm">
                 <source>credittrack.pay.confirm</source>
                 <target>Bill me $%amount% each month for CreditTrack starting today until cancelled.</target>
@@ -2216,6 +2232,26 @@
             <trans-unit id="credittrack.pay.amount">
                 <source>credittrack.pay.amount</source>
                 <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.charged_on">
+                <source>credittrack.pay.charged_on</source>
+                <target>Charged on</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.charged_day">
+                <source>credittrack.pay.charged_day</source>
+                <target>Day %DAY% of Each Month</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.note">
+                <source>credittrack.pay.note</source>
+                <target>We'll get your latest score and credit report when you complete your payment. You'll be leaving your free credit profile, so we'll no longer show you pre-qualified credit offers.</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.save">
+                <source>credittrack.pay.save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.saved">
+                <source>credittrack.pay.saved</source>
+                <target>Payment Account has been saved successfully.</target>
             </trans-unit>
             <trans-unit id="tab.accounting">
                 <source>tab.accounting</source>
@@ -2636,6 +2672,10 @@
             <trans-unit id="settings.plans.free">
                 <source>settings.plans.free</source>
                 <target>Free</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.none">
+                <source>settings.plans.none</source>
+                <target><![CDATA[<b>None</b>]]></target>
             </trans-unit>
             <trans-unit id="settings.plans.paid">
                 <source>settings.plans.paid</source>

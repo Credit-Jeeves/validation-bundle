@@ -34,7 +34,9 @@ class CreditTrackController extends Controller
         /** @var Tenant $user */
         $user = $this->getUser();
         $paymentAccounts = $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) {
-            if (PaymentAccountType::BANK == $paymentAccount->getType()) {//Temporary #RT-529
+            if (PaymentAccountType::BANK == $paymentAccount->getType()//Temporary #RT-529
+                || $paymentAccount->getDeletedAt()
+            ) {
                 return false;
             }
             return true;
@@ -51,10 +53,16 @@ class CreditTrackController extends Controller
             'json',
             SerializationContext::create()->setGroups(array('paymentAccounts'))
         );
+        $chargeDay = (new DateTime('now'))->format('j');
+        if ($user->getSettings()->isCreditTrack()) {
+            $chargeDay = $user->getSettings()->getCreditTrackEnabledAt()->format('j');
+        }
 
         return array(
             'paymentGroupJson' => $group,
             'paymentAccountsJson' => $paymentAccounts,
+            'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
+            'chargeDay' => $chargeDay,
         );
     }
 
@@ -80,6 +88,18 @@ class CreditTrackController extends Controller
             );
         }
         $settings = $user->getSettings();
+        if ($settings->isCreditTrack()) {
+            $settings->setCreditTrackPaymentAccount($paymentAccount);
+            $em->persist($settings);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'credittrack.pay.saved');
+            return new JsonResponse(
+                array(
+                    'success' => true,
+                    'url' => $this->generateUrl('user_plans'),
+                )
+            );
+        }
 
         /** @var BinaryMaskStatusRequest $statusRequest */
         $statusRequest = $this->get('payment.pay_credit_track')
@@ -94,7 +114,8 @@ class CreditTrackController extends Controller
 
             return new JsonResponse(
                 array(
-                    'success' => true
+                    'success' => true,
+                    'url' => $this->generateUrl('user_report'),
                 )
             );
         } else {
@@ -125,14 +146,8 @@ class CreditTrackController extends Controller
     {
         /** @var Tenant $user */
         $user = $this->getUser();
-
-        if ($settings = $user->getSettings()) {
-            $creditTrackEnabled = !!$settings->getCreditTrackPaymentAccount();
-        } else {
-            $creditTrackEnabled = false;
-        }
         return array(
-            'creditTrackEnabled' => $creditTrackEnabled
+            'creditTrackEnabled' => $user->getSettings()->isCreditTrack()
         );
     }
 
