@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block fos_user_content %}
-    <div class="form-login pod-border shadow floatleft" {% if 'rj' == application %} style="width: 690px"{% endif %}>
+    <div class="form-login pod-border shadow floatleft{% if 'rj' == application %} login-block"  style="width: 650px"{% else %}"{% endif %}>
         <h1>{{ 'login.title' | trans }}</h1>
             {% for flashMessage in app.session.flashbag.get('notice') %}
             <div class="row-20"></div>
@@ -71,7 +71,7 @@
                 <tr>
                     <td class="align-right"><label class="login-label" for="password">{{ 'login.password' | trans }}</label>
                     </td>
-                    <td><input class="login-input" type="password" id="password" name="_password" required="required"/>
+                    <td><input autocomplete="off" class="login-input" type="password" id="password" name="_password" required="required"/>
                     </td>
                 </tr>
                 <tr>
@@ -96,6 +96,12 @@
             </table>
         </form>
     </div>
+    {% if 'rj' == application %}
+    <div class="create-block-logins floatleft">
+        <h2>{{ 'login.new_user_question' | trans }}</h2>
+        <a id="create-user" href="{{ path('iframe_new') }}">» {{ 'login.create_user' | trans }} </a>
+    </div>
+    {% endif %}
     {% if 'cj' == application %}
     <div class="business-logins floatleft">
         <h2>Business Logins:</h2>

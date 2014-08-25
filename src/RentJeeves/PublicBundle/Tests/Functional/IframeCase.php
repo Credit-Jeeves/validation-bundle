@@ -35,7 +35,7 @@ class IframeCase extends BaseTestCase
     public function provideGoogleAddress()
     {
         return array(
-            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', null, 40.699021, -73.993744),
+            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', 'Brooklyn', 40.699021, -73.993744),
             array('13 Greenwich St, Manhattan, New York, NY 10013', 'New York', 'Manhattan', 40.7218084, -74.0097316),
         );
     }
@@ -294,7 +294,7 @@ class IframeCase extends BaseTestCase
         $this->clearEmail();
         $this->logout();
         $this->session->visit($this->getUrl() . 'iframe');
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
@@ -371,7 +371,7 @@ class IframeCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'iframe');
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#formNewUser').length > 0");
@@ -406,7 +406,7 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->clearEmail();
         $this->logout();
-        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
         $this->session->visit($this->getUrl() . 'public_iframe?af=CREDITCOM');
         $this->session->wait($this->timeout, "$('#property-add').length > 0");
         $this->fillGoogleAddress($fillAddress);
@@ -491,7 +491,6 @@ class IframeCase extends BaseTestCase
         $this->assertCount(1, $email, 'Wrong number of emails');
     }
 
-
     /**
      * @test
      */
@@ -531,5 +530,59 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $this->checkResendInvite();
+    }
+
+    /**
+     * @test
+     */
+    public function checkHoldingSelectForNew()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $doctrine = $this->getContainer()->get('doctrine');
+        $em = $doctrine->getManager();
+
+        $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(
+            array(
+                'name' => 'Rent Holding'
+            )
+        );
+
+        $holdingSecond = $em->getRepository('DataBundle:Holding')->findOneBy(
+            array(
+                'name' => 'Estate Holding'
+            )
+        );
+
+        $this->assertNotNull($holdingFirst);
+        $this->assertNotNull($holdingSecond);
+
+        $link1 = $this->getContainer()->get('router')
+            ->generate(
+                'iframe_new',
+                array(
+                    'id'  => $holdingFirst->getId(),
+                    'type'=> 'holding'
+                )
+            );
+        $link2 = $this->getContainer()->get('router')
+            ->generate(
+                'iframe_new',
+                array(
+                    'id'  => $holdingSecond->getId(),
+                    'type'=> 'holding'
+                )
+            );
+        $link =  substr($this->getUrl(), 0, -1);
+        $link1 = $link.$link1;
+        $link2 = $link.$link2;
+
+        $this->session->visit($link1);
+        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
+        $this->assertEquals(4, count($thisIsMyRental));
+
+        $this->session->visit($link2);
+        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
+        $this->assertEquals(1, count($thisIsMyRental));
     }
 }

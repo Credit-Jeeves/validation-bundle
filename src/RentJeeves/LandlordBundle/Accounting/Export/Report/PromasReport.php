@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\CoreBundle\Session\Landlord;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface as ExportSerializer;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use DateTime;
@@ -47,6 +48,10 @@ class PromasReport extends ExportReport
         $this->generateFilename($settings);
         $reportData = $this->getData($settings);
 
+        if (empty($reportData)) {
+            return null;
+        }
+
         return $this->serializer->serialize($reportData);
     }
 
@@ -61,7 +66,7 @@ class PromasReport extends ExportReport
 
         $beginDate = $settings['begin'].' 00:00:00';
         $endDate = $settings['end'].' 23:59:59';
-        $group = $settings['group'];
+        $group = $settings['landlord']->getGroup();
 
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
@@ -70,7 +75,7 @@ class PromasReport extends ExportReport
 
     protected function validateSettings($settings)
     {
-        if (!isset($settings['group']) || !($settings['group'] instanceof Group) ||
+        if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
             !isset($settings['begin']) || !isset($settings['end'])) {
             throw new ExportException('Not enough parameters for Promas report');
         }

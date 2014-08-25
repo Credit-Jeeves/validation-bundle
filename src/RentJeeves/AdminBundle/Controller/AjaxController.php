@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\DataBundle\Model\Group;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
@@ -15,12 +16,103 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Exception;
+use JMS\Serializer\SerializationContext;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/")
  */
 class AjaxController extends Controller
 {
+
+    protected function makeJsonResponse($data, $groups = array('AdminProperty'))
+    {
+        $serializer = $this->get('jms_serializer');
+        $context = new SerializationContext();
+        $context->setGroups($groups);
+
+        if (empty($data)) {
+            return new Response(
+                $serializer->serialize(
+                    array(),
+                    $format = 'json',
+                    $context
+                )
+            );
+        }
+
+        return new Response(
+            $serializer->serialize(
+                $data,
+                $format = 'json',
+                $context
+            )
+        );
+    }
+
+    /**
+     * @Route(
+     *     "/rj/group/properties",
+     *     name="admin_rj_group_properties",
+     *     options={"expose"=true}
+     * )
+     */
+    public function propertyAction(Request $request)
+    {
+        $groupId = $request->request->get('groupId');
+        $em = $this->getDoctrine()->getManager();
+        $group = $em->getRepository('DataBundle:Group')->find($groupId);
+        if (empty($group)) {
+            throw new Exception("Group not found.");
+        }
+        $properties = $group->getGroupProperties();
+
+        return $this->makeJsonResponse($properties);
+
+    }
+
+    /**
+     * @Route(
+     *    "/rj/property/units",
+     *     name="admin_rj_group_units",
+     *     options={"expose"=true}
+     * )
+     */
+    public function unitAction(Request $request)
+    {
+        $propertyId = $request->request->get('id');
+        $groupId = $request->request->get('groupId');
+        $em = $this->getDoctrine()->getManager();
+        $units = $em->getRepository('RjDataBundle:Unit')->findBy(
+            array(
+                'group' => $groupId,
+                'property' => $propertyId
+            )
+        );
+
+        return $this->makeJsonResponse($units, array("AdminUnit"));
+    }
+
+    /**
+     * @Route(
+     *    "/rj/residentMapping/tenants",
+     *     name="admin_rj_residentMapping_tenants",
+     *     options={"expose"=true}
+     * )
+     */
+    public function tenantsAction(Request $request)
+    {
+        $holdingId = $request->request->get('holdingId');
+        $em = $this->getDoctrine()->getManager();
+        $tenants = $em->getRepository('RjDataBundle:Tenant')->findByHolding(
+            $holdingId
+        )->getQuery()->getResult();
+
+        return $this->makeJsonResponse(
+            $tenants,
+            array("AdminResidentMapping")
+        );
+    }
     /**
      * @Route(
      *     "/rj/group/{id}/terminal",

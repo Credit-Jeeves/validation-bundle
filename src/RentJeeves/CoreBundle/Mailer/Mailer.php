@@ -13,6 +13,7 @@ use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Exception;
 use RuntimeException;
+use DateTime;
 use CreditJeeves\DataBundle\Enum\OrderType;
 
 /**
@@ -155,7 +156,7 @@ class Mailer extends BaseMailer
     public function sendRentReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderReceipt')
     {
         $tenant = $order->getUser();
-        $history = $order->getHeartlands()->last();
+        $history = $order->getCompleteTransaction();
         $fee = $order->getFee();
         $amount = $order->getSum();
         $total = $fee + $amount;
@@ -309,7 +310,8 @@ class Mailer extends BaseMailer
             'tenantFullName' => $tenant->getFullName(),
             'orderStatus' => $order->getStatus(),
             'rentAmount' => $order->getSum(),
-            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s')
+            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
+            'reversalDescription' => $order->getHeartlandErrorMessage(),
         );
 
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -324,6 +326,7 @@ class Mailer extends BaseMailer
             'rentAmount' => $order->getSum(),
             'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'tenantName' => $tenant->getFullName(),
+            'reversalDescription' => $order->getHeartlandErrorMessage(),
         );
 
         $group = $order->getContract()->getGroup();
@@ -337,14 +340,14 @@ class Mailer extends BaseMailer
     public function sendPendingInfo(Order $order, $template = 'rjPendingOrder')
     {
         $tenant = $order->getContract()->getTenant();
-        $history = $order->getHeartlands()->last();
+        $transaction = $order->getCompleteTransaction();
         $amount = $order->getSum();
         $fee = $order->getFee();
         $total = $fee + $amount;
         $vars = array(
             'tenantName' => $tenant->getFullName(),
             'orderTime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
-            'transactionID' => $history ? $history->getTransactionId() : 'N/A',
+            'transactionID' => $transaction ? $transaction->getTransactionId() : 'N/A',
             'amount' => $amount,
             'fee' => $fee,
             'total' => $total,
@@ -364,5 +367,54 @@ class Mailer extends BaseMailer
             'paymentAmount' => $payment->getAmount(),
         );
         return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param array $groups
+     * @param DateTime $date
+     * @return bool
+     */
+    public function sendBatchDepositReportHolding(Landlord $landlord, $groups, DateTime $date)
+    {
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date,
+            'groups' => $groups,
+        ];
+
+        return $this->sendBaseLetter(
+            'rjBatchDepositReportHolding',
+            $vars,
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param Group $group
+     * @param DateTime $date
+     * @param array $batches
+     * @param $returns
+     * @return bool
+     */
+    public function sendBatchDepositReportLandlord(Landlord $landlord, Group $group, DateTime $date, $batches, $returns)
+    {
+        $vars = [
+            'landlordFirstName' => $landlord->getFirstName(),
+            'date' => $date,
+            'groupName' => $group->getName(),
+            'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
+            'batches' => $batches,
+            'returns' => $returns,
+        ];
+
+        return $this->sendBaseLetter(
+            'rjBatchDepositReportLandlord',
+            $vars,
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
     }
 }

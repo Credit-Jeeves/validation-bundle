@@ -8,6 +8,7 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -80,13 +81,17 @@ class PaymentCommandsCase extends BaseTestCase
 
         $payment = $this->createPayment($contract, $amount);
         $em->persist($payment);
-        $em->flush();
+        $em->flush($payment);
 
         $this->executeCommand();
 
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
+        $this->assertNotNull($completeTransaction = $order->getCompleteTransaction());
+        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($paymentAccount = $completeTransaction->getPaymentAccount());
+        $this->assertEquals($payment->getPaymentAccount()->getId(), $paymentAccount->getId());
         $operations = $order->getOperations();
         $this->assertCount(3, $operations);
 
@@ -138,6 +143,7 @@ class PaymentCommandsCase extends BaseTestCase
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
+        $this->assertNotNull($order->getHeartlandBatchId());
         $operations = $order->getOperations();
         $this->assertCount(1, $operations);
 
@@ -161,10 +167,52 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertEquals(0, $contract->getIntegratedBalance());
     }
 
+    /**
+     * @test
+     */
+    public function completeOrderInstantlyWhenPayingWithCC()
+    {
+        $this->load(true);
+        /** @var EntityManager $em */
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /** @var Contract $contract */
+        $contract = $this->getContract($em);
+        /** @var Payment $payment */
+        $payment = $this->createPayment($contract, $contract->getRent());
+        $payment->setPaidFor(new DateTime());
+        $paymentAccount = $contract->getTenant()->getPaymentAccounts()->filter(
+            function ($paymentAccount) {
+                if (PaymentAccountType::CARD == $paymentAccount->getType()) {
+                    return true;
+                }
+                return false;
+            }
+        )->first();
+        $payment->setPaymentAccount($paymentAccount);
+
+        $em->persist($payment);
+        $em->flush();
+
+        $this->executeCommand();
+
+        /** @var Order $order */
+        $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $contract->getRent()));
+        $this->assertNotNull($order);
+        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
+    }
+
     protected function createPayment(Contract $contract, $amount)
     {
         $tenant = $contract->getTenant();
-        $paymentAccount = $tenant->getPaymentAccounts()->first();
+        $paymentAccount = $tenant->getPaymentAccounts()->filter(
+            function ($paymentAccount) {
+                if (PaymentAccountType::BANK == $paymentAccount->getType()) {
+                    return true;
+                }
+                return false;
+            }
+        )->first();
 
         $payment = new Payment();
         $payment->setAmount($amount);
@@ -211,10 +259,6 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertCount(0, $jobs);
     }
 
-    /**
-     * @param $em
-     * @return array
-     */
     protected function getContract($em)
     {
         $rentAmount = 987;

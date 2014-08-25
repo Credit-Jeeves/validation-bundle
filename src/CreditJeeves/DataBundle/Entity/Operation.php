@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Operation as Base;
@@ -19,6 +20,8 @@ use Exception;
  */
 class Operation extends Base
 {
+    const NOT_AVAILABLE = 'N/A';
+
     /**
      * It's class attribute not from DB, it's from user form
      * For generate correct report xml
@@ -358,7 +361,7 @@ class Operation extends Base
             $code = '';
         }
 
-        return sprintf('%s %d', $code, $this->getOrder()->getHeartlandTransactionId());
+        return sprintf('%s %d', $code, $this->getHeartlandTransactionId());
     }
 
     /**
@@ -372,7 +375,12 @@ class Operation extends Base
      */
     public function getNotes()
     {
+        if ($this->isReversalOrderStatus()) {
+            return sprintf('Reverse for Trans ID %d', $this->getHeartlandTransactionId());
+        }
+
         $order = $this->getOrder();
+
         if (!$contract = $order->getContract()) {
             return null;
         }
@@ -389,6 +397,72 @@ class Operation extends Base
         $address = $property->getFullAddress().$unitName;
 
         return $address;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ReturnType")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getReturnType()
+    {
+        if (!$this->isReversalOrderStatus()) {
+            return self::NOT_AVAILABLE;
+        }
+
+        switch ($this->getOrder()->getStatus()) {
+            case OrderStatus::REFUNDED:
+                return 'Reverse';
+            case OrderStatus::RETURNED:
+                return 'NSF';
+        }
+
+        return self::NOT_AVAILABLE;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("BatchId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string | integer
+     */
+    public function getBatchId()
+    {
+        if (!$this->isReversalOrderStatus()) {
+            return self::NOT_AVAILABLE;
+        }
+
+        return 0;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("OriginalReceiptDate")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string | null
+     */
+    public function getOriginalReceiptDate()
+    {
+        if (!$this->isReversalOrderStatus()) {
+            return self::NOT_AVAILABLE;
+        }
+
+        $heartlands = $this->getOrder()->getHeartlands();
+        if (count($heartlands) > 0) {
+            return $heartlands->first()->getCreatedAt()->format('Y-m-d\TH:i:s');
+        }
+
+        return null;
     }
 
     /**
@@ -458,5 +532,38 @@ class Operation extends Base
     {
         $days = $this->getPaidFor()->diff($this->getCreatedAt())->format('%r%a');
         return $days;
+    }
+
+    protected $reversalOrderTypes = [
+        OrderStatus::RETURNED,
+        OrderStatus::REFUNDED,
+    ];
+    /**
+     * return bool
+     */
+    protected function isReversalOrderStatus()
+    {
+        $order = $this->getOrder();
+
+        if (!$order || !in_array($order->getStatus(), $this->reversalOrderTypes)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getHeartlandTransactionId($original = true)
+    {
+        $order = $this->getOrder();
+
+        if ($order) {
+            if ($original && $trans = $order->getCompleteTransaction()) {
+                return  $trans->getTransactionId();
+            }
+
+            return $order->getHeartlandTransactionId();
+        }
+
+        return null;
     }
 }

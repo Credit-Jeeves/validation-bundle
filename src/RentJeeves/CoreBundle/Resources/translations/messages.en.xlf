@@ -462,6 +462,12 @@
                     %count% rentals in %city%, %area%:
                 </target>
             </trans-unit>
+            <trans-unit id="result.search2">
+                <source>result.search2</source>
+                <target>
+                    %count% Rentals Found:
+                </target>
+            </trans-unit>
             <trans-unit id="edit.tenant.info">
                 <source>edit.tenant.info</source>
                 <target>
@@ -856,7 +862,11 @@
                 <source>error.email.already.use</source>
                 <target>Email already use in the system.</target>
             </trans-unit>
-           <trans-unit id="error.start.empty">
+            <trans-unit id="error.residentId.already_use">
+                <source>error.residentId.already_use</source>
+                <target>ResidentId is already used.</target>
+            </trans-unit>
+            <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
                 <target>Specify a start date.</target>
             </trans-unit>
@@ -1535,6 +1545,10 @@
                 <source>select.rental</source>
                 <target>Please select your rental.</target>
             </trans-unit>
+            <trans-unit id="order.status">
+                <source>order.status</source>
+                <target>Status</target>
+            </trans-unit>
             <trans-unit id="order.status.text.new">
                 <source>order.status.text.new</source>
                 <target>PENDING</target>
@@ -1623,6 +1637,18 @@
                 <source>order.date.time</source>
                 <target>Date &amp; Time</target>
             </trans-unit>
+            <trans-unit id="order.resident">
+                <source>order.resident</source>
+                <target>Resident</target>
+            </trans-unit>
+            <trans-unit id="order.type.heartland_card">
+                <source>order.type.heartland_card</source>
+                <target>CC</target>
+            </trans-unit>
+            <trans-unit id="order.type.heartland_bank">
+                <source>order.type.heartland_bank</source>
+                <target>ACH</target>
+            </trans-unit>
             <trans-unit id="order.fee">
                 <source>order.fee</source>
                 <target>Fee</target>
@@ -1655,6 +1681,10 @@
                 <source>order.transaction.id</source>
                 <target>Transaction ID</target>
             </trans-unit>
+            <trans-unit id="order.transaction.id.short">
+                <source>order.transaction.id.short</source>
+                <target>Trans.ID</target>
+            </trans-unit>
             <trans-unit id="order.contact.us">
                 <source>order.contact.us</source>
                 <target>Please contact RentTrack at help@renttrack.com or call 866-841-9090.</target>
@@ -1677,7 +1707,7 @@
             </trans-unit>
             <trans-unit id="fill.full.address">
                 <source>fill.full.address</source>
-                <target>Please fill full address and try again. It's very short.</target>
+                <target>Please fill full address and try again. It's very short or invalid.</target>
             </trans-unit>
             <trans-unit id="tenant.wants.unit">
                 <source>tenant.wants.unit</source>
@@ -1828,32 +1858,32 @@
                 <source>tabs.reports</source>
                 <target>Reports</target>
             </trans-unit>
-            <trans-unit id="base.order.report.type.yardi">
-                <source>base.order.report.type.yardi</source>
+            <trans-unit id="order.report.type.yardi">
+                <source>order.report.type.yardi</source>
                 <target>Yardi Voyager (XML)</target>
             </trans-unit>
-            <trans-unit id="base.order.report.type.realpage">
-                <source>base.order.report.type.realpage</source>
+            <trans-unit id="order.report.type.realpage">
+                <source>order.report.type.realpage</source>
                 <target>RealPage OneSite (CSV)</target>
             </trans-unit>
-            <trans-unit id="base.order.report.type.promas">
-                <source>base.order.report.type.promas</source>
+            <trans-unit id="order.report.type.promas">
+                <source>order.report.type.promas</source>
                 <target>Promas (CSV)</target>
             </trans-unit>
-            <trans-unit id="base.order.report.download">
-                <source>base.order.report.download</source>
+            <trans-unit id="order.report.download">
+                <source>order.report.download</source>
                 <target>Download Report</target>
             </trans-unit>
             <trans-unit id="help">
                 <source>help</source>
                 <target>Help</target>
             </trans-unit>
-            <trans-unit id="base.order.report.how_to.yardi">
-                <source>base.order.report.how_to.yardi</source>
+            <trans-unit id="order.report.how_to.yardi">
+                <source>order.report.how_to.yardi</source>
                 <target>How to Import into Yardi</target>
             </trans-unit>
-            <trans-unit id="base.order.report.how_to.realpage">
-                <source>base.order.report.how_to.realpage</source>
+            <trans-unit id="order.report.how_to.realpage">
+                <source>order.report.how_to.realpage</source>
                 <target>How to Import into RealPage OneSite</target>
             </trans-unit>
             <trans-unit id="landlord.hps.processing_message">
@@ -2369,9 +2399,21 @@
                 <source>payment.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="payment.status_message">
+                <source>payment.status_message</source>
+                <target>Status Message</target>
+            </trans-unit>
             <trans-unit id="payment.date">
                 <source>payment.date</source>
                 <target>Date</target>
+            </trans-unit>
+            <trans-unit id="payment.date_initiated">
+                <source>payment.date_initiated</source>
+                <target>Date Initiated</target>
+            </trans-unit>
+            <trans-unit id="payment.date_reversal">
+                <source>payment.date_reversal</source>
+                <target>Reversal Date</target>
             </trans-unit>
             <trans-unit id="payment.property">
                 <source>payment.property</source>
@@ -2513,6 +2555,18 @@
                 <source>export.promas.make_zip</source>
                 <target>Separate By Batch Deposits (ZIP File with Multiple CSVs)</target>
             </trans-unit>
+            <trans-unit id="export.no_data">
+                <source>export.no_data</source>
+                <target>No data to export</target>
+            </trans-unit>
+            <trans-unit id="order.report.type.renttrack">
+                <source>order.report.type.renttrack</source>
+                <target>Standard Export(CSV)</target>
+            </trans-unit>
+            <trans-unit id="export.renttrack.include_all_groups">
+                <source>export.renttrack.include_all_groups</source>
+                <target>Include Transactions from All Groups</target>
+            </trans-unit>
             <trans-unit id="tenant.no_balance.alert">
                 <source>tenant.no_balance.alert</source>
                 <target>You do not have a balance to pay at this time.</target>
@@ -2523,6 +2577,14 @@
                     Your property manager is not accepting payments at this time.
                     Please come back between days %OPEN_DAY% and %CLOSE_DAY%.
                 </target>
+            </trans-unit>
+            <trans-unit id="transaction.status.text.complete">
+                <source>transaction.status.text.complete</source>
+                <target>PAID</target>
+            </trans-unit>
+            <trans-unit id="transaction.status.text.reversed">
+                <source>transaction.status.text.reversed</source>
+                <target>REVERSED</target>
             </trans-unit>
         </body>
     </file>

@@ -9,9 +9,11 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RuntimeException;
 
 /**
@@ -63,6 +65,22 @@ class Order extends BaseOrder
     }
 
     /**
+     * @return null | Unit
+     */
+    public function getUnit()
+    {
+        $contract = $this->getContract();
+
+        if (!$contract) {
+            return null;
+        }
+
+        $unit = $contract->getUnit();
+
+        return $unit;
+    }
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Unit")
      * @Serializer\Groups({"csvReport"})
@@ -72,12 +90,8 @@ class Order extends BaseOrder
     public function getUnitName()
     {
         $unitName = '';
-        $contract = $this->getContract();
-        if (!$contract) {
-            return $unitName;
-        }
 
-        $unit = $contract->getUnit();
+        $unit = $this->getUnit();
 
         if ($unit) {
             $unitName = $unit->getName();
@@ -130,7 +144,12 @@ class Order extends BaseOrder
      */
     public function getExternalUnitId()
     {
-        return $this->getContract()->getUnit()->getUnitMapping()->getExternalUnitId();
+        $unit = $this->getUnit();
+        if ($unit) {
+            return $unit->getUnitMapping()->getExternalUnitId();
+        }
+
+        return null;
     }
 
     /**
@@ -265,7 +284,18 @@ class Order extends BaseOrder
         );
     }
 
+    /**
+     * @return string|null
+     */
+    public function getGroupName()
+    {
+        $contract = $this->getContract();
+        if ($contract && ($group = $contract->getGroup())) {
+            return $group->getName();
+        }
 
+        return null;
+    }
 
     /**
      * @return \Doctrine\Common\Collections\Collection
@@ -383,6 +413,27 @@ class Order extends BaseOrder
         return $result;
     }
 
+    public function getOrderTypes()
+    {
+        $type = $this->getType();
+        switch ($type) {
+            case OrderType::HEARTLAND_CARD:
+                $result = 'credit-card';
+                break;
+            case OrderType::HEARTLAND_BANK:
+                $result = 'e-check';
+                break;
+            case OrderType::CASH:
+                $result = 'cash';
+                break;
+            default:
+                $result = '';
+                break;
+        }
+
+        return $result;
+    }
+
     protected function getOrderStatusStyle()
     {
         switch ($this->getStatus()) {
@@ -424,41 +475,66 @@ class Order extends BaseOrder
         return $result;
     }
 
-    public function getOrderTypes()
+    public function getHeartlandTransaction()
     {
-        $type = $this->getType();
-        switch ($type) {
-            case OrderType::HEARTLAND_CARD:
-                $result = 'credit-card';
-                break;
-            case OrderType::HEARTLAND_BANK:
-                $result = 'e-check';
-                break;
-            case OrderType::CASH:
-                $result = 'cash';
-                break;
-            default:
-                $result = '';
-                break;
+        if (OrderStatus::RETURNED == $this->getStatus() ||
+            OrderStatus::REFUNDED == $this->getStatus() ||
+            OrderStatus::CANCELLED == $this->getStatus()) {
+            $transaction = $this->getReversedTransaction();
+        } else {
+            $transaction = $this->getCompleteTransaction();
         }
-        return $result;
+
+        if ($transaction) {
+            return $transaction;
+        }
+
+        return null;
     }
 
     public function getHeartlandTransactionId()
     {
-        $result = 0;
-        $heartlands = $this->getHeartlands();
-        if (count($heartlands) > 0) {
-            $result = $heartlands->last()->getTransactionId();
+        if ($transaction = $this->getHeartlandTransaction()) {
+            return $transaction->getTransactionId();
         }
-        return $result;
+
+        return null;
+    }
+
+    /**
+     * @return boolean|Heartland
+     */
+    public function getCompleteTransaction()
+    {
+        return $this->getHeartlands()
+            ->filter(
+                function (Heartland $transaction) {
+                    if (TransactionStatus::COMPLETE == $transaction->getStatus() && $transaction->getIsSuccessful()) {
+                        return true;
+                    }
+                    return false;
+                }
+            )->first();
+    }
+
+    public function getReversedTransaction()
+    {
+        return $this->getHeartlands()
+            ->filter(
+                function (Heartland $transaction) {
+                    if (TransactionStatus::REVERSED == $transaction->getStatus() && $transaction->getIsSuccessful()) {
+                        return true;
+                    }
+                    return false;
+                }
+            )->first();
     }
 
     public function getHeartlandBatchId()
     {
-        $heartlands = $this->getHeartlands();
-        if (count($heartlands) > 0) {
-            return $heartlands->last()->getBatchId();
+        /** @var Heartland $transaction */
+        if ($transaction = $this->getHeartlandTransaction()) {
+            return $transaction->getBatchId();
         }
 
         return null;
@@ -466,12 +542,12 @@ class Order extends BaseOrder
 
     public function getHeartlandErrorMessage()
     {
-        $result = '';
-        $heartlands = $this->getHeartlands();
-        if (count($heartlands) > 0) {
-            $result = $heartlands->last()->getMessages();
+        /** @var Heartland $transaction */
+        if ($transaction = $this->getReversedTransaction()) {
+            return $transaction->getMessages();
         }
-        return $result;
+
+        return '';
     }
 
     /**
@@ -518,18 +594,6 @@ class Order extends BaseOrder
         }
 
         return false;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getGroupName()
-    {
-        if ($contract = $this->getContract()) {
-            return $contract->getGroup()->getName();
-        }
-
-        return null;
     }
 
     public function getAvailableOrderStatuses()

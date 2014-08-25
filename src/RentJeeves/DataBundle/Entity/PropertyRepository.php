@@ -1,10 +1,67 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
+    public function getDuplicateProperties()
+    {
+        $query = $this->createQueryBuilder('property')
+                ->select(
+                    '
+                    property.id,
+                    property.zip,
+                    property.number,
+                    property.street,
+                    COUNT(property.street) AS street_c,
+                    COUNT(property.number) AS number_c,
+                    COUNT(property.zip) AS zip_c
+                    '
+                )
+                ->groupBy(
+                    'property.street',
+                    'property.number',
+                    'property.zip'
+                )
+                ->having(
+                    'street_c > 1
+                    AND number_c > 1
+                    AND zip_c > 1'
+                );
+
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    public function getDublicatePropertiesWithContract()
+    {
+        $sql = <<< EOT
+SELECT (
+COUNT( property.id ) - COUNT(DISTINCT(property.id))) AS difference,
+property.id AS property_id, property.zip AS zip, property.number AS number,
+property.street AS street, contract.id AS contract_id,
+COUNT( contract.id ) AS count_contract, COUNT( property.zip ) AS count_zip,
+COUNT( property.number ) AS count_number, COUNT( property.street ) AS count_street
+FROM rj_property as property
+INNER JOIN rj_contract as contract ON property.id = contract.property_id
+GROUP BY property.street, property.number, property.zip
+HAVING count_street > 1
+AND count_number > 1
+AND count_zip > 1
+AND difference = 0
+
+EOT;
+        $stmt = $this->getEntityManager()
+            ->getConnection()
+            ->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+
     public function getPropetiesAll($group)
     {
         $query = $this->createQueryBuilder('p');
@@ -117,12 +174,12 @@ class PropertyRepository extends EntityRepository
     public function findOneWithUnitAndAlphaNumericSort($propertyId)
     {
         $query = $this->createQueryBuilder('p')
-                      ->select('LENGTH(u.name) as co,p,u');
-        $query->leftJoin('p.units', 'u');
+                      ->select('LENGTH(unit.name) as co,p,unit');
+        $query->leftJoin('p.units', 'unit');
         $query->where('p.id = :propertyId');
         $query->setParameter('propertyId', $propertyId);
         $query->addOrderBy('co', 'ASC');
-        $query->addOrderBy('u.name', 'ASC');
+        $query->addOrderBy('unit.name', 'ASC');
         $query = $query->getQuery();
         $result = $query->getResult();
 
@@ -151,5 +208,27 @@ class PropertyRepository extends EntityRepository
         }
 
         return null;
+    }
+
+    public function findByHoldingAndAlphaNumericSort(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('LENGTH(unit.name) as co,p,unit');
+        $query->innerJoin('p.property_groups', 'p_group');
+        $query->leftJoin('p.units', 'unit');
+        $query->where('p_group.holding_id = :holdingId');
+        $query->andWhere('unit.holding = :holdingId');
+        $query->andWhere('p.jb IS NOT NULL AND p.kb IS NOT NULL');
+        $query->setParameter('holdingId', $holding->getId());
+        $query->addOrderBy('co', 'ASC');
+        $query->addOrderBy('unit.name', 'ASC');
+        $query = $query->getQuery();
+        $result = $query->getResult();
+
+        if (!empty($result)) {
+            $result = array_map('current', $result);
+        }
+
+        return $result;
     }
 }

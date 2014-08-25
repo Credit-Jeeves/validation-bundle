@@ -118,6 +118,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
      * @param mixed $data
      * @param array $type
      *
+     * @param \JMS\Serializer\Context $context
      * @return void
      */
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
@@ -148,6 +149,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
      * @param ClassMetadata $metadata
      * @param mixed $data
      * @param array $type
+     * @param \JMS\Serializer\Context $context
      *
      * @return mixed
      */
@@ -200,5 +202,6 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
     protected function initOutput()
     {
         $this->fp = fopen('php://temp', 'r+');
+        $this->headerFlag = false;
     }
 }

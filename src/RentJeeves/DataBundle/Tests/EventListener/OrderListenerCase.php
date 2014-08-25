@@ -351,11 +351,10 @@ class OrderListenerCase extends Base
         $paidTo = $contract->getPaidTo();
         $paidToOriginal = clone $paidTo;
 
-
         $order = new Order();
         $order->setUser($tenant);
         $order->setSum(1000);
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setType(OrderType::HEARTLAND_BANK);
         $order->setStatus(OrderStatus::PENDING);
 
         $operation = new Operation();

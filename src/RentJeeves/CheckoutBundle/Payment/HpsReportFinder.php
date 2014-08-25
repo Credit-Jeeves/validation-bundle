@@ -29,10 +29,10 @@ class HpsReportFinder
     /**
      * @return null|string
      */
-    public function find()
+    public function find($suffix = '')
     {
         $finder = new Finder();
-        $finder->files()->in($this->reportPath)->name('*.csv')->depth('== 0');
+        $finder->files()->in($this->reportPath)->name("*{$suffix}.csv")->depth('== 0');
         if ($finder->count() == 0) {
             return null;
         }
@@ -42,16 +42,21 @@ class HpsReportFinder
         }
     }
 
+    public function findBySuffix($suffix)
+    {
+        return $this->find($suffix);
+    }
+
     /**
      * @param $filename
      * @return bool
      * @throws \RuntimeException
      */
-    public function archive($filename)
+    public function archive($filename, $suffix = '')
     {
         $now = new DateTime();
         $archiveDir = sprintf('%s/archive/%s/%s', $this->reportPath, $now->format('Y'), $now->format('m'));
-        $archiveFilename = sprintf('%s/%s.csv', $archiveDir, $now->format('d-H-i-s'));
+        $archiveFilename = sprintf('%s/%s%s.csv', $archiveDir, $now->format('d-H-i-s'), $suffix);
 
         try {
             $filesystem = new Filesystem();

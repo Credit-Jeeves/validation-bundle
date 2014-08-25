@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "08f0d98af64ce57c98ade5a6a753c07b2658b607"
+                    "reference": "3ea88fc5e6191508c47f0c6d43d41b732af595ce"
                 }
             }
         },
@@ -108,7 +108,7 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/Heartland.git"
+            "url": "git@github.com:Credit-Jeeves/Heartland.git"
         },
         {
             "type": "git",
@@ -243,7 +243,7 @@
         "guzzle/http": "v3.5.0",
         "apy/jsfv-bundle":"dev-master",
         "willdurand/js-translation-bundle": "dev-master",
-        "willdurand/geocoder-bundle": "v3.0.2",
+        "willdurand/geocoder-bundle": "dev-master",
         "beberlei/DoctrineExtensions": "dev-master",
         "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
         "pagerfanta/pagerfanta": "dev-master",

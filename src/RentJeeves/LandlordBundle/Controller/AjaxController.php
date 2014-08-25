@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -264,11 +265,13 @@ class AjaxController extends Controller
         $property = array();
         $itsNewProperty = false;
         $data = $request->request->all('address');
-        $addGroup = $request->request->all('addGroup');
+        $addGroup = (int)$request->request->all('addGroup');
         $data = json_decode($data['data'], true);
-        $addGroup = (!isset($data['addGroup'])
-                     || (isset($data['addGroup']) && $data['addGroup'] == 1)
-                    )?  true : false;
+        $addGroup = (isset($data['addGroup']) && $data['addGroup'] === 1)?  true : false;
+        /**
+         * @var $propertyProcess PropertyProcess
+         */
+        $propertyProcess = $this->container->get('property.process');
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
         $propertyDataLocation = $property->parseGoogleLocation($data);
@@ -280,12 +283,10 @@ class AjaxController extends Controller
                 )
             );
         }
+
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
         /** @var Property $property */
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
-        if ($property && $request->request->has('isSingle')) {
-            $property->setIsSingle($request->request->get('isSingle') == 'true');
-        }
+        $property = $propertyProcess->getPropertyFromDB($propertySearch);
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
@@ -294,6 +295,19 @@ class AjaxController extends Controller
             $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
             $property->fillPropertyData($propertyData);
             $itsNewProperty = true;
+        }
+
+        if ($request->request->has('isSingle') && is_null($property->getIsSingle())) {
+            $property->setIsSingle($request->request->get('isSingle') == 'true');
+        }
+
+        if (!$propertyProcess->isValidProperty($property)) {
+            return new JsonResponse(
+                array(
+                    'status'  => 'ERROR',
+                    'message' => $this->get('translator')->trans('fill.full.address')
+                )
+            );
         }
 
         if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
@@ -329,8 +343,7 @@ class AjaxController extends Controller
         }
 
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
-            $google = $this->container->get('google');
-            $google->savePlace($property);
+            $propertyProcess->saveToGoogle($property);
         }
 
         $securityContext = $this->container->get('security.context');
@@ -648,6 +661,7 @@ class AjaxController extends Controller
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
+        /** @var ContractRepository $repo */
         $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
         $query = $repo->getActionsRequiredPageQuery(
             $group,
@@ -935,12 +949,14 @@ class AjaxController extends Controller
         $filter = $request->request->get('filter');
 
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
+        $em = $this->getDoctrine()->getManager();
+        $orderRepo = $em->getRepository('DataBundle:Order');
+        $transactionRepo = $em->getRepository('RjDataBundle:Heartland');
 
-        $total = $repo->getCountDeposits($group, $filter);
+        $total = $transactionRepo->getCountDeposits($group, $filter);
         $deposits = array();
         if ($total) {
-            $deposits = $repo->getDepositedOrders($group, $filter, $page, $limit);
+            $deposits = $transactionRepo->getDepositedOrders($group, $filter, $orderRepo, $page, $limit);
         }
 
         $result = array(

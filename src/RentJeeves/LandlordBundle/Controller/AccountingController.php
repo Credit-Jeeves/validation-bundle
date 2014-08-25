@@ -90,18 +90,21 @@ class AccountingController extends Controller
         if ($formBaseOrder->isValid()) {
 
             $formData = $formBaseOrder->getData();
-            $formData['group'] = $group;
+            $formData['landlord'] = $this->get('core.session.landlord');
             $accounting = $this->get('accounting.export');
             /** @var ExportReport $report */
             $report = $accounting->getReport($formData);
 
-            $response = new Response();
-            $response->setContent($report->getContent($formData));
-            $response->headers->set('Cache-Control', 'private');
-            $response->headers->set('Content-Type', $report->getContentType());
-            $response->headers->set('Content-Disposition', 'attachment; filename=' . $report->getFilename());
+            if ($content = $report->getContent($formData)) {
+                $response = new Response();
+                $response->setContent($content);
+                $response->headers->set('Cache-Control', 'private');
+                $response->headers->set('Content-Type', $report->getContentType());
+                $response->headers->set('Content-Disposition', 'attachment; filename=' . $report->getFilename());
 
-            return $response;
+                return $response;
+            }
+            $this->get('session')->getFlashBag()->add('notice', $this->get('translator')->trans('export.no_data'));
         }
 
         return array(

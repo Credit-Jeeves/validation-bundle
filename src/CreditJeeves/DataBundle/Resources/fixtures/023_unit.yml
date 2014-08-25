@@ -204,3 +204,10 @@ fixtures:
         name:      2-e
         createdAt: '-60 days'
         updatedAt: '-8 days'
+    Unit_23:
+        property:  Property_1
+        holding:   rjHolding_2
+        group:     RentGroup_6
+        name:      2-U
+        createdAt: '-160 days'
+        updatedAt: '-160 days'

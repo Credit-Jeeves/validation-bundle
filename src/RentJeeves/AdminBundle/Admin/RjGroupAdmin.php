@@ -134,6 +134,7 @@ class RjGroupAdmin extends Admin
             ->with('Deposit Account')
                 // admin.deposit_account.merchant_name
                 ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name', 'required' => false))
+                ->add('depositAccount.accountNumber', null, array('label' => 'Account Number', 'required' => false))
                 ->add(
                     'depositAccount.status',
                     'choice',

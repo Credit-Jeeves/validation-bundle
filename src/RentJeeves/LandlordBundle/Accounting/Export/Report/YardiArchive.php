@@ -33,9 +33,13 @@ class YardiArchive extends ExportReport
         $this->validateSettings($settings);
         $this->generateFilename($settings);
 
-        $zipArchive = $this->openZipArchive();
-
         $data = $this->getData($settings);
+
+        if (empty($data)) {
+            return null;
+        }
+
+        $zipArchive = $this->openZipArchive();
 
         foreach ($data as $batchId => $batchedData) {
             $content = $this->serializer->serialize($batchedData);

@@ -33,12 +33,21 @@ class ContractProcess
         $this->em = $em;
     }
 
+    /**
+     * @param Tenant $tenant
+     * @param Property $property
+     * @param null $unitName
+     * @param ContractWaiting $contractWaiting
+     *
+     * @return Contract|void
+     */
     public function createContractFromTenantSide(
         Tenant $tenant,
         Property $property,
         $unitName = null,
         ContractWaiting $contractWaiting = null
     ) {
+
         $contract = new Contract();
         $contract->setTenant($tenant);
         $contract->setProperty($property);
@@ -67,9 +76,24 @@ class ContractProcess
             $this->em->persist($contract);
             $this->em->flush();
 
-            return;
+            return $contract;
         }
 
+        return $this->createContractFromWaiting($tenant, $contractWaiting);
+    }
+
+    /**
+     * @param Contract $contract
+     * @param ContractWaiting $contractWaiting
+     *
+     * @return Contract
+     */
+    public function createContractFromWaiting(Tenant $tenant, ContractWaiting $contractWaiting)
+    {
+        $contract = new Contract();
+        $contract->setTenant($tenant);
+        $contract->setProperty($contractWaiting->getProperty());
+        $tenant = $contract->getTenant();
         $contract->setHolding($contractWaiting->getGroup()->getHolding());
         $contract->setGroup($contractWaiting->getGroup());
         $contract->setUnit($contractWaiting->getUnit());
@@ -102,7 +126,10 @@ class ContractProcess
 
         $this->em->remove($contractWaiting);
         $this->em->flush();
+
+        return $contract;
     }
+
 
     /**
      * @param Tenant $tenant

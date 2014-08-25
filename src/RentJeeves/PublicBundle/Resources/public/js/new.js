@@ -16,8 +16,8 @@ $(document).ready(function(){
         markers: true,
         clearSearchId: 'delete',
         findButtonId: 'search-submit',
-        defaultLat: $('#lat').val(),
-        defaultLong: $('#lng').val(),
+        defaultLat: $('#lat').val() ? $('#lat').val() : null,
+        defaultLong: $('#lng').val() ? $('#lng').val() : null,
         classError :'errorsGoogleSearch',
         addPropertyCallback: function(data, textStatus, jqXHR) {
             if(data.hasLandlord) {
