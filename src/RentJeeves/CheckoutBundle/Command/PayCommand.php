@@ -1,11 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Command;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use RentJeeves\CheckoutBundle\Payment\PayRent;
 use RentJeeves\DataBundle\Entity\Job;
-use RentJeeves\DataBundle\Entity\JobRelatedPayment;
 use Doctrine\ORM\EntityManager;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
