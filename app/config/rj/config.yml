@@ -54,6 +54,9 @@ parameters:
     landlord_payment_per_month_dollars: 1
     landlord_payment_per_month_cents: 95
 framework:
+    session:
+        cookie_secure: true
+        cookie_httponly: true
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
     session:
