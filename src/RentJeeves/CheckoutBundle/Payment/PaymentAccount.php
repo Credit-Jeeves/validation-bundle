@@ -85,7 +85,7 @@ class PaymentAccount
 
             if (ACHDepositType::UNASSIGNED == $ACHDepositType) {
                 $request->setACHDepositType(ACHDepositType::CHECKING);
-                $request->setACHAccountType(ACHAccountTypee::BUSINESS);
+                $request->setACHAccountType(ACHAccountType::BUSINESS);
             } else {
                 $request->setACHDepositType($ACHDepositType);
                 $request->setACHAccountType(ACHAccountType::PERSONAL);
