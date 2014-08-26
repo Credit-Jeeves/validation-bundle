@@ -60,12 +60,12 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $commandTester->execute([ 'command' => $command->getName() ]);
 
         $this->assertRegExp('/Start prepare daily batch deposit report by/', $commandTester->getDisplay());
-        $this->assertCount(6, $plugin->getPreSendMessages());
+        $this->assertCount(1, $plugin->getPreSendMessages());
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($emails = $this->page->findAll('css', 'a'));
-        $this->assertCount(6, $emails, 'Wrong number of emails');
-        $emails[4]->click(); // Holding Admin Email
+        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $emails[0]->click(); // Holding Admin Email
         $this->page->clickLink('text/html');
 
         $groupNames = $this->page->findAll('css', '.group-name');
