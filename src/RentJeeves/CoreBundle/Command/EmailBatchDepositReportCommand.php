@@ -41,6 +41,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
 
         $holdingAdmins = $repoLandlord->findBy(['is_super_admin' => true], ['email' => 'DESC']);
         foreach ($holdingAdmins as $holdingAdmin) {
+            $needSend = false;
             /** @var Landlord $holdingAdmin */
             $groups = [];
             foreach ($holdingAdmin->getGroups() as $group) {
@@ -53,8 +54,11 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                     'batches' => $this->prepareBatchReportData($batchData),
                     'returns' => $reversalData,
                 ];
+                if (!$needSend && (count($batchData) > 0 || count($reversalData) > 0)) {
+                    $needSend = true;
+                }
             }
-            $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date);
+            !$needSend || $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date);
         }
 
         $landlords = $repoLandlord->findBy(['is_super_admin' => false], ['email' => 'DESC']);
@@ -64,13 +68,15 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 /** @var Group $group */
                 $batchData = $repoHeartland->getBatchDepositedInfo($group, $date);
                 $reversalData = $repoHeartland->getReversalDepositedInfo($group, $date);
-                $mailer->sendBatchDepositReportLandlord(
-                    $landlord,
-                    $group,
-                    $date,
-                    $this->prepareBatchReportData($batchData),
-                    $reversalData
-                );
+                if (count($batchData) > 0 || count($reversalData) > 0) {
+                    $mailer->sendBatchDepositReportLandlord(
+                        $landlord,
+                        $group,
+                        $date,
+                        $this->prepareBatchReportData($batchData),
+                        $reversalData
+                    );
+                }
             }
         }
     }
