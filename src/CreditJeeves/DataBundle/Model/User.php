@@ -30,7 +30,7 @@ abstract class User extends BaseUser
      * @ORM\GeneratedValue(
      *     strategy="AUTO"
      * )
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "AdminResidentMapping"})
      */
     protected $id;
 
@@ -170,7 +170,7 @@ abstract class User extends BaseUser
      *         "invite",
      *     }
      * )
-     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport", "AdminResidentMapping"})
      * @Serializer\Type("string")
      */
     protected $email;

@@ -61,6 +61,7 @@ class PayRent extends Pay
         }
 
         $paymentDetails = $this->getPaymentDetails();
+        $paymentDetails->setPaymentAccount($paymentAccount);
         $paymentDetails->setMerchantName($contract->getGroup()->getMerchantName());
 
         /** @var MakePaymentRequest $request */

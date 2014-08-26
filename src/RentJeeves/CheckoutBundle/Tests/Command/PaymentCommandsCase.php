@@ -112,14 +112,17 @@ class PaymentCommandsCase extends BaseTestCase
 
         $payment = $this->createPayment($contract, $amount);
         $em->persist($payment);
-        $em->flush();
+        $em->flush($payment);
 
         $this->executeCommand();
 
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
+        $this->assertNotNull($completeTransaction = $order->getCompleteTransaction());
         $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($paymentAccount = $completeTransaction->getPaymentAccount());
+        $this->assertEquals($payment->getPaymentAccount()->getId(), $paymentAccount->getId());
         $operations = $order->getOperations();
         $this->assertCount(3, $operations);
 

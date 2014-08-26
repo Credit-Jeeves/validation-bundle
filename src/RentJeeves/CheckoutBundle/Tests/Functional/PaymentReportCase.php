@@ -69,6 +69,7 @@ class PaymentReportCase extends BaseTestCase
         $this->assertEquals('8/3/2014', $depositDate->format('n/j/Y'));
         $this->assertNotNull($resultOrder = $resultTransaction->getOrder());
         $this->assertEquals(OrderStatus::COMPLETE, $resultOrder->getStatus());
+        $this->assertEquals('MrchntNm', $resultTransaction->getMerchantName());
     }
 
     /**

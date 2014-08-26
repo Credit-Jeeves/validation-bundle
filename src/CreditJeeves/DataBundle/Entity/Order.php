@@ -501,12 +501,15 @@ class Order extends BaseOrder
         return null;
     }
 
+    /**
+     * @return boolean|Heartland
+     */
     public function getCompleteTransaction()
     {
         return $this->getHeartlands()
             ->filter(
                 function (Heartland $transaction) {
-                    if (TransactionStatus::COMPLETE == $transaction->getStatus()) {
+                    if (TransactionStatus::COMPLETE == $transaction->getStatus() && $transaction->getIsSuccessful()) {
                         return true;
                     }
                     return false;
@@ -519,7 +522,7 @@ class Order extends BaseOrder
         return $this->getHeartlands()
             ->filter(
                 function (Heartland $transaction) {
-                    if (TransactionStatus::REVERSED == $transaction->getStatus()) {
+                    if (TransactionStatus::REVERSED == $transaction->getStatus() && $transaction->getIsSuccessful()) {
                         return true;
                     }
                     return false;

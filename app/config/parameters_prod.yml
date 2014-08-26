@@ -16,7 +16,7 @@ parameters:
     server_name_cj: my.creditjeeves.com
     server_name_rj: my.renttrack.com
     google_maps_key: AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24
-    session.lifetime: 3600 #in seconds
+    session.lifetime: 900 #in seconds
     payment_report_path: /home/heartland
     authorize_net:
         login_id: '29fDg7sU24G'

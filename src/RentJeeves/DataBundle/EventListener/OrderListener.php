@@ -308,7 +308,7 @@ class OrderListener
             OrderType::HEARTLAND_CARD == $order->getType() &&
             OrderStatus::COMPLETE == $order->getStatus()
         ) {
-            $batchDate = new DateTime();
+            $batchDate = $transaction->getCreatedAt();
             $transaction->setBatchDate($batchDate);
             $businessDaysCalc = $this->container->get('business_days_calculator');
             $transaction->setDepositDate($businessDaysCalc->getCreditCardBusinessDate($batchDate));

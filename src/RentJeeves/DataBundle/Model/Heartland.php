@@ -67,6 +67,18 @@ abstract class Heartland extends PaymentDetails
     protected $status = TransactionStatus::COMPLETE;
 
     /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *      inversedBy="transactions"
+     * )
+     * @ORM\JoinColumn(
+     *      name="payment_account_id",
+     *      referencedColumnName="id"
+     * )
+     */
+    protected $paymentAccount;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -166,5 +178,21 @@ abstract class Heartland extends PaymentDetails
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @param mixed $paymentAccount
+     */
+    public function setPaymentAccount(PaymentAccount $paymentAccount)
+    {
+        $this->paymentAccount = $paymentAccount;
+    }
+
+    /**
+     * @return PaymentAccount|null
+     */
+    public function getPaymentAccount()
+    {
+        return $this->paymentAccount;
     }
 }
