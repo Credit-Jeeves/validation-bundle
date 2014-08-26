@@ -273,9 +273,7 @@ class ContractRepository extends EntityRepository
             'c.reportToTransUnion = 1 OR c.reportToExperian = 1
             OR c.experianStartAt is not NULL OR c.transUnionStartAt is not NULL'
         );
-        $query->andWhere('c.status = :status');
         $query->setParameter('tenant', $tenant->getId());
-        $query->setParameter('status', ContractStatus::CURRENT);
         $query = $query->getQuery();
         return $query->getSingleScalarResult();
     }

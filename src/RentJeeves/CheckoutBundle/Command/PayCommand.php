@@ -167,6 +167,7 @@ class PayCommand extends ContainerAwareCommand
             $message = $model->getMessages();
         }
         $paymentDetails->setAmount($total + $fee);
+        $paymentDetails->setPaymentAccount($paymentAccount);
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
         $em->persist($paymentDetails);
         $em->persist($order);

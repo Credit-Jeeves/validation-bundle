@@ -161,15 +161,26 @@ abstract class PaymentAccount
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
-     * s
+     *
      * @var ArrayCollection
      */
     protected $payments;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Heartland",
+     *     mappedBy="paymentAccount"
+     * )
+     *
+     * @var ArrayCollection
+     */
+    protected $transactions;
 
     public function __construct()
     {
         $this->payments = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     /**
@@ -439,5 +450,13 @@ abstract class PaymentAccount
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTransactions()
+    {
+        return $this->transactions;
     }
 }

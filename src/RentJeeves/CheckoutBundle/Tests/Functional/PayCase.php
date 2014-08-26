@@ -51,10 +51,19 @@ class PayCase extends BaseTestCase
     }
 
     /**
+     * Turn off by Alexandr
      * @test
      */
     public function dayRange()
     {
+        $this->markTestSkipped(
+            "We have new code on the client side which don't
+            allow set start_date wrong. And this test has wrong
+            openDate and closeDate. New test for this constraint:
+            src/RentJeeves/CheckoutBundle/Tests/Unit/DayRangeCase.php
+            "
+        );
+
         $this->setDefaultSession('selenium2');
         $this->load(true);
         self::$kernel = null;

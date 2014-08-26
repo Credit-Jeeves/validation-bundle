@@ -75,6 +75,11 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
                 $this->container->get('translator')->trans('login.error.msg')
             );
         }
+        /**
+         * @var $userLog LogUser
+         */
+        $userLog = $this->container->get('user.log');
+        $userLog->signin($username, $status = 'failure');
         $url = $this->container->get('router')->generate('fos_user_security_login');
         return new RedirectResponse($url);
     }
