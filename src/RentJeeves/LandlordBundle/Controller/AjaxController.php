@@ -661,6 +661,7 @@ class AjaxController extends Controller
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
+        /** @var ContractRepository $repo */
         $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
         $query = $repo->getActionsRequiredPageQuery(
             $group,
@@ -948,12 +949,14 @@ class AjaxController extends Controller
         $filter = $request->request->get('filter');
 
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
+        $em = $this->getDoctrine()->getManager();
+        $orderRepo = $em->getRepository('DataBundle:Order');
+        $transactionRepo = $em->getRepository('RjDataBundle:Heartland');
 
-        $total = $repo->getCountDeposits($group, $filter);
+        $total = $transactionRepo->getCountDeposits($group, $filter);
         $deposits = array();
         if ($total) {
-            $deposits = $repo->getDepositedOrders($group, $filter, $page, $limit);
+            $deposits = $transactionRepo->getDepositedOrders($group, $filter, $orderRepo, $page, $limit);
         }
 
         $result = array(

@@ -462,6 +462,12 @@
                     %count% rentals in %city%, %area%:
                 </target>
             </trans-unit>
+            <trans-unit id="result.search2">
+                <source>result.search2</source>
+                <target>
+                    %count% Rentals Found:
+                </target>
+            </trans-unit>
             <trans-unit id="edit.tenant.info">
                 <source>edit.tenant.info</source>
                 <target>
@@ -2393,6 +2399,10 @@
                 <source>payment.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="payment.status_message">
+                <source>payment.status_message</source>
+                <target>Status Message</target>
+            </trans-unit>
             <trans-unit id="payment.date">
                 <source>payment.date</source>
                 <target>Date</target>
@@ -2400,6 +2410,10 @@
             <trans-unit id="payment.date_initiated">
                 <source>payment.date_initiated</source>
                 <target>Date Initiated</target>
+            </trans-unit>
+            <trans-unit id="payment.date_reversal">
+                <source>payment.date_reversal</source>
+                <target>Reversal Date</target>
             </trans-unit>
             <trans-unit id="payment.property">
                 <source>payment.property</source>
@@ -2561,8 +2575,16 @@
                 <source>payment_form.start_date.error_range</source>
                 <target>
                     Your property manager is not accepting payments at this time.
-                    Please select a day of month between %OPEN_DAY% and %CLOSE_DAY%.
+                    Please come back between days %OPEN_DAY% and %CLOSE_DAY%.
                 </target>
+            </trans-unit>
+            <trans-unit id="transaction.status.text.complete">
+                <source>transaction.status.text.complete</source>
+                <target>PAID</target>
+            </trans-unit>
+            <trans-unit id="transaction.status.text.reversed">
+                <source>transaction.status.text.reversed</source>
+                <target>REVERSED</target>
             </trans-unit>
         </body>
     </file>

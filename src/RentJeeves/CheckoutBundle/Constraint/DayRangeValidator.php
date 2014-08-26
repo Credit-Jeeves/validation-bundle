@@ -10,7 +10,6 @@ class DayRangeValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        $nowDateTime = new DateTime();
         $date = DateTime::createFromFormat('Y-m-d', $value);
 
         if (!$date) {
@@ -18,8 +17,15 @@ class DayRangeValidator extends ConstraintValidator
         }
 
         $day = (int) $date->format('j');
+        if ($constraint->openDay <= $constraint->closeDay &&
+            $constraint->closeDay >= $day && $constraint->openDay <= $day
+        ) {
+            return;
+        }
 
-        if ($constraint->openDay <= $day && $day <= $constraint->closeDay) {
+        if ($constraint->openDay >= $constraint->closeDay &&
+            $constraint->openDay <= $day
+        ) {
             return;
         }
 

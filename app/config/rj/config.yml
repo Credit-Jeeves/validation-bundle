@@ -54,6 +54,9 @@ parameters:
     landlord_payment_per_month_dollars: 1
     landlord_payment_per_month_cents: 95
 framework:
+    session:
+        cookie_secure: true
+        cookie_httponly: true
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
     session:
@@ -126,6 +129,15 @@ payum:
                 api:
                     options: %authorize_net%
 
+services:
+    geocode_cache_adapter:
+        class: "Doctrine\\Common\\Cache\\ApcCache"
+
 bazinga_geocoder:
     providers:
-        google_maps: ~
+        cache:
+            adapter:  geocode_cache_adapter
+            provider: google_maps
+        google_maps:
+            api_key:  %google_maps_key%
+            use_ssl:  true

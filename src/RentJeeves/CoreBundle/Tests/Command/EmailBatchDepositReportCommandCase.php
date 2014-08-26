@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\CoreBundle\Tests\Command;
 
+use Behat\Mink\Element\NodeElement;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -16,8 +17,6 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
      */
     public function executeReport()
     {
-        $this->markTestSkipped('Requires additional params to the query.');
-
         $this->load(true);
 
         /**
@@ -61,31 +60,52 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $commandTester->execute([ 'command' => $command->getName() ]);
 
         $this->assertRegExp('/Start prepare daily batch deposit report by/', $commandTester->getDisplay());
-        $this->assertCount(5, $plugin->getPreSendMessages());
+        $this->assertCount(6, $plugin->getPreSendMessages());
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($emails = $this->page->findAll('css', 'a'));
-        $this->assertCount(5, $emails, 'Wrong number of emails');
-        $emails[4]->click();
+        $this->assertCount(6, $emails, 'Wrong number of emails');
+        $emails[4]->click(); // Holding Admin Email
         $this->page->clickLink('text/html');
+
+        $groupNames = $this->page->findAll('css', '.group-name');
 
         $query = $em->getRepository('RjDataBundle:Heartland')->createQueryBuilder('h');
         $query->select("h.batchId");
-        $query->groupBy('h.batchId');
+        $query->groupBy('g.id'); // first group by Group, because one bathId can be included to diff group
+        $query->addGroupBy('h.batchId'); // after that be batchId remove duplicate
         $query->orderBy('h.batchId', 'DESC');
         $query->innerJoin('h.order', 'o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.group', 'g');
+
+        $query->where('g.name IN (:groupNames)');
+        $groupNames = array_map(
+            function (NodeElement $value) {
+                return $value->getText();
+            },
+            $groupNames
+        );
+
+        $query->setParameter('groupNames', $groupNames);
 
         $query->andWhere('h.depositDate = DATE(:date)');
         $query->setParameter('date', $date);
 
         $query->andWhere('h.batchId IS NOT NULL');
+        $query->andWhere('h.transactionId IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
 
-        /** Now we select only completed transaction */
-        $query->andWhere('o.status = :status');
-        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->andWhere('o.status in (:status)');
+        $query->setParameter('status', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
 
-        $batches = $query->getQuery()->getScalarResult();
+        $batches = array_map(
+            function ($value) {
+                return $value['batchId'];
+            },
+            $query->getQuery()->getScalarResult()
+        );
 
         $count = count($batches);
 
@@ -94,7 +114,7 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $this->assertCount($count, $batchesEmail);
 
         for ($i= 0; $i < $count; $i++) {
-            $this->assertEquals($batchesEmail[$i]->getText(), $batches[$i]['batchId']);
+            $this->assertTrue(in_array($batchesEmail[$i]->getText(), $batches));
         }
     }
 }

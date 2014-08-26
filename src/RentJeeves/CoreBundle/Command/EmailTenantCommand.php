@@ -2,6 +2,7 @@
 namespace RentJeeves\CoreBundle\Command;
 
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -148,6 +149,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                 }
                 break;
             case self::OPTION_TYPE_LATE:
+                /** @var ContractRepository $repo */
                 $repo = $doctrine->getRepository('RjDataBundle:Contract');
                 $contracts = $repo->getLateContracts($days);
                 $output->write('Start processing late contracts');

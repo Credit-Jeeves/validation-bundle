@@ -96,12 +96,12 @@ class ImportCase extends BaseTestCase
         $trs = $this->getParsedTrsByStatus();
 
         $this->assertNotNull(
-            $finishAt = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_contract_finishAt')
+            $finishAt = $trs['import.status.new'][1]->find('css', '.import_new_user_with_contract_contract_finishAt')
         );
         $finishAt->setValue('03/31/2014');
 
         $this->assertNotNull(
-            $firstName = $trs['import.status.new'][1]->find('css', '.import_new_user_with_contract_tenant_first_name')
+            $firstName = $trs['import.status.new'][2]->find('css', '.import_new_user_with_contract_tenant_first_name')
         );
         $firstName->setValue('Jung');
 
@@ -111,12 +111,12 @@ class ImportCase extends BaseTestCase
         $lastName->setValue('Sophia');
 
         $this->assertNotNull(
-            $finishAt = $trs['import.status.new'][2]->find('css', '.import_new_user_with_contract_contract_finishAt')
+            $finishAt = $trs['import.status.new'][3]->find('css', '.import_new_user_with_contract_contract_finishAt')
         );
         $finishAt->setValue('03/31/2014');
 
         $this->assertNotNull(
-            $lastName = $trs['import.status.new'][3]->find('css', '.import_new_user_with_contract_tenant_last_name')
+            $lastName = $trs['import.status.new'][4]->find('css', '.import_new_user_with_contract_tenant_last_name')
         );
         $lastName->setValue('Jr');
     }
@@ -180,7 +180,7 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals(5, count($trs), "Count statuses is wrong");
         $this->assertEquals(1, count($trs['import.status.error']), "Error contract on first page is wrong number");
-        $this->assertEquals(3, count($trs['import.status.new']), "New contract on first page is wrong number");
+        $this->assertEquals(2, count($trs['import.status.new']), "New contract on first page is wrong number");
         $this->assertEquals(3, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract on first page is wrong number");
         $this->assertEquals(2, count($trs['import.status.ended']), "Ended contract on first page is wrong number");
@@ -221,7 +221,12 @@ class ImportCase extends BaseTestCase
             5000,
             "$('.finishedTitle').length > 0"
         );
+        $submitImportFile->click();
 
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
@@ -806,7 +811,7 @@ class ImportCase extends BaseTestCase
         $trs = $this->getParsedTrsByStatus();
 
         $this->assertEquals(1, count($trs), "Count statuses is wrong");
-        $this->assertEquals(10, count($trs['import.status.waiting']), "All contracts should be waiting");
+        $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
@@ -829,7 +834,7 @@ class ImportCase extends BaseTestCase
         $this->waitReviewAndPost();
 
         $trs = $this->getParsedTrsByStatus();
-        $this->assertEquals(10, count($trs['import.status.waiting']), "All contracts should be waiting");
+        $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
 
         $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
         $this->assertEquals(0, count($errorFields));
@@ -842,6 +847,17 @@ class ImportCase extends BaseTestCase
             "jQuery('.overlay-trigger').length > 0"
         );
 
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('.overlay-trigger').length = 0"
+        );
+
+        $submitImportFile->click();
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('.overlay-trigger').length > 0"
+        );
         $this->session->wait(
             $this->timeout,
             "jQuery('.overlay-trigger').length = 0"

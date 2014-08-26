@@ -22,6 +22,10 @@ security:
                 failure_handler: user.service.login_defense
             logout:       true
             anonymous:    true
+            remember_me:
+                key: HKSHDY2PWUSGBNP88YTAT262Y2
+                secure: true
+                httponly: true
 
     access_control:
         - { path: ^/back_to_admin$,                 role: IS_AUTHENTICATED_ANONYMOUSLY }

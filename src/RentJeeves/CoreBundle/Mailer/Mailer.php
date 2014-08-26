@@ -396,6 +396,7 @@ class Mailer extends BaseMailer
      * @param Group $group
      * @param DateTime $date
      * @param array $batches
+     * @param $returns
      * @return bool
      */
     public function sendBatchDepositReportLandlord(Landlord $landlord, Group $group, DateTime $date, $batches, $returns)

@@ -73,6 +73,12 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 $url = $this->generateLanlordUrl($User);
                 break;
         }
+        /**
+         * @var $userLog LogUser
+         */
+        $userLog = $this->container->get('user.log');
+        $userLog->signin($User->getEmail(), $status = 'success');
+
         if (!$isDefense = $this->checkLogindefense($User)) {
             $url = $this->container->get('router')->generate('fos_user_security_login');
         }

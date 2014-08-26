@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
@@ -133,5 +134,27 @@ class TenantRepository extends EntityRepository
         $result = $query->getResult();
 
         return reset($result);
+    }
+
+    public function findByHolding($holdingId = null)
+    {
+        $query = $this->createQueryBuilder('tenant')
+            ->addSelect(
+                array('tenant')
+            );
+        $query->innerJoin(
+            'tenant.contracts',
+            'contract'
+        );
+        $query->innerJoin(
+            'contract.group',
+            'group_c'
+        );
+        $query->where('group_c.holding_id = :holdingId');
+        $query->groupBy('tenant.id');
+        $query->orderBy('tenant.email', 'ASC');
+        $query->setParameter('holdingId', $holdingId);
+
+        return $query;
     }
 }

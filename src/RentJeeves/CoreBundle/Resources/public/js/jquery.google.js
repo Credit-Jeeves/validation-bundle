@@ -130,7 +130,7 @@
                 };
             } else {
                  var mapOptions = {
-                    center: new google.maps.LatLng(38, -90),
+                    center: new google.maps.LatLng(39, -97),
                     zoom: 4,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                  };
