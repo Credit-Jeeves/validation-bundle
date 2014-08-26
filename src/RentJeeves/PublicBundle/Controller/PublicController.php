@@ -289,7 +289,6 @@ class PublicController extends Controller
 
         if (self::TYPE_HOLDING === $type && $holding) {
             $propertyList = $em->getRepository('RjDataBundle:Property')->findByHoldingAndAlphaNumericSort($holding);
-            $property = (!empty($propertyList))? current($propertyList) : null;
         }
 
         return array(
