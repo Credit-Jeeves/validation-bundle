@@ -233,11 +233,13 @@ class ContractWaitingAdmin extends Admin
             throw new Exception("We can't find landlord for group with id " . $contract->getGroup()->getId());
         }
 
-        $mailer->sendRjTenantInvite(
+        $result = $mailer->sendRjTenantInvite(
             $tenant,
             $landlord,
             $contract,
             $isImported = "1"
         );
+        var_dump($result);
+        exit;
     }
 }
