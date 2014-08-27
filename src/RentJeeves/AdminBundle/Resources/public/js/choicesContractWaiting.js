@@ -20,8 +20,8 @@ $( document ).ready(function() {
                 window.location.reload();
             },
             success: function(data, textStatus, jqXHR) {
-                callback(data);
                 $(".tab-content").hideOverlay();
+                callback(data);
             }
         });
     }
