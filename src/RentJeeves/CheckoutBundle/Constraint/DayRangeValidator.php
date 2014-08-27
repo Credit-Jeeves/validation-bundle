@@ -29,6 +29,12 @@ class DayRangeValidator extends ConstraintValidator
             return;
         }
 
+        if ($constraint->openDay >= $constraint->closeDay &&
+            $constraint->closeDay >= $day
+        ) {
+            return;
+        }
+
         $message = $constraint->translator->trans(
             'payment_form.start_date.error_range',
             array(
