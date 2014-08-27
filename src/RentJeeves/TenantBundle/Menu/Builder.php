@@ -89,6 +89,7 @@ class Builder extends ContainerAware
         );
         $menu->addChild('settings.email', array('route' => 'user_email'));
         $menu->addChild('settings.remove', array('route' => 'user_remove'));
+        $menu->addChild('settings.plans', array('route' => 'user_plans'));
         $menu->addChild('settings.address.head.manage', array('route' => 'user_addresses'));
 
        
@@ -104,6 +105,9 @@ class Builder extends ContainerAware
                 break;
             case 'user_remove':
                 $menu['settings.remove']->setUri('');
+                break;
+            case 'user_plans':
+                $menu['settings.plans']->setUri('');
                 break;
             case 'user_addresses':
                 $menu['settings.address.head.manage']->setUri('');

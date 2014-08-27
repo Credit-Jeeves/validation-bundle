@@ -45,12 +45,13 @@ class Payment
      * @ORM\ManyToOne(
      *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
      *      inversedBy="payments",
-     *      cascade={"persist","remove"}
+     *      cascade={"persist", "remove"}
      * )
      * @ORM\JoinColumn(
      *      name="payment_account_id",
      *      referencedColumnName="id",
-     *      nullable=false
+     *      nullable=false,
+     *      onDelete="CASCADE"
      * )
      * @Serializer\SerializedName("paymentAccountId")
      * @Serializer\Accessor(getter="getPaymentAccountId")

@@ -1,0 +1,114 @@
+<div id="pricing-popup" class="pricing-popup">
+    <h1>{{ 'popup.invite.tenant.title_1' | trans() }}</h1>
+    <h3>{{ 'popup.invite.tenant.credittrack.title_2' | trans() }}</h3>
+    <div class="table-box">
+        <ul class="pricing-table">
+            <li>
+                <div class="table-cell">
+                    <p class="note">{{ 'popup.invite.tenant.note.title' | trans() }}</p>
+                </div>
+                <div class="table-cell info-cell">
+                    <div class="info-title pie-el">{{ 'popup.invite.tenant.renttrack' | trans() }}</div>
+                    <div class="info-content">{{ 'popup.invite.tenant.free' | trans() }}</div>
+                </div>
+                <div class="table-cell info-cell">
+                    <div class="info-title pie-el">{{ 'popup.invite.tenant.credittrack' | trans() }}</div>
+                    <div class="info-content">
+                        <sup>$</sup>{{ credittrack_payment_per_month_dollars }}
+                        <sup>
+                            {{ credittrack_payment_per_month_cents }}/{{ 'popup.invite.tenant.per_month' | trans() }}
+                        </sup>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.get.credit.score' | trans() }}</div>
+                <div class="table-cell th">{{ 'popup.tenant.get.first.free' | trans() }}</div>
+                <div class="table-cell th">{{ 'popup.tenant.credittrack.monthly' | trans() }}</div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.view.experian' | trans() }}</div>
+                <div class="table-cell th"></div>
+                <div class="table-cell th">{{ 'popup.tenant.credittrack.monthly' | trans() }}</div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.pay.e-check' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.pay.credit-card' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.pay.auto' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.build.credit.history' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.support' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.safeguards' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.tenant.prequalified.offers' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+                <div class="table-cell"></div>
+            </li>
+            <li class="table-footer">
+                <div class="table-cell"></div>
+                <div class="table-cell">
+                    {% if creditTrackEnabled %}
+                        <span>&nbsp;</span>
+                        <div class="buttons-box score-track-pay">
+                            <button data-bind="click: cancel" class="button button-close" type="button">
+                                <span>{{ 'popup.cancel' | trans() }}</span>
+                            </button>
+                        </div>
+                    {% else %}
+                        <span>{{ 'popup.signed.up.already' | trans() }}</span>
+                    {% endif %}
+                </div>
+                <div class="table-cell">
+                    {% if creditTrackEnabled %}
+                        <span>{{ 'popup.signed.up.already' | trans() }}</span>
+                    {% endif %}
+                    <div class="buttons-box score-track-pay">
+                        <button data-bind="click: pay" class="button button-close" type="button">
+                            <span>
+                                {% if creditTrackEnabled %}
+                                    {{ 'popup.edit' | trans() }}
+                                {% else %}
+                                    {{ 'popup.sign.up.today' | trans() }}
+                                {% endif %}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <p class="note">
+        {{ 'popup.tenant.footer.note_3' | trans({"%payment_percent%": payment_card_fee, "%payment_dollars%": payment_dollars}) }}
+    </p>
+</div>
+<script type="text/javascript">
+$(function(){
+    var creditTrackPricing = new CreditTrackPricing({
+      amount: {{ credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents }}
+    });
+
+    ko.applyBindings(creditTrackPricing, $('#pricing-popup').get(0));
+});
+</script>

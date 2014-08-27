@@ -103,7 +103,8 @@ abstract class DepositAccount
     /**
      * @ORM\ManyToMany(
      *      targetEntity="PaymentAccount",
-     *      mappedBy="depositAccounts"
+     *      mappedBy="depositAccounts",
+     *      cascade={"remove"}
      * )
      * @Serializer\SerializedName("paymentAccounts")
      */
@@ -220,7 +221,7 @@ abstract class DepositAccount
     }
 
     /**
-     * @return float
+     * @return double
      */
     public function getFeeACH()
     {
@@ -228,7 +229,7 @@ abstract class DepositAccount
     }
 
     /**
-     * @param float $feeCC
+     * @param double $feeCC
      */
     public function setFeeCC($feeCC)
     {
@@ -236,7 +237,7 @@ abstract class DepositAccount
     }
 
     /**
-     * @return float
+     * @return double
      */
     public function getFeeCC()
     {

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\EventListener;
 
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -25,6 +26,13 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
  *     attributes = {
  *         "event"="postUpdate",
  *         "method"="postUpdate"
+ *     }
+ * )
+ * @Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="preRemove",
+ *         "method"="preRemove"
  *     }
  * )
  */
@@ -56,6 +64,23 @@ class PaymentListener
             $payment->setStatus(PaymentStatus::CLOSE);
             $em->persist($payment);
             $em->flush($payment);
+        }
+    }
+
+    /**
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function preRemove(LifecycleEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+        if ($entity instanceof Payment) {
+            $em = $eventArgs->getEntityManager();
+            $uow = $em->getUnitOfWork();
+            $oldValue = $entity->getStatus();
+            $entity->setStatus(PaymentStatus::CLOSE);
+            $em->persist($entity);
+            $uow->propertyChanged($entity, 'status', $oldValue, PaymentStatus::CLOSE);
+            $uow->scheduleExtraUpdate($entity, array('status' => array($oldValue, PaymentStatus::CLOSE)));
         }
     }
 }

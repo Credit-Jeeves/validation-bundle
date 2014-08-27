@@ -17,3 +17,9 @@ fixtures:
   DepositAccount_4:
     group: RentGroup_4
     status: init
+  DepositAccount_RentTrackCorp:
+    merchantName: RentTrackCorp
+    group: RentTrackCorp
+    status: complete
+    feeCC: "0"
+    feeACH: "0"

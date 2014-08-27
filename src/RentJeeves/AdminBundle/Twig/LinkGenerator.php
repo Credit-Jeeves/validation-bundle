@@ -3,6 +3,7 @@ namespace RentJeeves\AdminBundle\Twig;
 
 use JMS\JobQueueBundle\Twig\LinkGeneratorInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
 use RentJeeves\DataBundle\Entity\JobRelatedPayment;
 use RentJeeves\DataBundle\Entity\JobRelatedOrder;
 
@@ -19,6 +20,7 @@ class LinkGenerator implements LinkGeneratorInterface
     protected $entities = array(
        'RentJeeves\DataBundle\Entity\JobRelatedPayment' => 'Payment',
        'RentJeeves\DataBundle\Entity\JobRelatedOrder' => 'Order',
+       'RentJeeves\DataBundle\Entity\JobRelatedCreditTrack' => 'Credit Track Payment Account',
     );
 
     /**
@@ -51,6 +53,14 @@ class LinkGenerator implements LinkGeneratorInterface
                 'admin_creditjeeves_data_order_show',
                 array(
                     'id' => $entity->getOrder()->getId()
+                )
+            );
+        }
+        if ($entity instanceof JobRelatedCreditTrack) {
+            return $this->routeGenerator->generate(
+                'admin_rentjeeves_data_paymentaccount_show',
+                array(
+                    'id' => $entity->getCreditTrackPaymentAccount()->getId()
                 )
             );
         }

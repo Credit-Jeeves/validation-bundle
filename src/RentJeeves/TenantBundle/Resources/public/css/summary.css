@@ -1,0 +1,101 @@
+body {
+    line-height: normal;
+    color: #333333;
+    font-family: "Helvetica Neue", HelveticaNeue, helvetica-neue, helvetica, arial, sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+table {
+    width: inherit;
+}
+
+.credittrack-promo-box {
+    background: transparent right bottom no-repeat url(/bundles/checkout/images/promo-box-price-bg.png);
+    position: relative;
+    height: 207px;
+}
+
+.credittrack-promo-box h3 {
+    margin: 12px 0;
+}
+
+.credittrack-promo-box p {
+    margin: 20px 0;
+}
+
+.credittrack-promo-box .price {
+    font-family: astoria-medium;
+    position: absolute;
+    color: white;
+    right: 0px;
+    bottom: 0px;
+
+    /* center within the background image */
+    width: 100px;
+    height: 82px;
+
+    font-size: 18px;
+    line-height: 28px;
+    vertical-align: text-bottom;
+    text-align: center;
+}
+
+.credittrack-promo-box .price .integer {
+    vertical-align: text-top;
+    font-size: 30px;
+}
+
+.credittrack-promo-box p {
+    font-size: 16px;
+}
+
+.credittrack-promo-box .button {
+    margin: 10px 0 10px 0;
+}
+
+.credittrack-promo-box .note-text {
+    text-align: center;
+    width: 123px;
+    color: black;
+}
+
+.credit-score-graph {
+    position: relative;
+}
+
+.credittrack-teaser {
+    position: absolute;
+    background: transparent left bottom no-repeat url(/bundles/checkout/images/teaser-banner-bg.png);
+
+    /* dimensions of the background image */
+    width: 189px;
+    height: 38px;
+
+    bottom: 20px;
+    left: -10px; /* background sticks out the left side on purpose */
+}
+
+.credittrack-teaser .text {
+    color: white;
+    display: inline-block;
+    height: 100%;
+    box-sizing: border-box;
+
+    /* magic numbers to center the text in the background image */
+    margin-top: 2px;
+    margin-left: 40px;
+    padding-top: 3px;
+}
+
+.credittrack-teaser .text:hover {
+    text-decoration: none;
+}
+
+.credittrack-teaser .text.enrolled {
+    margin-top: 9px;
+}
+
+.credittrack-teaser .highlight {
+    text-decoration: underline;
+}

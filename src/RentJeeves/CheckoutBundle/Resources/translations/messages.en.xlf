@@ -386,7 +386,7 @@
             </trans-unit>
             <trans-unit id="checkout.your_payment">
                 <source>checkout.your_payment</source>
-                <target>Your payment</target>
+                <target>Your Payment</target>
             </trans-unit>
             <trans-unit id="checkout.send_to">
                 <source>checkout.send_to</source>

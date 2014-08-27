@@ -1,0 +1,17 @@
+<div id="credit-track-cancel" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'settings.plans.cancel.title' | trans() }}</h1>
+    <div class="clearfix col-box">
+        <div class="attention-box pie-el">
+            {{ 'settings.plans.cancel.text' | trans() }}
+        </div>
+        <div class="row-20"></div>
+        <div class="footer-button-box">
+            <a class="button" data-bind="attr: { href: cancelUrl }" style="display: inline-block;">
+                <span>{{ 'settings.plans.cancel.yes' | trans() }}</span>
+            </a>
+            <button data-bind="click: cancelClose" class="button grey buttonFix">
+                <span>{{ 'settings.plans.cancel.no' | trans() }}</span>
+            </button>
+        </div>
+    </div>
+</div>

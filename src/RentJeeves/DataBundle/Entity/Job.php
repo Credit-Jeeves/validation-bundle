@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\JobQueueBundle\Entity\Job as Base;
 use Doctrine\ORM\Mapping as ORM;
+use RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass = "RentJeeves\DataBundle\Entity\JobRepository")
@@ -85,7 +86,11 @@ class Job extends Base
                 $jobRelated = new JobRelatedOrder();
                 $jobRelated->setOrder($entity);
                 break;
+            case $entity instanceof JobRelatedEntities:
+                $jobRelated = $entity;
+                break;
             default:
+                throw new RuntimeException(sprintf("Provided entity '%s' does not registered", get_class($entity)));
 
         }
         $jobRelated->setJob($this);
