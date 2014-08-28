@@ -37,6 +37,6 @@ class ShorteningAddressUtilityCase extends BaseTestCase
     {
         $truncatedAddress = ShorteningAddressUtility::shrinkAddress($address);
 
-        $this->assertEquals($truncatedAddress, $result);
+        $this->assertEquals($result, $truncatedAddress);
     }
 }

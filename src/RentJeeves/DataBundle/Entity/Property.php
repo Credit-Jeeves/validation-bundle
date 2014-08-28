@@ -22,7 +22,7 @@ class Property extends Base
         getFullAddress as fullAddress;
     }
 
-    public function getShrinkFullAddress()
+    public function getShrinkAddress()
     {
         return ShorteningAddressUtility::shrinkAddress($this->getFullAddress());
     }
