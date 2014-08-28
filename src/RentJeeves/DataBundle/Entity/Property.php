@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Traits\AddressTrait;
 use Geocoder\Result\Geocoded;
 use JMS\Serializer\Annotation as Serializer;
-use RentJeeves\DataBundle\Utility\ShorteningAddressUtility;
+use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 
 /**
  * Property
@@ -22,9 +22,9 @@ class Property extends Base
         getFullAddress as fullAddress;
     }
 
-    public function getTruncateFullAddress()
+    public function getShrinkFullAddress()
     {
-        return ShorteningAddressUtility::truncateAddress($this->getFullAddress());
+        return ShorteningAddressUtility::shrinkAddress($this->getFullAddress());
     }
 
     public function parseGoogleAddress($data)

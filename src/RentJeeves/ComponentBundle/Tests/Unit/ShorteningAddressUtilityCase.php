@@ -1,7 +1,7 @@
 <?php
-namespace RentJeeves\DataBundle\Tests\Utility;
+namespace RentJeeves\ComponentBundle\Tests\Utility;
 
-use RentJeeves\DataBundle\Utility\ShorteningAddressUtility;
+use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class ShorteningAddressUtilityCase extends BaseTestCase
@@ -35,9 +35,8 @@ class ShorteningAddressUtilityCase extends BaseTestCase
      */
     public function truncateAddress($address, $result)
     {
-        $truncatedAddress = ShorteningAddressUtility::truncateAddress($address);
+        $truncatedAddress = ShorteningAddressUtility::shrinkAddress($address);
 
         $this->assertEquals($truncatedAddress, $result);
     }
-
 }
