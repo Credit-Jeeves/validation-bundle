@@ -70,7 +70,7 @@ class PayRent extends Pay
         /** @var BillTransaction $billTransaction */
         $billTransaction = $request->getBillTransactions()->getBillTransaction()[0];
 
-        $billTransaction->setID1(str_replace(",", "", $contract->getProperty()->getFullAddress()));
+        $billTransaction->setID1(str_replace(",", "", $contract->getProperty()->getShrinkAddress()));
         if ($contract->getUnit()) { // For houses, there are no units
             $billTransaction->setID2($contract->getUnit()->getName());
         }

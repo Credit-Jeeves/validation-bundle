@@ -68,7 +68,7 @@ class Terminal
         $paymentRequest = new MakePaymentRequest();
 
         $billTransaction = new BillTransaction();
-        $billTransaction->setID1($group->getName());
+        $billTransaction->setID1(substr($group->getName(), 0, 50));
         $billTransaction->setID4($id4);
         $billTransaction->setBillType('Subscription Services');
         $billTransaction->setAmountToApplyToBill($amount);
