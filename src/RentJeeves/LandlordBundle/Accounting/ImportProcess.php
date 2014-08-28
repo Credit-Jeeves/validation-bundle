@@ -744,10 +744,14 @@ class ImportProcess
             $import->getResidentMapping()
         );
 
-        if ($contractWaiting->getId()) {
+        if ($contractWaiting->getId() && !$import->getContract()->getId()) {
             $import->setHasContractWaiting(true);
             $tenant->setFirstName($contractWaiting->getFirstName());
             $tenant->setLastName($contractWaiting->getLastName());
+        } elseif ($contract->getId() && $contractWaiting->getId()) {
+            $this->em->remove($contractWaiting);
+            $import->setHasContractWaiting(false);
+            $this->em->flush();
         }
 
         if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
