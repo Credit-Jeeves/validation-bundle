@@ -33,7 +33,7 @@ class ShorteningAddressUtilityCase extends BaseTestCase
      * @dataProvider dataProviderAddresses
      * @test
      */
-    public function truncateAddress($address, $result)
+    public function shrinkAddress($address, $result)
     {
         $truncatedAddress = ShorteningAddressUtility::shrinkAddress($address);
 
