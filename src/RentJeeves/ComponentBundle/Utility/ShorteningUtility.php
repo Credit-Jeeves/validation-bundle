@@ -1,8 +1,7 @@
 <?php
 namespace RentJeeves\ComponentBundle\Utility;
 
-
-class ShorteningUtility 
+class ShorteningUtility
 {
     const MAX_LENGTH = 255;
 
