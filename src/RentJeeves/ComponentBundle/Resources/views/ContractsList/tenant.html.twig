@@ -50,89 +50,91 @@
                 </thead>
                 <tbody>
                 {% for contract in contracts %}
-                    <tr class="contracts">
-                        <td class="font-helvetica">{{ contract.rent }}</td>
-                        {% if hasIntegratedBalance %}
-                            <td class="font-helvetica">{{ contract.balance }}</td>
-                        {% endif %}
-                        <td class="font-helvetica">{{ contract.payment_next }}</td>
-                        <td class="font-helvetica">{{ contract.full_address }}</td>
-                        <td class="font-helvetica">
-                            {% if contract.status == 'pending' %}
-                                {{ 'contract.status.pending.text' | trans }}
-                            {% elseif contract.payment_status == 'processing' %}
-                                {{ 'contract.status.processing.text' | trans }}
-                            {% elseif contract.status == 'invite' %}
-                                {{ 'contract.status.invite.text' | trans }}
-                            {% elseif contract.payment_type == 'recurring' %}
-                                {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}
-                            {% elseif contract.payment_type == 'one_time' %}
-                                {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}
-                            {% elseif contract.status == 'approved' %}
-                                {{ 'contract.status.approved.text' | trans }}
-                            {% elseif contract.status == 'current' %}
-                                {{ 'contract.status.current.text' | trans }}
-                            {% elseif contract.status == 'finished' %}
-                                {{ 'contract.status.finished.text' | trans }}
-                            {% else %}
-                                {{ contract.status | upper }}
+                    {% if contract.status != 'deleted' %}
+                        <tr class="contracts">
+                            <td class="font-helvetica">{{ contract.rent }}</td>
+                            {% if hasIntegratedBalance %}
+                                <td class="font-helvetica">{{ contract.balance }}</td>
                             {% endif %}
-                        </td>
+                            <td class="font-helvetica">{{ contract.payment_next }}</td>
+                            <td class="font-helvetica">{{ contract.full_address }}</td>
+                            <td class="font-helvetica">
+                                {% if contract.status == 'pending' %}
+                                    {{ 'contract.status.pending.text' | trans }}
+                                {% elseif contract.payment_status == 'processing' %}
+                                    {{ 'contract.status.processing.text' | trans }}
+                                {% elseif contract.status == 'invite' %}
+                                    {{ 'contract.status.invite.text' | trans }}
+                                {% elseif contract.payment_type == 'recurring' %}
+                                    {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}
+                                {% elseif contract.payment_type == 'one_time' %}
+                                    {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}
+                                {% elseif contract.status == 'approved' %}
+                                    {{ 'contract.status.approved.text' | trans }}
+                                {% elseif contract.status == 'current' %}
+                                    {{ 'contract.status.current.text' | trans }}
+                                {% elseif contract.status == 'finished' %}
+                                    {{ 'contract.status.finished.text' | trans }}
+                                {% else %}
+                                    {{ contract.status | upper }}
+                                {% endif %}
+                            </td>
 
-                        <td class="font-helvetica">
-                            {% if contract.isPayment %}
-                                {% set buttonText = 'contract.edit' | trans() %}
-                            {% else %}
-                                {% set buttonText = 'contract.pay' | trans() %}
-                            {% endif %}
+                            <td class="font-helvetica">
+                                {% if contract.isPayment %}
+                                    {% set buttonText = 'contract.edit' | trans() %}
+                                {% else %}
+                                    {% set buttonText = 'contract.pay' | trans() %}
+                                {% endif %}
 
-                            {% if contract.status == 'pending' %}
-                                <div>
-                                    <button class="button small button-contract-pay floatleft" disabled>
-                                        <span>{{ 'contract.pay' | trans() }}</span>
-                                    </button>
-                                    {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
-                                        <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>#}
-                                </div>
-                            {% elseif contract.status == 'approved' or contract.status == 'invite' %}
-                                <div>
-                                    <button class="button small button-contract-pay floatleft"
-                                            data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
-                                            id="contract-pay-{{ loop.revindex }}"
-                                            {% if contract.payment_status == 'processing' %}
-                                                disabled
-                                            {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
-                                                title="{{ 'tenant.no_balance.alert'|trans }}" disabled
-                                            {% endif %}
-                                    >
+                                {% if contract.status == 'pending' %}
+                                    <div>
+                                        <button class="button small button-contract-pay floatleft" disabled>
+                                            <span>{{ 'contract.pay' | trans() }}</span>
+                                        </button>
+                                        {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                            <input type="hidden" value="{{ contract.full_address }}">
+                                        </div>#}
+                                    </div>
+                                {% elseif contract.status == 'approved' or contract.status == 'invite' %}
+                                    <div>
+                                        <button class="button small button-contract-pay floatleft"
+                                                data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
+                                                id="contract-pay-{{ loop.revindex }}"
+                                                {% if contract.payment_status == 'processing' %}
+                                                    disabled
+                                                {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
+                                                    title="{{ 'tenant.no_balance.alert'|trans }}" disabled
+                                                {% endif %}
+                                                >
 
-                                        <span>{{ buttonText }}</span>
-                                    </button>
-                                    {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
-                                        <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>#}
-                                </div>
-                            {% elseif contract.status == 'current' %}
-                                <div>
-                                    <button class="button small button-contract-pay floatleft"
-                                            data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
-                                            id="contract-pay-{{ loop.revindex }}"
-                                            {% if contract.payment_status == 'processing' %}
-                                                disabled
-                                            {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
-                                                title="{{ 'tenant.no_balance.alert'|trans }}" disabled
-                                            {% endif %}
-                                            >
-                                        <span>{{ buttonText }}</span>
-                                    </button>
-                                    {#<div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
-                                        <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>#}
-                                </div>
-                            {% endif %}
-                        </td>
-                    </tr>
+                                            <span>{{ buttonText }}</span>
+                                        </button>
+                                        {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                            <input type="hidden" value="{{ contract.full_address }}">
+                                        </div>#}
+                                    </div>
+                                {% elseif contract.status == 'current' %}
+                                    <div>
+                                        <button class="button small button-contract-pay floatleft"
+                                                data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
+                                                id="contract-pay-{{ loop.revindex }}"
+                                                {% if contract.payment_status == 'processing' %}
+                                                    disabled
+                                                {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
+                                                    title="{{ 'tenant.no_balance.alert'|trans }}" disabled
+                                                {% endif %}
+                                                >
+                                            <span>{{ buttonText }}</span>
+                                        </button>
+                                        {#<div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
+                                            <input type="hidden" value="{{ contract.full_address }}">
+                                        </div>#}
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
