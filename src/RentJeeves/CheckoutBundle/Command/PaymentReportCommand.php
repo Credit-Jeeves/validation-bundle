@@ -57,7 +57,6 @@ class PaymentReportCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Amount of synchronized reversal payments: %s', $result));
 
                 $job = new Job('api:yardi:push-reversal-receipts', ['--app=rj']);
-                $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
                 $em->persist($job);
                 $em->flush($job);
 
