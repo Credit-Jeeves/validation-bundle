@@ -97,7 +97,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                     'batchId' => $data[$i]['batchId'],
                     'paymentType' => $data[$i]['paymentType'],
                     'transactions' => $transactions,
-                    'paymentTotal' => $paymentTotal,
+                    'paymentTotal' => number_format($paymentTotal, 2, '.', ''),
                 ];
                 $transactions = [];
                 $paymentTotal = 0;
