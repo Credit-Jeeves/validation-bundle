@@ -69,4 +69,23 @@ class TenantCase extends BaseTestCase
         $this->page->clickLink('back.to.admin');
         $this->logout();
     }
+    /**
+     * @test
+     */
+    public function getReportTenant()
+    {
+        $this->load(false);
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_tenants'));
+        $tableBlock->clickLink('link_list');
+        $this->assertNotNull($getReport = $this->page->findAll('css', 'a.getNewReport'));
+        $getReport[0]->click();
+        $this->assertNotNull($alert = $this->page->find('css', '.alert'));
+        $this->assertEquals('We get Report with Score', $alert->getText());
+        $this->assertNotNull($view = $this->page->findAll('css', '.view_link'));
+        $this->assertEquals(1, count($view));
+        $view[0]->click();
+        $this->assertNotNull($textarea = $this->page->find('css', 'textarea'));
+        $this->assertEquals(9100, strlen($textarea->getText()));
+    }
 }
