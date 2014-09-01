@@ -65,23 +65,32 @@ class ReportAdmin extends Admin
         $listMapper
              ->add('report_score')
              ->add('total_monthly_payment', 'money')
-             ->add('created_at', 'date');
-//             ->add(
-//                 '_action',
-//                 'actions',
-//                 array(
-//                     'actions' => array(
-//                         'edit' => array(),
-//                         'delete' => array(),
-//                         'report' => array(
-//                             'template' => 'AdminBundle:CRUD:list__action_report.html.twig'
-//                         ),
-//                         'observe' => array(
-//                             'template' => 'AdminBundle:CRUD:list__action_observe.html.twig'
-//                         ),
-//                     )
-//                 )
-//             );
-//         ;
+             ->add('created_at', 'date')
+             ->add(
+                 '_action',
+                 'actions',
+                 array(
+                     'actions' => array(
+                         'show' => array(),
+                     )
+                 )
+             );
+    }
+
+    protected function configureShowFields(ShowMapper $showMapper)
+    {
+        $showMapper->add('rawData');
+    }
+
+    public function getTemplate($name)
+    {
+        switch ($name) {
+            case 'show':
+                return 'AdminBundle:CRUD:arf_show.html.twig';
+                break;
+            default:
+                return parent::getTemplate($name);
+                break;
+        }
     }
 }
