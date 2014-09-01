@@ -62,6 +62,7 @@ class AppRjKernel extends AppKernel
             // Must be last in the list
             new RentJeeves\AdminBundle\RjAdminBundle(),
             new RentJeeves\DataBundle\RjDataBundle(),
+            new RentJeeves\ExternalApiBundle\ExternalApiBundle(),
             new RentJeeves\TenantBundle\TenantBundle(),
             new RentJeeves\LandlordBundle\LandlordBundle(),
             new RentJeeves\PublicBundle\RjPublicBundle(),

@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\Command;
 
+use RentJeeves\DataBundle\Entity\Job;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -33,6 +34,7 @@ class PaymentReportCommand extends ContainerAwareCommand
     {
         $syncType = $input->getArgument('type');
         $makeArchive = $input->getOption('archive');
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
         switch ($syncType) {
             case 'deposit':
@@ -41,6 +43,11 @@ class PaymentReportCommand extends ContainerAwareCommand
                     ->get('payment.deposit_report')
                     ->synchronize($makeArchive);
                 $output->writeln(sprintf('Amount of synchronized deposits: %s', $result));
+
+                $job = new Job('api:yardi:push-batch-receipts', ['--app=rj']);
+                $em->persist($job);
+                $em->flush($job);
+
                 break;
             case 'reversal':
                 $result = $this
@@ -48,6 +55,12 @@ class PaymentReportCommand extends ContainerAwareCommand
                     ->get('payment.reversal_report')
                     ->synchronize($makeArchive);
                 $output->writeln(sprintf('Amount of synchronized reversal payments: %s', $result));
+
+                $job = new Job('api:yardi:push-reversal-receipts', ['--app=rj']);
+                $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+                $em->persist($job);
+                $em->flush($job);
+
                 break;
             default:
                 $output->writeln(sprintf('Unknown sync type "%s". Choose "deposit" or "reversal".', $syncType));
