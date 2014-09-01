@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\Mapping as ORM;
@@ -123,6 +124,12 @@ class Landlord extends User
         $address || $address = $this->getDefaultAddress();
 
         return $address;
+    }
+
+    public function setAddress(Address $address)
+    {
+        $address->setUser($this); // TODO: hack, need check
+        $this->addAddress($address);
     }
 
     public function hasMerchant()
