@@ -21,6 +21,8 @@ class DayRangeCase extends BaseTestCase
             array($openDay = 15, $closeDay = 20, $todayDay = '2014-08-14', $isValid = false),
             array($openDay = 15, $closeDay = 20, $todayDay = '2014-08-15', $isValid = true),
             array($openDay = 22, $closeDay = 2, $todayDay = '2014-08-22', $isValid = true),
+            array($openDay = 27, $closeDay = 2, $todayDay = '2014-08-01', $isValid = true),
+            array($openDay = 27, $closeDay = 2, $todayDay = '2014-08-03', $isValid = false),
         );
     }
 

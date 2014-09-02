@@ -1,0 +1,31 @@
+{% extends 'SonataAdminBundle:CRUD:show.html.twig' %}
+
+{% block show %}
+    <div class="sonata-ba-view">
+        {% for name, view_group in admin.showgroups %}
+
+            <table class="table table-bordered">
+                {% if name %}
+                    <tr class="sonata-ba-view-title">
+                        <td colspan="2">
+                            {{ admin.trans(name) }}
+                        </td>
+                    </tr>
+                {% endif %}
+
+                {% for field_name in view_group.fields %}
+                    <tr class="sonata-ba-view-container">
+                        {% if elements[field_name] is defined %}
+                            <td>{{ field_name }} </td>
+                            <td>
+                                <textarea cols="120" rows="50" style="width: 950px;height: 300px;">
+                                    {{ object.rawData }}
+                                </textarea>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -244,7 +244,7 @@ class Tenant extends User
          */
         foreach ($residentsMapping as $residentMapping) {
             if ($residentMapping->getResidentId() ===  $residentId
-                && $residentMapping->getHolding() === $holding->getId()
+                && $residentMapping->getHolding()->getId() === $holding->getId()
             ) {
                 return true;
             }

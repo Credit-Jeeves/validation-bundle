@@ -91,7 +91,7 @@
     </td>
     <td data-bind="text:tenant.first_name"></td>
     <td data-bind="text:tenant.last_name"></td>
-    <td data-bind="text:email"></td>
+    <td data-bind="text: (email)? email : tenant.email"></td>
     <td>
         {{
             form_widget(
@@ -208,6 +208,7 @@
             "data-bind": "
                 attr: {
                     'visible': has_contract_waiting,
+                    'checked': false,
                     'class': number+'_sendInvite '+$root.getErrorClass($data, 'import_new_user_with_sendInvite'),
                 }"}
         }
