@@ -46,7 +46,7 @@ class PidkiqController extends Controller
 
     /**
      * @DI\InjectParams({
-     *     "pidkiqApi" = @DI\Inject("experian.pidkiq")
+     *     "pidkiqApi" = @DI\Inject("experian.net_connect.precise_id")
      * })
      */
     public function setPidkiqApi($pidkiqApi)

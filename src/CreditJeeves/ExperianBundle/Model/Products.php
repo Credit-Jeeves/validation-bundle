@@ -12,7 +12,8 @@ class Products
 {
     /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\PreciseIDServer")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\SerializedName("PreciseIDServer")
+     * @Serializer\Groups({"CreditJeeves", "PreciseID"})
      */
     protected $preciseIDServer;
 
@@ -29,6 +30,9 @@ class Products
      */
     public function getPreciseIDServer()
     {
+        if (null == $this->preciseIDServer) {
+            $this->preciseIDServer = new PreciseIDServer();
+        }
         return $this->preciseIDServer;
     }
 }

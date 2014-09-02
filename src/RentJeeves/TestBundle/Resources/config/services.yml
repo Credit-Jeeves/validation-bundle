@@ -1,3 +1,3 @@
 parameters:
-    experian.net_connect.class: RentJeeves\TestBundle\Experian\NetConnectTest
+#    experian.net_connect.class: CreditJeeves\TestBundle\NetConnect\CreditProfileTest
     payment_account.class: RentJeeves\TestBundle\Heartland\PaymentAccountTest

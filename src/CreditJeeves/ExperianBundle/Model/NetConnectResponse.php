@@ -11,9 +11,25 @@ use CreditJeeves\ExperianBundle\Model\Products;
 class NetConnectResponse
 {
     /**
-     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Products")
+     * @Serializer\SerializedName("CompletionCode")
+     * @Serializer\Type("string")
+     * @var string
+     */
+    protected $completionCode;
+
+    /**
+     * @Serializer\SerializedName("ReferenceId")
+     * @Serializer\Type("string")
+     * @var string
+     */
+    protected $referenceId;
+
+    /**
      * @Serializer\SerializedName("Products")
+     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Products")
      * @Serializer\Groups({"CreditJeeves"})
+     *
+     * @var Products
      */
     protected $products;
 

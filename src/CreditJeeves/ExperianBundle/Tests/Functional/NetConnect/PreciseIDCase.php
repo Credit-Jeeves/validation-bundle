@@ -4,17 +4,15 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
+use CreditJeeves\ExperianBundle\NetConnect\Exception;
+use CreditJeeves\ExperianBundle\NetConnect\PreciseID;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Applicant;
-use CreditJeeves\ExperianBundle\Pidkiq;
 
 /**
- * PIDKIQ test case.
- * @see src/RentJeeves/ExperianBundle/Tests/Functional/PidkiqCase.php
- *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-abstract class PidkiqCase extends BaseTestCase
+class PreciseIDCase extends BaseTestCase
 {
 
     protected $users = array(
@@ -118,43 +116,106 @@ abstract class PidkiqCase extends BaseTestCase
         return $aplicant;
     }
 
-    protected function getPidkiq()
-    {
-        $pidkiq = new Pidkiq();
-        $pidkiq->initConfigs(
-            $this->getContainer()->get('experian.config'),
-            $this->getContainer()->getParameter('experian.logging'),
-            $this->getContainer()->getParameter('kernel.logs_dir')
-        );
-        return $pidkiq;
-    }
-
     /**
-     * Tests Pidkiq->getResponseOnUserData()
+     * @test
      */
-    protected function getResponseOnUserData($data)
+    public function getObjectOnUserData()
     {
-        $aplicant = $this->getApplicant($data);
+        $netConnectResponse = $this->getContainer()->get('experian.net_connect.precise_id')
+            ->getObjectOnUserData($this->getApplicant($this->users[0]));
 
-        return $this->getPidkiq()->getResponseOnUserData($aplicant);
+        $this->assertEquals(
+            232,
+            $netConnectResponse->getProducts()->getPreciseIDServer()->getSummary()->getPreciseIDScore()
+        );
     }
 
     /**
      * @test
-     * @expectedException \ExperianException
+     */
+    public function getResponseOnUserData()
+    {
+        $this->assertEquals(
+            array(
+                'Which of the following is the highest level of education you completed?' => array(
+                    '1' => 'HIGH SCHOOL DIPLOMA',
+                    '2' => 'SOME COLLEGE',
+                    '3' => 'BACHELOR DEGREE',
+                    '4' => 'GRADUATE DEGREE',
+                    '5' => 'NONE OF THE ABOVE',
+                ),
+                'You may have opened a student loan in or around February 2006. To whom do you make your payments?' => array(
+                    '1' => 'FIRST MIDWEST BK',
+                    '2' => 'VSAC LOAN SERVICES',
+                    '3' => 'COMMERCE BANK',
+                    '4' => 'US BANK',
+                    '5' => 'NONE OF THE ABOVE/DOES NOT APPLY',
+                ),
+                'To which of the following professions do you currently or have previously belonged?' => array(
+                    '1' => 'ACCOUNTANT',
+                    '2' => 'NURSE',
+                    '3' => 'CHIROPRACTOR',
+                    '4' => 'PROFESSIONAL DRIVER',
+                    '5' => 'NONE OF THE ABOVE',
+                ),
+                'Based on our records, you opened an auto loan/lease around June 2000. Please select the dollar range of your total monthly payment.' => array(
+                    '1' => '$50 - $99',
+                    '2' => '$100 - $149',
+                    '3' => '$150 - $199',
+                    '4' => '$200 - $249',
+                    '5' => 'NONE OF THE ABOVE/DOES NOT APPLY',
+                ),
+
+            ),
+            $this->getContainer()->get('experian.net_connect.precise_id')
+                ->getResponseOnUserData($this->getApplicant($this->users[0]))
+        );
+    }
+
+    protected function getPreciseID()
+    {
+        $preciseID = new PreciseID(
+            $this->getContainer()->get('doctrine.orm.default_entity_manager'),
+            $this->getContainer()->getParameter('cacert_path'),
+            false,
+            $this->getContainer()->getParameter('server_name'),
+            $this->getContainer()->getParameter('kernel.logs_dir'),
+            $this->getContainer()->getParameter('web.upload.dir')
+        );
+        $preciseID->setConfigs(
+            $this->getContainer()->getParameter('net_connect.precise_id.url'),
+            $this->getContainer()->getParameter('net_connect.precise_id.dbhost'),
+            $this->getContainer()->getParameter('net_connect.precise_id.sub_code')
+        );
+        return $preciseID;
+    }
+
+    /**
+     * Tests PreciseID->getResponseOnUserData()
+     */
+    protected function execute($data)
+    {
+        $aplicant = $this->getApplicant($data);
+
+        return $this->getPreciseID()->getResponseOnUserData($aplicant);
+    }
+
+    /**
+     * @test
+     * @expectedException Exception
      * @expectedExceptionMessage Unable to standardize current address
      */
     public function getResponseOnUserDataErrorAddress()
     {
         $data = $this->users[0];
         $data['CurrentAddress']['Zip'] = '99999';
-        $this->getResponseOnUserData($data);
+        $this->execute($data);
     }
 
     /**
      * @test
      *
-     * @expectedException \ExperianException
+     * @expectedException Exception
      * @expectedExceptionMessage Consumer Not Found on File One
      */
     public function getResponseOnUserDataIncorrect()
@@ -162,7 +223,7 @@ abstract class PidkiqCase extends BaseTestCase
         $data = $this->users[0];
         $data['Name']['Surname'] = 'dfgsdfgsdfg';
         $data['Name']['First'] = 'dfg';
-        $this->getResponseOnUserData($data);
+        $this->execute($data);
     }
 
     /**
@@ -173,10 +234,10 @@ abstract class PidkiqCase extends BaseTestCase
         $i = 0;
         while (!empty($this->users[$i])) {
             try {
-                $resp = $this->getResponseOnUserData($this->users[$i]);
+                $resp = $this->execute($this->users[$i]);
                 $this->assertTrue(is_array($resp));
                 return;
-            } catch (\ExperianException $e) {
+            } catch (Exception $e) {
                 if ('No questions returned due to excessive use' == $e->getMessage()) {
                     $i++;
                     continue;
@@ -205,11 +266,11 @@ abstract class PidkiqCase extends BaseTestCase
      * 2014.05.28 It works again
      *
      *
-     * @expectedException \ExperianException
+     * @expectedException Exception
      * @expectedExceptionMessage No questions returned due to excessive use
      */
     public function getResponseOnUserDataTimeout()
     {
-        $this->getResponseOnUserData($this->users[0]);
+        $this->execute($this->users[0]);
     }
 }

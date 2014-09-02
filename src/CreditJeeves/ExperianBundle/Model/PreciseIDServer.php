@@ -11,100 +11,14 @@ use CreditJeeves\ExperianBundle\Model\Error;
 class PreciseIDServer
 {
     /**
-     * @Serializer\Type("string")
-     * @Serializer\SerializedName("SessionID")
-     * @Serializer\Groups({"CreditJeeves"})
-     * @var string
+     * @Serializer\SerializedName("XMLVersion")
+     * @Serializer\Type("integer")
+     * @Serializer\Groups({"PreciseID", "CreditJeeves"})
+     *
+     * @var int
      */
-    protected $sessionId;
+    protected $XMLVersion = 5;
 
-    /**
-     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Summary")
-     * @Serializer\SerializedName("Summary")
-     * @Serializer\Groups({"CreditJeeves"})
-     */
-    protected $summary;
-
-    /**
-     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\GLBDetail")
-     * @Serializer\SerializedName("GLBDetail")
-     * @Serializer\Groups({"CreditJeeves"})
-     */
-    protected $GLBDetail;
-
-    /**
-     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Error")
-     * @Serializer\SerializedName("Error")
-     * @Serializer\Groups({"CreditJeeves"})
-     */
-    protected $error;
-
-    /**
-     * @param GLBDetail $GLBDetail
-     */
-    public function setGLBDetail($GLBDetail)
-    {
-        $this->GLBDetail = $GLBDetail;
-    }
-
-    /**
-     * @return GLBDetail
-     */
-    public function getGLBDetail()
-    {
-        if (empty($this->GLBDetail)) {
-            $this->GLBDetail = new GLBDetail();
-        }
-        return $this->GLBDetail;
-    }
-
-
-    /**
-     * @param string $sessionId
-     */
-    public function setSessionId($sessionId)
-    {
-        $this->sessionId = $sessionId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSessionId()
-    {
-        return $this->sessionId;
-    }
-
-
-    /**
-     * @param Summary $summary
-     */
-    public function setSummary(Summary $summary)
-    {
-        $this->summary = $summary;
-    }
-
-    /**
-     * @return Summary
-     */
-    public function getSummary()
-    {
-        return $this->summary;
-    }
-
-    /**
-     * @param Error $error
-     */
-    public function setError(Error $error)
-    {
-        $this->error = $error;
-    }
-
-    /**
-     * @return Error
-     */
-    public function getError()
-    {
-        return $this->error;
-    }
+    use PreciseIDServerRequest;
+    use PreciseIDServerResponse;
 }

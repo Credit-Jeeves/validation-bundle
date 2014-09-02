@@ -18,25 +18,49 @@ class Summary
     protected $preciseIDScore;
 
     /**
-     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\InitialResults")
      * @Serializer\SerializedName("InitialResults")
+     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\InitialResults")
      * @Serializer\Groups({"CreditJeeves"})
      */
     protected $initialResults;
 
     /**
-     * @param InitialResults $initialResults
+     * @return mixed
      */
-    public function setInitialResult(InitialResults $initialResults)
+    public function getPreciseIDScore()
     {
-        $this->initialResults = $initialResults;
+        return $this->preciseIDScore;
     }
 
     /**
-     * @return InitialResults
+     * @param mixed $preciseIDScore
+     *
+     * @return $this
      */
-    public function getInitialResult()
+    public function setPreciseIDScore($preciseIDScore)
+    {
+        $this->preciseIDScore = $preciseIDScore;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInitialResults()
     {
         return $this->initialResults;
+    }
+
+    /**
+     * @param mixed $initialResults
+     *
+     * @return $this
+     */
+    public function setInitialResults($initialResults)
+    {
+        $this->initialResults = $initialResults;
+
+        return $this;
     }
 }

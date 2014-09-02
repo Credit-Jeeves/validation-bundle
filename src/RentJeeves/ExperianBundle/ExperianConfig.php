@@ -10,7 +10,7 @@ use CreditJeeves\ExperianBundle\ExperianConfig as Base;
 /**
  * DI\Service("experian.config") It is deffined in services.yml
  */
-class ExperianConfig extends Base
+class ExperianConfig
 {
     /**
      * @param string $serverName

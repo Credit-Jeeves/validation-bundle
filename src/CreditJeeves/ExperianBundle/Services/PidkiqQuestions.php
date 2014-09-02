@@ -51,7 +51,7 @@ class PidkiqQuestions
 
     /**
      * @InjectParams({
-     *     "pidkiqApi"          = @Inject("experian.pidkiq"),
+     *     "pidkiqApi"          = @Inject("experian.net_connect.precise_id"),
      *     "securityContext"    = @Inject("security.context"),
      *     "catcher"            = @Inject("fp_badaboom.exception_catcher"),
      *     "translator"         = @Inject("translator"),

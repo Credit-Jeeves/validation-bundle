@@ -1,14 +1,14 @@
 <?php
-namespace CreditJeeves\TestBundle\Experian;
+namespace CreditJeeves\TestBundle\NetConnect;
 
-use CreditJeeves\ExperianBundle\NetConnect as Base;
+use CreditJeeves\ExperianBundle\NetConnect\CreditProfile as Base;
 use JMS\DiExtraBundle\Annotation as DI;
 use RuntimeException;
 
 /**
- * DI\Service("experian.net_connect") It is deffined in services.yml
+ * DI\Service("experian.net_connect.credit_profile") It is deffined in services.yml
  */
-class NetConnectTest extends Base
+class CreditProfileTest extends Base
 {
     protected $dataDir;
 
@@ -56,7 +56,7 @@ class NetConnectTest extends Base
     {
         $responce = $this->getResponse($aplicant);
         $this->xml->__construct();
-        $this->xml->userRequestXML($this->modelToData($aplicant)); // It need to pass XML validation
+        $this->xml->userRequestXML($this->addUserToRequest($aplicant)); // It need to pass XML validation
 
         return $this->retriveUserDataFromXML($responce);
     }

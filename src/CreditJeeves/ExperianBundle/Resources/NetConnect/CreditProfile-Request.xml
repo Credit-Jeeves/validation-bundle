@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NetConnectRequest xmlns="http://www.experian.com/NetConnect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.experian.com/NetConnect NetConnect.xsd">
+  <EAI>HRPCX4RA</EAI>
+  <DBHost>STAR</DBHost>
+  <ReferenceId>123</ReferenceId>
+  <Request xmlns="http://www.experian.com/WebDelivery" version="1.0">
+    <Products>
+      <CreditProfile>
+        <Subscriber>
+          <Preamble>TBD2</Preamble>
+          <OpInitials>DE</OpInitials>
+          <SubCode>2266580</SubCode>
+        </Subscriber>
+        <PrimaryApplicant>
+          <Name>
+            <Surname>BRIEN</Surname>
+            <First>MARION</First>
+            <Middle>R</Middle>
+          </Name>
+          <SSN>666560093</SSN>
+          <CurrentAddress>
+            <Street>INGLEWOOD 934 S</Street>
+            <City>INGLEWOOD</City>
+            <State>CA</State>
+            <Zip>903013646</Zip>
+          </CurrentAddress>
+        </PrimaryApplicant>
+        <AccountType>
+          <Type>3F</Type>
+        </AccountType>
+        <AddOns>
+          <ProfileSummary>Y</ProfileSummary>
+          <RiskModels>
+            <VantageScore3>Y</VantageScore3>
+          </RiskModels>
+        </AddOns>
+        <OutputType>
+          <ARF>
+            <ARFVersion>07</ARFVersion>
+            <Y2K>Y</Y2K>
+            <Segment130>Y</Segment130>
+          </ARF>
+        </OutputType>
+        <Vendor>
+          <VendorNumber>P94</VendorNumber>
+        </Vendor>
+      </CreditProfile>
+    </Products>
+  </Request>
+</NetConnectRequest>

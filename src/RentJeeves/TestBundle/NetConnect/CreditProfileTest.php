@@ -1,14 +1,14 @@
 <?php
-namespace RentJeeves\TestBundle\Experian;
+namespace RentJeeves\TestBundle\NetConnect;
 
-use CreditJeeves\TestBundle\Experian\NetConnectTest as Base;
+use CreditJeeves\TestBundle\NetConnect\CreditProfileTest as Base;
 use JMS\DiExtraBundle\Annotation as DI;
 use RuntimeException;
 
 /**
- * DI\Service("experian.net_connect") It is deffined in services.yml
+ * DI\Service("experian.net_connect.credit_profile") It is defined in services.yml
  */
-class NetConnectTest extends Base
+class CreditProfileTest extends Base
 {
     protected function getFixturesDir()
     {
