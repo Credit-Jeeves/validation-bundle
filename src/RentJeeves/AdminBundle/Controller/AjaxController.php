@@ -7,6 +7,8 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Model\Group;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
@@ -83,12 +85,25 @@ class AjaxController extends Controller
         $propertyId = $request->request->get('id');
         $groupId = $request->request->get('groupId');
         $em = $this->getDoctrine()->getManager();
-        $units = $em->getRepository('RjDataBundle:Unit')->findBy(
-            array(
-                'group' => $groupId,
-                'property' => $propertyId
-            )
-        );
+        /**
+         * @var $property Property
+         */
+        $property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+
+        if ($property && $property->isSingle()) {
+            /**
+             * @var $singleUnit Unit
+             */
+            $singleUnit = $property->getSingleUnit();
+            $units = array($singleUnit);
+        } else {
+            $units = $em->getRepository('RjDataBundle:Unit')->findBy(
+                array(
+                    'group' => $groupId,
+                    'property' => $propertyId
+                )
+            );
+        }
 
         return $this->makeJsonResponse($units, array("AdminUnit"));
     }
