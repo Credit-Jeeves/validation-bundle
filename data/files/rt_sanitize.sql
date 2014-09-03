@@ -36,7 +36,7 @@ update rj_property set city = mid(md5(city),1,12), zip = mid(md5(zip),1,5), stre
 
 update rj_unit set name = mid(md5(name),1,4);
 
--- added 03-09-2014
+-- RentTrack Sanitization Script - relevant to release 3.4
 update rj_contract_waiting set resident_id = mid(md5(resident_id),1,12),
 first_name = mid(md5(first_name),1,12),
 last_name = mid(md5(last_name),1,12);
@@ -47,4 +47,6 @@ delete from refresh_token;
 delete from access_token;
 delete from auth_code;
 delete from client;
--- delete from yardi_settings; uncomment later
+
+-- RentTrack Sanitization Script - relevant to next release after 3.4
+-- delete from yardi_settings;
