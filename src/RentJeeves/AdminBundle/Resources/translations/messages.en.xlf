@@ -82,6 +82,10 @@
                 <source>admin.form.contract_waiting.error.residentId</source>
                 <target>This residentId already exists.</target>
             </trans-unit>
+            <trans-unit id="admin.form.error.property_mapping">
+                <source>admin.form.error.property_mapping</source>
+                <target>This property mapping already exists.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
