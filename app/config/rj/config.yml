@@ -149,3 +149,10 @@ bazinga_geocoder:
         google_maps:
             api_key:  %google_maps_key%
             use_ssl:  true
+
+be_simple_soap:
+    clients:
+        yardi_resident:
+            wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20.html.twig
+        yardi_payment:
+            wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20_SysBatch.html.twig

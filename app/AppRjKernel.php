@@ -58,6 +58,7 @@ class AppRjKernel extends AppKernel
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
             new CreditJeeves\AdminBundle\AdminBundle(),
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
+            new BeSimple\SoapBundle\BeSimpleSoapBundle(),
 
             // Must be last in the list
             new RentJeeves\AdminBundle\RjAdminBundle(),
@@ -71,7 +72,6 @@ class AppRjKernel extends AppKernel
             new RentJeeves\CheckoutBundle\RjCheckoutBundle(),
             new RentJeeves\ExperianBundle\RjExperianBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
-            new BeSimple\SoapBundle\BeSimpleSoapBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test', 'migration'))) {

@@ -36,3 +36,7 @@ parameters:
     net_connect.credit_profile.dbhost: 'CIS' #required!
     net_connect.credit_profile.sub_code: '2266580' #required!
     net_connect.credit_profile.d2c.sub_code: '2266580' #required!
+
+    soap.api.yardi.entity: RentTrack
+    soap.api.yardi.license: "./src/RentJeeves/ExternalApiBundle/Resources/files/V100057742BP.lic"
+

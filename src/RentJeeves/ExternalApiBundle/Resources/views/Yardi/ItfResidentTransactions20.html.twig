@@ -1,0 +1,1188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Yardi Billing &amp; Payment Interface v2.0 Web Service. Utilizes XML in MITS Resident Transactions 2.0. All web methods contained in this web service that read/write data from Voyager will require login credentials.</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20">
+      <s:element name="GetResidentTransaction_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TenantId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentTransaction_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentTransaction_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentTransactions_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentTransactions_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentTransactions_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentTransactions_ByChargeDate_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="FromDate" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="ToDate" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentTransactions_ByChargeDate_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentTransactions_ByChargeDate_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentTransactions_ByApplicationDate_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="FromDate" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="ToDate" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentTransactions_ByApplicationDate_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentTransactions_ByApplicationDate_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentLeaseCharges_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="PostMonth" type="s:dateTime" />
+            <s:element minOccurs="0" maxOccurs="1" name="TenantId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentLeaseCharges_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentLeaseCharges_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentsLeaseCharges_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="PostMonth" type="s:dateTime" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentsLeaseCharges_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentsLeaseCharges_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetOwnerTransactions_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetOwnerTransactions_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetOwnerTransactions_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUnitInformation_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUnitInformation_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUnitInformation_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPropertyConfigurations">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPropertyConfigurationsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPropertyConfigurationsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ImportResidentTransactions_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TransactionXml">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ImportResidentTransactions_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ImportResidentTransactions_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ImportResidentTransactions_DepositDate">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TransactionXml">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+            <s:element minOccurs="1" maxOccurs="1" name="DepositDate" type="s:dateTime" />
+            <s:element minOccurs="0" maxOccurs="1" name="DepositMemo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ImportResidentTransactions_DepositDateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ImportResidentTransactions_DepositDateResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ImportPayable_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PayableDoc">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ImportPayable_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ImportPayable_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ImportCheck_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CheckDoc">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ImportCheck_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ImportCheck_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPayables">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="VendorId" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="InvoicePostMonthFrom" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="InvoicePostMonthTo" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="InvoiceFromDate" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="InvoiceToDate" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="UnpaidOnly" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPayablesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPayablesResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVendor_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="VendorId" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVendor_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVendor_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVendors_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVendors_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVendors_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExportChartOfAccounts">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PropertyId" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExportChartOfAccountsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExportChartOfAccountsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetChargeTypes_Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetChargeTypes_LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetChargeTypes_LoginResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVersionNumber_Str">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetVersionNumber_StrResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVersionNumber_StrResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVersionNumber">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetVersionNumberResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVersionNumberResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Ping">
+        <s:complexType />
+      </s:element>
+      <s:element name="PingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PingResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetResidentTransaction_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentTransaction_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentTransaction_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentTransaction_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentTransactions_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentTransactions_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentTransactions_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentTransactions_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentTransactions_ByChargeDate_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentTransactions_ByChargeDate_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentTransactions_ByChargeDate_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentTransactions_ByChargeDate_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentTransactions_ByApplicationDate_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentTransactions_ByApplicationDate_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentTransactions_ByApplicationDate_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentTransactions_ByApplicationDate_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentLeaseCharges_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentLeaseCharges_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentLeaseCharges_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentLeaseCharges_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentsLeaseCharges_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentsLeaseCharges_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentsLeaseCharges_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentsLeaseCharges_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetOwnerTransactions_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetOwnerTransactions_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetOwnerTransactions_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetOwnerTransactions_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUnitInformation_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUnitInformation_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetUnitInformation_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUnitInformation_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertyConfigurationsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPropertyConfigurations" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertyConfigurationsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPropertyConfigurationsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ImportResidentTransactions_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:ImportResidentTransactions_Login" />
+  </wsdl:message>
+  <wsdl:message name="ImportResidentTransactions_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:ImportResidentTransactions_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="ImportResidentTransactions_DepositDateSoapIn">
+    <wsdl:part name="parameters" element="tns:ImportResidentTransactions_DepositDate" />
+  </wsdl:message>
+  <wsdl:message name="ImportResidentTransactions_DepositDateSoapOut">
+    <wsdl:part name="parameters" element="tns:ImportResidentTransactions_DepositDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="ImportPayable_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:ImportPayable_Login" />
+  </wsdl:message>
+  <wsdl:message name="ImportPayable_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:ImportPayable_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="ImportCheck_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:ImportCheck_Login" />
+  </wsdl:message>
+  <wsdl:message name="ImportCheck_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:ImportCheck_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPayablesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPayables" />
+  </wsdl:message>
+  <wsdl:message name="GetPayablesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPayablesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVendor_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVendor_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetVendor_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVendor_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVendors_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVendors_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetVendors_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVendors_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExportChartOfAccountsSoapIn">
+    <wsdl:part name="parameters" element="tns:ExportChartOfAccounts" />
+  </wsdl:message>
+  <wsdl:message name="ExportChartOfAccountsSoapOut">
+    <wsdl:part name="parameters" element="tns:ExportChartOfAccountsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetChargeTypes_LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:GetChargeTypes_Login" />
+  </wsdl:message>
+  <wsdl:message name="GetChargeTypes_LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:GetChargeTypes_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVersionNumber_StrSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVersionNumber_Str" />
+  </wsdl:message>
+  <wsdl:message name="GetVersionNumber_StrSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVersionNumber_StrResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVersionNumberSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVersionNumber" />
+  </wsdl:message>
+  <wsdl:message name="GetVersionNumberSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVersionNumberResponse" />
+  </wsdl:message>
+  <wsdl:message name="PingSoapIn">
+    <wsdl:part name="parameters" element="tns:Ping" />
+  </wsdl:message>
+  <wsdl:message name="PingSoapOut">
+    <wsdl:part name="parameters" element="tns:PingResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ItfResidentTransactions2_0Soap">
+    <wsdl:operation name="GetResidentTransaction_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of resident/transactional data for a given property/property list; will only return one resident based on the Yardi tenant code supplied. </wsdl:documentation>
+      <wsdl:input message="tns:GetResidentTransaction_LoginSoapIn" />
+      <wsdl:output message="tns:GetResidentTransaction_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of resident/transactional data for a given property/property list. </wsdl:documentation>
+      <wsdl:input message="tns:GetResidentTransactions_LoginSoapIn" />
+      <wsdl:output message="tns:GetResidentTransactions_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_ByChargeDate_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of resident/transactional data for a given property/property list; will only extract tenants/prospects with new charges within the specified date range. Only allows the consumer to pull up to 31 days worth of information (hours not included). </wsdl:documentation>
+      <wsdl:input message="tns:GetResidentTransactions_ByChargeDate_LoginSoapIn" />
+      <wsdl:output message="tns:GetResidentTransactions_ByChargeDate_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_ByApplicationDate_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows login &amp; export of resident/transactional data for a given property/property list; will only extract tenants/prospects who have submitted an application within the specified date range. Only allows the consumer to pull up to 31 days worth of information (hours not included). </wsdl:documentation>
+      <wsdl:input message="tns:GetResidentTransactions_ByApplicationDate_LoginSoapIn" />
+      <wsdl:output message="tns:GetResidentTransactions_ByApplicationDate_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentLeaseCharges_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of resident lease charge data for a given property/property list; will only return one resident based on the Yardi tenant code supplied. </wsdl:documentation>
+      <wsdl:input message="tns:GetResidentLeaseCharges_LoginSoapIn" />
+      <wsdl:output message="tns:GetResidentLeaseCharges_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsLeaseCharges_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of resident/transactional data for a given property/property list; Can be used thru 1/1/13 without an InterfaceLicense. </wsdl:documentation>
+      <wsdl:input message="tns:GetResidentsLeaseCharges_LoginSoapIn" />
+      <wsdl:output message="tns:GetResidentsLeaseCharges_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOwnerTransactions_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of owner/transactional data for a given property/property list. Can be used thru 1/1/13 without an InterfaceLicense. </wsdl:documentation>
+      <wsdl:input message="tns:GetOwnerTransactions_LoginSoapIn" />
+      <wsdl:output message="tns:GetOwnerTransactions_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUnitInformation_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of resident/transactional data for a given property/property list. </wsdl:documentation>
+      <wsdl:input message="tns:GetUnitInformation_LoginSoapIn" />
+      <wsdl:output message="tns:GetUnitInformation_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyConfigurations">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of the Property Configuration with the Database.  The Unique Interface Entity name is needed in order to return the Property Id's the 3rd party has access to. </wsdl:documentation>
+      <wsdl:input message="tns:GetPropertyConfigurationsSoapIn" />
+      <wsdl:output message="tns:GetPropertyConfigurationsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ImportResidentTransactions_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows import of resident transaction data from a 3rd party system. </wsdl:documentation>
+      <wsdl:input message="tns:ImportResidentTransactions_LoginSoapIn" />
+      <wsdl:output message="tns:ImportResidentTransactions_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ImportResidentTransactions_DepositDate">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows import of resident transaction data from a 3rd party system; allows the consumer pass to in a deposit date and memo.  The deposit date and memo will represent the date and memo for the entire transactional xml file. </wsdl:documentation>
+      <wsdl:input message="tns:ImportResidentTransactions_DepositDateSoapIn" />
+      <wsdl:output message="tns:ImportResidentTransactions_DepositDateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ImportPayable_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows for import of payable transactions into a Yardi Voyager database. </wsdl:documentation>
+      <wsdl:input message="tns:ImportPayable_LoginSoapIn" />
+      <wsdl:output message="tns:ImportPayable_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ImportCheck_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows for the import of check information into a Yardi Voyager database that may be applied to payables. </wsdl:documentation>
+      <wsdl:input message="tns:ImportCheck_LoginSoapIn" />
+      <wsdl:output message="tns:ImportCheck_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPayables">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows for export of payable/invoice transaction data from a Yardi Voyager database. Payable data can be filtered by Yardi Property Id, Vendor Id, post month range, and transaction date range. </wsdl:documentation>
+      <wsdl:input message="tns:GetPayablesSoapIn" />
+      <wsdl:output message="tns:GetPayablesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVendor_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of vendor information from a Yardi Voyager database. </wsdl:documentation>
+      <wsdl:input message="tns:GetVendor_LoginSoapIn" />
+      <wsdl:output message="tns:GetVendor_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVendors_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of vendor information from a Yardi Voyager database. </wsdl:documentation>
+      <wsdl:input message="tns:GetVendors_LoginSoapIn" />
+      <wsdl:output message="tns:GetVendors_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExportChartOfAccounts">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows Export of a Chart of Accounts.  Yardi Property Id is needed in the case of multiple charts. </wsdl:documentation>
+      <wsdl:input message="tns:ExportChartOfAccountsSoapIn" />
+      <wsdl:output message="tns:ExportChartOfAccountsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChargeTypes_Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Export Charge Types; </wsdl:documentation>
+      <wsdl:input message="tns:GetChargeTypes_LoginSoapIn" />
+      <wsdl:output message="tns:GetChargeTypes_LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber_Str">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">(Deprecated)</wsdl:documentation>
+      <wsdl:input message="tns:GetVersionNumber_StrSoapIn" />
+      <wsdl:output message="tns:GetVersionNumber_StrSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns current version number of Interfaces concatenated with Billing and Payments Plugin version (XX_Y)</wsdl:documentation>
+      <wsdl:input message="tns:GetVersionNumberSoapIn" />
+      <wsdl:output message="tns:GetVersionNumberSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+      <wsdl:input message="tns:PingSoapIn" />
+      <wsdl:output message="tns:PingSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ItfResidentTransactions2_0Soap" type="tns:ItfResidentTransactions2_0Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetResidentTransaction_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentTransaction_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentTransactions_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_ByChargeDate_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentTransactions_ByChargeDate_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_ByApplicationDate_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentTransactions_ByApplicationDate_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentLeaseCharges_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentLeaseCharges_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsLeaseCharges_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentsLeaseCharges_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOwnerTransactions_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetOwnerTransactions_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUnitInformation_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetUnitInformation_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyConfigurations">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetPropertyConfigurations" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportResidentTransactions_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ImportResidentTransactions_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportResidentTransactions_DepositDate">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ImportResidentTransactions_DepositDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportPayable_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ImportPayable_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportCheck_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ImportCheck_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPayables">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetPayables" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendor_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetVendor_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendors_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetVendors_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExportChartOfAccounts">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ExportChartOfAccounts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChargeTypes_Login">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetChargeTypes_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber_Str">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetVersionNumber_Str" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetVersionNumber" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+      <soap:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/Ping" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ItfResidentTransactions2_0Soap12" type="tns:ItfResidentTransactions2_0Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetResidentTransaction_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentTransaction_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentTransactions_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_ByChargeDate_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentTransactions_ByChargeDate_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentTransactions_ByApplicationDate_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentTransactions_ByApplicationDate_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentLeaseCharges_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentLeaseCharges_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsLeaseCharges_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetResidentsLeaseCharges_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOwnerTransactions_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetOwnerTransactions_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUnitInformation_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetUnitInformation_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyConfigurations">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetPropertyConfigurations" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportResidentTransactions_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ImportResidentTransactions_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportResidentTransactions_DepositDate">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ImportResidentTransactions_DepositDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportPayable_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ImportPayable_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportCheck_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ImportCheck_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPayables">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetPayables" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendor_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetVendor_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendors_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetVendors_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExportChartOfAccounts">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/ExportChartOfAccounts" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChargeTypes_Login">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetChargeTypes_Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber_Str">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetVersionNumber_Str" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/GetVersionNumber" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+      <soap12:operation soapAction="{{ url }}YSI.Interfaces.WebServices/ItfResidentTransactions20/Ping" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ItfResidentTransactions2_0">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Yardi Billing &amp; Payment Interface v2.0 Web Service. Utilizes XML in MITS Resident Transactions 2.0. All web methods contained in this web service that read/write data from Voyager will require login credentials.</wsdl:documentation>
+    <wsdl:port name="ItfResidentTransactions2_0Soap" binding="tns:ItfResidentTransactions2_0Soap">
+      <soap:address location="{{ url }}WebServices/ItfResidentTransactions20.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ItfResidentTransactions2_0Soap12" binding="tns:ItfResidentTransactions2_0Soap12">
+      <soap12:address location="{{ url }}Webservices/ItfResidentTransactions20.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

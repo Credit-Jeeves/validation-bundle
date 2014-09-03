@@ -23,6 +23,7 @@ parameters:
         application_id: 3
         username: RTAPI
         password: $RTapi13
+
     login.attempts: 1
     login.delay: 1
     net_connect.precise_id.userpwd: 'renttrack_pid_demo:UdWU3aSDkjxa' #required! # overwritten by DB
@@ -36,3 +37,6 @@ parameters:
     net_connect.credit_profile.dbhost: 'STAR' #required!
     net_connect.credit_profile.sub_code: '2266580' #required!
     net_connect.credit_profile.d2c.sub_code: '2266580' #required!
+
+    soap.api.yardi.entity: RentTrack
+    soap.api.yardi.license: "./src/RentJeeves/ExternalApiBundle/Resources/files/V100057742BP.lic"
