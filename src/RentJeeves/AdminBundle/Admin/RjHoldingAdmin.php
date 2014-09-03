@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
+use RentJeeves\DataBundle\Entity\YardiSettings;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -28,6 +29,35 @@ class RjHoldingAdmin extends Admin
             )
         );
         return $query;
+    }
+
+    public function configureFormFields(FormMapper $formMapper)
+    {
+        parent::configureFormFields($formMapper);
+        $contrainer = $this->getConfigurationPool()->getContainer();
+        $formMapper
+            ->with('Yardi Settings')
+                ->add(
+                    'yardiSettings',
+                    $contrainer->get('form.yardi_settings'),
+                    array(
+                    ),
+                    array(
+                        'edit'      => 'inline',
+                        'inline'    => 'table',
+                        'sortable'  => 'position',
+                    )
+                )
+            ->end();
+    }
+
+    public function prePersist($holding)
+    {
+        /**
+         * @var $yardi YardiSettings
+         */
+        $yardi = $holding->getYardiSettings();
+        $yardi->setHolding($holding);
     }
 
     protected function configureShowField(ShowMapper $showMapper)
