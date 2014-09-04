@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -904,14 +905,27 @@ class Contract extends Base
     public function hasPaymentForMonth($month, $year)
     {
         $operations = $this->getOperations();
-        if ($operations->count() > 0) {
-            $lastOperation = $operations->last();
-            /** @var $lastOperation Operation */
-            $order = $lastOperation->getOrder();
-            $paymentMonth = $lastOperation->getPaidFor()->format('n');
-            $paymentYear = $lastOperation->getPaidFor()->format('Y');
-            if ($order->getStatus() == OrderStatus::PENDING && ($paymentMonth + $paymentYear) >= ($month + $year)) {
-                return true;
+        $count = $operations->count();
+        for ($i = 1; $i <= $count; $i++) {
+
+            /** @var $operation Operation */
+            $operation = $operations->slice($count-$i, 1);
+            $operation = reset($operation);
+            if ($operation->getType() == OperationType::RENT) {
+                $order = $operation->getOrder();
+                $paidFor = $operation->getPaidFor();
+
+                if ($order && $paidFor) {
+                    $paymentMonth = (int) $paidFor->format('n');
+                    $paymentYear = (int) $paidFor->format('Y');
+                    if (($order->getStatus() == OrderStatus::PENDING)
+                        && (($paymentMonth + $paymentYear) >= ($month + $year))) {
+
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
 
