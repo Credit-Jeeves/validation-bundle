@@ -65,12 +65,9 @@ class PaymentDepositReport implements PaymentSynchronizerInterface
             $transaction->setBatchDate(new DateTime($paymentData['BatchCloseDate']));
         }
 
-        if ($paymentData['MerchantDepositAmount'] > 0) {
+        if ($paymentData['MerchantDepositAmount'] > 0 && !empty($paymentData['MerchantDepositDate'])) {
             $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
-
-            if (!empty($paymentData['MerchantDepositDate'])) {
-                $transaction->setDepositDate(new DateTime($paymentData['MerchantDepositDate']));
-            }
+            $transaction->setDepositDate(new DateTime($paymentData['MerchantDepositDate']));
         }
         $this->em->flush();
     }
