@@ -543,7 +543,7 @@ class Contract extends Base
     public function shiftPaidTo($amount = null)
     {
         // paid_to can not be calculated without rent
-        if ($this->getRent() <= 0 ) {
+        if ($this->getRent() <= 0) {
             return;
         }
 
@@ -571,7 +571,7 @@ class Contract extends Base
     public function unshiftPaidTo($amount)
     {
         // paid_to can not be calculated without rent
-        if ($this->getRent() <= 0 ) {
+        if ($this->getRent() <= 0) {
             return;
         }
 
