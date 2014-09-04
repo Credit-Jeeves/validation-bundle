@@ -470,7 +470,7 @@ class ContractRepository extends EntityRepository
         $query->leftJoin('op.order', 'o');
         $query->where('c.group IN (:groups)');
         $query->andWhere('c.status IN (:status)');
-        $query->andWhere('c.paidTo < :date');
+        $query->andWhere('c.paidTo < DATE(:date)');
         $query->andWhere('o.status <> :orderPendingStatus OR o.status IS NULL');
         $query->setParameter('groups', $this->getGroupIds($groups));
         $query->setParameter('status', $status);
