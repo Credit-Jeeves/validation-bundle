@@ -339,7 +339,7 @@ class Contract extends Base
             $interval = $date->diff($now);
             $unpaidDays = $interval->format('%r%a');
 
-            if ($unpaidDays <= 0) {
+            if ($unpaidDays <= 0 || $this->hasPaymentForMonth($date->format('n'), $date->format('Y'))) {
                 return $result;
             }
             $lastPayment = $this->getLastPayment();
@@ -894,5 +894,27 @@ class Contract extends Base
     public function getTenantLateDays()
     {
         return $this->getPaidTo()->diff(new DateTime())->format('%d');
+    }
+
+    /**
+     * @param $month
+     * @param $year
+     * @return bool
+     */
+    public function hasPaymentForMonth($month, $year)
+    {
+        $operations = $this->getOperations();
+        if ($operations->count() > 0) {
+            $lastOperation = $operations->last();
+            /** @var $lastOperation Operation */
+            $order = $lastOperation->getOrder();
+            $paymentMonth = $lastOperation->getPaidFor()->format('n');
+            $paymentYear = $lastOperation->getPaidFor()->format('Y');
+            if ($order->getStatus() == OrderStatus::PENDING && ($paymentMonth + $paymentYear) >= ($month + $year)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
