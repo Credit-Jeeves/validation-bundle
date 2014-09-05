@@ -231,4 +231,19 @@ EOT;
 
         return $result;
     }
+
+    public function findByHolding(Holding $holding = null)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->innerJoin('p.property_groups', 'p_group');
+        $query->where('p.jb IS NOT NULL AND p.kb IS NOT NULL');
+        if ($holding) {
+            $query->andWhere('p_group.holding_id = :holdingId');
+            $query->setParameter('holdingId', $holding->getId());
+        }
+        $query->addOrderBy('p.street', 'ASC');
+        $query->addOrderBy('p.number', 'ASC');
+
+        return $query;
+    }
 }
