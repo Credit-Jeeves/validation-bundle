@@ -902,7 +902,7 @@ class Contract extends Base
      * @param $year
      * @return bool
      */
-    public function hasPaymentForMonth($month, $year)
+    public function hasPaymentPendingForMonth($month, $year)
     {
         $operations = $this->getOperations();
         $count = $operations->count();
