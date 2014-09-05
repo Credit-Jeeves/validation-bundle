@@ -340,7 +340,7 @@ class Contract extends Base
             $interval = $date->diff($now);
             $unpaidDays = $interval->format('%r%a');
 
-            if ($unpaidDays <= 0 || $this->hasPaymentForMonth($date->format('n'), $date->format('Y'))) {
+            if ($unpaidDays <= 0 || $this->hasPaymentPendingForMonth($date->format('n'), $date->format('Y'))) {
                 return $result;
             }
             $lastPayment = $this->getLastPayment();
