@@ -39,7 +39,7 @@ class SourcesCase extends BaseTestCase
             "jQuery('#payment-account-edit .attention-box li').length"
         );
         $this->assertNotNull($errors = $this->page->findAll('css', '#payment-account-edit .attention-box li'));
-        $this->assertCount(6, $errors);
+        $this->assertCount(3, $errors);
 
         $this->fillForm(
             $form,
@@ -95,6 +95,7 @@ class SourcesCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Edited',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy Applegate',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
@@ -117,9 +118,6 @@ class SourcesCase extends BaseTestCase
 
         $this->session->wait($this->timeout, "jQuery('#payment-account-row-2 td:first').text() == 'Edited'");
 
-        $this->logout(); // FIXME remove
-        $this->markTestIncomplete('Functional have strange bug');//FIXME fix bug and run test
-
         $this->assertNotNull($cols = $this->page->findAll('css', '#payment-account-row-2 td'));
         $this->assertEquals('Edited', $cols[0]->getText());
     }
@@ -134,18 +132,18 @@ class SourcesCase extends BaseTestCase
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('rent.sources');
 
-
         $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
         $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
-        $this->assertCount(2, $rows);
-
-        $rows[1]->clickLink('delete');
+        $rowsCount = count($rows);
+        $this->asserttrue(1 < $rowsCount);
+        $rowsCount -= 1;
+        $rows[$rowsCount]->clickLink('delete');
         $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
         $this->page->clickLink('payment_account.delete.yes');
 
-        $this->session->wait($this->timeout, "1 == jQuery('#payment-account-table tbody tr').length");
+        $this->session->wait($this->timeout, ($rowsCount) . " == jQuery('#payment-account-table tbody tr').length");
         $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
-        $this->assertCount(1, $rows);
+        $this->assertCount($rowsCount, $rows);
         $this->logout();
 
     }

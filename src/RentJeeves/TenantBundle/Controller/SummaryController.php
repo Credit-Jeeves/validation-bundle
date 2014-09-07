@@ -24,6 +24,7 @@ class SummaryController extends Controller
      */
     public function indexAction()
     {
+        /** @var Tenant $user */
         $user = $this->getUser();
         if (UserIsVerified::PASSED != $user->getIsVerified()) {
             return new RedirectResponse(
@@ -44,6 +45,7 @@ class SummaryController extends Controller
             'Report' => $Report,
             'Score' => $Score,
             'User' => $user,
+            'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
         );
     }
 

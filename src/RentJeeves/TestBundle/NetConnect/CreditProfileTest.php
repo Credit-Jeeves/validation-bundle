@@ -22,6 +22,8 @@ class CreditProfileTest extends Base
                 return file_get_contents($this->getFixturesDir() . 'tenant11.xml');
             case 'mamazza@rentrack.com':
                 return file_get_contents($this->getFixturesDir() . 'mamazza.xml');
+            case 'marion@rentrack.com':
+                return file_get_contents($this->getFixturesDir() . 'marion.xml');
         }
         throw new RuntimeException(sprintf('Please add fixture for user %s', $aplicant->getEmail()));
     }

@@ -74,6 +74,16 @@ abstract class Order
 
     /**
      * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     */
+    protected $fee = null;
+
+    /**
+     * @ORM\Column(
      *     type="datetime"
      * )
      * @Gedmo\Timestampable(on="create")
@@ -227,6 +237,29 @@ abstract class Order
     
         return $this;
     }
+
+    /**
+     * Get fee
+     *
+     * @return double
+     */
+    public function getFee()
+    {
+        return $this->fee;
+    }
+
+    /**
+     * Set fee
+     *
+     * @param double $fee
+     * @return Order
+     */
+    public function setFee($fee)
+    {
+        $this->fee = $fee;
+
+        return $this;
+    }
     
     /**
      * Get sum
@@ -235,7 +268,7 @@ abstract class Order
      */
     public function getSum()
     {
-        return $this->sum;
+        return (double)$this->sum;
     }
     
     /**

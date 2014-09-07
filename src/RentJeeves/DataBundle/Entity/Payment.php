@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -15,7 +16,6 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
- * @ORM\HasLifecycleCallbacks()
  * @Assert\Callback(methods={"isEndLaterThanStart"})
  */
 class Payment extends Base
@@ -71,18 +71,6 @@ class Payment extends Base
         $job = new Job('payment:pay', array('--app=rj'));
         $job->addRelatedEntity($this);
         return $job;
-    }
-
-    /**
-     * @ORM\PreRemove
-     */
-    public function preRemove(LifecycleEventArgs $event)
-    {
-        $em = $event->getEntityManager();
-//        $em->detach($this);
-        $this->setStatus(PaymentStatus::CLOSE);
-        $em->persist($this);
-        $em->flush($this);
     }
 
     protected function getNow()

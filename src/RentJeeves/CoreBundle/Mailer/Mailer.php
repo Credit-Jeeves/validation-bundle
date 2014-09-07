@@ -417,4 +417,20 @@ class Mailer extends BaseMailer
             $landlord->getCulture()
         );
     }
+
+    public function sendReportReceipt(Order $order)
+    {
+        $dateShortFormat = $this->container->getParameter('date_short');
+        return $this->sendEmail(
+            $order->getUser(),
+            'rjReceipt',
+            array(
+                'tenantName' => $order->getUser()->getFullName(),
+                'date' => $order->getCreatedAt()->format($dateShortFormat),
+                'amout' => $this->container->getParameter('credittrack_payment_per_month_currency') .
+                    $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting
+                'number' => $order->getHeartlandTransactionId(),
+            )
+        );
+    }
 }

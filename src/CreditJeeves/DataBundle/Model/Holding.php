@@ -5,6 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Model\YardiSettings;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
@@ -130,6 +131,16 @@ abstract class Holding
      */
     protected $propertyMapping;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\YardiSettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"},
+     *     fetch="EAGER"
+     * )
+     */
+    protected $yardiSettings;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -139,6 +150,23 @@ abstract class Holding
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
     }
+
+    /**
+     * @param YardiSettings $yardiSettings
+     */
+    public function setYardiSettings(YardiSettings $yardiSettings)
+    {
+        $this->yardiSettings = $yardiSettings;
+    }
+
+    /**
+     * @return YardiSettings
+     */
+    public function getYardiSettings()
+    {
+        return $this->yardiSettings;
+    }
+
     /**
      * @param PropertyMapping $propertyMapping
      */

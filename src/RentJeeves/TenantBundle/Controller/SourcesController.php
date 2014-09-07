@@ -49,7 +49,7 @@ class SourcesController extends Controller
             throw $this->createNotFoundException("Payment Account with ID '{$id}' not found");
         }
         $em->remove($paymentAccount);
-        $em->flush();
+        $em->flush($paymentAccount);
         return $this->redirect($request->headers->get('referer'));
     }
 

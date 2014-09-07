@@ -605,18 +605,4 @@ class Order extends BaseOrder
     {
         return (string)$this->getId();
     }
-
-    public function getFee()
-    {
-        $fee = 0;
-        switch ($this->getType()) {
-            case OrderType::HEARTLAND_CARD:
-                $fee = round($this->getSum() * (float)$this->getContract()->getDepositAccount()->getFeeCC()) / 100;
-                break;
-            case OrderType::HEARTLAND_BANK:
-                $fee = (float)$this->getContract()->getDepositAccount()->getFeeACH();
-                break;
-        }
-        return $fee;
-    }
 }

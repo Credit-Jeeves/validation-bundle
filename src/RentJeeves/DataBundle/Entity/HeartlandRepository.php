@@ -22,7 +22,7 @@ class HeartlandRepository extends EntityRepository
         $query->select(
             "h.batchId,
             h.transactionId,
-            h.amount,
+            o.sum as amount,
             date_format(h.createdAt, '%m/%d/%Y') as dateInitiated,
             o.type as paymentType,
             o.status as orderStatus,
@@ -121,7 +121,7 @@ class HeartlandRepository extends EntityRepository
         $query = $this->createQueryBuilder('h');
         $query->select(
             "h.transactionId,
-            h.amount,
+            o.sum as amount,
             date_format(h.createdAt, '%m/%d/%Y') as reversalDate,
             date_format(o.created_at, '%m/%d/%Y') as originDate,
             o.type as paymentType,

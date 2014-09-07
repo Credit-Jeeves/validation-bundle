@@ -7,6 +7,8 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Model\Group;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
@@ -18,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @Route("/")
@@ -83,12 +86,25 @@ class AjaxController extends Controller
         $propertyId = $request->request->get('id');
         $groupId = $request->request->get('groupId');
         $em = $this->getDoctrine()->getManager();
-        $units = $em->getRepository('RjDataBundle:Unit')->findBy(
-            array(
-                'group' => $groupId,
-                'property' => $propertyId
-            )
-        );
+        /**
+         * @var $property Property
+         */
+        $property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+
+        if ($property && $property->isSingle()) {
+            /**
+             * @var $singleUnit Unit
+             */
+            $singleUnit = $property->getSingleUnit();
+            $units = array($singleUnit);
+        } else {
+            $units = $em->getRepository('RjDataBundle:Unit')->findBy(
+                array(
+                    'group' => $groupId,
+                    'property' => $propertyId
+                )
+            );
+        }
 
         return $this->makeJsonResponse($units, array("AdminUnit"));
     }
@@ -246,6 +262,29 @@ class AjaxController extends Controller
             array(
                 'success' => true
             )
+        );
+    }
+
+    /**
+     * @Route(
+     *    "/rj/property_mapping",
+     *     name="admin_property_mapping",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getHoldingProperties(Request $request)
+    {
+        $holdingId = $request->request->get('holdingId');
+        $em = $this->getDoctrine()->getManager();
+        $holding = $em->getRepository('DataBundle:Holding')->find($holdingId);
+        if (!$holding) {
+            throw new NotFoundHttpException(sprintf('Holding with id #%s not found', $holdingId));
+        }
+        $properties = $em->getRepository('RjDataBundle:Property')->findByHolding($holding)->getQuery()->getResult();
+
+        return $this->makeJsonResponse(
+            $properties,
+            array("AdminProperty")
         );
     }
 }

@@ -20,7 +20,7 @@ abstract class UserSettings
     /**
      * @ORM\Column(type="boolean", name="is_base_order_report")
      */
-    protected $isBaseOrderReport;
+    protected $isBaseOrderReport = false;
 
     /**
      * @ORM\OneToOne(targetEntity="\CreditJeeves\DataBundle\Entity\User", inversedBy="settings")
@@ -29,15 +29,26 @@ abstract class UserSettings
     protected $user;
 
     /**
-     * @ORM\OneToOne(targetEntity="PaymentAccount")
-     * @ORM\JoinColumn(name="credit_track_payment_account_id", referencedColumnName="id", nullable=true)
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *      inversedBy="creditTrackUserSetting",
+     *      cascade={"persist", "remove"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="credit_track_payment_account_id",
+     *      referencedColumnName="id",
+     *      nullable=true,
+     *      onDelete="SET NULL"
+     * )
+     *
+     * @var PaymentAccount
      */
-    protected $creditTrackPaymentAccount;
+    protected $creditTrackPaymentAccount = null;
 
     /**
      * @ORM\Column(type="datetime", name="credit_track_enabled_at", nullable=true)
      */
-    protected $creditTrackEnabledAt;
+    protected $creditTrackEnabledAt = null;
 
     /**
      * @return mixed
@@ -82,7 +93,7 @@ abstract class UserSettings
     /**
      * @param PaymentAccount $paymentAccount
      */
-    public function setCreditTrackPaymentAccount($paymentAccount)
+    public function setCreditTrackPaymentAccount($paymentAccount = null)
     {
         $this->creditTrackPaymentAccount = $paymentAccount;
     }
@@ -98,7 +109,7 @@ abstract class UserSettings
     /**
      * @param DateTime $datetime
      */
-    public function setCreditTrackEnabledAt(DateTime $datetime)
+    public function setCreditTrackEnabledAt(DateTime $datetime = null)
     {
         $this->creditTrackEnabledAt = $datetime;
     }

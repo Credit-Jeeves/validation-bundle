@@ -7,6 +7,8 @@
     {% stylesheets  '@ComponentBundle/Resources/public/css/*'
                     '@RjComponentBundle/Resources/public/css/alert.css'
                     '@RjPublicBundle/Resources/public/css/footer.css'
+                    '@CoreBundle/Resources/public/css/styles.css'
+                    '@CoreBundle/Resources/public/css/pricing-popup.css'
                     '@CoreBundle/Resources/public/css/rj-logos.css'
                     '@CoreBundle/Resources/public/css/tabs.css'
                     '@UserBundle/Resources/public/css/login.css'
@@ -15,9 +17,19 @@
                     '@TenantBundle/Resources/public/css/alert.css'
                     '@TenantBundle/Resources/public/css/home.page.css'
                     '@CheckoutBundle/Resources/public/css/checkout.css'
+                    '@TenantBundle/Resources/public/css/summary.css'
     %}
         <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
     {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@TenantBundle/Resources/public/js/CreditTrackPricing.js'
+                   '@TenantBundle/Resources/public/js/CreditTrackPayDialog.js'
+                   '@RjCoreBundle/Resources/public/js/formProcess.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
 
 {% block content %}
@@ -25,17 +37,19 @@
         <div class="column-middle floatleft">
             {{ render(controller('ComponentBundle:Score:index', {'user': User})) }}
         </div>
-        {# TODO fix it http://trac.creditjeeves.com/ticket/242#comment:9
         <div class="column-small floatright">
-             {{ render(controller('CheckoutBundle:Default:box')) }}
-        </div>#}
-        <div class="column-small floatright">
-             {{ render(controller('ComponentBundle:LearnMore:index')) }}
+            {% if creditTrackEnabled %}
+                {{ render(controller('ComponentBundle:LearnMore:index')) }}
+            {% else %}
+                {{ render(controller('TenantBundle:CreditTrack:promobox')) }}
+            {% endif %}
         </div>
         <div class="clearboth"></div>
         <div class="column-large">
-            <div class="row-20"></div>
-            {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
+            {% if not creditTrackEnabled %}
+              <div class="row-20"></div>
+              {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
+            {% endif %}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:CreditBalance:index', {'Report': Report, 'Score': Score})) }}
             <div class="row-20"></div>
@@ -66,4 +80,8 @@
         {#</div>#}
         <div class="clearboth"></div>
     </div>
+
+    {{ render(controller('TenantBundle:CreditTrack:pricing')) }}
+    {{ render(controller('TenantBundle:CreditTrack:pay')) }}
+
 {% endblock %}

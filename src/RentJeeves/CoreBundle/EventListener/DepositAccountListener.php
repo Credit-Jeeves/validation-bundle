@@ -96,7 +96,7 @@ class DepositAccountListener
 
         $group =  $entity->getGroup();
 
-        if (!$group) {
+        if (!$group || !$group->getHolding()) {
             return;
         }
 
@@ -125,10 +125,10 @@ class DepositAccountListener
         if (!$entity instanceof DepositAccount) {
             return;
         }
-        if (null == $entity->getFeeACH()) {
+        if (null === $entity->getFeeACH()) {
             $entity->setFeeACH((float)$this->feeACH);
         }
-        if (null == $entity->getFeeCC()) {
+        if (null === $entity->getFeeCC()) {
             $entity->setFeeCC((float)$this->feeCC);
         }
     }
