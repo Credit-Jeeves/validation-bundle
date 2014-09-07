@@ -10,7 +10,6 @@ trait PreciseIDServerRequest
     /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Subscriber")
      * @Serializer\Groups({"PreciseID"})
-     *
      * @var Subscriber
      */
     protected $subscriber;
@@ -18,7 +17,6 @@ trait PreciseIDServerRequest
     /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\PrimaryApplicant")
      * @Serializer\Groups({"PreciseID"})
-     *
      * @var PrimaryApplicant
      */
     protected $primaryApplicant;
@@ -34,7 +32,6 @@ trait PreciseIDServerRequest
     /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Vendor")
      * @Serializer\Groups({"PreciseID"})
-     *
      * @var Vendor
      */
     protected $vendor;
@@ -42,7 +39,6 @@ trait PreciseIDServerRequest
     /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Options")
      * @Serializer\Groups({"PreciseID"})
-     *
      * @var Options
      */
     protected $options;

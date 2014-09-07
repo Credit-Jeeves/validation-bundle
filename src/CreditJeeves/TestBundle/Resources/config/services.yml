@@ -1,4 +1,4 @@
 parameters:
-#    experian.net_connect.credit_profile.class: CreditJeeves\TestBundle\NetConnect\CreditProfileTest
+    experian.net_connect.credit_profile.class: CreditJeeves\TestBundle\NetConnect\CreditProfileTest
     experian.net_connect.precise_id.class: CreditJeeves\TestBundle\NetConnect\PreciseIDTest
     mink.driver.selenium2.class: CreditJeeves\TestBundle\Tests\Driver\Selenium2Driver

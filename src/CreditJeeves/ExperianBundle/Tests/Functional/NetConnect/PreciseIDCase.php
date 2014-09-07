@@ -1,9 +1,7 @@
 <?php
-namespace CreditJeeves\ExperianBundle\Tests\Functional;
+namespace CreditJeeves\ExperianBundle\Tests\Functional\NetConnect;
 
 use CreditJeeves\DataBundle\Entity\Address;
-use CreditJeeves\DataBundle\Entity\Settings;
-use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\ExperianBundle\NetConnect\PreciseID;
 use CreditJeeves\TestBundle\BaseTestCase;
@@ -12,8 +10,9 @@ use CreditJeeves\DataBundle\Entity\Applicant;
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class PreciseIDCase extends BaseTestCase
+abstract class PreciseIDCase extends BaseTestCase
 {
+    protected $preciseIDClass = 'CreditJeeves\ExperianBundle\NetConnect\PreciseID';
 
     protected $users = array(
         0 => array(
@@ -172,12 +171,16 @@ class PreciseIDCase extends BaseTestCase
         );
     }
 
+    /**
+     * @return PreciseID
+     */
     protected function getPreciseID()
     {
-        $preciseID = new PreciseID(
+        $class = $this->preciseIDClass;
+        /** @var PreciseID $preciseID */
+        $preciseID = new $class(
             $this->getContainer()->get('doctrine.orm.default_entity_manager'),
-            $this->getContainer()->getParameter('cacert_path'),
-            false,
+            true,
             $this->getContainer()->getParameter('server_name'),
             $this->getContainer()->getParameter('kernel.logs_dir'),
             $this->getContainer()->getParameter('web.upload.dir')
@@ -216,7 +219,20 @@ class PreciseIDCase extends BaseTestCase
      * @test
      *
      * @expectedException Exception
-     * @expectedExceptionMessage Consumer Not Found on File One
+     * @expectedExceptionMessage Generated XML is invalid
+     */
+    public function getResponseOnUserDataXMLIsInvalid()
+    {
+        $data = $this->users[0];
+        $data['Name']['Surname'] = '';
+        $this->execute($data);
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException Exception
+     * @expectedExceptionMessage Cannot formulate questions for this consumer.
      */
     public function getResponseOnUserDataIncorrect()
     {
@@ -251,7 +267,7 @@ class PreciseIDCase extends BaseTestCase
 
     /**
      * @test
-     * @~depends getResponseOnUserDataCorrect
+     * @depends getResponseOnUserDataCorrect
      * does not work anymore. Ton
      * 2013.03.22 It works again
      * 2013.03.29 It does not work

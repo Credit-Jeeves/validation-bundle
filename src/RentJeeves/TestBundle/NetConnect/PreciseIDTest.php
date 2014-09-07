@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\TestBundle\NetConnect;
+namespace RentJeeves\TestBundle\NetConnect;
 
 use CreditJeeves\ExperianBundle\NetConnect\PreciseID;
 use JMS\DiExtraBundle\Annotation as DI;

@@ -3,18 +3,12 @@ parameters:
     experian.net_connect.credit_profile.class: CreditJeeves\ExperianBundle\NetConnect\CreditProfile
     experian.net_connect.precise_id.class: CreditJeeves\ExperianBundle\NetConnect\PreciseID
 
-
-#    experian.config.class: CreditJeeves\ExperianBundle\ExperianConfig
-#    experian.net_connect.class: CreditJeeves\ExperianBundle\NetConnect
-#    experian.pidkiq.class: CreditJeeves\ExperianBundle\Pidkiq
-
 services:
     experian.net_connect:
         abstract:  true
         class: "%experian.net_connect.class%"
         arguments:
             - "@doctrine.orm.default_entity_manager"
-            - "%cacert_path%"
             - "%experian.logging%"
             - "%server_name%"
             - "%kernel.logs_dir%"
@@ -29,19 +23,3 @@ services:
         class: "%experian.net_connect.precise_id.class%"
         calls:
             - [setConfigs, ["%net_connect.precise_id.url%", "%net_connect.precise_id.dbhost%", "%net_connect.precise_id.sub_code%"]]
-
-
-#    experian.config:
-#        class: "%experian.config.class%"
-#        arguments:
-#            - "%server_name%"
-#            - "@doctrine.orm.default_entity_manager"
-#            - "%experian.logging%"
-#    experian.net_connect:
-#        class: "%experian.net_connect.class%"
-#        calls:
-#            - [initConfigs, ["@experian.config"]]
-#    experian.pidkiq:
-#        class: "%experian.pidkiq.class%"
-#        calls:
-#            - [initConfigs, ["@experian.config", "%experian.logging%", "%kernel.logs_dir%"]]

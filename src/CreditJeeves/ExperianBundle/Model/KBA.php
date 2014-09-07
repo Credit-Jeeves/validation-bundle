@@ -12,7 +12,7 @@ class KBA extends KBAScore
 {
     /**
      * @Serializer\Type("array<CreditJeeves\ExperianBundle\Model\QuestionSet>")
-     * @Serializer\SerializedName("QuestionSet")
+     * @Serializer\XmlMap(inline = true, entry = "QuestionSet")
      * @var array
      */
     protected $questionSet = array();

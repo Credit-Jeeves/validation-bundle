@@ -119,7 +119,6 @@ abstract class AppKernel extends Kernel
         $parameters['web.dir'] = $parameters['project.root'] . '/web';
         $parameters['data.dir'] = $parameters['project.root'] . '/data';
         $parameters['web.upload.dir'] = $parameters['web.dir'] . '/uploads';
-        $parameters['cacert_path'] = $parameters['data.dir'] . '/cacert.pem';
         return $parameters;
     }
 

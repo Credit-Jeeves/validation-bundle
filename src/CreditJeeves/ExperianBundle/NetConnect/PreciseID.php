@@ -79,20 +79,27 @@ class PreciseID extends Base
      *
      * @return array
      */
-    public function retriveUserData(NetConnectResponse $model)
+    public function retrieveUserData(NetConnectResponse $model)
     {
         $preciseIDServer = $model->getProducts()->getPreciseIDServer();
         $this->sessionId = $preciseIDServer->getSessionId();
         $questions = array();
         /** @var QuestionSet $question */
         foreach ($preciseIDServer->getKba()->getQuestionSet() as $question) {
-            $questions[$question->getQuestionText()] = $question->getQuestionSelect();
+            $questionArr = $question->getQuestionChoices();
+            array_unshift($questionArr, null);
+            unset($questionArr[0]);
+            $questions[$question->getQuestionText()] = $questionArr;
         }
         return $questions;
     }
 
     /**
      * @param User $user
+     *
+     * @throws Exception
+     *
+     * @return array
      */
     public function getResponseOnUserData(User $user)
     {
@@ -113,11 +120,13 @@ class PreciseID extends Base
             );
         }
 
-        return $this->retriveUserData($netConnectResponse);
+        return $this->retrieveUserData($netConnectResponse);
     }
 
     /**
-     * @param User $user
+     * @param $user
+     *
+     * @throws Exception
      *
      * @return NetConnectResponse
      */
@@ -135,7 +144,13 @@ class PreciseID extends Base
         return $netConnectResponse;
     }
 
-
+    /**
+     * @param $response
+     *
+     * @throws Exception
+     *
+     * @return NetConnectResponse
+     */
     protected function createResponse($response)
     {
         $this->lastResponse = $response;
@@ -181,5 +196,33 @@ class PreciseID extends Base
     public function getSessionId()
     {
         return $this->sessionId;
+    }
+
+    /**
+     * @param string $sessionId
+     * @param array $answers
+     *
+     * @return bool
+     */
+    public function getResult($sessionId, $answers)
+    {
+        $outWalletAnswerData = $this->getNetConnectRequest()
+            ->getRequest()->getProducts()->getPreciseIDServer()->getKbaAnswers()->getOutWalletAnswerData();
+        $outWalletAnswerData->setSessionID($sessionId);
+        $outWalletAnswerData->getOutWalletAnswers()
+            ->setOutWalletAnswer1(array_shift($answers))
+            ->setOutWalletAnswer2(array_shift($answers))
+            ->setOutWalletAnswer3(array_shift($answers))
+            ->setOutWalletAnswer4(array_shift($answers));
+
+        $xml = $this->getSerializer()->serialize(
+            $this->getNetConnectRequest(),
+            'xml',
+            $this->getSerializerContext('PreciseIDQuestions')
+        );
+        $this->validate($xml, 'NCPreciseIDRequestV5_0');
+
+        return 'ACC' == $this->createResponse($this->doRequest($xml, '-Questions'))
+            ->getProducts()->getPreciseIDServer()->getKbaScore()->getScoreSummary()->getAcceptReferCode();
     }
 }

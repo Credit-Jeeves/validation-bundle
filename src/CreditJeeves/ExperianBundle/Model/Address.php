@@ -7,28 +7,28 @@ class Address
 {
     /**
      * @Serializer\SerializedName("Street")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $street;
 
     /**
      * @Serializer\SerializedName("City")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $city;
 
     /**
      * @Serializer\SerializedName("State")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $state;
 
     /**
      * @Serializer\SerializedName("Zip")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var int
      */
     protected $zip;

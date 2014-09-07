@@ -13,17 +13,18 @@ class Products
     /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\PreciseIDServer")
      * @Serializer\SerializedName("PreciseIDServer")
-     * @Serializer\Groups({"CreditJeeves", "PreciseID"})
+     * @Serializer\Groups({"CreditJeeves", "PreciseID", "PreciseIDQuestions"})
+     * @var PreciseIDServer
      */
     protected $preciseIDServer;
 
     /**
-     * @param PreciseIDServer $preciseIDServer
+     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\CreditProfile")
+     * @Serializer\SerializedName("CreditProfile")
+     * @Serializer\Groups({"CreditProfile"})
+     * @var CreditProfile
      */
-    public function setPreciseIDServer(PreciseIDServer $preciseIDServer)
-    {
-        $this->preciseIDServer = $preciseIDServer;
-    }
+    protected $creditProfile;
 
     /**
      * @return PreciseIDServer
@@ -34,5 +35,40 @@ class Products
             $this->preciseIDServer = new PreciseIDServer();
         }
         return $this->preciseIDServer;
+    }
+
+    /**
+     * @param PreciseIDServer $preciseIDServer
+     *
+     * @return $this
+     */
+    public function setPreciseIDServer(PreciseIDServer $preciseIDServer)
+    {
+        $this->preciseIDServer = $preciseIDServer;
+
+        return $this;
+    }
+
+    /**
+     * @return CreditProfile
+     */
+    public function getCreditProfile()
+    {
+        if (null == $this->creditProfile) {
+            $this->creditProfile = new CreditProfile();
+        }
+        return $this->creditProfile;
+    }
+
+    /**
+     * @param CreditProfile $creditProfile
+     *
+     * @return $this
+     */
+    public function setCreditProfile(CreditProfile $creditProfile)
+    {
+        $this->creditProfile = $creditProfile;
+
+        return $this;
     }
 }

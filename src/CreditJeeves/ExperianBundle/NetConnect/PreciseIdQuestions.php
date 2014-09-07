@@ -1,23 +1,21 @@
 <?php
-
-namespace CreditJeeves\ExperianBundle\Services;
+namespace CreditJeeves\ExperianBundle\NetConnect;
 
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
-use CreditJeeves\ExperianBundle\Pidkiq as ServicePidkiq;
+use CreditJeeves\ExperianBundle\NetConnect\PreciseID as PreciseIDApi;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use \DateTime;
+use DateTime;
 use CreditJeeves\DataBundle\Entity\Pidkiq;
-use \Exception;
-use \ExperianException;
+use CreditJeeves\ExperianBundle\NetConnect\Exception as ExperianException;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
- * @Service("pidkiq.questions")
+ * @Service("experian.net_connect.precise_id.questions")
  */
-class PidkiqQuestions
+class PreciseIDQuestions
 {
     /**
      * @var bool
@@ -25,9 +23,9 @@ class PidkiqQuestions
     protected $isValidUser = false;
 
     /**
-     * @var ServicePidkiq
+     * @var PreciseIDApi
      */
-    protected $pidkiqApi;
+    protected $preciseIDApi;
 
     /**
      * @var string
@@ -51,7 +49,7 @@ class PidkiqQuestions
 
     /**
      * @InjectParams({
-     *     "pidkiqApi"          = @Inject("experian.net_connect.precise_id"),
+     *     "preciseIDApi"       = @Inject("experian.net_connect.precise_id"),
      *     "securityContext"    = @Inject("security.context"),
      *     "catcher"            = @Inject("fp_badaboom.exception_catcher"),
      *     "translator"         = @Inject("translator"),
@@ -61,7 +59,7 @@ class PidkiqQuestions
      * })
      */
     public function __construct(
-        $pidkiqApi,
+        $preciseIDApi,
         $securityContext,
         $catcher,
         $translator,
@@ -69,7 +67,7 @@ class PidkiqQuestions
         $externalUrls,
         $em
     ) {
-        $this->pidkiqApi = $pidkiqApi;
+        $this->preciseIDApi = $preciseIDApi;
         $this->securityContext = $securityContext;
         $this->catcher = $catcher;
         $this->translator = $translator;
@@ -156,11 +154,10 @@ class PidkiqQuestions
             $this->em->persist($pidiqModel);
             $this->em->flush();
 
-            $this->pidkiqApi->execute();
-            $questions = $this->pidkiqApi->getResponseOnUserData($this->getUser());
+            $questions = $this->preciseIDApi->getResponseOnUserData($this->getUser());
 
             $pidiqModel->setQuestions($questions);
-            $pidiqModel->setSessionId($this->pidkiqApi->getSessionId());
+            $pidiqModel->setSessionId($this->preciseIDApi->getSessionId());
             $pidiqModel->setCheckSumm($this->getPidkiqCheckSum());
             $this->em->persist($pidiqModel);
             $this->em->flush();
@@ -234,7 +231,7 @@ class PidkiqQuestions
                         break;
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->isValidUser = false;
             $this->catcher->handleException($e);
             $this->error = $e->getMessage();
@@ -247,8 +244,7 @@ class PidkiqQuestions
      */
     public function processForm($form)
     {
-        $this->pidkiqApi->execute();
-        if ($this->pidkiqApi->getResult(
+        if ($this->preciseIDApi->getResult(
             $this->getUser()->getPidkiqs()->last()->getSessionId(),
             $form->getData()
         )) {

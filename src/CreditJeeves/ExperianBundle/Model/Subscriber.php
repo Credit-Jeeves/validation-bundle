@@ -10,21 +10,21 @@ class Subscriber
 {
     /**
      * @Serializer\SerializedName("Preamble")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $preamble = 'TBD2';
 
     /**
      * @Serializer\SerializedName("OpInitials")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $opInitials = 'DE';
 
     /**
      * @Serializer\SerializedName("SubCode")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var int
      */
     protected $subCode;

@@ -147,4 +147,60 @@ class PreciseIDCase extends BaseTestCase
             );
         $this->objInstance->getResponseOnUserData($this->getUser());
     }
+
+    /**
+     * @test
+     */
+    public function getResultRequest()
+    {
+        $this->objInstance
+            ->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->callback(
+                    function($xml) {
+                        $this->assertStringEqualsFile(
+                            __DIR__ . '/../../Resources/NetConnect/PreciseID-Questions-Request.xml',
+                            $xml
+                        );
+                        return true;
+                    }
+                )
+            )
+            ->will(
+                $this->returnValue(
+                    file_get_contents(__DIR__ . '/../../Resources/NetConnect/PreciseID-Questions-Response.xml')
+                )
+            );
+        $this->objInstance->getNetConnectRequest()
+            ->setDbHost('PRECISE_ID_TEST')
+            ->setEai('HRPCX4RA');
+        $this->assertTrue(
+            $this->objInstance->getResult(
+                '1BF7168380E8DB40CA9BE5D14F32F347.pidd1v-1408261641330210446354688',
+                array(2, 3, 3, 5)
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getResultRequestFalse()
+    {
+        $this->objInstance
+            ->expects($this->once())
+            ->method('doRequest')
+            ->will(
+                $this->returnValue(
+                    file_get_contents(__DIR__ . '/../../Resources/NetConnect/PreciseID-Questions-Response-Wrong.xml')
+                )
+            );
+        $this->assertFalse(
+            $this->objInstance->getResult(
+                '1BF7168380E8DB40CA9BE5D14F32F347.pidd1v-1408261641330210446354688',
+                array(1, 1, 1, 1)
+            )
+        );
+    }
 }

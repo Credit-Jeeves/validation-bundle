@@ -10,21 +10,21 @@ class Name
 {
     /**
      * @Serializer\SerializedName("Surname")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $surname;
 
     /**
      * @Serializer\SerializedName("First")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $first;
 
     /**
      * @Serializer\SerializedName("Middle")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $middle;

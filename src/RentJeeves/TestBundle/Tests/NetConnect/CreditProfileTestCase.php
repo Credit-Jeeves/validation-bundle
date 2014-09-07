@@ -1,13 +1,13 @@
 <?php
-namespace RentJeeves\TestBundle\Tests\Experian;
+namespace RentJeeves\TestBundle\Tests\NetConnect;
 
-use CreditJeeves\TestBundle\Tests\Experian\NetConnectTestCase as Base;
+use CreditJeeves\TestBundle\Tests\NetConnect\CreditProfileTestCase as Base;
 use RentJeeves\DataBundle\Entity\Tenant;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
  */
-class NetConnectTestCase extends Base
+class CreditProfileTestCase extends Base
 {
     /**
      * @var string

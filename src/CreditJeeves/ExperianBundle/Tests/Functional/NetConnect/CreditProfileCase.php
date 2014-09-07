@@ -1,24 +1,23 @@
 <?php
-namespace CreditJeeves\ExperianBundle\Tests\Functional;
+namespace CreditJeeves\ExperianBundle\Tests\Functional\NetConnect;
 
 use CreditJeeves\DataBundle\Entity\Address;
-use CreditJeeves\DataBundle\Entity\Settings;
-use CreditJeeves\ExperianBundle\ExperianConfig;
-use CreditJeeves\ExperianBundle\NetConnect;
+use CreditJeeves\ExperianBundle\NetConnect\CreditProfile;
+use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Applicant;
-use sfConfig;
 use PHPUnit_Framework_AssertionFailedError;
-use ExperianException;
-use CurlException;
+use Guzzle\Http\Exception\CurlException;
 
 /**
  * NetConnect test case.
  *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class NetConnectCase extends BaseTestCase
+abstract class CreditProfileCase extends BaseTestCase
 {
+    protected $creditProfileClass = 'CreditJeeves\ExperianBundle\NetConnect\CreditProfile';
+
     protected $user = array(
         'Name' => array(
             'Surname' => 'BREEN',
@@ -35,18 +34,27 @@ class NetConnectCase extends BaseTestCase
     );
 
     /**
-     * @return NetConnect
+     * @return CreditProfile
      */
     protected function getNetConnect()
     {
-        $netConnect = new NetConnect();
-        $netConnect->initConfigs($this->getContainer()->get('experian.config'));
-        return $netConnect;
+        $class = $this->creditProfileClass;
+        /** @var CreditProfile $creditProfile */
+        $creditProfile = new $class(
+            $this->getContainer()->get('doctrine.orm.default_entity_manager'),
+            true,
+            $this->getContainer()->getParameter('server_name'),
+            $this->getContainer()->getParameter('kernel.logs_dir'),
+            $this->getContainer()->getParameter('web.upload.dir')
+        );
+        $creditProfile->setConfigs(
+            $this->getContainer()->getParameter('net_connect.credit_profile.url'),
+            $this->getContainer()->getParameter('net_connect.credit_profile.dbhost'),
+            $this->getContainer()->getParameter('net_connect.credit_profile.sub_code')
+        );
+        return $creditProfile;
     }
 
-    /**
-     * Tests NetConnect->getResponseOnUserData()
-     */
     protected function getResponseOnUserData($data)
     {
         $aplicant = new Applicant();
@@ -69,7 +77,7 @@ class NetConnectCase extends BaseTestCase
                 try {
                     $netConnect = $this->getNetConnect();
                     return $netConnect->getResponseOnUserData($aplicant);
-                } catch (ExperianException $e) {
+                } catch (Exception $e) {
                     if (4000 != $e->getCode()) {
                         throw $e;
                     }
@@ -85,7 +93,7 @@ class NetConnectCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException ExperianException
+     * @expectedException Exception
      * @expectedExceptionMessage Generated XML is invalid
      */
     public function getResponseOnUserDataXmlInvalid()

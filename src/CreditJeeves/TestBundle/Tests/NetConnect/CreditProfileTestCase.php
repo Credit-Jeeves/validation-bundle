@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\TestBundle\Tests\Experian;
+namespace CreditJeeves\TestBundle\Tests\NetConnect;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
@@ -10,7 +10,7 @@ use RuntimeException;
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
  */
-class NetConnectTestCase extends BaseTestCase
+class CreditProfileTestCase extends BaseTestCase
 {
     /**
      * @test

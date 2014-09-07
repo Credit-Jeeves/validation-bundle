@@ -34,6 +34,60 @@ class NetConnectResponse
     protected $products;
 
     /**
+     * @Serializer\SerializedName("HostResponse")
+     * @Serializer\Type("string")
+     * @var string
+     */
+    protected $hostResponse;
+
+    /**
+     * @Serializer\SerializedName("ErrorMessage")
+     * @Serializer\Type("string")
+     * @var string
+     */
+    protected $errorMessage;
+
+    /**
+     * @return string
+     */
+    public function getCompletionCode()
+    {
+        return $this->completionCode;
+    }
+
+    /**
+     * @param string $completionCode
+     *
+     * @return $this
+     */
+    public function setCompletionCode($completionCode)
+    {
+        $this->completionCode = $completionCode;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReferenceId()
+    {
+        return $this->referenceId;
+    }
+
+    /**
+     * @param string $referenceId
+     *
+     * @return $this
+     */
+    public function setReferenceId($referenceId)
+    {
+        $this->referenceId = $referenceId;
+
+        return $this;
+    }
+
+    /**
      * @param Products $products
      */
     public function setProducts(Products $products)
@@ -47,5 +101,45 @@ class NetConnectResponse
     public function getProducts()
     {
         return $this->products;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHostResponse()
+    {
+        return $this->hostResponse;
+    }
+
+    /**
+     * @param string $hostResponse
+     *
+     * @return $this
+     */
+    public function setHostResponse($hostResponse)
+    {
+        $this->hostResponse = $hostResponse;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @param string $errorMessage
+     *
+     * @return $this
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
+
+        return $this;
     }
 }

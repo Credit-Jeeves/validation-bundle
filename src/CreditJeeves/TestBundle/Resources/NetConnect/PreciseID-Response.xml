@@ -369,18 +369,6 @@
           <NumberOfQuestions>4</NumberOfQuestions>
         </General>
         <QuestionSet>
-          <QuestionType>24</QuestionType>
-          <QuestionText>To which of the following professions do you currently or have previously belonged?
-          </QuestionText>
-          <QuestionSelect>
-            <QuestionChoice>SOCIAL WORKER</QuestionChoice>
-            <QuestionChoice>OPTICIAN / OPTOMETRIST</QuestionChoice>
-            <QuestionChoice>OCCUPATIONAL / PHYSICAL THERAPIST</QuestionChoice>
-            <QuestionChoice>CHIROPRACTOR</QuestionChoice>
-            <QuestionChoice>NONE OF THE ABOVE</QuestionChoice>
-          </QuestionSelect>
-        </QuestionSet>
-        <QuestionSet>
           <QuestionType>26</QuestionType>
           <QuestionText>Which of the following is the highest level of education you completed?</QuestionText>
           <QuestionSelect>
@@ -393,26 +381,35 @@
         </QuestionSet>
         <QuestionSet>
           <QuestionType>5</QuestionType>
-          <QuestionText>You may have opened a student loan in or around April 2010. To whom do you make your
-            payments?
-          </QuestionText>
+          <QuestionText>You may have opened a student loan in or around February 2006. To whom do you make your payments?</QuestionText>
           <QuestionSelect>
-            <QuestionChoice>WELLS FARGO</QuestionChoice>
-            <QuestionChoice>BRAZOS HIGHER EDUC</QuestionChoice>
-            <QuestionChoice>USA SERVICING COMPANY</QuestionChoice>
-            <QuestionChoice>NATIONAL CITY BK</QuestionChoice>
+            <QuestionChoice>FIRST MIDWEST BK</QuestionChoice>
+            <QuestionChoice>VSAC LOAN SERVICES</QuestionChoice>
+            <QuestionChoice>COMMERCE BANK</QuestionChoice>
+            <QuestionChoice>US BANK</QuestionChoice>
             <QuestionChoice>NONE OF THE ABOVE/DOES NOT APPLY</QuestionChoice>
           </QuestionSelect>
         </QuestionSet>
         <QuestionSet>
-          <QuestionType>39</QuestionType>
-          <QuestionText>Which of the following is a previous phone number of yours?</QuestionText>
+          <QuestionType>24</QuestionType>
+          <QuestionText>To which of the following professions do you currently or have previously belonged?</QuestionText>
           <QuestionSelect>
-            <QuestionChoice>(714)207-0664</QuestionChoice>
-            <QuestionChoice>(714)227-3705</QuestionChoice>
-            <QuestionChoice>(714)228-7251</QuestionChoice>
-            <QuestionChoice>(714)206-3634</QuestionChoice>
+            <QuestionChoice>ACCOUNTANT</QuestionChoice>
+            <QuestionChoice>NURSE</QuestionChoice>
+            <QuestionChoice>CHIROPRACTOR</QuestionChoice>
+            <QuestionChoice>PROFESSIONAL DRIVER</QuestionChoice>
             <QuestionChoice>NONE OF THE ABOVE</QuestionChoice>
+          </QuestionSelect>
+        </QuestionSet>
+        <QuestionSet>
+          <QuestionType>35</QuestionType>
+          <QuestionText>Based on our records, you opened an auto loan/lease around June 2000. Please select the dollar range of your total monthly payment.</QuestionText>
+          <QuestionSelect>
+            <QuestionChoice>$50 - $99</QuestionChoice>
+            <QuestionChoice>$100 - $149</QuestionChoice>
+            <QuestionChoice>$150 - $199</QuestionChoice>
+            <QuestionChoice>$200 - $249</QuestionChoice>
+            <QuestionChoice>NONE OF THE ABOVE/DOES NOT APPLY</QuestionChoice>
           </QuestionSelect>
         </QuestionSet>
       </KBA>

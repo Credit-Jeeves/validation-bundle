@@ -10,7 +10,7 @@ class Vendor
 {
     /**
      * @Serializer\SerializedName("VendorNumber")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var string
      */
     protected $vendorNumber = 'P94';

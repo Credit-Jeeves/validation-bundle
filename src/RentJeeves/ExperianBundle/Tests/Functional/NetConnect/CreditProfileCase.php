@@ -1,15 +1,17 @@
 <?php
-namespace RentJeeves\ExperianBundle\Tests\Functional;
+namespace RentJeeves\ExperianBundle\Tests\Functional\NetConnect;
 
 use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\CoreBundle\Enum\ScoreModelType;
-use CreditJeeves\ExperianBundle\Tests\Functional\NetConnectCase as BaseTestCase;
+use CreditJeeves\ExperianBundle\Tests\Functional\NetConnect\CreditProfileCase as Base;
 
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class NetConnectCase extends BaseTestCase
+class CreditProfileCase extends Base
 {
+    protected $creditProfileClass = 'RentJeeves\ExperianBundle\NetConnect\CreditProfile';
+
     /**
      * @var string
      */

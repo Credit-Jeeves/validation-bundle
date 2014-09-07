@@ -10,7 +10,16 @@ class Request
 {
     /**
      * @Serializer\XmlAttributeMap
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"CreditProfile"})
+     * @var string
+     */
+    protected $namespace = array(
+        'xmlns' => 'http://www.experian.com/WebDelivery'
+    );
+
+    /**
+     * @Serializer\XmlAttributeMap
+     * @Serializer\Groups({"PreciseID", "PreciseIDQuestions", "CreditProfile"})
      * @var string
      */
     protected $attributes = array(
@@ -19,7 +28,7 @@ class Request
 
     /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Products")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "PreciseIDQuestions", "CreditProfile"})
      * @var Products
      */
     protected $products;

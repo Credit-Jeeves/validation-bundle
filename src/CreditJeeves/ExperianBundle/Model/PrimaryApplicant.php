@@ -10,20 +10,20 @@ class PrimaryApplicant
 {
     /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Name")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile", "CreditProfile"})
      * @var Name
      */
     protected $name;
 
     /**
      * @Serializer\SerializedName("SSN")
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var int
      */
     protected $ssn;
 
     /**
-     * @Serializer\Groups({"PreciseID"})
+     * @Serializer\Groups({"PreciseID", "CreditProfile"})
      * @var CurrentAddress
      */
     protected $currentAddress;

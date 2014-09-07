@@ -17,10 +17,10 @@ class QuestionSet
 
     /**
      * @Serializer\SerializedName("QuestionSelect")
-     * @Serializer\Type("array<string>")
-     * @var array
+     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\QuestionSelect")
+     * @var QuestionSelect
      */
-    protected $questionSelect = array();
+    protected $questionSelect;
 
     /**
      * @return string
@@ -43,22 +43,33 @@ class QuestionSet
     }
 
     /**
-     * @return array
+     * @return QuestionSelect
      */
     public function getQuestionSelect()
     {
+        if (null == $this->questionSelect) {
+            $this->questionSelect = new QuestionSelect();
+        }
         return $this->questionSelect;
     }
 
     /**
-     * @param array $questionSelect
+     * @param QuestionSelect $questionSelect
      *
      * @return $this
      */
-    public function setQuestionSelect(array $questionSelect)
+    public function setQuestionSelect($questionSelect)
     {
         $this->questionSelect = $questionSelect;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getQuestionChoices()
+    {
+        return $this->getQuestionSelect()->getQuestionChoice();
     }
 }

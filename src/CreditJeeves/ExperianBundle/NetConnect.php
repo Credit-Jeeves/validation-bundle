@@ -81,7 +81,6 @@ abstract class NetConnect
     /**
      * DI\InjectParams({ It is defined in services.yml
      *     "em"         = DI\Inject("@doctrine.orm.default_entity_manager"),
-     *     "cacertPath" = DI\Inject("%cacert_path%"),
      *     "isLogging"  = DI\Inject("%experian.logging%"),
      *     "serverName" = DI\Inject("%server_name%"),
      *     "logPath"    = DI\Inject("%kernel.logs_dir%"),
@@ -89,20 +88,18 @@ abstract class NetConnect
      * })
      *
      * @param EntityManager $em
-     * @param string $cacertPath
      * @param bool $isLogging
      * @param string $serverName
      * @param string $logPath
      * @param string $uploadDir
      */
-    public function __construct(EntityManager $em, $cacertPath, $isLogging, $serverName, $logPath, $uploadDir)
+    public function __construct(EntityManager $em, $isLogging, $serverName, $logPath, $uploadDir)
     {
         $this->settings = $em->getRepository('DataBundle:Settings')->find(1);;
         $this->isLogging = $isLogging;
         $this->serverName = $serverName;
         $this->logPath = $logPath;
         $this->uploadDir = $uploadDir;
-        $this->headers[CURLOPT_CAINFO] = $cacertPath;
     }
 
     /**
@@ -209,22 +206,24 @@ abstract class NetConnect
 
     /**
      * @param string $request
+     * @param string $logPrefix
+     * @param string $method
      *
      * @return string
      */
-    protected function doRequest($request)
+    protected function doRequest($request, $logPrefix = '', $method = 'POST')
     {
-        $this->log($request, '-Request');
-        $this->headers = array(
-            CURLOPT_USERPWD => $this->usrPwd
-        );
+        $this->log($request, $logPrefix . '-Request');
+        $usrPwdArr = explode(':', $this->usrPwd);
+        $this->getClient()->setSslVerification();
         $guzzleRequest = $this->getClient()->createRequest(
-            'POST',
+            $method,
             $this->url,
             $this->headers,
             $request
         );
         $guzzleRequest->getParams()->set('redirect.disable', true);
+        $guzzleRequest->setAuth($usrPwdArr[0], $usrPwdArr[1]);
 
 
         // Let BrowserKit handle redirects
@@ -237,11 +236,11 @@ abstract class NetConnect
 
             $response = $e->getResponse();
         }
-        if (200 == $response->getStatusCode()) {
+        if (200 != $response->getStatusCode()) {
             throw new CurlException(sprintf('HTTP code not %d but %d', 200, $response->getStatusCode()));
         }
         $responseString = $response->getBody(true);
-        $this->log($responseString, '-Response');
+        $this->log($responseString, $logPrefix . '-Response');
         return $responseString;
     }
 
