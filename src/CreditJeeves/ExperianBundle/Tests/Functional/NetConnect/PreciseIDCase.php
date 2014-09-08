@@ -143,7 +143,8 @@ abstract class PreciseIDCase extends BaseTestCase
                     '4' => 'GRADUATE DEGREE',
                     '5' => 'NONE OF THE ABOVE',
                 ),
-                'You may have opened a student loan in or around February 2006. To whom do you make your payments?' => array(
+                'You may have opened a student loan in or around February 2006. ' .
+                'To whom do you make your payments?' => array(
                     '1' => 'FIRST MIDWEST BK',
                     '2' => 'VSAC LOAN SERVICES',
                     '3' => 'COMMERCE BANK',
@@ -157,7 +158,8 @@ abstract class PreciseIDCase extends BaseTestCase
                     '4' => 'PROFESSIONAL DRIVER',
                     '5' => 'NONE OF THE ABOVE',
                 ),
-                'Based on our records, you opened an auto loan/lease around June 2000. Please select the dollar range of your total monthly payment.' => array(
+                'Based on our records, you opened an auto loan/lease around June 2000. ' .
+                'Please select the dollar range of your total monthly payment.' => array(
                     '1' => '$50 - $99',
                     '2' => '$100 - $149',
                     '3' => '$150 - $199',

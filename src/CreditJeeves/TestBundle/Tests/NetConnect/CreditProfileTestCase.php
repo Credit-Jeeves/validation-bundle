@@ -1,9 +1,9 @@
 <?php
 namespace CreditJeeves\TestBundle\Tests\NetConnect;
 
-use CreditJeeves\DataBundle\Entity\ReportPrequal;
-use CreditJeeves\DataBundle\Entity\Score;
+use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Applicant;
+use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\TestBundle\BaseTestCase;
 use RuntimeException;
 
@@ -12,19 +12,28 @@ use RuntimeException;
  */
 class CreditProfileTestCase extends BaseTestCase
 {
-    /**
-     * @test
-     */
-    public function getResponseOnUserData()
+    protected function getAplicant()
     {
         $applicant = new Applicant();
         $applicant->setEmail('mamazza@example.com');
         $applicant->setSsn('666042073');
         $applicant->setFirstName('Ton');
         $applicant->setLastName('Sharp');
+        $address = new Address();
+        $address->setIsDefault(true);
+        $applicant->addAddress($address);
+        return $applicant;
+    }
+    /**
+     * @test
+     */
+    public function getResponseOnUserData()
+    {
+
         $this->assertStringEqualsFile(
-            $this->getContainer()->getParameter('data.dir') . '/experian/netConnect/mamazza.arf',
-            $this->getContainer()->get('experian.net_connect')->getResponseOnUserData($applicant)
+            __DIR__ . '/../../Resources/NetConnect/CreditProfile/mamazza.arf',
+            $this->getContainer()->get('experian.net_connect.credit_profile')
+                ->getResponseOnUserData($this->getAplicant())
         );
     }
 
@@ -35,18 +44,20 @@ class CreditProfileTestCase extends BaseTestCase
      */
     public function getResponseOnUserDataException()
     {
-        $this->getContainer()->get('experian.net_connect')->getResponseOnUserData(new Applicant());
+        $applicant = $this->getAplicant();
+        $applicant->setEmail('some@notExisting.email');
+        $this->getContainer()->get('experian.net_connect.credit_profile')->getResponseOnUserData($applicant);
     }
 
     /**
      * @test
      *
-     * @expectedException \ExperianXmlException
+     * @expectedException Exception
      */
     public function getResponseOnUserDataXmlException()
     {
-        $applicant = new Applicant();
-        $applicant->setEmail('emilio@example.com');
-        $this->getContainer()->get('experian.net_connect')->getResponseOnUserData($applicant);
+        $applicant = $this->getAplicant();
+        $applicant->setFirstName('');
+        $this->getContainer()->get('experian.net_connect.credit_profile')->getResponseOnUserData($applicant);
     }
 }

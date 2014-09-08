@@ -220,8 +220,8 @@ class XmlSerializationVisitor extends AbstractVisitor
             throw new RuntimeException(
                 sprintf(
                     'If you make use of @XmlValue, ' .
-                        'all other properties in the class must have the @XmlAttribute annotation. ' .
-                        'Invalid usage detected in class %s.',
+                    'all other properties in the class must have the @XmlAttribute annotation. ' .
+                    'Invalid usage detected in class %s.',
                     $metadata->class
                 )
             );
@@ -447,4 +447,3 @@ class XmlSerializationVisitor extends AbstractVisitor
         }
     }
 }
-

@@ -6,6 +6,7 @@ use CreditJeeves\ExperianBundle\NetConnect\PreciseID as PreciseIDApi;
 use CreditJeeves\DataBundle\Entity\Pidkiq;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\ExperianBundle\NetConnect\PreciseIDQuestions;
 use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PidkiqController extends Controller
 {
     /**
-     * @var $preciseIdQuestions PidkiqQuestions
+     * @var $preciseIdQuestions PreciseIDQuestions
      */
     protected $preciseIdQuestions;
 
@@ -54,12 +55,12 @@ class PidkiqController extends Controller
 
     /**
      * @DI\InjectParams({
-     *     "pidkiqQuestions" = @DI\Inject("experian.net_connect.precise_id.questions")
+     *     "preciseIdQuestions" = @DI\Inject("experian.net_connect.precise_id.questions")
      * })
      */
-    public function setPreciseIdQuestions($pidkiqQuestions)
+    public function setPreciseIdQuestions($preciseIdQuestions)
     {
-        $this->preciseIdQuestions = $pidkiqQuestions;
+        $this->preciseIdQuestions = $preciseIdQuestions;
     }
 
     /**

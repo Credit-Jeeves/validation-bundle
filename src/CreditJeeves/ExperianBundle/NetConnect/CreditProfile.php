@@ -48,6 +48,7 @@ class CreditProfile extends NetConnect
             }
             $this->url = $url;
             $this->isUrlInit = true;
+            $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
         }
     }
 
@@ -107,7 +108,7 @@ class CreditProfile extends NetConnect
      *
      * @throws Exception
      *
-     * @return NetConnectResponse
+     * @return string
      */
     protected function createResponse($response)
     {
@@ -120,8 +121,14 @@ class CreditProfile extends NetConnect
             'CreditJeeves\ExperianBundle\Model\NetConnectResponse',
             'xml'
         );
-
-        return $netConnectResponse;
+        if ($errorMessage = $netConnectResponse->getErrorMessage()) {
+            throw new Exception($errorMessage);
+        }
+        $arfString = trim($netConnectResponse->getHostResponse());
+        if (false !== strpos($arfString, '*****  NO RECORD FOUND  *****')) {
+            throw new Exception('No record found');
+        }
+        return $arfString;
     }
 
     /**
@@ -134,16 +141,8 @@ class CreditProfile extends NetConnect
     public function getResponseOnUserData(User $user)
     {
         $this->initNetConnectUrl();
-        $netConnectResponse = $this->createResponse(
+        return $this->createResponse(
             $this->doRequest($this->composeRequest($this->createRequestOnUserData($user)))
         );
-        if ($errorMessage = $netConnectResponse->getErrorMessage()) {
-            throw new Exception($errorMessage);
-        }
-        $arfString = trim($netConnectResponse->getHostResponse());
-        if (false !== strpos($arfString, '*****  NO RECORD FOUND  *****')) {
-            throw new Exception('No record found');
-        }
-        return $arfString;
     }
 }

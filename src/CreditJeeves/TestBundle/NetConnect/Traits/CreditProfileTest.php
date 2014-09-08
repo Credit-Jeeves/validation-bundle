@@ -2,17 +2,18 @@
 namespace CreditJeeves\TestBundle\NetConnect\Traits;
 
 use CreditJeeves\DataBundle\Entity\User;
+use RuntimeException;
 
 trait CreditProfileTest
 {
     protected function getFixturesDir()
     {
-        return $this->dataDir . '/experian/netConnect/';
+        return __DIR__ . '/../../Resources/NetConnect/CreditProfile/';
     }
 
-    protected function getResponse($aplicant)
+    protected function getResponse($tenant)
     {
-        switch ($aplicant->getEmail()) {
+        switch ($tenant->getEmail()) {
             case 'emilio@example.com':
                 return file_get_contents($this->getFixturesDir() . 'emilio.xml');
             case 'marion@example.com':
@@ -30,15 +31,13 @@ trait CreditProfileTest
             case 'alexey.karpik+app1334753295955955@gmail.com':
                 return file_get_contents($this->getFixturesDir() . 'alexey.karpik.xml');
         }
-        throw new RuntimeException(sprintf('Please add fixture for user %s', $aplicant->getEmail()));
+        throw new RuntimeException(sprintf('Please add fixture for user %s', $tenant->getEmail()));
     }
 
-    public function getResponseOnUserData(User $aplicant)
+    public function getResponseOnUserData(User $user)
     {
-        $responce = $this->getResponse($aplicant);
-        $this->xml->__construct();
-        $this->xml->userRequestXML($this->addUserToRequest($aplicant)); // It need to pass XML validation
+        $this->composeRequest($this->createRequestOnUserData($user));
 
-        return $this->retriveUserDataFromXML($responce);
+        return $this->createResponse($this->getResponse($user));
     }
 }

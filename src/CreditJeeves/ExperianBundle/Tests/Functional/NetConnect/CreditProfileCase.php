@@ -55,6 +55,13 @@ abstract class CreditProfileCase extends BaseTestCase
         return $creditProfile;
     }
 
+    /**
+     * @param $data
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
     protected function getResponseOnUserData($data)
     {
         $aplicant = new Applicant();

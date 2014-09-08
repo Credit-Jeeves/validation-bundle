@@ -40,9 +40,9 @@ class PidkiqController extends Base
      *     "pidkiqQuestions" = @DI\Inject("experian.net_connect.precise_id.questions")
      * })
      */
-    public function setPreciseIdQuestions($pidkiqQuestions)
+    public function setPreciseIdQuestions($preciseIdQuestions)
     {
-        parent::setPreciseIdQuestions($pidkiqQuestions);
+        parent::setPreciseIdQuestions($preciseIdQuestions);
     }
 
     protected function setupUserIsValidUserIntoSession(Request $request)

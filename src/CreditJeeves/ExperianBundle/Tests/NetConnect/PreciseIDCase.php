@@ -63,7 +63,7 @@ class PreciseIDCase extends BaseTestCase
             ->method('doRequest')
             ->with(
                 $this->callback(
-                    function($xml) {
+                    function ($xml) {
                         $this->assertStringEqualsFile(
                             __DIR__ . '/../../Resources/NetConnect/PreciseID-Request.xml',
                             $xml
@@ -158,7 +158,7 @@ class PreciseIDCase extends BaseTestCase
             ->method('doRequest')
             ->with(
                 $this->callback(
-                    function($xml) {
+                    function ($xml) {
                         $this->assertStringEqualsFile(
                             __DIR__ . '/../../Resources/NetConnect/PreciseID-Questions-Request.xml',
                             $xml

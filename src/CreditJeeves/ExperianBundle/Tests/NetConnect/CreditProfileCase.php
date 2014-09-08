@@ -63,7 +63,7 @@ class CreditProfileCase extends BaseTestCase
             ->method('composeRequest')
             ->with(
                 $this->callback(
-                    function($xml) {
+                    function ($xml) {
                         $this->assertStringEqualsFile(
                             __DIR__ . '/../../Resources/NetConnect/CreditProfile-Request.xml',
                             $xml

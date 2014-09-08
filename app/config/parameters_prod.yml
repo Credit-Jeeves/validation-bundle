@@ -35,3 +35,4 @@ parameters:
     net_connect.credit_profile.url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnect&serviceVersion=2.0&responseType=text/plain' #required!
     net_connect.credit_profile.dbhost: 'CIS' #required!
     net_connect.credit_profile.sub_code: '2266580' #required!
+    net_connect.credit_profile.d2c.sub_code: '2266580' #required!

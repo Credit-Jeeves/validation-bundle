@@ -22,9 +22,8 @@ class ApplicantController extends Controller
         }
         $session = $this->get('session');
         try {
-            $netConnect = $this->get('experian.net_connect');
-            $netConnect->execute($this->container);
-            $arf = $netConnect->getResponseOnUserData($user);
+            $creditProfile = $this->get('experian.net_connect.credit_profile');
+            $arf = $creditProfile->getResponseOnUserData($user);
             if (empty($arf)) {
                 throw new Exception("Empty arf string");
             }

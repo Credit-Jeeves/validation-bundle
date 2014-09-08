@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\TestBundle\Tests\NetConnect;
 
+use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\TestBundle\Tests\NetConnect\CreditProfileTestCase as Base;
 use RentJeeves\DataBundle\Entity\Tenant;
 
@@ -14,31 +16,40 @@ class CreditProfileTestCase extends Base
      */
     const APP = 'AppRj';
 
+    protected function getTenant()
+    {
+        $tenant = new Tenant();
+        $tenant->setEmail('tenant11@example.com');
+        $tenant->setSsn('666042073');
+        $tenant->setFirstName('Ton');
+        $tenant->setLastName('Sharp');
+        $address = new Address();
+        $address->setIsDefault(true);
+        $tenant->addAddress($address);
+        return $tenant;
+    }
+
     /**
      * @test
      */
     public function getResponseOnUserData()
     {
-        $applicant = new Tenant();
-        $applicant->setEmail('tenant11@example.com');
-        $applicant->setSsn('666042073');
-        $applicant->setFirstName('Ton');
-        $applicant->setLastName('Sharp');
+        $tenant = $this->getTenant();
         $this->assertStringEqualsFile(
-            $this->getContainer()->getParameter('data.dir') . '/experian/netConnect/tenant11.arf',
-            $this->getContainer()->get('experian.net_connect')->getResponseOnUserData($applicant)
+            __DIR__ . '/../../Resources/NetConnect/CreditProfile/tenant11.arf',
+            $this->getContainer()->get('experian.net_connect.credit_profile')->getResponseOnUserData($tenant)
         );
     }
 
     /**
      * @test
      *
-     * @expectedException \ExperianXmlException
+     * @expectedException Exception
      */
     public function getResponseOnUserDataXmlException()
     {
-        $applicant = new Tenant();
-        $applicant->setEmail('tenant11@example.com');
-        $this->getContainer()->get('experian.net_connect')->getResponseOnUserData($applicant);
+        $tenant = $this->getTenant();
+        $tenant->setEmail('tenant11111@example.com');
+        $this->getContainer()->get('experian.net_connect.credit_profile')->getResponseOnUserData($tenant);
     }
 }

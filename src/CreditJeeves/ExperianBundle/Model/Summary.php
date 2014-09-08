@@ -14,6 +14,7 @@ class Summary
      * @Serializer\Type("integer")
      * @Serializer\SerializedName("PreciseIDScore")
      * @Serializer\Groups({"CreditJeeves"})
+     * @var int
      */
     protected $preciseIDScore;
 
@@ -25,7 +26,7 @@ class Summary
     protected $initialResults;
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getPreciseIDScore()
     {
@@ -33,7 +34,7 @@ class Summary
     }
 
     /**
-     * @param mixed $preciseIDScore
+     * @param int $preciseIDScore
      *
      * @return $this
      */
@@ -45,7 +46,7 @@ class Summary
     }
 
     /**
-     * @return mixed
+     * @return InitialResults
      */
     public function getInitialResults()
     {
@@ -53,7 +54,7 @@ class Summary
     }
 
     /**
-     * @param mixed $initialResults
+     * @param InitialResults $initialResults
      *
      * @return $this
      */

@@ -179,11 +179,9 @@ class PreciseID extends Base
     }
 
     /**
-     * @todo rename and rename in ApiBundle
-     *
      * @return mixed
      */
-    public function getLastResponce()
+    public function getLastResponse()
     {
         return $this->lastResponse;
     }
