@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -339,7 +340,7 @@ class Contract extends Base
             $interval = $date->diff($now);
             $unpaidDays = $interval->format('%r%a');
 
-            if ($unpaidDays <= 0) {
+            if ($unpaidDays <= 0 || $this->hasPaymentPendingForMonth($date->format('n'), $date->format('Y'))) {
                 return $result;
             }
             $lastPayment = $this->getLastPayment();
@@ -904,5 +905,40 @@ class Contract extends Base
     public function getTenantLateDays()
     {
         return $this->getPaidTo()->diff(new DateTime())->format('%d');
+    }
+
+    /**
+     * @param $month
+     * @param $year
+     * @return bool
+     */
+    public function hasPaymentPendingForMonth($month, $year)
+    {
+        $operations = $this->getOperations();
+        $count = $operations->count();
+        for ($i = 1; $i <= $count; $i++) {
+
+            /** @var $operation Operation */
+            $operation = $operations->slice($count-$i, 1);
+            $operation = reset($operation);
+            if ($operation->getType() == OperationType::RENT) {
+                $order = $operation->getOrder();
+                $paidFor = $operation->getPaidFor();
+
+                if ($order && $paidFor) {
+                    $paymentMonth = (int) $paidFor->format('n');
+                    $paymentYear = (int) $paidFor->format('Y');
+                    if (($order->getStatus() == OrderStatus::PENDING)
+                        && (($paymentMonth + $paymentYear) >= ($month + $year))) {
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        return false;
     }
 }
