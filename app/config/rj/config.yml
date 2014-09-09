@@ -55,12 +55,11 @@ parameters:
     landlord_payment_per_month_cents: 95
 framework:
     session:
+        name: rj
         cookie_secure: true
         cookie_httponly: true
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
-    session:
-        name: rj
 
 sonata_admin:
     title:      Admin
