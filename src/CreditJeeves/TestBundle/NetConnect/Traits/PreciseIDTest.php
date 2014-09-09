@@ -23,7 +23,7 @@ trait PreciseIDTest
         $this->createRequestOnUserData($user);
         $response = file_get_contents(__DIR__ . '/../../Resources/NetConnect/PreciseID/Response.xml');
 
-        return $this->retriveUserData($this->createResponse($response));
+        return $this->retrieveUserData($this->createResponse($response));
     }
 
     /**
@@ -39,6 +39,6 @@ trait PreciseIDTest
             $response = file_get_contents(__DIR__ . '/../../Resources/NetConnect/PreciseID/Questions-Response.xml');
         }
 
-        return $this->retriveUserData($response);
+        return $this->retrieveUserData($response);
     }
 }

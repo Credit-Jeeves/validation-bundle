@@ -17,9 +17,6 @@ class ScoreListenerAndLeadCase extends BaseTestCase
     public function score()
     {
         $this->load(true);
-        //@TODO Its hack, becouse after use load function, for load fixtures, we have problem.
-        static::$kernel = null;
-        //end hack
         $container = $this->getContainer();
         $em = $container->get('doctrine')->getManager();
         /** @var Applicant $user */
