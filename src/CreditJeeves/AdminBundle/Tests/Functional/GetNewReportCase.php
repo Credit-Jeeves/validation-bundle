@@ -17,13 +17,14 @@ class GetNewReportCase extends BaseTestCase
         $tableTr->clickLink('link_list');
         $this->assertNotNull($getNewReport = $this->page->findAll('css', 'a.getNewReport'));
         $this->assertCount(25, $getNewReport);
-        $getNewReport[6]->click();
+        $getNewReport[7]->click();
         $this->assertNotNull($tableTr = $this->page->find('css', '.alert-success'), $this->page->getHtml());
         $this->logout();
     }
 
     /**
      * @test
+     * @depends success
      */
     public function info()
     {
@@ -39,6 +40,7 @@ class GetNewReportCase extends BaseTestCase
 
     /**
      * @test
+     * @depends info
      */
     public function error()
     {
@@ -47,8 +49,8 @@ class GetNewReportCase extends BaseTestCase
         $tableTr->clickLink('link_list');
         $this->assertNotNull($getNewReport = $this->page->findAll('css', 'a.getNewReport'));
         $this->assertCount(25, $getNewReport);
-        $getNewReport[24]->click();
-        $this->assertNotNull($tableTr = $this->page->find('css', '.alert-error'));
+        $getNewReport[10]->click();
+        $this->assertNotNull($tableTr = $this->page->find('css', '.alert-error'), $this->page->getHtml());
         $this->logout();
     }
 }

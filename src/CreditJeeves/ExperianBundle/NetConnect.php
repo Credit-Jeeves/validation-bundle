@@ -180,12 +180,13 @@ abstract class NetConnect
         $model->getPhone()
             ->setNumber($user->getPhone());
 //            ->setType($user->getPhoneType()); //TODO find out format
-        $defaultAddress = $user->getDefaultAddress();
-        $model->getCurrentAddress()
-            ->setCity($defaultAddress->getCity())
-            ->setState($defaultAddress->getArea())
-            ->setStreet($defaultAddress->getStreet())
-            ->setZip($defaultAddress->getZip());
+        if ($defaultAddress = $user->getDefaultAddress()) {
+            $model->getCurrentAddress()
+                ->setCity($defaultAddress->getCity())
+                ->setState($defaultAddress->getArea())
+                ->setStreet($defaultAddress->getStreet())
+                ->setZip($defaultAddress->getZip());
+        }
         $model->setDob($user->getDBO());
 //        $model->setEmailAddress($user->getEmail()); //TODO do we need to sed it?
     }
