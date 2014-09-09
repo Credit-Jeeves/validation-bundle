@@ -138,21 +138,15 @@ class TenantRepository extends EntityRepository
 
     public function findByHolding($holdingId = null)
     {
-        $query = $this->createQueryBuilder('tenant')
-            ->addSelect(
-                array('tenant')
-            );
+        $query = $this->createQueryBuilder('tenant');
+        $query->select('tenant.id, tenant.email');
+
         $query->innerJoin(
             'tenant.contracts',
             'contract'
         );
-        $query->innerJoin(
-            'contract.group',
-            'group_c'
-        );
-        $query->where('group_c.holding_id = :holdingId');
-        $query->groupBy('tenant.id');
         $query->orderBy('tenant.email', 'ASC');
+        $query->where('contract.holding = :holdingId');
         $query->setParameter('holdingId', $holdingId);
 
         return $query;
