@@ -20,7 +20,11 @@ class ResidentMappingAdmin extends Admin
     protected function configureDatagridFilters(DatagridMapper $datagrid)
     {
         $datagrid
-            ->add('residentId');
+            ->add('residentId')
+            ->add('tenant.email')
+            ->add('tenant.first_name')
+            ->add('tenant.last_name')
+            ->add('holding.name');
     }
 
     public function configureListFields(ListMapper $listMapper)
