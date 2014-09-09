@@ -42,6 +42,8 @@ class AppRjKernel extends AppKernel
             new Sonata\BlockBundle\SonataBlockBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
             new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
             new Fp\JsFormValidatorBundle\FpJsFormValidatorBundle(),

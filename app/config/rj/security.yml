@@ -61,4 +61,6 @@ security:
         - { path: ^/login/defence/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/,                      role: ROLE_LANDLORD }
         - { path: ^/admin/,                         role: ROLE_ADMIN }
+        - { path: ^/api,                            role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/documentation/api,              role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/,                               role: ROLE_TENANT }

@@ -1,0 +1,4 @@
+properties :
+  type : rest
+  resource:     "RestApiBundle:Properties"
+  name_prefix:  api_
