@@ -11,7 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\GroupRepository")
  * @ORM\Table(name="cj_account_group")
  */
 class Group extends BaseGroup
