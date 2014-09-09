@@ -94,7 +94,11 @@ class ResidentMappingAdmin extends Admin
                 array(
                     'class' => 'RjDataBundle:Tenant',
                     'query_builder' => function (EntityRepository $er) use ($holding) {
-                            return $er->findByHolding($holding);
+                            // TO AVOID MEMORY EXHAUSTION caused by doctrine hydration:
+                            // All tenants are loaded by ajax, so we can load only one tenant here.
+                            // This query is also used inside doctrine to load corresponding entity
+                            // for chosen tenant on the form (there tenant is just id).
+                            return $er->findOneTenantByHolding($holding);
                     }
                 )
             )
