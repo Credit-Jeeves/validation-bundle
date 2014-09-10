@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use \DateTime;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 class OperationRepository extends EntityRepository
 {
@@ -104,12 +105,17 @@ class OperationRepository extends EntityRepository
         $query->innerJoin('contract.property', 'prop');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('ord.heartlands', 'heartland');
-        $query->where("ord.updated_at BETWEEN :start AND :end");
+
+        $query->where("heartland.depositDate BETWEEN :start AND :end");
         $query->andWhere('contract.property = :property');
         $query->andWhere('resident.holding = :holding');
         $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
         $query->andWhere('ord.status IN (:statuses)');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
+        $query->andWhere(
+            '(ord.status = :completeOrder AND heartland.status = :completeTransaction) OR
+            (ord.status != :completeOrder AND heartland.status = :reversedTransaction)
+        ');
         $query->orderBy('ord.id', 'ASC');
 
         $query->setParameter('end', $end);
@@ -119,6 +125,9 @@ class OperationRepository extends EntityRepository
         $query->setParameter('start', $start);
         $query->setParameter('property', $property);
         $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+        $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
+        $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
 
         $query = $query->getQuery();
         return $query->execute();
