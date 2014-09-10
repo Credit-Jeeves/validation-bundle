@@ -14,7 +14,7 @@ class ExportCase extends BaseTestCase
     /**
      * @test
      */
-    public function baseXmlFormat()
+    public function goToYardiReport()
     {
         $this->load(true);
         //$this->setDefaultSession('selenium2');
@@ -44,7 +44,14 @@ class ExportCase extends BaseTestCase
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
+    }
 
+    /**
+     * @depends goToYardiReport
+     * @test
+     */
+    public function baseXmlFormat()
+    {
         $this->page->pressButton('order.report.download');
 
         $xml = $this->page->getContent();
@@ -77,6 +84,110 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('1500.00', (string)$amount);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
 
+    }
+
+    /**
+     * @test
+     */
+    public function reversalYardiXmlFormat()
+    {
+        $this->goToYardiReport();
+
+        $date = new DateTime('-27 days');
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+
+        $begin->setValue($date->format('m/d/Y'));
+        $end->setValue($date->format('m/d/Y'));
+
+        $this->page->pressButton('order.report.download');
+
+        $xml = $this->page->getContent();
+        $doc = new SimpleXMLElement($xml);
+
+        $this->assertNotNull($receipts = $doc->Receipts);
+        $this->assertNotNull($receipt = $receipts->Receipt);
+        $this->assertNotNull($date = $receipt->Date);
+        $this->assertNotNull($totalAmount = $receipt->TotalAmount);
+        $this->assertNotNull($isCash = $receipt->IsCash);
+        $this->assertNotNull($checkNumber = $receipt->CheckNumber);
+        $this->assertNotNull($notes = $receipt->Notes);
+        $this->assertNotNull($propertyId = $receipt->PropertyId);
+        $this->assertNotNull($payerName = $receipt->PayerName);
+        $this->assertNotNull($personId = $receipt->PersonId);
+        $this->assertNotNull($postMonth = $receipt->PostMonth);
+        $this->assertNotNull($details = $receipt->Details->Detail);
+        $this->assertNotNull($amount = $details->Amount);
+        $this->assertNotNull($notesDetail = $details->Notes);
+
+        $this->assertNotNull($batchId = $receipt->BatchId);
+        $this->assertNotNull($originalReceiptDate = $receipt->OriginalReceiptDate);
+        $this->assertNotNull($returnType = $receipt->ReturnType);
+
+        $this->assertEquals(100, (int) $receipt->PropertyId);
+        $this->assertEquals(88, (int) $details->AccountId);
+        $this->assertEquals(77, (int) $details->ArAccountId);
+        $this->assertEquals(100, (int) $details->PropertyId);
+
+        $this->assertEquals('700.00', (string) $totalAmount);
+        $this->assertEquals('false', (string) $isCash);
+        $this->assertEquals('PMTCRED 55123260', (string) $checkNumber);
+        $this->assertEquals('FGDTRFG-44', (string) $personId);
+        $this->assertEquals('700.00', (string) $amount);
+        $this->assertEquals('Reverse for Trans ID 55123260', (string) $notes);
+        $this->assertEquals('Reverse', (string) $returnType);
+        $this->assertEquals('0', (string) $batchId);
+    }
+
+    /**
+     * @test
+     */
+    public function completeYardiXmlFormat()
+    {
+        $this->goToYardiReport();
+
+        $date = new DateTime('-9 days');
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+
+        $begin->setValue($date->format('m/d/Y'));
+        $end->setValue($date->format('m/d/Y'));
+
+        $this->page->pressButton('order.report.download');
+
+        $xml = $this->page->getContent();
+        $doc = new SimpleXMLElement($xml);
+
+        $this->assertNotNull($receipts = $doc->Receipts);
+        $this->assertNotNull($receipt = $receipts->Receipt);
+        $this->assertNotNull($date = $receipt->Date);
+        $this->assertNotNull($totalAmount = $receipt->TotalAmount);
+        $this->assertNotNull($isCash = $receipt->IsCash);
+        $this->assertNotNull($checkNumber = $receipt->CheckNumber);
+        $this->assertNotNull($notes = $receipt->Notes);
+        $this->assertNotNull($propertyId = $receipt->PropertyId);
+        $this->assertNotNull($payerName = $receipt->PayerName);
+        $this->assertNotNull($personId = $receipt->PersonId);
+        $this->assertNotNull($postMonth = $receipt->PostMonth);
+        $this->assertNotNull($details = $receipt->Details->Detail);
+        $this->assertNotNull($amount = $details->Amount);
+        $this->assertNotNull($notesDetail = $details->Notes);
+
+        $this->assertTrue(!isset($receipt->BatchId));
+        $this->assertTrue(!isset($receipt->OriginalReceiptDate));
+        $this->assertTrue(!isset($receipt->ReturnType));
+
+        $this->assertEquals(100, (int) $receipt->PropertyId);
+        $this->assertEquals(88, (int) $details->AccountId);
+        $this->assertEquals(77, (int) $details->ArAccountId);
+        $this->assertEquals(100, (int) $details->PropertyId);
+
+        $this->assertEquals('1500.00', (string) $totalAmount);
+        $this->assertEquals('false', (string) $isCash);
+        $this->assertEquals('PMTCRED 147147', (string) $checkNumber);
+        $this->assertEquals('FGDTRFG-44', (string) $personId);
+        $this->assertEquals('1500.00', (string)$amount);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
 
     /**
