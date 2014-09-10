@@ -10,7 +10,6 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 class AlertController extends Controller
 {
     /**
-     * FIXME in this controller we have more query, which we can modify by one.
      * @Template
      *
      * @return array
@@ -20,6 +19,7 @@ class AlertController extends Controller
         $alerts = array();
         $user = $this->getUser();
         $translator = $this->get('translator.default');
+        $em = $this->getDoctrine()->getManager();
 
         $inviteCode = $user->getInviteCode();
         if (!empty($inviteCode)) {
@@ -28,66 +28,36 @@ class AlertController extends Controller
 
         if ($isSuperAdmin = $user->getIsSuperAdmin()) {
             $holding = $user->getHolding();
-            $groups = $holding->getGroups();
+            $groups = $em->getRepository('DataBundle:Group')->getGroupsWithoutDepositAccount($holding);
             // alerts about merchant name
             foreach ($groups as $group) {
-                $deposit = $group->getDepositAccount();
-                if (empty($deposit)) {
-                    $alerts[] = $translator->
-                        trans(
-                            'deposit.merchant.setup.admin',
-                            array(
-                                '%GROUP%' => $group->getName()
-                            )
-                        );
-                }
+                $alerts[] = $translator->
+                    trans(
+                        'deposit.merchant.setup.admin',
+                        array(
+                            '%GROUP%' => $group->getName()
+                        )
+                    );
             }
+            // alerts about pending contracts
+            $groups = $em->getRepository('DataBundle:Group')->getGroupsWithPendingContracts($holding);
             foreach ($groups as $group) {
-                $pending = 0;
-                $contracts = $group->getContracts();
-                foreach ($contracts as $contract) {
-                    $status = $contract->getStatus();
-                    switch ($status) {
-                        case ContractStatus::PENDING:
-                            $pending++;
-                            break;
-                    }
-                }
-                if ($pending > 0) {
-                    $text = $translator->
-                        trans(
-                            'landlord.alert.pending-one.admin',
-                            array(
-                                '%GROUP%' => $group->getName()
-                            )
-                        );
-                    if ($pending > 1) {
-                        $text = $translator->trans(
-                            'landlord.alert.pending-many.admin',
-                            array(
-                                '%COUNT%' => $pending,
-                                '%GROUP%' => $group->getName()
-                            )
-                        );
-                    }
-                    $alerts[] = $text;
-                }
-                
+                $text = $translator->
+                    transChoice(
+                        'landlord.alert.pending-contract.admin',
+                        $group['amount_pending'],
+                        array(
+                            '%count%' => $group['amount_pending'],
+                            '%group%' => $group['group_name']
+                        )
+                    );
+                $alerts[] = $text;
             }
         } else {
             $group = $this->get('core.session.landlord')->getGroup();
             $deposit = $group->getDepositAccount();
             $billing = $group->getActiveBillingAccount();
-            $contracts = $group->getContracts();
-            $pending = 0;
-            foreach ($contracts as $contract) {
-                $status = $contract->getStatus();
-                switch ($status) {
-                    case ContractStatus::PENDING:
-                        $pending++;
-                        break;
-                }
-            }
+
             if (empty($deposit) || $deposit->getStatus() == DepositAccountStatus::DA_INIT) {
                 $alerts[] = $translator->trans(
                     'landlord.hps.complete_application',
@@ -111,17 +81,18 @@ class AlertController extends Controller
                 );
             }
 
-            if ($pending > 0) {
-                $text = $translator->trans('landlord.alert.pending-one');
-                if ($pending > 1) {
-                    $text = $translator->trans(
-                        'landlord.alert.pending-many',
-                        array('%COUNT%' => $pending)
-                    );
-                }
+            $pendingContractsCount = $em->getRepository('DataBundle:Group')->getCountPendingContracts($group);
+            if ($pendingContractsCount > 0) {
+                $text = $translator->transChoice(
+                    'landlord.alert.pending-contracts.landlord',
+                    $pendingContractsCount,
+                    array('%COUNT%' => $pendingContractsCount)
+                );
+
                 $alerts[] = $text;
             }
         }
+
         return array(
             'alerts' => $alerts
         );

@@ -57,13 +57,18 @@ class PaymentDepositReport implements PaymentSynchronizerInterface
     {
         /** @var HeartlandTransaction $transaction */
         $transaction = $this->repo->findOneByTransactionId($paymentData['TransactionID']);
-        if ($transaction) {
-            $transaction->setBatchDate(new DateTime($paymentData['BatchCloseDate']));
-            if ($paymentData['MerchantDepositAmount'] > 0) {
-                $transaction->setDepositDate(new DateTime($paymentData['MerchantDepositDate']));
-                $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
-            }
-            $this->em->flush();
+        if (!$transaction) {
+            return;
         }
+
+        if (!empty($paymentData['BatchCloseDate'])) {
+            $transaction->setBatchDate(new DateTime($paymentData['BatchCloseDate']));
+        }
+
+        if ($paymentData['MerchantDepositAmount'] > 0 && !empty($paymentData['MerchantDepositDate'])) {
+            $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
+            $transaction->setDepositDate(new DateTime($paymentData['MerchantDepositDate']));
+        }
+        $this->em->flush();
     }
 }
