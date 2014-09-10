@@ -4,11 +4,14 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\ExternalApiBundle\Services\SoapClientInterface;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientBuilder;
 use RentJeeves\ExternalApiBundle\Soap\SoapSettingsInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClient;
 use Exception;
 use RentJeeves\ExternalApiBundle\Soap\SoapWsdlTwigRenderer;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+use JMS\Serializer\Serializer;
 
 abstract class AbstractClient implements SoapClientInterface
 {
@@ -42,7 +45,20 @@ abstract class AbstractClient implements SoapClientInterface
      */
     protected $license;
 
+    /**
+     * @var ExceptionCatcher
+     */
     protected $exceptionCatcher;
+
+    /**
+     * @var Serializer
+     */
+    protected $serializer;
+
+    /**
+     * @var Messages
+     */
+    protected $messages;
 
     /**
      * @param SoapClient $soapClient
@@ -50,7 +66,8 @@ abstract class AbstractClient implements SoapClientInterface
     public function __construct(
         SoapWsdlTwigRenderer $wsdlRenderer,
         SoapClientBuilder $soapClientBuilder,
-        $exceptionCatcher,
+        ExceptionCatcher $exceptionCatcher,
+        Serializer $serializer,
         $entity,
         $license
     ) {
@@ -59,6 +76,7 @@ abstract class AbstractClient implements SoapClientInterface
         $this->wsdlRenderer = $wsdlRenderer;
         $this->license = $license;
         $this->exceptionCatcher = $exceptionCatcher;
+        $this->serializer = $serializer;
     }
 
     public function build()
@@ -66,6 +84,7 @@ abstract class AbstractClient implements SoapClientInterface
         $this->soapClientBuilder->setSettings($this->getSettings());
         $this->soapClientBuilder->setWsdlRenderer($this->wsdlRenderer);
         $this->soapClient = $this->soapClientBuilder->build();
+
         return $this;
     }
 
@@ -109,12 +128,70 @@ abstract class AbstractClient implements SoapClientInterface
         return file_get_contents($this->license);
     }
 
-    protected function processRequest($function, $params)
+    /**
+     * @param null $xml
+     * @return bool
+     */
+    public function isError($xml = null)
+    {
+        if (is_null($xml)) {
+            if ($this->messages) {
+                return true;
+            }
+
+            return false;
+        }
+
+        $result = $this->serializer->deserialize(
+            $xml,
+            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages',
+            'xml'
+        );
+
+        if (!empty($result)) {
+            $this->messages = $result;
+            return true;
+        }
+        $this->messages = null;
+
+        return false;
+    }
+
+    /**
+     * @param string $function
+     * @param array $params
+     * @param string $deserializeClass
+     *
+     * @return null|class
+     */
+    protected function processRequest(string $function, array $params, string $deserializeClass)
     {
         try {
-            return  $this->soapClient->__soapCall($function, $params);
+            $responce = $this->soapClient->__soapCall($function, $params);
+
+            if (isset($responce->GetPropertyConfigurationsResult->any)) {
+                $xml = $responce->GetPropertyConfigurationsResult->any;
+                $xml = '<?xml version="1.0" encoding="UTF-8"?>'.$xml;
+            } else {
+                throw new Exception("Bad Response: ".$this->soapClient->__getLastResponse());
+            }
+
+            if ($this->isError($xml)) {
+                return null;
+            }
+
+            $result = $this->serializer->deserialize(
+                $xml,
+                $deserializeClass,
+                'xml'
+            );
+            return $result;
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
+            $this->messages = new Messages();
+            $this->messages->setMessage($e->getMessage());
         }
+
+        return null;
     }
 }
