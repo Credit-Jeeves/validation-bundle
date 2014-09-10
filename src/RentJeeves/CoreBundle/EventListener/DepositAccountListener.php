@@ -83,9 +83,7 @@ class DepositAccountListener
             $eventArgs->setNewValue('feeCC', null);
         }
 
-        if ($eventArgs->hasChangedField('merchantName') && !$eventArgs->getOldValue('merchantName')) {
-            $this->sendEmail($entity);
-        }
+        $this->sendEmail($entity);
     }
 
     private function sendEmail(DepositAccount $entity)
