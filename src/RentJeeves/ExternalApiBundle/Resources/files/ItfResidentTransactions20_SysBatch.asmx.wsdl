@@ -1181,10 +1181,10 @@
   </wsdl:binding>
   <wsdl:service name="ItfResidentTransactions20_SysBatch">
     <wsdl:port name="ItfResidentTransactions20_SysBatchSoap" binding="tns:ItfResidentTransactions20_SysBatchSoap">
-      <soap:address location="{{ url }}WebServices/ItfResidentTransactions20_SysBatch.asmx" />
+      <soap:address location="http://qawebvm24/708_DEV/webservices/ItfResidentTransactions20_SYsBatch.asmx" />
     </wsdl:port>
     <wsdl:port name="ItfResidentTransactions20_SysBatchSoap12" binding="tns:ItfResidentTransactions20_SysBatchSoap12">
-      <soap12:address location="{{ url }}WebServices/ItfResidentTransactions20_SysBatch.asmx" />
+      <soap12:address location="http://qawebvm24/708_DEV/webservices/ItfResidentTransactions20_SYsBatch.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

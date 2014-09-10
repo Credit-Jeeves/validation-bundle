@@ -1179,10 +1179,10 @@
   <wsdl:service name="ItfResidentTransactions2_0">
     <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Yardi Billing &amp; Payment Interface v2.0 Web Service. Utilizes XML in MITS Resident Transactions 2.0. All web methods contained in this web service that read/write data from Voyager will require login credentials.</wsdl:documentation>
     <wsdl:port name="ItfResidentTransactions2_0Soap" binding="tns:ItfResidentTransactions2_0Soap">
-      <soap:address location="{{ url }}WebServices/ItfResidentTransactions20.asmx" />
+      <soap:address location="http://localhost/Voyager7S/Webservices/ItfResidentTransactions20.asmx" />
     </wsdl:port>
     <wsdl:port name="ItfResidentTransactions2_0Soap12" binding="tns:ItfResidentTransactions2_0Soap12">
-      <soap12:address location="{{ url }}Webservices/ItfResidentTransactions20.asmx" />
+      <soap12:address location="http://localhost/Voyager7S/Webservices/ItfResidentTransactions20.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

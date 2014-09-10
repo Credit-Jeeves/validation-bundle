@@ -42,12 +42,15 @@ abstract class AbstractClient implements SoapClientInterface
      */
     protected $license;
 
+    protected $exceptionCatcher;
+
     /**
      * @param SoapClient $soapClient
      */
     public function __construct(
         SoapWsdlTwigRenderer $wsdlRenderer,
         SoapClientBuilder $soapClientBuilder,
+        $exceptionCatcher,
         $entity,
         $license
     ) {
@@ -55,6 +58,7 @@ abstract class AbstractClient implements SoapClientInterface
         $this->entity = $entity;
         $this->wsdlRenderer = $wsdlRenderer;
         $this->license = $license;
+        $this->exceptionCatcher = $exceptionCatcher;
     }
 
     public function build()
@@ -108,14 +112,9 @@ abstract class AbstractClient implements SoapClientInterface
     protected function processRequest($function, $params)
     {
         try {
-            $this->soapClient->__soapCall($function, $params);
+            return  $this->soapClient->__soapCall($function, $params);
         } catch (Exception $e) {
-            //@TODO send email and throw excpetion
-
-            print_r($this->soapClient->__getLastRequestHeaders());
-            print_r($this->soapClient->__getLastRequest());
-            print_r($this->soapClient->__getLastResponseHeaders());
-            print_r($this->soapClient->__getLastResponse());
+            $this->exceptionCatcher->handleException($e);
         }
     }
 }
