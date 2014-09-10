@@ -114,8 +114,8 @@ class OperationRepository extends EntityRepository
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
         $query->andWhere(
             '(ord.status = :completeOrder AND heartland.status = :completeTransaction) OR
-            (ord.status != :completeOrder AND heartland.status = :reversedTransaction)
-        ');
+            (ord.status != :completeOrder AND heartland.status = :reversedTransaction)'
+        );
         $query->orderBy('ord.id', 'ASC');
 
         $query->setParameter('end', $end);
