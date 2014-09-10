@@ -30,16 +30,20 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
      */
     protected $em;
 
+    protected $exceptionCatcher;
+
     /**
      * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container"),
-     *     "em"     = @DI\Inject("doctrine.orm.entity_manager")
+     *     "container"              = @DI\Inject("service_container"),
+     *     "em"                     = @DI\Inject("doctrine.orm.entity_manager"),
+     *     "exceptionCatcher"       = @DI\Inject("fp_badaboom.exception_catcher")
      * })
      */
-    public function __construct(ContainerInterface $container, $em)
+    public function __construct(ContainerInterface $container, $em, $exceptionCatcher)
     {
         $this->container = $container;
         $this->em = $em;
+        $this->exceptionCatcher = $exceptionCatcher;
     }
 
     /**
@@ -81,6 +85,8 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
         $userLog = $this->container->get('user.log');
         $userLog->signin($username, $status = 'failure');
         $url = $this->container->get('router')->generate('fos_user_security_login');
+        $this->exceptionCatcher->handleException($exception);
+
         return new RedirectResponse($url);
     }
 }
