@@ -6,6 +6,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use PhpOption;
 
 class SkipPropertyExclusionStrategy implements ExclusionStrategyInterface
 {
@@ -33,9 +34,10 @@ class SkipPropertyExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $context, $object = null)
+    public function shouldSkipProperty(PropertyMetadata $property, Context $context)
     {
         $name = $property->serializedName ? $property->serializedName : $property->name;
+        $object = $this->getObject($context);
 
         if (in_array($name, $this->skipProperties)) {
             if ($this->useCompare && $object) {
@@ -48,5 +50,15 @@ class SkipPropertyExclusionStrategy implements ExclusionStrategyInterface
         }
 
         return false;
+    }
+
+    protected function getObject($context)
+    {
+        $object = $context->attributes->get('object');
+        if ($object instanceof PhpOption\Some) {
+            return $object->get();
+        }
+
+        return null;
     }
 }
