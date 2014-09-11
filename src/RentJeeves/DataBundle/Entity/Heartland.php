@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Model\Heartland as Base;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -176,6 +177,10 @@ class Heartland extends Base
     {
         $order = $this->getOrder();
         $amount = $order ? $order->getSum() : 0;
+
+        if ($this->getStatus() == TransactionStatus::REVERSED) {
+            $amount = -$amount;
+        }
 
         return number_format($amount, 2, '.', '');
     }
