@@ -9,6 +9,8 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\HeartlandRepository")
  * @ORM\Table(name="rj_checkout_heartland")
+ *
+ * @method getRequest $this
  */
 class Heartland extends Base
 {
@@ -174,7 +176,10 @@ class Heartland extends Base
      */
     public function getTotalAmount()
     {
-        return number_format($this->getAmount(), 2, '.', '');
+        $order = $this->getOrder();
+        $amount = $order ? $order->getSum() : 0;
+
+        return number_format($amount, 2, '.', '');
     }
 
     /**
