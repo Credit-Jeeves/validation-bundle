@@ -125,7 +125,11 @@ abstract class AbstractClient implements SoapClientInterface
      */
     protected function getLicense()
     {
-        return file_get_contents($this->license);
+        $currentFolder = dirname(__FILE__);
+        $licensePath = $currentFolder.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..';
+        $licensePath .= DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.$this->license;
+
+        return file_get_contents($licensePath);
     }
 
     /**
@@ -142,20 +146,33 @@ abstract class AbstractClient implements SoapClientInterface
             return false;
         }
 
-        $result = $this->serializer->deserialize(
+        $this->messages = $this->serializer->deserialize(
             $xml,
             'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages',
             'xml'
         );
 
-        if (!empty($result)) {
-            $this->messages = $result;
+        if (!is_null($this->messages->getMessage())) {
             return true;
         }
+
         $this->messages = null;
 
         return false;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getErrorMessage()
+    {
+        if ($this->messages) {
+            return $this->messages->getMessage();
+        }
+
+        return null;
+    }
+
 
     /**
      * @param string $function
@@ -164,7 +181,7 @@ abstract class AbstractClient implements SoapClientInterface
      *
      * @return null|class
      */
-    protected function processRequest(string $function, array $params, string $deserializeClass)
+    protected function processRequest($function, array $params, $deserializeClass)
     {
         try {
             $responce = $this->soapClient->__soapCall($function, $params);

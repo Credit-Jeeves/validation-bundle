@@ -50,6 +50,7 @@ services:
             - CreditJeeves\DataBundle\Entity\Holding
             - 'SonataAdminBundle:CRUD'
         calls:
+            - [ setTemplate, [edit, AdminBundle:CRUD:holding_edit.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
     sonata.admin.rj_group:
@@ -163,7 +164,6 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-            - [ setTemplate, [edit, AdminBundle:CRUD:form_contract_waiting.html.twig]] 
 
     sonata.admin.resident_mapping:
         class: RentJeeves\AdminBundle\Admin\ResidentMappingAdmin

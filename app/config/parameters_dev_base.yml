@@ -39,4 +39,4 @@ parameters:
     net_connect.credit_profile.d2c.sub_code: '2266580' #required!
 
     soap.api.yardi.entity: RentTrack
-    soap.api.yardi.license: "./src/RentJeeves/ExternalApiBundle/Resources/files/V100057742BP.lic"
+    soap.api.yardi.license: V100057742BP.lic
