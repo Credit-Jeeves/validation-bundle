@@ -14,8 +14,8 @@ $( document ).ready(function() {
             dataType: 'json',
             data:$('form').serialize(),
             error: function(jqXHR, textStatus, errorThrown) {
-                //window.location.reload();
                 $(".tab-content").hideOverlay();
+                window.location.reload();
             },
             success: function(data, textStatus, jqXHR) {
                 $(".tab-content").hideOverlay();
