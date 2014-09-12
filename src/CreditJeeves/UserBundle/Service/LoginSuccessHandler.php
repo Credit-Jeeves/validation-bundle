@@ -24,16 +24,6 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     protected $container;
 
     /**
-     * @var SecurityContext
-     */
-    protected $security;
-
-    /**
-     * @var string|null
-     */
-    protected $messageDefence;
-
-    /**
      * @DI\InjectParams({
      *     "container" = @DI\Inject("service_container")
      * })

@@ -24,6 +24,8 @@ class LogAndDefenceUser
      */
     protected $request;
 
+    protected $messageDefence;
+
     protected $em;
 
     protected $translator;
