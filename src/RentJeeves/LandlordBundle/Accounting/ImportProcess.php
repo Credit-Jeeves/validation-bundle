@@ -482,11 +482,12 @@ class ImportProcess
             $paidTo->modify('+1 month');
         }
 
-        $paidTo = $paidTo->setDate(
+        $paidTo->setDate(
             $paidTo->format('Y'),
             $paidTo->format('n'),
             $groupDueDate
         );
+        
         $contract->setPaidTo($paidTo);
         // After living with this, we should always put the startAt = moveIn on the contract
         $contract->setStartAt($moveIn);
