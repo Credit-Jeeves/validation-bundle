@@ -66,7 +66,8 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
             );
             $url = $this->container->get('router')->generate('fos_user_security_login');
         }
-        //$this->exceptionCatcher->handleException($exception);
+
+        $this->exceptionCatcher->handleException($exception);
 
         $redirect = new RedirectResponse($url);
         $redirect->send();
