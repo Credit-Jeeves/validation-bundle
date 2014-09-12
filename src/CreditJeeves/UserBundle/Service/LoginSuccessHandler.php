@@ -85,7 +85,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         return new RedirectResponse($url);
     }
 
-    private function checkLogindefense($user)
+    private function checkLogindefense(User $user)
     {
         $delay = $this->container->getParameter('login.delay');
         $defense = $user->getDefense();
@@ -94,28 +94,26 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             $attempts = $defense->getAttempts();
             $last = $defense->getUpdatedAt();
             $interval = $now->diff($last, true)->format('%i');
-            if ($attempts > $this->container->getParameter('login.attempts')) {
-                if ($interval < $delay) {
-                    $this->container->get('session')->getFlashBag()->add(
-                        'defense',
-                        sprintf('Please, try "%s" minutes later.', ($delay- $interval))
-                    );
-                    return false;
-                } else {
-                    $defense->setAttempts(0);
-                    $em = $this->container->get('doctrine.orm.default_entity_manager');
-                    $user->setDefense($defense);
-                    $em->persist($user);
-                    $em->flush();
-                }
+            $em = $this->container->get('doctrine.orm.default_entity_manager');
+            if ($attempts > $this->container->getParameter('login.attempts')
+                && $interval < $delay
+            ) {
+                $newDelay = $delay - $interval;
+                $this->container->get('session')->getFlashBag()->add(
+                    'defense',
+                    sprintf('Please, try "%s" minutes later.', $newDelay)
+                );
+                $defense->setAttempts($defense->getAttempts()+1);
+                $em->persist($defense);
+                return false;
             } else {
                 $defense->setAttempts(0);
-                $em = $this->container->get('doctrine.orm.default_entity_manager');
-                $user->setDefense($defense);
-                $em->persist($user);
-                $em->flush();
+                $em->persist($defense);
             }
+
+            $em->flush();
         }
+
         return true;
     }
 

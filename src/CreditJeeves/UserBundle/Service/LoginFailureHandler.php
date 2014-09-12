@@ -68,7 +68,6 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
                 $defense->addAttempt();
             } else {
                 $defense = new LoginDefense();
-                //$user->setDefense($defense);
                 $defense->setUser($user);
             }
             $this->em->persist($defense);
