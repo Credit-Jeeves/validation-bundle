@@ -63,7 +63,7 @@ class RealPageReport extends ExportReport
         $propertyId = $settings['property']->getId();
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForReport($propertyId, $beginDate, $endDate);
+        return $orderRepository->getOrdersForRealPageReport($propertyId, $beginDate, $endDate);
     }
 
     protected function validateSettings($settings)

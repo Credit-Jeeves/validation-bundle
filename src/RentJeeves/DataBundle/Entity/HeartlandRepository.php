@@ -80,9 +80,16 @@ class HeartlandRepository extends EntityRepository
         $query->innerJoin('t.group', 'g');
         $query->leftJoin('g.groupSettings', 'gs');
 
-        $query->where("o.created_at BETWEEN :start AND :end");
+        $query->where("h.depositDate BETWEEN :start AND :end");
+        $query->andWhere(
+            '(o.status = :completeOrder AND h.status = :completeTransaction) OR
+            (o.status != :completeOrder AND h.status = :reversedTransaction)'
+        );
         $query->setParameter('start', $start);
         $query->setParameter('end', $end);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+        $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
+        $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
 
         // order may be deposited and returned the same day, so we should count complete and reversal types
         $query->andWhere('o.status in (:statuses)');
