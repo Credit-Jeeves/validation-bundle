@@ -73,7 +73,7 @@ class Operation extends Base
      */
     public function getActualPaymentTransactionDate()
     {
-        return $this->getOrder()->getCreatedAt()->format('Y-m-d\TH:i:s');
+        return $this->getOrder()->getHeartlandTransaction()->getDepositDate()->format('Y-m-d\TH:i:s');
     }
 
     /**
