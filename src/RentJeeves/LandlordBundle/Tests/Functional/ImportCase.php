@@ -265,7 +265,8 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('1200', $contract->getRent());
         $this->assertEquals('0', $contract->getIntegratedBalance());
         // startAt should be the first day of next month b/c this contract has no payments yet
-        $this->assertEquals('11/09/2013', $contract->getStartAt()->format('m/d/Y'));
+        $today = new DateTime('first day of next month');
+        $this->assertEquals($today->format('m/d/Y'), $contract->getStartAt()->format('m/d/Y'));
         $this->assertEquals('11/08/2014', $contract->getFinishAt()->format('m/d/Y'));
 
         /**
@@ -297,7 +298,7 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals('1190', $contractMatch->getRent());
         $this->assertEquals('0', $contractMatch->getIntegratedBalance());
-        $this->assertEquals('04/22/2010', $contractMatch->getStartAt()->format('m/d/Y'));
+        $this->assertEquals($today->format('m/d/Y'), $contractMatch->getStartAt()->format('m/d/Y'));
         $this->assertEquals('10/21/2016', $contractMatch->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractMatch->getStatus());
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
@@ -317,7 +318,7 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals('950', $contractNew->getRent());
         $this->assertEquals('0', $contractNew->getIntegratedBalance());
-        $this->assertEquals('03/18/2011', $contractNew->getStartAt()->format('m/d/Y'));
+        $this->assertEquals($today->format('m/d/Y'), $contractNew->getStartAt()->format('m/d/Y'));
         $this->assertEquals('03/31/2015', $contractNew->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
     }
@@ -449,7 +450,7 @@ class ImportCase extends BaseTestCase
 
         return $contractWaiting;
     }
-    
+
     /**
      * @test
      */
@@ -735,10 +736,12 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(2, count($result));
         $td = $result[0]->findAll('css', 'td');
 
-        $this->assertEquals('12/29/2012<br>12/28/2013', $td[7]->getHtml());
+        $today = new DateTime('first day of this month');
+        $this->assertEquals($today->format('n/j/Y') . '<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
         $datepicker = $result[1]->findAll('css', '.datepicker');
         $this->assertEquals(2, count($datepicker));
-        $this->assertEquals('11/09/2013', $datepicker[0]->getValue(), $datepicker[0]->getValue());
+        $today = new DateTime('first day of next month');
+        $this->assertEquals($today->format('m/d/Y'), $datepicker[0]->getValue(), $datepicker[0]->getValue());
         $this->assertEquals('11/08/2014', $datepicker[1]->getValue(), $datepicker[1]->getValue());
         $this->logout();
     }
@@ -892,8 +895,9 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($waitingContract);
         $this->assertEquals(975, $waitingContract->getRent());
         $this->assertEquals(193, $waitingContract->getIntegratedBalance());
-
-        $this->assertEquals('2014-01-01', $waitingContract->getStartAt()->format('Y-m-d'));
+        $date = new DateTime();
+        $date->setDate(null, null, 1);
+        $this->assertEquals($date->format('Y-m-d'), $waitingContract->getStartAt()->format('Y-m-d'));
         $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->isSingle());
 

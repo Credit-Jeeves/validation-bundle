@@ -283,6 +283,8 @@ class ImportProcess
             $contract->setUnit($unit);
         }
         $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
+        $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
+        $contract->setStartAt($moveIn);
 
         /**
          * If we don't have unit and property don't have flag is_single set it to single by default
@@ -469,10 +471,9 @@ class ImportProcess
         $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
 
-        $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
         $paidTo = new DateTime();
-
         $groupDueDate = $this->group->getGroupSettings()->getDueDate();
+
         // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
         if ($row[ImportMapping::KEY_BALANCE] <= 0) {
             $paidTo->modify('+1 month');
@@ -485,8 +486,7 @@ class ImportProcess
         );
         
         $contract->setPaidTo($paidTo);
-        // After living with this, we should always put the startAt = paidTo on the contract
-        $contract->setStartAt($paidTo);
+
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
