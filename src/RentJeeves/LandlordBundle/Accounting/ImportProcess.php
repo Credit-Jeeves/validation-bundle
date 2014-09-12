@@ -470,19 +470,24 @@ class ImportProcess
         $contract->setRent($row[ImportMapping::KEY_RENT]);
 
         $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
-        $paidTo = clone $moveIn;
+        if (!is_null($moveIn)) {
+            $paidTo = clone $moveIn;
+        } else {
+            $paidTo = new DateTime();
+        }
 
         $groupDueDate = $this->group->getGroupSettings()->getDueDate();
         // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
         if ($row[ImportMapping::KEY_BALANCE] <= 0) {
             $paidTo->modify('+1 month');
-            $paidTo = $paidTo->setDate(null, null, $groupDueDate);
-        } else {
-            // Set paidTo to prev month if balance is >=0 so the tenant sees this month AND next month in PaidFor wizard
-            $paidTo = $paidTo->setDate(null, null, $groupDueDate);
         }
-        $contract->setPaidTo($paidTo);
 
+        $paidTo = $paidTo->setDate(
+            $paidTo->format('Y'),
+            $paidTo->format('n'),
+            $groupDueDate
+        );
+        $contract->setPaidTo($paidTo);
         // After living with this, we should always put the startAt = moveIn on the contract
         $contract->setStartAt($moveIn);
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
