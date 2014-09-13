@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "84ceae02d08748305549fc8072b03fa2",
+    "hash": "d8138038a2492329f13ad51fe1436825",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -6641,6 +6641,51 @@
             },
             "type": "library",
             "description": "Test spies, stubs and mocks for JavaScript."
+        },
+        {
+            "name": "ton/email-bundle",
+            "version": "v1.0.0",
+            "target-dir": "Ton/EmailBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/66Ton99/EmailBundle.git",
+                "reference": "7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/66Ton99/EmailBundle/zipball/7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
+                "reference": "7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/framework-bundle": "~2.2",
+                "symfony/swiftmailer-bundle": "~2.2",
+                "zendframework/zend-mail": "~2.1"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Ton\\EmailBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ton Sharp",
+                    "email": "66ton99@gmail.com"
+                }
+            ],
+            "description": "Email bundle for test environment of Symfony2",
+            "keywords": [
+                "cap",
+                "email",
+                "test"
+            ],
+            "time": "2014-09-13 01:43:41"
         }
     ],
     "aliases": [

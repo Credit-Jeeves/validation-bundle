@@ -231,10 +231,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
         //Check notify tenant invite for new user
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(10, $email, 'Wrong number of emails');
+        $this->assertCount(10, $this->getEmails(), 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -867,10 +864,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
         //Check notify tenant invite for new user
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(0, $email, 'Wrong number of emails');
+        $this->assertCount(0, $this->getEmails(), 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -1015,14 +1009,14 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            $this->timeout,
             "$('.errorField').length > 0"
         );
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            $this->timeout,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1031,17 +1025,16 @@ class ImportCase extends BaseTestCase
         $this->logout();
         //Check notify tenant invite for new user
         $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
-        $link->click();
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $crawler = $this->getCrawlerObject($email->getBody());
+        $url = $crawler->filter('#payRentLink')->getNode(0)->getAttribute('href');
 
+        $this->session->visit($url);
         $this->assertNotNull($haveAccount = $this->page->find('css', '.haveAccount>a'));
         $haveAccount->click();
+
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
         $this->assertCount(5, $payButtons);

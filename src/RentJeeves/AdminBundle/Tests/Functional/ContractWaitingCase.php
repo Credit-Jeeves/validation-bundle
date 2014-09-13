@@ -51,8 +51,7 @@ class ContractWaitingCase extends BaseTestCase
         $this->assertEquals(0, count($contractWaiting));
 
         $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
     }
 }

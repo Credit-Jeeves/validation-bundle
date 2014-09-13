@@ -233,14 +233,13 @@ class IframeCase extends BaseTestCase
     public function checkEmailIframeNotFound()
     {
         $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#email-body a'));
-        $link->click();
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $crawler = $this->getCrawlerObject($email->getBody());
+        $url = $crawler->filter('#email-body')->filter('a')->getNode(0)->getAttribute('href');
+
+        $this->session->visit($url);
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();
         $this->login('newtenant@test.com', 'pass');
@@ -254,15 +253,12 @@ class IframeCase extends BaseTestCase
      */
     public function checkInviteIframeNotFound()
     {
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(2, $email, 'Wrong number of emails');
-        $email = end($email);
-        $email->click();
-        $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
-        $url = $link->getAttribute('href');
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $crawler = $this->getCrawlerObject($email->getBody());
+        $url = $crawler->filter('#payRentLinkLandlord')->getNode(0)->getAttribute('href');
+
         $this->setDefaultSession('selenium2');
         $this->session->visit($url);
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
@@ -341,17 +337,14 @@ class IframeCase extends BaseTestCase
     public function iframeFoundCheckEmail()
     {
         $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->page->clickLink('text/html');
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
         $this->assertEquals(
             1,
             preg_match(
                 "/Please visit.*href=\"(.*)\".*to confirm your registration/is",
-                $this->page->getContent(),
+                $email->getBody(),
                 $matches
             )
         );
@@ -485,10 +478,8 @@ class IframeCase extends BaseTestCase
         $this->session->visit($this->getUrl() . 'tenant/invite/resend/'.$user->getId());
         $this->assertNotNull($title = $this->page->find('css', '.title'));
         $this->assertEquals('error.oops', $title->getText());
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+
+        $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
     }
 
     /**

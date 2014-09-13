@@ -17,6 +17,7 @@ class ScoreListenerAndLeadCase extends BaseTestCase
     public function score()
     {
         $this->load(true);
+        $plugin = $this->registerEmailListener();
         $container = $this->getContainer();
         $em = $container->get('doctrine')->getManager();
         /** @var Applicant $user */
@@ -68,17 +69,6 @@ class ScoreListenerAndLeadCase extends BaseTestCase
                 'Fraction != 100 it is == '.$lead->getFraction()
             );
         }
-    }
-
-    /**
-     * @test
-     * @depends score
-     */
-    public function lead()
-    {
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount(1, $plugin->getPreSendMessages(), 'Wrong number of emails');
     }
 }

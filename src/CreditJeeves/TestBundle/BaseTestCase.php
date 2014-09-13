@@ -3,8 +3,9 @@ namespace CreditJeeves\TestBundle;
 
 use Behat\MinkBundle\Test\MinkTestCase;
 use Doctrine\ORM\Tools\SchemaTool;
-use \ReflectionClass;
-use CreditJeeves\TestBundle\EventListener\EmailListener;
+use ReflectionClass;
+use Symfony\Component\DomCrawler\Crawler;
+use Ton\EmailBundle\EventListener\EmailListener;
 use AppKernel;
 
 /**
@@ -142,5 +143,17 @@ abstract class BaseTestCase extends MinkTestCase
                 $connection->rollback();
             }
         }
+    }
+
+    /**
+     * @param $html
+     *
+     * @return Crawler
+     */
+    protected function getCrawlerObject($html)
+    {
+        $crawler = new Crawler();
+        $crawler->addContent($html);
+        return $crawler;
     }
 }
