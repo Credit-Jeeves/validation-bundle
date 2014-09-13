@@ -129,7 +129,7 @@ class Order extends BaseOrder
      */
     public function getPaymentDateForPromas()
     {
-        return $this->getCompleteTransaction()->getDepositDate()->format('Y-m-d');
+        return $this->getCreatedAt()->format('Y-m-d');
     }
 
     /**
