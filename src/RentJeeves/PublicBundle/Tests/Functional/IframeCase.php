@@ -254,7 +254,7 @@ class IframeCase extends BaseTestCase
     public function checkInviteIframeNotFound()
     {
         $emails = $this->getEmails();
-        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $this->assertCount(2, $emails, 'Wrong number of emails');
         $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
         $crawler = $this->getCrawlerObject($email->getBody());
         $url = $crawler->filter('#payRentLinkLandlord')->getNode(0)->getAttribute('href');
