@@ -33,12 +33,13 @@ trait PreciseIDTest
     {
         if (count(array_diff_assoc(array_values($answers), array(1, 2, 3, 4)))) {
             $response = file_get_contents(
-                __DIR__ . '/../Resources/NetConnect/PreciseID/Questions-Response-WrongAnswers.xml'
+                __DIR__ . '/../../Resources/NetConnect/PreciseID/Questions-Response-WrongAnswers.xml'
             );
         } else {
             $response = file_get_contents(__DIR__ . '/../../Resources/NetConnect/PreciseID/Questions-Response.xml');
         }
 
-        return $this->retrieveUserData($response);
+        return 'ACC' == $this->createResponse($response)
+            ->getProducts()->getPreciseIDServer()->getKbaScore()->getScoreSummary()->getAcceptReferCode();
     }
 }

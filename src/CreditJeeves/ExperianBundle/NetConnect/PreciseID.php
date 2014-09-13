@@ -82,6 +82,20 @@ class PreciseID extends Base
     public function retrieveUserData(NetConnectResponse $model)
     {
         $preciseIDServer = $model->getProducts()->getPreciseIDServer();
+        if (0 != $preciseIDServer->getKbaScore()->getGeneral()->getKbaResultCode()) {
+            throw new Exception(
+                $preciseIDServer->getKbaScore()->getGeneral()->getKbaResultCodeDescription(),
+                E_USER_ERROR
+            );
+        }
+
+        if (null == $preciseIDServer->getKba()) {
+            throw new Exception(
+                $preciseIDServer->getMessages()->getMessage()->getText(),
+                E_USER_ERROR
+            );
+        }
+        $preciseIDServer = $model->getProducts()->getPreciseIDServer();
         $this->sessionId = $preciseIDServer->getSessionId();
         $questions = array();
         /** @var QuestionSet $question */
@@ -104,21 +118,6 @@ class PreciseID extends Base
     public function getResponseOnUserData(User $user)
     {
         $netConnectResponse = $this->createResponse($this->doRequest($this->createRequestOnUserData($user)));
-
-        $preciseIDServer = $netConnectResponse->getProducts()->getPreciseIDServer();
-        if (0 != $preciseIDServer->getKbaScore()->getGeneral()->getKbaResultCode()) {
-            throw new Exception(
-                $preciseIDServer->getKbaScore()->getGeneral()->getKbaResultCodeDescription(),
-                E_USER_ERROR
-            );
-        }
-
-        if (null == $preciseIDServer->getKba()) {
-            throw new Exception(
-                $preciseIDServer->getMessages()->getMessage()->getText(),
-                E_USER_ERROR
-            );
-        }
 
         return $this->retrieveUserData($netConnectResponse);
     }
