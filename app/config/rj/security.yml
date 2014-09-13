@@ -19,7 +19,9 @@ security:
                 provider: custom 
                 csrf_provider: form.csrf_provider
                 success_handler: user.service.login_success_handler
-                failure_handler: user.service.login_defense
+                failure_handler: user.service.login_failure_handler
+                failure_path:  null
+                failure_forward: false
             logout:       true
             anonymous:    true
             remember_me:
@@ -56,6 +58,7 @@ security:
         - { path: ^/user/new,                       role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/check/*,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/translations,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login/defence/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/,                      role: ROLE_LANDLORD }
         - { path: ^/admin/,                         role: ROLE_ADMIN }
         - { path: ^/,                               role: ROLE_TENANT }
