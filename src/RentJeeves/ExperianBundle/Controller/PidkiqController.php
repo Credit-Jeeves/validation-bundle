@@ -3,7 +3,7 @@ namespace RentJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\ExperianBundle\Controller\PidkiqController as Base;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
-use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
+use CreditJeeves\ExperianBundle\NetConnect\PreciseIDQuestions;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -26,7 +26,7 @@ class PidkiqController extends Base
     /**
      * // Do not remove it!!!
      * @DI\InjectParams({
-     *     "pidkiqApi" = @DI\Inject("experian.net_connect.precise_id")
+     *     "preciseIdApi" = @DI\Inject("experian.net_connect.precise_id")
      * })
      */
     public function setPreciseIdApi($preciseIdApi)
@@ -37,7 +37,7 @@ class PidkiqController extends Base
     /**
      * // Do not remove it!!!
      * @DI\InjectParams({
-     *     "pidkiqQuestions" = @DI\Inject("experian.net_connect.precise_id.questions")
+     *     "preciseIdQuestions" = @DI\Inject("experian.net_connect.precise_id.questions")
      * })
      */
     public function setPreciseIdQuestions($preciseIdQuestions)
