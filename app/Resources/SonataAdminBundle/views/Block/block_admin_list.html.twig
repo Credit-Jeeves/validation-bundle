@@ -67,6 +67,19 @@ file that was distributed with this source code.
                         </tr>
                     {% endif %}
                 {% endfor %}
+                {% if _key == 0 %}
+                    <tr id="block_settings">
+                        <td class="sonata-ba-list-label">{{ 'admin.settings'|trans }}</td>
+                        <td>
+                            <a href="{{ url('admin_settings_edit', {id: '1'}) }}"
+                               class="btn edit_link btn-small"
+                               title="action_edit">
+                                <i class="icon-edit"></i>
+                                {% trans from 'SonataAdminBundle' %}action_edit{% endtrans -%}
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
     {% endfor %}
