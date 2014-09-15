@@ -6,3 +6,5 @@ fos_oauth_server:
     auth_code_class:     CreditJeeves\DataBundle\Entity\AuthCode
     service:
         user_provider: user.user_provider
+        options:
+            enforce_redirect: false

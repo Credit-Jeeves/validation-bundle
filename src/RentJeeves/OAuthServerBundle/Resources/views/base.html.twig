@@ -1,0 +1,62 @@
+{% extends "RjCoreBundle::rj_base.html.twig" %}
+
+{% block stylesheets %}
+    {% stylesheets '@ComponentBundle/Resources/public/css/*'
+                   '@RjComponentBundle/Resources/public/css/*'
+                   '@CoreBundle/Resources/public/css/rj-logos.css'
+                   '@CoreBundle/Resources/public/css/tabs.css'
+                   '@UserBundle/Resources/public/css/login.css'
+                   '@CoreBundle/Resources/public/css/google-maps.css'
+                   '@CoreBundle/Resources/public/css/check.css'
+                   '@CoreBundle/Resources/public/css/datepicker.css'
+                   '@CoreBundle/Resources/public/css/styles.css'
+                   '@CoreBundle/Resources/public/css/pricing-popup.css'
+                   '@RjPublicBundle/Resources/public/css/footer.css'
+                   '@CoreBundle/Resources/public/css/landlord.css'
+                   '@RjPublicBundle/Resources/public/css/base-font.css'
+     %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+    <script src="{{ asset('bundles/core/js/less.min.js') }}"></script>
+    <script src="{{ asset('bundles/core/js/datepicker.js') }}"></script>
+{% endblock %}
+
+{% block alert %}
+    {{ render(controller('RjComponentBundle:Alert:index')) }}
+{% endblock %}
+
+
+{% block google_api %}
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
+{% endblock %}
+
+{% block select %}
+    {% if nGroups is defined and nGroups > 1 %}
+        {{ render(controller('ComponentBundle:Groups:index')) }}
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+    {{ render(controller('RjComponentBundle:Footer:index')) }}
+{% endblock %}
+
+{% block head_javascripts %}
+    {% javascripts '@RjCoreBundle/Resources/public/js/formProcess.js'
+                   '@RjCoreBundle/Resources/public/js/user-voice.js'
+                   '@LandlordBundle/Resources/public/js/accountingImport.js'
+                   '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {% javascripts  '@CoreBundle/Resources/public/js/less.min.js'
+                    '@CoreBundle/Resources/public/js/datepicker.js'
+                    '@ComponentBundle/Resources/public/js/groups.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+

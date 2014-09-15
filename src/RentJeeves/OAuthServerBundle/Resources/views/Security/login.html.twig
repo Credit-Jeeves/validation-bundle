@@ -1,0 +1,116 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {% stylesheets
+        '@UserBundle/Resources/public/css/login.css'
+        '@ComponentBundle/Resources/public/css/footer.css'
+        '@UserBundle/Resources/public/css/jquery.reject.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+{% block head_javascripts %}
+    {% if 'rj' == application %}
+        {{ include(
+        'RjComponentBundle:Blocks:reject.html.twig'
+        ) }}
+    {% else %}
+         {% javascripts
+         '@UserBundle/Resources/public/js/jquery.reject.min.js'
+         '@UserBundle/Resources/public/js/reject.js'
+         %}
+         <script type="text/javascript" src="{{ asset_url }}"></script>
+         {% endjavascripts %}
+    {% endif %}
+{% endblock %}
+
+{% block fos_user_content %}
+    <div class="form-login pod-border shadow floatleft{% if 'rj' == application %} login-block"  style="width: 650px"{% else %}"{% endif %}>
+        <h1>{{ 'login.title' | trans }} TEST</h1>
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+            <div class="row-20"></div>
+                <div class="flash-notice">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+            {% for flashMessage in app.session.flashbag.get('defense') %}
+            <div class="row-20"></div>
+                <div class="login-error">
+                    {{ flashMessage|trans }}
+                </div>
+            {% endfor %}
+            {% for flashMessage in app.session.flashbag.get('error') %}
+            <div class="row-20"></div>
+                <div class="login-error">
+                    {{ flashMessage|trans }}
+                </div>
+            {% endfor %}
+            <form action="{{ path("oauth_server_login_check") }}" method="post" id="login_form">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+            <table class="form-table">
+                {% if error %}
+                    <tr>
+                        <td colspan="2">
+                            <div class="login-error">{{ error|trans({}, 'FOSUserBundle') }}</div>
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td class="align-right"><label class="login-label" for="username">{{ 'login.email' | trans }}</label></td>
+                    <td>
+                        <input class="login-input"
+                               type="text"
+                               id="username"
+                               name="_username"
+                               value="{{ last_username }}"
+                               required="required"
+                               autocomplete="off"
+                                />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="align-right"><label class="login-label" for="password">{{ 'login.password' | trans }}</label>
+                    </td>
+                    <td><input autocomplete="off" class="login-input" type="password" id="password" name="_password" required="required"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input class="button large green"
+                               type="submit"
+                               id="_submit"
+                               name="_submit"
+                               value="{{ 'login.submit' | trans }}"
+                                />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input id="remember_me" name="_remember_me" type="checkbox" value="1">
+                        <div class="checkbox-label" for="remember_me">{{ 'login.remember' | trans }}</div>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+    {% if 'rj' == application %}
+    <div class="create-block-logins floatleft">
+        <h2>{{ 'login.new_user_question' | trans }}</h2>
+        <a id="create-user" href="{{ path('iframe_new') }}">» {{ 'login.create_user' | trans }} </a>
+    </div>
+    {% endif %}
+    {% if 'cj' == application %}
+    <div class="business-logins floatleft">
+        <h2>Business Logins:</h2>
+        <a href="/dealer.php">» {{ 'login.dealership' | trans }} </a>
+    </div>
+    {% endif %}
+    <div class="clearboth"></div>
+    <p class="login-pod-footer">
+        {{ 'resetting.title' | trans }}
+        <a href="{{ path('fos_user_resetting_request') }}">» {{ 'login.resetting.link' | trans }} </a>
+    </p>
+{% endblock fos_user_content %}

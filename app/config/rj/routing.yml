@@ -124,3 +124,14 @@ rest_api :
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /documentation/api
+
+fos_oauth_server_token:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
+
+fos_oauth_server_authorize:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
+
+oauth_server_security:
+    resource: "@OAuthServerBundle/Controller/SecurityController.php"
+    type:     annotation
+    prefix:   /
