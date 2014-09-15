@@ -288,6 +288,7 @@ abstract class AbstractClient implements SoapClientInterface
             }
 
             $responce = $this->soapClient->__soapCall($function, $params);
+            $this->debugMessage($this->soapClient->__getLastRequest());
             $resultXmlResponse = $this->processXmlResponse($responce, $function);
             if ($resultXmlResponse) {
                 return $resultXmlResponse;

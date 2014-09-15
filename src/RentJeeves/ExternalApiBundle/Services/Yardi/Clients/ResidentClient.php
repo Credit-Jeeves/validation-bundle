@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionLoginResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
 
 class ResidentClient extends AbstractClient
@@ -11,6 +12,10 @@ class ResidentClient extends AbstractClient
         'GetPropertyConfigurations' => array(
             self::MAPPING_FIELD_STD_CLASS    => 'GetPropertyConfigurationsResult',
             self::MAPPING_DESERIALIZER_CLASS => 'GetPropertyConfigurationsResponse',
+        ),
+        'GetResidentTransactions_Login' => array(
+            self::MAPPING_FIELD_STD_CLASS    => 'GetResidentTransactions_LoginResult',
+            self::MAPPING_DESERIALIZER_CLASS => 'GetResidentTransactionsLoginResponse',
         ),
     );
 
@@ -29,6 +34,23 @@ class ResidentClient extends AbstractClient
 
         return $this->processRequest(
             'GetPropertyConfigurations',
+            $parameters
+        );
+    }
+
+    public function getResidentTransactions($propertyId)
+    {
+        $parameters = array(
+            'GetResidentTransactions_Login' => array_merge(
+                $this->getLoginCredentials(),
+                [
+                    'YardiPropertyId' => $propertyId
+                ]
+            )
+        );
+
+        return $this->processRequest(
+            'GetResidentTransactions_Login',
             $parameters
         );
     }

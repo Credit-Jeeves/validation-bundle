@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyRepository extends EntityRepository
 {
@@ -245,5 +246,23 @@ EOT;
         $query->addOrderBy('p.number', 'ASC');
 
         return $query;
+    }
+
+    public function findContractPropertiesByHolding(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->innerJoin('p.contracts', 'c');
+        $query->innerJoin('p.propertyMapping', 'pm');
+
+        $query->where('c.status = :current');
+        $query->andWhere('pm.holding = :holdingId');
+
+        $query->groupBy('p.id');
+
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('holdingId', $holding->getId());
+        $query = $query->getQuery();
+
+        return $query->execute();
     }
 }
