@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Soap;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Message;
 
 /**
  * @Serializer\XmlRoot("Messages")
@@ -11,20 +12,20 @@ class Messages
 {
     /**
      * @Serializer\SerializedName("Message")
-     * @Serializer\Type("string")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Message")
      */
     protected $message;
 
     /**
-     * @param mixed $message
+     * @param Message $message
      */
-    public function setMessage($message)
+    public function setMessage(Message $message)
     {
         $this->message = $message;
     }
 
     /**
-     * @return mixed
+     * @return Message
      */
     public function getMessage()
     {

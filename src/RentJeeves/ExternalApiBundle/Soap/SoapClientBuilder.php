@@ -7,7 +7,7 @@ use RentJeeves\ExternalApiBundle\Soap\SoapClient as Client;
 
 class SoapClientBuilder extends Base
 {
-    protected static $isBuild = false;
+    protected $isBuild = false;
 
     /**
      * @var SoapWsdlTwigRenderer
@@ -46,8 +46,8 @@ class SoapClientBuilder extends Base
      */
     public function build()
     {
-        if (static::$isBuild === false) {
-            static::$isBuild = true;
+        if ($this->isBuild === false) {
+            $this->isBuild = true;
             return $this;
         }
         $this->validateOptions();

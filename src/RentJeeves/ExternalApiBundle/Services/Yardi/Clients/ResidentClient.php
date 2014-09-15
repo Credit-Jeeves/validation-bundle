@@ -7,6 +7,13 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
 
 class ResidentClient extends AbstractClient
 {
+    protected $mapping = array(
+        'GetPropertyConfigurations' => array(
+            self::MAPPING_FIELD_STD_CLASS    => 'GetPropertyConfigurationsResult',
+            self::MAPPING_DESERIALIZER_CLASS => 'GetPropertyConfigurationsResponse',
+        ),
+    );
+
     /**
      * This method don't need any parameters, from outside
      * so it can be used for checking login
@@ -21,9 +28,7 @@ class ResidentClient extends AbstractClient
 
         return $this->processRequest(
             'GetPropertyConfigurations',
-            $parameters,
-            'GetPropertyConfigurationsResult',
-            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse'
+            $parameters
         );
     }
 }

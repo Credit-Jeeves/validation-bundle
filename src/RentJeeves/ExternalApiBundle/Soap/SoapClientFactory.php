@@ -14,13 +14,14 @@ class SoapClientFactory
         $this->container = $container;
     }
 
-    public function getClient(SoapSettingsInterface $settings, $type)
+    public function getClient(SoapSettingsInterface $settings, $type, $debug = false)
     {
         if (!in_array($type, SoapClientEnum::all())) {
             throw new Exception("Such client({$type}) does not exist");
         }
 
         $client = $this->container->get($type);
+        $client->setDebug($debug);
         $client->setSettings($settings);
         $client->build();
         return $client;

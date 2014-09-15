@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\ExternalApiBundle\Services\SoapClientInterface;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Message;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientBuilder;
 use RentJeeves\ExternalApiBundle\Soap\SoapSettingsInterface;
@@ -16,6 +17,10 @@ use \AppRjKernel as Kernel;
 
 abstract class AbstractClient implements SoapClientInterface
 {
+    const MAPPING_DESERIALIZER_CLASS = 'class';
+
+    const MAPPING_FIELD_STD_CLASS = 'field';
+
     /**
      * @var string
      */
@@ -61,7 +66,36 @@ abstract class AbstractClient implements SoapClientInterface
      */
     protected $messages;
 
+    /**
+     * @var Kernel
+     */
     protected $kernel;
+
+    /**
+     * @var boolean
+     */
+    protected $debug = false;
+
+    /**
+     * @var array
+     */
+    protected $mapping = array();
+
+    /**
+     * @var array
+     */
+    protected $errorMapping = array(
+        "0"  => 'Could not open charge batch',
+        "-1" => 'Web service user can insuffient rights',
+        "-2" => 'Interface Entity does not have access to Yardi Property',
+        "-3" => 'Interface Entity or License Error',
+        "-4" => 'Login Failed',
+    );
+
+    /**
+     * @var string
+     */
+    protected $pathToSoapClass;
 
     /**
      * @param SoapClient $soapClient
@@ -73,7 +107,8 @@ abstract class AbstractClient implements SoapClientInterface
         Serializer $serializer,
         Kernel $kernel,
         $entity,
-        $license
+        $license,
+        $pathToSoapClasses
     ) {
         $this->soapClientBuilder = $soapClientBuilder;
         $this->entity = $entity;
@@ -82,6 +117,17 @@ abstract class AbstractClient implements SoapClientInterface
         $this->exceptionCatcher = $exceptionCatcher;
         $this->serializer = $serializer;
         $this->kernel = $kernel;
+        $this->pathToSoapClass = $pathToSoapClasses;
+    }
+
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+    }
+
+    public function isDebugEnabled()
+    {
+        return $this->debug;
     }
 
     public function build()
@@ -137,30 +183,62 @@ abstract class AbstractClient implements SoapClientInterface
     }
 
     /**
-     * @param null $xml
+     * @param string|integer $response
      * @return bool
      */
-    public function isError($xml = null)
+    public function isNumericError($response)
     {
-        if (is_null($xml)) {
-            if ($this->messages) {
-                return true;
-            }
+        $this->debugMessage($response);
+        settype($response, 'string');
 
-            return false;
-        }
-
-        $this->messages = $this->serializer->deserialize(
-            $xml,
-            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages',
-            'xml'
-        );
-
-        if (!is_null($this->messages->getMessage())) {
+        if (isset($this->errorMapping[$response])) {
+            $this->setErrorMessage($this->errorMapping[$response]);
             return true;
         }
 
+        return false;
+    }
+
+    /**
+     * @param string $response
+     *
+     * @return bool
+     */
+    public function isXmlError($response)
+    {
+        $this->messages = $this->serializer->deserialize(
+            $response,
+            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages',
+            'xml'
+        );
+        if (empty($this->messages)) {
+            return false;
+        }
+        $this->debugMessage($this->messages);
+        /**
+         * @var $message Message
+         */
+        $message = $this->messages->getMessage();
+        if (empty($message)) {
+            return false;
+        }
+
+        if (in_array($message->getMessageType(), array('Error', 'Warning'))) {
+            return true;
+        };
         $this->messages = null;
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isError()
+    {
+        if ($this->messages) {
+            return true;
+        }
 
         return false;
     }
@@ -171,63 +249,143 @@ abstract class AbstractClient implements SoapClientInterface
     public function getErrorMessage()
     {
         if ($this->messages) {
-            return $this->messages->getMessage();
+            return $this->messages->getMessage()->getMessage();
         }
 
         return null;
     }
 
+    /**
+     * @param string $messageString
+     */
+    public function setErrorMessage($messageString)
+    {
+        $this->debugMessage($messageString);
+        $messages = new Messages();
+        $message = new Message();
+        $message->setMessage($messageString);
+        $messages->setMessage($message);
+        $this->messages = $messages;
+    }
 
     /**
      * @param string $function
      * @param array $params
-     * @param string $deserializeClass
      *
      * @return mixed
      */
-    protected function processRequest(
-        $function,
-        array $params,
-        $responseField = null,
-        $deserializeClass = null
-    ) {
+    protected function processRequest($function, array $params)
+    {
         try {
+            $this->messages = null;
+            if (!isset($this->mapping[$function])) {
+                throw new Exception(
+                    sprintf(
+                        "Don't have mapping for function: %s",
+                        $function
+                    )
+                );
+            }
+
             $responce = $this->soapClient->__soapCall($function, $params);
-
-            //When response is xml
-            if (isset($responce->$responseField->any)) {
-                $xml = $responce->$responseField->any;
-                $xml = '<?xml version="1.0" encoding="UTF-8"?>'.$xml;
-            //When response just string or integer
-            } elseif (isset($responce->$responseField)) {
-                return $responce->$responseField;
-            } else {
-                throw new Exception("Bad Response: ".$this->soapClient->__getLastResponse());
+            $resultXmlResponse = $this->processXmlResponse($responce, $function);
+            if ($resultXmlResponse) {
+                return $resultXmlResponse;
             }
 
-            if (!isset($xml)) {
-                return $responce;
+            if ($this->isError()) {
+                return null;
+            }
+            $resultNumericResponse = $this->processNumericResponse($responce, $function);
+            if ($resultNumericResponse) {
+                return $resultNumericResponse;
             }
 
-            if ($this->isError($xml)) {
+            if ($this->isError()) {
                 return null;
             }
 
-            if (empty($deserializeClass)) {
-                return $xml;
-            }
-            $result = $this->serializer->deserialize(
-                $xml,
-                $deserializeClass,
-                'xml'
+            throw new Exception(
+                sprintf(
+                    "Bad Response: %s",
+                    $this->soapClient->__getLastResponse()
+                )
             );
-            return $result;
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
-            $this->messages = new Messages();
-            $this->messages->setMessage($e->getMessage());
+            $this->setErrorMessage($e->getMessage());
+            $this->debugMessage($e->getMessage());
         }
 
         return null;
+    }
+
+    /**
+     * @param $responce
+     * @param $function
+     *
+     * @return null|integer
+     */
+    protected function processNumericResponse($responce, $function)
+    {
+        $responseField = $this->mapping[$function][self::MAPPING_FIELD_STD_CLASS];
+        if (isset($responce->$responseField) && !$this->isNumericError($responce->$responseField)) {
+            return $responce->$responseField;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $response
+     * @param $function
+     *
+     * @return mixed|null|string
+     */
+    protected function processXmlResponse($response, $function)
+    {
+        $responseField = $this->mapping[$function][self::MAPPING_FIELD_STD_CLASS];
+        $deserializeClass = $this->mapping[$function][self::MAPPING_DESERIALIZER_CLASS];
+
+        $this->debugMessage($response);
+        if (!isset($response->$responseField->any) || empty($deserializeClass)) {
+            return null;
+        }
+
+        $xml = $response->$responseField->any;
+        $xml = $this->getXmlHeader().$xml;
+
+        if ($this->isXmlError($xml)) {
+            return null;
+        }
+
+        $deserializeClass = $this->pathToSoapClass.$deserializeClass;
+
+        return $this->serializer->deserialize(
+            $xml,
+            $deserializeClass,
+            'xml'
+        );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getXmlHeader()
+    {
+        return '<?xml version="1.0" encoding="UTF-8"?>';
+    }
+
+    /**
+     * @param $var
+     */
+    protected function debugMessage($var)
+    {
+        if (!$this->isDebugEnabled()) {
+            return;
+        }
+        echo "\n";
+        var_dump($var);
+        echo "\n";
     }
 }

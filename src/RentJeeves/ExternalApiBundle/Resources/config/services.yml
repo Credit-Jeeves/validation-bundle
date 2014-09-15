@@ -19,6 +19,7 @@ services:
             - "@kernel"
             - "%soap.api.yardi.entity%"
             - "%soap.api.yardi.license%"
+            - "%soap.api.yardi.path_to_classes%"
     soap.client.yardi.resident:
         class:            "%soap.client.yardi.resident.class%"
         arguments:
@@ -29,4 +30,5 @@ services:
             - "@kernel"
             - "%soap.api.yardi.entity%"
             - "%soap.api.yardi.license%"
+            - "%soap.api.yardi.path_to_classes%"
 
