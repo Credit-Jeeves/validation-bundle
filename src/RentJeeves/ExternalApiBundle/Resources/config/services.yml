@@ -1,8 +1,8 @@
 parameters:
-    besimple.soap.client.builder.class: "RentJeeves\ExternalApiBundle\Soap\SoapClientBuilder"
-    soap.client.factory.class: "RentJeeves\ExternalApiBundle\Soap\SoapClientFactory"
-    soap.client.yardi.payment.class: "RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient"
-    soap.client.yardi.resident.class: "RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient"
+    besimple.soap.client.builder.class: 'RentJeeves\ExternalApiBundle\Soap\SoapClientBuilder'
+    soap.client.factory.class: 'RentJeeves\ExternalApiBundle\Soap\SoapClientFactory'
+    soap.client.yardi.payment.class:  'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient'
+    soap.client.yardi.resident.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient'
 
 services:
     soap.client.factory:

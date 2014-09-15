@@ -22,11 +22,8 @@ class ResidentClient extends AbstractClient
         return $this->processRequest(
             'GetPropertyConfigurations',
             $parameters,
+            'GetPropertyConfigurationsResult',
             'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse'
         );
-    }
-
-    public function getResidentData()
-    {
     }
 }

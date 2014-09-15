@@ -23,7 +23,6 @@ class SoapClientFactory
         $client = $this->container->get($type);
         $client->setSettings($settings);
         $client->build();
-
         return $client;
     }
 }

@@ -2,13 +2,40 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
+use RentJeeves\CoreBundle\DateTime;
+
 class PaymentClient extends AbstractClient
 {
-    public function pushPaymentBatch()
-    {
-    }
+    /**
+     * @param DateTime $depositDate
+     * @param string $yardiPropertyId
+     * @param null $batchDescription
+     * @param null $DepositMemo
+     * @return mixed
+     */
+    public function openReceiptBatchDepositDate(
+        DateTime $depositDate,
+        $yardiPropertyId,
+        $batchDescription = null,
+        $DepositMemo = null
+    ) {
 
-    public function pushReversedPayment()
-    {
+        $parameters = array(
+            'OpenReceiptBatch_DepositDate' => array_merge(
+                $this->getLoginCredentials(),
+                array(
+                    'YardiPropertyId'   => $yardiPropertyId,
+                    'BatchDescription'  => $batchDescription,
+                    'DepositDate'       => $depositDate,
+                    'DepositMemo'       => $DepositMemo
+                )
+            ),
+        );
+
+        return $this->processRequest(
+            'OpenReceiptBatch_DepositDate',
+            $parameters,
+            'OpenReceiptBatch_DepositDateResult'
+        );
     }
 }

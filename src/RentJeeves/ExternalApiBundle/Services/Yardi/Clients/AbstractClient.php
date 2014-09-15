@@ -183,24 +183,39 @@ abstract class AbstractClient implements SoapClientInterface
      * @param array $params
      * @param string $deserializeClass
      *
-     * @return null|class
+     * @return mixed
      */
-    protected function processRequest($function, array $params, $deserializeClass)
-    {
+    protected function processRequest(
+        $function,
+        array $params,
+        $responseField = null,
+        $deserializeClass = null
+    ) {
         try {
             $responce = $this->soapClient->__soapCall($function, $params);
 
-            if (isset($responce->GetPropertyConfigurationsResult->any)) {
-                $xml = $responce->GetPropertyConfigurationsResult->any;
+            //When response is xml
+            if (isset($responce->$responseField->any)) {
+                $xml = $responce->$responseField->any;
                 $xml = '<?xml version="1.0" encoding="UTF-8"?>'.$xml;
+            //When response just string or integer
+            } elseif (isset($responce->$responseField)) {
+                return $responce->$responseField;
             } else {
                 throw new Exception("Bad Response: ".$this->soapClient->__getLastResponse());
+            }
+
+            if (!isset($xml)) {
+                return $responce;
             }
 
             if ($this->isError($xml)) {
                 return null;
             }
 
+            if (empty($deserializeClass)) {
+                return $xml;
+            }
             $result = $this->serializer->deserialize(
                 $xml,
                 $deserializeClass,
