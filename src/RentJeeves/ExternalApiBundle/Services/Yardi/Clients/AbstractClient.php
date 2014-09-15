@@ -12,6 +12,7 @@ use Exception;
 use RentJeeves\ExternalApiBundle\Soap\SoapWsdlTwigRenderer;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
+use \AppRjKernel as Kernel;
 
 abstract class AbstractClient implements SoapClientInterface
 {
@@ -60,6 +61,8 @@ abstract class AbstractClient implements SoapClientInterface
      */
     protected $messages;
 
+    protected $kernel;
+
     /**
      * @param SoapClient $soapClient
      */
@@ -68,6 +71,7 @@ abstract class AbstractClient implements SoapClientInterface
         SoapClientBuilder $soapClientBuilder,
         ExceptionCatcher $exceptionCatcher,
         Serializer $serializer,
+        Kernel $kernel,
         $entity,
         $license
     ) {
@@ -77,6 +81,7 @@ abstract class AbstractClient implements SoapClientInterface
         $this->license = $license;
         $this->exceptionCatcher = $exceptionCatcher;
         $this->serializer = $serializer;
+        $this->kernel = $kernel;
     }
 
     public function build()
@@ -125,11 +130,10 @@ abstract class AbstractClient implements SoapClientInterface
      */
     protected function getLicense()
     {
-        $currentFolder = dirname(__FILE__);
-        $licensePath = $currentFolder.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..';
-        $licensePath .= DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'files'.DIRECTORY_SEPARATOR.$this->license;
-
-        return file_get_contents($licensePath);
+        $path = $this->kernel->locateResource(
+            '@ExternalApiBundle/Resources/files/'.$this->license
+        );
+        return file_get_contents($path);
     }
 
     /**

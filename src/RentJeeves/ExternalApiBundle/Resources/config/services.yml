@@ -16,6 +16,7 @@ services:
             - "@besimple.soap.client.yardi_payment"
             - "@fp_badaboom.exception_catcher"
             - "@jms_serializer"
+            - "@kernel"
             - "%soap.api.yardi.entity%"
             - "%soap.api.yardi.license%"
     soap.client.yardi.resident:
@@ -25,6 +26,7 @@ services:
             - "@besimple.soap.client.yardi_resident"
             - "@fp_badaboom.exception_catcher"
             - "@jms_serializer"
+            - "@kernel"
             - "%soap.api.yardi.entity%"
             - "%soap.api.yardi.license%"
 
