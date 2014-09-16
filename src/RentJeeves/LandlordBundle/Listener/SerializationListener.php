@@ -56,9 +56,7 @@ class SerializationListener implements EventSubscriberInterface
          */
         $operation = $event->getObject();
         $operation->initDetails(
-            $this->reportOrder->getPropertyId(),
-            $this->reportOrder->getAccountId(),
-            $this->reportOrder->getArAccountId()
+            $this->reportOrder->getPropertyId()
         );
         $operation->setPropertyId($this->reportOrder->getPropertyId());
     }

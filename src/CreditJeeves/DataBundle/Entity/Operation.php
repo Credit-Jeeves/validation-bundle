@@ -48,12 +48,10 @@ class Operation extends Base
         return array($this->details);
     }
 
-    public function initDetails($propertyId, $accountId, $arAccountId)
+    public function initDetails($propertyId)
     {
         $detail = new Detail();
-        $detail->setAccountId($accountId);
         $detail->setPropertyId($propertyId);
-        $detail->setArAccountId($arAccountId);
         $detail->setAmount($this->getAmount());
         $detail->setNotes($this->getCreatedAt());
         $this->details = $detail;
@@ -73,7 +71,7 @@ class Operation extends Base
      */
     public function getActualPaymentTransactionDate()
     {
-        return $this->getOrder()->getHeartlandTransaction()->getDepositDate()->format('Y-m-d\TH:i:s');
+        return $this->getOrder()->getCreatedAt()->format('Y-m-d\TH:i:s');
     }
 
     /**
