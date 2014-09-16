@@ -409,7 +409,7 @@ class Operation extends Base
                 return 'NSF';
         }
 
-        return self::NOT_AVAILABLE;
+        return null;
     }
 
     /**

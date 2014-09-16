@@ -75,53 +75,6 @@ class ExportCase extends BaseTestCase
     }
 
     /**
-     * test
-     */
-    public function reversalYardiXmlFormat()
-    {
-        $this->goToYardiReport();
-
-        $date = new DateTime('-27 days');
-        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
-        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
-
-        $begin->setValue($date->format('m/d/Y'));
-        $end->setValue($date->format('m/d/Y'));
-
-        $this->page->pressButton('order.report.download');
-
-        $xml = $this->page->getContent();
-        $doc = new SimpleXMLElement($xml);
-
-        $this->assertNotNull($receipts = $doc->Receipts);
-        $this->assertNotNull($receipt = $receipts->Receipt);
-        $this->assertNotNull($date = $receipt->Date);
-        $this->assertNotNull($totalAmount = $receipt->TotalAmount);
-        $this->assertNotNull($isCash = $receipt->IsCash);
-        $this->assertNotNull($checkNumber = $receipt->CheckNumber);
-        $this->assertNotNull($notes = $receipt->Notes);
-        $this->assertNotNull($propertyId = $receipt->PropertyId);
-        $this->assertNotNull($payerName = $receipt->PayerName);
-        $this->assertNotNull($personId = $receipt->PersonId);
-        $this->assertNotNull($postMonth = $receipt->PostMonth);
-        $this->assertNull($details = $receipt->Details->Detail);
-
-        $this->assertNotNull($batchId = $receipt->BatchId);
-        $this->assertNotNull($originalReceiptDate = $receipt->OriginalReceiptDate);
-        $this->assertNotNull($returnType = $receipt->ReturnType);
-
-        $this->assertEquals(100, (int) $receipt->PropertyId);
-
-        $this->assertEquals('700.00', (string) $totalAmount);
-        $this->assertEquals('false', (string) $isCash);
-        $this->assertEquals('PMTCRED 55123260', (string) $checkNumber);
-        $this->assertEquals('FGDTRFG-44', (string) $personId);
-        $this->assertEquals('Reverse for Trans ID 55123260', (string) $notes);
-        $this->assertEquals('Reverse', (string) $returnType);
-        $this->assertEquals('0', (string) $batchId);
-    }
-
-    /**
      * @test
      */
     public function completeYardiXmlFormat()
@@ -153,9 +106,9 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($postMonth = $receipt->PostMonth);
         $this->assertNull($details = $receipt->Details->Detail);
 
-        $this->assertTrue(!isset($receipt->BatchId));
-        $this->assertTrue(!isset($receipt->OriginalReceiptDate));
-        $this->assertTrue(!isset($receipt->ReturnType));
+        $this->assertTrue(isset($receipt->BatchId));
+        $this->assertTrue(isset($receipt->OriginalReceiptDate));
+        $this->assertTrue(isset($receipt->ReturnType));
 
         $this->assertEquals(100, (int) $receipt->PropertyId);
 
@@ -216,7 +169,7 @@ class ExportCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function promasCsvFormat()
     {
