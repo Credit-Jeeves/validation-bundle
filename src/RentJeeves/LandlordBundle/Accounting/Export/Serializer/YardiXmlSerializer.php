@@ -37,8 +37,8 @@ class YardiXmlSerializer implements ExportSerializerInterface
         $context->setGroups('xmlReport');
 
         $strategy = new SkipPropertyExclusionStrategy(
-            ['BatchId', 'ReturnType', 'OriginalReceiptDate', 'Details'],
-            array(Operation::NOT_AVAILABLE, null),
+            ['Details'],
+            array(null),
             true
         );
 
