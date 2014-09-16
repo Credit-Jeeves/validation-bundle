@@ -294,10 +294,9 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals(ContractStatus::FINISHED, $contractEnded->getStatus());
         $this->assertEquals('03/01/2011', $contractEnded->getFinishAt()->format('m/d/Y'));
-
+        //For match contract we don't need check startAt because it's not updated
         $this->assertEquals('1190', $contractMatch->getRent());
         $this->assertEquals('0', $contractMatch->getIntegratedBalance());
-        $this->assertEquals('09/12/2014', $contractMatch->getStartAt()->format('m/d/Y'));
         $this->assertEquals('10/21/2016', $contractMatch->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractMatch->getStatus());
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
