@@ -9,7 +9,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 class DashboardCase extends BaseTestCase
 {
     /**
-     * @test
+     * test
      */
     public function sort()
     {
@@ -82,13 +82,13 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (40)', $allh2->getHtml(), 'Wrong count');
+        $this->assertEquals('payments.total (41)', $allh2->getHtml(), 'Wrong count');
 
         $this->logout();
     }
 
     /**
-     * @test
+     * test
      */
     public function groupByDeposit()
     {
@@ -119,7 +119,7 @@ class DashboardCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function returnedRefundedFilter()
     {
