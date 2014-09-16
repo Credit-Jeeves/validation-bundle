@@ -115,9 +115,7 @@ class OperationRepository extends EntityRepository
         $query->andWhere('resident.holding = :holding');
         $query->andWhere('ord.status IN (:statuses)');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
-        $query->andWhere(
-            '(ord.status = :completeOrder AND heartland.status = :completeTransaction)'
-        );
+        $query->andWhere('heartland.status = :completeTransaction');
         $query->orderBy('ord.id', 'ASC');
 
         $query->setParameter('end', $end);
@@ -127,7 +125,6 @@ class OperationRepository extends EntityRepository
         $query->setParameter('start', $start);
         $query->setParameter('property', $property);
         $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
         $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
 
         $query = $query->getQuery();
