@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
+use SoapVar;
 
 class PaymentClient extends AbstractClient
 {
@@ -14,6 +15,10 @@ class PaymentClient extends AbstractClient
         ),
         'PostReceiptBatch' => array(
             self::MAPPING_FIELD_STD_CLASS       => 'PostReceiptBatchResult',
+            self::MAPPING_DESERIALIZER_CLASS    => 'Messages',
+        ),
+        'AddReceiptsToBatch' => array(
+            self::MAPPING_FIELD_STD_CLASS       => 'AddReceiptsToBatchResult',
             self::MAPPING_DESERIALIZER_CLASS    => 'Messages',
         ),
     );
@@ -32,7 +37,7 @@ class PaymentClient extends AbstractClient
         $batchDescription = null,
         $depositMemo = null
     ) {
-
+        $this->debugMessage('Run OpenReceiptBatch_DepositDate');
         $parameters = array(
             'OpenReceiptBatch_DepositDate' => array_merge(
                 $this->getLoginCredentials(),
@@ -58,6 +63,7 @@ class PaymentClient extends AbstractClient
      */
     public function closeReceiptBatch($batchId)
     {
+        $this->debugMessage('Run PostReceiptBatch');
         $parameters = array(
             'PostReceiptBatch' => array_merge(
                 $this->getLoginCredentials(),
@@ -77,5 +83,30 @@ class PaymentClient extends AbstractClient
         }
 
         return false;
+    }
+
+    /**
+     * @param $batchId
+     * @param $xml
+     *
+     * @return mixed
+     */
+    public function addReceiptsToBatch($batchId, $xml)
+    {
+        $this->debugMessage('Run AddReceiptsToBatch');
+        $parameters = array(
+            'AddReceiptsToBatch' => array_merge(
+                $this->getLoginCredentials(),
+                array(
+                    'BatchId'           => $batchId,
+                    'TransactionXml'    => new SoapVar($xml, 147),
+                )
+            ),
+        );
+
+        return $this->processRequest(
+            'AddReceiptsToBatch',
+            $parameters
+        );
     }
 }

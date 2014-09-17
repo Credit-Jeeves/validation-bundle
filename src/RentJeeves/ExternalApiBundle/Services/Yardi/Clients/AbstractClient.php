@@ -296,6 +296,7 @@ abstract class AbstractClient implements SoapClientInterface
             if ($this->isError()) {
                 return null;
             }
+
             $resultNumericResponse = $this->processNumericResponse($responce, $function);
             if ($resultNumericResponse) {
                 return $resultNumericResponse;
@@ -387,5 +388,30 @@ abstract class AbstractClient implements SoapClientInterface
         echo "\n";
         var_dump($var);
         echo "\n";
+    }
+
+    public function getFullResponse($show = true)
+    {
+        return $this->getSoapData('__getLastResponse', $show);
+    }
+
+    public function getFullRequest($show = true)
+    {
+        return $this->getSoapData('__getLastRequest', $show);
+    }
+
+    protected function getSoapData($method, $show)
+    {
+        $methodHeader = $method.'Headers';
+        $request = array(
+            'header' => $this->soapClient->$methodHeader(),
+            'body'   => $this->soapClient->$method()
+        );
+
+        if ($show) {
+            print_r($request);
+        }
+        
+        return $request;
     }
 }

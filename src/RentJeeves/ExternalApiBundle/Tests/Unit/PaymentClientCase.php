@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Unit;
 
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Tests\Unit\BaseClientCase as Base;
 
@@ -39,6 +40,33 @@ class PaymentClientCase extends Base
     /**
      * @test
      * @depends openReceiptBatchDepositDate
+     */
+    public function addReceiptsToBatch()
+    {
+        $kernel = $this->getKernel();
+        $path = $kernel->locateResource(
+            '@ExternalApiBundle/Resources/fixtures/receipt_push_sample.xml'
+        );
+        $xml = file_get_contents($path);
+        /**
+         * @var $result Messages
+         */
+        $result = self::$client->addReceiptsToBatch(
+            self::$batchId,
+            file_get_contents($path)
+        );
+
+        if (self::$client->isError()) {
+            $this->assertFalse(true, self::$client->getErrorMessage());
+        }
+
+        $this->assertEquals('1 Receipts were added to Batch '.self::$batchId, $result->getMessage()->getMessage());
+    }
+
+
+    /**
+     * @test
+     * @depends addReceiptsToBatch
      */
     public function closeReceiptBatch()
     {

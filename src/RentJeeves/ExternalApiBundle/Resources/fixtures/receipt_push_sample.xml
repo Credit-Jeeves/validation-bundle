@@ -1,0 +1,22 @@
+<ns1:TransactionXml>
+    <ResidentTransactions>
+        <Property>
+            <RT_Customer>
+                <RTServiceTransactions>
+                    <Transactions>
+                        <Payment Type="Check">
+                            <Detail>
+                                <DocumentNumber>444</DocumentNumber>
+                                <TransactionDate>2014-05-23</TransactionDate>
+                                <CustomerID>t0012027</CustomerID>
+                                <Amount>1300.00</Amount>
+                                <Comment>Test payment</Comment>
+                                <PropertyPrimaryID>rnttrk01</PropertyPrimaryID>
+                            </Detail>
+                        </Payment>
+                    </Transactions>
+                </RTServiceTransactions>
+            </RT_Customer>
+        </Property>
+    </ResidentTransactions>
+</ns1:TransactionXml>

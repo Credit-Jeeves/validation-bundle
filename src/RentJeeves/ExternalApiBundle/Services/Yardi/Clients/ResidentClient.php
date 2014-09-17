@@ -22,6 +22,7 @@ class ResidentClient extends AbstractClient
      */
     public function getPropertyConfigurations()
     {
+        $this->debugMessage('Run getPropertyConfigurations');
         $parameters = array(
             'GetPropertyConfigurations' => $this->getLoginCredentials()
         );
