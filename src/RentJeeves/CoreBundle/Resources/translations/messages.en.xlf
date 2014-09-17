@@ -2578,6 +2578,10 @@
                 <source>transaction.status.text.reversed</source>
                 <target>REVERSED</target>
             </trans-unit>
+            <trans-unit id="deposit.date.range">
+                <source>deposit.date.range</source>
+                <target>Deposit Date Range:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

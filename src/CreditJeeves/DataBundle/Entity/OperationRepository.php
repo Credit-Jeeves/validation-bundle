@@ -64,8 +64,9 @@ class OperationRepository extends EntityRepository
         $query->innerJoin("operation.order", "ord");
         $query->innerJoin("operation.contract", "contract");
         $query->innerJoin("contract.tenant", "tenant");
+        $query->innerJoin("ord.heartlands", "heartland");
         $query->where("tenant.id = :tenant");
-        $query->andWhere("ord.status = :status");
+        $query->andWhere("ord.status = :complete");
         $query->andWhere("operation.amount = :amount");
         $query->andWhere("contract.id = :contract");
         $query->andWhere("MONTH(operation.paidFor) = :paidForMonth");
@@ -76,7 +77,7 @@ class OperationRepository extends EntityRepository
         $query->setParameter("paidForMonth", $paidFor->format("n"));
         $query->setParameter("paidForYear", $paidFor->format("Y"));
         $query->setParameter("tenant", $tenant->getId());
-        $query->setParameter("status", OrderStatus::COMPLETE);
+        $query->setParameter("complete", OrderStatus::COMPLETE);
 
         $query->setMaxResults(1);
         $query = $query->getQuery();
@@ -107,15 +108,14 @@ class OperationRepository extends EntityRepository
         $query->innerJoin('ord.heartlands', 'heartland');
 
         $query->where("heartland.depositDate BETWEEN :start AND :end");
+        $query->andWhere("heartland.depositDate IS NOT NULL");
+        $query->andWhere("heartland.batchId IS NOT NULL");
+        $query->andWhere('heartland.isSuccessful = 1');
         $query->andWhere('contract.property = :property');
         $query->andWhere('resident.holding = :holding');
-        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
         $query->andWhere('ord.status IN (:statuses)');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
-        $query->andWhere(
-            '(ord.status = :completeOrder AND heartland.status = :completeTransaction) OR
-            (ord.status != :completeOrder AND heartland.status = :reversedTransaction)'
-        );
+        $query->andWhere('heartland.status = :completeTransaction');
         $query->orderBy('ord.id', 'ASC');
 
         $query->setParameter('end', $end);
@@ -125,9 +125,7 @@ class OperationRepository extends EntityRepository
         $query->setParameter('start', $start);
         $query->setParameter('property', $property);
         $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
         $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
-        $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
 
         $query = $query->getQuery();
         return $query->execute();
