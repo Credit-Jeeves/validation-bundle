@@ -41,9 +41,9 @@ class ContractBalanceCommand extends ContainerAwareCommand
             $contract = end($row);
             $balance = $contract->getBalance() + $contract->getRent();
             $contract->setBalance($balance);
-            $manager->persist($contract);
+            $manager->merge($contract);
             $manager->flush();
-            $manager->detach($contract);
+            //$manager->detach($contract); can duplicate contract? but we not find where
         }
     }
 }

@@ -283,7 +283,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-    public function endContractByLandlord($contract, $landlord, $tenant, $template = 'rjEndContract')
+    public function endContractByLandlord($contract, Landlord $landlord, Tenant $tenant, $template = 'rjEndContract')
     {
         // Unit is a Doctrine Proxy, it always exists, but it throws an exception when we try to get unit's name
         try {
@@ -299,7 +299,7 @@ class Mailer extends BaseMailer
             'unitName'            => $unitName,
         );
 
-        return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
     public function sendOrderCancelToTenant(Order $order, $template = 'rjOrderCancel')

@@ -331,7 +331,8 @@ abstract class Contract
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
      *     mappedBy="contract",
      *     cascade={"all"},
-     *     orphanRemoval=true
+     *     orphanRemoval=true,
+     *     fetch="EXTRA_LAZY"
      * )
      * @var ArrayCollection
      */
@@ -639,6 +640,7 @@ abstract class Contract
      * Set dueDate
      *
      * @param integer $dueDate
+     * @throws \LogicException
      * @return $this
      */
     public function setDueDate($dueDate)

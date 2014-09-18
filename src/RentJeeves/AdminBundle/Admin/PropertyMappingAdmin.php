@@ -1,38 +1,25 @@
 <?php
+
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Enum\GroupType;
-use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\EntityRepository;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\HttpFoundation\Request;
 
-class ResidentMappingAdmin extends Admin
+class PropertyMappingAdmin extends Admin
 {
-    protected function configureDatagridFilters(DatagridMapper $datagrid)
-    {
-        $datagrid
-            ->add('residentId')
-            ->add('tenant.email')
-            ->add('tenant.first_name')
-            ->add('tenant.last_name')
-            ->add('holding.name');
-    }
-
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
             ->add('holding')
-            ->add('tenant')
-            ->add('residentId')
+            ->add('property')
+            ->add('externalPropertyId')
             ->add(
                 '_action',
                 'actions',
@@ -45,30 +32,21 @@ class ResidentMappingAdmin extends Admin
             );
     }
 
-    protected function configureShowField(ShowMapper $showMapper)
+    protected function configureDatagridFilters(DatagridMapper $datagrid)
     {
-        $showMapper
-            ->add('holding')
-            ->add('tenant')
-            ->add('residentId');
+        $datagrid->add('externalPropertyId');
     }
 
     protected function configureFormFields(FormMapper $formMapper)
     {
         $container = $this->getConfigurationPool()->getContainer();
-        /**
-         * @var $request Request
-         */
-        $request = $container->get('request');
-        $params = $request->request->all();
-        $uniqid = $request->query->get('uniqid');
 
-        if (isset($params[$uniqid]['holding'])) {
-            $holding = $params[$uniqid]['holding'];
-        } elseif ($id = $request->get('id')) {
+        $request = $container->get('request');
+
+        if ($id = $request->get('id')) {
             $em = $container->get('doctrine.orm.default_entity_manager');
-            $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->find($id);
-            $holding = ($residentMapping)? $residentMapping->getHolding()->getId() : null;
+            $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->find($id);
+            $holding = ($propertyMapping)? $propertyMapping->getHolding() : null;
         } else {
             $holding = null;
         }
@@ -89,20 +67,16 @@ class ResidentMappingAdmin extends Admin
                 )
             )
             ->add(
-                'tenant',
+                'property',
                 'entity',
                 array(
-                    'class' => 'RjDataBundle:Tenant',
+                    'class' => 'RjDataBundle:Property',
                     'query_builder' => function (EntityRepository $er) use ($holding) {
-                            // TO AVOID MEMORY EXHAUSTION caused by doctrine hydration:
-                            // All tenants are loaded by ajax, so we can load only one tenant here.
-                            // This query is also used inside doctrine to load corresponding entity
-                            // for chosen tenant on the form (there tenant is just id).
-                            return $er->findOneTenantByHolding($holding);
+                            return $er->findByHolding($holding);
                     }
                 )
             )
-            ->add('residentId');
+            ->add('externalPropertyId');
 
         $self = $this;
         $formMapper->getFormBuilder()->addEventListener(
@@ -113,25 +87,23 @@ class ResidentMappingAdmin extends Admin
                 $em = $container->get('doctrine.orm.default_entity_manager');
 
                 $form = $event->getForm();
-                /**
-                 * @var $residentMapping ResidentMapping
-                 */
-                $residentMapping = $form->getData();
 
-                $residentMappingDuplicate = $em->getRepository('RjDataBundle:ResidentMapping')
+                $propertyMapping = $form->getData();
+
+                $existentPropertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')
                     ->findOneBy(
                         array(
-                            'residentId' => $residentMapping->getResidentId(),
-                            'tenant'     => $residentMapping->getTenant()->getId(),
-                            'holding'    => $residentMapping->getHolding()->getId(),
+                            'externalPropertyId' => $propertyMapping->getExternalPropertyId(),
+                            'property'     => $propertyMapping->getProperty()->getId(),
+                            'holding'    => $propertyMapping->getHolding()->getId(),
                         )
                     );
 
-                if ($residentMappingDuplicate) {
-                    $form->get('residentId')->addError(
+                if ($existentPropertyMapping) {
+                    $form->get('externalPropertyId')->addError(
                         new FormError(
                             $translation->trans(
-                                'admin.form.contract_waiting.error.residentId'
+                                'admin.form.error.property_mapping'
                             )
                         )
                     );

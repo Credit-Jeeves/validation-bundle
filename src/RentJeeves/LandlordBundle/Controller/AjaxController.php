@@ -430,6 +430,7 @@ class AjaxController extends Controller
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
         $result['property'] = $property->getAddress();
         $result['isSingle'] = $property->getIsSingle();
+        $this->get('soft.deleteable.control')->enable();
         $result['units'] = $this->getDoctrine()
             ->getRepository('RjDataBundle:Unit')
             ->getUnitsArray(
@@ -483,18 +484,19 @@ class AjaxController extends Controller
      */
     public function saveUnitsList(Request $request)
     {
-        $data = array();
-        $names = array();
         $existingNames = array();
         $errorNames = array();
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
-        $data = $request->request->all('units');
-        $property = $request->request->all('property');
-        $parent = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($property['property_id']);
-        if (empty($parent)) {
-            return new JsonResponse($data);
+        $data = $request->request->all();
+        $propertyId = $request->request->get('property_id');
+        if ($propertyId === null) {
+            throw new BadRequestHttpException('Property ID is not specified');
+        }
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($propertyId);
+        if (empty($property)) {
+            return new NotFoundHttpException('Property not found');
         }
         $units = (isset($data['units']))? $data['units'] : array();
         $unitCome = array();
@@ -506,7 +508,7 @@ class AjaxController extends Controller
                 'isNew' => (empty($unit['id']))? true : false,
             );
         }
-        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
+        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $holding, $group);
         $em = $this->getDoctrine()->getManager();
 
         //Update Current Unit
@@ -532,7 +534,7 @@ class AjaxController extends Controller
         foreach ($unitCome as $unit) {
             if ($unit['isNew'] & !empty($unit['name']) & !in_array($unit['name'], $existingNames)) {
                 $entity = new Unit();
-                $entity->setProperty($parent);
+                $entity->setProperty($property);
                 $entity->setHolding($holding);
                 $entity->setGroup($group);
                 $entity->setName($unit['name']);
@@ -544,7 +546,7 @@ class AjaxController extends Controller
         }
 
         $em->flush();
-        $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
+        $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($property, $holding, $group);
         return new JsonResponse($data);
     }
 

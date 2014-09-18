@@ -8,6 +8,7 @@ use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 /**
@@ -83,7 +84,7 @@ class DepositAccountListener
             $eventArgs->setNewValue('feeCC', null);
         }
 
-        if ($eventArgs->hasChangedField('merchantName') && !$eventArgs->getOldValue('merchantName')) {
+        if ($eventArgs->hasChangedField('status') && DepositAccountStatus::DA_COMPLETE == $entity->getStatus()) {
             $this->sendEmail($entity);
         }
     }
