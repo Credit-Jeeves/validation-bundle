@@ -31,7 +31,10 @@ class SecurityController extends BaseController
      */
     protected function renderLogin(array $data)
     {
-        $template = sprintf('OAuthServerBundle:Security:login.html.%s', $this->container->getParameter('fos_user.template.engine'));
+        $template = sprintf(
+            'OAuthServerBundle:Security:login.html.%s',
+            $this->container->getParameter('fos_user.template.engine')
+        );
 
         return $this->container->get('templating')->renderResponse($template, $data);
     }

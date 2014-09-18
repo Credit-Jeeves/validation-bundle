@@ -1,16 +1,16 @@
 <?php
 
-namespace RentJeeves\OAuthServerBundle;
+namespace RentJeeves\ApiBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class OAuthServerBundle extends Bundle
+class RjApiBundle extends Bundle
 {
     /**
      * {@inheritdoc}
      */
     public function getParent()
     {
-        return 'FOSOAuthServerBundle';
+        return 'FOSRestBundle';
     }
 }

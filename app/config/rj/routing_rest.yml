@@ -1,4 +1,4 @@
 properties :
   type : rest
-  resource:     "RestApiBundle:Properties"
+  resource:     "RjApiBundle:Properties"
   name_prefix:  api_

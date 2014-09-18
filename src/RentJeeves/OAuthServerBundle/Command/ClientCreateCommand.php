@@ -53,6 +53,12 @@ EOT
         $client->setRedirectUris($input->getOption('redirect-uri'));
         $client->setAllowedGrantTypes($input->getOption('grant-type'));
         $clientManager->updateClient($client);
-        $output->writeln(sprintf('Added a new client with name <info>%s</info> and public id <info>%s</info>.', $client->getName(), $client->getPublicId()));
+        $output->writeln(
+            sprintf(
+                'Added a new client with name <info>%s</info> and public id <info>%s</info>.',
+                $client->getName(),
+                $client->getPublicId()
+            )
+        );
     }
 }
