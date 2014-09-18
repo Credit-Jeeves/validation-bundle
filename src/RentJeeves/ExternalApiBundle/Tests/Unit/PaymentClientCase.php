@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Unit;
 
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Tests\Unit\BaseClientCase as Base;
@@ -11,12 +12,12 @@ class PaymentClientCase extends Base
 {
     protected static $batchId;
 
+    /**
+     * @var $client PaymentClient
+     */
     protected static $client;
 
-    /**
-     * @test
-     */
-    public function openReceiptBatchDepositDate()
+    protected function initOpenReceiptBatchDepositDate()
     {
         $container = $this->getKernel()->getContainer();
         $clientFactory = $container->get('soap.client.factory');
@@ -31,10 +32,22 @@ class PaymentClientCase extends Base
             $yardiPropertyId = 'rnttrk01',
             $description = 'Test open date'
         );
+    }
 
+    protected function checkError()
+    {
         if (self::$client->isError()) {
             $this->assertFalse(true, self::$client->getErrorMessage());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function openReceiptBatchDepositDate()
+    {
+        $this->initOpenReceiptBatchDepositDate();
+        $this->checkError();
     }
 
     /**
@@ -56,11 +69,8 @@ class PaymentClientCase extends Base
             file_get_contents($path)
         );
 
-        if (self::$client->isError()) {
-            $this->assertFalse(true, self::$client->getErrorMessage());
-        }
-
-        $this->assertEquals('1 Receipts were added to Batch '.self::$batchId, $result->getMessage()->getMessage());
+        $this->checkError();
+        $this->assertEquals('2 Receipts were added to Batch '.self::$batchId, $result->getMessage()->getMessage());
     }
 
 
@@ -73,11 +83,19 @@ class PaymentClientCase extends Base
         $result = self::$client->closeReceiptBatch(
             self::$batchId
         );
-
-        if (self::$client->isError()) {
-            $this->assertFalse(true, self::$client->getErrorMessage());
-        }
-
+        $this->checkError();
         $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function cancelReceiptBatch()
+    {
+        $this->initOpenReceiptBatchDepositDate();
+        self::$client->closeReceiptBatch(
+            self::$batchId
+        );
+        $this->checkError();
     }
 }

@@ -21,6 +21,10 @@ class PaymentClient extends AbstractClient
             self::MAPPING_FIELD_STD_CLASS       => 'AddReceiptsToBatchResult',
             self::MAPPING_DESERIALIZER_CLASS    => 'Messages',
         ),
+        'CancelReceiptBatch' => array(
+            self::MAPPING_FIELD_STD_CLASS       => 'CancelReceiptBatchResult',
+            self::MAPPING_DESERIALIZER_CLASS    => 'Messages',
+        )
     );
 
     /**
@@ -106,6 +110,24 @@ class PaymentClient extends AbstractClient
 
         return $this->processRequest(
             'AddReceiptsToBatch',
+            $parameters
+        );
+    }
+
+    public function cancelReceiptBatch($batchId)
+    {
+        $this->debugMessage('Run CancelReceiptBatch');
+        $parameters = array(
+            'CancelReceiptBatch' => array_merge(
+                $this->getLoginCredentials(),
+                array(
+                    'BatchId'           => $batchId,
+                )
+            ),
+        );
+
+        return $this->processRequest(
+            'CancelReceiptBatch',
             $parameters
         );
     }

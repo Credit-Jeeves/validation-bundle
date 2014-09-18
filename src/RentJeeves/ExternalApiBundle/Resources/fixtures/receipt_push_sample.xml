@@ -15,6 +15,18 @@
                             </Detail>
                         </Payment>
                     </Transactions>
+                    <Transactions>
+                        <Payment Type="Check">
+                            <Detail>
+                                <DocumentNumber>445</DocumentNumber>
+                                <TransactionDate>2014-04-23</TransactionDate>
+                                <CustomerID>t0012027</CustomerID>
+                                <Amount>1340.00</Amount>
+                                <Comment>Test payment</Comment>
+                                <PropertyPrimaryID>rnttrk01</PropertyPrimaryID>
+                            </Detail>
+                        </Payment>
+                    </Transactions>
                 </RTServiceTransactions>
             </RT_Customer>
         </Property>

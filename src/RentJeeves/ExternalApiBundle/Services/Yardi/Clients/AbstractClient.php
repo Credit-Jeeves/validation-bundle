@@ -411,7 +411,7 @@ abstract class AbstractClient implements SoapClientInterface
         if ($show) {
             print_r($request);
         }
-        
+
         return $request;
     }
 }
