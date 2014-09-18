@@ -66,11 +66,11 @@ class PropertiesController extends Controller
      * @ApiDoc(
      *     resource=true,
      *     section="Properties",
-     *     description="This call allows the application to get details information about property by full address.",
+     *     description="Get detailed information about a RentTrack property using full address seach.",
      *     statusCodes={
-     *         200="Returned when successful",
-     *         204="No content with such parameters",
-     *         400="Error validate data, like address was not found on Google",
+     *         200="Success",
+     *         204="No content with supplied parameters",
+     *         400="Error validating data, such as address not found by Google Maps",
      *         500= {
      *          "Something wrong in request"
      *         }
@@ -81,7 +81,7 @@ class PropertiesController extends Controller
      *   name="address",
      *   strict=true,
      *   nullable=false,
-     *   description="The full address which was received from Google"
+     *   description="Full normalized address as displayed by Google Maps"
      * )
      *
      * @return array
@@ -115,14 +115,14 @@ class PropertiesController extends Controller
      * @ApiDoc(
      *     resource=true,
      *     section="Properties",
-     *     description="This call allows the application to get details information about unit by its id
+     *     description="Get detailed information about a RentTrack unit by its id
                         and property id.",
      *     statusCodes={
-     *         200="Returned when successful",
-     *         204="No content with such parameters",
-     *         400="Error validate data",
+     *         200="Success",
+     *         204="No content with supplied parameters",
+     *         400="Error validating data",
      *         500= {
-     *          "Something wrong in request"
+     *          "Something went wrong with the request"
      *         }
      *     }
      * )
@@ -150,13 +150,13 @@ class PropertiesController extends Controller
      * @ApiDoc(
      *     resource=true,
      *     section="Properties",
-     *     description="This call allows the application to get all units that belong to property.",
+     *     description="Get all the units that belong to a property.",
      *     statusCodes={
-     *         200="Returned when successful",
-     *         204="No content with such parameters",
-     *         400="Error validate data",
+     *         200="Success",
+     *         204="No content with supplied parameters",
+     *         400="Error validating data",
      *         500= {
-     *          "Something wrong in request"
+     *          "Something went wrong with the request"
      *         }
      *     }
      * )
@@ -185,12 +185,12 @@ class PropertiesController extends Controller
      * @ApiDoc(
      *     resource=true,
      *     section="Properties",
-     *     description="This call allows the application to create unit or property with unit.",
+     *     description="Create a unit, or a property with a unit.",
      *     statusCodes={
-     *         200="Returned when successful",
-     *         400="Error validate data",
+     *         200="Success",
+     *         400="Error validating data",
      *         500= {
-     *          "Something wrong in request"
+     *          "Something went wrong with the request"
      *         }
      *     }
      * )
