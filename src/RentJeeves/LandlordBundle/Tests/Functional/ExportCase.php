@@ -113,7 +113,7 @@ class ExportCase extends BaseTestCase
 
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
-        $this->assertEquals('PMTCRED 456123', (string) $checkNumber);
+        $this->assertEquals('PMTCRED 456456', (string) $checkNumber);
         $this->assertEquals('FGDTRFG-44', (string) $personId);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
