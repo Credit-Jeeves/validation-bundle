@@ -81,12 +81,13 @@ class ExportCase extends BaseTestCase
     {
         $this->goToYardiReport();
 
-        $date = new DateTime('-9 days');
+        $dateStart = new DateTime('-41 days');
+        $dateEnd = new DateTime();
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
 
-        $begin->setValue($date->format('m/d/Y'));
-        $end->setValue($date->format('m/d/Y'));
+        $begin->setValue($dateStart->format('m/d/Y'));
+        $end->setValue($dateEnd->format('m/d/Y'));
 
         $this->page->pressButton('order.report.download');
 
@@ -107,14 +108,12 @@ class ExportCase extends BaseTestCase
         $this->assertNull($details = $receipt->Details->Detail);
 
         $this->assertTrue(isset($receipt->BatchId));
-        $this->assertTrue(isset($receipt->OriginalReceiptDate));
-        $this->assertTrue(isset($receipt->ReturnType));
 
         $this->assertEquals(100, (int) $receipt->PropertyId);
 
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
-        $this->assertEquals('PMTCRED 147147', (string) $checkNumber);
+        $this->assertEquals('PMTCRED 456123', (string) $checkNumber);
         $this->assertEquals('FGDTRFG-44', (string) $personId);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
