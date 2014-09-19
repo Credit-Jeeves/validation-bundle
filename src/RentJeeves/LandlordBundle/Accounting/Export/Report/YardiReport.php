@@ -65,8 +65,8 @@ class YardiReport extends ExportReport
         $this->validateSettings($settings);
         $this->setYardiParams($settings);
 
-        $beginDate = $settings['begin'].' 00:00:00';
-        $endDate = $settings['end'].' 23:59:59';
+        $beginDate = $settings['begin'];
+        $endDate = $settings['end'];
         $property = $settings['property'];
         $holding = $settings['landlord']->getUser()->getHolding();
 
