@@ -31,6 +31,7 @@ class RjDataBundle extends Bundle
             Type::overrideType(Type::DATE, 'RentJeeves\DataBundle\DBAL\Types\DateType');
             Type::addType('PaymentTypeACH', 'RentJeeves\DataBundle\Enum\PaymentTypeACH');
             Type::addType('PaymentTypeCC', 'RentJeeves\DataBundle\Enum\PaymentTypeCC');
+            Type::addType('ExternalApi', 'RentJeeves\DataBundle\Enum\ExternalApi');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()

@@ -628,13 +628,7 @@ class Order extends BaseOrder
      */
     public function getTransactionDate()
     {
-        $transaction = $this->getCompleteTransaction();
-
-        if ($transaction && $transaction->getDepositDate()) {
-            return $transaction->getDepositDate()->format('Y-m-d');
-        }
-
-        return null;
+        return $this->getCreatedAt()->format('Y-m-d');
     }
 
     /**

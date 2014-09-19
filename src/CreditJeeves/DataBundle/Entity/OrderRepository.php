@@ -346,4 +346,49 @@ class OrderRepository extends EntityRepository
 
         return $query->getQuery()->getSingleScalarResult();
     }
+
+    public function getReceiptBatch(
+        DateTime $depositDate,
+        Holding $holding,
+        $start,
+        $limit,
+        $remotePropertyId = null
+    ) {
+        $query = $this->createQueryBuilder('order');
+        $query->innerJoin('order.operations', 'operation');
+        $query->innerJoin('operation.contract', 'contract');
+        $query->innerJoin('contract.group', 'group');
+        $query->innerJoin('group.holding', 'holding');
+        $query->innerJoin('contract.tenant', 'tenant');
+        $query->innerJoin('contract.property', 'property');
+        $query->innerJoin('property.propertyMapping', 'mapping');
+        $query->innerJoin('property.unit', 'unit');
+        $query->innerJoin('o.heartlands', 'heartland');
+        $query->where("heartland.depositDate = :depositDate");
+        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+        $query->andWhere('mapping.landlordPropertyId IS NOT NULL');
+        $query->andWhere('order.status = :orderStatus');
+        $query->andWhere('operation.status = :rentStatus AND operation.status = :otherStatus');
+        $query->andWhere('mapping.holding = :holdingId');
+        $query->setParameter('rentStatus', OperationType::RENT);
+        $query->setParameter('otherStatus', OperationType::OTHER);
+        $query->setParameter('orderStatus', OrderStatus::COMPLETE);
+        $query->setParameter('holdingId', $holding->getId());
+        $query->setParameter('depositDate', $depositDate->format('Y-m-d'));
+        $query->orderBy('heartland.depositDate', 'ASC');
+
+
+        if ($remotePropertyId) {
+            $query->where("mappign.landlordPropertyId = :remoteId");
+            $query->setParameter('remoteId', $remotePropertyId);
+        } else {
+            $query->groupBy("mapping.landlordPropertyId");
+        }
+
+
+        $query->setFirstResult($start);
+        $query->setMaxResults($limit);
+        $query = $query->getQuery();
+        return $query->execute();
+    }
 }

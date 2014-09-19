@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
+use RentJeeves\DataBundle\Entity\OrderExternalApi;
 
 /**
  * @ORM\MappedSuperclass
@@ -137,6 +138,13 @@ abstract class Order
      */
     protected $jobs;
 
+    /**
+     * @ORM\OneToOne(targetEntity="RentJeeves\DataBundle\Entity\OrderExternalApi")
+     * @ORM\JoinColumn(name="external_api_id", referencedColumnName="id")
+     * @Serializer\Exclude
+     */
+    protected $externalApi;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
@@ -144,6 +152,22 @@ abstract class Order
         $this->heartlands = new ArrayCollection();
         $this->operations = new ArrayCollection();
         $this->created_at = new DateTime();
+    }
+
+    /**
+     * @param OrderExternalApi $externalApi
+     */
+    public function setExternalApi(OrderExternalApi $externalApi)
+    {
+        $this->externalApi = $externalApi;
+    }
+
+    /**
+     * @return OrderExternalApi
+     */
+    public function getExternalApi()
+    {
+        return $this->externalApi;
     }
 
     /**
