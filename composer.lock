@@ -487,7 +487,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "794719037a6a18b190d7dfa61b70fad04b16431a"
+                "reference": "dd9f6e7cd0e9f8215ccbab1cad8feae47eaf4447"
             },
             "require": {
                 "doctrine/dbal": "~2.4",
@@ -514,7 +514,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2014-08-27 07:40:07"
+            "time": "2014-09-09 18:08:45"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -4406,7 +4406,7 @@
                 "generator",
                 "sonata"
             ],
-            "time": "2014-03-19 11:44:11"
+            "time": "2014-02-28 16:17:48"
         },
         {
             "name": "sonata-project/exporter",

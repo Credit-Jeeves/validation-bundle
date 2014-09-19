@@ -283,6 +283,8 @@ class ImportProcess
             $contract->setUnit($unit);
         }
         $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
+        $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
+        $contract->setStartAt($moveIn);
 
         /**
          * If we don't have unit and property don't have flag is_single set it to single by default
@@ -469,24 +471,22 @@ class ImportProcess
         $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
 
-        $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
-        $today = new DateTime();
-        if ($moveIn > $today) {
-            $startAt = $moveIn;
-        } else {
-            $groupDueDate = $this->group->getGroupSettings()->getDueDate();
-            $startAt = new DateTime();
-            if ($row[ImportMapping::KEY_BALANCE] <= 0) {
-                // snap to next month due date (default from group) for start_at
-                $startAt->modify('+1 month');
-                $startAt = $startAt->setDate(null, null, $groupDueDate);
-            } else {
-                // snap to this month due date (default from group) for start_at
-                $startAt = $startAt->setDate(null, null, $groupDueDate);
-            }
+        $paidTo = new DateTime();
+        $groupDueDate = $this->group->getGroupSettings()->getDueDate();
+
+        // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
+        if ($row[ImportMapping::KEY_BALANCE] <= 0) {
+            $paidTo->modify('+1 month');
         }
 
-        $contract->setStartAt($startAt);
+        $paidTo->setDate(
+            $paidTo->format('Y'),
+            $paidTo->format('n'),
+            $groupDueDate
+        );
+        
+        $contract->setPaidTo($paidTo);
+
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
@@ -949,6 +949,7 @@ class ImportProcess
         }
 
         if ($import->getIsSkipped() || $this->getIsSkip($postData)) {
+            $this->detach($import);
             return false;
         }
 
@@ -1250,5 +1251,29 @@ class ImportProcess
         }
 
         return false;
+    }
+
+    protected function detach(Import $import)
+    {
+        $contract = $import->getContract();
+        if ($contract->getId()) {
+            $this->em->detach($contract);
+        }
+        $unit = $contract->getUnit();
+        if ($unit && $unit->getId()) {
+            $this->em->detach($unit);
+        }
+        $tenant = $import->getTenant();
+        if ($tenant->getId()) {
+            $this->em->detach($tenant);
+        }
+        $residentMapping = $import->getResidentMapping();
+        if ($residentMapping->getId()) {
+            $this->em->detach($residentMapping);
+        }
+        $operation = $import->getOperation();
+        if ($operation && $operation->getId()) {
+            $this->em->detach($operation);
+        }
     }
 }

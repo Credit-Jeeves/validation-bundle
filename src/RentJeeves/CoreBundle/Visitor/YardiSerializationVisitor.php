@@ -27,8 +27,9 @@ class YardiSerializationVisitor extends XmlSerializationVisitor
     public function visitProperty(PropertyMetadata $metadata, $object, Context $context)
     {
         $exclusionStrategy = $context->getExclusionStrategy();
+        $context->attributes->set('object', $object);
 
-        if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($metadata, $context, $object)) {
+        if (null !== $exclusionStrategy && $exclusionStrategy->shouldSkipProperty($metadata, $context)) {
             return;
         }
 

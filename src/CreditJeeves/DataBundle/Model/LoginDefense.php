@@ -36,9 +36,9 @@ abstract class LoginDefense
     /**
      * @var integer
      *
-     * @ORM\Column(name="attempts", type="bigint", options={"default"="1"})
+     * @ORM\Column(name="attempts", type="bigint", options={"default"="0"})
      */
-    protected $attempts = 1;
+    protected $attempts = 0;
 
     /**
      * @var string
