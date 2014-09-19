@@ -23,4 +23,5 @@ parameters:
         application_id: 3
         username: RTAPI
         password: $RTapi13
-
+    login.attempts: 1
+    login.delay: 1

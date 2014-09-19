@@ -24,11 +24,6 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     protected $container;
 
     /**
-     * @var SecurityContext
-     */
-    protected $security;
-
-    /**
      * @DI\InjectParams({
      *     "container" = @DI\Inject("service_container")
      * })
@@ -74,49 +69,18 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 break;
         }
         /**
-         * @var $userLog LogUser
+         * @var $userLogAndDefence LogAndDefenceUser
          */
-        $userLog = $this->container->get('user.log');
-        $userLog->signin($User->getEmail(), $status = 'success');
+        $userLogAndDefence = $this->container->get('user.log_and_defence');
+        $userLogAndDefence->signin($User->getEmail(), $status = 'success');
 
-        if (!$isDefense = $this->checkLogindefense($User)) {
-            $url = $this->container->get('router')->generate('fos_user_security_login');
+        if ($userLogAndDefence->isDefense($User)) {
+            $url = $userLogAndDefence->getRedirectLinkForDefense();
+        } else {
+            $userLogAndDefence->clearDefense($User);
         }
+
         return new RedirectResponse($url);
-    }
-
-    private function checkLogindefense($user)
-    {
-        $delay = $this->container->getParameter('login.delay');
-        $defense = $user->getDefense();
-        if ($defense) {
-            $now = new \DateTime('now');
-            $attempts = $defense->getAttempts();
-            $last = $defense->getUpdatedAt();
-            $interval = $now->diff($last, true)->format('%i');
-            if ($attempts > $this->container->getParameter('login.attempts')) {
-                if ($interval < $delay) {
-                    $this->container->get('session')->getFlashBag()->add(
-                        'defense',
-                        sprintf('Please, try "%s" minutes later.', ($delay- $interval))
-                    );
-                    return false;
-                } else {
-                    $defense->setAttempts(0);
-                    $em = $this->container->get('doctrine.orm.default_entity_manager');
-                    $user->setDefense($defense);
-                    $em->persist($user);
-                    $em->flush();
-                }
-            } else {
-                $defense->setAttempts(0);
-                $em = $this->container->get('doctrine.orm.default_entity_manager');
-                $user->setDefense($defense);
-                $em->persist($user);
-                $em->flush();
-            }
-        }
-        return true;
     }
 
     private function generateLanlordUrl($user)
