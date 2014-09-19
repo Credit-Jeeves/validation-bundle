@@ -13,7 +13,6 @@ class YardiSyncBalanceCommand extends ContainerAwareCommand
     {
         $this
             ->setName('api:yardi:sync-balance')
-            ->addOption('jms-job-id', null, InputOption::VALUE_OPTIONAL, 'Job ID')
             ->setDescription('Update resident balances.');
     }
 

@@ -15,6 +15,9 @@ class TenantCase extends BaseTestCase
 {
     protected $timeout = 30000;
 
+    const ALL = 'All (18)';
+    const ALL_PLUS_ONE = 'All (19)';
+
     /**
      * @test
      */
@@ -261,7 +264,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout + 15000, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count of tenants');
+        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count of tenants');
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
         $this->page->pressButton('edit.Info');
@@ -270,7 +273,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#contract-remove-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
@@ -289,7 +292,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count of tenants');
+        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count of tenants');
 
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->click();
@@ -336,7 +339,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.pending');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
@@ -360,7 +363,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
@@ -406,7 +409,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (18)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL_PLUS_ONE, $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.invite');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
@@ -477,7 +480,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
@@ -531,7 +534,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (18)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL_PLUS_ONE, $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.approved');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
@@ -584,7 +587,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
@@ -653,7 +656,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');

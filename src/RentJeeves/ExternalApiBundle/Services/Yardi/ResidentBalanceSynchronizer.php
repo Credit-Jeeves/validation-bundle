@@ -20,6 +20,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ResidentBalanceSynchronizer
 {
+    const COUNT_PROPERTIES_PER_SET = 20;
+
     protected $em;
 
     protected $clientFactory;
@@ -59,18 +61,22 @@ class ResidentBalanceSynchronizer
 
     protected function updateBalancesForHolding(Holding $holding)
     {
-        $propertyRepo = $this->em->getRepository('RjDataBundle:Property');
+        $repo = $this->em->getRepository('RjDataBundle:Property');
 
         /** @var $residentClient ResidentClient */
         $residentClient = $this->clientFactory->getClient($holding->getYardiSettings(), SoapClientEnum::RESIDENT);
-        $properties = $propertyRepo->findContractPropertiesByHolding($holding);
-        /** @var $property Property */
-        foreach ($properties as $property) {
-            $mapping = $property->getPropertyMapping()->first();
-            $residentTransactions = $residentClient->getResidentTransactions($mapping->getLandlordPropertyId());
-            $this->processResidentTransactions($residentTransactions, $holding, $property);
+        $propertySets = ceil($repo->countContractPropertiesByHolding($holding) / self::COUNT_PROPERTIES_PER_SET);
+        for ($offset = 1; $offset <= $propertySets; $offset++) {
+            $properties = $repo->findContractPropertiesByHolding($holding, $offset, self::COUNT_PROPERTIES_PER_SET);
+            /** @var $property Property */
+            foreach ($properties as $property) {
+                $mapping = $property->getPropertyMapping()->first();
+                $residentTransactions = $residentClient->getResidentTransactions($mapping->getLandlordPropertyId());
+                $this->processResidentTransactions($residentTransactions, $holding, $property);
+            }
+            $this->em->flush();
+            $this->em->clear();
         }
-        $this->em->flush();
     }
 
     protected function getHoldings()
