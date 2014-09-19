@@ -393,27 +393,6 @@ class Operation extends Base
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("ReturnType")
-     * @Serializer\Groups({"xmlReport"})
-     * @Serializer\Type("string")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return string
-     */
-    public function getReturnType()
-    {
-        switch ($this->getOrder()->getStatus()) {
-            case OrderStatus::REFUNDED:
-                return 'Reverse';
-            case OrderStatus::RETURNED:
-                return 'NSF';
-        }
-
-        return null;
-    }
-
-    /**
-     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("BatchId")
      * @Serializer\Groups({"xmlReport"})
      * @Serializer\Type("string")
@@ -424,25 +403,6 @@ class Operation extends Base
     public function getBatchId()
     {
         return 0;
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("OriginalReceiptDate")
-     * @Serializer\Groups({"xmlReport"})
-     * @Serializer\Type("string")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return string | null
-     */
-    public function getOriginalReceiptDate()
-    {
-        $heartlands = $this->getOrder()->getHeartlands();
-        if (count($heartlands) > 0) {
-            return $heartlands->first()->getCreatedAt()->format('Y-m-d\TH:i:s');
-        }
-
-        return null;
     }
 
     /**

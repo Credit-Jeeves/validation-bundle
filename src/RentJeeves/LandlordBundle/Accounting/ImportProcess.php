@@ -949,6 +949,7 @@ class ImportProcess
         }
 
         if ($import->getIsSkipped() || $this->getIsSkip($postData)) {
+            $this->detach($import);
             return false;
         }
 
@@ -1250,5 +1251,29 @@ class ImportProcess
         }
 
         return false;
+    }
+
+    protected function detach(Import $import)
+    {
+        $contract = $import->getContract();
+        if ($contract->getId()) {
+            $this->em->detach($contract);
+        }
+        $unit = $contract->getUnit();
+        if ($unit && $unit->getId()) {
+            $this->em->detach($unit);
+        }
+        $tenant = $import->getTenant();
+        if ($tenant->getId()) {
+            $this->em->detach($tenant);
+        }
+        $residentMapping = $import->getResidentMapping();
+        if ($residentMapping->getId()) {
+            $this->em->detach($residentMapping);
+        }
+        $operation = $import->getOperation();
+        if ($operation && $operation->getId()) {
+            $this->em->detach($operation);
+        }
     }
 }
