@@ -21,42 +21,6 @@ use Exception;
 class Operation extends Base
 {
     /**
-     * It's class attribute not from DB, it's from user form
-     * For generate correct report xml
-     */
-    protected $details;
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Details")
-     * @Serializer\XmlList(inline = false, entry="Detail")
-     * @Serializer\XmlKeyValuePairs
-     * @Serializer\Groups({"xmlReport"})
-     */
-    public function getXmlDetails()
-    {
-        if ($this->getType() === OperationType::OTHER) {
-            return null;
-        }
-
-        if (empty($this->details)) {
-            throw new Exception("Details not initialize");
-        }
-
-        return array($this->details);
-    }
-
-    public function initDetails($propertyId)
-    {
-        $detail = new Detail();
-        $detail->setPropertyId($propertyId);
-        $detail->setAmount($this->getAmount());
-        $detail->setNotes($this->getCreatedAt());
-        $this->details = $detail;
-        return $this;
-    }
-
-    /**
      * Date time of actual payment transaction with Heartland
      *
      * @Serializer\VirtualProperty
