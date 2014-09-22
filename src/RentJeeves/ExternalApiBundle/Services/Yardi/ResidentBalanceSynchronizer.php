@@ -4,6 +4,8 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
+use Exception;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Entity\Property;
@@ -22,9 +24,20 @@ class ResidentBalanceSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
 
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
+    /**
+     * @var SoapClientFactory
+     */
     protected $clientFactory;
+
+    /**
+     * @var ExceptionCatcher
+     */
+    protected $exceptionCatcher;
 
     protected $logger;
 
@@ -32,23 +45,30 @@ class ResidentBalanceSynchronizer
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
      *     "clientFactory" = @DI\Inject("soap.client.factory"),
+     *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher")
      * })
      */
-    public function __construct(EntityManager $em, SoapClientFactory $clientFactory)
+    public function __construct(EntityManager $em, SoapClientFactory $clientFactory, ExceptionCatcher $exceptionCatcher)
     {
         $this->em = $em;
         $this->clientFactory = $clientFactory;
+        $this->exceptionCatcher = $exceptionCatcher;
     }
 
     public function run()
     {
-        $holdings = $this->getHoldings();
-        if (empty($holdings)) {
-            return $this->logMessage('No data to update');
-        }
+        try {
+            $holdings = $this->getHoldings();
+            if (empty($holdings)) {
+                return $this->logMessage('No data to update');
+            }
 
-        foreach ($holdings as $holding) {
-            $this->updateBalancesForHolding($holding);
+            foreach ($holdings as $holding) {
+                $this->updateBalancesForHolding($holding);
+            }
+        } catch (Exception $e) {
+            $this->exceptionCatcher->handleException($e);
+            return $this->logMessage($e->getMessage());
         }
     }
 
@@ -94,7 +114,6 @@ class ResidentBalanceSynchronizer
             $resident->getCustomerId(),
             $resident->getUnit()->getUnitId()
         );
-
     }
 
     protected function processResidentTransactions(
