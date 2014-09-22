@@ -302,7 +302,7 @@ class TenantCase extends BaseTestCase
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (7)', $allh2->getText(), 'Wrong count of tenants');
+        $this->assertEquals('All (8)', $allh2->getText(), 'Wrong count of tenants');
         $this->assertNotNull($approve = $this->page->find('css', '.edit'));
         $approve->click();
         $this->page->clickLink('end.br.contract');
@@ -312,7 +312,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#tenant-end-contract').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (6)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (7)', $allh2->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
