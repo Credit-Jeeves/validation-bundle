@@ -147,6 +147,7 @@ class AjaxController extends Controller
     {
         $repo = $this->getDoctrine()->getManager()->getRepository('DataBundle:Order');
 
+        $this->get('soft.deleteable.control')->disable();
         $orders = $repo->getTenantPayments($this->getUser(), $page, $contractId, self::TENANT_PAYMENTS_LIMIT);
 
         $totalOrdersAmount = $repo->getTenantPaymentsAmount($this->getUser(), $contractId);
@@ -159,6 +160,7 @@ class AjaxController extends Controller
                 $order = $order->getTenantPayment();
             }
         );
+        $this->get('soft.deleteable.control')->enable();
 
         return new JsonResponse(array('tenantPayments' => $orders, 'pages' => array($pages)));
     }

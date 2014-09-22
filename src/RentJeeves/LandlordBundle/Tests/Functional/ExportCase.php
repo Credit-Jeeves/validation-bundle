@@ -14,7 +14,7 @@ class ExportCase extends BaseTestCase
     /**
      * @test
      */
-    public function baseXmlFormat()
+    public function goToYardiReport()
     {
         $this->load(true);
         //$this->setDefaultSession('selenium2');
@@ -28,22 +28,65 @@ class ExportCase extends BaseTestCase
 
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(6, count($errors));
+        $this->assertEquals(4, count($errors));
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
-
         $this->assertNotNull($propertyId = $this->page->find('css', '#base_order_report_type_propertyId'));
-        $this->assertNotNull($accountId = $this->page->find('css', '#base_order_report_type_accountId'));
-        $this->assertNotNull($arAccountId = $this->page->find('css', '#base_order_report_type_arAccountId'));
 
         $propertyId->setValue(100);
-        $accountId->setValue(88);
-        $arAccountId->setValue(77);
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
+    }
+
+    /**
+     * @depends goToYardiReport
+     * @test
+     */
+    public function baseXmlFormat()
+    {
+        $this->page->pressButton('order.report.download');
+
+        $xml = $this->page->getContent();
+        $doc = new SimpleXMLElement($xml);
+
+        $this->assertNotNull($receipts = $doc->Receipts);
+        $this->assertNotNull($receipt = $receipts->Receipt);
+        $this->assertNotNull($date = $receipt->Date);
+        $this->assertNotNull($totalAmount = $receipt->TotalAmount);
+        $this->assertNotNull($isCash = $receipt->IsCash);
+        $this->assertNotNull($checkNumber = $receipt->CheckNumber);
+        $this->assertNotNull($notes = $receipt->Notes);
+        $this->assertNotNull($propertyId = $receipt->PropertyId);
+        $this->assertNotNull($payerName = $receipt->PayerName);
+        $this->assertNotNull($personId = $receipt->PersonId);
+        $this->assertNotNull($postMonth = $receipt->PostMonth);
+
+        $this->assertEquals(100, (int) $receipt->PropertyId);
+
+        $this->assertEquals('1500.00', (string) $totalAmount);
+        $this->assertEquals('false', (string) $isCash);
+        $this->assertEquals('PMTCRED 123123', (string) $checkNumber);
+        $this->assertEquals('FGDTRFG-44', (string) $personId);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
+    }
+
+    /**
+     * @test
+     */
+    public function completeYardiXmlFormat()
+    {
+        $this->goToYardiReport();
+
+        $dateStart = new DateTime('-45 days');
+        $dateEnd = new DateTime();
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+
+        $begin->setValue($dateStart->format('m/d/Y'));
+        $end->setValue($dateEnd->format('m/d/Y'));
 
         $this->page->pressButton('order.report.download');
 
@@ -61,22 +104,16 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($payerName = $receipt->PayerName);
         $this->assertNotNull($personId = $receipt->PersonId);
         $this->assertNotNull($postMonth = $receipt->PostMonth);
-        $this->assertNotNull($details = $receipt->Details->Detail);
-        $this->assertNotNull($amount = $details->Amount);
-        $this->assertNotNull($notesDetail = $details->Notes);
+
+        $this->assertTrue(isset($receipt->BatchId));
 
         $this->assertEquals(100, (int) $receipt->PropertyId);
-        $this->assertEquals(88, (int) $details->AccountId);
-        $this->assertEquals(77, (int) $details->ArAccountId);
-        $this->assertEquals(100, (int) $details->PropertyId);
 
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
-        $this->assertEquals('PMTCRED 123123', (string) $checkNumber);
+        $this->assertEquals('PMTCRED 456456', (string) $checkNumber);
         $this->assertEquals('FGDTRFG-44', (string) $personId);
-        $this->assertEquals('1500.00', (string)$amount);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
-
     }
 
     /**
@@ -95,7 +132,7 @@ class ExportCase extends BaseTestCase
 
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(6, count($errors));
+        $this->assertEquals(4, count($errors));
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
         $type->selectOption('csv');
@@ -226,13 +263,9 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
 
         $this->assertNotNull($propertyId = $this->page->find('css', '#base_order_report_type_propertyId'));
-        $this->assertNotNull($accountId = $this->page->find('css', '#base_order_report_type_accountId'));
-        $this->assertNotNull($arAccountId = $this->page->find('css', '#base_order_report_type_arAccountId'));
         $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
 
         $propertyId->setValue(100);
-        $accountId->setValue(88);
-        $arAccountId->setValue(77);
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
@@ -257,14 +290,11 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($totalAmount = $receipt->TotalAmount);
         $this->assertNotNull($personId = $receipt->PersonId);
         $this->assertNotNull($postMonth = $receipt->PostMonth);
-        $this->assertNotNull($details = $receipt->Details->Detail);
+        $this->assertNull($details = $receipt->Details->Detail);
         $this->assertNotNull($notes = $receipt->Notes);
-        $this->assertNotNull($amount = $details->Amount);
-        $this->assertNotNull($notesDetail = $details->Notes);
 
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('FGDTRFG-44', (string) $personId);
-        $this->assertEquals('1500.00', (string)$amount);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
 
@@ -303,7 +333,7 @@ class ExportCase extends BaseTestCase
         $csv = $this->page->getContent();
 
         $csvFullArr = explode("\n", $csv);
-        $this->assertEquals(17, count($csvFullArr));
+        $this->assertEquals(15, count($csvFullArr));
         /** check Last */
         $this->assertNotNull($csvArr = str_getcsv($csvFullArr[9]));
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $csvArr[1]);
@@ -313,7 +343,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('FGDTRFG-44', $csvArr[4]);
         $this->assertEquals('15235678', $csvArr[13]);
         /** check Refunded */
-        $this->assertNotNull($csvArr = str_getcsv($csvFullArr[13]));
+        $this->assertNotNull($csvArr = str_getcsv($csvFullArr[11]));
         $this->assertEquals('-700.00', $csvArr[6]);
         $this->assertEquals('65123261', $csvArr[7]);
         $this->assertEquals('', $csvArr[8]);
@@ -350,7 +380,7 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(9, $archive->numFiles);
+        $this->assertEquals(8, $archive->numFiles);
         $file = $archive->getFromIndex(2);
         $rows = explode("\n", trim($file));
         $this->assertEquals(3, count($rows));

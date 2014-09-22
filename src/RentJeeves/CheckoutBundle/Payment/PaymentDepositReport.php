@@ -18,20 +18,23 @@ class PaymentDepositReport implements PaymentSynchronizerInterface
     protected $repo;
     protected $fileReader;
     protected $fileFinder;
+    protected $businessDaysCalculator;
 
     /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
      *     "fileReader" = @DI\Inject("reader.csv"),
-     *     "fileFinder" = @DI\Inject("payment.report.finder")
+     *     "fileFinder" = @DI\Inject("payment.report.finder"),
+     *     "businessDaysCalc" = @DI\Inject("business_days_calculator")
      * })
      */
-    public function __construct($em, $fileReader, $fileFinder)
+    public function __construct($em, $fileReader, $fileFinder, $businessDaysCalc)
     {
         $this->em = $em;
         $this->repo = $this->em->getRepository('RjDataBundle:Heartland');
         $this->fileReader = $fileReader;
         $this->fileFinder = $fileFinder;
+        $this->businessDaysCalculator = $businessDaysCalc;
     }
 
     public function synchronize($makeArchive = false)
@@ -57,13 +60,20 @@ class PaymentDepositReport implements PaymentSynchronizerInterface
     {
         /** @var HeartlandTransaction $transaction */
         $transaction = $this->repo->findOneByTransactionId($paymentData['TransactionID']);
-        if ($transaction) {
-            $transaction->setBatchDate(new DateTime($paymentData['BatchCloseDate']));
-            if ($paymentData['MerchantDepositAmount'] > 0) {
-                $transaction->setDepositDate(new DateTime($paymentData['MerchantDepositDate']));
-                $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
-            }
-            $this->em->flush();
+        if (!$transaction) {
+            return;
         }
+
+        if (!empty($paymentData['BatchCloseDate'])) {
+            $transaction->setBatchDate(new DateTime($paymentData['BatchCloseDate']));
+        }
+
+        if ($paymentData['MerchantDepositAmount'] > 0 && !empty($paymentData['MerchantDepositDate'])) {
+            $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
+            $merchantDepositDate = new DateTime($paymentData['MerchantDepositDate']);
+            $depositDate = $this->businessDaysCalculator->getBusinessDate($merchantDepositDate, 1);
+            $transaction->setDepositDate($depositDate);
+        }
+        $this->em->flush();
     }
 }

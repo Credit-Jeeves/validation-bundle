@@ -23,8 +23,8 @@ parameters:
         application_id: 3
         username: RTAPI
         password: $RTapi13
-    login.attempts: 1
-    login.delay: 1
+<<<<<<< HEAD
+
     net_connect.precise_id.userpwd: 'renttrack_pid_demo:UdWU3aSDkjxa' #required! # overwritten by DB
     net_connect.precise_id.eai: 'HRPCX4RA' #required! # overwritten by DB
     net_connect.precise_id.url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
@@ -36,3 +36,7 @@ parameters:
     net_connect.credit_profile.dbhost: 'STAR' #required!
     net_connect.credit_profile.sub_code: '2266580' #required!
     net_connect.credit_profile.d2c.sub_code: '2266580' #required!
+=======
+    login.attempts: 1
+    login.delay: 1
+>>>>>>> 5a050073dc9697bb0fc16f0f9cf5b0b737479ac0

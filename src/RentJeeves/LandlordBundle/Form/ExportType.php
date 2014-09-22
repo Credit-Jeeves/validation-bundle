@@ -199,56 +199,6 @@ class ExportType extends AbstractType
         );
 
         $builder->add(
-            'accountId',
-            'text',
-            array(
-                'label'       => 'account.id',
-                'required'    => false,
-                'attr'        => array(
-                    'class' => 'int',
-                    'data-bind' => 'value: accountId',
-                    'row_attr' => array(
-                        'data-bind' => "visible: selectedType() == 'xml'",
-                    )
-                ),
-                'constraints' => array(
-                    new Regex(
-                        array(
-                            'pattern' => '/^[0-9\-]{1,10}$/',
-                            'groups'  => array('xml')
-                        )
-                    ),
-                    new NotBlank(array('groups' => array('xml')))
-                )
-            )
-        );
-
-        $builder->add(
-            'arAccountId',
-            'text',
-            array(
-                'label'       => 'ar.account.id',
-                'required'    => false,
-                'attr'        => array(
-                    'class' => 'int',
-                    'data-bind' => 'value: arAccountId',
-                    'row_attr' => array(
-                        'data-bind' => "visible: selectedType() == 'xml'",
-                    )
-                ),
-                'constraints' => array(
-                    new Regex(
-                        array(
-                            'pattern' => '/^[0-9\-]{1,10}$/',
-                            'groups'  => array('xml')
-                        )
-                    ),
-                    new NotBlank(array('groups' => array('xml')))
-                )
-            )
-        );
-
-        $builder->add(
             'makeZip',
             'checkbox',
             array(

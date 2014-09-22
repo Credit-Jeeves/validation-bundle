@@ -227,7 +227,7 @@ class OrderRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
-    public function getOrdersForReport(
+    public function getOrdersForRealPageReport(
         $propertyId,
         $start,
         $end
@@ -238,7 +238,9 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
         $query->innerJoin('t.unit', 'unit');
-        $query->where("o.updated_at BETWEEN :start AND :end");
+        $query->innerJoin('o.heartlands', 'heartland');
+        $query->where("heartland.depositDate BETWEEN :start AND :end");
+        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
         $query->andWhere('prop.id = :propId');
         $query->andWhere('o.status = :status');
         $query->setParameter('end', $end);
@@ -262,8 +264,9 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('o.heartlands', 'heartland');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
-        $query->where("o.updated_at BETWEEN :start AND :end");
+        $query->where("heartland.depositDate BETWEEN :start AND :end");
         $query->andWhere('o.status = :status');
+        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
         $query->andWhere('o.type in (:orderType)');
         $query->andWhere('g.id = :groupId');
         $query->andWhere('gs.isIntegrated = 1');

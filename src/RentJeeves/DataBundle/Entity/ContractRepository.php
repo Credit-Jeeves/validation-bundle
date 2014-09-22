@@ -40,6 +40,7 @@ class ContractRepository extends EntityRepository
      */
     private function applySearchFilter($query, $searchField = '', $searchString = '')
     {
+        $isUseStatus = false;
         if (!empty($searchField) && !empty($searchString)) {
             $search = $this->prepareSearch($searchString);
             switch ($searchField) {
@@ -75,6 +76,7 @@ class ContractRepository extends EntityRepository
                     break;
                 case 'status':
                 case 'statusA':
+                    $isUseStatus = true;
                     $query->andWhere('c.status = :status');
                     $query->setparameter('status', $searchString);
                     break;
@@ -85,6 +87,10 @@ class ContractRepository extends EntityRepository
                     }
                     break;
             }
+        }
+        if (!$isUseStatus) {
+            $query->andWhere('c.status <> :status');
+            $query->setParameter('status', ContractStatus::DELETED);
         }
         return $query;
     }
@@ -470,7 +476,7 @@ class ContractRepository extends EntityRepository
         $query->leftJoin('op.order', 'o');
         $query->where('c.group IN (:groups)');
         $query->andWhere('c.status IN (:status)');
-        $query->andWhere('c.paidTo < :date');
+        $query->andWhere('c.paidTo < DATE(:date)');
         $query->andWhere('o.status <> :orderPendingStatus OR o.status IS NULL');
         $query->setParameter('groups', $this->getGroupIds($groups));
         $query->setParameter('status', $status);

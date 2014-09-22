@@ -1500,6 +1500,10 @@
                 <source>Bad credentials</source>
                 <target>Email/Password combination not found. Please try again.</target>
             </trans-unit>
+            <trans-unit id="login.defence">
+                <source>login.defence</source>
+                <target>Please, try "%MINUTES_LEFT%" minutes later.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

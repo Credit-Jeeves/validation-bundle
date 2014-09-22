@@ -1541,21 +1541,13 @@
                 <source>landlord.alert.invite-many</source>
                 <target>Approve your tenants by clicking on the checkmarks.</target>
             </trans-unit>
-            <trans-unit id="landlord.alert.pending-one">
-                <source>landlord.alert.pending-one</source>
-                <target>There is one new tenant pending your review.</target>
+            <trans-unit id="landlord.alert.pending-contract.admin">
+                <source>landlord.alert.pending-contract.admin</source>
+                <target>{1}There is one new tenant pending your review in the %group% group.|[2,Inf]There are %count% new tenants pending your review in the %group% group.</target>
             </trans-unit>
-            <trans-unit id="landlord.alert.pending-one.admin">
-                <source>landlord.alert.pending-one.admin</source>
-                <target>There is one new tenant pending your review in the %GROUP% group.</target>
-            </trans-unit>
-            <trans-unit id="landlord.alert.pending-many">
-                <source>landlord.alert.pending-many</source>
-                <target>There are %COUNT% new tenants pending your review.</target>
-            </trans-unit>
-            <trans-unit id="landlord.alert.pending-many.admin">
-                <source>landlord.alert.pending-many.admin</source>
-                <target>There are %COUNT% new tenants pending your review in the %GROUP% group.</target>
+            <trans-unit id="landlord.alert.pending-contracts.landlord">
+                <source>landlord.alert.pending-contracts.landlord</source>
+                <target>{1}There is one new tenant pending your review.|[2,Inf]There are %COUNT% new tenants pending your review.</target>
             </trans-unit>
             <trans-unit id="landlord.add_tenant.hover">
                 <source>landlord.add_tenant.hover</source>
@@ -2754,6 +2746,10 @@
             <trans-unit id="yardi.regexp.error.url">
                 <source>yardi.regexp.error.url</source>
                 <target><![CDATA[Wrong url, see example of correct url: https://www.yardiaspca12.com/53467milhouse/]]></target>
+            </trans-unit>
+            <trans-unit id="deposit.date.range">
+                <source>deposit.date.range</source>
+                <target>Deposit Date Range:</target>
             </trans-unit>
         </body>
     </file>

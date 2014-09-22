@@ -64,8 +64,9 @@ label.checkbox input {
 }
 
 #base_order_report_type .type-date {
-    margin-top: 0;
-    margin-right: 130px;
+    margin-top: 20px;
+    position: absolute;
+    margin-left: 465px;
 }
 
 div#base_order_report_type .form-row {
@@ -80,4 +81,19 @@ div#base_order_report_type .form-row {
 
 form#base_order_report_type button {
     float: left;
+}
+element.style {
+}
+.dateTitle {
+    color: rgb(102, 102, 102);
+    margin-left: 499px;
+    font-size: 14px;
+    display: block;
+    position: absolute;
+    margin-top: 9px;
+}
+
+.fields-box {
+    width: 350px;
+    height: 10px;
 }
