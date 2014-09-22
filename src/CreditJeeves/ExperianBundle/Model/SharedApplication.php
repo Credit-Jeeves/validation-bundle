@@ -13,6 +13,8 @@ class SharedApplication
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\GLBRule1")
      * @Serializer\SerializedName("GLBRule1")
      * @Serializer\Groups({"CreditJeeves"})
+     *
+     * @var GLBRule1
      */
     protected $GLBRule1;
 
@@ -476,11 +478,13 @@ class SharedApplication
         foreach ($attributs as $name => $value) {
             $method = "get".ucfirst($name);
             $GLBRule = $this->$method();
-            $value = $GLBRule->getDescription();
-            $code = $GLBRule->getCode();
+            if ($GLBRule) {
+                $value = $GLBRule->getDescription();
+                $code = $GLBRule->getCode();
 
-            if (!empty($value) && !empty($code)) {
-                $array[$code] = $value;
+                if (!empty($value) && !empty($code)) {
+                    $array[$code] = $value;
+                }
             }
         }
 

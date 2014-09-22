@@ -3,7 +3,7 @@ namespace RentJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\ExperianBundle\Controller\PidkiqController as Base;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
-use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
+use CreditJeeves\ExperianBundle\NetConnect\PreciseIDQuestions;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -26,29 +26,29 @@ class PidkiqController extends Base
     /**
      * // Do not remove it!!!
      * @DI\InjectParams({
-     *     "pidkiqApi" = @DI\Inject("experian.pidkiq")
+     *     "preciseIdApi" = @DI\Inject("experian.net_connect.precise_id")
      * })
      */
-    public function setPidkiqApi($pidkiqApi)
+    public function setPreciseIdApi($preciseIdApi)
     {
-        parent::setPidkiqApi($pidkiqApi);
+        parent::setPreciseIdApi($preciseIdApi);
     }
 
     /**
      * // Do not remove it!!!
      * @DI\InjectParams({
-     *     "pidkiqQuestions" = @DI\Inject("pidkiq.questions")
+     *     "preciseIdQuestions" = @DI\Inject("experian.net_connect.precise_id.questions")
      * })
      */
-    public function setPidkiqQuestions($pidkiqQuestions)
+    public function setPreciseIdQuestions($preciseIdQuestions)
     {
-        parent::setPidkiqQuestions($pidkiqQuestions);
+        parent::setPreciseIdQuestions($preciseIdQuestions);
     }
 
     protected function setupUserIsValidUserIntoSession(Request $request)
     {
         $session = $request->getSession();
-        $session->set('isValidUser', $this->pidkiqQuestions->isValidUser());
+        $session->set('isValidUser', $this->preciseIdQuestions->isValidUser());
     }
 
     /**
@@ -59,17 +59,17 @@ class PidkiqController extends Base
      */
     public function getAction(Request $request)
     {
-        if (!$this->pidkiqQuestions->processQuestions()) {
+        if (!$this->preciseIdQuestions->processQuestions()) {
             $this->setupUserIsValidUserIntoSession($request);
             $response = array(
                 'status'          => 'error',
-                'error'           => $this->pidkiqQuestions->getError(),
-                'isValidUser'     => $this->pidkiqQuestions->isValidUser(),
+                'error'           => $this->preciseIdQuestions->getError(),
+                'isValidUser'     => $this->preciseIdQuestions->isValidUser(),
             );
             return new JsonResponse($response);
         }
 
-        if ($questionsData = $this->pidkiqQuestions->getQuestionsData()) {
+        if ($questionsData = $this->preciseIdQuestions->getQuestionsData()) {
             $form = $this->createForm(new QuestionsType($questionsData));
             return array(
                 'status'    => 'ok',
@@ -80,7 +80,7 @@ class PidkiqController extends Base
                 array(
                     'status'            => 'error',
                     'error'             => $this->getErrorMessageQuestionNotFound(),
-                    'isValidUser'       => $this->pidkiqQuestions->isValidUser(),
+                    'isValidUser'       => $this->preciseIdQuestions->isValidUser(),
                 )
             );
         }
@@ -92,7 +92,7 @@ class PidkiqController extends Base
      */
     public function executeAction(Request $request)
     {
-        if ($questions = $this->pidkiqQuestions->retrieveQuestions()) {
+        if ($questions = $this->preciseIdQuestions->retrieveQuestions()) {
             $form = $this->createForm(new QuestionsType($questions));
         } else {
             $this->setupUserIsValidUserIntoSession($request);
@@ -100,14 +100,14 @@ class PidkiqController extends Base
                 array(
                     'status'          => 'error',
                     'error'           => $this->getErrorMessageQuestionNotFound(),
-                    'isValidUser'     => $this->pidkiqQuestions->isValidUser(),
+                    'isValidUser'     => $this->preciseIdQuestions->isValidUser(),
                 )
             );
         }
         $this->setupUserIsValidUserIntoSession($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            if ($this->pidkiqQuestions->processForm($form)) {
+            if ($this->preciseIdQuestions->processForm($form)) {
                 return new JsonResponse(
                     array(
                         'success' => true,

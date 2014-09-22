@@ -263,7 +263,8 @@
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
         "sensio/generator-bundle": "dev-master",
         "khepin/yaml-fixtures-bundle": "dev-master",
-        "comfortablynumb/backup-restore-bundle": "dev-master"
+        "comfortablynumb/backup-restore-bundle": "dev-master",
+        "ton/email-bundle": "1.0.*"
     },
     "scripts": {
         "post-install-cmd": [

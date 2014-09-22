@@ -82,6 +82,7 @@ sonata_admin:
                 - sonata.admin.orders
                 - sonata.admin.operations
                 - sonata.admin.jobs
+                - sonata.admin.settings
             RentJeeves:
               items:
                 - sonata.admin.payments

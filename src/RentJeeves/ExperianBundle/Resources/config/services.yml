@@ -1,2 +1,3 @@
 parameters:
-    experian.config.class: RentJeeves\ExperianBundle\ExperianConfig
+    experian.net_connect.credit_profile.class: RentJeeves\ExperianBundle\NetConnect\CreditProfile
+    experian.net_connect.precise_id.class: RentJeeves\ExperianBundle\NetConnect\PreciseID

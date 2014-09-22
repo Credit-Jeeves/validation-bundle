@@ -3,4 +3,4 @@ fixtures:
   cjTenantReportPrequal_1:
     user: Tenant_9
     created_at: '-5 days' 
-    raw_data: '%file:src/RentJeeves/TestBundle/Resources/experian/netConnect/marion.arf%'
+    raw_data: '%file:src/RentJeeves/TestBundle/Resources/NetConnect/CreditProfile/marion.arf%'

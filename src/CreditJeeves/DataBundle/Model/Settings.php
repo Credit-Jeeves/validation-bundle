@@ -2,10 +2,10 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
- * @ORM\HasLifecycleCallbacks()
  */
 abstract class Settings
 {
@@ -17,47 +17,46 @@ abstract class Settings
     protected $id;
 
     /**
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(name="precise_id_user_pwd", type="encrypt")
      */
-    protected $pidkiq_password;
+    protected $preciseIDUserPwd;
 
     /**
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(name="precise_id_eai", type="encrypt")
      */
-    protected $pidkiq_eai;
-
-    /**
-     *
-     * @ORM\Column(type="encrypt")
-     */
-    protected $net_connect_password;
+    protected $preciseIDEai;
 
     /**
      *
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(name="credit_profile_user_pwd", type="encrypt")
      */
-    protected $net_connect_eai;
+    protected $creditProfileUserPwd;
 
     /**
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(name="credit_profile_eai", type="encrypt")
+     */
+    protected $creditProfileEai;
+
+    /**
+     *
+     * @ORM\Column(name="contract", type="text")
      */
     protected $contract;
 
     /**
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(name="rights", type="text")
      */
     protected $rights;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated_at", type="datetime")
      */
-    protected $updated_at;
+    protected $updatedAt;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -65,48 +64,24 @@ abstract class Settings
         return $this->id;
     }
 
-    public function __construct()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
     /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdate()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * Set pidkiq password
+     * @param string $password
      *
-     * @param string $score
-     * @return Score
+     * @return $this
      */
-    public function setPidkiqPassword($password)
+    public function setPreciseIDUserPwd($password)
     {
-        $this->pidkiq_password = $password;
+        $this->preciseIDUserPwd = $password;
 
         return $this;
     }
 
     /**
-     * Get  pidkiq password
-     *
      * @return string
      */
-    public function getPidkiqPassword()
+    public function getPreciseIDUserPwd()
     {
-        return $this->pidkiq_password;
+        return $this->preciseIDUserPwd;
     }
 
     public function setRights($rights)
@@ -122,79 +97,69 @@ abstract class Settings
     }
 
     /**
-     * Set pidkiq_eai
-     *
-     * @param encrypt $pidkiqEai
-     * @return Settings
+     * @return string
      */
-    public function setPidkiqEai($pidkiqEai)
+    public function getPreciseIDEai()
     {
-        $this->pidkiq_eai = $pidkiqEai;
+        return $this->preciseIDEai;
+    }
+
+    /**
+     * @param mixed $preciseIDEai
+     *
+     * @return $this
+     */
+    public function setPreciseIDEai($preciseIDEai)
+    {
+        $this->preciseIDEai = $preciseIDEai;
 
         return $this;
     }
 
     /**
-     * Get pidkiq_eai
+     * @param string $netConnectPassword
      *
-     * @return encrypt
+     * @return $this
      */
-    public function getPidkiqEai()
+    public function setCreditProfileUserPwd($netConnectPassword)
     {
-        return $this->pidkiq_eai;
-    }
-
-    /**
-     * Set net_connect_password
-     *
-     * @param encrypt $netConnectPassword
-     * @return Settings
-     */
-    public function setNetConnectPassword($netConnectPassword)
-    {
-        $this->net_connect_password = $netConnectPassword;
+        $this->creditProfileUserPwd = $netConnectPassword;
 
         return $this;
     }
 
     /**
-     * Get net_connect_password
-     *
-     * @return encrypt
+     * @return string
      */
-    public function getNetConnectPassword()
+    public function getCreditProfileUserPwd()
     {
-        return $this->net_connect_password;
+        return $this->creditProfileUserPwd;
     }
 
     /**
-     * Set net_connect_eai
+     * @param string $netConnectEai
      *
-     * @param encrypt $netConnectEai
-     * @return Settings
+     * @return $this
      */
-    public function setNetConnectEai($netConnectEai)
+    public function setCreditProfileEai($netConnectEai)
     {
-        $this->net_connect_eai = $netConnectEai;
+        $this->creditProfileEai = $netConnectEai;
 
         return $this;
     }
 
     /**
-     * Get net_connect_eai
-     *
-     * @return encrypt
+     * @return string
      */
-    public function getNetConnectEai()
+    public function getCreditProfileEai()
     {
-        return $this->net_connect_eai;
+        return $this->creditProfileEai;
     }
 
     /**
-     * Set contract
-     *
      * @param string $contract
-     * @return Settings
+     *
+     * @return $this
      */
     public function setContract($contract)
     {
@@ -204,8 +169,6 @@ abstract class Settings
     }
 
     /**
-     * Get contract
-     *
      * @return string
      */
     public function getContract()
@@ -214,25 +177,22 @@ abstract class Settings
     }
 
     /**
-     * Set updated_at
-     *
      * @param \DateTime $updatedAt
+     *
      * @return Settings
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get updated_at
-     *
      * @return \DateTime
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 }

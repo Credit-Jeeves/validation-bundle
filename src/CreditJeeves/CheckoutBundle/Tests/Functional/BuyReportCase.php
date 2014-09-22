@@ -139,20 +139,12 @@ class BuyReportCase extends BaseTestCase
      */
     public function authorizeNetAimCheckEmail()
     {
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
 
-        $email->click();
-        $this->assertNotNull($subject = $this->page->find('css', '#subject span'));
-        $this->assertEquals('Receipt from Credit Jeeves', $subject->getText());
-        $this->assertNotNull($body = $this->page->find('css', '#body'));
-
-        $this->page->clickLink('text/html');
-
-        $this->assertEquals(1, preg_match("/Reference Number: (.*)/", $this->page->getText(), $matches));
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $this->assertEquals('Receipt from Credit Jeeves', $email->getSubject());
+        $this->assertEquals(1, preg_match("/Reference Number: (.*)/", $email->getBody(), $matches));
         $this->assertNotEmpty($matches[1]);
     }
 }

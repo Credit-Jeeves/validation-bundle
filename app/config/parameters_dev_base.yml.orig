@@ -1,0 +1,42 @@
+parameters:
+    database_host: localhost
+    database_driver: pdo_mysql
+    database_port: null
+    mailer_transport: mail
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+
+    session.lifetime:  3600 #in seconds
+    mink.browser_name: 'firefox'
+    mink.base_url: 'http://%server_name%/_test.php'
+    mink.coverage_script_url: 'http://%server_name%/bundles/mink/phpunit_coverage.php'
+    server: dev
+    google_maps_key: 'AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24'
+    payment_report_path: /tmp
+    authorize_net:
+        login_id: '7hNc5K44'
+        transaction_key: '5588K4QpHFhhqL5A'
+        sandbox: true
+    heartland:
+        env: testing
+        application_id: 3
+        username: RTAPI
+        password: $RTapi13
+<<<<<<< HEAD
+
+    net_connect.precise_id.userpwd: 'renttrack_pid_demo:UdWU3aSDkjxa' #required! # overwritten by DB
+    net_connect.precise_id.eai: 'HRPCX4RA' #required! # overwritten by DB
+    net_connect.precise_id.url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
+    net_connect.precise_id.dbhost: 'PRECISE_ID_TEST' #required!
+    net_connect.precise_id.sub_code: '2279720' #required!
+    net_connect.credit_profile.url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnectDemo&serviceVersion=2.0&responseType=text/plain' #required!
+    net_connect.credit_profile.userpwd: 'renttrack_nc_demo:MEPCTQ8zdZRx' #required! # overwritten by DB
+    net_connect.credit_profile.eai: 'HRPCX4RA' #required! # overwritten by DB
+    net_connect.credit_profile.dbhost: 'STAR' #required!
+    net_connect.credit_profile.sub_code: '2266580' #required!
+    net_connect.credit_profile.d2c.sub_code: '2266580' #required!
+=======
+    login.attempts: 1
+    login.delay: 1
+>>>>>>> 5a050073dc9697bb0fc16f0f9cf5b0b737479ac0

@@ -1,0 +1,7 @@
+<?xml version="1.0" standalone="no"?>
+<NetConnectResponse xmlns="http://www.experian.com/NetConnectResponse">
+    <CompletionCode>0000</CompletionCode>
+    <ReferenceId>123</ReferenceId>
+    <TransactionId>11640008</TransactionId>
+    <HostResponse><![CDATA[1100040041714194116TMD10700K11204172014@361005427420027 CKPT: INPUT SSN ISSUE DATE UNVERIFIED@361004607340007 *****  NO RECORD FOUND  *****@950001600400156@]]></HostResponse>
+</NetConnectResponse>

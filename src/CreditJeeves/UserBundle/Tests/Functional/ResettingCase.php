@@ -35,32 +35,22 @@ class ResettingCase extends BaseTestCase
      */
     public function checkEmail()
     {
-        $this->setDefaultSession('goutte');
-//        $this->setDefaultSession('selenium2');
-        $this->visitEmailsPage();
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails);
 
-        $this->assertNotNull($links = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $links);
 
-        $this->page->clickLink('email_1');
-
-        $this->assertNotNull($subject = $this->page->find('css', '#subject span'));
-        $this->assertEquals('Reset Password', $subject->getText());
-
-        $this->page->clickLink('text/html');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $this->assertEquals('Reset Password', $email->getSubject());
 
         $this->assertEquals(
             1,
             preg_match(
                 "/.*href=\"(.*)\".*Click here to change your password./is",
-                $this->page->getContent(),
+                $email->getBody(),
                 $matches
             )
         );
         $this->assertNotEmpty($matches[1]);
-//        die('OK');
-//        $this->setDefaultSession('symfony');
-//        $this->setDefaultSession('selenium2');
         $this->session->visit($matches[1]);
     }
 //

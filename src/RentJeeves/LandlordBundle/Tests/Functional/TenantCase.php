@@ -273,10 +273,7 @@ class TenantCase extends BaseTestCase
         $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
     }
 
     /**
@@ -315,10 +312,7 @@ class TenantCase extends BaseTestCase
         $this->assertEquals('All (6)', $allh2->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
@@ -424,15 +418,13 @@ class TenantCase extends BaseTestCase
         // end
 
         $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
-        $link->click();
-        //$this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_tenanttype').is(':visible')");
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $crawler = $this->getCrawlerObject($email->getBody());
+        $url = $crawler->filter('#payRentLink')->getNode(0)->getAttribute('href');
+
+        $this->session->visit($url);
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_tenanttype'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
@@ -644,10 +636,7 @@ class TenantCase extends BaseTestCase
         $this->assertEquals('contract.reminder.error.already.send', $error->getText(), 'Wrong text error');
         $this->logout();
         // check email
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount($nCountEmails, $email, 'Wrong number of emails');
+        $this->assertCount($nCountEmails, $this->getEmails(), 'Wrong number of emails');
         // end
     }
 
@@ -767,9 +756,6 @@ class TenantCase extends BaseTestCase
         $this->assertEquals('All (0)', $all->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
     }
 }

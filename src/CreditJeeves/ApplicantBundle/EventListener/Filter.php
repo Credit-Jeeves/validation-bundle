@@ -103,7 +103,7 @@ class Filter implements ContainerAwareInterface
      */
     public function isVerified(FilterEvent $event)
     {
-        if (UserIsVerified::FAILED == $this->getUser()->getIsVerified()) {
+        if (UserIsVerified::LOCKED == $this->getUser()->getIsVerified()) {
             $this->getSession()->getFlashBag()->add('message_title', $this->trans('pidkiq.title'));
             $this->getSession()->getFlashBag()->add(
                 'message_body',

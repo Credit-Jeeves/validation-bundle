@@ -3,6 +3,7 @@ namespace CreditJeeves\TestBundle\Functional;
 
 use Behat\Mink\Driver\Selenium2Driver;
 use CreditJeeves\TestBundle\BaseTestCase as Base;
+use Ton\EmailBundle\EmailReader;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -37,9 +38,34 @@ abstract class BaseTestCase extends Base
         return $this->url;
     }
 
-    protected function visitEmailsPage()
+    /**
+     * @return EmailReader
+     */
+    protected function getEmailReader()
     {
-        $this->session->visit('http://' . static::getContainer()->getParameter('server_name') . '/test.php/sfEmail');
+        return $this->getContainer()->get('ton.email_bundle.email_reader');
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEmails()
+    {
+        return $this->getEmailReader()->getAllEmails();
+    }
+
+    protected function clearEmail()
+    {
+        $this->getEmailReader()->clear();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function load($reload = false)
+    {
+        parent::load($reload);
+        $this->clearEmail();
     }
 
     /**
@@ -61,26 +87,6 @@ abstract class BaseTestCase extends Base
     {
         $this->getMink()->setDefaultSessionName($name);
         $this->setUp();
-    }
-
-    /**
-     * Load fixtures
-     *
-     * @param bool $reload
-     * @return void
-     */
-    protected function load($reload = false)
-    {
-        parent::load($reload);
-        $this->clearEmail();
-    }
-
-    protected function clearEmail()
-    {
-        $session = $this->getMink()->getSession('goutte');
-        $baseUrl = 'http://' . static::getContainer()->getParameter('server_name') . '/test.php/sfPhpunit/';
-
-        $session->visit($baseUrl . 'cc');
     }
 
     /**
@@ -189,13 +195,14 @@ abstract class BaseTestCase extends Base
      * Retrieve absolute url
      *
      * @param string $text
+     * @param string $postfix
      *
      * @retrun string
      */
-    protected function retrieveAbsoluteUrl($text)
+    protected function retrieveAbsoluteUrl($text, $postfix = '')
     {
         $matches = array();
-        if (0 === preg_match("/https?:\/\/[^ \n]*/", $text, $matches)) {
+        if (0 === preg_match("/https?:\/\/{$postfix}[^ \n]*/", $text, $matches)) {
             return false;
         }
         if (empty($matches[0])) {

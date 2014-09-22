@@ -17,6 +17,8 @@ class CheckCase extends BaseTestCase
         $this->load(true);
         $this->userLoginCheck();
         $this->userFailAttempt();
+        $this->session->visit($this->getUrl());
+        $this->userFailAttempt();
         $this->userCheckError();
         $this->logout();
         $this->login('john@example.com', 'pass');

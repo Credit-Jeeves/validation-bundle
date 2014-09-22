@@ -171,9 +171,6 @@ class SourcesCase extends BaseTestCase
         $this->logout();
 
         //Check email notify landlord about removed contract by tenant
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
     }
 }

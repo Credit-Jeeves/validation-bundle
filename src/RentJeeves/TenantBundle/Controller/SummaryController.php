@@ -113,7 +113,7 @@ class SummaryController extends Controller
         /**
          * @var $pidkiqQuestions PidkiqQuestions
          */
-        $pidkiqQuestions = $this->get('pidkiq.questions');
+        $pidkiqQuestions = $this->get('experian.net_connect.precise_id.questions');
 
         if ($pidkiqQuestions->processQuestions()) {
             $form = $this->createForm(new QuestionsType($pidkiqQuestions->getQuestionsData()));

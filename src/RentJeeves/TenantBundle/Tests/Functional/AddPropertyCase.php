@@ -132,24 +132,14 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(5, $tr, 'List of property');
-    }
 
-    /**
-     * test
-     * @depends invite
-     */
-    public function checkInvite()
-    {
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
-        $url = $link->getAttribute('href');
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $crawler = $this->getCrawlerObject($email->getBody());
+        $url = $crawler->filter('#payRentLinkLandlord')->getNode(0)->getAttribute('href');
         $this->clearEmail();
+
         $this->setDefaultSession('selenium2');
         $this->session->visit($url);
         $this->session->wait($this->timeout, '$("#invitelandlordtype").length > 0');
@@ -177,10 +167,7 @@ class AddPropertyCase extends BaseTestCase
         $this->assertCount(1, $contract, 'Wrong number of contract');
         $this->logout();
         //Check notify tenant about landlord come
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
     }
 
     /**
