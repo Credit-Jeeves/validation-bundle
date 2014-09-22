@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Model;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\YardiSettings;
 
 /**
  * @Serializer\XmlRoot("ResidentTransactions")
@@ -17,9 +18,9 @@ class ResidentTransactions
      */
     protected $property;
 
-    public function __construct($orders = null)
+    public function __construct(YardiSettings $yardiSettings, $orders = null)
     {
-        $this->property = new Property($orders);
+        $this->property = new Property($yardiSettings, $orders);
     }
 
     /**

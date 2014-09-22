@@ -2,8 +2,11 @@
 
 namespace RentJeeves\ExternalApiBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
 use JMS\Serializer\Annotation as Serializer;
 use CreditJeeves\DataBundle\Entity\Order;
+use RentJeeves\DataBundle\Entity\YardiSettings;
+use Exception;
 
 class Payment
 {
@@ -14,7 +17,7 @@ class Payment
      * @Serializer\Type("string")
      * @Serializer\Groups({"soapYardiRequest"})
      */
-    protected $type = "Check";
+    protected $type;
 
     /**
      * @Serializer\SerializedName("Detail")
@@ -23,9 +26,38 @@ class Payment
      */
     protected $detail;
 
-    public function __construct(Order $order = null)
+    public function __construct(YardiSettings $yardiSettings, Order $order = null)
     {
         $this->setDetail($order);
+
+        $orderType = $order->getType();
+        $this->type = self::getType($yardiSettings, $orderType);
+    }
+
+    public static function getType(YardiSettings $yardiSettings, $orderType)
+    {
+        switch ($orderType) {
+            case OrderType::HEARTLAND_BANK:
+                $type = $yardiSettings->getPaymentTypeACH();
+                break;
+            case OrderType::HEARTLAND_CARD:
+                $type = $yardiSettings->getPaymentTypeCC();
+                break;
+            default:
+                throw new Exception(
+                    sprintf(
+                        "Order type '%s' can't be process. Provide yardi settings for it.",
+                        $orderType
+                    )
+                );
+        }
+
+        return self::formatType($type);
+    }
+
+    public static function formatType($type)
+    {
+        return ucfirst($type);
     }
 
     /**

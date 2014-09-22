@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\YardiSettings;
 
 class Property
 {
@@ -14,9 +15,9 @@ class Property
      */
     protected $rtCustomer;
 
-    public function __construct($orders = null)
+    public function __construct(YardiSettings $yardiSettings, $orders = null)
     {
-        $this->rtCustomer = new RtCustomer($orders);
+        $this->rtCustomer = new RtCustomer($yardiSettings, $orders);
     }
 
     /**

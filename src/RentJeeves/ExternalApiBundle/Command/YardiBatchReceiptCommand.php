@@ -20,6 +20,13 @@ class YardiBatchReceiptCommand extends ContainerAwareCommand
                 InputOption::VALUE_OPTIONAL,
                 'Date in format YYYY-MM-DD'
             )
+            ->addOption(
+                'force',
+                true,
+                InputOption::VALUE_OPTIONAL,
+                'Clear database table order_external_api, payments which we already send before on this depositdate.
+                 Can be: true/false. By default true.'
+            )
             ->setDescription(
                 'Pushes payments to Yardi packing them into batches by batchId.'
             );
@@ -34,9 +41,12 @@ class YardiBatchReceiptCommand extends ContainerAwareCommand
             $date = new DateTime();
         }
 
+        $clearDb = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
+
         $this->getContainer()
             ->get('yardi.push_batch_receipts')
             ->usingOutput($output)
+            ->isCleanDBAlreadySentOut($clearDb)
             ->run($date);
     }
 }

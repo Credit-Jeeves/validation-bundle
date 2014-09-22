@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Model;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\YardiSettings;
 
 class RtServiceTransactions
 {
@@ -14,14 +15,14 @@ class RtServiceTransactions
      */
     protected $transactions = array();
 
-    public function __construct($orders = null)
+    public function __construct(YardiSettings $yardiSettings, $orders = null)
     {
         if (!$orders) {
             return;
         }
 
         foreach ($orders as $order) {
-            $this->transactions[] = new Transactions($order);
+            $this->transactions[] = new Transactions($yardiSettings, $order);
         }
     }
 

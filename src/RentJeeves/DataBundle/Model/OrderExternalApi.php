@@ -3,9 +3,11 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
+ * @TODO remove depositDate we already have it on order
+ * @TODO make unique index by order id and apiType
+ *
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
@@ -19,11 +21,15 @@ abstract class OrderExternalApi
     protected $id;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Order",
-     *     inversedBy="externalApi"
+     *     inversedBy="sentOrder"
      * )
-     * @ORM\JoinColumn(name="order_id", referencedColumnName="id")
+     * @ORM\JoinColumn(
+     *      name="order_id",
+     *      referencedColumnName="id",
+     *      nullable=false
+     * )
      */
     protected $order;
 
@@ -32,19 +38,21 @@ abstract class OrderExternalApi
      *     type="ExternalApi",
      *     options={
      *         "default"="yardi"
-     *     }
+     *     },
+     *     name="api_type",
+     *     nullable=false
      * )
      */
     protected $apiType;
 
     /**
-     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
-     *     name="created_at",
-     *     type="datetime"
+     *     name="deposit_date",
+     *     type="date",
+     *     nullable=false
      * )
      */
-    protected $createdAt;
+    protected $depositDate;
 
     /**
      * @param string $apiType
@@ -65,17 +73,17 @@ abstract class OrderExternalApi
     /**
      * @param DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setDepositDate(\DateTime $depositDate)
     {
-        $this->createdAt = $createdAt;
+        $this->depositDate = $depositDate;
     }
 
     /**
      * @return DateTime
      */
-    public function getCreatedAt()
+    public function getDepositDate()
     {
-        return $this->createdAt;
+        return $this->depositDate;
     }
 
     /**

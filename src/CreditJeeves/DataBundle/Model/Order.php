@@ -133,17 +133,22 @@ abstract class Order
     protected $operations;
 
     /**
-     * @ORM\OneToMany(targetEntity = "\RentJeeves\DataBundle\Entity\JobRelatedOrder", mappedBy = "order")
+     * @ORM\OneToMany(
+     *      targetEntity = "\RentJeeves\DataBundle\Entity\JobRelatedOrder",
+     *      mappedBy = "order"
+     * )
      * @Serializer\Exclude
      */
     protected $jobs;
 
     /**
-     * @ORM\OneToOne(targetEntity="RentJeeves\DataBundle\Entity\OrderExternalApi")
-     * @ORM\JoinColumn(name="external_api_id", referencedColumnName="id")
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\OrderExternalApi",
+     *      mappedBy = "order"
+     * )
      * @Serializer\Exclude
      */
-    protected $externalApi;
+    protected $sentOrder;
 
     public function __construct()
     {
@@ -151,23 +156,24 @@ abstract class Order
         $this->authorizes = new ArrayCollection();
         $this->heartlands = new ArrayCollection();
         $this->operations = new ArrayCollection();
+        $this->sentOrder  = new ArrayCollection();
         $this->created_at = new DateTime();
     }
 
     /**
      * @param OrderExternalApi $externalApi
      */
-    public function setExternalApi(OrderExternalApi $externalApi)
+    public function addSendOrder(OrderExternalApi $sentOrder)
     {
-        $this->externalApi = $externalApi;
+        $this->sentOrder->add($sentOrder);
     }
 
     /**
-     * @return OrderExternalApi
+     * @return ArrayCollection
      */
-    public function getExternalApi()
+    public function getSentOrder()
     {
-        return $this->externalApi;
+        return $this->sentOrder;
     }
 
     /**

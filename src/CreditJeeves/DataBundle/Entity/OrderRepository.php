@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ExternalApi;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
@@ -347,48 +348,93 @@ class OrderRepository extends EntityRepository
         return $query->getQuery()->getSingleScalarResult();
     }
 
-    public function getReceiptBatch(
+    public function getBatchIds(
         DateTime $depositDate,
         Holding $holding,
         $start,
-        $limit,
-        $remotePropertyId = null
+        $limit
     ) {
-        $query = $this->createQueryBuilder('order');
-        $query->innerJoin('order.operations', 'operation');
+        $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
+        $query->groupBy("heartland.batchId");
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    public function getPropertyMapping(
+        DateTime $depositDate,
+        Holding $holding,
+        $batchId,
+        $start,
+        $limit
+    ) {
+        $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
+        $query->andWhere('heartland.batchId = :batchId');
+        $query->groupBy("mapping.landlordPropertyId");
+        $query->setParameter('batchId', $batchId);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    public function getReceiptBatch(
+        DateTime $depositDate,
+        Holding $holding,
+        $batchId,
+        $remotePropertyId,
+        $start,
+        $limit
+    ) {
+        $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
+        $query->andWhere("mapping.landlordPropertyId = :remoteId");
+        $query->andWhere("heartland.batchId = :batchId");
+        $query->setParameter('batchId', $batchId);
+        $query->setParameter('remoteId', $remotePropertyId);
+
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    protected function getBaseReceiptBatchQuery(
+        DateTime $depositDate,
+        Holding $holding,
+        $start,
+        $limit
+    ) {
+        $query = $this->createQueryBuilder('ord');
+        $query->innerJoin('ord.operations', 'operation');
         $query->innerJoin('operation.contract', 'contract');
         $query->innerJoin('contract.group', 'group');
         $query->innerJoin('group.holding', 'holding');
         $query->innerJoin('contract.tenant', 'tenant');
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('property.propertyMapping', 'mapping');
-        $query->innerJoin('property.unit', 'unit');
-        $query->innerJoin('o.heartlands', 'heartland');
-        $query->where("heartland.depositDate = :depositDate");
+        $query->innerJoin('ord.heartlands', 'heartland');
+        $query->leftJoin(
+            'ord.sentOrder',
+            'externalApi',
+            Expr\Join::WITH,
+            'externalApi.depositDate = :depositDate1 AND externalApi.apiType = :apiType'
+        );
+        $query->where("heartland.depositDate = :depositDate2");
+        $query->andWhere('externalApi.id IS NULL');
         $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
         $query->andWhere('mapping.landlordPropertyId IS NOT NULL');
-        $query->andWhere('order.status = :orderStatus');
-        $query->andWhere('operation.status = :rentStatus AND operation.status = :otherStatus');
+        $query->andWhere('ord.status = :orderStatus');
+        $query->andWhere('operation.type = :rentStatus OR operation.type = :otherStatus');
         $query->andWhere('mapping.holding = :holdingId');
+
+        $query->setParameter('apiType', ExternalApi::YARDI);
+        $query->setParameter('depositDate1', $depositDate->format('Y-m-d'));
+        $query->setParameter('depositDate2', $depositDate->format('Y-m-d'));
+        $query->setParameter('orderStatus', OrderStatus::COMPLETE);
         $query->setParameter('rentStatus', OperationType::RENT);
         $query->setParameter('otherStatus', OperationType::OTHER);
-        $query->setParameter('orderStatus', OrderStatus::COMPLETE);
         $query->setParameter('holdingId', $holding->getId());
-        $query->setParameter('depositDate', $depositDate->format('Y-m-d'));
-        $query->orderBy('heartland.depositDate', 'ASC');
-
-
-        if ($remotePropertyId) {
-            $query->where("mappign.landlordPropertyId = :remoteId");
-            $query->setParameter('remoteId', $remotePropertyId);
-        } else {
-            $query->groupBy("mapping.landlordPropertyId");
-        }
-
-
         $query->setFirstResult($start);
         $query->setMaxResults($limit);
-        $query = $query->getQuery();
-        return $query->execute();
+
+        return $query;
     }
 }

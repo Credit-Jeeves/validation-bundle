@@ -616,7 +616,7 @@ class Order extends BaseOrder
      */
     public function getDocumentNumber()
     {
-        $this->getHeartlandTransactionId();
+        return $this->getHeartlandTransactionId();
     }
 
     /**
@@ -683,11 +683,6 @@ class Order extends BaseOrder
     public function getPropertyPrimaryID()
     {
         $mapping = $this->getContract()->getProperty()->getPropertyMapping();
-
-        if (!empty($mapping) && $mapping->first()) {
-            return $mapping->first()->getLandlordPropertyId();
-        }
-
-        return null;
+        return $mapping->first()->getLandlordPropertyId();
     }
 }

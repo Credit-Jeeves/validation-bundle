@@ -2763,6 +2763,18 @@
                 <source>yardi.sync_balance.label</source>
                 <target>Sync balance?</target>
             </trans-unit>
+            <trans-unit id="common.status">
+                <source>common.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="common.type_ach_cc">
+                <source>common.type_ach_cc</source>
+                <target><![CDATA[Type ACH/CC]]></target>
+            </trans-unit>
+            <trans-unit id="common.batch_id">
+                <source>common.batch_id</source>
+                <target>Batch ID</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

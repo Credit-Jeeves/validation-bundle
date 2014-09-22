@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
-use RentJeeves\CoreBundle\DateTime;
+use \DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use SoapVar;
 

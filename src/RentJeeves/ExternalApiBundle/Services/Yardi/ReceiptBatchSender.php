@@ -2,18 +2,22 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\Serializer\SerializationContext;
 use \DateTime;
-use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\ExternalApiBundle\Services\Yardi\YardiBatchReceiptMailer;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\ExternalApi;
+use RentJeeves\ExternalApiBundle\Model\Payment;
 use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
@@ -29,13 +33,13 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
  *
  * @Service("yardi.push_batch_receipts")
  */
-class ReceiptBatch
+class ReceiptBatchSender
 {
     const LIMIT_ORDERS = 500;
 
     const LIMIT_HOLDING = 50;
 
-    const REQUEST_SUCCESSFULLY = 'successfully';
+    const REQUEST_SUCCESSFUL = 'successfully';
 
     const REQUEST_FAILED = 'failed';
 
@@ -80,7 +84,7 @@ class ReceiptBatch
     protected $requests = array();
 
     /**
-     * @var Mailer
+     * @var YardiBatchReceiptMailer
      */
     protected $mailer;
 
@@ -88,12 +92,18 @@ class ReceiptBatch
      * @var ExceptionCatcher
      */
     protected $exceptionCatcher;
+
+    /**
+     * @var bool
+     */
+    protected $isCleanDBAlreadySentOut = true;
+
     /**
      * @InjectParams({
      *     "em"                 = @Inject("doctrine.orm.default_entity_manager"),
      *     "clientFactory"      = @Inject("soap.client.factory"),
      *     "serializer"         = @Inject("jms_serializer"),
-     *     "mailer"             = @Inject("project.mailer"),
+     *     "mailer"             = @Inject("yardi.receipt_mailer"),
      *     "exceptionCatcher"   = @Inject("fp_badaboom.exception_catcher")
      * })
      */
@@ -101,7 +111,7 @@ class ReceiptBatch
         EntityManager $em,
         SoapClientFactory $clientFactory,
         Serializer $serializer,
-        Mailer $mailer,
+        YardiBatchReceiptMailer $mailer,
         ExceptionCatcher $exceptionCatcher
     ) {
         $this->em = $em;
@@ -122,6 +132,16 @@ class ReceiptBatch
     }
 
     /**
+     * @param $isCleanDBAlreadySentOut
+     * @return $this
+     */
+    public function isCleanDBAlreadySentOut($isCleanDBAlreadySentOut)
+    {
+        $this->isCleanDBAlreadySentOut = $isCleanDBAlreadySentOut;
+        return $this;
+    }
+
+    /**
      * @param DateTime $depositDate
      */
     public function run(DateTime $depositDate = null)
@@ -131,8 +151,13 @@ class ReceiptBatch
         }
 
         $this->depositDate = $depositDate;
-        $startPagination = 1;
+        $startPagination = 0;
         $this->logMessage("Deposit date: ".$depositDate->format('Y-m-d'));
+
+        if ($this->isCleanDBAlreadySentOut) {
+            $this->clearSentOrders();
+        }
+
         try {
             while (
                 $holdings = $this->getHoldingRepository()->findHoldingsWhithYardiSettings(
@@ -140,21 +165,31 @@ class ReceiptBatch
                     self::LIMIT_HOLDING
                 )
             ) {
-                $this->processHolding($holdings);
+                $this->pushHoldingReceipts($holdings);
                 $startPagination += self::LIMIT_HOLDING;
                 $this->em->clear();
                 gc_collect_cycles();
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
-            $this->logMessage(sprintf("Failed %s", $e->getMessage()));
+            $this->logMessage(sprintf("Failed \n%s", $e->getMessage()));
         }
+    }
+
+    protected function clearSentOrders()
+    {
+        $this->logMessage("Clear OrderExternalApi table");
+        $repository = $this->em->getRepository('RjDataBundle:OrderExternalApi');
+        $repository->removeByDateAndApiType(
+            $this->depositDate,
+            ExternalApi::YARDI
+        );
     }
 
     /**
      * @param $holdings
      */
-    protected function processHolding($holdings)
+    protected function pushHoldingReceipts($holdings)
     {
         foreach ($holdings as $holding) {
             $this->logMessage(
@@ -166,19 +201,25 @@ class ReceiptBatch
             );
             $yardiSettings = $holding->getYardiSettings();
             $this->initClient($yardiSettings);
-            $this->processRemotePropertyId($holding);
-            $this->finishProcessHolding($holding);
+            $this->pushReceiptBatchByBatchId($holding);
+            $this->logMessage(
+                sprintf(
+                    "Sending emails for holding %s",
+                    $holding->getId()
+                )
+            );
+            $this->mailer->send($this->requests);
         }
     }
 
     /**
      * @param Holding $holding
      */
-    protected function processRemotePropertyId(Holding $holding)
+    public function pushReceiptBatchByBatchId(Holding $holding)
     {
-        $startPagination = 1;
+        $startPagination = 0;
         while (
-            $orders = $this->getOrderRepository()->getReceiptBatch(
+            $orders = $this->getOrderRepository()->getBatchIds(
                 $this->depositDate,
                 $holding,
                 $startPagination,
@@ -189,12 +230,40 @@ class ReceiptBatch
              * @var $order Order
              */
             foreach ($orders as $order) {
+                $batchId =$order->getHeartlandTransaction()->getBatchId();
+                $this->pushReceiptBatchByPropertyMapping($holding, $batchId);
+            }
+
+            $startPagination += self::LIMIT_ORDERS;
+        }
+    }
+
+    /**
+     * @param Holding $holding
+     * @param $batchId
+     */
+    protected function pushReceiptBatchByPropertyMapping(Holding $holding, $batchId)
+    {
+        $startPagination = 0;
+        while (
+            $orders = $this->getOrderRepository()->getPropertyMapping(
+                $this->depositDate,
+                $holding,
+                $batchId,
+                $startPagination,
+                self::LIMIT_ORDERS
+            )
+        ) {
+            /**
+             * @var $order Order
+             */
+            foreach ($orders as $order) {
                 $property = $order->getContract()->getProperty();
-                $remotePropertyId = $property->getPropertyMapping()->getLandlordPropertyId();
-                $description = $property->getFullAddress();
+                $mapping = $property->getPropertyMapping()->first();
+                $remotePropertyId = $mapping->getLandlordPropertyId();
 
                 try {
-                    $this->processOrders($holding, $remotePropertyId, $description);
+                    $this->pushReceiptBatch($holding, $batchId, $remotePropertyId);
                 } catch (Exception $e) {
                     $this->logMessage($e->getMessage());
                     $this->exceptionCatcher->handleException($e);
@@ -207,34 +276,40 @@ class ReceiptBatch
 
     /**
      * @param Holding $holding
+     * @param $batchId
      * @param $remotePropertyId
-     * @param null $description
+     * @throws \Exception
      */
-    protected function processOrders(Holding $holding, $remotePropertyId, $description = null)
+    protected function pushReceiptBatch(Holding $holding, $batchId, $remotePropertyId)
     {
-        $startPagination = 1;
+        $startPagination = 0;
         while (
-            $ordersReceiptBatch = $this->getOrder()->getReceiptBatch(
+            $ordersReceiptBatch = $this->getOrderRepository()->getReceiptBatch(
                 $this->depositDate,
                 $holding,
+                $batchId,
+                $remotePropertyId,
                 $startPagination,
-                self::LIMIT_ORDERS,
-                $remotePropertyId
+                self::LIMIT_ORDERS
             )
         ) {
             try {
-                $result = $this->execute(
+                $yardiBatchId = $this->getBatchId($remotePropertyId, $batchId);
+                $result = $this->sendReceiptsBatchToApi(
                     $ordersReceiptBatch,
-                    $this->getBatchId($remotePropertyId, $description)
+                    $yardiBatchId
                 );
 
                 if ($result === true) {
-                    $this->successfullRequest($holding, $ordersReceiptBatch);
+                    $this->saveSuccessfullRequest($holding, $ordersReceiptBatch, $yardiBatchId);
                 } else {
-                    $this->failedRequest($holding, $ordersReceiptBatch);
+                    $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId);
                 }
             } catch (Exception $e) {
-                $this->failedRequest($holding, $ordersReceiptBatch);
+                if (empty($yardiBatchId) || !isset($yardiBatchId)) {
+                    $yardiBatchId = 'undefined';
+                }
+                $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId);
                 throw $e;
             }
 
@@ -246,22 +321,30 @@ class ReceiptBatch
      * @param array $orders
      * @param string $batchId
      */
-    protected function execute($orders, $batchId)
+    protected function sendReceiptsBatchToApi($orders, $batchId)
     {
-        $transaction = new ResidentTransactions($orders);
+        $this->logMessage(
+            sprintf(
+                "Try to send payments in the amount of %s pieces",
+                count($orders)
+            )
+        );
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('soapYardiRequest');
-        $residentTransactions = new ResidentTransactions($orders);
+        $residentTransactions = new ResidentTransactions(
+            $this->paymentClient->getSettings(),
+            $orders
+        );
         $xml = $this->serializer->serialize(
             $residentTransactions,
             'xml',
             $context
         );
-
+        $xml = $this->prepareXml($xml);
         $this->paymentClient->addReceiptsToBatch(
             $batchId,
-            $this->prepeaXml($xml)
+            $xml
         );
 
         if ($this->paymentClient->isError()) {
@@ -278,20 +361,20 @@ class ReceiptBatch
 
     /**
      * @param $remotePropertyId
-     * @param null $description
-     * @return int|null
-     * @throws \Exception
+     * @param $batchId
+     * @return mixed
      */
-    protected function getBatchId($remotePropertyId, $description = null)
+    protected function getBatchId($remotePropertyId, $batchId)
     {
-        if (isset($this->batchIds[$remotePropertyId])) {
-            return $this->batchIds[$remotePropertyId];
+        $key = $remotePropertyId.'_'.$batchId;
+        if (isset($this->batchIds[$key])) {
+            return $this->batchIds[$key];
         }
 
-        $batchId = $this->paymentClient->openReceiptBatchDepositDate(
+        $yardiBatchId = $this->paymentClient->openReceiptBatchDepositDate(
             $this->depositDate,
             $remotePropertyId,
-            $description
+            $batchId
         );
 
         if ($this->paymentClient->isError()) {
@@ -302,8 +385,15 @@ class ReceiptBatch
                 )
             );
         }
-        $this->batchIds[$remotePropertyId] = $batchId;
-        return $batchId;
+        $this->logMessage(
+            sprintf(
+                "Create batchId %s for remote property id %s",
+                $yardiBatchId,
+                $remotePropertyId
+            )
+        );
+        $this->batchIds[$key] = $yardiBatchId;
+        return $yardiBatchId;
     }
 
     protected function throwExceptionClient($message)
@@ -314,7 +404,7 @@ class ReceiptBatch
 
         throw new Exception(
             sprintf(
-                $message."\nRequest: %s %s \n Response: %s %s",
+                $message."\nRequest:\n %s %s \n Response:\n %s %s",
                 $request['header'],
                 $request['body'],
                 $response['header'],
@@ -364,7 +454,7 @@ class ReceiptBatch
      * @param $xml
      * @return string
      */
-    protected function prepeaXml($xml)
+    protected function prepareXml($xml)
     {
         if (empty($xml)) {
             return $xml;
@@ -373,27 +463,64 @@ class ReceiptBatch
         $domXml = new DOMDocument();
         $domXml->loadXML($xml);
         $xmlOut = $domXml->saveXML($domXml->documentElement);
+        $xmlOut = '<ns1:TransactionXml>'.$xmlOut;
+        $xmlOut = $xmlOut.'</ns1:TransactionXml>';
+        $xmlOut = str_replace(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"', '', $xmlOut);
 
         return $xmlOut;
     }
 
-    protected function processRequest(Holding $holding)
+    /**
+     * @param Holding $holding
+     * @param $batchId
+     */
+    protected function fillRequestDefaultData(Holding $holding, $batchId)
     {
         if (!isset($this->requests[$holding->getId()])) {
-            $this->requests[$holding->getId()] = array(
-                self::REQUEST_FAILED => 0,
-                self::REQUEST_SUCCESSFULLY => 0,
-            );
+            $batchId = (empty($batchId))? 'undefined' : $batchId;
+            $this->requests[$holding->getId()] = array();
+            $settings = $this->paymentClient->getSettings();
+            $groups = $holding->getGroups();
+            /**
+             * @var $group Group
+             */
+            foreach ($groups as $group) {
+                $this->requests[$holding->getId()][$group->getId()] = array(
+                    $batchId => array()
+                );
+                $this->requests[$holding->getId()]
+                    [$group->getId()]
+                    [$batchId]
+                    [Payment::formatType($settings->getPaymentTypeACH())] = array(
+                        self::REQUEST_FAILED => 0,
+                        self::REQUEST_SUCCESSFUL => 0,
+                    );
+                $this->requests[$holding->getId()]
+                    [$group->getId()]
+                    [$batchId]
+                    [Payment::formatType($settings->getPaymentTypeCC())] = array(
+                        self::REQUEST_FAILED => 0,
+                        self::REQUEST_SUCCESSFUL => 0,
+                    );
+            }
         }
     }
 
-    protected function successfullRequest(Holding $holding, $orders)
+    /**
+     * @param Holding $holding
+     * @param $orders
+     * @param $batchId
+     */
+    protected function saveSuccessfullRequest(Holding $holding, $orders, $batchId)
     {
-        $countOrders = count($orders);
-        $this->processRequest($holding);
-        $currentSuccessfully = $this->requests[$holding->getId()][self::REQUEST_SUCCESSFULLY];
-        $this->requests[$holding->getId()][self::REQUEST_SUCCESSFULLY] = $currentSuccessfully + $countOrders;
-
+        $this->logMessage(
+            sprintf(
+                "Successfully Request holding: %s batch: %s",
+                $holding->getId(),
+                $batchId
+            )
+        );
+        $this->fillRequestDefaultData($holding, $batchId);
         /**
          * @var $order Order
          */
@@ -401,25 +528,47 @@ class ReceiptBatch
             $orderExternalApi = new OrderExternalApi();
             $orderExternalApi->setApiType(ExternalApi::YARDI);
             $orderExternalApi->setOrder($order);
-            $order->setExternalApi($orderExternalApi);
+            $orderExternalApi->setDepositDate($this->depositDate);
 
             $this->em->persist($orderExternalApi);
-            $this->em->persist($order);
+
+            $typePayment = Payment::getType(
+                $this->paymentClient->getSettings(),
+                $order->getType()
+            );
+
+            $group = $order->getContract()->getGroup();
+            $this->requests[$holding->getId()][$group->getId()][$batchId][$typePayment][self::REQUEST_SUCCESSFUL]++;
         }
 
         $this->em->flush();
     }
 
-    protected function failedRequest(Holding $holding, $orders)
+    /**
+     * @param Holding $holding
+     * @param $orders
+     * @param $batchId
+     */
+    protected function saveFailedRequest(Holding $holding, $orders, $batchId)
     {
-        $countOrders = count($orders);
-        $this->processRequest($holding);
-        $currentFailed = $this->requests[$holding->getId()][self::REQUEST_FAILED];
-        $this->requests[$holding->getId()][self::REQUEST_FAILED] = $currentFailed + $countOrders;
-    }
-
-    protected function finishProcessHolding(Holding $holding)
-    {
-        //@TODO send email to landlord with report
+        $this->logMessage(
+            sprintf(
+                "Failed Request holding: %s batch: %s",
+                $holding->getId(),
+                $batchId
+            )
+        );
+        $this->fillRequestDefaultData($holding, $batchId);
+        /**
+         * @var $order Order
+         */
+        foreach ($orders as $order) {
+            $typePayment = Payment::getType(
+                $this->paymentClient->getSettings(),
+                $order->getType()
+            );
+            $group = $order->getContract()->getGroup();
+            $this->requests[$holding->getId()][$group->getId()][$batchId][$typePayment][self::REQUEST_FAILED]++;
+        }
     }
 }

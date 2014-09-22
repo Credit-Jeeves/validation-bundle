@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\YardiSettings;
 
 class Transactions
 {
@@ -14,9 +15,9 @@ class Transactions
      */
     protected $payment;
 
-    public function __construct(Order $order = null)
+    public function __construct(YardiSettings $yardiSettings, Order $order = null)
     {
-        $this->payment = new Payment($order);
+        $this->payment = new Payment($yardiSettings, $order);
     }
 
     /**

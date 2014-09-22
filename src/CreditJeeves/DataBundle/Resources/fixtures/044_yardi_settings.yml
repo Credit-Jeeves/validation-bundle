@@ -9,7 +9,7 @@ fixtures:
         databaseName: 'afqoml_70dev'
         platform: 'SQL Server'
         paymentTypeACH: 'check'
-        paymentTypeCC: 'other'
+        paymentTypeCC: 'cash'
         notesACH: ''
         notesCC: ''
         syncBalance: true
