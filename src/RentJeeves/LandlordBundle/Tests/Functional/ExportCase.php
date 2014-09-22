@@ -63,7 +63,6 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($payerName = $receipt->PayerName);
         $this->assertNotNull($personId = $receipt->PersonId);
         $this->assertNotNull($postMonth = $receipt->PostMonth);
-        $this->assertNull($details = $receipt->Details->Detail);
 
         $this->assertEquals(100, (int) $receipt->PropertyId);
 
@@ -81,7 +80,7 @@ class ExportCase extends BaseTestCase
     {
         $this->goToYardiReport();
 
-        $dateStart = new DateTime('-41 days');
+        $dateStart = new DateTime('-45 days');
         $dateEnd = new DateTime();
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
@@ -105,7 +104,6 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($payerName = $receipt->PayerName);
         $this->assertNotNull($personId = $receipt->PersonId);
         $this->assertNotNull($postMonth = $receipt->PostMonth);
-        $this->assertNull($details = $receipt->Details->Detail);
 
         $this->assertTrue(isset($receipt->BatchId));
 
