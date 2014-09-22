@@ -108,6 +108,7 @@ class ReceiptBatch
         $this->serializer = $serializer;
         $this->clientFactory = $clientFactory;
         $this->exceptionCatcher = $exceptionCatcher;
+        $this->mailer = $mailer;
     }
 
     /**
