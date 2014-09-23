@@ -263,7 +263,7 @@ class PropertyProcess
 
     /**
      * @param $address
-     * @return bool|null|Property
+     * @return null|Property
      */
     public function getPropertyByAddress($address)
     {
@@ -277,10 +277,10 @@ class PropertyProcess
                 /** Property */
                 return $propertyDB;
             }
-            /** Empty */
+            /** Empty Property */
             return $property;
         }
-        /** Error */
-        return false;
+        /** Error Address not found */
+        return null;
     }
 }

@@ -1,0 +1,93 @@
+{% extends 'OAuthServerBundle::base.html.twig' %}
+
+{% form_theme form 'RjCoreBundle::form.html.twig' %}
+
+{% block stylesheets %}
+    {% stylesheets
+        '@UserBundle/Resources/public/css/jquery.reject.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block content %}
+    <div class="connect-info-block">{{ 'signup.info_block' | trans }}</div>
+    <div class="form">
+        {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="row-10"></div>
+            <div class="flash-notice">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('defense') %}
+        <div class="row-10"></div>
+            <div class="login-error">
+                {{ flashMessage|trans }}
+            </div>
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('error') %}
+        <div class="row-10"></div>
+            <div class="login-error">
+                {{ flashMessage|trans }}
+            </div>
+        {% endfor %}
+        <form action="{{ path("fos_oauth_server_registration") }}" method="post" id="registration_form" {{ form_enctype(form) }}>
+            <input type="submit" id="submitBtn"/>
+            {{ form_errors(form) }}
+            <div class="row-10">
+                {{ form_label(form.first_name) }}
+                {{ form_widget(form.first_name) }}
+                {{ form_errors(form.first_name) }}
+            </div>
+            <div class="row-10">
+                {{ form_label(form.last_name) }}
+                {{ form_widget(form.last_name) }}
+                {{ form_errors(form.last_name) }}
+            </div>
+            <div class="row-10">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+                {% if app.session.flashbag.has('tenant_email_error') %}
+                    <ul class="error_list">
+                        {% for flashMessage in app.session.flashbag.get('tenant_email_error') %}
+                            <li>{{ flashMessage|raw }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="row-10">
+                {{ form_label(form.password.Password) }}
+                {{ form_widget(form.password.Password) }}
+                {{ form_errors(form.password.Password) }}
+            </div>
+            <div class="row-10">
+                {{ form_label(form.password.Verify_Password) }}
+                {{ form_widget(form.password.Verify_Password) }}
+                {{ form_errors(form.password.Verify_Password) }}
+            </div>
+
+            <div class="row-10">
+                <div class="form-row checkboxes clearfix">
+                    <label id="checkboxterms"class="checkbox">
+                        {{ form_widget(form.tos, {'attr': {'class': 'tos-input-field'}}) }}
+                        <span class="big">
+                          {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
+                          {{'terms.service.pre-link'|trans }}
+                          <a href="{{ link }}" title="{{ 'terms.service.link.text'|trans }}">
+                              {{'terms.service.link.text'|trans }}
+                          </a>
+                        </span>
+                    </label>
+                </div>
+                {{ form_errors(form.tos) }}
+            </div>
+            {{ form_rest(form) }}
+        </form>
+    </div>
+{% endblock content %}
+
+{% block action_buttons %}
+    <div class="buttons left">
+        <button id="connectBtn" type="submit" class="button"><span>{{ 'continue' | trans }}</span></button>
+    </div>
+{% endblock %}

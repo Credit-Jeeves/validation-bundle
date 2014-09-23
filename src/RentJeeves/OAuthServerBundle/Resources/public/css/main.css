@@ -1,0 +1,487 @@
+/** Additional fonts **/
+@font-face {
+    font-family: 'astoria-medium';
+    src: url("/bundles/core/fonts/astoria-medium/astoria-medium-webfont.eot?#iefix") format("embedded-opentype"), url("/bundles/core/fonts/astoria-medium/astoria-medium-webfont.woff") format("woff"), url("/bundles/core/fonts/astoria-medium/astoria-medium-webfont.ttf") format("truetype"), url("/bundles/core/fonts/astoria-medium/astoria-medium-webfont.svg#AstoriaMedium") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body, p {
+    margin: 0;
+    color: #333333;
+    font-family: "Helvetica Neue", HelveticaNeue, helvetica-neue, helvetica, arial, sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    /*  line-height: 135%; */
+}
+
+a {
+    color: #1985ea;
+    font-weight: bold;
+    outline: medium none;
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5 {
+    color: #ff6600;
+    font-family: astoria-medium;
+    font-size: 18px;
+    font-weight: normal;
+    margin: 5px;
+    margin-left: 0;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+h5 {
+    font-size: 14px;
+}
+
+/** Header part **/
+.header {
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+.info-block {
+    float: right;
+    margin-right: 30px;
+    margin-top: 20px;
+}
+
+.create-block-logins a {
+    font-size: 18px;
+}
+
+.create-block-logins h2 {
+    display: inline;
+}
+
+.create-block-logins {
+    text-align: center;
+}
+
+.connect-info-block {
+    padding: 0 40px;
+}
+
+.form {
+    margin: 20px auto;
+    width: 330px;
+}
+
+/** Main content part **/
+.page-body {
+    padding: 20px 0;
+}
+
+.page-content {
+    min-height: 200px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    text-align: left;
+}
+
+/** Footer part **/
+.footer {
+    padding: 20px 0;
+    text-align: center;
+    background-color: #dcdcdc;
+    height: 46px;
+}
+
+.footer .accreditations {
+    position: relative;
+    top: -127%;
+    float: right;
+    padding: 0 10px;
+}
+/** additional styles **/
+.row-20 {
+    margin-top: 20px;
+}
+
+.row-10 {
+    margin-top: 10px;
+}
+
+.clearboth {
+    clear: both;
+}
+
+.floatleft {
+    float: left;
+}
+
+.floatright {
+    float: right;
+}
+
+.margin-none {
+    margin: 0;
+}
+
+.margin-left-none {
+    margin-left: 0;
+}
+
+.border {
+    border: none;
+    padding: 20px;
+    -moz-border-radius: 24px;
+    -webkit-border-radius: 24px;
+    border-radius: 24px;
+}
+
+.page-border {
+    border: none;
+    padding: 20px;
+    -moz-border-radius: 24px;
+    -webkit-border-radius: 24px;
+    border-radius: 24px;
+}
+
+.pod-border {
+    border: none;
+
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+
+}
+
+.pod-padding {
+    padding: 20px;
+}
+
+.biggerbold {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.shadow {
+    /*  -moz-border-radius: 8px;
+      -webkit-border-radius: 8px;
+      border-radius: 8px;
+    */
+    -webkit-box-shadow: 0 0 2px 2px #cccccc;
+    -moz-box-shadow: 0 0 2px 2px #cccccc;
+    box-shadow: 0 0 2px 2px #cccccc;
+}
+
+.checkbox-off {
+    background: url("/bundles/core/images/check_off.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 23px;
+    width: 27px;
+    cursor: pointer;
+}
+
+.checkbox-on {
+    background: url("/bundles/core/images/check_on.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 23px;
+    width: 27px;
+    cursor: pointer;
+}
+
+/* colors */
+.red {
+    color: #cc0000;
+}
+
+.green {
+    color: #6faf00;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    border: 1px solid #999999;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 0 1px 1px #D7D7D7 inset;
+    padding: 3px 10px;
+}
+
+input {
+    background-color: white;
+    color: #333333;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.flash-notice {
+    margin: 4px 0;
+    padding: 4px 4px 4px 30px;
+    background: url(/bundles/core/images/tick.png) no-repeat 10px 4px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    background-color: #ffc;
+}
+
+.flash-error {
+    margin: 4px 0;
+    padding: 4px 4px 4px 30px;
+    background: url(/bundles/core/images/exclamation-point-red-icon.png) no-repeat 10px 4px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    background-color: #ffc;
+}
+
+
+.background-grey {
+    background-color: #f3f3f3;
+    padding: 20px;
+}
+
+form label,
+table label {
+    /*    float: left;*/
+    color: #333333;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 190%;
+    width: 330px;
+    display: block;
+}
+
+.loading {
+    margin-top: 30px;
+}
+
+.dealer-name {
+    top: 110px;
+    color: #659E01;
+    font-family: astoria-medium;
+    font-size: 24px;
+    position: absolute;
+    right: 40px;
+    text-align: right;
+    /*cursor: pointer;*/
+}
+
+.lock-icon {
+    background: url("/bundles/core/images/padlock-icon.png") no-repeat scroll left top transparent;
+    display: block;
+    height: 30px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: 24px;
+}
+
+.placeholder-active {
+    color: #999999;
+}
+
+/*match placeholder/watermark padding to border+padding for input element*/
+label.placeholder {
+    cursor: text;
+    padding: 4px 4px 4px 4px;
+    color: #999999;
+}
+/* html5 placeholder support */
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+    color:#999999;
+}
+input:placeholder, textarea:placeholder {
+    color:#999999;
+}
+
+::-webkit-input-placeholder {
+    color: #999;
+}
+:-moz-placeholder {
+    color: #999;
+}
+.placeholder {
+    color: #999;
+}
+
+.arrow-right {
+    background: url("/bundles/core/images/arrow-right.png") no-repeat scroll left center transparent;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-left: 27px;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.overlay {
+    background-color: #000;
+    background-image: url('../images/processing.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    opacity: 0.2;
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity = 20);
+    z-index: 50;
+}
+
+ul.error_list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.error_list li {
+    color: #cc0000;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.login-error {
+    color: #cc0000;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.ui-front {
+    position:fixed;
+    z-index:100;
+}
+
+.ui-widget-overlay {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#000;
+    opacity:0.5;
+}
+
+.ui-widget-content {
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+    background:#fff;
+    -webkit-box-shadow: 0px 0px 0px 6px rgba(255, 255, 255, 0.33);
+    box-shadow: 0px 0px 0px 6px rgba(255, 255, 255, 0.33);
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    position:absolute;
+    top:20px;
+    right:20px;
+    z-index:9;
+}
+
+.ui-dialog .ui-dialog-title {
+    display:none;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+    position:static;
+    display: block;
+    width:15px;
+    height:15px;
+    overflow: hidden;
+    text-indent: -999px;
+    background: url(/bundles/rjpublic/images/sprite-icons.png) 0 -240px no-repeat;
+}
+
+.pricing-popup h1 {
+    display:block;
+    padding:15px 40px 0;
+    color:#eb6024;
+    text-align:center;
+    line-height:normal;
+    font-size:24px;
+}
+
+.pricing-popup.dashboard-popup h1 {
+    text-align:left;
+    padding:15px 20px 0;
+}
+
+.pricing-popup.properties-popup .col-box .col {
+    display: block;
+    float: none;
+    padding: 20px 20px 0;
+    width: auto;
+}
+.dashboard-popup .footer-button-box {
+    background-color: #E1E1E1;
+    border-radius: 0 0 10px 10px;
+    bottom: 0;
+    height: 53px;
+    left: 0;
+    padding-top: 17px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+}
+
+.dashboard-popup .footer-button-box {
+    background-color: #E1E1E1;
+    border-radius: 0 0 10px 10px;
+    bottom: 0;
+    height: 53px;
+    left: 0;
+    padding-top: 17px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+}
+.footer-button-box .button {
+    margin: 0 4px;
+}
+.footer-button-box .button.fixed span {
+    width: 80px;
+}
+.dashboard-popup .footer-button-box .banner-ns {
+    background: url("/bundles/rjpublic/images/logo-norton-secured-popup.png") repeat scroll 0 0 transparent;
+    height: 35px;
+    position: absolute;
+    right: 16px;
+    top: 6px;
+    width: 63px;
+}
+.button.xmiddle span, .footer-button-box .button span {
+    font-weight: normal;
+    padding: 8px 14px;
+}
+
+.pricing-popup.properties-popup .col-box .col h4 {
+    color: #666666;
+    display: block;
+    font: bold 14px/17px 'ABeeZee',sans-serif;
+    padding: 0 0 7px;
+}
+
+.tos-input-field {
+    position: relative;
+    top: 1px;
+}
+
+.linkselect-link {
+    line-height: 20px;
+}
+
+input[type="submit"] {
+    position: absolute;
+    left: -9999px
+}
+.required b {
+    color: #C00;
+}

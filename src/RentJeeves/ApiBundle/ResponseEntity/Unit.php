@@ -46,7 +46,7 @@ class Unit
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"UnitDetails", "UnitShort"})
+     * @Serializer\Groups({"UnitDetails"})
      * @Serializer\SerializedName("property_id")
      *
      * @return string
@@ -58,7 +58,7 @@ class Unit
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"UnitDetails", "UnitShort"})
+     * @Serializer\Groups({"UnitDetails"})
      * @Serializer\SerializedName("has_landlord")
      *
      * @return string

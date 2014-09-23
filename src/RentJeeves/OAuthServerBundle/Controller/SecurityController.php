@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\UserBundle\Controller\SecurityController as BaseController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class SecurityController extends BaseController
 {
@@ -35,6 +36,22 @@ class SecurityController extends BaseController
             'OAuthServerBundle:Security:login.html.%s',
             $this->container->getParameter('fos_user.template.engine')
         );
+        $request = $this->container->get('request');
+        /* @var $request \Symfony\Component\HttpFoundation\Request */
+        $session = $request->getSession();
+        /* @var $session \Symfony\Component\HttpFoundation\Session\Session */
+        $clientId = $session->get('client_id');
+
+        if ($clientId) {
+            /** @var Client $client */
+            $client = $this->container
+                ->get('fos_oauth_server.client_manager')
+                ->findClientByPublicId($clientId);
+            if ($client) {
+                $data['clientName'] = $client->getName();
+            }
+        }
+        isset($data['clientName']) || $data['clientName'] ='';
 
         return $this->container->get('templating')->renderResponse($template, $data);
     }
@@ -48,5 +65,13 @@ class SecurityController extends BaseController
     public function loginCheckAction(Request $request)
     {
 
+    }
+
+    /**
+     * @Route("/oauth/v2/auth_logout", name="oauth_server_logout")
+     */
+    public function logoutAction()
+    {
+        parent::logoutAction();
     }
 }

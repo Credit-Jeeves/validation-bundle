@@ -59,6 +59,7 @@ class AuthorizeController extends BaseAuthorizeController
         return [
             'form'      => $form->createView(),
             'client'    => $this->getClient(),
+            'email'     => $user->getEmail(),
         ];
     }
 }

@@ -74,7 +74,6 @@ class AppRjKernel extends AppKernel
             new RentJeeves\CheckoutBundle\RjCheckoutBundle(),
             new RentJeeves\ExperianBundle\RjExperianBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
-            new BeSimple\SoapBundle\BeSimpleSoapBundle(),
             new RentJeeves\ApiBundle\RjApiBundle(),
             new RentJeeves\OAuthServerBundle\OAuthServerBundle(),
         );

@@ -11,7 +11,7 @@ use PhpOption\Some as Option;
 /**
  * Add data after serialization
  *
- * @Service("api.listener.serializationlistener")
+ * @Service("api.listener.serialization_listener")
  * @Tag("jms_serializer.event_subscriber")
  */
 class SerializationListener implements EventSubscriberInterface

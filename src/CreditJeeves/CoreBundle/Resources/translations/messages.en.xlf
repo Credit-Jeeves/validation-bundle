@@ -196,6 +196,14 @@
                 <source>common.help</source>
                 <target>Help</target>
             </trans-unit>
+            <trans-unit id="common.terms">
+                <source>common.terms</source>
+                <target>Terms</target>
+            </trans-unit>
+            <trans-unit id="common.privacy">
+                <source>common.privacy</source>
+                <target>Privacy</target>
+            </trans-unit>
             <trans-unit id="common.log_out">
                 <source>common.log_out</source>
                 <target>Log Out</target>
@@ -1047,6 +1055,10 @@
             <trans-unit id="error.user.password.empty">
                 <source>error.user.password.empty</source>
                 <target>Password is required.</target>
+            </trans-unit>
+            <trans-unit id="error.user.password.match">
+                <source>error.user.password.match</source>
+                <target>The password fields must match.</target>
             </trans-unit>
             <trans-unit id="error.group.code.empty">
                 <source>error.group.code.empty</source>

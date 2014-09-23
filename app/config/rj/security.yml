@@ -26,7 +26,7 @@ security:
                 provider: fos_userbundle
                 check_path: /oauth/v2/auth_login_check
                 login_path: /oauth/v2/auth_login
-            anonymous: true
+            anonymous: ~
         main:
             pattern: ^/
             form_login:
@@ -45,8 +45,9 @@ security:
 
     access_control:
         - { path: ^/oauth/v2/auth_login,            role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/oauth/v2/auth_reg,              role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/oauth/v2/token,                 role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/oauth/v2/auth,                  role: IS_AUTHENTICATED_FULLY }
+        - { path: ^/oauth/v2/auth,                  role: ROLE_TENANT }
         - { path: ^/back_to_admin$,                 role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_profiler/,                     role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_wdt/,                          role: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -78,6 +79,6 @@ security:
         - { path: ^/login/defence/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/,                      role: ROLE_LANDLORD }
         - { path: ^/admin/,                         role: ROLE_ADMIN }
-        - { path: ^/api,                            role: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api,                            role: ROLE_TENANT }
         - { path: ^/documentation/api,              role: ROLE_ADMIN }
         - { path: ^/,                               role: ROLE_TENANT }

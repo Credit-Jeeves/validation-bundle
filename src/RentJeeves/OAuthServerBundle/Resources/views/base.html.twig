@@ -1,62 +1,93 @@
-{% extends "RjCoreBundle::rj_base.html.twig" %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}{{ 'project_name'|trans }}{% endblock %}</title>
+    {{ render(controller('CoreBundle:Session:js')) }}
+    {% stylesheets
+    '@OAuthServerBundle/Resources/public/css/main.css'
+    '@CoreBundle/Resources/public/css/buttons.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
 
-{% block stylesheets %}
-    {% stylesheets '@ComponentBundle/Resources/public/css/*'
-                   '@RjComponentBundle/Resources/public/css/*'
-                   '@CoreBundle/Resources/public/css/rj-logos.css'
-                   '@CoreBundle/Resources/public/css/tabs.css'
-                   '@UserBundle/Resources/public/css/login.css'
-                   '@CoreBundle/Resources/public/css/google-maps.css'
-                   '@CoreBundle/Resources/public/css/check.css'
-                   '@CoreBundle/Resources/public/css/datepicker.css'
-                   '@CoreBundle/Resources/public/css/styles.css'
-                   '@CoreBundle/Resources/public/css/pricing-popup.css'
-                   '@RjPublicBundle/Resources/public/css/footer.css'
-                   '@CoreBundle/Resources/public/css/landlord.css'
-                   '@RjPublicBundle/Resources/public/css/base-font.css'
-     %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
-    <script src="{{ asset('bundles/core/js/less.min.js') }}"></script>
-    <script src="{{ asset('bundles/core/js/datepicker.js') }}"></script>
-{% endblock %}
 
-{% block alert %}
-    {{ render(controller('RjComponentBundle:Alert:index')) }}
-{% endblock %}
-
-
-{% block google_api %}
-    {{ include('RjComponentBundle:Google:js.html.twig') }}
-{% endblock %}
-
-{% block select %}
-    {% if nGroups is defined and nGroups > 1 %}
-        {{ render(controller('ComponentBundle:Groups:index')) }}
+    {% javascripts
+        '@CoreBundle/Resources/public/js/jquery-1.9.1.min.js'
+        '@CoreBundle/Resources/public/js/jquery.placeholder.min.js'
+        '@CoreBundle/Resources/public/js/date.js'
+        '@FOSJsRoutingBundle/Resources/public/js/router.js'
+        '@CoreBundle/Resources/public/js/jquery.cookie.js'
+        '@CoreBundle/Resources/public/js/session.js'
+        '@CoreBundle/Resources/public/js/Format.js'
+        'bundles/bazingajstranslation/js/translator.min.js'
+        '@OAuthServerBundle/Resources/public/js/main.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% block google_analytics %}
+        {% if application == 'rj' %}
+            {% include 'RjCoreBundle::google_analytics.html.twig' %}
+        {% else %}
+            {% include 'CoreBundle::google_analytics.html.twig' %}
+        {% endif %}
+    {% endblock %}
+    {% block head_javascripts %}
+        {{ include(
+            'RjComponentBundle:Blocks:reject.html.twig'
+        ) }}
+    {% endblock %}
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
+    {% if 'dev' == env %}
+        <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    {% else %}
+        <script src="/bundles/fosjsrouting/js/{{ application }}_{{ env }}.js"></script>
     {% endif %}
-{% endblock %}
+    <link href="{{ asset('bundles/oauthserver/css/logos.css') }}" rel="stylesheet" type="text/css" />
 
-{% block footer %}
-    {{ render(controller('RjComponentBundle:Footer:index')) }}
-{% endblock %}
-
-{% block head_javascripts %}
-    {% javascripts '@RjCoreBundle/Resources/public/js/formProcess.js'
-                   '@RjCoreBundle/Resources/public/js/user-voice.js'
-                   '@LandlordBundle/Resources/public/js/accountingImport.js'
-                   '@RjCoreBundle/Resources/public/js/jquery-ui.js'
-    %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-{% endblock %}
-
-
-{% block javascripts %}
-    {% javascripts  '@CoreBundle/Resources/public/js/less.min.js'
-                    '@CoreBundle/Resources/public/js/datepicker.js'
-                    '@ComponentBundle/Resources/public/js/groups.js'
-    %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-{% endblock %}
-
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+    {% block stylesheets %}{% endblock %}
+    {% block google_api %}{% endblock %}
+    <!--[if gte IE 9]>
+    <style type="text/css">
+        .gradient {
+            filter: none;
+        }
+    </style>
+    <![endif]-->
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/core/css/main-ie-8.css') }}" />
+    <![endif]-->
+</head>
+<body>
+{% block alert %}{% endblock %}
+{% block header %}{% endblock %}
+<div class="header">
+    <div class="site-logo"></div>
+    <div class="info-block">
+        {% block info %}
+            {% include 'OAuthServerBundle::infoBlock.html.twig' %}
+        {% endblock %}
+    </div>
+    {% block partner_logo %}{% endblock %}
+</div>
+<div class="clearboth"></div>
+<div class="section">
+    <div class="page-body">
+        <div class="page-content">{% block content %}{% endblock %}</div>
+    </div>
+</div>
+<div class="footer">
+    {% block footer %}
+        <div class="buttons-box clearfix">
+            {% block action_buttons %}{% endblock %}
+        </div>
+        <div class="accreditations">
+            {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': true}) }}
+            {{ include('RjCoreBundle::bbbseal.html.twig', {'pad': true}) }}
+        </div>
+    {% endblock %}
+</div>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

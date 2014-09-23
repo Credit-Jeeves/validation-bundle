@@ -2,3 +2,7 @@ properties :
   type : rest
   resource:     "RjApiBundle:Properties"
   name_prefix:  api_
+landlords :
+  type : rest
+  resource:     "RjApiBundle:Landlords"
+  name_prefix:  api_

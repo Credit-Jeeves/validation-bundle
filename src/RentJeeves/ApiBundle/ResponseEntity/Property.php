@@ -40,7 +40,7 @@ class Property
      *
      * @return string
      */
-    public function getDetailsAddress()
+    public function getAddressDetails()
     {
         return [
             'country'   => $this->entity->getCountry(),
@@ -94,7 +94,7 @@ class Property
      *
      * @return string
      */
-    public function getIsSingle()
+    public function isSingle()
     {
         return ($this->entity->getIsSingle()) ?  true : false;
     }
@@ -108,7 +108,7 @@ class Property
      */
     public function getUnitCount()
     {
-        if ($this->getIsSingle()) {
+        if ($this->isSingle()) {
             return 1;
         }
 

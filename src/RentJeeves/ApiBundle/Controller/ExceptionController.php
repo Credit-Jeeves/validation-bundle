@@ -2,10 +2,10 @@
 
 namespace RentJeeves\ApiBundle\Controller;
 
-use FOS\RestBundle\Controller\ExceptionController as ExceptionBase;
+use FOS\RestBundle\Controller\ExceptionController as BaseExceptionController;
 use CreditJeeves\ApiBundle\Util\ExceptionWrapper;
 
-class ExceptionController extends ExceptionBase
+class ExceptionController extends BaseExceptionController
 {
     /**
      * Creates a new ExceptionWrapper instance that can be overwritten by a custom

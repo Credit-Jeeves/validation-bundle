@@ -132,6 +132,6 @@ fos_oauth_server_authorize:
     resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
 
 oauth_server_security:
-    resource: "@OAuthServerBundle/Controller/SecurityController.php"
+    resource: "@OAuthServerBundle/Controller/"
     type:     annotation
     prefix:   /

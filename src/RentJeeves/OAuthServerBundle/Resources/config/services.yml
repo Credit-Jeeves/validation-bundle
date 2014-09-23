@@ -1,0 +1,2 @@
+parameters:
+    security.exception_listener.class: RentJeeves\OAuthServerBundle\Security\ExceptionListener

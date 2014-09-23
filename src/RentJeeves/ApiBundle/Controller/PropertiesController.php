@@ -5,16 +5,12 @@ namespace RentJeeves\ApiBundle\Controller;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Util\Codes;
-use FOS\RestBundle\View\View;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\ApiBundle\ResponseEntity\Property as PropertyResponse;
 use RentJeeves\ApiBundle\ResponseEntity\Unit as UnitResponse;
 use RentJeeves\DataBundle\Entity\PropertyRepository;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitRepository;
-use RentJeeves\PublicBundle\Form\PropertyType;
-use RentJeeves\PublicBundle\Form\UnitType;
-use stdClass;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -38,9 +34,7 @@ class PropertiesController extends Controller
      *         200="Returned when successful",
      *         204="No content with such parameters",
      *         400="Error validate data",
-     *         500= {
-     *          "Something wrong in request"
-     *         }
+     *         500="Something wrong in request"
      *     }
      * )
      * @Rest\View(serializerGroups={"PropertyDetails"})
@@ -66,17 +60,16 @@ class PropertiesController extends Controller
      * @ApiDoc(
      *     resource=true,
      *     section="Properties",
-     *     description="Get detailed information about a RentTrack property using full address seach.",
+     *     description="Get detailed information about a RentTrack property using full address search.",
      *     statusCodes={
      *         200="Success",
      *         204="No content with supplied parameters",
      *         400="Error validating data, such as address not found by Google Maps",
-     *         500= {
-     *          "Something wrong in request"
-     *         }
+     *         500="Something wrong in request"
      *     }
      * )
      * @Rest\View(serializerGroups={"PropertyDetails"})
+     * @Rest\Get("/properties")
      * @Rest\QueryParam(
      *   name="address",
      *   strict=true,
@@ -95,7 +88,7 @@ class PropertiesController extends Controller
 
         $property = $propertyProcesser->getPropertyByAddress($address);
 
-        if (false === $property) {
+        if (is_null($property)) {
             return $this->view([
                 'status' => 'Error',
                 'status_code' => Codes::HTTP_BAD_REQUEST,
@@ -121,9 +114,7 @@ class PropertiesController extends Controller
      *         200="Success",
      *         204="No content with supplied parameters",
      *         400="Error validating data",
-     *         500= {
-     *          "Something went wrong with the request"
-     *         }
+     *         500="Something went wrong with the request"
      *     }
      * )
      * @Rest\View(serializerGroups={"UnitDetails"})
@@ -155,9 +146,7 @@ class PropertiesController extends Controller
      *         200="Success",
      *         204="No content with supplied parameters",
      *         400="Error validating data",
-     *         500= {
-     *          "Something went wrong with the request"
-     *         }
+     *         500="Something went wrong with the request"
      *     }
      * )
      * @Rest\View(serializerGroups={"UnitShort"})
@@ -165,7 +154,7 @@ class PropertiesController extends Controller
      *
      * @return array
      */
-    public function cgetPropertyUnitsAction($propertyId)
+    public function getPropertyUnitsAction($propertyId)
     {
         /** @var PropertyRepository $repo */
         $repo = $this->getDoctrine()->getRepository('RjDataBundle:Property');
@@ -187,15 +176,13 @@ class PropertiesController extends Controller
      *     section="Properties",
      *     description="Create a unit, or a property with a unit.",
      *     statusCodes={
-     *         200="Success",
+     *         201="Success created",
      *         400="Error validating data",
-     *         500= {
-     *          "Something went wrong with the request"
-     *         }
+     *         500="Something went wrong with the request"
      *     }
      * )
      * @Rest\View(serializerGroups={"PropertyDetails", "UnitDetails"})
-     * @Rest\Post()
+     * @Rest\Post("/properties")
      * @Rest\RequestParam(
      *   name="address",
      *   strict=true,
@@ -216,15 +203,14 @@ class PropertiesController extends Controller
      */
     public function createPropertiesAction(ParamFetcher $paramFetcher)
     {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        /** @var PropertyProcess $propertyProcesser */
+        $propertyProcesser = $this->get('property.process');
 
-        return $this->process($paramFetcher, $this->get('property.process'), $this->getDoctrine()->getManager());
-    }
-
-    protected function process(ParamFetcher $paramFetcher, PropertyProcess $propertyProcesser, EntityManager $em)
-    {
         if ($address = $paramFetcher->get('address')) {
             $property = $propertyProcesser->getPropertyByAddress($address);
-            $single = $paramFetcher->get('is_single');
+            $isSingle = $paramFetcher->get('is_single');
 
             if (false === $property) {
                 return $this->view([
@@ -232,21 +218,20 @@ class PropertiesController extends Controller
                     'status_code' => Codes::HTTP_BAD_REQUEST,
                     'message' => 'Address is invalid'
                 ], Codes::HTTP_BAD_REQUEST);
-            } elseif (!$this->isNew($property) && $property->getIsSingle() != $single) {
-                $s = !$single ? '' : ' not';
+            } elseif (!$this->isNew($property) && $property->getIsSingle() != $isSingle) {
                 return $this->view([
                     'status' => 'Error',
                     'status_code' => Codes::HTTP_BAD_REQUEST,
-                    'message' => sprintf('Property is%s standalone', $s)
+                    'message' => 'You can\'t change property "IS_SINGLE"',
                 ], Codes::HTTP_BAD_REQUEST);
             }
 
-            if (!$single) {
+            if (!$isSingle) {
                 if (!($unitName = $paramFetcher->get('unit_name'))) {
                     return $this->view([
                         'status' => 'Error',
                         'status_code' => Codes::HTTP_BAD_REQUEST,
-                        'message' => 'Unit is required for not standalone property.'
+                        'message' => 'Unit is required for not standalone property'
                     ], Codes::HTTP_BAD_REQUEST);
                 }
 
@@ -255,6 +240,7 @@ class PropertiesController extends Controller
                 $unit->setProperty($property);
             }
 
+            $property->setIsSingle($isSingle);
             $em->persist($property);
             $em->flush($property);
 
@@ -264,7 +250,7 @@ class PropertiesController extends Controller
                 $response['unit_id'] = $unit->getId();
             }
 
-            return $response;
+            return $this->view($response, Codes::HTTP_CREATED);
         }
 
         return $this->view([

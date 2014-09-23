@@ -21,7 +21,7 @@ class Version20140405200815 extends AbstractMigration
         $ret = $this->addSql(
             "INSERT INTO `rj_deposit_account` VALUES (NULL, (
               SELECT `id` FROM `cj_account_group` WHERE `code`='RentTrackCorp'
-            ), 'RentTrackCorp', 'complete', NULL)"
+            ), 'RentTrackCorp', NULL, 'complete', NULL, NULL, NULL)"
         );
     }
 

@@ -34,7 +34,7 @@ class CollectionWrapperHandler extends ArrayCollectionHandler
         Context $context
     ) {
         $context->attributes->set('use_wrapper', true);
-        
+
         return parent::serializeCollection($visitor, $collection, $type, $context);
     }
 }
