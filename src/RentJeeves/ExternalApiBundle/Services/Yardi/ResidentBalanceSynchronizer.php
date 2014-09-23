@@ -104,16 +104,52 @@ class ResidentBalanceSynchronizer
         return $this->em->getRepository('DataBundle:Holding')->findHoldingsForUpdatingBalance();
     }
 
-    protected function getContracts(Holding $holding, Property $property, ResidentTransactionPropertyCustomer $resident)
+    protected function getContract(Holding $holding, Property $property, ResidentTransactionPropertyCustomer $resident)
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
+        $residentId = $resident->getCustomerId();
+        $unitName = $resident->getUnit()->getUnitId();
 
-        return $contractRepo->findContractByHoldingPropertyResidentUnit(
+        $contracts = $contractRepo->findContractByHoldingPropertyResidentUnit(
             $holding,
             $property,
-            $resident->getCustomerId(),
-            $resident->getUnit()->getUnitId()
+            $residentId,
+            $unitName
         );
+
+        if (count($contracts) > 1) {
+            $this->logMessage(
+                sprintf(
+                    "Found more than one contract with property %s, unit %s, resident %s",
+                    $property->getPropertyMapping()->first()->getLandlordPropertyId(),
+                    $unitName,
+                    $residentId
+                )
+            );
+            return null;
+        }
+
+        if (count($contracts) == 1) {
+            $contract = reset($contracts);
+            return $contract;
+        }
+
+        $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
+            ->findByHoldingPropertyUnitResident($holding, $property, $unitName, $residentId);
+        if ($contractWaiting) {
+            return $contractWaiting;
+        }
+
+        $this->logMessage(
+            sprintf(
+                "Could not find contract with property %s, unit %s, resident %s",
+                $property->getPropertyMapping()->first()->getLandlordPropertyId(),
+                $unitName,
+                $residentId
+            )
+        );
+
+        return null;
     }
 
     protected function processResidentTransactions(
@@ -127,31 +163,11 @@ class ResidentBalanceSynchronizer
             $residentId = $resident->getCustomerId();
             $unitId = $resident->getUnit()->getUnitId();
 
-            $contracts = $this->getContracts($holding, $property, $resident);
-            if (empty($contracts)) {
-                $this->logMessage(
-                    sprintf(
-                        "Could not find contract with property %s, unit %s, resident %s",
-                        $property->getPropertyMapping()->first()->getLandlordPropertyId(),
-                        $unitId,
-                        $residentId
-                    )
-                );
+            $contract = $this->getContract($holding, $property, $resident);
+            if (!$contract) {
                 continue;
             }
-            if (count($contracts) > 1) {
-                $this->logMessage(
-                    sprintf(
-                        "Found more than one contract with property %s, unit %s, resident %s",
-                        $property->getPropertyMapping()->first()->getLandlordPropertyId(),
-                        $unitId,
-                        $residentId
-                    )
-                );
-                continue;
-            }
-            /** @var Contract $contract */
-            $contract = reset($contracts);
+
             $balance = $this->calcResidentBalance($resident);
             $contract->setIntegratedBalance($balance);
             $this->logMessage(

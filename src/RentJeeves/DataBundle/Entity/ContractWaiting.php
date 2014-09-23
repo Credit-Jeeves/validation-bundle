@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * Contract
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\ContractWaitingRepository")
  * @ORM\Table(name="rj_contract_waiting")
  */
 class ContractWaiting extends Base
