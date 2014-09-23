@@ -2696,17 +2696,17 @@
             </trans-unit>
             <trans-unit id="settings.plans.cancel.title">
                 <source>settings.plans.cancel.title</source>
-                <target>Cancel Payment</target>
+                <target>Cancel CreditTrack</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.text">
                 <source>settings.plans.cancel.text</source>
                 <target>
-                    Are you sure want to cancel this payment?
+                    Are you sure want to cancel monthly updates of your score and credit report?
                 </target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.yes">
                 <source>settings.plans.cancel.yes</source>
-                <target>Yes, Cancel Payment</target>
+                <target>Yes, Cancel CreditTrack</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.no">
                 <source>settings.plans.cancel.no</source>
