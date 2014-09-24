@@ -39,8 +39,8 @@ class PaymentAccountCase extends BaseTestCase
 
         foreach ($em->getRepository('RjDataBundle:PaymentAccount')->findAll() as $pa) {
             $em->remove($pa);
+            $em->flush($pa);
         }
-        $em->flush();
         static::$kernel = null;
         $payment = $em->getRepository('RjDataBundle:Payment')->findOneBy(array('id' => $paymentId));
         $this->assertNotNull($payment);
