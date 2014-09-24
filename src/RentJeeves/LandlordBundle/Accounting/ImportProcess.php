@@ -488,13 +488,13 @@ class ImportProcess
             if ($row[ImportMapping::KEY_BALANCE] <= 0) {
                 $paidTo->modify('+1 month');
             }
-
-            $paidTo->setDate(
-                $paidTo->format('Y'),
-                $paidTo->format('n'),
-                $groupDueDate
-            );
         }
+
+        $paidTo->setDate(
+            $paidTo->format('Y'),
+            $paidTo->format('n'),
+            $groupDueDate
+        );
 
         $contract->setPaidTo($paidTo);
 
