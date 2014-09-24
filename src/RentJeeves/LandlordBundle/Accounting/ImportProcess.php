@@ -481,6 +481,17 @@ class ImportProcess
             // it is obvious someone paid outside of RentTrack:
             if ($row[ImportMapping::KEY_BALANCE] <= 0 && $currentPaidTo <= $paidTo) {
                 $paidTo->modify('+1 month');
+                // will be in future
+                //if (there is no order with paid_for for this month) {
+                    // create new cash payment on $groupDueDate for this month
+                //}
+                $paidTo->setDate(
+                    $paidTo->format('Y'),
+                    $paidTo->format('n'),
+                    $groupDueDate
+                );
+
+                $contract->setPaidTo($paidTo);
             }
         } else {
             // this contract is new, so let's set paid_to accordingly
@@ -488,15 +499,15 @@ class ImportProcess
             if ($row[ImportMapping::KEY_BALANCE] <= 0) {
                 $paidTo->modify('+1 month');
             }
+
+            $paidTo->setDate(
+                $paidTo->format('Y'),
+                $paidTo->format('n'),
+                $groupDueDate
+            );
+
+            $contract->setPaidTo($paidTo);
         }
-
-        $paidTo->setDate(
-            $paidTo->format('Y'),
-            $paidTo->format('n'),
-            $groupDueDate
-        );
-
-        $contract->setPaidTo($paidTo);
 
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
