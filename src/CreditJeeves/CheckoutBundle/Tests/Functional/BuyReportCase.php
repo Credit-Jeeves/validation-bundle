@@ -140,11 +140,11 @@ class BuyReportCase extends BaseTestCase
     public function authorizeNetAimCheckEmail()
     {
         $emails = $this->getEmails();
-        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $this->assertCount(2, $emails, 'Wrong number of emails');
 
         $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
         $this->assertEquals('Receipt from Credit Jeeves', $email->getSubject());
-        $this->assertEquals(2, preg_match("/Reference Number: (.*)/", $email->getBody(), $matches));
+        $this->assertEquals(1, preg_match("/Reference Number: (.*)/", $email->getBody(), $matches));
         $this->assertNotEmpty($matches[1]);
     }
 }

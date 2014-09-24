@@ -44,10 +44,9 @@ class GetCreditProfileCommand extends ContainerAwareCommand
                     $output->writeln('Report already received');
                     return 0;
                 }
-                $report->setRawData(
-                    $this->getContainer()->get('experian.net_connect.credit_profile')->initD2c()
-                        ->getResponseOnUserData($report->getUser())
-                );
+                $arf = $this->getContainer()->get('experian.net_connect.credit_profile')->initD2c()
+                    ->getResponseOnUserData($report->getUser());
+                $report->setRawData($arf);
                 $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
                 $em->persist($report);
                 $em->flush();
