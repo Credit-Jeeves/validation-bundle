@@ -370,7 +370,7 @@ class OrderRepository extends EntityRepository
     ) {
         $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
         $query->andWhere('heartland.batchId = :batchId');
-        $query->groupBy("mapping.landlordPropertyId");
+        $query->groupBy("mapping.externalPropertyId");
         $query->setParameter('batchId', $batchId);
         $query = $query->getQuery();
 
@@ -386,7 +386,7 @@ class OrderRepository extends EntityRepository
         $limit
     ) {
         $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
-        $query->andWhere("mapping.landlordPropertyId = :remoteId");
+        $query->andWhere("mapping.externalPropertyId = :remoteId");
         $query->andWhere("heartland.batchId = :batchId");
         $query->setParameter('batchId', $batchId);
         $query->setParameter('remoteId', $remotePropertyId);
@@ -420,7 +420,7 @@ class OrderRepository extends EntityRepository
         $query->where("heartland.depositDate = :depositDate2");
         $query->andWhere('externalApi.id IS NULL');
         $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
-        $query->andWhere('mapping.landlordPropertyId IS NOT NULL');
+        $query->andWhere('mapping.externalPropertyId IS NOT NULL');
         $query->andWhere('ord.status = :orderStatus');
         $query->andWhere('operation.type = :rentStatus OR operation.type = :otherStatus');
         $query->andWhere('mapping.holding = :holdingId');

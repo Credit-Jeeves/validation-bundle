@@ -683,6 +683,6 @@ class Order extends BaseOrder
     public function getPropertyPrimaryID()
     {
         $mapping = $this->getContract()->getProperty()->getPropertyMapping();
-        return $mapping->first()->getLandlordPropertyId();
+        return $mapping->first()->getExternalPropertyId();
     }
 }

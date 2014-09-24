@@ -91,7 +91,7 @@ class ResidentBalanceSynchronizer
             /** @var $property Property */
             foreach ($properties as $property) {
                 $mapping = $property->getPropertyMapping()->first();
-                $residentTransactions = $residentClient->getResidentTransactions($mapping->getLandlordPropertyId());
+                $residentTransactions = $residentClient->getResidentTransactions($mapping->getExternalPropertyId());
                 $this->processResidentTransactions($residentTransactions, $holding, $property);
             }
             $this->em->flush();
@@ -121,7 +121,7 @@ class ResidentBalanceSynchronizer
             $this->logMessage(
                 sprintf(
                     "Found more than one contract with property %s, unit %s, resident %s",
-                    $property->getPropertyMapping()->first()->getLandlordPropertyId(),
+                    $property->getPropertyMapping()->first()->getExternalPropertyId(),
                     $unitName,
                     $residentId
                 )
@@ -143,7 +143,7 @@ class ResidentBalanceSynchronizer
         $this->logMessage(
             sprintf(
                 "Could not find contract with property %s, unit %s, resident %s",
-                $property->getPropertyMapping()->first()->getLandlordPropertyId(),
+                $property->getPropertyMapping()->first()->getExternalPropertyId(),
                 $unitName,
                 $residentId
             )

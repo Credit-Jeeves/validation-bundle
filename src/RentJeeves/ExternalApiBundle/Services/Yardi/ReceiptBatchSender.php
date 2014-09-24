@@ -160,7 +160,7 @@ class ReceiptBatchSender
 
         try {
             while ($holdings = $this->getHoldingRepository()
-                ->findHoldingsWhithYardiSettings($startPagination, self::LIMIT_HOLDING)
+                ->findHoldingsWithYardiSettings($startPagination, self::LIMIT_HOLDING)
             ) {
                 $this->pushHoldingReceipts($holdings);
                 $startPagination += self::LIMIT_HOLDING;
@@ -255,7 +255,7 @@ class ReceiptBatchSender
             foreach ($orders as $order) {
                 $property = $order->getContract()->getProperty();
                 $mapping = $property->getPropertyMapping()->first();
-                $remotePropertyId = $mapping->getLandlordPropertyId();
+                $remotePropertyId = $mapping->getExternalPropertyId();
 
                 try {
                     $this->pushReceiptBatch($holding, $batchId, $remotePropertyId);

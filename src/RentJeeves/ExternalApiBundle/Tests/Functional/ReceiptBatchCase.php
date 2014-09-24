@@ -20,8 +20,9 @@ class ReceiptBatchCase extends BaseTestCase
         $date->modify('-359 days'); //DepositDate from rjCheckout_7_1_1
         $receiptBatch->run($date);
         $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $emails = $this->getEmails();
+//        $this->visitEmailsPage();
+//        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $emails, 'Wrong number of emails');
     }
 }
