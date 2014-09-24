@@ -144,7 +144,7 @@ class BuyReportCase extends BaseTestCase
 
         $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
         $this->assertEquals('Receipt from Credit Jeeves', $email->getSubject());
-        $this->assertEquals(1, preg_match("/Reference Number: (.*)/", $email->getBody(), $matches));
+        $this->assertEquals(2, preg_match("/Reference Number: (.*)/", $email->getBody(), $matches));
         $this->assertNotEmpty($matches[1]);
     }
 }
