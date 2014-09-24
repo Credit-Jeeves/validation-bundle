@@ -473,19 +473,29 @@ class ImportProcess
         $contract->setRent($row[ImportMapping::KEY_RENT]);
 
         $paidTo = new DateTime();
+        $currentPaidTo = $contract->getPaidTo();
         $groupDueDate = $this->group->getGroupSettings()->getDueDate();
+        //contract is a match
+        if ($contract->getId() !== null) {
+            // normally, we don't want to mess with paid_to for existing contracts unless
+            // it is obvious someone paid outside of RentTrack:
+            if ($row[ImportMapping::KEY_BALANCE] <= 0 && $currentPaidTo <= $paidTo) {
+                $paidTo->modify('+1 month');
+            }
+        } else {
+            // this contract is new, so let's set paid_to accordingly
+            // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
+            if ($row[ImportMapping::KEY_BALANCE] <= 0) {
+                $paidTo->modify('+1 month');
+            }
 
-        // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
-        if ($row[ImportMapping::KEY_BALANCE] <= 0) {
-            $paidTo->modify('+1 month');
+            $paidTo->setDate(
+                $paidTo->format('Y'),
+                $paidTo->format('n'),
+                $groupDueDate
+            );
         }
 
-        $paidTo->setDate(
-            $paidTo->format('Y'),
-            $paidTo->format('n'),
-            $groupDueDate
-        );
-        
         $contract->setPaidTo($paidTo);
 
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
