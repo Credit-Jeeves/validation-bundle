@@ -279,6 +279,7 @@ class ImportProcess
         $contract->setGroup($this->group);
         $contract->setHolding($this->group->getHolding());
         $contract->setTenant($tenant);
+
         if ($unit = $this->getUnit($row, $contract->getProperty())) {
             $contract->setUnit($unit);
         }
@@ -398,6 +399,7 @@ class ImportProcess
         if (is_null($property)) {
             return null;
         }
+
         if ($property->isSingle()) {
             return $property->getSingleUnit();
         }
@@ -452,13 +454,13 @@ class ImportProcess
     protected function getContract(ModelImport $import, array $row)
     {
         $tenant = $import->getTenant();
-
+        $property = $this->getProperty($row);
         if (!$tenant->getId()) {
             $contract = $this->createContract($row, $tenant);
         } else {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
-                $row[ImportMapping::KEY_UNIT],
+                ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[ImportMapping::KEY_UNIT],
                 isset($row[ImportMapping::KEY_UNIT_ID])? $row[ImportMapping::KEY_UNIT_ID] : null
             );
 
@@ -466,7 +468,6 @@ class ImportProcess
                 $contract = $this->createContract($row, $tenant);
             }
         }
-
         //set data from csv file
         $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
@@ -856,6 +857,7 @@ class ImportProcess
     {
         $data       = $this->mapping->getFileData($this->storage->getFileLine(), $rowCount = self::ROW_ON_PAGE);
         $collection = new ArrayCollection(array());
+
         foreach ($data as $key => $values) {
             $import = $this->getImport($values, $key);
             $import->setNumber($key);
@@ -888,7 +890,7 @@ class ImportProcess
             /**
              * @var $import Import
              */
-            foreach ($mappedData as $import) {
+            foreach ($mappedData as $key => $import) {
                 if ($import->getNumber() === $formData['line']) {
                     $currentLine = $formData['line'];
                     $lines[] = $currentLine;
@@ -972,6 +974,7 @@ class ImportProcess
                      * @var $contract Contract
                      */
                     $contract = $form->getData();
+
                     if ($import->getHasContractWaiting()) {
                         $sendInvite = $form->get('sendInvite')->getNormData();
                         $this->processContractWaiting(

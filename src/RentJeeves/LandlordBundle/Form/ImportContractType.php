@@ -229,13 +229,10 @@ class ImportContractType extends AbstractType
             $data['unit'] = array();
         }
 
-        if (isset($data['unit']['name'])) {
-            return;
-        }
-
         $data['unit'] = array(
-            'name' => ($this->unit)? $this->unit->getName() : '',
+            'name' => $this->unit->getActualName(),
         );
+
         $event->setData($data);
     }
 
