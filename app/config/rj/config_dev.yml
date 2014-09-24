@@ -4,10 +4,6 @@ imports:
 framework:
     router:   { resource: "%kernel.root_dir%/config/rj/routing_dev.yml" }
     profiler: { only_exceptions: false }
-    session:
-        name: rj
-        cookie_secure: false
-        cookie_httponly: false
 
 web_profiler:
     toolbar: true
