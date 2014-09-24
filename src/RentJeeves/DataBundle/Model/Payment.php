@@ -91,7 +91,7 @@ class Payment
      *      nullable=true
      * )
      * @Assert\Range(
-     *      min=1,
+     *      min=0,
      *      minMessage="checkout.error.amount.min",
      *      invalidMessage="checkout.error.amount.valid"
      * )

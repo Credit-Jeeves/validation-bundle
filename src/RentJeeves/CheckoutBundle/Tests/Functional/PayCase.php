@@ -188,8 +188,8 @@ class PayCase extends BaseTestCase
             $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
 
             $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-            $this->assertCount(2, $errors);
-            $this->assertEquals('checkout.error.amount.min', $errors[1]->getText());
+            $this->assertCount(1, $errors);
+            $this->assertEquals('checkout.error.total.min', $errors[0]->getText());
 
             if (!$infoMessage) {
                 $dueDate = cal_days_in_month(CAL_GREGORIAN, date('n'), date('Y'));
