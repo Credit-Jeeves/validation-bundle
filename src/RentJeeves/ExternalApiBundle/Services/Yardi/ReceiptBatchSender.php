@@ -159,11 +159,8 @@ class ReceiptBatchSender
         }
 
         try {
-            while (
-                $holdings = $this->getHoldingRepository()->findHoldingsWhithYardiSettings(
-                    $startPagination,
-                    self::LIMIT_HOLDING
-                )
+            while ($holdings = $this->getHoldingRepository()
+                ->findHoldingsWhithYardiSettings($startPagination, self::LIMIT_HOLDING)
             ) {
                 $this->pushHoldingReceipts($holdings);
                 $startPagination += self::LIMIT_HOLDING;
@@ -218,13 +215,12 @@ class ReceiptBatchSender
     public function pushReceiptBatchByBatchId(Holding $holding)
     {
         $startPagination = 0;
-        while (
-            $orders = $this->getOrderRepository()->getBatchIds(
-                $this->depositDate,
-                $holding,
-                $startPagination,
-                self::LIMIT_ORDERS
-            )
+        while ($orders = $this->getOrderRepository()->getBatchIds(
+            $this->depositDate,
+            $holding,
+            $startPagination,
+            self::LIMIT_ORDERS
+        )
         ) {
             /**
              * @var $order Order
@@ -245,14 +241,13 @@ class ReceiptBatchSender
     protected function pushReceiptBatchByPropertyMapping(Holding $holding, $batchId)
     {
         $startPagination = 0;
-        while (
-            $orders = $this->getOrderRepository()->getPropertyMapping(
-                $this->depositDate,
-                $holding,
-                $batchId,
-                $startPagination,
-                self::LIMIT_ORDERS
-            )
+        while ($orders = $this->getOrderRepository()->getPropertyMapping(
+            $this->depositDate,
+            $holding,
+            $batchId,
+            $startPagination,
+            self::LIMIT_ORDERS
+        )
         ) {
             /**
              * @var $order Order
@@ -283,15 +278,14 @@ class ReceiptBatchSender
     protected function pushReceiptBatch(Holding $holding, $batchId, $remotePropertyId)
     {
         $startPagination = 0;
-        while (
-            $ordersReceiptBatch = $this->getOrderRepository()->getReceiptBatch(
-                $this->depositDate,
-                $holding,
-                $batchId,
-                $remotePropertyId,
-                $startPagination,
-                self::LIMIT_ORDERS
-            )
+        while ($ordersReceiptBatch = $this->getOrderRepository()->getReceiptBatch(
+            $this->depositDate,
+            $holding,
+            $batchId,
+            $remotePropertyId,
+            $startPagination,
+            self::LIMIT_ORDERS
+        )
         ) {
             try {
                 $yardiBatchId = $this->getBatchId($remotePropertyId, $batchId);
