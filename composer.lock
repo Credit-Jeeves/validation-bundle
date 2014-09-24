@@ -535,7 +535,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/SimulationBundle.git",
-                "reference": "b13bd58e90600e229b3d5dcd349714769056f86a"
+                "reference": "6f54729718d7c04726ac5c0b26a42296ca854bde"
             },
             "require": {
                 "credit-jeeves/arf-bundle": "dev-master",
@@ -565,7 +565,7 @@
                 }
             ],
             "description": "CreditJeeves Simulation Bundle",
-            "time": "2014-05-08 13:16:07"
+            "time": "2014-09-24 18:48:11"
         },
         {
             "name": "doctrine/annotations",
