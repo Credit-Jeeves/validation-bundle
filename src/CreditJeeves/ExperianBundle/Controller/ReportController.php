@@ -84,16 +84,9 @@ class ReportController extends Controller
 
     protected function getArf($isD2c = false)
     {
-        if (null == $this->creditProfile) {
-            $this->creditProfile = $this->get('experian.net_connect.credit_profile');
-            if ($isD2c) {
-                $this->creditProfile->getNetConnectRequest()
-                    ->getRequest()
-                    ->getProducts()
-                    ->getCreditProfile()
-                    ->getSubscriber()
-                    ->setSubCode($this->container->getParameter('net_connect.credit_profile.d2c.sub_code'));
-            }
+        $this->creditProfile = $this->get('experian.net_connect.credit_profile');
+        if ($isD2c) {
+            $this->creditProfile->initD2c();
         }
         return $this->creditProfile->getResponseOnUserData($this->get('core.session.applicant')->getUser());
     }
