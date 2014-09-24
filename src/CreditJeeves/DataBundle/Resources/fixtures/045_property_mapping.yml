@@ -3,4 +3,4 @@ fixtures:
     PropertyMapping_1:
         holding: rjHolding_1
         property: Property_1
-        landlordPropertyId: 'rnttrk01'
+        externalPropertyId: 'rnttrk01'
