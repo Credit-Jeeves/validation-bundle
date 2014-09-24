@@ -1,6 +1,8 @@
 <?php
 namespace CreditJeeves\UserBundle\Service;
 
+use Doctrine\ORM\EntityManager;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -20,10 +22,13 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
     protected $container;
 
     /**
-     * @var Entity Manager
+     * @var EntityManager
      */
     protected $em;
 
+    /**
+     * @var ExceptionCatcher
+     */
     protected $exceptionCatcher;
 
     /**
@@ -32,6 +37,10 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
      *     "em"                     = @DI\Inject("doctrine.orm.entity_manager"),
      *     "exceptionCatcher"       = @DI\Inject("fp_badaboom.exception_catcher")
      * })
+     *
+     * @param ContainerInterface $container
+     * @param EntityManager $em
+     * @param ExceptionCatcher $exceptionCatcher
      */
     public function __construct(ContainerInterface $container, $em, $exceptionCatcher)
     {
@@ -44,7 +53,8 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
      * 
      * @param Request $request
      * @param AuthenticationException $exception
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @return RedirectResponse
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {

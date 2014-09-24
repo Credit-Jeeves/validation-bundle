@@ -38,11 +38,11 @@
             {{ render(controller('ComponentBundle:Score:index', {'user': User})) }}
         </div>
         <div class="column-small floatright">
-            {% if creditTrackEnabled %}
+            {#% if creditTrackEnabled //TODO return it back when CreditTrack will be on place %#}
                 {{ render(controller('ComponentBundle:LearnMore:index')) }}
-            {% else %}
+            {#% else %}
                 {{ render(controller('TenantBundle:CreditTrack:promobox')) }}
-            {% endif %}
+            {% endif %#}
         </div>
         <div class="clearboth"></div>
         <div class="column-large">

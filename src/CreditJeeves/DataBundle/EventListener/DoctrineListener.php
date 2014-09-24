@@ -3,7 +3,6 @@ namespace CreditJeeves\DataBundle\EventListener;
 
 use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\DataBundle\Entity\Report;
-use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\Tradeline;
 use CreditJeeves\DataBundle\Entity\ApplicantIncentive;
@@ -20,7 +19,7 @@ class DoctrineListener
     {
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
-        if ($entity instanceof ReportPrequal) {
+        if ($entity instanceof Report) {
             $this->setScore($entity, $em);
         }
     }
@@ -32,9 +31,16 @@ class DoctrineListener
         if ($entity instanceof Tradeline) {
             $this->checkCompleted($entity, $em);
         }
-
+        if ($entity instanceof Report) {
+            $this->setScore($entity, $em);
+        }
     }
 
+    /**
+     * @param Report $report
+     *
+     * @return int
+     */
     protected function getReportScore($report)
     {
         return $report->getArfReport()->getScore();
@@ -45,16 +51,20 @@ class DoctrineListener
      *
      * @return int
      */
-    protected function setScore(ReportPrequal $report, $em)
+    protected function setScore(Report $report, $em)
     {
         $newScore = $this->getReportScore($report);
         if ($newScore > 1000) {
             $newScore = 0;
         }
+        if (0 == $newScore) {
+            return;
+        }
         $score = new Score();
         $score->setUser($report->getUser());
         $score->setScore($newScore);
         $em->persist($score);
+        $em->flush($score);
     }
 
     /**

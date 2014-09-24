@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
 use RentJeeves\DataBundle\Entity\JobRelatedPayment;
 use RentJeeves\DataBundle\Entity\JobRelatedOrder;
+use RentJeeves\DataBundle\Entity\JobRelatedReport;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -21,6 +22,7 @@ class LinkGenerator implements LinkGeneratorInterface
        'RentJeeves\DataBundle\Entity\JobRelatedPayment' => 'Payment',
        'RentJeeves\DataBundle\Entity\JobRelatedOrder' => 'Order',
        'RentJeeves\DataBundle\Entity\JobRelatedCreditTrack' => 'Credit Track Payment Account',
+       'RentJeeves\DataBundle\Entity\JobRelatedReport' => 'Report',
     );
 
     /**
@@ -61,6 +63,14 @@ class LinkGenerator implements LinkGeneratorInterface
                 'admin_rentjeeves_data_paymentaccount_show',
                 array(
                     'id' => $entity->getCreditTrackPaymentAccount()->getId()
+                )
+            );
+        }
+        if ($entity instanceof JobRelatedReport) {
+            return $this->routeGenerator->generate(
+                'admin_cj_report_show',
+                array(
+                    'id' => $entity->getReport()->getId()
                 )
             );
         }

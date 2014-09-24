@@ -53,7 +53,6 @@ class GroupCase extends BaseTestCase
      */
     public function settingSecond()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
@@ -61,13 +60,13 @@ class GroupCase extends BaseTestCase
         $tableBlock->clickLink('link_list');
 
         $this->assertNotNull($edit = $this->page->findAll('css', 'a.edit_link'));
-        $edit[0]->click();
+        $edit[8]->click();
 
         $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
         $menu[4]->click();
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(6, $checkbox);
+        $this->assertCount(6, $checkbox); // TODO check only current tab
         $checkbox[4]->check();  //Check is integrated
         $checkbox[5]->check(); //Check pay balance only
 

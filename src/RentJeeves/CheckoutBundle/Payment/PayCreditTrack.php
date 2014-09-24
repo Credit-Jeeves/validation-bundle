@@ -11,6 +11,8 @@ use Payum\Heartland\Soap\Base\BillTransaction;
 use Payum\Heartland\Soap\Base\MakePaymentRequest;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\JobRelatedReport;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
@@ -108,6 +110,12 @@ class PayCreditTrack extends Pay
             $order->addOperation($operation);
             $this->em->persist($operation);
             $this->em->persist($report);
+            $job = new Job('experian-credit_profile:get', array('--app=rj'));
+            $job->addRelatedEntity($report);
+            $execute = new DateTime();
+            $execute->modify("+5 minutes");
+            $job->setExecuteAfter($execute);
+            $this->em->persist($job);
         } else {
             $order->setStatus(OrderStatus::ERROR);
         }

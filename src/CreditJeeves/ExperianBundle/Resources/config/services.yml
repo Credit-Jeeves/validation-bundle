@@ -17,7 +17,7 @@ services:
         parent: experian.net_connect
         class: "%experian.net_connect.credit_profile.class%"
         calls:
-            - [setConfigs, ["%net_connect.credit_profile.url%", "%net_connect.credit_profile.dbhost%", "%net_connect.credit_profile.sub_code%"]]
+            - [setConfigs, ["%net_connect.credit_profile.url%", "%net_connect.credit_profile.dbhost%", "%net_connect.credit_profile.sub_code%", "%net_connect.credit_profile.d2c.sub_code%"]]
     experian.net_connect.precise_id:
         parent: experian.net_connect
         class: "%experian.net_connect.precise_id.class%"

@@ -2,8 +2,10 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\CoreBundle\Type\Encrypt;
-//use CreditJeeves\DataBundle\Entity\ApiUpdate;
+use CreditJeeves\DataBundle\Entity\ReportD2c;
+use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Enum\UserType;
+use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Entity\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
@@ -14,7 +16,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
 use RentJeeves\DataBundle\Entity\UserSettings;
 use JMS\Serializer\Annotation as Serializer;
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -420,25 +422,13 @@ abstract class User extends BaseUser
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportPrequal",
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Report",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
      */
-    protected $reportsPrequal;
-
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportD2c",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $reportsD2c;
+    protected $reports;
 
     /**
      * @var ArrayCollection
@@ -653,6 +643,7 @@ abstract class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
+        $this->reports = new ArrayCollection();
         $this->reportsPrequal = new ArrayCollection();
         $this->reportsD2c = new ArrayCollection();
         $this->scores = new ArrayCollection();
@@ -668,7 +659,7 @@ abstract class User extends BaseUser
         $this->accessTokens = new ArrayCollection();
         $this->authCodes = new ArrayCollection();
         $this->refreshTokens = new ArrayCollection();
-        $this->created_at = new \DateTime();
+        $this->created_at = new DateTime();
     }
 
 
@@ -1411,6 +1402,39 @@ abstract class User extends BaseUser
     }
 
     /**
+     * Add report
+     *
+     * @param Report $report
+     * @return User
+     */
+    public function addReport(Report $report)
+    {
+        $this->reports[] = $report;
+
+        return $this;
+    }
+
+    /**
+     * Remove report
+     *
+     * @param Report $report
+     */
+    public function removeReport(Report $report)
+    {
+        $this->reports->removeElement($report);
+    }
+
+    /**
+     * Get reports
+     *
+     * @return Collection
+     */
+    public function getReports()
+    {
+        return $this->reports;
+    }
+
+    /**
      * Add reportsPrequal
      *
      * @param \CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal
@@ -1418,7 +1442,7 @@ abstract class User extends BaseUser
      */
     public function addReportsPrequal(\CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal)
     {
-        $this->reportsPrequal[] = $reportsPrequal;
+        $this->reports[] = $reportsPrequal;
 
         return $this;
     }
@@ -1430,7 +1454,7 @@ abstract class User extends BaseUser
      */
     public function removeReportsPrequal(\CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal)
     {
-        $this->reportsPrequal->removeElement($reportsPrequal);
+        $this->reports->removeElement($reportsPrequal);
     }
 
     /**
@@ -1440,7 +1464,14 @@ abstract class User extends BaseUser
      */
     public function getReportsPrequal()
     {
-        return $this->reportsPrequal;
+        return $this->reports->filter(
+            function (Report $report) {
+                if ($report instanceof ReportPrequal) {
+                    return true;
+                }
+                return false;
+            }
+        );
     }
 
     /**
@@ -1451,7 +1482,7 @@ abstract class User extends BaseUser
      */
     public function addReportsD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c)
     {
-        $this->reportsD2c[] = $reportsD2c;
+        $this->reports[] = $reportsD2c;
 
         return $this;
     }
@@ -1463,7 +1494,7 @@ abstract class User extends BaseUser
      */
     public function removeReportsD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c)
     {
-        $this->reportsD2c->removeElement($reportsD2c);
+        $this->reports->removeElement($reportsD2c);
     }
 
     /**
@@ -1473,7 +1504,14 @@ abstract class User extends BaseUser
      */
     public function getReportsD2c()
     {
-        return $this->reportsD2c;
+        return $this->reports->filter(
+            function (Report $report) {
+                if ($report instanceof ReportD2c) {
+                    return true;
+                }
+                return false;
+            }
+        );
     }
 
     /**

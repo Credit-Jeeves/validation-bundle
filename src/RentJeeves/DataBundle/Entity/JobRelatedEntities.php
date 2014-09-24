@@ -3,7 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use \DateTime;
+use DateTime;
 
 /**
  * @ORM\Entity
@@ -13,7 +13,8 @@ use \DateTime;
  * @ORM\DiscriminatorMap({
  *      "payment" = "JobRelatedPayment",
  *      "order" = "JobRelatedOrder",
- *      "credit_track" = "JobRelatedCreditTrack"
+ *      "credit_track" = "JobRelatedCreditTrack",
+ *      "report" = "JobRelatedReport"
  * })
  */
 class JobRelatedEntities
@@ -46,10 +47,6 @@ class JobRelatedEntities
      * @var DateTime
      */
     protected $createdAt;
-
-//    protected $relatedClass;
-
-//    protected $relatedId;
 
     public function __clone()
     {

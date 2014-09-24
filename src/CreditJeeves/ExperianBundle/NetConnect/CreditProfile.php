@@ -19,11 +19,12 @@ class CreditProfile extends NetConnect
      * @var string
      */
     protected $isUrlInit = false;
+    protected $d2cSubCode = false;
 
     /**
      * @inheritdoc
      */
-    public function setConfigs($url, $dbHost, $subCode)
+    public function setConfigs($url, $dbHost, $subCode, $d2cSubCode = null)
     {
         $this->url = $url;
         $this->getNetConnectRequest()
@@ -31,8 +32,25 @@ class CreditProfile extends NetConnect
             ->setDbHost($dbHost);
         $this->getNetConnectRequest()
             ->getRequest()->getProducts()->getCreditProfile()->getSubscriber()->setSubCode($subCode);
-
+        $this->d2cSubCode = $d2cSubCode;
         $this->usrPwd = $this->settings->getCreditProfileUserPwd();
+        return $this;
+    }
+
+    /**
+     * Initialize D2C credit profiles attributes
+     *
+     * @return $this
+     */
+    public function initD2c()
+    {
+        $this->getNetConnectRequest()
+            ->getRequest()
+            ->getProducts()
+            ->getCreditProfile()
+            ->getSubscriber()
+            ->setSubCode($this->d2cSubCode);
+
         return $this;
     }
 
