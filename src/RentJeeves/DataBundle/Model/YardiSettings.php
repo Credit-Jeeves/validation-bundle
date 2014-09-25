@@ -144,6 +144,17 @@ abstract class YardiSettings
     protected $holding;
 
     /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="sync_balance",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     */
+    protected $syncBalance = false;
+
+    /**
      * @param string $notesACH
      */
     public function setNotesACH($notesACH)
@@ -325,5 +336,21 @@ abstract class YardiSettings
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * @param mixed $syncBalance
+     */
+    public function setSyncBalance($syncBalance)
+    {
+        $this->syncBalance = $syncBalance;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSyncBalance()
+    {
+        return $this->syncBalance;
     }
 }

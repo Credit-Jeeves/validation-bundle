@@ -1,0 +1,15 @@
+model: RentJeeves\DataBundle\Entity\YardiSettings
+fixtures:
+    YardiSetting_1:
+        holding: rjHolding_1
+        url: 'https://www.iyardiasp.com/8223thirdparty708dev/'
+        username: 'renttrackws'
+        password: '57742'
+        databaseServer: 'sdb17\SQL2k8_R2'
+        databaseName: 'afqoml_70dev'
+        platform: 'SQL Server'
+        paymentTypeACH: 'check'
+        paymentTypeCC: 'cash'
+        notesACH: ''
+        notesCC: ''
+        syncBalance: true

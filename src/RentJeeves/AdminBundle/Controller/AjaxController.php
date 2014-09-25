@@ -9,9 +9,12 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Model\Group;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient;
+use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -107,6 +110,62 @@ class AjaxController extends Controller
         }
 
         return $this->makeJsonResponse($units, array("AdminUnit"));
+    }
+
+    /**
+     * @Route(
+     *    "/rj/check/yardi/settings",
+     *     name="admin_check_yardi_settings",
+     *     options={"expose"=true}
+     * )
+     */
+    public function checkYardiSettings()
+    {
+        $request = $this->getRequest();
+        $all = $request->request->all();
+        foreach ($all as $fields) {
+            foreach ($fields as $key => $data) {
+                if ($key === 'yardiSettings') {
+                    $settings = $fields[$key];
+                }
+            }
+        }
+
+        if (empty($settings)) {
+            throw new NotFoundHttpException();
+        }
+
+        $yardiSettings = new YardiSettings();
+        foreach ($settings as $key => $value) {
+            $method = 'set'.ucfirst($key);
+            $yardiSettings->$method($value);
+        }
+        $clientFactory = $this->get('soap.client.factory');
+        /**
+         * @var $resident ResidentClient
+         */
+        $resident = $clientFactory->getClient(
+            $yardiSettings,
+            SoapClientEnum::RESIDENT
+        );
+
+        $result = $resident->getPropertyConfigurations();
+
+        if (empty($result) && $resident->isError()) {
+            $response = array(
+                'status' => 'error',
+                'message'=> $resident->getErrorMessage()
+            );
+        } else {
+            $response = array(
+                'status' => 'ok',
+                'message'=> $this->get('translator')->trans(
+                    'common.test.setting.successfully'
+                )
+            );
+        }
+
+        return new JsonResponse($response);
     }
 
     /**

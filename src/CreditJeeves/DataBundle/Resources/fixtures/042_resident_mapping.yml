@@ -3,4 +3,8 @@ fixtures:
     ResidentMapping_1:
         tenant: Tenant_1
         holding: rjHolding_1
-        residentId: FGDTRFG-44
+        residentId: t0012027
+    ResidentMapping_2:
+        tenant: Tenant_12
+        holding: rjHolding_1
+        residentId: t0011984

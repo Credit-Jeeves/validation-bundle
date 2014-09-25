@@ -69,7 +69,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 123123', (string) $checkNumber);
-        $this->assertEquals('FGDTRFG-44', (string) $personId);
+        $this->assertEquals('t0012027', (string) $personId);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
 
@@ -112,7 +112,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 456456', (string) $checkNumber);
-        $this->assertEquals('FGDTRFG-44', (string) $personId);
+        $this->assertEquals('t0012027', (string) $personId);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
 
@@ -196,7 +196,7 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($csvArr = str_getcsv($csvArr[2]));
         $this->assertEquals('AAABBB-7', $csvArr[1]);
         $this->assertEquals('1500.00', $csvArr[2]);
-        $this->assertEquals('FGDTRFG-44', $csvArr[4]);
+        $this->assertEquals('t0012027', $csvArr[4]);
     }
 
     /**
@@ -241,7 +241,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('AAABBB-7', $columns[1]);
         $this->assertEquals(1500, $columns[2]);
         $this->assertEquals($columns[3], '"Trans #123123 Batch #125478"');
-        $this->assertEquals("FGDTRFG-44", $columns[4]);
+        $this->assertEquals("t0012027", $columns[4]);
     }
 
     /**
@@ -294,7 +294,7 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($notes = $receipt->Notes);
 
         $this->assertEquals('1500.00', (string) $totalAmount);
-        $this->assertEquals('FGDTRFG-44', (string) $personId);
+        $this->assertEquals('t0012027', (string) $personId);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
 
@@ -340,7 +340,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('AAABBB-7', $csvArr[2]);
         $this->assertEquals('456456', $csvArr[7]);
         $this->assertEquals('325698', $csvArr[8]);
-        $this->assertEquals('FGDTRFG-44', $csvArr[4]);
+        $this->assertEquals('t0012027', $csvArr[4]);
         $this->assertEquals('15235678', $csvArr[13]);
         /** check Refunded */
         $this->assertNotNull($csvArr = str_getcsv($csvFullArr[11]));

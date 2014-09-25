@@ -144,10 +144,6 @@
         },
         {
             "type": "git",
-            "url":"git@github.com:66Ton99/BeSimpleSoapCommon.git"
-        },
-        {
-            "type": "git",
             "url": "git@github.com:Credit-Jeeves/ApiBundle.git"
         },
         {
@@ -224,7 +220,6 @@
         "payum/payum-bundle": "dev-heartland",
         "payum/authorize-net-aim": "0.5.*",
         "payum/heartland": "dev-master",
-        "besimple/soap-common": "dev-ton as dev-master",
         "ass/xmlsecurity": "dev-master",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",
@@ -248,7 +243,8 @@
         "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
         "pagerfanta/pagerfanta": "dev-master",
         "fp/jsformvalidator-bundle": "dev-master",
-        "besimple/soap":   "0.1.*@dev"
+        "besimple/soap": "dev-master",
+        "besimple/wsdl2php": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",

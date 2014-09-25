@@ -67,7 +67,7 @@ fixtures:
         property:  Property_1
         holding:   rjHolding_1
         group:     RentGroup_1
-        name:      2-d
+        name:      108
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_1_11:
