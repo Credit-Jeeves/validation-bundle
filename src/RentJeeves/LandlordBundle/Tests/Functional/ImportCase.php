@@ -900,9 +900,6 @@ class ImportCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->logout();
-        /**
-         * @var $em EntityManager
-         */
         $em = $this->getContainer()->get('doctrine')->getManager();
 
         $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
@@ -960,6 +957,7 @@ class ImportCase extends BaseTestCase
         $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
             $waitingContractParams
         );
+
         $this->assertNull($waitingContract);
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
