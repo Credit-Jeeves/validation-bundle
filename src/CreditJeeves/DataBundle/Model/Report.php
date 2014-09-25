@@ -44,6 +44,30 @@ abstract class Report extends BaseReport
      */
     protected $atbs;
 
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     inversedBy="reports"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_applicant_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $user;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\JobRelatedReport",
+     *     mappedBy="report",
+     *     cascade={"persist", "merge"},
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
+     */
+    protected $jobs;
+
     public function __construct()
     {
         $this->atbs = new ArrayCollection();

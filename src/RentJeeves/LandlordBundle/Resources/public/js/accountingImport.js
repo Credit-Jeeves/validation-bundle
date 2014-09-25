@@ -80,11 +80,12 @@ function accountingImport() {
         return false;
     }
 
-    this.getDatePickerOptions = function() {
+    this.getDatePickerOptions = function(disabled) {
         var options = {
             showOn: "both",
             buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
-            format: 'm/d/Y'
+            format: 'm/d/Y',
+            disabled: disabled
         };
 
         return options;
@@ -141,9 +142,22 @@ function accountingImport() {
             }
             var form = new Object();
             if (element.find('form').length > 0) {
-                var data = element.find('input').serializeArray();
+                var inputs = element.find('input');
+                var disabled = Array();
+                //disabled element turn off
+                $.each(inputs, function( index, value ) {
+                    if ($(this).attr('disabled')) {
+                        $(this).attr('disabled', false);
+                        disabled.push($(this));
+                    }
+                });
+                var data = inputs.serializeArray();
                 ko.utils.arrayForEach(data, function (value) {
                     form[value.name] = value.value;
+                });
+                //disabled element turn on
+                $.each(disabled, function( index, value ) {
+                    $(this).attr('disabled', true);
                 });
             }
             form['line'] = self.rows()[number].number;

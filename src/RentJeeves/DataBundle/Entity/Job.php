@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\Report;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\JobQueueBundle\Entity\Job as Base;
 use Doctrine\ORM\Mapping as ORM;
@@ -85,6 +86,10 @@ class Job extends Base
             case $entity instanceof Order:
                 $jobRelated = new JobRelatedOrder();
                 $jobRelated->setOrder($entity);
+                break;
+            case $entity instanceof Report:
+                $jobRelated = new JobRelatedReport();
+                $jobRelated->setReport($entity);
                 break;
             case $entity instanceof JobRelatedEntities:
                 $jobRelated = $entity;

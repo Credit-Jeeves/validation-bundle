@@ -433,4 +433,20 @@ class Mailer extends BaseMailer
             )
         );
     }
+
+    /**
+     * @param Landlord $landlord
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function sendPushBatchReceiptsReport(Landlord $landlord, $data)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjPushBatchReceiptsReport',
+            array('data' => $data),
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
+    }
 }

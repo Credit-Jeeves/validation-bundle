@@ -89,7 +89,8 @@ class Builder extends ContainerAware
         );
         $menu->addChild('settings.email', array('route' => 'user_email'));
         $menu->addChild('settings.remove', array('route' => 'user_remove'));
-        $menu->addChild('settings.plans', array('route' => 'user_plans'));
+        //TODO return it back when CreditTrack will be on place
+//        $menu->addChild('settings.plans', array('route' => 'user_plans'));
         $menu->addChild('settings.address.head.manage', array('route' => 'user_addresses'));
 
        

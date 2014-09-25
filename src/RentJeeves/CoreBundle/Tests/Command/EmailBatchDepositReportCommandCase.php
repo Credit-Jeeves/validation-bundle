@@ -36,16 +36,16 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
             ->getQuery()
             ->execute();
 
-        $date = new DateTime('-1 day');
+        $date = new DateTime();
         /**
          * Update date for all success transactions
          */
         $qb = $em->createQueryBuilder();
         $qb->update('RjDataBundle:Heartland', 'h')
-            ->set('h.depositDate', ':yesterday')
+            ->set('h.depositDate', ':depositDate')
             ->where('h.batchId iS NOT NULL')
             ->andWhere('h.isSuccessful = 1')
-            ->setParameter('yesterday', $date)
+            ->setParameter('depositDate', $date)
             ->getQuery()
             ->execute();
 

@@ -39,6 +39,6 @@ class PropertyMappingCase extends BaseTestCase
         $btn[1]->click();
 
         $this->assertNotNull($properties = $this->page->findAll('css', 'tbody tr'));
-        $this->assertEquals(2, count($properties));
+        $this->assertEquals(3, count($properties));
     }
 }

@@ -139,7 +139,7 @@
                         'title': $root.getErrorTitle($data, 'import_contract_startAt')
                     },
                     datepickerOld: $root.formatDate(contract.startAt),
-                    datepickerOptions: $root.getDatePickerOptions(),
+                    datepickerOptions: $root.getDatePickerOptions(contract.id),
                     datepickerFieldName: 'startAt'
                     ",
                 }

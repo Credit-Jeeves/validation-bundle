@@ -1,0 +1,6 @@
+model: RentJeeves\DataBundle\Entity\PropertyMapping
+fixtures:
+    PropertyMapping_1:
+        holding: rjHolding_1
+        property: Property_1
+        externalPropertyId: 'rnttrk01'

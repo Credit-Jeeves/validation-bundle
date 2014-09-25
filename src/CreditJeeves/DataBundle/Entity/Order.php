@@ -605,4 +605,84 @@ class Order extends BaseOrder
     {
         return (string)$this->getId();
     }
+
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("DocumentNumber")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getDocumentNumber()
+    {
+        return $this->getHeartlandTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("TransactionDate")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getTransactionDate()
+    {
+        return $this->getCreatedAt()->format('Y-m-d');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("CustomerID")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getCustomerID()
+    {
+        return $this->getTenantExternalId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Amount")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("double")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return double
+     */
+    public function getYardiAmount()
+    {
+        return $this->getTotalAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Comment")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->getContract()->getProperty()->getFullAddress();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PropertyPrimaryID")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getPropertyPrimaryID()
+    {
+        $mapping = $this->getContract()->getProperty()->getPropertyMapping();
+        return $mapping->first()->getExternalPropertyId();
+    }
 }
