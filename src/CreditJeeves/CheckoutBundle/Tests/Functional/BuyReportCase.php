@@ -64,7 +64,7 @@ class BuyReportCase extends BaseTestCase
 
     /**
      * @test
-     * @depends checkCurrentDownloadedData
+     * depends checkCurrentDownloadedData
      */
     public function authorizeNetAim()
     {
@@ -131,18 +131,11 @@ class BuyReportCase extends BaseTestCase
 
         $this->assertNotNull($date);
         $this->assertEquals(date(static::getContainer()->getParameter('date_short')), $date->getText());
-    }
 
-    /**
-     * @test
-     * @depends authorizeNetAim
-     */
-    public function authorizeNetAimCheckEmail()
-    {
         $emails = $this->getEmails();
         $this->assertCount(2, $emails, 'Wrong number of emails');
 
-        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $email = $this->getEmailReader()->getEmail(array_shift($emails))->getMessage('text/html');
         $this->assertEquals('Receipt from Credit Jeeves', $email->getSubject());
         $this->assertEquals(1, preg_match("/Reference Number: (.*)/", $email->getBody(), $matches));
         $this->assertNotEmpty($matches[1]);
