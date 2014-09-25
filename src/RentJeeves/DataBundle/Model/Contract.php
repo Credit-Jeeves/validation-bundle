@@ -214,8 +214,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
-     * @Serializer\Groups({"RentJeevesImport", "payRent"})
-     * @Serializer\Type("DateTime<'Y-m-d 00:00:00'>")
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $paidTo;
@@ -284,8 +283,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * @Serializer\Groups({"RentJeevesImport", "payRent"})
-     * @Serializer\Type("DateTime<'Y-m-d 00:00:00'>")
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $startAt;
