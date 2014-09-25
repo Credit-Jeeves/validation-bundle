@@ -856,6 +856,33 @@ class Contract extends Base
         return $this->getGroup()->getGroupSettings();
     }
 
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("paidTo")
+     * @Serializer\Type("DateTime<'Y-m-d 00:00:00'>")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return int
+     */
+    public function getFormattedPaidTo()
+    {
+        return $this->getPaidTo();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("startAt")
+     * @Serializer\Type("DateTime<'Y-m-d 00:00:00'>")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return int
+     */
+    public function getFormattedStartAt()
+    {
+        return $this->getStartAt();
+    }
+
+
     public function getCurrentBalance()
     {
         if ($this->getSettings()->getIsIntegrated()) {
