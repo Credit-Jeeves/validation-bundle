@@ -283,7 +283,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * @Serializer\Groups({"RentJeevesImport", "payRent"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $startAt;

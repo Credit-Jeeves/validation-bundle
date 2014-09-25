@@ -18,9 +18,7 @@ class PaymentReportCase extends BaseTestCase
     public function executeCommand()
     {
         $this->load(true);
-        static::$kernel = null;
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
+        $application = new Application($this->getKernel());
         $application->add(new PaymentReportCommand());
 
         $plugin = $this->registerEmailListener();

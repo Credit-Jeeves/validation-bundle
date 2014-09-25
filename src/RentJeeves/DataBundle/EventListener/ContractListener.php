@@ -96,13 +96,12 @@ class ContractListener
             return;
         }
         /**
-         * Need double check because:
          * 500 - string
          * 500.00 - double
          * value the same but contract will close.
          */
-        $oldValue = $eventArgs->getNewValue('rent');
-        $newValue = $eventArgs->getOldValue('rent');
+        $oldValue = floatval($eventArgs->getNewValue('rent'));
+        $newValue = floatval($eventArgs->getOldValue('rent'));
 
         if ($oldValue === $newValue) {
             return;

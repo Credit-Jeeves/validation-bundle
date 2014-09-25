@@ -1,0 +1,14 @@
+{% extends 'SonataAdminBundle:CRUD:edit.html.twig' %}
+
+{% block form %}
+    {{ parent() }}
+    {% javascripts
+    'bundles/bazingajstranslation/js/translator.min.js'
+    '@CoreBundle/Resources/public/js/jquery.overlay.js'
+    '@CoreBundle/Resources/public/js/jquery.overlay-ext.js'
+    '@RjAdminBundle/Resources/public/js/testYardi.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
+{% endblock %}

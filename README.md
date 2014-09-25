@@ -111,7 +111,21 @@ ec2-user@54.243.130.78 - SELENIUM ssh user alex
 ./screen.sh - run selenium for RT
 ./screen2.sh - run selenium for sf1 CJ
 
+_______________________________
+Yardi Soap, generate class from wsdl, example
 
+php ./vendor/besimple/wsdl2php/bin/wsdl2php.php \
+    -w"./src/RentJeeves/ExternalApiBundle/Resources/files/ItfResidentTransactions20.asmx.wsdl" \
+    -v2 \
+    -nRentJeeves\\ExternalApiBundle\\Services\\Yardi\\Soap \
+    -cClient \
+    -osrc \
+    --backup \
+    --instance_on_getter \
+    --access=protected \
+    --empty_parameter_name \
+    --wsdl2java_style
+_______________________________
 
 TODO
 ----

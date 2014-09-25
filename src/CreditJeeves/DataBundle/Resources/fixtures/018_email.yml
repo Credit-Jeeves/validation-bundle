@@ -80,3 +80,5 @@ fixtures:
       name: rjBatchDepositReportHolding.html
   email_40:
       name: rjReceipt.html
+  email_41:
+      name: rjPushBatchReceiptsReport.html

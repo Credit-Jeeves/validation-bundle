@@ -1,6 +1,6 @@
 <?php
 
-namespace CreditJeeves\DataBundle\Tests\Unit;
+namespace CreditJeeves\DataBundle\Tests\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Dealer;
 use CreditJeeves\DataBundle\Entity\Lead;

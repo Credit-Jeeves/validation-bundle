@@ -48,7 +48,7 @@ class RjGroupAdmin extends Admin
         $nHoldingId = $this->getRequest()->get('holding_id', $this->request->getSession()->get('holding_id', null));
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-        $query->add('where', $query->expr()->in($alias.'.type', array(GroupType::RENT)));
+        $query->add('where', $query->expr()->in($alias.'.type', array(GroupType::RENT, GroupType::GENERIC)));
         if (!empty($nHoldingId)) {
             $this->request->getSession()->set('holding_id', $nHoldingId);
             $query->andWhere($alias.'.holding_id = :holding_id');

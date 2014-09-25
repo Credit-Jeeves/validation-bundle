@@ -25,6 +25,15 @@ class YardiSettings extends Base
         $builder->add('platform');
         $builder->add('databaseName');
         $builder->add(
+            'syncBalance',
+            'checkbox',
+            array(
+                'error_bubbling'    => true,
+                'label'             => 'yardi.sync_balance.label',
+                'required'          => false,
+            )
+        );
+        $builder->add(
             'paymentTypeACH',
             'choice',
             array(

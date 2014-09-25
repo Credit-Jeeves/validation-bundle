@@ -1342,3 +1342,60 @@ fixtures:
         </br>
         {{ 'order.receipt.footer' | trans }}
       {% endblock %}
+
+
+# rjPushBatchReceiptsReport.html
+  translation_41_subject:
+    translatable: email_41
+    locale: %locale%
+    property: subject
+    value: Push Batch Receipts Report
+
+  translation_41_body:
+    translatable: email_41
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+       The following batch deposits for (deposit-date) were uploaded to your accounting system.
+       Please review and post the batches.
+       <br />
+       <br />
+       <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
+         <thead>
+           <tr>
+             <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>
+                {{ 'common.batch_id'| trans }}
+             </th>
+             <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">
+                {{ 'common.type_ach_cc'| trans }}
+             </th>
+             <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">
+                {{ 'common.total'| trans }}
+             </th>
+             <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">
+                {{ 'common.status'| trans }}
+             </th>
+           </tr>
+         </thead>
+         <tbody>
+              {% for value in data %}
+                <tr>
+                  <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+                    {{ value['bratchId'] }}
+                  </td>
+                  <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+                    {{ value['type'] }}
+                  </td>
+                  <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+                    {{ value['total'] }}
+                  </td>
+                  <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+                    {{ value['status'] }}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      {% endblock %}
