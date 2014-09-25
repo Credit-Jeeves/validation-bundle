@@ -298,7 +298,7 @@ class AjaxController extends Controller
         }
 
         if ($request->request->has('isSingle') && is_null($property->getIsSingle())) {
-            $property->setIsSingle($request->request->get('isSingle') == 'true');
+            $property->setIsSingle($request->request->get('isSingle') === 'true');
         }
 
         if (!$propertyProcess->isValidProperty($property)) {
@@ -494,6 +494,9 @@ class AjaxController extends Controller
         if ($propertyId === null) {
             throw new BadRequestHttpException('Property ID is not specified');
         }
+        /**
+         * @var $property Property
+         */
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($propertyId);
         if (empty($property)) {
             return new NotFoundHttpException('Property not found');

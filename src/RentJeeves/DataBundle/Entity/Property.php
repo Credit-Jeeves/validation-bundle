@@ -244,7 +244,13 @@ class Property extends Base
     public function getSingleUnit()
     {
         if ($this->isSingle()) {
-            return $this->getUnits()->first();
+            $unit = $this->getUnits()->first();
+            if (!$unit) {
+                throw new \LogicException(
+                    sprintf('Standalone property "%s" has no unit.', $this->getAddress())
+                );
+            }
+            return $unit;
         }
 
         return null;
