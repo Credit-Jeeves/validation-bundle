@@ -27,3 +27,12 @@ parameters:
         application_id: 1
         username: RTAPI
         password: $RTapi13
+
+
+    net_connect.precise_id.url: 'https://ss3.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
+    net_connect.precise_id.dbhost: 'PRECISE_ID' #required!
+    net_connect.precise_id.sub_code: '2279720' #required!
+    net_connect.credit_profile.url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnect&serviceVersion=2.0&responseType=text/plain' #required!
+    net_connect.credit_profile.dbhost: 'CIS' #required!
+    net_connect.credit_profile.sub_code: '2266580' #required!
+    net_connect.credit_profile.d2c.sub_code: '2266580' #required!

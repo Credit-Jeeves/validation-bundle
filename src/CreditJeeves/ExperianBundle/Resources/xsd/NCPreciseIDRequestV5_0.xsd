@@ -1,0 +1,1334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Mary Shollenberger (Experian) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="5.0">
+	<xs:element name="NetConnectRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="EAI">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="8"/>
+							<xs:minLength value="8"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="DBHost">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="PRECISE_ID"/>
+							<xs:enumeration value="PRECISE_ID_TEST"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="ReferenceId" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="90"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Request">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="Products"/>
+						</xs:sequence>
+						<xs:attribute name="version" type="xs:string"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Products">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="PreciseIDServer"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PreciseIDServer">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="KBAAddOn"/>
+				<xs:sequence>
+					<xs:element ref="XMLVersion"/>
+					<xs:choice>
+						<xs:sequence>
+							<xs:element ref="Subscriber"/>
+							<xs:element ref="PrimaryApplicant"/>
+							<xs:element ref="AccountType" minOccurs="0"/>
+							<xs:element ref="AddOns" minOccurs="0"/>
+							<xs:element ref="Verbose" minOccurs="0"/>
+							<xs:element ref="Vendor" minOccurs="0"/>
+							<xs:element ref="Options"/>
+							<xs:element ref="NFD" minOccurs="0"/>
+							<xs:element ref="BankingInformation" minOccurs="0"/>
+							<xs:element ref="ResidenceInformation" minOccurs="0"/>
+							<xs:element ref="TotalIncome" minOccurs="0"/>
+							<xs:element name="Dependents" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Primary" minOccurs="0">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:pattern value="((\d){1,2})?"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element ref="JobHistory" minOccurs="0"/>
+							<xs:element ref="CheckPointOptions" minOccurs="0"/>
+							<xs:element ref="ReferenceNumber" minOccurs="0"/>
+							<xs:element ref="CCNumerics" minOccurs="0"/>
+							<xs:element ref="CCStrings" minOccurs="0"/>
+							<xs:element ref="IPAddress" minOccurs="0"/>
+							<xs:element ref="CreditCardNumbers" minOccurs="0"/>
+							<xs:element ref="KBA" minOccurs="0"/>
+							<xs:element ref="EarlyWarningOptionalInput" minOccurs="0"/>
+							<xs:element ref="DIDOptionalInput" minOccurs="0"/>
+						</xs:sequence>
+						<xs:element ref="KBAAnswers"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="XMLVersion" default="5.0">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(5|05|5.0)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Subscriber">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Preamble"/>
+				<xs:element ref="OpInitials"/>
+				<xs:element ref="SubCode"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Preamble">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="([a-zA-Z0-9]{4}){1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="OpInitials">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="([a-zA-Z0-9]{2}){1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="SubCode">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="([0-9]{7}){1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="PrimaryApplicant">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="Name"/>
+				<xs:element ref="SSN" minOccurs="0"/>
+				<xs:element ref="CurrentAddress"/>
+				<xs:element ref="PreviousAddress" minOccurs="0"/>
+				<xs:element ref="DriverLicense" minOccurs="0"/>
+				<xs:element ref="Phone" minOccurs="0"/>
+				<xs:element ref="Employment" minOccurs="0"/>
+				<xs:element ref="Age" minOccurs="0"/>
+				<xs:element ref="DOB" minOccurs="0"/>
+				<xs:element ref="YOB" minOccurs="0"/>
+				<xs:element ref="MothersMaidenName" minOccurs="0"/>
+				<xs:element ref="EmailAddress" minOccurs="0"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Age">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="([1][4-9]|[2-9][0-9]|10[0-9]|11[0-9]|120)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="DOB">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="((0[1-9]|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[0-1]))((19[0-9][0-9])|(20[0-9][0-9])))?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="YOB">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="((19[0-9][0-9])|(20[0-9][0-9]))?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="MothersMaidenName">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="([a-zA-Z \-']){0,60}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="EmailAddress">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Name">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="Surname"/>
+				<xs:element ref="First"/>
+				<xs:element ref="Middle" minOccurs="0"/>
+				<xs:element ref="Gen" minOccurs="0"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Surname">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="([a-zA-Z \-'\s]{1,65}){1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="First">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="([a-zA-Z]{1,32}){1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Middle">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z]{1,32})?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Gen">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="(SR|JR|(II|2)|(III|3)|(IV|4))?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="SSN">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:pattern value="(\d{3}-\d{2}-\d{4}|\d{9}|\d{4})?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CurrentAddress">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="Street">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="([a-zA-Z0-9# \- / \.]{1,68}){1}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="City">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="([a-zA-Z \.]{1,38}){1}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="State">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="([a-zA-Z]{2}){1}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Zip">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="([\d]{5}([\-]?[\d]{4})?){1}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PreviousAddress">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="Street" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="([a-zA-Z0-9# \- / \.]{1,68})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="City" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="([a-zA-Z \.]{1,38})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="State" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="([a-zA-Z]{2})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Zip" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="(([\d]{5}([\-]?[\d]{4})?){1})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="DriverLicense">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="State" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="([a-zA-Z]{2})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element ref="Number" minOccurs="0"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Number">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(([a-zA-Z0-9]{1,21}){1})?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Phone">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="Number" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="([a-zA-Z0-9\(\)\-]{10,13})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Type" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="[a-zA-Z0-9]{0,1}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<!-- CCV Module -->
+	<xs:element name="CreditCardNumbers">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="CreditCardNumber1" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value='[^"\r\n]*'/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="CreditCardType1" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value='([^"\r\n]{1})?'/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="CreditCardNumber2" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value='[^"\r\n]*'/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="CreditCardType2" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value='([^"\r\n]{1})?'/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="CreditCardNumber3" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value='[^"\r\n]*'/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="CreditCardType3" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value='([^"\r\n]{1})?'/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- End CCV -->
+	<xs:element name="Employment">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="Company" minOccurs="0"/>
+				<xs:element ref="Address" minOccurs="0"/>
+				<xs:element name="City" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="([a-zA-Z\.\s]{1,11})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="State" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="([a-zA-Z]{2})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Zip" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:whiteSpace value="collapse"/>
+							<xs:pattern value="(([\d]{5}([\-]?[\d]{4})?){1})?"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Company">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(([A-Za-z0-9\s\-#\.&amp;']{1,23})?){1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Address">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z0-9# \- \.]{1,25})?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AccountType">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="Type" minOccurs="0"/>
+				<xs:element ref="Terms" minOccurs="0"/>
+				<xs:element ref="AbbreviatedAmount" minOccurs="0"/>
+				<xs:element ref="FullAmount" minOccurs="0"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Type">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z0-9]{0,2})"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Terms">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="[a-zA-Z0-9]{0,3}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AbbreviatedAmount">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="[0-9]{0,3}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="FullAmount">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="[0-9]{0,7}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AddOns">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="NewConsumer" minOccurs="0"/>
+				<xs:element ref="DirectCheck" minOccurs="0"/>
+				<xs:element ref="ProfileSummary" minOccurs="0"/>
+				<xs:element ref="RiskModels" minOccurs="0"/>
+				<xs:element ref="Demographics" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="NewConsumer" type="YesNoType" default="N"/>
+	<xs:element name="DirectCheck" type="YesNoType" default="N"/>
+	<xs:element name="ProfileSummary" type="YesNoType" default="N"/>
+	<xs:element name="RiskModels">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Auto" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="Bankruptcy" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="BankruptcyPLUS" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="BankruptcyWatch" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="CollectScore" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="CreditUnion" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="CrossViewScore" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICO" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICO2" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICO3" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOAdvanced" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOAdvanced2" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOAuto" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOAuto2" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOAuto3" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOBank" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOBank2" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOBank3" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOFinance" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOFinance2" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOFinance3" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInsHomeownerF35" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInsHomeownerF4" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInsNonstandardAuto" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInsPrefAutoGT" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInsStandardAutoGT" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInsStandardAutoMin" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInstall" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInstall2" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FICOInstall3" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="FraudShield" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="NationalEquiv" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="NationalRisk" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="OldNational" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="RecoveryScoreBank" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="RecoveryScoreRetail" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="Retail" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="ROI1Digit" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="ROI3Digit" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="ScorexPLUS" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="ScorexPLUS2" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="SureView" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="TEC" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="TeleRisk" type="YesNoType" default="N" minOccurs="0"/>
+				<xs:element name="VantageScore" type="YesNoType" default="N" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Demographics">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Phone" type="YesNoType" default="N"/>
+				<xs:element name="GEOCode" type="YesNoType" default="N"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Verbose" type="YesNoType" default="N"/>
+	<xs:element name="Vendor">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="VendorNumber" minOccurs="0"/>
+				<xs:element ref="VendorVersion" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="VendorNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z0-9]){0,3}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="VendorVersion">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z0-9]){0,6}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Options">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="BrokerNumber" minOccurs="0"/>
+				<xs:element ref="EndUser" minOccurs="0"/>
+				<xs:element ref="FreezeKeyPIN" minOccurs="0"/>
+				<xs:element ref="ReferenceNumber" minOccurs="0"/>
+				<xs:element ref="OFAC" minOccurs="0"/>
+				<xs:element ref="OFACMSG" minOccurs="0"/>
+				<xs:element ref="PreciseIDType"/>
+				<xs:element ref="DetailRequest" minOccurs="0"/>
+				<xs:element ref="InquiryChannel" minOccurs="0"/>
+				<xs:element ref="AccessChannel" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BrokerNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([0-9]){0,10}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="EndUser">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z0-9 -']){0,30}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="FreezeKeyPIN">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z0-9]){0,15}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ReferenceNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:minLength value="0"/>
+				<xs:maxLength value="90"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="OFAC" type="YesNoType" default="N"/>
+	<xs:element name="OFACMSG" type="YesNoType" default="N"/>
+	<xs:element name="PreciseIDType">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="((0[1-9])|([1-9])|(1[0-9])|(2[0-4])){1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="DetailRequest" default="S">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(S|D)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="InquiryChannel">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(ATM|INTE|MAIL|PDA|PHON|PRE)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AccessChannel">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="preserve"/>
+				<xs:pattern value="([a-zA-Z0-9]){0,4}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="NFD">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="NFDSubscriberNumber" minOccurs="0"/>
+				<xs:element ref="DetailedResponse" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="NFDSubscriberNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="((\d{0,6}){1})?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="DetailedResponse" type="YesNoType" default="N"/>
+	<xs:element name="BankingInformation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Primary" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="AccountNumber" minOccurs="0"/>
+							<xs:element ref="RoutingNumber" minOccurs="0"/>
+							<xs:element ref="TimeWithBank" minOccurs="0"/>
+							<xs:element ref="BankingRelationship" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AccountNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(\d){0,20}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="RoutingNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([\d]{9})?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="TimeWithBank">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([1-9]|[1-9][0-9]|[1-9][0-9][0-9])?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BankingRelationship">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([0-9]{1})?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ResidenceInformation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Primary" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ResidenceType" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:whiteSpace value="collapse"/>
+										<xs:pattern value="([0][1-8])?"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="DurationOfStayInMonths" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:whiteSpace value="collapse"/>
+										<xs:pattern value="((\d){0,3})?"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="PrevResidenceType" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:whiteSpace value="collapse"/>
+										<xs:pattern value="([0][1-8])?"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="PrevDurationOfStayInMonths" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:whiteSpace value="collapse"/>
+										<xs:pattern value="((\d){0,3})?"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TotalIncome">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Primary" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="TotGrossIncomeFreq" minOccurs="0"/>
+							<xs:element ref="TotGrossIncomeAmt" minOccurs="0"/>
+							<xs:element ref="SalaryFreq" minOccurs="0"/>
+							<xs:element ref="SalaryAmt" minOccurs="0"/>
+							<xs:element ref="OtherGrossIncomeFreq" minOccurs="0"/>
+							<xs:element ref="OtherGrossIncomeAmt" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TotGrossIncomeFreq">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(B|H|M|Q|S|T|W|Y)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="TotGrossIncomeAmt">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(\d){0,7}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="SalaryFreq">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="[a-zA-Z]{0,1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="SalaryAmt">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(\d){0,7}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="OtherGrossIncomeFreq">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="[a-zA-Z]{0,1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="OtherGrossIncomeAmt">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(\d){0,7}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="JobHistory">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Primary" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="CurrentJobType" minOccurs="0"/>
+							<xs:element ref="CurrentJobDuration" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CurrentJobType">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(E|H|L|R|S|U)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CurrentJobDuration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="DurationInMonths"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="DurationInMonths">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="((\d){0,3})?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CheckPointOptions">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="LevelOfDetail" minOccurs="0"/>
+				<xs:element ref="EchoInput" minOccurs="0"/>
+				<xs:element ref="EDAFallThru" minOccurs="0"/>
+				<xs:element ref="EDABestPickCutoff" minOccurs="0"/>
+				<xs:element ref="NoOfEDAListings" minOccurs="0"/>
+				<xs:element ref="Validation" minOccurs="0"/>
+				<xs:element ref="PrevAddrSegment" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="LevelOfDetail" default="B">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(B|F)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="EchoInput" type="YesNoType" default="N"/>
+	<xs:element name="EDAFallThru" type="YesNoType" default="N"/>
+	<xs:element name="EDABestPickCutoff" default="00">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([0-8][0-9])?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="NoOfEDAListings" default="00">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(0[0-9]|10)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Validation" type="YesNoType" default="N"/>
+	<xs:element name="PrevAddrSegment" type="YesNoType" default="N"/>
+	<xs:element name="CCNumerics">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CCNumeric" minOccurs="0" maxOccurs="10"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CCNumeric">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(\d){0,5}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CCStrings">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CCString" minOccurs="0" maxOccurs="5"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CCString">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z0-9\s]){0,10}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="IPAddress">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="KBA">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="RiskStrategyNumber" minOccurs="0"/>
+				<xs:element ref="LanguageCode" minOccurs="0"/>
+				<xs:element ref="ChampionChallengerRandomNumber" minOccurs="0"/>
+				<xs:element ref="UserDefinedNumerics" minOccurs="0"/>
+				<xs:element ref="UserDefinedTexts" minOccurs="0"/>
+				<xs:element ref="UserDefinedDates" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RiskStrategyNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(\d){0,2}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="LanguageCode">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="(es|en)?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ChampionChallengerRandomNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([1-9]|[1-9][0-9]|[1-9][0-9][0-9])?"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="UserDefinedNumerics">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="UserDefinedNumeric1" type="NumericLen9Type" minOccurs="0"/>
+				<xs:element name="UserDefinedNumeric2" type="NumericLen9Type" minOccurs="0"/>
+				<xs:element name="UserDefinedNumeric3" type="NumericLen9Type" minOccurs="0"/>
+				<xs:element name="UserDefinedNumeric4" type="NumericLen9Type" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="UserDefinedTexts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="UserDefinedText1" type="TextLen60Type" minOccurs="0"/>
+				<xs:element name="UserDefinedText2" type="TextLen60Type" minOccurs="0"/>
+				<xs:element name="UserDefinedText3" type="TextLen60Type" minOccurs="0"/>
+				<xs:element name="UserDefinedText4" type="TextLen60Type" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="UserDefinedDates">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="UserDefinedDate1" type="DateType" minOccurs="0"/>
+				<xs:element name="UserDefinedDate2" type="DateType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="EarlyWarningOptionalInput">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="OrgReportingUnit" minOccurs="0"/>
+				<xs:element ref="Branch" minOccurs="0"/>
+				<xs:element ref="CSRID" minOccurs="0"/>
+				<xs:element ref="Gender" minOccurs="0"/>
+				<xs:element ref="CustomerUse1" minOccurs="0"/>
+				<xs:element ref="IdentificationType" minOccurs="0"/>
+				<xs:element ref="IdentificationNumber" minOccurs="0"/>
+				<xs:element ref="IdentificationState" minOccurs="0"/>
+				<xs:element ref="IdentificationCountryCode" minOccurs="0"/>
+				<xs:element ref="IdentificationExpirationDate" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OrgReportingUnit">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Branch">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CSRID">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Gender">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CustomerUse1">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="IdentificationType">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="IdentificationNumber">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="IdentificationState">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="IdentificationCountryCode">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="IdentificationExpirationDate">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="KBAAddOn">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="XMLVersion"/>
+				<xs:element ref="OutWalletRequestData"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OutWalletRequestData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="SessionID"/>
+				<xs:element ref="OutWalletQuestionsRequest"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SessionID">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="([a-zA-Z0-9# \- / \.]{1,70}){1}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="OutWalletQuestionsRequest" type="YesType" default="Y"/>
+	<xs:element name="KBAAnswers">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="OutWalletAnswerData"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OutWalletAnswerData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="SessionID"/>
+				<xs:element ref="OutWalletAnswers"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OutWalletAnswers">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="OutWalletAnswer1" type="AnswerType" minOccurs="0"/>
+				<xs:element name="OutWalletAnswer2" type="AnswerType" minOccurs="0"/>
+				<xs:element name="OutWalletAnswer3" type="AnswerType" minOccurs="0"/>
+				<xs:element name="OutWalletAnswer4" type="AnswerType" minOccurs="0"/>
+				<xs:element name="OutWalletAnswer5" type="AnswerType" minOccurs="0"/>
+				<xs:element name="OutWalletAnswer6" type="AnswerType" minOccurs="0"/>
+				<xs:element name="OutWalletAnswer7" type="AnswerType" minOccurs="0"/>
+				<xs:element name="OutWalletAnswer8" type="AnswerType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="AnswerType">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="((1|01)|(2|02)|(3|03)|(4|04)|(5|05))?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="YesNoType">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="[YN]"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="YesType">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="[Y]"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateType">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="((0[1-9]|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[0-1]))((19[0-9][0-9])|(20[0-9][0-9])))?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TextLen60Type">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="(([a-zA-Z0-9\s]){0,60})?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NumericLen9Type">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="([\d]{0,9})?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="DIDOptionalInput">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Provider" minOccurs="0"/>
+				<xs:element ref="EndUserInfo"/>
+				<xs:element name="Options" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="ProdOpt" minOccurs="0"/>
+							<xs:element name="DetailRequest" default="D" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:whiteSpace value="collapse"/>
+										<xs:length value="1"/>
+										<xs:pattern value="(S|D|s|d)?"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Provider">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Code" minOccurs="0"/>
+				<xs:element ref="ID" minOccurs="0"/>
+				<xs:element ref="Account" minOccurs="0"/>
+				<xs:element ref="Passcode" minOccurs="0"/>
+				<xs:element ref="RuleType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Code" default="1">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:maxLength value="2"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ID">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Account">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:maxLength value="80"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Passcode">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:maxLength value="80"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="RuleType">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="EndUserInfo">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IPAddress">
+					<xs:simpleType>
+						<xs:restriction base="ipaddrstr">
+							<xs:maxLength value="15"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element ref="AccountCode" minOccurs="0"/>
+				<xs:element ref="DeviceData" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AccountCode">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:maxLength value="80"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="DeviceData">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:maxLength value="4000"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ProdOpt" default="1">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:maxLength value="2"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:simpleType name="ipaddrstr">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:maxLength value="15"/>
+			<xs:pattern value="((1?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ipaddr">
+		<xs:simpleContent>
+			<xs:extension base="ipaddrstr">
+				<xs:attribute name="type" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

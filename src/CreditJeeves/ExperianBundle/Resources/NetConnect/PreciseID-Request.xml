@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NetConnectRequest>
+  <EAI>HRPCX4RA</EAI>
+  <DBHost>PRECISE_ID_TEST</DBHost>
+  <ReferenceId>123</ReferenceId>
+  <Request version="1.0">
+    <Products>
+      <PreciseIDServer>
+        <XMLVersion>5</XMLVersion>
+        <Subscriber>
+          <Preamble>TBD2</Preamble>
+          <OpInitials>DE</OpInitials>
+          <SubCode>2279720</SubCode>
+        </Subscriber>
+        <PrimaryApplicant>
+          <Name>
+            <Surname>BRIEN</Surname>
+            <First>MARION</First>
+            <Middle>R</Middle>
+            <Gen/>
+          </Name>
+          <SSN>666560093</SSN>
+          <CurrentAddress>
+            <Street>INGLEWOOD 934 S</Street>
+            <City>INGLEWOOD</City>
+            <State>CA</State>
+            <Zip>903013646</Zip>
+          </CurrentAddress>
+          <PreviousAddress/>
+          <Phone>
+            <Number>7818945369</Number>
+            <Type/>
+          </Phone>
+          <Employment/>
+          <Age/>
+          <DOB>01011970</DOB>
+          <YOB/>
+          <MothersMaidenName/>
+          <EmailAddress/>
+        </PrimaryApplicant>
+        <Verbose>Y</Verbose>
+        <Vendor>
+          <VendorNumber>P94</VendorNumber>
+        </Vendor>
+        <Options>
+          <BrokerNumber/>
+          <EndUser/>
+          <FreezeKeyPIN/>
+          <ReferenceNumber/>
+          <OFAC>Y</OFAC>
+          <OFACMSG>Y</OFACMSG>
+          <PreciseIDType>11</PreciseIDType>
+          <DetailRequest>D</DetailRequest>
+          <InquiryChannel>INTE</InquiryChannel>
+          <AccessChannel>PPQ</AccessChannel>
+        </Options>
+      </PreciseIDServer>
+    </Products>
+  </Request>
+</NetConnectRequest>

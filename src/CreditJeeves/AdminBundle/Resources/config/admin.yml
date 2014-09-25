@@ -126,3 +126,12 @@ services:
             - ~
             - CreditJeeves\DataBundle\Entity\Pidkiq
             - 'SonataAdminBundle:CRUD'
+
+    sonata.admin.settings:
+        class: CreditJeeves\AdminBundle\Admin\SettingsAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Settings" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\Settings
+            - 'SonataAdminBundle:CRUD'

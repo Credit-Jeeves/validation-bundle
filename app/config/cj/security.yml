@@ -28,7 +28,7 @@ security:
                 provider: custom 
                 csrf_provider: form.csrf_provider
                 success_handler: user.service.login_success_handler
-                failure_handler: user.service.login_defense
+                failure_handler: user.service.login_failure_handler
             logout:       true
             anonymous:    true
 
@@ -56,6 +56,7 @@ security:
         - { path: ^/invite,         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/public/*,       role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login/defence/*,   role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/documentation/api, role: ROLE_ADMIN  }
         - { path: ^/admin/,         role: ROLE_ADMIN }
         - { path: ^/dealer/,        role: ROLE_DEALER }

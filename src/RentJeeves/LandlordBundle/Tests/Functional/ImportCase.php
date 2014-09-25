@@ -231,10 +231,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
         //Check notify tenant invite for new user
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(10, $email, 'Wrong number of emails');
+        $this->assertCount(10, $this->getEmails(), 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -265,8 +262,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('1200', $contract->getRent());
         $this->assertEquals('0', $contract->getIntegratedBalance());
         // startAt should be the first day of next month b/c this contract has no payments yet
-        $today = new DateTime('first day of next month');
-        $this->assertEquals($today->format('m/d/Y'), $contract->getStartAt()->format('m/d/Y'));
+        $this->assertEquals('11/09/2013', $contract->getStartAt()->format('m/d/Y'));
         $this->assertEquals('11/08/2014', $contract->getFinishAt()->format('m/d/Y'));
 
         /**
@@ -295,10 +291,9 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals(ContractStatus::FINISHED, $contractEnded->getStatus());
         $this->assertEquals('03/01/2011', $contractEnded->getFinishAt()->format('m/d/Y'));
-
+        //For match contract we don't need check startAt because it's not updated
         $this->assertEquals('1190', $contractMatch->getRent());
         $this->assertEquals('0', $contractMatch->getIntegratedBalance());
-        $this->assertEquals($today->format('m/d/Y'), $contractMatch->getStartAt()->format('m/d/Y'));
         $this->assertEquals('10/21/2016', $contractMatch->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractMatch->getStatus());
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
@@ -318,7 +313,7 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals('950', $contractNew->getRent());
         $this->assertEquals('0', $contractNew->getIntegratedBalance());
-        $this->assertEquals($today->format('m/d/Y'), $contractNew->getStartAt()->format('m/d/Y'));
+        $this->assertEquals('03/18/2011', $contractNew->getStartAt()->format('m/d/Y'));
         $this->assertEquals('03/31/2015', $contractNew->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
     }
@@ -450,7 +445,7 @@ class ImportCase extends BaseTestCase
 
         return $contractWaiting;
     }
-    
+
     /**
      * @test
      */
@@ -736,12 +731,10 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(2, count($result));
         $td = $result[0]->findAll('css', 'td');
 
-        $today = new DateTime('first day of this month');
-        $this->assertEquals($today->format('n/j/Y') . '<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
+        $this->assertEquals('12/29/2012<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
         $datepicker = $result[1]->findAll('css', '.datepicker');
         $this->assertEquals(2, count($datepicker));
-        $today = new DateTime('first day of next month');
-        $this->assertEquals($today->format('m/d/Y'), $datepicker[0]->getValue(), $datepicker[0]->getValue());
+        $this->assertEquals('11/09/2013', $datepicker[0]->getValue(), $datepicker[0]->getValue());
         $this->assertEquals('11/08/2014', $datepicker[1]->getValue(), $datepicker[1]->getValue());
         $this->logout();
     }
@@ -867,10 +860,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
         //Check notify tenant invite for new user
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(0, $email, 'Wrong number of emails');
+        $this->assertCount(0, $this->getEmails(), 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -895,9 +885,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($waitingContract);
         $this->assertEquals(975, $waitingContract->getRent());
         $this->assertEquals(193, $waitingContract->getIntegratedBalance());
-        $date = new DateTime();
-        $date->setDate(null, null, 1);
-        $this->assertEquals($date->format('Y-m-d'), $waitingContract->getStartAt()->format('Y-m-d'));
+        $this->assertEquals('2014-01-01', $waitingContract->getStartAt()->format('Y-m-d'));
         $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->isSingle());
 
@@ -1015,14 +1003,14 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            $this->timeout,
             "$('.errorField').length > 0"
         );
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            $this->timeout,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1031,17 +1019,16 @@ class ImportCase extends BaseTestCase
         $this->logout();
         //Check notify tenant invite for new user
         $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
-        $link->click();
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $crawler = $this->getCrawlerObject($email->getBody());
+        $url = $crawler->filter('#payRentLink')->getNode(0)->getAttribute('href');
 
+        $this->session->visit($url);
         $this->assertNotNull($haveAccount = $this->page->find('css', '.haveAccount>a'));
         $haveAccount->click();
+
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
         $this->assertCount(5, $payButtons);

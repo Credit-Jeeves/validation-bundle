@@ -65,8 +65,8 @@ class YardiReport extends ExportReport
         $this->validateSettings($settings);
         $this->setYardiParams($settings);
 
-        $beginDate = $settings['begin'].' 00:00:00';
-        $endDate = $settings['end'].' 23:59:59';
+        $beginDate = $settings['begin'];
+        $endDate = $settings['end'];
         $property = $settings['property'];
         $holding = $settings['landlord']->getUser()->getHolding();
 
@@ -80,16 +80,6 @@ class YardiReport extends ExportReport
         );
     }
 
-    public function getAccountId()
-    {
-        return $this->accountId;
-    }
-
-    public function getArAccountId()
-    {
-        return $this->arAccountId;
-    }
-
     public function getPropertyId()
     {
         return $this->propertyId;
@@ -98,15 +88,13 @@ class YardiReport extends ExportReport
     protected function setYardiParams($params)
     {
         $this->propertyId = $params['propertyId'];
-        $this->arAccountId = $params['arAccountId'];
-        $this->accountId = $params['accountId'];
     }
 
     protected function validateSettings($settings)
     {
         if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
             !isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
-            !isset($settings['propertyId']) || !isset($settings['arAccountId']) || !isset($settings['accountId']) ||
+            !isset($settings['propertyId']) ||
             !isset($settings['begin']) || !isset($settings['end'])) {
             throw new ExportException('Not enough parameters for Yardi report');
         }

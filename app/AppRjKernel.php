@@ -82,6 +82,7 @@ class AppRjKernel extends AppKernel
             $bundles[] = new CreditJeeves\DevBundle\CjDevBundle();
         }
         if (in_array($this->getEnvironment(), array('test', 'migration'))) {
+            $bundles[] = new Ton\EmailBundle\EmailBundle();
             $bundles[] = new Behat\MinkBundle\MinkBundle();
             $bundles[] = new CreditJeeves\TestBundle\TestBundle(); // Must be one of last included bundle
             $bundles[] = new RentJeeves\TestBundle\TestBundle(); // Must be last included bundle

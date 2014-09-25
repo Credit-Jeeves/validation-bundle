@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class TenantController extends ApplicantController
 {
     /**
-     * @Route("/rj/tenant/{id}/report", name="admin_tenant_new_report")
+     * @Route("/rj/tenant/{id}/report", name="admin_user_new_report")
      */
     public function reportAction($id)
     {

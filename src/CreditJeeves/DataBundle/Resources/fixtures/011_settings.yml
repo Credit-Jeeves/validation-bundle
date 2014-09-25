@@ -1,9 +1,9 @@
 model: CreditJeeves\DataBundle\Entity\Settings
 fixtures:
   settings:
-    pidkiq_password: "%experian_pidkiq_userpwd%"
-    pidkiq_eai: '%experian_pidkiq_eai%'
-    net_connect_password: "%experian_net_connect_userpwd%"
-    net_connect_eai: '%experian_net_connect_eai%'
+    preciseIDUserPwd: "%net_connect.precise_id.userpwd%"
+    preciseIDEai: '%net_connect.precise_id.eai%'
+    creditProfileUserPwd: "%net_connect.credit_profile.userpwd%"
+    creditProfileEai: '%net_connect.credit_profile.eai%'
     contract: 'Test Contract text'
     rights: Some rules

@@ -1,20 +1,25 @@
 parameters:
-    experian.config.class: CreditJeeves\ExperianBundle\ExperianConfig
     experian.net_connect.class: CreditJeeves\ExperianBundle\NetConnect
-    experian.pidkiq.class: CreditJeeves\ExperianBundle\Pidkiq
+    experian.net_connect.credit_profile.class: CreditJeeves\ExperianBundle\NetConnect\CreditProfile
+    experian.net_connect.precise_id.class: CreditJeeves\ExperianBundle\NetConnect\PreciseID
 
 services:
-    experian.config:
-        class: "%experian.config.class%"
+    experian.net_connect:
+        abstract:  true
+        class: "%experian.net_connect.class%"
         arguments:
-            - "%server_name%"
             - "@doctrine.orm.default_entity_manager"
             - "%experian.logging%"
-    experian.net_connect:
-        class: "%experian.net_connect.class%"
+            - "%server_name%"
+            - "%kernel.logs_dir%"
+            - "%web.upload.dir%"
+    experian.net_connect.credit_profile:
+        parent: experian.net_connect
+        class: "%experian.net_connect.credit_profile.class%"
         calls:
-            - [initConfigs, ["@experian.config"]]
-    experian.pidkiq:
-        class: "%experian.pidkiq.class%"
+            - [setConfigs, ["%net_connect.credit_profile.url%", "%net_connect.credit_profile.dbhost%", "%net_connect.credit_profile.sub_code%"]]
+    experian.net_connect.precise_id:
+        parent: experian.net_connect
+        class: "%experian.net_connect.precise_id.class%"
         calls:
-            - [initConfigs, ["@experian.config", "%experian.logging%", "%kernel.logs_dir%"]]
+            - [setConfigs, ["%net_connect.precise_id.url%", "%net_connect.precise_id.dbhost%", "%net_connect.precise_id.sub_code%"]]

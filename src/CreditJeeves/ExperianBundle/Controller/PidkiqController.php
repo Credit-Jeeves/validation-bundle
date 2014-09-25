@@ -2,10 +2,11 @@
 namespace CreditJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
-use CreditJeeves\ExperianBundle\Pidkiq as PidkiqApi;
+use CreditJeeves\ExperianBundle\NetConnect\PreciseID as PreciseIDApi;
 use CreditJeeves\DataBundle\Entity\Pidkiq;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\ExperianBundle\NetConnect\PreciseIDQuestions;
 use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -14,8 +15,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use \ExperianException;
-use \Exception;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -27,14 +26,14 @@ use \Exception;
 class PidkiqController extends Controller
 {
     /**
-     * @var $pidkiqQuestions PidkiqQuestions
+     * @var $preciseIdQuestions PreciseIDQuestions
      */
-    protected $pidkiqQuestions;
+    protected $preciseIdQuestions;
 
     /**
-     * @var $pidkiqApi PidkiqApi
+     * @var $preciseIdApi PreciseIDApi
      */
-    protected $pidkiqApi;
+    protected $preciseIdApi;
 
     /**
      * @return \Symfony\Component\HttpFoundation\Session\Session
@@ -46,22 +45,22 @@ class PidkiqController extends Controller
 
     /**
      * @DI\InjectParams({
-     *     "pidkiqApi" = @DI\Inject("experian.pidkiq")
+     *     "preciseIdApi" = @DI\Inject("experian.net_connect.precise_id")
      * })
      */
-    public function setPidkiqApi($pidkiqApi)
+    public function setPreciseIdApi($preciseIdApi)
     {
-        $this->pidkiqApi = $pidkiqApi;
+        $this->preciseIdApi = $preciseIdApi;
     }
 
     /**
      * @DI\InjectParams({
-     *     "pidkiqQuestions" = @DI\Inject("pidkiq.questions")
+     *     "preciseIdQuestions" = @DI\Inject("experian.net_connect.precise_id.questions")
      * })
      */
-    public function setPidkiqQuestions($pidkiqQuestions)
+    public function setPreciseIdQuestions($preciseIdQuestions)
     {
-        $this->pidkiqQuestions = $pidkiqQuestions;
+        $this->preciseIdQuestions = $preciseIdQuestions;
     }
 
     /**
@@ -83,18 +82,18 @@ class PidkiqController extends Controller
         }
 
         if ($request->isXmlHttpRequest()) {
-            if ($this->pidkiqQuestions->processQuestions()) {
+            if ($this->preciseIdQuestions->processQuestions()) {
                 return new JsonResponse('finished');
             }
-        } elseif ($this->pidkiqQuestions->retrieveQuestions()) {
-            $form = $this->createForm(new QuestionsType($this->pidkiqQuestions->getQuestionsData()));
+        } elseif ($this->preciseIdQuestions->retrieveQuestions()) {
+            $form = $this->createForm(new QuestionsType($this->preciseIdQuestions->getQuestionsData()));
             $form->handleRequest($request);
             if ($form->isValid()) {
-                if ($this->pidkiqQuestions->processForm($form)) {
+                if ($this->preciseIdQuestions->processForm($form)) {
                     return $this->redirect($this->generateUrl('applicant_homepage'));
                 }
                 //Setup not valid answer
-                $this->pidkiqQuestions->setError(
+                $this->preciseIdQuestions->setError(
                     $this->get('translator')->trans(
                         'pidkiq.error.answers-%SUPPORT_EMAIL%',
                         array(
@@ -106,7 +105,7 @@ class PidkiqController extends Controller
             $form = $form->createView();
         }
 
-        $error = $this->pidkiqQuestions->getError();
+        $error = $this->preciseIdQuestions->getError();
 
         if (!empty($error)) {
             $this->getSession()->getFlashBag()->add(

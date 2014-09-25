@@ -13,6 +13,8 @@ class GLBDetail
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\SharedApplication")
      * @Serializer\SerializedName("SharedApplication")
      * @Serializer\Groups({"CreditJeeves"})
+     *
+     * @var SharedApplication
      */
     protected $sharedApplication;
 

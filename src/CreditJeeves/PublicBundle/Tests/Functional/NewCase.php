@@ -66,33 +66,20 @@ class NewCase extends BaseTestCase
         $this->assertNotNull($submit = $form->findButton('user.email.again'));
         $submit->click();
         $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(2, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->assertNotNull($subject = $this->page->find('css', '#subject span'));
-        $this->assertEquals('Check Email', $subject->getText());
-        $this->assertNotNull($body = $this->page->find('css', '#body'));
-        $this->assertNotNull($htmlLink = $this->page->find('css', 'a'));
-        $htmlLink->click();
-        $this->assertNotNull($body = $this->page->find('css', '#email-body'));
-        $this->assertNotEquals(false, $url = $this->retrieveAbsoluteUrl($body->getText()));
+        $emails = $this->getEmails();
+        $this->assertCount(2, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage();
+        $this->assertEquals('Check Email', $email->getSubject());
+        $this->assertNotNull($body = $email->getBody());
+        $this->assertNotEquals(false, $url = $this->retrieveAbsoluteUrl($body, '.*\/new\/'));
         $this->session->visit($url);
         $this->login('angela@example.com', 'pass');
         $this->logout();
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(3, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->assertNotNull($subject = $this->page->find('css', '#subject span'));
-        $this->assertEquals('Welcome to Credit Jeeves', $subject->getText());
-        $this->assertNotNull($body = $this->page->find('css', '#body'));
-        $this->assertNotNull($htmlLink = $this->page->find('css', 'a'));
-        $htmlLink->click();
-        $this->assertNotNull($title = $this->page->find('css', 'h1'));
-        $this->assertEquals('Welcome to CreditJeeves', $title->getText());
+        $emails = $this->getEmails();
+        $this->assertCount(3, $emails, 'Wrong number of emails');
+        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage();
+        $this->assertEquals('Welcome to Credit Jeeves', $email->getSubject());
+        $this->assertContains('Welcome to CreditJeeves', $email->getBody());
     }
 
     /**

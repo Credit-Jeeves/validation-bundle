@@ -1,9 +1,7 @@
 <?php
-
 namespace CreditJeeves\ExperianBundle\Model;
 
 use JMS\Serializer\Annotation as Serializer;
-use CreditJeeves\ExperianBundle\Model\Error;
 
 /**
  * @Serializer\XmlRoot("PreciseIDServer")
@@ -11,100 +9,44 @@ use CreditJeeves\ExperianBundle\Model\Error;
 class PreciseIDServer
 {
     /**
-     * @Serializer\Type("string")
-     * @Serializer\SerializedName("SessionID")
-     * @Serializer\Groups({"CreditJeeves"})
-     * @var string
+     * @Serializer\SerializedName("XMLVersion")
+     * @Serializer\Type("integer")
+     * @Serializer\Groups({"PreciseID", "CreditJeeves", "PreciseIDQuestions"})
+     * @var int
      */
-    protected $sessionId;
+    protected $XMLVersion = 5;
 
     /**
-     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Summary")
-     * @Serializer\SerializedName("Summary")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\SerializedName("KBAAnswers")
+     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\KBAAnswers")
+     * @Serializer\Groups({"PreciseIDQuestions"})
+     * @var KBAAnswers
      */
-    protected $summary;
+    protected $kbaAnswers;
+
+    use PreciseIDServerRequest;
+    use PreciseIDServerResponse;
 
     /**
-     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\GLBDetail")
-     * @Serializer\SerializedName("GLBDetail")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @return KBAAnswers
      */
-    protected $GLBDetail;
-
-    /**
-     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Error")
-     * @Serializer\SerializedName("Error")
-     * @Serializer\Groups({"CreditJeeves"})
-     */
-    protected $error;
-
-    /**
-     * @param GLBDetail $GLBDetail
-     */
-    public function setGLBDetail($GLBDetail)
+    public function getKbaAnswers()
     {
-        $this->GLBDetail = $GLBDetail;
-    }
-
-    /**
-     * @return GLBDetail
-     */
-    public function getGLBDetail()
-    {
-        if (empty($this->GLBDetail)) {
-            $this->GLBDetail = new GLBDetail();
+        if (null == $this->kbaAnswers) {
+            $this->kbaAnswers = new KBAAnswers();
         }
-        return $this->GLBDetail;
-    }
-
-
-    /**
-     * @param string $sessionId
-     */
-    public function setSessionId($sessionId)
-    {
-        $this->sessionId = $sessionId;
+        return $this->kbaAnswers;
     }
 
     /**
-     * @return string
+     * @param KBAAnswers $kbaAnswers
+     *
+     * @return $this
      */
-    public function getSessionId()
+    public function setKbaAnswers($kbaAnswers)
     {
-        return $this->sessionId;
-    }
+        $this->kbaAnswers = $kbaAnswers;
 
-
-    /**
-     * @param Summary $summary
-     */
-    public function setSummary(Summary $summary)
-    {
-        $this->summary = $summary;
-    }
-
-    /**
-     * @return Summary
-     */
-    public function getSummary()
-    {
-        return $this->summary;
-    }
-
-    /**
-     * @param Error $error
-     */
-    public function setError(Error $error)
-    {
-        $this->error = $error;
-    }
-
-    /**
-     * @return Error
-     */
-    public function getError()
-    {
-        return $this->error;
+        return $this;
     }
 }

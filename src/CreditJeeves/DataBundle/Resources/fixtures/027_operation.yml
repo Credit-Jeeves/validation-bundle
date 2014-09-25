@@ -12,6 +12,12 @@ fixtures:
     type: rent
     amount: 1500
     paidFor: '-40 days'
+  rjOperation_2_1:
+    order: rjOrder_2
+    contract: Contract_7
+    type: other
+    amount: 300
+    paidFor: '-40 days'
   rjOperation_3:
     order: rjOrder_3
     contract: Contract_7
