@@ -12,15 +12,4 @@ use CreditJeeves\DataBundle\Entity\Score;
  */
 class ReportPrequal extends Report
 {
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
-     *     inversedBy="reportsPrequal"
-     * )
-     * @ORM\JoinColumn(
-     *     name="cj_applicant_id",
-     *     referencedColumnName="id"
-     * )
-     */
-    protected $user;
 }

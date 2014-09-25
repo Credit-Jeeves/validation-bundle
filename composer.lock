@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d8138038a2492329f13ad51fe1436825",
+    "hash": "82ea48bc07332ad16ff438005fdc4e79",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -535,7 +535,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/SimulationBundle.git",
-                "reference": "b13bd58e90600e229b3d5dcd349714769056f86a"
+                "reference": "6f54729718d7c04726ac5c0b26a42296ca854bde"
             },
             "require": {
                 "credit-jeeves/arf-bundle": "dev-master",
@@ -565,7 +565,7 @@
                 }
             ],
             "description": "CreditJeeves Simulation Bundle",
-            "time": "2014-05-08 13:16:07"
+            "time": "2014-09-24 18:48:11"
         },
         {
             "name": "doctrine/annotations",
@@ -4406,7 +4406,7 @@
                 "generator",
                 "sonata"
             ],
-            "time": "2014-02-28 16:17:48"
+            "time": "2014-03-19 11:44:11"
         },
         {
             "name": "sonata-project/exporter",
@@ -6800,7 +6800,5 @@
         "lib-curl": "*",
         "lib-openssl": "*"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

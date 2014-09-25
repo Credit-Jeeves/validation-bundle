@@ -229,8 +229,8 @@ class PaymentCommandsCase extends BaseTestCase
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $contract->getRent()));
         $this->assertNotNull($order);
-        $this->assertNotNull($order->getHeartlandBatchId());
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
+        $this->assertNotNull($order->getHeartlandBatchId());
     }
 
     protected function createPayment(Contract $contract, $amount)

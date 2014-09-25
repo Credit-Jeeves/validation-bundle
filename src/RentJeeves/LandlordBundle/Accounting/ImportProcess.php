@@ -279,6 +279,7 @@ class ImportProcess
         $contract->setGroup($this->group);
         $contract->setHolding($this->group->getHolding());
         $contract->setTenant($tenant);
+
         if ($unit = $this->getUnit($row, $contract->getProperty())) {
             $contract->setUnit($unit);
         }
@@ -398,6 +399,7 @@ class ImportProcess
         if (is_null($property)) {
             return null;
         }
+
         if ($property->isSingle()) {
             return $property->getSingleUnit();
         }
@@ -452,13 +454,13 @@ class ImportProcess
     protected function getContract(ModelImport $import, array $row)
     {
         $tenant = $import->getTenant();
-
+        $property = $this->getProperty($row);
         if (!$tenant->getId()) {
             $contract = $this->createContract($row, $tenant);
         } else {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
-                $row[ImportMapping::KEY_UNIT],
+                ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[ImportMapping::KEY_UNIT],
                 isset($row[ImportMapping::KEY_UNIT_ID])? $row[ImportMapping::KEY_UNIT_ID] : null
             );
 
@@ -466,26 +468,46 @@ class ImportProcess
                 $contract = $this->createContract($row, $tenant);
             }
         }
-
         //set data from csv file
         $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
 
         $paidTo = new DateTime();
+        $currentPaidTo = $contract->getPaidTo();
         $groupDueDate = $this->group->getGroupSettings()->getDueDate();
+        //contract is a match
+        if ($contract->getId() !== null) {
+            // normally, we don't want to mess with paid_to for existing contracts unless
+            // it is obvious someone paid outside of RentTrack:
+            if ($row[ImportMapping::KEY_BALANCE] <= 0 && $currentPaidTo <= $paidTo) {
+                $paidTo->modify('+1 month');
+                // will be in future
+                //if (there is no order with paid_for for this month) {
+                    // create new cash payment on $groupDueDate for this month
+                //}
+                $paidTo->setDate(
+                    $paidTo->format('Y'),
+                    $paidTo->format('n'),
+                    $groupDueDate
+                );
 
-        // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
-        if ($row[ImportMapping::KEY_BALANCE] <= 0) {
-            $paidTo->modify('+1 month');
+                $contract->setPaidTo($paidTo);
+            }
+        } else {
+            // this contract is new, so let's set paid_to accordingly
+            // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
+            if ($row[ImportMapping::KEY_BALANCE] <= 0) {
+                $paidTo->modify('+1 month');
+            }
+
+            $paidTo->setDate(
+                $paidTo->format('Y'),
+                $paidTo->format('n'),
+                $groupDueDate
+            );
+
+            $contract->setPaidTo($paidTo);
         }
-
-        $paidTo->setDate(
-            $paidTo->format('Y'),
-            $paidTo->format('n'),
-            $groupDueDate
-        );
-        
-        $contract->setPaidTo($paidTo);
 
         if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
@@ -856,6 +878,7 @@ class ImportProcess
     {
         $data       = $this->mapping->getFileData($this->storage->getFileLine(), $rowCount = self::ROW_ON_PAGE);
         $collection = new ArrayCollection(array());
+
         foreach ($data as $key => $values) {
             $import = $this->getImport($values, $key);
             $import->setNumber($key);
@@ -888,7 +911,7 @@ class ImportProcess
             /**
              * @var $import Import
              */
-            foreach ($mappedData as $import) {
+            foreach ($mappedData as $key => $import) {
                 if ($import->getNumber() === $formData['line']) {
                     $currentLine = $formData['line'];
                     $lines[] = $currentLine;
@@ -972,6 +995,7 @@ class ImportProcess
                      * @var $contract Contract
                      */
                     $contract = $form->getData();
+
                     if ($import->getHasContractWaiting()) {
                         $sendInvite = $form->get('sendInvite')->getNormData();
                         $this->processContractWaiting(
