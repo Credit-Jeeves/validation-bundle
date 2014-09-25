@@ -17,6 +17,7 @@ class TenantCase extends BaseTestCase
 
     const ALL = 'All (18)';
     const ALL_PLUS_ONE = 'All (19)';
+    const ALL_MINUS_ONE = 'All (17)';
 
     /**
      * @test
@@ -273,7 +274,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#contract-remove-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count');
+        $this->assertEquals(self::ALL_MINUS_ONE, $allh2->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
