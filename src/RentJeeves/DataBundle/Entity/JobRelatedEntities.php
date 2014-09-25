@@ -3,14 +3,19 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use \DateTime;
+use DateTime;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name = "jms_job_related_entities")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="related_class", type="string")
- * @ORM\DiscriminatorMap({"payment" = "JobRelatedPayment", "order" = "JobRelatedOrder"})
+ * @ORM\DiscriminatorMap({
+ *      "payment" = "JobRelatedPayment",
+ *      "order" = "JobRelatedOrder",
+ *      "credit_track" = "JobRelatedCreditTrack",
+ *      "report" = "JobRelatedReport"
+ * })
  */
 class JobRelatedEntities
 {
@@ -34,13 +39,6 @@ class JobRelatedEntities
     protected $job;
 
     /**
-     * @ORM\ManyToOne(targetEntity = "Payment", inversedBy = "jobs", fetch = "EAGER")
-     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id", nullable=true)
-     * @var Payment
-     */
-    protected $payment;
-
-    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -49,10 +47,6 @@ class JobRelatedEntities
      * @var DateTime
      */
     protected $createdAt;
-
-//    protected $relatedClass;
-
-//    protected $relatedId;
 
     public function __clone()
     {

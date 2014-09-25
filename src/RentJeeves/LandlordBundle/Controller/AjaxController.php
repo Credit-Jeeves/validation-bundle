@@ -298,7 +298,7 @@ class AjaxController extends Controller
         }
 
         if ($request->request->has('isSingle') && is_null($property->getIsSingle())) {
-            $property->setIsSingle($request->request->get('isSingle') == 'true');
+            $property->setIsSingle($request->request->get('isSingle') === 'true');
         }
 
         if (!$propertyProcess->isValidProperty($property)) {
@@ -494,6 +494,9 @@ class AjaxController extends Controller
         if ($propertyId === null) {
             throw new BadRequestHttpException('Property ID is not specified');
         }
+        /**
+         * @var $property Property
+         */
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($propertyId);
         if (empty($property)) {
             return new NotFoundHttpException('Property not found');
@@ -704,7 +707,7 @@ class AjaxController extends Controller
      *     requirements={"_format"="html|json"},
      *     options={"expose"=true}
      * )
-     * @Method({"POST", "GET"})
+     * @Method({"POST"})
      */
     public function saveContract(Request $request)
     {
@@ -719,7 +722,8 @@ class AjaxController extends Controller
         if (isset($details['action'])) {
             $action = $details['action'];
         }
-        if (empty($details['amount']) || $details['amount'] <= 0) {
+        // amount is allowed to be 0
+        if (strlen(trim($details['amount'])) == 0 || $details['amount'] < 0) {
             $errors[] = $translator->trans('contract.error.rent');
         }
         if (empty($details['start'])) {

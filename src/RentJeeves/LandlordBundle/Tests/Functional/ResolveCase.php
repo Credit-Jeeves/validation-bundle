@@ -35,13 +35,7 @@ class ResolveCase extends BaseTestCase
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
         );
         $this->assertCount(static::CONTRACTS_COUNT, $resolve, 'Wrong number of resolve contracts');
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->page->clickLink('text/html');
+        $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
         $this->logout();
     }
 
@@ -190,10 +184,7 @@ class ResolveCase extends BaseTestCase
         $this->assertCount(static::CONTRACTS_COUNT - 1, $contracts);
         $this->logout();
         //Check email notify tenant about removed contract by landlord
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(

@@ -29,6 +29,8 @@ class RjDataBundle extends Bundle
             Type::addType('TransactionStatus', 'RentJeeves\DataBundle\Enum\TransactionStatus');
             Type::overrideType(Type::DATETIME, 'RentJeeves\DataBundle\DBAL\Types\DateTimeType');
             Type::overrideType(Type::DATE, 'RentJeeves\DataBundle\DBAL\Types\DateType');
+            Type::addType('PaymentTypeACH', 'RentJeeves\DataBundle\Enum\PaymentTypeACH');
+            Type::addType('PaymentTypeCC', 'RentJeeves\DataBundle\Enum\PaymentTypeCC');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()

@@ -78,3 +78,5 @@ fixtures:
       name: rjBatchDepositReportLandlord.html
   email_39:
       name: rjBatchDepositReportHolding.html
+  email_40:
+      name: rjReceipt.html

@@ -1,37 +1,16 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Command;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use RentJeeves\DataBundle\Entity\Job;
-use RentJeeves\DataBundle\Entity\JobRelatedPayment;
-use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
-use Payum\Heartland\Soap\Base\BillTransaction;
-use Payum\Heartland\Soap\Base\CardProcessingMethod;
-use Payum\Heartland\Soap\Base\MakePaymentRequest;
-use Payum\Heartland\Soap\Base\TokenToCharge;
-use Payum\Heartland\Soap\Base\Transaction;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
-use RentJeeves\DataBundle\Entity\Payment;
-use RentJeeves\DataBundle\Entity\PaymentRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use RentJeeves\DataBundle\Enum\PaymentAccountType;
-use RentJeeves\CoreBundle\Traits\DateCommon;
 use Payum\Payment as Payum;
-use RentJeeves\CoreBundle\DateTime;
 use RuntimeException;
 
 class PayCommand extends ContainerAwareCommand
@@ -47,7 +26,6 @@ class PayCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Start');
-
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $jobId = $input->getOption('jms-job-id');
@@ -58,211 +36,10 @@ class PayCommand extends ContainerAwareCommand
             throw new RuntimeException("Can not fid --jms-job-id={$jobId}");
         }
 
-        $date = new DateTime();
-        /** @var Payum $payum */
-        $payum = $this->getContainer()->get('payum')->getPayment('heartland');
+        $paymentJobExecutor = $this->getContainer()->get('checkout.payment_job_executor');
+        $paymentJobExecutor->execute($job);
 
-        /** @var JobRelatedPayment $relatedPayment */
-        $relatedPayment = $job->findRelatedEntity('RentJeeves\DataBundle\Entity\JobRelatedPayment');
-
-        if (empty($relatedPayment)) {
-            throw new RuntimeException("Job ID:'{$jobId}' must have related payment");
-        }
-        $payment = $relatedPayment->getPayment();
-        $paymentAccount = $payment->getPaymentAccount();
-        $contract = $payment->getContract();
-
-        $filterClosure = function (Operation $operation) use ($date) {
-            if (($order = $operation->getOrder()) &&
-                $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
-                OrderStatus::ERROR != $order->getStatus()
-            ) {
-                return true;
-            }
-            return false;
-        };
-        if ($contract->getOperations()->filter($filterClosure)->count()) {
-            $output->writeln('Payment already executed.');
-            return 1;
-        }
-        $order = new Order();
-        $total = $payment->getAmount() + $payment->getOther();
-        $fee = 0;
-
-        $this->createOperations($payment, $order);
-
-        if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $fee = round($total * ((float)$contract->getDepositAccount()->getFeeCC() / 100), 2);
-            $order->setType(OrderType::HEARTLAND_CARD);
-        } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $fee = (float)$contract->getDepositAccount()->getFeeACH();
-            $order->setType(OrderType::HEARTLAND_BANK);
-        }
-
-        $order->setUser($paymentAccount->getUser());
-        $order->setSum($total);
-        $order->setStatus(OrderStatus::NEWONE);
-
-        $request = new MakePaymentRequest();
-
-        $billTransaction = new BillTransaction();
-        $billTransaction->setID1(str_replace(",", "", $contract->getProperty()->getFullAddress()));
-        if ($contract->getUnit()) { // For houses, there are no units
-            $billTransaction->setID2($contract->getUnit()->getName());
-        }
-        $tenant = $contract->getTenant();
-        $billTransaction->setID3(sprintf("%s %s", $tenant->getFirstName(), $tenant->getLastName()));
-        $billTransaction->setID4($contract->getGroup()->getName());
-
-        $billTransaction->setAmountToApplyToBill($total);
-        $request->getBillTransactions()->setBillTransaction(array($billTransaction));
-
-        $tokenToCharge = new TokenToCharge();
-        $tokenToCharge->setAmount((float)$total);
-        $tokenToCharge->setExpectedFeeAmount($fee);
-        $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
-        $tokenToCharge->setToken($paymentAccount->getToken());
-
-        $request->getTokensToCharge()->setTokenToCharge(array($tokenToCharge));
-
-        $request->getTransaction()
-            ->setAmount($total)
-            ->setFeeAmount($fee);
-
-        $paymentDetails = new PaymentDetails();
-        $paymentDetails->setMerchantName($contract->getGroup()->getMerchantName());
-        $paymentDetails->setRequest($request);
-        $paymentDetails->setOrder($order);
-
-        if (PaymentTypeEnum::ONE_TIME == $payment->getType() ||
-            date('n') == $payment->getEndMonth() && date('Y') == $payment->getEndYear()
-        ) {
-            $payment->setStatus(PaymentStatus::CLOSE);
-            $em->persist($payment);
-        }
-        $em->persist($order);
-        $job->addRelatedEntity($order);
-        $em->persist($job);
-        $em->flush();
-
-
-        $captureRequest = new CaptureRequest($paymentDetails);
-        $payum->execute($captureRequest);
-
-        /** @var PaymentDetails $model */
-        $model = $captureRequest->getModel();
-        $statusRequest = new BinaryMaskStatusRequest($model);
-        $payum->execute($statusRequest);
-        $order->addHeartland($paymentDetails);
-        $message = 'OK';
-        if ($statusRequest->isSuccess()) {
-            $orderStatus = $this->getSuccessfulOrderStatus($order);
-            $order->setStatus($orderStatus);
-            $contractStatus = $contract->getStatus();
-            if (in_array($contractStatus, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
-                $contract->setStatus(ContractStatus::CURRENT);
-            }
-        } else {
-            $order->setStatus(OrderStatus::ERROR);
-            $message = $model->getMessages();
-        }
-        $paymentDetails->setAmount($total + $fee);
-        $paymentDetails->setPaymentAccount($paymentAccount);
-        $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
-        $em->persist($paymentDetails);
-        $em->persist($order);
-        $em->persist($contract);
-        $em->flush();
-        $em->clear();
-        $output->writeln($message);
-        if ('OK' != $message) {
-            return 1;
-        }
-    }
-
-    protected function getSuccessfulOrderStatus(Order $order)
-    {
-        if (OrderType::HEARTLAND_CARD == $order->getType()) {
-            return OrderStatus::COMPLETE;
-        }
-
-        return OrderStatus::PENDING;
-    }
-
-    protected function createOperations(Payment $payment, Order $order)
-    {
-        $contract = $payment->getContract();
-        $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
-
-        if ($payBalanceOnly) {
-            $this->createBalanceBasedOperations($payment, $order);
-        } else {
-            $this->createRegularOperations($payment, $order);
-        }
-    }
-
-    protected function createBalanceBasedOperations(Payment $payment, Order $order)
-    {
-        $contract = $payment->getContract();
-
-        $paymentAmount = $payment->getTotal();
-        $rent = $contract->getRent();
-        $paidForDates = array_keys($this->getContainer()->get('checkout.paid_for')->getArray($contract));
-        if (empty($paidForDates)) {
-            throw new RuntimeException('Can not calculate paid_for');
-        }
-        $paidForCounter = 0;
-
-        do {
-            $operationAmount = $paymentAmount >= $rent ? $rent : $paymentAmount;
-            $operation = new Operation();
-            $operation->setOrder($order);
-            $operation->setType(OperationType::RENT);
-            $operation->setContract($contract);
-            $operation->setAmount($operationAmount);
-
-            if (!isset($paidForDates[$paidForCounter])) {
-                $paidFor = new DateTime($paidForDates[$paidForCounter - 1]); // take previous paidFor
-                $paidFor->modify('+1 month');
-                $paidForDates[$paidForCounter] = $paidFor->format('Y-m-d');
-            }
-
-            $paidFor = new DateTime($paidForDates[$paidForCounter]);
-            $operation->setPaidFor($paidFor);
-
-            $paymentAmount -= $operationAmount;
-            $paidForCounter++;
-        } while ($paymentAmount >= $rent);
-
-        if ($paymentAmount > 0) {
-            $operation = new Operation();
-            $operation->setOrder($order);
-            $operation->setType(OperationType::OTHER);
-            $operation->setContract($contract);
-            $operation->setAmount($paymentAmount);
-            $operation->setPaidFor($paidFor);
-        }
-    }
-
-    protected function createRegularOperations(Payment $payment, Order $order)
-    {
-        $contract = $payment->getContract();
-
-        if ($amount = $payment->getAmount()) {
-            $operation = new Operation();
-            $operation->setOrder($order);
-            $operation->setType(OperationType::RENT);
-            $operation->setContract($contract);
-            $operation->setAmount($amount);
-            $operation->setPaidFor($payment->getPaidFor());
-        }
-        if ($amount = $payment->getOther()) {
-            $operation = new Operation();
-            $operation->setOrder($order);
-            $operation->setType(OperationType::OTHER);
-            $operation->setContract($contract);
-            $operation->setAmount($amount);
-            $operation->setPaidFor($payment->getPaidFor());
-        }
+        $output->writeln($paymentJobExecutor->getMessage());
+        return $paymentJobExecutor->getExitCode();
     }
 }

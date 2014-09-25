@@ -36,16 +36,16 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
             ->getQuery()
             ->execute();
 
-        $date = new DateTime('-1 day');
+        $date = new DateTime();
         /**
          * Update date for all success transactions
          */
         $qb = $em->createQueryBuilder();
         $qb->update('RjDataBundle:Heartland', 'h')
-            ->set('h.depositDate', ':yesterday')
+            ->set('h.depositDate', ':depositDate')
             ->where('h.batchId iS NOT NULL')
             ->andWhere('h.isSuccessful = 1')
-            ->setParameter('yesterday', $date)
+            ->setParameter('depositDate', $date)
             ->getQuery()
             ->execute();
 
@@ -61,14 +61,9 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
 
         $this->assertRegExp('/Start prepare daily batch deposit report by/', $commandTester->getDisplay());
         $this->assertCount(1, $plugin->getPreSendMessages());
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($emails = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $emails, 'Wrong number of emails');
-        $emails[0]->click(); // Holding Admin Email
-        $this->page->clickLink('text/html');
-
-        $groupNames = $this->page->findAll('css', '.group-name');
+        $this->assertCount(1, $parts = $plugin->getPreSendMessage(0)->getChildren());
+        $crawler = $this->getCrawlerObject($parts[0]->getBody());
+        $groupNamesNodes = $crawler->filter('.group-name');
 
         $query = $em->getRepository('RjDataBundle:Heartland')->createQueryBuilder('h');
         $query->select("h.batchId");
@@ -81,12 +76,10 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $query->innerJoin('t.group', 'g');
 
         $query->where('g.name IN (:groupNames)');
-        $groupNames = array_map(
-            function (NodeElement $value) {
-                return $value->getText();
-            },
-            $groupNames
-        );
+        $groupNames = array();
+        for ($i = 0; $i < $groupNamesNodes->count(); $i++) {
+            $groupNames[] = $groupNamesNodes->getNode($i)->textContent;
+        }
 
         $query->setParameter('groupNames', $groupNames);
 
@@ -109,12 +102,12 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
 
         $count = count($batches);
 
-        $batchesEmail = $this->page->findAll('css', '.batch-id');
+        $batchesEmail = $crawler->filter('.batch-id');
 
         $this->assertCount($count, $batchesEmail);
 
         for ($i= 0; $i < $count; $i++) {
-            $this->assertTrue(in_array($batchesEmail[$i]->getText(), $batches));
+            $this->assertContains($batchesEmail->getNode($i)->textContent, $batches);
         }
     }
 }

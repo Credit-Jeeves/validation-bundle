@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Traits\AddressTrait;
 use Geocoder\Result\Geocoded;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 
 /**
  * Property
@@ -19,6 +20,11 @@ class Property extends Base
 {
     use AddressTrait {
         getFullAddress as fullAddress;
+    }
+
+    public function getShrinkAddress()
+    {
+        return ShorteningAddressUtility::shrinkAddress($this->getFullAddress());
     }
 
     public function parseGoogleAddress($data)
@@ -238,7 +244,13 @@ class Property extends Base
     public function getSingleUnit()
     {
         if ($this->isSingle()) {
-            return $this->getUnits()->first();
+            $unit = $this->getUnits()->first();
+            if (!$unit) {
+                throw new \LogicException(
+                    sprintf('Standalone property "%s" has no unit.', $this->getAddress())
+                );
+            }
+            return $unit;
         }
 
         return null;

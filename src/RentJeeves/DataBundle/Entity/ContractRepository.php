@@ -208,6 +208,7 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
+        $query->leftJoin('t.settings', 's');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);

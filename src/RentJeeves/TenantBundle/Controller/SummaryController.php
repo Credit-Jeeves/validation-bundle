@@ -24,6 +24,7 @@ class SummaryController extends Controller
      */
     public function indexAction()
     {
+        /** @var Tenant $user */
         $user = $this->getUser();
         if (UserIsVerified::PASSED != $user->getIsVerified()) {
             return new RedirectResponse(
@@ -44,6 +45,7 @@ class SummaryController extends Controller
             'Report' => $Report,
             'Score' => $Score,
             'User' => $user,
+            'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
         );
     }
 
@@ -111,7 +113,7 @@ class SummaryController extends Controller
         /**
          * @var $pidkiqQuestions PidkiqQuestions
          */
-        $pidkiqQuestions = $this->get('pidkiq.questions');
+        $pidkiqQuestions = $this->get('experian.net_connect.precise_id.questions');
 
         if ($pidkiqQuestions->processQuestions()) {
             $form = $this->createForm(new QuestionsType($pidkiqQuestions->getQuestionsData()));

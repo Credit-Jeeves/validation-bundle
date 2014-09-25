@@ -1,15 +1,16 @@
-10 2 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize deposit --archive=true >> /var/log/renttrack.log 2>&1
-15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize reversal --archive=true >> /var/log/renttrack.log 2>&1
-30 4 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
-55 21 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
-0 8 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant >> /var/log/renttrack.log 2>&1
-0 8 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --auto >> /var/log/renttrack.log 2>&1
-30 0 * * * /var/www/my.renttrack.com/bin/console --app=rj contract:update:balance >> /var/log/renttrack.log 2>&1
-0 1 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --type=late --days=1 >> /var/log/renttrack.log 2>&1
+10 2 * * *  /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize deposit --archive=true >> /var/log/renttrack.log 2>&1
+15 4 * * *  /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize reversal --archive=true >> /var/log/renttrack.log 2>&1
+30 4 * * *  /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+55 21 * * *  /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+0 30 * * *  /var/www/my.renttrack.com/bin/console --app=rj tenant:credit-track >> /var/log/renttrack.log 2>&1
+0 8 * * *   /var/www/my.renttrack.com/bin/console --app=rj Email:tenant >> /var/log/renttrack.log 2>&1
+0 8 * * *   /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --auto >> /var/log/renttrack.log 2>&1
+30 0 * * *  /var/www/my.renttrack.com/bin/console --app=rj contract:update:balance >> /var/log/renttrack.log 2>&1
+0 1 * * *   /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --type=late --days=1 >> /var/log/renttrack.log 2>&1
 30 23 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord >> /var/log/renttrack.log 2>&1
-0 7 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=pending >> /var/log/renttrack.log 2>&1
-0 7 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=nsf >> /var/log/renttrack.log 2>&1
-0 7 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:batchDeposit:report >> /var/log/renttrack.log 2>&1
-#0 1 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=report >> /var/log/renttrack.log 2>&1
+0 7 * * *   /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=pending >> /var/log/renttrack.log 2>&1
+0 7 * * *   /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=nsf >> /var/log/renttrack.log 2>&1
+0 7 * * *  /var/www/my.renttrack.com/bin/console --app=rj Email:batchDeposit:report >> /var/log/renttrack.log 2>&1
+#0 1 * * *  /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=report >> /var/log/renttrack.log 2>&1
 30 23 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=late >> /var/log/renttrack.log 2>&1
 */5 * * * * /var/www/my.renttrack.com/bin/console jms-job-queue:run --max-runtime=300

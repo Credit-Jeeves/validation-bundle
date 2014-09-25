@@ -283,7 +283,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-    public function endContractByLandlord($contract, $landlord, $tenant, $template = 'rjEndContract')
+    public function endContractByLandlord($contract, Landlord $landlord, Tenant $tenant, $template = 'rjEndContract')
     {
         // Unit is a Doctrine Proxy, it always exists, but it throws an exception when we try to get unit's name
         try {
@@ -299,7 +299,7 @@ class Mailer extends BaseMailer
             'unitName'            => $unitName,
         );
 
-        return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
     public function sendOrderCancelToTenant(Order $order, $template = 'rjOrderCancel')
@@ -415,6 +415,22 @@ class Mailer extends BaseMailer
             $vars,
             $landlord->getEmail(),
             $landlord->getCulture()
+        );
+    }
+
+    public function sendReportReceipt(Order $order)
+    {
+        $dateShortFormat = $this->container->getParameter('date_short');
+        return $this->sendEmail(
+            $order->getUser(),
+            'rjReceipt',
+            array(
+                'tenantName' => $order->getUser()->getFullName(),
+                'date' => $order->getCreatedAt()->format($dateShortFormat),
+                'amout' => $this->container->getParameter('credittrack_payment_per_month_currency') .
+                    $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting
+                'number' => $order->getHeartlandTransactionId(),
+            )
         );
     }
 }

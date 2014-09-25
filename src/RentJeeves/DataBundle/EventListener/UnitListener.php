@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 /**
  * @Service("data.event_listener.unit")
@@ -22,6 +23,13 @@ use LogicException;
  *     attributes = {
  *         "event"="prePersist",
  *         "method"="prePersist"
+ *     }
+ * )
+ * @Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="preUpdate",
+ *         "method"="preUpdate"
  *     }
  * )
  */
@@ -49,6 +57,29 @@ class UnitListener
         $property = $entity->getProperty();
         if ($property->isSingle() && count($property->getUnits()) > 1) {
             throw new LogicException('Standalone property can not have units');
+        }
+    }
+
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof Unit) {
+            return;
+        }
+
+        if (!$eventArgs->hasChangedField('name')) {
+            return;
+        }
+        $property = $entity->getProperty();
+        if ($property->getIsSingle() && $entity->getActualName() !== Unit::SINGLE_PROPERTY_UNIT_NAME) {
+            $contract = $entity->getContracts();
+            throw new LogicException(
+                sprintf(
+                    "Can't update unit name '%s' for single unit '%s' ",
+                    $entity->getActualName(),
+                    $entity->getId()
+                )
+            );
         }
     }
 }

@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @Route("/")
@@ -261,6 +262,29 @@ class AjaxController extends Controller
             array(
                 'success' => true
             )
+        );
+    }
+
+    /**
+     * @Route(
+     *    "/rj/property_mapping",
+     *     name="admin_property_mapping",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getHoldingProperties(Request $request)
+    {
+        $holdingId = $request->request->get('holdingId');
+        $em = $this->getDoctrine()->getManager();
+        $holding = $em->getRepository('DataBundle:Holding')->find($holdingId);
+        if (!$holding) {
+            throw new NotFoundHttpException(sprintf('Holding with id #%s not found', $holdingId));
+        }
+        $properties = $em->getRepository('RjDataBundle:Property')->findByHolding($holding)->getQuery()->getResult();
+
+        return $this->makeJsonResponse(
+            $properties,
+            array("AdminProperty")
         );
     }
 }

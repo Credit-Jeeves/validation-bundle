@@ -6,6 +6,10 @@
                 <source>project_name</source>
                 <target>RentTrack</target>
             </trans-unit>
+            <trans-unit id="note">
+                <source>note</source>
+                <target>Note</target>
+            </trans-unit>
             <trans-unit id="email_rj.creditjeeves.team">
                 <source>email_rj.creditjeeves.team</source>
                 <target>The RentTrack Team</target>
@@ -1181,9 +1185,17 @@
                 <source>popup.invite.tenant.free</source>
                 <target>Free*</target>
             </trans-unit>
-            <trans-unit id="popup.invite.tenant.scoretrack">
-                <source>popup.invite.tenant.scoretrack</source>
-                <target>ScoreTrack</target>
+            <trans-unit id="popup.invite.tenant.credittrack.title_2">
+                <source>popup.invite.tenant.credittrack.title_2</source>
+                <target>Build credit history while you pay rent.</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.credittrack.monthly">
+                <source>popup.tenant.credittrack.monthly</source>
+                <target>Updated Monthly</target>
+            </trans-unit>
+            <trans-unit id="popup.invite.tenant.credittrack">
+                <source>popup.invite.tenant.credittrack</source>
+                <target>CreditTrack</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.per_month">
                 <source>popup.invite.tenant.per_month</source>
@@ -1196,6 +1208,10 @@
             <trans-unit id="popup.tenant.get.credit.score">
                 <source>popup.tenant.get.credit.score</source>
                 <target>Get Your Credit Score</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.view.experian">
+                <source>popup.tenant.view.experian</source>
+                <target>View Your Experian Credit Report</target>
             </trans-unit>
             <trans-unit id="popup.tenant.get.first.free">
                 <source>popup.tenant.get.first.free</source>
@@ -1213,6 +1229,10 @@
                 <source>popup.tenant.pay.auto</source>
                 <target>Set up Auto Payments</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.build.credit.history">
+                <source>popup.tenant.build.credit.history</source>
+                <target>Build Credit History</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
                 <target>Build Credit History (opt-in)</target>
@@ -1225,13 +1245,29 @@
                 <source>popup.tenant.safeguards</source>
                 <target>Rock-Solid Security Safeguards</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.prequalified.offers">
+                <source>popup.tenant.prequalified.offers</source>
+                <target>Pre-Qualified Credit Offers</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.footer.note_1">
                 <source>popup.tenant.footer.note_1</source>
                 <target>We’ll invite your landlord to join. Once they join and accept rent electronically, you can start building your credit.</target>
             </trans-unit>
+            <trans-unit id="popup.signed.up.already">
+                <source>popup.signed.up.already</source>
+                <target>Your Current Plan</target>
+            </trans-unit>
             <trans-unit id="popup.sign.up.today">
                 <source>popup.sign.up.today</source>
                 <target>Sign Up Today</target>
+            </trans-unit>
+            <trans-unit id="popup.cancel">
+                <source>popup.cancel</source>
+                <target>Choose</target>
+            </trans-unit>
+            <trans-unit id="popup.edit">
+                <source>popup.edit</source>
+                <target>Edit</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_2">
                 <source>popup.tenant.footer.note_2</source>
@@ -1896,7 +1932,7 @@
             </trans-unit>
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>
-                <target><![CDATA[Verify your email address. <a href="#" id="landlord-verify-email">Resend Verification Email</a> <span id="landlord-verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
+                <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="landlord">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
             </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
@@ -2166,6 +2202,54 @@
             <trans-unit id="info.payment.date">
                 <source>info.payment.date</source>
                 <target>Your payment scheduled for the %DAY_1%st will be executed on the %DAY_2%th due to the short month.</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.title">
+                <source>credittrack.pay.title</source>
+                <target>Sign up for CreditTrack</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.edit.title">
+                <source>credittrack.pay.edit.title</source>
+                <target>Edit CreditTrack Setup</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.step.1">
+                <source>credittrack.pay.step.1</source>
+                <target>Payment Source</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.step.2">
+                <source>credittrack.pay.step.2</source>
+                <target>Review &amp; Pay</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.step.2.edit">
+                <source>credittrack.pay.step.2.edit</source>
+                <target>Review &amp; Save</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.confirm">
+                <source>credittrack.pay.confirm</source>
+                <target>Bill me $%amount% each month for CreditTrack starting today until cancelled.</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.amount">
+                <source>credittrack.pay.amount</source>
+                <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.charged_on">
+                <source>credittrack.pay.charged_on</source>
+                <target>Charged on</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.charged_day">
+                <source>credittrack.pay.charged_day</source>
+                <target>Day %DAY% of Each Month</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.note">
+                <source>credittrack.pay.note</source>
+                <target>We'll get your latest score and credit report when you complete your payment. You'll be leaving your free credit profile, so we'll no longer show you pre-qualified credit offers.</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.save">
+                <source>credittrack.pay.save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="credittrack.pay.saved">
+                <source>credittrack.pay.saved</source>
+                <target>Payment Account has been saved successfully.</target>
             </trans-unit>
             <trans-unit id="tab.accounting">
                 <source>tab.accounting</source>
@@ -2559,9 +2643,74 @@
                 <source>export.renttrack.include_all_groups</source>
                 <target>Include Transactions from All Groups</target>
             </trans-unit>
+            <trans-unit id="credittrack.teaser.link">
+                <source>credittrack.teaser.link</source>
+                <target>Enroll in &lt;span class="highlight"&gt;CreditTrack&lt;/span&gt; to get monthly updates.</target>
+            </trans-unit>
+            <trans-unit id="credittrack.active.message">
+                <source>credittrack.active.message</source>
+                <target>Enrolled in CreditTrack</target>
+            </trans-unit>
             <trans-unit id="tenant.no_balance.alert">
                 <source>tenant.no_balance.alert</source>
                 <target>You do not have a balance to pay at this time.</target>
+            </trans-unit>
+            <trans-unit id="settings.plans">
+                <source>settings.plans</source>
+                <target>My Plans</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.title">
+                <source>settings.plans.title</source>
+                <target>My Plans</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.head">
+                <source>settings.plans.head</source>
+                <target>My Plans</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.comment">
+                <source>settings.plans.comment</source>
+                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in report your payments to earn credit.</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.label">
+                <source>settings.plans.label</source>
+                <target>Plan type:</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.free">
+                <source>settings.plans.free</source>
+                <target>Free</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.none">
+                <source>settings.plans.none</source>
+                <target><![CDATA[<b>None</b>]]></target>
+            </trans-unit>
+            <trans-unit id="settings.plans.paid">
+                <source>settings.plans.paid</source>
+                <target><![CDATA[
+                    Credit Track TM - Track your credit monthly as you build credit history.<br />
+                    <span class="bold">Payment Account:</span> "%PAYMENT_ACCOUNT%"
+                ]]></target>
+            </trans-unit>
+            <trans-unit id="settings.plans.update">
+                <source>settings.plans.update</source>
+                <target>Update plan</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.cancel.title">
+                <source>settings.plans.cancel.title</source>
+                <target>Cancel CreditTrack</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.cancel.text">
+                <source>settings.plans.cancel.text</source>
+                <target>
+                    Are you sure want to cancel monthly updates of your score and credit report?
+                </target>
+            </trans-unit>
+            <trans-unit id="settings.plans.cancel.yes">
+                <source>settings.plans.cancel.yes</source>
+                <target>Yes, Cancel CreditTrack</target>
+            </trans-unit>
+            <trans-unit id="settings.plans.cancel.no">
+                <source>settings.plans.cancel.no</source>
+                <target>No, Do Nothing</target>
             </trans-unit>
             <trans-unit id="payment_form.start_date.error_range">
                 <source>payment_form.start_date.error_range</source>
@@ -2577,6 +2726,26 @@
             <trans-unit id="transaction.status.text.reversed">
                 <source>transaction.status.text.reversed</source>
                 <target>REVERSED</target>
+            </trans-unit>
+            <trans-unit id="common.payment_type_cc">
+                <source>common.payment_type_cc</source>
+                <target>Payment Type CC</target>
+            </trans-unit>
+            <trans-unit id="common.payment_type_ach">
+                <source>common.payment_type_ach</source>
+                <target>Payment Type ACH</target>
+            </trans-unit>
+            <trans-unit id="common.payment_type_cc.notes">
+                <source>common.payment_type_cc.notes</source>
+                <target>Notes for CC</target>
+            </trans-unit>
+            <trans-unit id="common.payment_type_ach.notes">
+                <source>common.payment_type_ach.notes</source>
+                <target>Notes for ACH</target>
+            </trans-unit>
+            <trans-unit id="yardi.regexp.error.url">
+                <source>yardi.regexp.error.url</source>
+                <target><![CDATA[Wrong url, see example of correct url: https://www.yardiaspca12.com/53467milhouse/]]></target>
             </trans-unit>
             <trans-unit id="deposit.date.range">
                 <source>deposit.date.range</source>

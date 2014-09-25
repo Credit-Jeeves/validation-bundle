@@ -77,22 +77,22 @@ abstract class PropertyMapping
      * )
      * @Serializer\Groups({"RentJeevesImport"})
      */
-    protected $landlordPropertyId;
+    protected $externalPropertyId;
 
     /**
-     * @param string $landlordPropertyId
+     * @param string $externalPropertyId
      */
-    public function setLandlordPropertyId($landlordPropertyId)
+    public function setExternalPropertyId($externalPropertyId)
     {
-        $this->landlordPropertyId = $landlordPropertyId;
+        $this->externalPropertyId = $externalPropertyId;
     }
 
     /**
      * @return string
      */
-    public function getLandlordPropertyId()
+    public function getExternalPropertyId()
     {
-        return $this->landlordPropertyId;
+        return $this->externalPropertyId;
     }
 
     /**

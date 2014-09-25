@@ -7,14 +7,16 @@
         {% form_theme form 'form_cj_layout.html.twig' %}
 
         {% stylesheets '@UserBundle/Resources/public/css/user_settings.css' %}
-        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+            <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
         {% endstylesheets %}
 
     {% else %}
         {% form_theme form 'RjCoreBundle::form.html.twig' %}
 
-        {% stylesheets '@CoreBundle/Resources/public/css/styles.css' %}
-        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% stylesheets  '@CoreBundle/Resources/public/css/styles.css'
+                        '@CoreBundle/Resources/public/css/pricing-popup.css'
+        %}
+            <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
         {% endstylesheets %}
     {% endif %}
 

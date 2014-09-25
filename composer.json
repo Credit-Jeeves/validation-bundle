@@ -1,7 +1,7 @@
 {
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
-    "version": "3.0",
+    "version": "3.6",
     "minimum-stability": "stable",
     "authors": [
         {
@@ -247,7 +247,8 @@
         "beberlei/DoctrineExtensions": "dev-master",
         "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
         "pagerfanta/pagerfanta": "dev-master",
-        "fp/jsformvalidator-bundle": "dev-master"
+        "fp/jsformvalidator-bundle": "dev-master",
+        "besimple/soap":   "0.1.*@dev"
     },
     "require-dev": {
         "qunit": "v1",
@@ -262,7 +263,8 @@
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
         "sensio/generator-bundle": "dev-master",
         "khepin/yaml-fixtures-bundle": "dev-master",
-        "comfortablynumb/backup-restore-bundle": "dev-master"
+        "comfortablynumb/backup-restore-bundle": "dev-master",
+        "ton/email-bundle": "1.0.*"
     },
     "scripts": {
         "post-install-cmd": [

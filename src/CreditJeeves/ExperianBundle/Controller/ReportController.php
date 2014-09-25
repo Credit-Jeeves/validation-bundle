@@ -6,12 +6,14 @@ use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\ReportType;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
+use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use Doctrine\DBAL\DBALException;
+use Guzzle\Http\Exception\CurlException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use CreditJeeves\ExperianBundle\NetConnect;
+use CreditJeeves\ExperianBundle\NetConnect\CreditProfile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +33,7 @@ class ReportController extends Controller
     /**
      * @var \CreditJeeves\ExperianBundle\NetConnect
      */
-    protected $netConnect;
+    protected $creditProfile;
 
     /**
      * @todo add all rules
@@ -80,13 +82,13 @@ class ReportController extends Controller
         );
     }
 
-    protected function getArf()
+    protected function getArf($isD2c = false)
     {
-        if (null == $this->netConnect) {
-            $this->netConnect = $this->get('experian.net_connect');
+        $this->creditProfile = $this->get('experian.net_connect.credit_profile');
+        if ($isD2c) {
+            $this->creditProfile->initD2c();
         }
-        $this->netConnect->execute($this->container);
-        return $this->netConnect->getResponseOnUserData($this->get('core.session.applicant')->getUser());
+        return $this->creditProfile->getResponseOnUserData($this->get('core.session.applicant')->getUser());
     }
 
     protected function saveArf($isD2c = false)
@@ -102,7 +104,7 @@ class ReportController extends Controller
             $report = new ReportPrequal();
             $report->setUser($this->getUser());
         }
-        $report->setRawData($this->getArf());
+        $report->setRawData($this->getArf($isD2c));
         $em->persist($report);
         $em->flush();
         return true;
@@ -125,7 +127,6 @@ class ReportController extends Controller
             $session = $this->getRequest()->getSession();
             ignore_user_abort();
             set_time_limit(90);
-            require_once __DIR__.'/../../../../vendor/credit-jeeves/credit-jeeves/lib/curl/CurlException.class.php';
             if (false == $session->get('cjIsArfProcessing', false)) {
                 $session->set('cjIsArfProcessing', true);
                 $isD2cReport = $this->get('session')->getFlashBag()->get('isD2cReport');
@@ -145,12 +146,12 @@ class ReportController extends Controller
                         )
                     );
                     return new JsonResponse(array('url' => $this->generateUrl('public_message_flash')));
-                } catch (\CurlException $e) {
+                } catch (CurlException $e) {
                     $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     $this->get('session')->getFlashBag()->set('isD2cReport', $isD2cReport);
                     $session->set('cjIsArfProcessing', false);
                     return new JsonResponse('warning');
-                } catch (\ExperianException $e) {
+                } catch (Exception $e) {
                     $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     if (4000 == $e->getCode()) {
                         $this->get('session')->getFlashBag()->set('isD2cReport', $isD2cReport);

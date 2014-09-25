@@ -4,7 +4,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 // start collect coverage from functional tests
 //require_once  __DIR__ . '/../vendor/behat/mink-bundle/Behat/MinkBundle/Coverage/prepend.php';
-if (function_exists('xdebug_disable')) {
+if (function_exists('xdebug_disable') && empty($_COOKIE['XDEBUG_SESSION'])) {
     xdebug_disable();
 }
 

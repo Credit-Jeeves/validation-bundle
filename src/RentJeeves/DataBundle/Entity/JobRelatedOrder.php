@@ -10,7 +10,12 @@ use CreditJeeves\DataBundle\Entity\Order;
 class JobRelatedOrder extends JobRelatedEntities
 {
     /**
-     * @ORM\ManyToOne(targetEntity = "\CreditJeeves\DataBundle\Entity\Order", inversedBy = "jobs", fetch = "EAGER")
+     * @ORM\ManyToOne(
+     *      targetEntity = "\CreditJeeves\DataBundle\Entity\Order",
+     *      inversedBy = "jobs",
+     *      fetch = "EAGER",
+     *      cascade={"persist"}
+     * )
      * @ORM\JoinColumn(name="order_id", referencedColumnName="id", nullable=true)
      */
     protected $order;

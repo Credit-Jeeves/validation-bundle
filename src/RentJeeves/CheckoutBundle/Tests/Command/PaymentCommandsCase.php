@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
+use Ton\EmailBundle\EventListener\EmailListener;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
@@ -19,45 +20,74 @@ use RentJeeves\TestBundle\Command\BaseTestCase;
 class PaymentCommandsCase extends BaseTestCase
 {
     /**
+     * @var EmailListener
+     */
+    protected $plugin;
+
+    protected function setUp()
+    {
+        $this->load(true);
+        $this->plugin = $this->registerEmailListener();
+        $this->plugin->clean();
+    }
+
+    protected function executePayCommand($jobId)
+    {
+        $application = new Application($this->getKernel());
+        $application->add(new PayCommand());
+
+        $command = $application->find('payment:pay');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+                '--jms-job-id' => $jobId,
+            )
+        );
+        return $commandTester;
+    }
+
+
+    /**
      * @test
      */
     public function collectAndPay()
     {
-        $this->load(true);
-        $plugin = $this->registerEmailListener();
-        $plugin->clean();
-
-        $application = new Application($this->getKernel());
-        $application->add(new PayCommand());
-
         $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
         $this->assertCount(1, $jobs);
 
-        $command = $application->find('payment:pay');
-        $commandTester = new CommandTester($command);
+        $commandTester = $this->executePayCommand($jobs[0]->getId());
 
-        $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                '--jms-job-id' => $jobs[0]->getId(),
-            )
-        );
         $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
-        // "Your Rent is Processing" Email
-        $this->assertCount(1, $plugin->getPreSendMessages());
+        $this->assertCount(1, $this->plugin->getPreSendMessages());
+        $this->assertEquals('Rent Payment Receipt', $this->plugin->getPreSendMessage(0)->getSubject());
 
-        $plugin->clean();
-        $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                '--jms-job-id' => $jobs[0]->getId(),
-            )
-        );
+        $this->plugin->clean();
+
+        $commandTester = $this->executePayCommand($jobs[0]->getId());
         $this->assertRegExp("/Start\nPayment already executed./", $commandTester->getDisplay());
-        $this->assertCount(0, $plugin->getPreSendMessages());
+        $this->assertCount(0, $this->plugin->getPreSendMessages());
 
         $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
         $this->assertCount(0, $jobs);
+    }
+
+    /**
+     * @test
+     */
+    public function collectCreditTrackAndPay()
+    {
+        $jobs = $this->getContainer()->get('doctrine')
+            ->getRepository('RjDataBundle:PaymentAccount')
+            ->collectCreditTrackToJobs();
+        $this->assertCount(1, $jobs);
+
+        $commandTester = $this->executePayCommand($jobs[0]->getId());
+
+        $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
+
+        $this->assertCount(1, $this->plugin->getPreSendMessages());
+        $this->assertEquals('Receipt from Rent Track', $this->plugin->getPreSendMessage(0)->getSubject());
     }
 
     /**
@@ -75,6 +105,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $amount = $rentAmount * 2 + 25;
         $contract->setIntegratedBalance($amount);
+        $groupId = $contract->getGroup()->getId();
         $groupSettings = $contract->getGroup()->getGroupSettings();
         $groupSettings->setPayBalanceOnly(true);
         $groupSettings->setIsIntegrated(true);
@@ -198,8 +229,8 @@ class PaymentCommandsCase extends BaseTestCase
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $contract->getRent()));
         $this->assertNotNull($order);
-        $this->assertNotNull($order->getHeartlandBatchId());
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
+        $this->assertNotNull($order->getHeartlandBatchId());
     }
 
     protected function createPayment(Contract $contract, $amount)

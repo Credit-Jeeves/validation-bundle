@@ -10,6 +10,7 @@ use \DateTime;
 
 /**
  * @ORM\MappedSuperclass
+ *
  */
 abstract class Heartland extends PaymentDetails
 {

@@ -2,6 +2,7 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Lead;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -9,12 +10,15 @@ class ScoreController extends Controller
 {
     /**
      * @Template()
-     * @param \CreditJeeves\DataBundle\Entity\Lead $Lead
+     *
+     * @param Tenant $user
+     *
+     * @return array
      */
     public function indexAction($user)
     {
         $aScores = $user->getScores();
-        
+
         $chartData = array();
         foreach ($aScores as $score) {
             $nScore = $score->getScore();
@@ -30,7 +34,10 @@ class ScoreController extends Controller
         $nScore = ($nScore > 900) ? 900 : $nScore;
         $nFicoScore = $user->getScores()->last()->getFicoScore();
         $sDate = $user->getScores()->last()->getCreatedDate()->format('M d, Y');
+
+
         return array(
+            'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
             'chartData' => $chartData,
             'nScore' => $nScore,
             'nFicoScore' => $nFicoScore,

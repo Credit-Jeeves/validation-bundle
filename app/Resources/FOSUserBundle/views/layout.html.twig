@@ -23,6 +23,7 @@
     {% if 'rj' == application %}
         <div class="accreditations">
             {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': true}) }}
+            {{ include('RjCoreBundle::bbbseal.html.twig', {'pad': true}) }}
         </div>
     {% endif  %}
 {% endblock %}

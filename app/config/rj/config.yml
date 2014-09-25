@@ -49,6 +49,10 @@ parameters:
     tenant_payment_per_month_curence: $
     tenant_payment_per_month_dollars: 1
     tenant_payment_per_month_cents: 95
+    credittrack_payment_per_month_currency: $
+    credittrack_payment_per_month_dollars: 9
+    credittrack_payment_per_month_cents: 95
+    credittrack_payment_per_month: %credittrack_payment_per_month_dollars%.%credittrack_payment_per_month_cents%
     landlord_monthly_minimum: $9.95
     landlord_per_screen: $14.95
     landlord_payment_per_month_dollars: 1
@@ -78,6 +82,7 @@ sonata_admin:
                 - sonata.admin.orders
                 - sonata.admin.operations
                 - sonata.admin.jobs
+                - sonata.admin.settings
             RentJeeves:
               items:
                 - sonata.admin.payments
@@ -88,6 +93,7 @@ sonata_admin:
                 - sonata.admin.tenant
                 - sonata.admin.contract_waiting
                 - sonata.admin.resident_mapping
+                - sonata.admin.property_mapping
 
 twig:
     globals:
@@ -95,6 +101,9 @@ twig:
         google_maps_key: %google_maps_key%
         payment_card_fee: %payment_card_fee%
         payment_dollars: %payment_dollars%
+        credittrack_payment_per_month: %credittrack_payment_per_month_currency%%credittrack_payment_per_month%
+        credittrack_payment_per_month_dollars: %credittrack_payment_per_month_dollars%
+        credittrack_payment_per_month_cents: %credittrack_payment_per_month_cents%
         tenant_payment_per_month: %tenant_payment_per_month_curence%%tenant_payment_per_month_dollars%.%tenant_payment_per_month_cents%
         tenant_payment_per_month_dollars: %tenant_payment_per_month_dollars%
         tenant_payment_per_month_cents: %tenant_payment_per_month_cents%

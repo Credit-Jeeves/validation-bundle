@@ -1,0 +1,201 @@
+<div
+    id="credit-track-pay-popup"
+    class="pricing-popup dashboard-popup properties-popup payments-popup verify-min"
+    data-payment-accounts="{{ paymentAccountsJson }}"
+    data-payment-group="{{ paymentGroupJson }}">
+    <h1>{{ (creditTrackEnabled ? 'credittrack.pay.edit.title' : 'credittrack.pay.title') | trans }}</h1>
+    <div class="clearfix col-box attention-container">
+
+        <ul class="steps clearfix">
+            <li class="step1" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
+                <span class="step"><span style="width:258px">{{ 'credittrack.pay.step.1' | trans }}</span></span>
+            </li>
+            <li class="step2" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
+                <span class="step"><span style="width:245px">
+                    {{ (creditTrackEnabled ? 'credittrack.pay.step.2.edit' : 'credittrack.pay.step.2') | trans }}
+                </span></span>
+            </li>
+        </ul>
+
+        <div class="attention-box pie-el" style="display: none">
+            <h3>{{ 'pay_popup.errors.title' | trans }}</h3>
+            <ul class="default">
+            </ul>
+        </div>
+
+        <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
+            <div data-bind="visible: $root.notEmptyPaymentAccount" class="form-row clearfix" >
+                <label>{{ 'payment.account' | trans }}*</label>
+                <div class="fields-box payment-accounts">
+                    <small ><b>*</b>{{ 'required' | trans }}</small>
+                    <!-- ko foreach: paymentAccounts -->
+                        <label class="checkbox radio" style="clear: left;">
+                            <input type="radio"
+                                required="required"
+                                data-bind="
+                                    value: $data.id,
+                                    checked: $parent.paymentSource.id
+                                " />
+                            <i></i>
+                            <span data-bind="text: $data.name"></span>
+                        </label>
+                    <!-- /ko -->
+                    <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
+                        <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus">
+                            <span></span>{{ 'payment.account.new' | trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div data-bind="visible: isNewPaymentAccount || !$root.notEmptyPaymentAccount">
+                {{ render(controller('RjCheckoutBundle:Component:source')) }}
+            </div>
+        </div>
+
+        <div class="col" data-bind="visible: 'user' == step()">
+            <div class="form-row clearfix">
+                <div class="fields-box">
+                    <small><b>*</b>{{ 'required' | trans }}</small>
+                </div>
+            </div>
+        </div>
+
+        <div data-bind="visible: 'pay' == step()" id="id-pay-step">
+            <h3 class="italic">
+                {{ 'credittrack.pay.confirm'|trans({'%amount%': credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents })|raw }}
+            </h3>
+
+            <div class="clearfix halfs-box">
+                <div class="half-box left">
+                    <h4>{{ 'checkout.your_payment' | trans }}</h4>
+                    <div class="form-row clearfix">
+                        <label>{{ 'credittrack.pay.amount' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value">{{ credittrack_payment_per_month }}</span>
+                        </div>
+                    </div>
+                    {#<div class="form-row clearfix">
+                        <label>{{ 'checkout.fee' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix total-amount">
+                        <label>{{ 'checkout.total' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value" data-bind="text: getTotalAmount()"></span>
+                        </div>
+                    </div>#}
+                    <div class="form-row clearfix">
+                        <label>{{ 'credittrack.pay.charged_on' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value">
+                                {{ 'credittrack.pay.charged_day' | trans({ '%DAY%': chargeDay }) }}
+                            </span>
+                        </div>
+                    </div>
+                    <br />
+                    <h4>{{ 'note' | trans }}</h4>
+                    <p>{{ 'credittrack.pay.note' | trans }}</p>
+                </div>
+                <div class="half-box right">
+                    <h4>{{ 'checkout.how_paying' | trans }}</h4>
+                    <div class="form-row clearfix">
+                        <label>{{ 'checkout.method' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value"
+                                  data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"
+                                  id="checkout-payment-source"
+                            >
+
+                            </span>
+                        </div>
+                    </div>
+                    <div data-bind="visible: !newPaymentAccount()">
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.account_nickname' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.name"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-bind="visible: 'bank' == paymentSource.type() && newPaymentAccount()">
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.payor_name' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.PayorName"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.routing_number' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.RoutingNumber"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.account_number' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.AccountNumber"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.account_type' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="visible: 'Checking' == paymentSource.ACHDepositType()">
+                                    {{ 'checkout.account_type.checking' | trans }}
+                                </span>
+                                <span class="value" data-bind="visible: 'Savings' == paymentSource.ACHDepositType()">
+                                    {{ 'checkout.account_type.savings' | trans }}
+                                </span>
+                                <span class="value" data-bind="visible: 'Unassigned' == paymentSource.ACHDepositType()">
+                                    {{ 'checkout.account_type.business_checking' | trans }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-bind="visible: 'card' == paymentSource.type()">
+                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
+                            <label>{{ 'checkout.card.account_name' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.CardAccountName"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
+                            <label>{{ 'checkout.card_number' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.getCardNumber"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.expiration' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value"
+                                      data-bind="text: paymentSource.ExpirationMonth() + '/' + paymentSource.ExpirationYear()">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.billing_address' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: currentAddress()"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-button-box">
+        <button class="button grey fixed" data-bind="visible: 'source' != step(), click: previous">
+            <span>{{ 'pay_popup.step.previous' | trans }}</span>
+        </button>
+        <button class="button fixed" data-bind="visible: 'pay' != step(), click: next">
+            <span>{{ 'pay_popup.step.next' | trans }}</span>
+        </button>
+        <button class="button" data-bind="visible: 'pay' == step(), click: next">
+            <span>{{ (creditTrackEnabled ? 'credittrack.pay.save' : 'checkout.make_payment') | trans }}</span>
+        </button>
+        {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': false}) }}
+    </div>
+</div>
