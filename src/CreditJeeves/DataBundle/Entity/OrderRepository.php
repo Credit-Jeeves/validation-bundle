@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
 use DateTime;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
@@ -396,7 +397,6 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('operation.contract', 'contract');
         $query->innerJoin('contract.group', 'group');
         $query->innerJoin('group.holding', 'holding');
-        $query->innerJoin('contract.tenant', 'tenant');
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('property.propertyMapping', 'mapping');
         $query->innerJoin('ord.heartlands', 'heartland');
@@ -408,7 +408,7 @@ class OrderRepository extends EntityRepository
         );
         $query->where("heartland.depositDate = :depositDate2");
         $query->andWhere('externalApi.id IS NULL');
-        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+        $query->andWhere('heartland.isSuccessful = 1');
         $query->andWhere('mapping.externalPropertyId IS NOT NULL');
         $query->andWhere('ord.status = :orderStatus');
         $query->andWhere('operation.type = :rentStatus OR operation.type = :otherStatus');
@@ -425,5 +425,35 @@ class OrderRepository extends EntityRepository
         $query->setMaxResults($limit);
 
         return $query;
+    }
+
+    public function getReversedOrders(Holding $holding, DateTime $depositDate, $start, $limit)
+    {
+        $query = $this->createQueryBuilder('ord');
+        $query->innerJoin('ord.operations', 'operation');
+        $query->innerJoin('operation.contract', 'contract');
+        $query->innerJoin('contract.holding', 'holding');
+        $query->innerJoin('contract.property', 'property');
+        $query->innerJoin('property.propertyMapping', 'mapping');
+        $query->innerJoin('ord.heartlands', 'heartland');
+
+        $query->where("heartland.depositDate = :depositDate");
+        $query->andWhere('heartland.isSuccessful = 1 and heartland.status = :reversedStatus');
+        $query->andWhere('mapping.externalPropertyId IS NOT NULL');
+        $query->andWhere('ord.status in (:orderStatuses)');
+        $query->andWhere('operation.type = :rentStatus OR operation.type = :otherStatus');
+        $query->andWhere('mapping.holding = :holdingId');
+
+        $query->setParameter('depositDate', $depositDate->format('Y-m-d'));
+        $query->setParameter('orderStatuses', [OrderStatus::REFUNDED, OrderStatus::RETURNED]);
+        $query->setParameter('rentStatus', OperationType::RENT);
+        $query->setParameter('otherStatus', OperationType::OTHER);
+        $query->setParameter('reversedStatus', TransactionStatus::REVERSED);
+        $query->setParameter('holdingId', $holding->getId());
+        $query->setFirstResult($start);
+        $query->setMaxResults($limit);
+        $query = $query->getQuery();
+
+        return $query->execute();
     }
 }

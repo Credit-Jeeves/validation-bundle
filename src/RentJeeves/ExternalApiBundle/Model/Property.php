@@ -11,7 +11,7 @@ class Property
     /**
      * @Serializer\SerializedName("RT_Customer")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\RtCustomer")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      */
     protected $rtCustomer;
 
