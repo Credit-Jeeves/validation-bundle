@@ -41,3 +41,17 @@ form li, .errorsGoogleSearch {
 .single-property-checkbox ul {
     padding-left: 50px;
 }
+.spinner {
+    position: absolute;
+    height: 933px;
+    width: 950px;
+    background-color: gainsboro;
+    z-index: 11;
+    opacity: 0.5;
+}
+.spinner-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -50px;
+}

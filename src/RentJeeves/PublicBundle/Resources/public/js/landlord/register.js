@@ -76,4 +76,8 @@ $(document).ready(function(){
             $('#property-units').show();
         }
     });
+
+    $("#LandlordAddressType").submit(function(){
+        $("#submitFormSpinner").show();
+    });
 });

@@ -5,6 +5,9 @@
 
 {% block content %}
 <section class="form-content">
+<div class="spinner" id="submitFormSpinner" style="display: none;">
+    <img src="/bundles/core/images/img_loading.gif" class="spinner-img">
+</div>
 {{ include('RjComponentBundle:Invite:_popupLandlord.html.twig') }}
 <form action="{{ path('landlord_register') }}" method="post" {{ form_enctype(form) }} id="landlordRegister">
     <div class="box type1">

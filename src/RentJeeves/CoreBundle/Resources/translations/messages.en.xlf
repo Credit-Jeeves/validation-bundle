@@ -1934,6 +1934,10 @@
                 <source>landlord.alert.verify_email</source>
                 <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="landlord">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
             </trans-unit>
+            <trans-unit id="redirect.wait.notification">
+                <source>redirect.wait.notification</source>
+                <target><![CDATA[Please wait while we redirect you to payment processor's online Merchant Application.]]></target>
+            </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
                 <target>PropertyID</target>
