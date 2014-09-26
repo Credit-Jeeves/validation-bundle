@@ -509,17 +509,20 @@ class ImportProcess
             $contract->setPaidTo($paidTo);
         }
 
-        if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
+        if (!empty($row[ImportMapping::KEY_MOVE_OUT])) {
+            $import->setMoveOut($this->getDateByField($row[ImportMapping::KEY_MOVE_OUT]));
+        }
+
+        if ($import->getMoveOut() !== null) {
+            $contract->setFinishAt($import->getMoveOut());
+            $this->isFinishedContract($contract);
+        } elseif (
+            isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
             $contract->setFinishAt(null);
         } else {
             $contract->setFinishAt($this->getDateByField($row[ImportMapping::KEY_LEASE_END]));
-        }
-
-        if (!empty($row[ImportMapping::KEY_MOVE_OUT])) {
-            $import->setMoveOut($this->getDateByField($row[ImportMapping::KEY_MOVE_OUT]));
-            $contract->setStatus(ContractStatus::FINISHED);
         }
 
         return $contract;
@@ -1128,16 +1131,29 @@ class ImportProcess
      */
     protected function persistContract(ModelImport $import, Contract $contract)
     {
+        if ($contract->getIntegratedBalance() > 0 && $this->isFinishedContract($contract)) {
+            $contract->setUncollectedBalance($contract->getIntegratedBalance());
+        }
+
+        $this->em->persist($contract);
+    }
+
+    /**
+     * Modify contract status if needed
+     *
+     * @param Contract $contract
+     * @return bool
+     */
+    protected function isFinishedContract(Contract $contract)
+    {
         $today = new DateTime();
         if (($finishAt = $contract->getFinishAt()) && $finishAt <= $today) { //set status of contract to finished...
             $contract->setStatus(ContractStatus::FINISHED);
 
-            if ($contract->getIntegratedBalance() > 0) {
-                $contract->setUncollectedBalance($contract->getIntegratedBalance());
-            }
+            return true;
         }
 
-        $this->em->persist($contract);
+        return false;
     }
 
     /**
