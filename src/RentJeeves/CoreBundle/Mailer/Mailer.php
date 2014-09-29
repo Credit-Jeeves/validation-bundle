@@ -311,7 +311,7 @@ class Mailer extends BaseMailer
             'orderStatus' => $order->getStatus(),
             'rentAmount' => $order->getSum(),
             'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
-            'reversalDescription' => $order->getHeartlandErrorMessage(),
+            'reversalDescription' => $order->getReversalDescription(),
         );
 
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -326,7 +326,7 @@ class Mailer extends BaseMailer
             'rentAmount' => $order->getSum(),
             'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'tenantName' => $tenant->getFullName(),
-            'reversalDescription' => $order->getHeartlandErrorMessage(),
+            'reversalDescription' => $order->getReversalDescription(),
         );
 
         $group = $order->getContract()->getGroup();
