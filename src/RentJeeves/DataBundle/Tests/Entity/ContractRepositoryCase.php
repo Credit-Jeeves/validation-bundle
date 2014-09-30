@@ -23,6 +23,9 @@ class ContractRepositoryCase extends BaseTestCase
 {
     public function dataForGetPotentialLateContract()
     {
+        $today = new DateTime();
+        $dayOfMonth = $today->format('d');
+        $randomTest = ($dayOfMonth >= 27)? true : false;
         return array(
             //#0 When we don't have payment at all and dueDate today
             //We must send email
@@ -84,7 +87,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $endPayment = null,
                 $statusPayment = PaymentStatus::ACTIVE,
                 $typePayment =  PaymentType::RECURRING,
-                $isSendEmail =  false,
+                $isSendEmail =  $randomTest,
             ),
             //#4 When we have payment but payment in the past started and finished
             //We must send email
