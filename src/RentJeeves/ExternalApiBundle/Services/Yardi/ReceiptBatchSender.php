@@ -177,9 +177,9 @@ class ReceiptBatchSender
     protected function cancelBatch()
     {
         try {
-            foreach ($this->batchIds as $bathId) {
-                $this->paymentClient->cancelReceiptBatch($bathId);
-                $this->logMessage(sprintf("Cancel batch \n%s", $bathId));
+            foreach ($this->batchIds as $batchId) {
+                $this->paymentClient->cancelReceiptBatch($batchId);
+                $this->logMessage(sprintf("Cancel batch \n%s", $batchId));
                 if ($this->paymentClient->isError()) {
                     throw new Exception(sprintf("Can't cancel batch with id: %s", $bathId));
                 }
