@@ -11,7 +11,7 @@ use JMS\Serializer\Serializer;
 
 class BaseApiTestCase extends BaseTestCase
 {
-    const ACCESS_TOKEN = 'test';
+    const ACCESS_TOKEN = 'api_test_case';
 
     protected static $instance = false;
 
@@ -69,9 +69,9 @@ class BaseApiTestCase extends BaseTestCase
         /** @var Client $oauthClient */
         $oauthClient = $repo->find(1);
         /** @var LandlordRepository $repo */
-        $repo = $em->getRepository('RjDataBundle:Landlord');
+        $repo = $em->getRepository('RjDataBundle:Tenant');
 
-        $user = $repo->findOneBy(['email' => 'landlord1@example.com']);
+        $user = $repo->findOneBy(['email' => 'tenant11@example.com']);
 
         $oauthStorage->createAccessToken(static::ACCESS_TOKEN, $oauthClient, $user, 0);
     }

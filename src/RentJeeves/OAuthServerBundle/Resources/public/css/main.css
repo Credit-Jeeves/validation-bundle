@@ -80,7 +80,8 @@ h5 {
 }
 
 .connect-info-block {
-    padding: 0 40px;
+    width: 400px;
+    margin: auto;
 }
 
 .form {
@@ -101,6 +102,28 @@ h5 {
     text-align: left;
 }
 
+.page-content strong {
+    font-weight: bold;
+}
+
+.block-content {
+    width: 600px;
+    margin: auto;
+}
+
+.top-block {
+    margin-bottom: 25px;
+}
+
+.top-block h3 {
+    padding: 0 0 6px 10px;
+    border-bottom: 1px solid #ececec;
+}
+
+.bottom-block {
+    margin-top: 25px;
+}
+
 /** Footer part **/
 .footer {
     padding: 20px 0;
@@ -111,9 +134,9 @@ h5 {
 
 .footer .accreditations {
     position: relative;
-    top: -127%;
+    top: -130%;
     float: right;
-    padding: 0 10px;
+    padding: 0 20px;
 }
 /** additional styles **/
 .row-20 {

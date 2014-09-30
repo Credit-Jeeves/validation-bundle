@@ -237,8 +237,7 @@
             <trans-unit id="authorization.additional_info">
                 <source>authorization.additional_info</source>
                 <target>
-                <![CDATA[%appName% will use your %email% account. <a href="%logoutLink%">Log out</a> to connect to a different account.
-                %appName% will not be able to access your payment details. You can revoke access anytime by visiting your Settings.]]>
+                <![CDATA[%appName% will use your <strong>%email%</strong> account. You can revoke access anytime by visiting your Settings.]]>
                 </target>
             </trans-unit>
             <trans-unit id="success.active">

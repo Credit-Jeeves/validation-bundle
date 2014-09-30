@@ -44,9 +44,14 @@ class PublicController extends Controller
             $em->flush();
 
             $this->get('project.mailer')->sendRjCheckEmail($tenant);
+
+            $targetUrl = $request->getSession()->get('_security.oauth_authorize.target_path');
+
+            $targetUrl || $targetUrl = $this->generateUrl('tenant_homepage');
+
             return $this->get('common.login.manager')->loginAndRedirect(
                 $tenant,
-                $this->generateUrl('fos_oauth_server_authorize')
+                $targetUrl
             );
         }
         return [

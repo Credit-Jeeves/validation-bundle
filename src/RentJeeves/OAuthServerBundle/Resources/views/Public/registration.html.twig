@@ -10,8 +10,11 @@
     {% endstylesheets %}
 {% endblock %}
 
+{% block top_content %}
+    <div class="connect-info-block"><h3>{{ 'signup.info_block' | trans }}</h3></div>
+{% endblock %}
+
 {% block content %}
-    <div class="connect-info-block">{{ 'signup.info_block' | trans }}</div>
     <div class="form">
         {% for flashMessage in app.session.flashbag.get('notice') %}
         <div class="row-10"></div>

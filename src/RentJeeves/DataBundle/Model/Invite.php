@@ -31,7 +31,7 @@ abstract class Invite
      *     minMessage="error.user.first_name.short",
      *     maxMessage="error.user.first_name.long",
      *     groups={
-     *         "invite",
+     *         "invite", "inviteByApi"
      *     }
      * )     
      */
@@ -47,7 +47,7 @@ abstract class Invite
      *     minMessage="error.user.first_name.short",
      *     maxMessage="error.user.first_name.long",
      *     groups={
-     *         "invite",
+     *         "invite", "inviteByApi"
      *     }
      * )     
      */
@@ -67,12 +67,12 @@ abstract class Invite
      * @Assert\NotBlank(
      *     message="error.user.last_name.empty",
      *     groups={
-     *         "invite",
+     *         "invite", "inviteByApi"
      *     }
      * )
      * @Assert\Email(
      *     groups={
-     *         "invite",
+     *         "invite", "inviteByApi"
      *     }
      * )
      */
@@ -92,7 +92,7 @@ abstract class Invite
     /**
      * @var string
      *
-     * @ORM\Column(name="unit", type="string", length=50, nullable=true)
+     * @ORM\Column(name="unitName", type="string", length=50, nullable=true)
      */
     protected $unitName;
 

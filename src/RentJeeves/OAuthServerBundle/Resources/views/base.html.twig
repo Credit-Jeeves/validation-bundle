@@ -74,7 +74,11 @@
 <div class="clearboth"></div>
 <div class="section">
     <div class="page-body">
-        <div class="page-content">{% block content %}{% endblock %}</div>
+        <div class="page-content">
+            <div class="top-block block-content ">{% block top_content %}{% endblock %}</div>
+            {% block content %}{% endblock %}
+            <div class="bottom-block block-content">{% block bottom_content %}{% endblock %}</div>
+        </div>
     </div>
 </div>
 <div class="footer">
@@ -83,8 +87,7 @@
             {% block action_buttons %}{% endblock %}
         </div>
         <div class="accreditations">
-            {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': true}) }}
-            {{ include('RjCoreBundle::bbbseal.html.twig', {'pad': true}) }}
+            <img id="nortonsecurity" width="" height="72" alt="Norton Secured" src="/bundles/oauthserver/images/symantic.png">
         </div>
     {% endblock %}
 </div>

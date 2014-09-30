@@ -1,8 +1,8 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Handler;
+namespace RentJeeves\ApiBundle\ErrorHandler;
 
-use CreditJeeves\ApiBundle\Util\ExceptionWrapper;
+use RentJeeves\ApiBundle\ErrorHandler\ExceptionWrapper;
 use FOS\RestBundle\View\ExceptionWrapperHandlerInterface;
 
 class ApiExceptionWrapperHandler implements ExceptionWrapperHandlerInterface

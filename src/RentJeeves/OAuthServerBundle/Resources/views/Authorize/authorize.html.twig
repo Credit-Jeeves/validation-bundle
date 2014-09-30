@@ -4,10 +4,13 @@
     {% include 'OAuthServerBundle::authInfoBlock.html.twig' with {'email': email} %}
 {% endblock %}
 
+{% block top_content %}
+    <div class="main-info block row-20">
+        <h3>{{ 'authorization.main_info' | trans({'%appName%' : client.name}) | raw }}</h3>
+    </div>
+{% endblock %}
+
 {% block content %}
-<div class="main-info row-20">
-    {{ 'authorization.main_info' | trans({'%appName%' : client.name}) | raw }}
-</div>
 <div class="form">
     {% for flashMessage in app.session.flashbag.get('notice') %}
         <div class="row-10"></div>
@@ -28,9 +31,6 @@
         </div>
     {% endfor %}
     <form action="{{ path("fos_oauth_server_authorize") }}" method="post" id="registration_form" {{ form_enctype(form) }}>
-        <div class="row-10">
-            {{ 'authorization.additional_info' | trans({'%appName%' : client.name, '%email%' : email, '%logoutLink%' : path('oauth_server_logout') }) | raw }}
-        </div>
         <input type="submit" id="acceptedSbt" name="accepted" value="{{ 'authorize.accept'|trans({}, 'FOSOAuthServerBundle') }}" />
         <input type="submit" id="rejectedSbt" name="rejected" value="{{ 'authorize.reject'|trans({}, 'FOSOAuthServerBundle') }}" />
         {{ form_row(form.client_id) }}
@@ -43,9 +43,16 @@
 </div>
 {% endblock content %}
 
+{% block bottom_content %}
+    <div class="additional-info row-10">
+        {{ 'authorization.additional_info' | trans({'%appName%' : client.name, '%email%' : email, '%logoutLink%' : path('oauth_server_logout') }) | raw }}
+    </div>
+{% endblock %}
+
 {% block action_buttons %}
     <div class="buttons left">
         <button id="rejectBtn" type="submit" class="button"><span>{{ 'authorize.reject'|trans({}, 'FOSOAuthServerBundle') }}</span></button>
         <button id="acceptBtn" type="submit" class="button"><span>{{ 'authorize.accept'|trans({}, 'FOSOAuthServerBundle') }}</span></button>
     </div>
 {% endblock %}
+

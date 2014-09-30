@@ -159,7 +159,7 @@ class Properties extends BaseApiTestCase
 
         $client->request(
             'GET',
-            "/api/properties/search.{$format}",
+            "/api/properties.{$format}",
             ['address' => $fullAddress],
             [],
             [
@@ -364,7 +364,7 @@ class Properties extends BaseApiTestCase
      * @test
      * @dataProvider dataProviderCreateProperty
      */
-    public function createProperty($params, $format, $result, $statusCode = Response::HTTP_OK)
+    public function createProperty($params, $format, $result, $statusCode = Response::HTTP_CREATED)
     {
         $client = $this->getClient();
 
@@ -373,7 +373,7 @@ class Properties extends BaseApiTestCase
 
         $client->request(
             'POST',
-            "/api/properties/create.{$format}",
+            "/api/properties.{$format}",
             [],
             [],
             [
