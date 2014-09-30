@@ -361,35 +361,16 @@ class OrderRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getPropertyMapping(
-        DateTime $depositDate,
-        Holding $holding,
-        $batchId,
-        $start,
-        $limit
-    ) {
-        $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
-        $query->andWhere('heartland.batchId = :batchId');
-        $query->groupBy("mapping.externalPropertyId");
-        $query->setParameter('batchId', $batchId);
-        $query = $query->getQuery();
-
-        return $query->execute();
-    }
-
     public function getReceiptBatch(
         DateTime $depositDate,
         Holding $holding,
         $batchId,
-        $remotePropertyId,
         $start,
         $limit
     ) {
         $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
-        $query->andWhere("mapping.externalPropertyId = :remoteId");
         $query->andWhere("heartland.batchId = :batchId");
         $query->setParameter('batchId', $batchId);
-        $query->setParameter('remoteId', $remotePropertyId);
 
         $query = $query->getQuery();
 

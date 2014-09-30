@@ -227,44 +227,9 @@ class ReceiptBatchSender
              */
             foreach ($orders as $order) {
                 $batchId =$order->getHeartlandTransaction()->getBatchId();
-                $this->pushReceiptBatchByPropertyMapping($holding, $batchId);
+                $this->pushReceiptBatch($holding, $batchId);
             }
 
-            $startPagination += self::LIMIT_ORDERS;
-        }
-    }
-
-    /**
-     * @param Holding $holding
-     * @param $batchId
-     */
-    protected function pushReceiptBatchByPropertyMapping(Holding $holding, $batchId)
-    {
-        $startPagination = 0;
-        while ($orders = $this->getOrderRepository()->getPropertyMapping(
-            $this->depositDate,
-            $holding,
-            $batchId,
-            $startPagination,
-            self::LIMIT_ORDERS
-        )
-        ) {
-            /**
-             * @var $order Order
-             */
-            foreach ($orders as $order) {
-                $property = $order->getContract()->getProperty();
-                $mapping = $property->getPropertyMapping()->first();
-                $remotePropertyId = $mapping->getExternalPropertyId();
-
-                try {
-                    $this->pushReceiptBatch($holding, $batchId, $remotePropertyId);
-                } catch (Exception $e) {
-                    $this->logMessage($e->getMessage());
-                    $this->exceptionCatcher->handleException($e);
-                    continue;
-                }
-            }
             $startPagination += self::LIMIT_ORDERS;
         }
     }
@@ -275,19 +240,26 @@ class ReceiptBatchSender
      * @param $remotePropertyId
      * @throws \Exception
      */
-    protected function pushReceiptBatch(Holding $holding, $batchId, $remotePropertyId)
+    protected function pushReceiptBatch(Holding $holding, $batchId)
     {
         $startPagination = 0;
         while ($ordersReceiptBatch = $this->getOrderRepository()->getReceiptBatch(
             $this->depositDate,
             $holding,
             $batchId,
-            $remotePropertyId,
             $startPagination,
             self::LIMIT_ORDERS
         )
         ) {
             try {
+                if (!isset($remotePropertyId)) {
+                    /**
+                     * @var $order Order
+                     */
+                    $order = $ordersReceiptBatch[0];
+                    $propertyMapping = $order->getContract()->getProperty()->getPropertyMapping();
+                    $remotePropertyId = $propertyMapping->first()->getExternalPropertyId();
+                }
                 $yardiBatchId = $this->getBatchId($remotePropertyId, $batchId);
                 $result = $this->sendReceiptsBatchToApi(
                     $ordersReceiptBatch,
@@ -360,7 +332,7 @@ class ReceiptBatchSender
      */
     protected function getBatchId($remotePropertyId, $batchId)
     {
-        $key = $remotePropertyId.'_'.$batchId;
+        $key = $batchId;
         if (isset($this->batchIds[$key])) {
             return $this->batchIds[$key];
         }
