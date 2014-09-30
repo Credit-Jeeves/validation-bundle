@@ -169,7 +169,24 @@ class ReceiptBatchSender
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
-            $this->logMessage(sprintf("Failed \n%s", $e->getMessage()));
+            $this->logMessage(sprintf("Failed push receipts: \n%s", $e->getMessage()));
+            $this->cancelBatch();
+        }
+    }
+
+    protected function cancelBatch()
+    {
+        try {
+            foreach ($this->batchIds as $bathId) {
+                $this->paymentClient->cancelReceiptBatch($bathId);
+                $this->logMessage(sprintf("Cancel batch \n%s", $bathId));
+                if ($this->paymentClient->isError()) {
+                    throw new Exception(sprintf("Can't cancel batch with id: %s", $bathId));
+                }
+            }
+        } catch (Exception $e) {
+            $this->exceptionCatcher->handleException($e);
+            $this->logMessage(sprintf("Failed cancel: \n%s", $e->getMessage()));
         }
     }
 
