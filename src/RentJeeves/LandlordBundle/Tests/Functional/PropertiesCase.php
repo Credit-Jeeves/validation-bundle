@@ -92,7 +92,7 @@ class PropertiesCase extends BaseTestCase
         $saveProperty->click();
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
-        $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY';
+        $fillAddress = '13 Greenwich St, Manhattan, New York, NY 10013, United States';
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $propertySearch->setValue($fillAddress);
         $searchSubmit->click();
@@ -147,7 +147,7 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
-        $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY';
+        $fillAddress = '13 Greenwich St, Manhattan, New York, NY 10013, United States';
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $propertySearch->setValue($fillAddress);
         $searchSubmit->click();
