@@ -29,8 +29,8 @@ class RealPageCsvSerializer implements ExportSerializerInterface
     {
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups('csvReport');
-        $context->setAttribute('use_header', true);
+        $context->setGroups('realPageReport');
+        $context->setAttribute('use_header', false);
         $content = $this->serializer->serialize($data, 'csv', $context);
 
         return $content;
