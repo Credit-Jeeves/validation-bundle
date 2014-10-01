@@ -57,6 +57,16 @@ class GroupSettings extends Base
         );
 
         $builder->add(
+            'isReportingOff',
+            'checkbox',
+            array(
+                'error_bubbling'    => true,
+                'label'             => 'is.reporting_off',
+                'required'          => false,
+            )
+        );
+
+        $builder->add(
             'payBalanceOnly',
             'checkbox',
             array(
