@@ -52,4 +52,4 @@ trait ImportOperation
 
         return $operation;
     }
-} 
+}

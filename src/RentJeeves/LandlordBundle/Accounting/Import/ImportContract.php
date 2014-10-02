@@ -63,7 +63,7 @@ trait ImportContract
     {
         $tenant = $import->getTenant();
         $property = $this->getProperty($row);
-        if (!$tenant->getId()) {
+        if (!$tenant->getId() || !$property) {
             $contract = $this->createContract($row, $tenant);
         } else {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
@@ -186,5 +186,4 @@ trait ImportContract
 
         return false;
     }
-
 }
