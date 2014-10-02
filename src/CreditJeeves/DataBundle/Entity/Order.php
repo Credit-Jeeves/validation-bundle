@@ -540,7 +540,33 @@ class Order extends BaseOrder
         return null;
     }
 
+    /**
+     * Reversed transactions are added from csv report, so error message may be only for complete transaction type
+     *
+     * @return string
+     */
     public function getHeartlandErrorMessage()
+    {
+        /** @var Heartland $transaction */
+        $transaction = $this->getHeartlands()
+            ->filter(
+                function (Heartland $transaction) {
+                    if (TransactionStatus::COMPLETE == $transaction->getStatus() && !$transaction->getIsSuccessful()) {
+                        return true;
+                    }
+                    return false;
+                }
+            )->last();
+
+
+        if ($transaction) {
+            return $transaction->getMessages();
+        }
+
+        return '';
+    }
+
+    public function getReversalDescription()
     {
         /** @var Heartland $transaction */
         if ($transaction = $this->getReversedTransaction()) {
