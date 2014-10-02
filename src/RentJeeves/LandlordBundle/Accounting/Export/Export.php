@@ -47,8 +47,12 @@ class Export
                     $report = $this->container->get('accounting.export.yardi');
                 }
                 break;
-            case 'csv':
-                $report = $this->container->get('accounting.export.real_page');
+            case 'real_page':
+                if ($this->makeZip) {
+                    $report = $this->container->get('accounting.export.real_page_archive');
+                } else {
+                    $report = $this->container->get('accounting.export.real_page');
+                }
                 break;
             case 'promas':
                 if ($this->makeZip) {

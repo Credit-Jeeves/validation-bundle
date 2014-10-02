@@ -119,7 +119,7 @@ class ExportCase extends BaseTestCase
     /**
      * @test
      */
-    public function baseCsvFormat()
+    public function realPageCsvFormat()
     {
         $this->load(true);
         //$this->setDefaultSession('selenium2');
@@ -130,39 +130,84 @@ class ExportCase extends BaseTestCase
         $beginD->modify('-1 year');
         $endD = new DateTime();
 
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('real_page');
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(4, count($errors));
-
-        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
-        $type->selectOption('csv');
-        $this->page->pressButton('order.report.download');
-        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(3, count($errors));
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $this->assertNotNull($building = $this->page->find('css', '#base_order_report_type_buildingId'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
+        $building->setValue(75);
 
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
         $csvArr = explode("\n", $csv);
         $this->assertTrue(isset($csvArr[0]));
-        $header = 'Property,Unit,Date,TotalAmount,First_Name,Last_Name,Code,Description';
-        $this->assertEquals($header, $csvArr[0]);
 
-        $this->assertNotNull($csvArr = str_getcsv($csvArr[1]));
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $csvArr[0]);
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
+        $this->assertEquals('75', $csvArr[0]);
         $this->assertEquals('2-a', $csvArr[1]);
-        $this->assertNotNull($csvArr[2]);
         $this->assertEquals('1500.00', $csvArr[3]);
         $this->assertEquals('TIMOTHY', $csvArr[4]);
         $this->assertEquals('APPLEGATE', $csvArr[5]);
         $this->assertEquals('PMTCRED', $csvArr[6]);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a PMTCRED 123123', $csvArr[7]);
+        $this->assertEquals(123123, $csvArr[7]);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a BATCH# 125478', $csvArr[8]);
+    }
+
+    /**
+     * @test
+     */
+    public function realPageBatchReport()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('real_page');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(4, count($errors));
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $this->assertNotNull($building = $this->page->find('css', '#base_order_report_type_buildingId'));
+        $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $property->selectOption(1);
+        $building->setValue(88);
+        $makeZip->check();
+
+        $this->page->pressButton('order.report.download');
+
+        $csvZip = $this->session->getDriver()->getContent();
+
+        $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
+        file_put_contents($testFile, $csvZip);
+
+        $archive = new ZipArchive();
+        $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
+        $this->assertEquals(13, $archive->numFiles);
+        $file = $archive->getFromIndex(1);
+        $rows = explode("\n", trim($file));
+        $this->assertEquals(4, count($rows));
+        $columns = str_getcsv($rows[0]);
+        $this->assertEquals(88, $columns[0]);
+        $this->assertEquals('2-a', $columns[1]);
+        $this->assertEquals(1500, $columns[3]);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a BATCH# 325698', $columns[8]);
     }
 
     /**

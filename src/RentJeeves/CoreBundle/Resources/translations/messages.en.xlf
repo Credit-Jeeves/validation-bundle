@@ -1942,6 +1942,10 @@
                 <source>property.id</source>
                 <target>PropertyID</target>
             </trans-unit>
+            <trans-unit id="building.id">
+                <source>building.id</source>
+                <target>Building ID</target>
+            </trans-unit>
             <trans-unit id="account.id">
                 <source>account.id</source>
                 <target>AccountID</target>

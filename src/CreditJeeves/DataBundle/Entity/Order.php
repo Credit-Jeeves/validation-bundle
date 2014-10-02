@@ -25,6 +25,13 @@ class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
+    protected $buildingId = null;
+
+    public function setBuildingId($buildingId)
+    {
+        $this->buildingId = $buildingId;
+    }
+
     /**
      * @return DateTime
      */
@@ -41,13 +48,6 @@ class Order extends BaseOrder
         return $paidFor ? $paidFor->format('Y-m-d\TH:i:s') : '';
     }
 
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Property")
-     * @Serializer\Groups({"csvReport"})
-     *
-     * @return string
-     */
     public function getPropertyAddress()
     {
         $contract = $this->getContract();
@@ -82,8 +82,18 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Unit")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\SerializedName("BuildingId")
+     * @Serializer\Groups({"realPageReport"})
+     */
+    public function getBuilding()
+    {
+        return $this->buildingId;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Unit Number")
+     * @Serializer\Groups({"realPageReport"})
      *
      * @return string
      */
@@ -105,7 +115,7 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -113,7 +123,7 @@ class Order extends BaseOrder
      */
     public function getActualPaymentTransactionDate()
     {
-        return $this->getCreatedAt()->format('Y-m-d\TH:i:s');
+        return $this->getCreatedAt()->format('m/d/Y');
     }
 
 
@@ -155,7 +165,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TotalAmount")
-     * @Serializer\Groups({"csvReport", "promasReport"})
+     * @Serializer\Groups({"realPageReport", "promasReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -199,7 +209,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("First_Name")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      *
      * @return string
@@ -221,7 +231,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Last_Name")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -243,7 +253,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Code")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -266,8 +276,22 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("DocumentNumber")
+     * @Serializer\Groups({"realPageReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getRealPageDocumentNumber()
+    {
+        return $this->getHeartlandTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Description")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -276,11 +300,10 @@ class Order extends BaseOrder
     public function getDescription()
     {
         return sprintf(
-            '%s #%s %s %d',
+            '%s #%s BATCH# %d',
             $this->getPropertyAddress(),
             $this->getUnitName(),
-            $this->getCode(),
-            $this->getHeartlandTransactionId()
+            $this->getHeartlandBatchId()
         );
     }
 

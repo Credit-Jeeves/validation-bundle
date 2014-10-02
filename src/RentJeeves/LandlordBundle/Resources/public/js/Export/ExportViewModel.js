@@ -4,6 +4,7 @@ function ExportViewModel() {
     this.properties = ko.observableArray([]);
     this.selectedProperty = ko.observable(null);
     this.propertyId = ko.observable(null);
+    this.buildingId = ko.observable(null);
     this.accountId = ko.observable(null);
     this.arAccountId = ko.observable(null);
     this.begin = ko.observable(null);
