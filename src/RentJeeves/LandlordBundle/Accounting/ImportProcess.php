@@ -521,8 +521,7 @@ class ImportProcess
         if ($import->getMoveOut() !== null) {
             $contract->setFinishAt($import->getMoveOut());
             $this->isFinishedContract($contract);
-        } elseif (
-            isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
+        } elseif (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
             $contract->setFinishAt(null);
