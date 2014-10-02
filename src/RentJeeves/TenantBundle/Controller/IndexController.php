@@ -5,6 +5,7 @@ namespace RentJeeves\TenantBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -39,12 +40,18 @@ class IndexController extends Controller
     public function paymentReportingAction()
     {
         $tenant = $this->getUser();
+        /** @var ContractRepository $contractRepo */
         $contractRepo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
         $isReporting = $contractRepo->countReporting($tenant);
-        $hasAccessToOptInReporting = $contractRepo->countTenantContractsByStatus($tenant, ContractStatus::CURRENT) > 0;
+        $countReportingIsOffContracts = $contractRepo->countContractsWithReportingIsOff($tenant);
+        $countCurrentContracts = $contractRepo->countTenantContractsByStatus($tenant, ContractStatus::CURRENT);
+        // reporting is not allowed when all contracts are to groups with reportingIsOff = true
+        $reportingIsOff = $countReportingIsOffContracts == $countCurrentContracts;
+        $hasAccessToOptInReporting = $countCurrentContracts > 0 && !$reportingIsOff;
 
         return array(
             'isReporting' => $isReporting,
+            'reportingIsOff' => $reportingIsOff,
             'hasAccessToOptInReporting' => $hasAccessToOptInReporting,
         );
     }

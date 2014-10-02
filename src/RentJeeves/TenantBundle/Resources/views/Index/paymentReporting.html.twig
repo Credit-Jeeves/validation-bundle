@@ -33,6 +33,11 @@
                 <h3 class="font-abeezee">{{ 'info.reporting.see' | trans() }}</h3>
                 <p class="font-helvetica">
                     {{ 'info.reporting.text' | trans() }}
+                    {% if reportingIsOff %}
+                        <strong>{{ 'info.reporting.coming_soon' | trans }}</strong>
+                    {% else %}
+                        {{ 'info.reporting.available' | trans }}
+                    {% endif %}
                 </p>
                 <br />
                 <center>
