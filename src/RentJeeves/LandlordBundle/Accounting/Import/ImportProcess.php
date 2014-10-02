@@ -166,6 +166,11 @@ class ImportProcess
         } catch (Exception $e) {
             return null;
         }
+        $errors = DateTime::getLastErrors();
+
+        if (!empty($errors['warning_count']) || !empty($errors['errors'])) {
+            return null;
+        }
 
         return ($date) ? $date : null;
     }

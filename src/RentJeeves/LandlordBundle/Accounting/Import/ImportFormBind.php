@@ -202,13 +202,8 @@ trait ImportFormBind
      */
     protected function persistContract(ModelImport $import, Contract $contract)
     {
-        $today = new DateTime();
-        if (($finishAt = $contract->getFinishAt()) && $finishAt <= $today) { //set status of contract to finished...
-            $contract->setStatus(ContractStatus::FINISHED);
-
-            if ($contract->getIntegratedBalance() > 0) {
-                $contract->setUncollectedBalance($contract->getIntegratedBalance());
-            }
+        if ($contract->getIntegratedBalance() > 0 && $this->isFinishedContract($contract)) {
+            $contract->setUncollectedBalance($contract->getIntegratedBalance());
         }
 
         $this->em->persist($contract);
