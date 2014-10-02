@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting;
+namespace RentJeeves\LandlordBundle\Accounting\Import;
 
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use JMS\DiExtraBundle\Annotation\Inject;
