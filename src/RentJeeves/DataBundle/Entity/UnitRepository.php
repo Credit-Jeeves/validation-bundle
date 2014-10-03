@@ -52,4 +52,39 @@ class UnitRepository extends EntityRepository
 
         return $result;
     }
+
+    /**
+     * @param $groupId
+     * @param null $unitName
+     * @param null $externalUnitId
+     *
+     * @return null|Unit
+     */
+    public function getImportUnit($groupId, $unitName = null, $externalUnitId = null)
+    {
+        if (empty($unitName) && empty($externalUnitId)) {
+            return null;
+        }
+
+        $query = $this->createQueryBuilder('u');
+        $query->leftJoin('u.group', 'g');
+        $query->innerJoin('u.property', 'p');
+        $query->where('g.id = :groupId OR (p.isSingle=1 AND g.id IS NULL)');
+
+        if (!empty($externalUnitId)) {
+            $query->innerJoin('u.unitMapping', 'm');
+            $query->andWhere('m.externalUnitId = :unitId');
+            $query->setParameter('unitId', $externalUnitId);
+        }
+
+        if (!empty($unitName)) {
+            $query->andWhere('u.name = :unitName');
+            $query->setParameter('unitName', $unitName);
+        }
+
+        $query->setParameter('groupId', $groupId);
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
 }
