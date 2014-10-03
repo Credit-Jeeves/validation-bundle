@@ -124,7 +124,7 @@ trait ImportContract
         if ($import->getMoveOut() !== null) {
             $contract->setFinishAt($import->getMoveOut());
             $this->isFinishedContract($contract);
-        } elseif (
+        } elseif(
             isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
