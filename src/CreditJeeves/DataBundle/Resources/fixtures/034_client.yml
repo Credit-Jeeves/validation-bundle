@@ -6,12 +6,3 @@ fixtures:
     allowed_grant_types:
       - refresh_token
       - password
-  client_2:
-    secret: 20h1hdqkgeaswo8kw8o800ck00wk4o8okck48wgskg0gwcco0w
-    random_id: 3fjeg33hn944o0o88woc8w04c0c0gsso000ggk0848skkkkw84
-    redirect_uris:
-      - http://localhost
-    allowed_grant_types:
-      - token
-      - authorization_code
-    name: TestApp

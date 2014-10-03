@@ -1,6 +1,0 @@
-model: CreditJeeves\DataBundle\Entity\AccessToken
-fixtures:
-  access_token_1:
-    user: Tenant_1
-    client: client_2
-    token: test
