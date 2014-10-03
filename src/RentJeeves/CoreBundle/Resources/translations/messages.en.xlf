@@ -1000,7 +1000,7 @@
             </trans-unit>
             <trans-unit id="next_payment_date">
                 <source>next_payment_date</source>
-                <target>Next Payment Date</target>
+                <target>Start On Date</target>
             </trans-unit>
             <trans-unit id="norton_secured">
                 <source>norton_secured</source>
@@ -1048,7 +1048,7 @@
             </trans-unit>
             <trans-unit id="contract.payment.date.next">
                 <source>contract.payment.date.next</source>
-                <target>Next Payment Date</target>
+                <target>Start On Date</target>
             </trans-unit>
             <trans-unit id="contract.payment.recurring">
                 <source>contract.payment.recurring</source>
@@ -1880,7 +1880,7 @@
             </trans-unit>
             <trans-unit id="help.popup">
                 <source>help.popup</source>
-                <target>Enter the monthly rent amount and due date according to your lease. The next payment date should correspond with the due date - if the next month is June and the Due Date is the 1st, enter June 1st. Finally, specify a month-to-month lease or a specific end date.</target>
+                <target>Enter the monthly rent amount and due date according to your lease. The start on date should correspond with the due date - if the next month is June and the Due Date is the 1st, enter June 1st. Finally, specify a month-to-month lease or a specific end date.</target>
             </trans-unit>
             <trans-unit id="order.type.cash">
                 <source>order.type.cash</source>
