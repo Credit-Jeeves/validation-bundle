@@ -154,7 +154,7 @@ abstract class Holding
     /**
      * @param YardiSettings $yardiSettings
      */
-    public function setYardiSettings(YardiSettings $yardiSettings)
+    public function setYardiSettings(YardiSettings $yardiSettings = null)
     {
         $this->yardiSettings = $yardiSettings;
     }

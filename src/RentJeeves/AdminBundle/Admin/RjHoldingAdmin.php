@@ -22,7 +22,7 @@ class RjHoldingAdmin extends Admin
         $query->add(
             'where',
             $query->expr()->in(
-                $alias.'_g.type',
+                $alias . '_g.type',
                 array(
                     GroupType::RENT
                 )
@@ -37,27 +37,42 @@ class RjHoldingAdmin extends Admin
         $contrainer = $this->getConfigurationPool()->getContainer();
         $formMapper
             ->with('Yardi Settings')
-                ->add(
-                    'yardiSettings',
-                    $contrainer->get('form.yardi_settings'),
-                    array(
-                    ),
-                    array(
-                        'edit'      => 'inline',
-                        'inline'    => 'table',
-                        'sortable'  => 'position',
-                    )
+            ->add(
+                'yardiSettings',
+                $contrainer->get('form.yardi_settings'),
+                array(
+                    'required' => false,
+                ),
+                array(
+                    'edit'      => 'inline',
+                    'inline'    => 'table',
+                    'sortable'  => 'position',
                 )
+            )
             ->end();
     }
 
     public function prePersist($holding)
     {
+        $this->setHolding($holding);
+    }
+
+    public function preUpdate($holding)
+    {
+        $this->setHolding($holding);
+    }
+
+    protected function setHolding($holding)
+    {
         /**
          * @var $yardi YardiSettings
          */
         $yardi = $holding->getYardiSettings();
-        $yardi->setHolding($holding);
+        if ($yardi&& $yardi->getUrl()) {
+            $yardi->setHolding($holding);
+        } else {
+            $holding->setYardiSettings();
+        }
     }
 
     protected function configureShowField(ShowMapper $showMapper)
