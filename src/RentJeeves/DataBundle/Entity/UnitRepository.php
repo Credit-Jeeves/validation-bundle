@@ -56,13 +56,13 @@ class UnitRepository extends EntityRepository
     /**
      * @param $groupId
      * @param null $unitName
-     * @param null $unitId
+     * @param null $externalUnitId
      *
      * @return null|Unit
      */
-    public function getImportUnit($groupId, $unitName = null, $unitId = null)
+    public function getImportUnit($groupId, $unitName = null, $externalUnitId = null)
     {
-        if (empty($unitName) && empty($unitId)) {
+        if (empty($unitName) && empty($externalUnitId)) {
             return null;
         }
 
@@ -71,10 +71,10 @@ class UnitRepository extends EntityRepository
         $query->innerJoin('u.property', 'p');
         $query->where('g.id = :groupId OR (p.isSingle=1 AND g.id IS NULL)');
 
-        if (!empty($unitId)) {
+        if (!empty($externalUnitId)) {
             $query->innerJoin('u.unitMapping', 'm');
             $query->andWhere('m.externalUnitId = :unitId');
-            $query->setParameter('unitId', $unitId);
+            $query->setParameter('unitId', $externalUnitId);
         }
 
         if (!empty($unitName)) {

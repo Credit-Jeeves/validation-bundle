@@ -57,13 +57,14 @@ trait ImportFormBind
             //Do save and maybe in future move it to factory pattern, when have more logic
             switch ($form->getName()) {
                 case 'import_contract_finish':
-                    $this->executeContractFinishForm($form);
+                    $contract = $form->getData();
+                    $this->em->persist($contract);
                     break;
                 case 'import_contract':
-                    $this->executeImportContractForm($form, $import);
+                    $this->bindImportContractForm($form, $import);
                     break;
                 case 'import_new_user_with_contract':
-                    $this->executeImportNewUserWithContractForm($form, $import);
+                    $this->bindImportNewUserWithContractForm($form, $import);
                     break;
             }
 
@@ -80,18 +81,9 @@ trait ImportFormBind
 
     /**
      * @param Form $form
-     */
-    protected function executeContractFinishForm(Form $form)
-    {
-        $contract = $form->getData();
-        $this->em->persist($contract);
-    }
-
-    /**
-     * @param Form $form
      * @param ModelImport $import
      */
-    protected function executeImportContractForm(Form $form, ModelImport $import)
+    protected function bindImportContractForm(Form $form, ModelImport $import)
     {
         /**
          * @var $contract Contract
@@ -100,7 +92,7 @@ trait ImportFormBind
 
         if ($import->getHasContractWaiting()) {
             $sendInvite = $form->get('sendInvite')->getNormData();
-            $this->persistContractWaiting(
+            $this->processingContractWaiting(
                 $import->getTenant(),
                 $contract,
                 $import->getResidentMapping(),
@@ -118,13 +110,13 @@ trait ImportFormBind
             }
             $this->em->persist($unitMapping);
         }
-        $this->persistContract($import, $contract);
+        $this->processingContract($import, $contract);
         if (!$contract->getId()) {
             $this->emailSendingQueue[] = $contract;
         } elseif (!is_null($import->getOperation())) {
             //see logic in setOperation method
             $operation = $form->get('operation')->getData();
-            $this->persistOperation($import->getTenant(), $operation, $contract);
+            $this->processingOperationAndOrder($import->getTenant(), $operation, $contract);
         }
         $residentMapping = $form->get('residentMapping')->getData();
         $this->em->persist($residentMapping);
@@ -134,7 +126,7 @@ trait ImportFormBind
      * @param Form $form
      * @param ModelImport $import
      */
-    protected function executeImportNewUserWithContractForm(Form $form, ModelImport $import)
+    protected function bindImportNewUserWithContractForm(Form $form, ModelImport $import)
     {
         $data = $form->getData();
         $tenant = $data['tenant'];
@@ -159,7 +151,7 @@ trait ImportFormBind
         } else {
             $this->em->persist($tenant);
             $this->em->persist($residentMapping);
-            $this->persistContract($import, $contract);
+            $this->processingContract($import, $contract);
             if ($data['sendInvite']) {
                 $this->emailSendingQueue[] = $contract;
             }
@@ -172,7 +164,7 @@ trait ImportFormBind
      * @param ResidentMapping $residentMapping
      * @param boolean $sendInvite
      */
-    protected function persistContractWaiting(
+    protected function processingContractWaiting(
         Tenant $tenant,
         Contract $contract,
         ResidentMapping $residentMapping,
@@ -202,7 +194,7 @@ trait ImportFormBind
      * @param ModelImport $import
      * @param Contract $contract
      */
-    protected function persistContract(ModelImport $import, Contract $contract)
+    protected function processingContract(ModelImport $import, Contract $contract)
     {
         if ($contract->getIntegratedBalance() > 0 && $this->isFinishedContract($contract)) {
             $contract->setUncollectedBalance($contract->getIntegratedBalance());
@@ -216,7 +208,7 @@ trait ImportFormBind
      * @param Operation $operation
      * @param Contract $contract
      */
-    protected function persistOperation(Tenant $tenant, Operation $operation, Contract $contract)
+    protected function processingOperationAndOrder(Tenant $tenant, Operation $operation, Contract $contract)
     {
         $order = new Order();
         $order->setStatus(OrderStatus::COMPLETE);
