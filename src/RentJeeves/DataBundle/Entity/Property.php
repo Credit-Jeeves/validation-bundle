@@ -278,7 +278,7 @@ class Property extends Base
      */
     public function hasGroup(Group $group)
     {
-        return !!$this->getPropertyGroups()->filter(function(Group $entity) use ($group) {
+        return !!$this->getPropertyGroups()->filter(function (Group $entity) use ($group) {
             return $entity->getId() === $group->getId();
         });
     }
