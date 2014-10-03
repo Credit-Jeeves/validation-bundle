@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -269,5 +270,16 @@ class Property extends Base
     public function getFullAddress()
     {
         return $this->fullAddress();
+    }
+
+    /**
+     * @param Group $group
+     * @return bool
+     */
+    public function hasGroup(Group $group)
+    {
+        return !!$this->getPropertyGroups()->filter(function(Group $entity) use ($group) {
+            return $entity->getId() === $group->getId();
+        });
     }
 }

@@ -8,8 +8,6 @@ use Symfony\Component\Form\FormInterface;
 
 class ExceptionWrapper
 {
-    const SEPARATOR = '#';
-
     /**
      * @Serializer\Type("string")
      * @Serializer\Groups({"RentJeevesApi"})

@@ -3,7 +3,8 @@
 namespace RentJeeves\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\ExceptionController as BaseExceptionController;
-use CreditJeeves\ApiBundle\Util\ExceptionWrapper;
+use FOS\RestBundle\View\ExceptionWrapperHandlerInterface;
+use RentJeeves\ApiBundle\ErrorHandler\ExceptionWrapper;
 
 class ExceptionController extends BaseExceptionController
 {
@@ -17,6 +18,8 @@ class ExceptionController extends BaseExceptionController
      */
     protected function createExceptionWrapper(array $parameters)
     {
-        return new ExceptionWrapper($parameters);
+        /** @var ExceptionWrapperHandlerInterface $exceptionWrapperHandler */
+        $exceptionWrapperHandler = $this->container->get('fos_rest.view.exception_wrapper_handler');
+        return $exceptionWrapperHandler->wrap($parameters);
     }
 }

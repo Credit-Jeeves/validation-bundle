@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="api.error.change_property">
+                <source>api.error.change_property</source>
+                <target>Can't change property "%property%".</target>
+            </trans-unit>
+            <trans-unit id="api.error.required_property">
+                <source>api.error.change_property</source>
+                <target>%property% is required.</target>
+            </trans-unit>
+            <trans-unit id="api.error.property_not_found">
+                <source>api.error.change_property</source>
+                <target>%property% not found.</target>
+            </trans-unit>
+            <trans-unit id="api.error.property.address_invalid">
+                <source>api.error.property.address_invalid</source>
+                <target>Address is invalid.</target>
+            </trans-unit>
+            <trans-unit id="api.error.property.required_unit">
+                <source>api.error.property.required_unit</source>
+                <target>Unit is required for not standalone property.</target>
+            </trans-unit>
+            <trans-unit id="api.error.landlord.assignment.multi_groups">
+                <source>api.error.landlord.assignment.multi_groups</source>
+                <target>Multi groups is not supported.</target>
+            </trans-unit>
+            <trans-unit id="api.error.landlord.assignment.multi_assignment">
+                <source>api.error.landlord.assignment.multi_assignment</source>
+                <target>Not supports multiple assignment for property units. Please assign each unit.</target>
+            </trans-unit>
+            <trans-unit id="api.error.landlord.assignment.reassignment">
+                <source>api.error.landlord.assignment.reassignment</source>
+                <target>Unit cannot be reassigned.</target>
+            </trans-unit>
+            <trans-unit id="api.validation_error">
+                <source>api.validation_error</source>
+                <target>Validation Error</target>
+            </trans-unit>
+
+        </body>
+    </file>
+</xliff>

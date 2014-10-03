@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ApiBundle\Controller;
 
+use CreditJeeves\CoreBundle\Translation\Translator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Util\Codes;
@@ -34,6 +35,7 @@ class PropertiesController extends Controller
      *         500="Something wrong in request"
      *     }
      * )
+     * @Rest\Get("/properties/{id}")
      * @Rest\View(serializerGroups={"PropertyDetails"})
      *
      * @return array
@@ -65,7 +67,6 @@ class PropertiesController extends Controller
      *         500="Something wrong in request"
      *     }
      * )
-     * @Rest\View(serializerGroups={"PropertyDetails"})
      * @Rest\Get("/properties")
      * @Rest\QueryParam(
      *   name="address",
@@ -73,6 +74,7 @@ class PropertiesController extends Controller
      *   nullable=false,
      *   description="Full normalized address as displayed by Google Maps"
      * )
+     * @Rest\View(serializerGroups={"PropertyDetails", "RentJeevesApi"})
      *
      * @return array
      */
@@ -80,6 +82,8 @@ class PropertiesController extends Controller
     {
         $address = $paramFetcher->get('address');
 
+        /** @var Translator $translator */
+        $translator = $this->get('translator');
         /** @var PropertyProcess $propertyProcesser */
         $propertyProcesser = $this->get('property.process');
 
@@ -89,7 +93,7 @@ class PropertiesController extends Controller
             return $this->view([
                 'status' => 'Error',
                 'status_code' => Codes::HTTP_BAD_REQUEST,
-                'message' => 'Address is invalid'
+                'message' => $translator->trans('api.error.property.address_invalid')
             ], Codes::HTTP_BAD_REQUEST); // TODO Error Handler Check
         } elseif ($this->isNew($property)) {
             return $this->view([], Codes::HTTP_NO_CONTENT);
@@ -114,8 +118,8 @@ class PropertiesController extends Controller
      *         500="Something went wrong with the request"
      *     }
      * )
-     * @Rest\View(serializerGroups={"UnitDetails"})
      * @Rest\Get("/properties/{propertyId}/units/{unitId}")
+     * @Rest\View(serializerGroups={"UnitDetails"})
      *
      * @return array
      */
@@ -146,8 +150,8 @@ class PropertiesController extends Controller
      *         500="Something went wrong with the request"
      *     }
      * )
-     * @Rest\View(serializerGroups={"UnitShort"})
      * @Rest\Get("/properties/{propertyId}/units")
+     * @Rest\View(serializerGroups={"UnitShort"})
      *
      * @return array
      */
@@ -178,7 +182,6 @@ class PropertiesController extends Controller
      *         500="Something went wrong with the request"
      *     }
      * )
-     * @Rest\View(serializerGroups={"PropertyDetails", "UnitDetails"})
      * @Rest\Post("/properties")
      * @Rest\RequestParam(
      *   name="address",
@@ -195,6 +198,7 @@ class PropertiesController extends Controller
      *   strict=true,
      *   nullable=true
      * )
+     * @Rest\View(serializerGroups={"PropertyDetails", "UnitDetails"})
      *
      * @return array
      */
@@ -204,6 +208,8 @@ class PropertiesController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var PropertyProcess $propertyProcesser */
         $propertyProcesser = $this->get('property.process');
+        /** @var Translator $translator */
+        $translator = $this->get('translator');
 
         if ($address = $paramFetcher->get('address')) {
             $property = $propertyProcesser->getPropertyByAddress($address);
@@ -213,13 +219,13 @@ class PropertiesController extends Controller
                 return $this->view([
                     'status' => 'Error',
                     'status_code' => Codes::HTTP_BAD_REQUEST,
-                    'message' => 'Address is invalid'
+                    'message' => $translator->trans('api.error.property.address_invalid')
                 ], Codes::HTTP_BAD_REQUEST);
-            } elseif (!$this->isNew($property) && $property->getIsSingle() != $isSingle) {
+            } elseif (!$this->isNew($property) && $property->isSingle() != $isSingle) {
                 return $this->view([
                     'status' => 'Error',
                     'status_code' => Codes::HTTP_BAD_REQUEST,
-                    'message' => 'You can\'t change property "IS_SINGLE"',
+                    'message' => $translator->trans('api.error.change_property', ['%property%' => 'IS_SINGLE'])
                 ], Codes::HTTP_BAD_REQUEST);
             }
 
@@ -228,7 +234,7 @@ class PropertiesController extends Controller
                     return $this->view([
                         'status' => 'Error',
                         'status_code' => Codes::HTTP_BAD_REQUEST,
-                        'message' => 'Unit is required for not standalone property'
+                        'message' => $translator->trans('api.error.property.required_unit')
                     ], Codes::HTTP_BAD_REQUEST);
                 }
 
@@ -253,7 +259,7 @@ class PropertiesController extends Controller
         return $this->view([
             'status' => 'Error',
             'status_code' => Codes::HTTP_BAD_REQUEST,
-            'message' => 'Address is required'
+            'message' => $translator->trans('api.error.required_property', ['%property%' => 'Address'])
         ], Codes::HTTP_BAD_REQUEST);
     }
 

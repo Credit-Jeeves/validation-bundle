@@ -137,7 +137,7 @@ class Properties extends BaseApiTestCase
                 [
                     'status' => 'Error',
                     'status_code' => Response::HTTP_BAD_REQUEST,
-                    'message' => 'Address is invalid'
+                    'message' => 'api.error.property.address_invalid'
                 ],
                 Response::HTTP_BAD_REQUEST,
             ]
@@ -309,7 +309,7 @@ class Properties extends BaseApiTestCase
                 [
                     'status' => 'Error',
                     'status_code' => Response::HTTP_BAD_REQUEST,
-                    'message' => 'Unit is required for not standalone property'
+                    'message' => 'api.error.property.required_unit'
                 ],
                 Response::HTTP_BAD_REQUEST
             ],
@@ -323,7 +323,7 @@ class Properties extends BaseApiTestCase
                 [
                     'status' => 'Error',
                     'status_code' => Response::HTTP_BAD_REQUEST,
-                    'message' => 'You can\'t change property "IS_SINGLE"'
+                    'message' => 'api.error.change_property'
                 ],
                 Response::HTTP_BAD_REQUEST
             ],

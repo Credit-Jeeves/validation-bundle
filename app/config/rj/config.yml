@@ -159,7 +159,7 @@ be_simple_soap:
             wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20_SysBatch.html.twig
 
 fos_rest:
-    param_fetcher_listener: true
+    param_fetcher_listener: 'force'
     body_listener: true
     format_listener: true
     view:
@@ -173,7 +173,7 @@ fos_rest:
             html: true
         failed_validation: HTTP_BAD_REQUEST
         default_engine: twig
-        exception_wrapper_handler: RentJeeves\ApiBundle\Handler\ApiExceptionWrapperHandler
+        exception_wrapper_handler: RentJeeves\ApiBundle\ErrorHandler\ApiExceptionWrapperHandler
     exception:
         codes:
             'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404

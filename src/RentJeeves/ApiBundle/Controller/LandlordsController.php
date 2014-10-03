@@ -2,19 +2,21 @@
 
 namespace RentJeeves\ApiBundle\Controller;
 
-use Doctrine\ORM\EntityManager;
+use CreditJeeves\CoreBundle\Translation\Translator;
 use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use RentJeeves\ApiBundle\ResponseEntity\Landlord as LandlordResponse;
-use RentJeeves\ApiBundle\Services\ProcessAssignment;
+use RentJeeves\ApiBundle\Services\LandlordAssignment;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\LandlordRepository;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyRepository;
 use RentJeeves\DataBundle\Entity\Unit;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Forms\InviteLandlordType;
+use RentJeeves\DataBundle\Entity\UnitRepository;
 use RentJeeves\TenantBundle\Services\InviteLandlord;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -34,6 +36,7 @@ class LandlordsController extends Controller
      *         500="Something wrong in request"
      *     }
      * )
+     * @Rest\Get("/landlords/{id}")
      * @Rest\View(serializerGroups={"LandlordDetails"})
      *
      * @return array
@@ -52,8 +55,6 @@ class LandlordsController extends Controller
     }
 
     /**
-     * @param ParamFetcher $paramFetcher
-     *
      * @ApiDoc(
      *     resource=true,
      *     section="Landlords",
@@ -76,7 +77,7 @@ class LandlordsController extends Controller
      *   nullable=true
      * )
      * @Rest\RequestParam(
-     *   name="second_name",
+     *   name="last_name",
      *   strict=true,
      *   nullable=true
      * )
@@ -94,7 +95,7 @@ class LandlordsController extends Controller
      *
      * @return array
      */
-    public function newLandlordAction(ParamFetcher $paramFetcher)
+    public function newLandlordAction()
     {
         /** @var InviteLandlord $inviteProcesser */
         $inviteProcesser = $this->get('invite.landlord');
@@ -105,14 +106,10 @@ class LandlordsController extends Controller
 
         $request = $this->get('request');
 
-        $paramFetcher->all();
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $invite = $form->getData();
-            $invite->setTenant($this->getUser());
-
             $landlord = $inviteProcesser->invite($invite, $this->getUser());
 
             return $this->view([
@@ -128,12 +125,15 @@ class LandlordsController extends Controller
      * @param $landlordId
      * @param $unitId
      *
+     * @todo Need change this, or use POST with cmd assignment or use header
+     *  "Link: <{host}/api/units/{id}>; rel="unit"
+     *
      * @ApiDoc(
      *     resource=true,
      *     section="Landlords",
      *     description="Assign unit to landlord and create contract.",
      *     statusCodes={
-     *         200="Success",
+     *         204="Accepted",
      *         400="Error validating data",
      *         404="Landlord is not found",
      *         500="Something went wrong with the request"
@@ -146,26 +146,64 @@ class LandlordsController extends Controller
      */
     public function assignUnitToLandlordAction($landlordId, $unitId)
     {
-        /** @var ProcessAssignment $assignmentProcesser */
-        $assignmentProcesser = $this->get('landlord.process_assignment');
+        /** @var Translator $translator */
+        $translator = $this->get('translator');
+        /** @var LandlordRepository $repo */
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Landlord');
+        /** @var Landlord $landlord */
+        $landlord = $repo->find($landlordId);
 
-        $response = $assignmentProcesser->assignment($landlordId, $unitId);
+        if (!$landlord) {
+            return $this->view([
+                'status' => 'error',
+                'status_code' => Codes::HTTP_NOT_FOUND,
+                'message' => $translator->trans('api.error.property_not_found', ['%property%' => 'Landlord'])
+            ], Codes::HTTP_NOT_FOUND);
+        }
 
-        $statusCode = isset($response['status_code']) ? $response['status_code'] : Codes::HTTP_OK;
+        /** @var UnitRepository $repo */
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Unit');
+        /** @var Unit $unit */
+        $unit = $repo->find($unitId);
 
-        return $this->view($response, $statusCode);
+        if (!$unit) {
+            return $this->view([
+                'status' => 'error',
+                'status_code' => Codes::HTTP_NOT_FOUND,
+                'message' => $translator->trans('api.error.property_not_found', ['%property%' => 'Unit'])
+            ], Codes::HTTP_NOT_FOUND);
+        }
+
+        /** @var LandlordAssignment $assignmentProcesser */
+        $assignmentProcesser = $this->get('landlord.assignment');
+
+        if ($assignmentProcesser->assignmentUnit($landlord, $unit)) {
+            return $this->view([
+                'status' => 'OK'
+            ], Codes::HTTP_ACCEPTED);
+        }
+
+        return $this->view([
+            'status' => 'Error',
+            'status_code' => Codes::HTTP_BAD_REQUEST,
+            'message' => $translator->trans('api.validation_error'),
+            'errors' => $assignmentProcesser->getErrors()
+        ], Codes::HTTP_BAD_REQUEST);
     }
 
     /**
      * @param $landlordId
      * @param $propertyId
      *
+     * @todo Need change this, or use POST with cmd assignment or use header
+     *  "Link: <{host}/api/properties/{id}>; rel="property"
+     *
      * @ApiDoc(
      *     resource=true,
      *     section="Landlords",
      *     description="Assign property to landlord and create contract.",
      *     statusCodes={
-     *         200="Success",
+     *         204="Accepted",
      *         400="Error validating data",
      *         404="Landlord is not found",
      *         500="Something went wrong with the request"
@@ -178,14 +216,48 @@ class LandlordsController extends Controller
      */
     public function assignPropertyToLandlordAction($landlordId, $propertyId)
     {
-        /** @var ProcessAssignment $assignmentProcesser */
-        $assignmentProcesser = $this->get('landlord.process_assignment');
+        /** @var Translator $translator */
+        $translator = $this->get('translator');
+        /** @var LandlordRepository $repo */
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Landlord');
+        /** @var Landlord $landlord */
+        $landlord = $repo->find($landlordId);
 
-        $response = $assignmentProcesser->assignment($landlordId, $propertyId, ProcessAssignment::ASSIGNMENT_PROPERTY);
+        if (!$landlord) {
+            return $this->view([
+                'status' => 'Error',
+                'status_code' => Codes::HTTP_NOT_FOUND,
+                'message' => $translator->trans('api.error.property_not_found', ['%property%' => 'Landlord'])
+            ], Codes::HTTP_NOT_FOUND);
+        }
 
-        $statusCode = isset($response['status_code']) ? $response['status_code'] : Codes::HTTP_OK;
+        /** @var PropertyRepository $repo */
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Unit');
+        /** @var Property $property */
+        $property = $repo->find($propertyId);
 
-        return $this->view($response, $statusCode);
+        if (!$property) {
+            return $this->view([
+                'status' => 'Error',
+                'status_code' => Codes::HTTP_NOT_FOUND,
+                'message' => $translator->trans('api.error.property_not_found', ['%property%' => 'Property'])
+            ], Codes::HTTP_NOT_FOUND);
+        }
+
+        /** @var LandlordAssignment $assignmentProcesser */
+        $assignmentProcesser = $this->get('landlord.assignment');
+
+        if ($assignmentProcesser->assignmentProperty($landlord, $property)) {
+            return $this->view([
+                'status' => 'OK'
+            ], Codes::HTTP_ACCEPTED);
+        }
+
+        return $this->view([
+            'status' => 'Error',
+            'status_code' => Codes::HTTP_BAD_REQUEST,
+            'message' => $translator->trans('api.validation_error'),
+            'errors' => $assignmentProcesser->getErrors()
+        ], Codes::HTTP_BAD_REQUEST);
     }
 }
-

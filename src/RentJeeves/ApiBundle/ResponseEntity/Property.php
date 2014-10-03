@@ -92,11 +92,11 @@ class Property
      * @Serializer\Groups({"PropertyDetails"})
      * @Serializer\SerializedName("is_single")
      *
-     * @return string
+     * @return bool
      */
     public function isSingle()
     {
-        return ($this->entity->getIsSingle()) ?  true : false;
+        return $this->entity->isSingle();
     }
 
     /**
@@ -109,7 +109,7 @@ class Property
     public function getUnitCount()
     {
         if ($this->isSingle()) {
-            return 1;
+            return 0;
         }
 
         return $this->entity->getUnits()->count();
