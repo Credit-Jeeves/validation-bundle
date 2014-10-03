@@ -757,7 +757,15 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This free and optional activity helps to establish or build credit history. Available after your first successful online payment.</target>
+                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This free and optional activity helps to establish or build credit history.</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.available">
+                <source>info.reporting.available</source>
+                <target>Available after your first successful online payment.</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.coming_soon">
+                <source>info.reporting.coming_soon</source>
+                <target>This feature is coming soon for roommates.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
@@ -1942,6 +1950,10 @@
                 <source>property.id</source>
                 <target>PropertyID</target>
             </trans-unit>
+            <trans-unit id="building.id">
+                <source>building.id</source>
+                <target>Building ID</target>
+            </trans-unit>
             <trans-unit id="account.id">
                 <source>account.id</source>
                 <target>AccountID</target>
@@ -2202,6 +2214,10 @@
             <trans-unit id="is.integrated">
                 <source>is.integrated</source>
                 <target>Is Integrated?</target>
+            </trans-unit>
+            <trans-unit id="is.reporting_off">
+                <source>is.reporting_off</source>
+                <target>Reporting Off?</target>
             </trans-unit>
             <trans-unit id="info.payment.date">
                 <source>info.payment.date</source>

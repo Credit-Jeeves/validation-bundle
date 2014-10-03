@@ -72,14 +72,7 @@ class UnitListener
         }
         $property = $entity->getProperty();
         if ($property->getIsSingle() && $entity->getActualName() !== Unit::SINGLE_PROPERTY_UNIT_NAME) {
-            $contract = $entity->getContracts();
-            throw new LogicException(
-                sprintf(
-                    "Can't update unit name '%s' for single unit '%s' ",
-                    $entity->getActualName(),
-                    $entity->getId()
-                )
-            );
+            $entity->setName(Unit::SINGLE_PROPERTY_UNIT_NAME);
         }
     }
 }

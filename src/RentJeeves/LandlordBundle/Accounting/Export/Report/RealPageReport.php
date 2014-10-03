@@ -16,6 +16,8 @@ use DateTime;
  */
 class RealPageReport extends ExportReport
 {
+    protected $buildingId;
+
     protected $em;
     protected $serializer;
     protected $softDeleteableControl;
@@ -58,6 +60,9 @@ class RealPageReport extends ExportReport
     {
         $this->softDeleteableControl->disable();
 
+        $this->validateSettings($settings);
+        $this->setRealPageParams($settings);
+
         $beginDate = $settings['begin'].' 00:00:00';
         $endDate = $settings['end'].' 23:59:59';
         $propertyId = $settings['property']->getId();
@@ -66,10 +71,22 @@ class RealPageReport extends ExportReport
         return $orderRepository->getOrdersForRealPageReport($propertyId, $beginDate, $endDate);
     }
 
+    public function getBuildingId()
+    {
+        return $this->buildingId;
+    }
+
+    protected function setRealPageParams($params)
+    {
+        $this->buildingId = $params['buildingId'];
+    }
+
     protected function validateSettings($settings)
     {
         if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
-            !isset($settings['begin']) || !isset($settings['end'])) {
+            !isset($settings['begin']) || !isset($settings['end']) ||
+            !isset($settings['buildingId'])
+        ) {
             throw new ExportException('Not enough parameters for OnePage report');
         }
     }

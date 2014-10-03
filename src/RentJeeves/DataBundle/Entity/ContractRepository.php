@@ -286,6 +286,29 @@ class ContractRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    /**
+     * If all tenant contracts belong to groups with reportingIsOff
+     * @param Tenant $tenant
+     */
+    public function countContractsWithReportingIsOff(Tenant $tenant)
+    {
+        $query = $this->createQueryBuilder('contract');
+
+        $query->select('count(contract.id)');
+        $query->innerJoin('contract.group', 'group');
+        $query->innerJoin('group.groupSettings', 'groupSettings');
+
+        $query->where('contract.tenant = :tenant');
+        $query->andWhere('contract.status = :status');
+        $query->andWhere('groupSettings.isReportingOff = 1');
+
+        $query->setParameter('tenant', $tenant->getId());
+        $query->setParameter('status', ContractStatus::CURRENT);
+        $query = $query->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
+
     public function countTenantContractsByStatus(Tenant $tenant, $status = ContractStatus::CURRENT)
     {
         $query = $this->createQueryBuilder('c');

@@ -20,7 +20,7 @@ class ExportType extends AbstractType
     protected $validationGroups;
 
     protected $aviableValidationGroups = array(
-        'xml', 'csv', 'promas', 'renttrack'
+        'xml', 'real_page', 'promas', 'renttrack'
     );
 
     public function __construct($user, $group = null, $validationGroups = array('xml'))
@@ -68,8 +68,8 @@ class ExportType extends AbstractType
                     'data-bind' => 'datepicker: begin'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv', 'promas', 'renttrack'))),
-                    new Date(array('groups' => array('xml', 'csv', 'promas', 'renttrack'))),
+                    new NotBlank(array('groups' => array('xml', 'real_page', 'promas', 'renttrack'))),
+                    new Date(array('groups' => array('xml', 'real_page', 'promas', 'renttrack'))),
                 )
             )
         );
@@ -87,8 +87,8 @@ class ExportType extends AbstractType
                     'data-bind' => 'datepicker: end'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv', 'promas', 'renttrack'))),
-                    new Date(array('groups' => array('xml', 'csv', 'promas', 'renttrack'))),
+                    new NotBlank(array('groups' => array('xml', 'real_page', 'promas', 'renttrack'))),
+                    new Date(array('groups' => array('xml', 'real_page', 'promas', 'renttrack'))),
                 )
             )
         );
@@ -100,7 +100,7 @@ class ExportType extends AbstractType
             array(
                 'choices' => array(
                     'xml' => 'order.report.type.yardi',
-                    'csv' => 'order.report.type.realpage',
+                    'real_page' => 'order.report.type.realpage',
                     'promas' => 'order.report.type.promas',
                     'renttrack' => 'order.report.type.renttrack',
                 ),
@@ -115,7 +115,7 @@ class ExportType extends AbstractType
                         value: selectedType'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'csv', 'promas', 'renttrack')))
+                    new NotBlank(array('groups' => array('xml', 'real_page', 'promas', 'renttrack')))
                 ),
             )
         );
@@ -140,7 +140,7 @@ class ExportType extends AbstractType
                     )
                 ),
                 'constraints'    => array(
-                    new NotBlank(array('groups' => array('xml', 'csv'))),
+                    new NotBlank(array('groups' => array('xml', 'real_page'))),
                 ),
                 'query_builder'  => function (EntityRepository $er) use ($groups) {
 
@@ -199,16 +199,38 @@ class ExportType extends AbstractType
         );
 
         $builder->add(
+            'buildingId',
+            'integer',
+            array(
+                'label'       => 'building.id',
+                'required'    => false,
+                'attr'        => array(
+                    'class' => 'int',
+                    'data-bind' => 'value: buildingId',
+                    'row_attr' => array(
+                        'data-bind' => "visible: selectedType() == 'real_page'",
+                    )
+                ),
+                'constraints' => array(
+                    new Regex(
+                        array(
+                            'pattern' => '/^[0-9]{1,10}$/',
+                            'groups'  => array('csv')
+                        )
+                    ),
+                    new NotBlank(array('groups' => array('real_page')))
+                )
+            )
+        );
+
+        $builder->add(
             'makeZip',
             'checkbox',
             array(
                 'label' => 'export.promas.make_zip',
                 'required' => false,
                 'attr' => array(
-                    'data-bind' => 'checked: makeZip',
-                    'row_attr' => array(
-                        'data-bind' => "visible: selectedType() != 'csv'",
-                    )
+                    'data-bind' => 'checked: makeZip'
                 ),
             )
         );

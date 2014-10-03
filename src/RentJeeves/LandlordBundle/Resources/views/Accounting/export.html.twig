@@ -26,10 +26,10 @@
                         {{ 'order.report.download'|trans }}
                     </span>
            </button>
-           <div class="helpContainer" data-bind="visible: (selectedType() == 'csv') && (selectedType() == 'xml')">
+           <div class="helpContainer" data-bind="visible: (selectedType() == 'real_page') || (selectedType() == 'xml')">
                Help:
                <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296770-how-to-import-payments-into-yardi" class="xml" data-bind="visible: selectedType() == 'xml'">{{ 'order.report.how_to.yardi'|trans }}</a>
-               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296772-how-do-i-import-payments-into-realpage-onesite-" class="csv" data-bind="visible: selectedType() == 'csv'">{{ 'order.report.how_to.realpage'|trans }}</a>
+               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296772-how-do-i-import-payments-into-realpage-onesite-" class="csv" data-bind="visible: selectedType() == 'real_page'">{{ 'order.report.how_to.realpage'|trans }}</a>
            </div>
         </form>
     </section>
