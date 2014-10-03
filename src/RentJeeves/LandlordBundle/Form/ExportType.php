@@ -20,10 +20,10 @@ class ExportType extends AbstractType
     protected $validationGroups;
 
     protected $aviableValidationGroups = array(
-        'xml', 'real_page', 'promas', 'renttrack'
+        'yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page'
     );
 
-    public function __construct($user, $group = null, $validationGroups = array('xml'))
+    public function __construct($user, $group = null, $validationGroups = array('yardi'))
     {
         $this->user  = $user;
         $this->group = $group;
@@ -68,8 +68,12 @@ class ExportType extends AbstractType
                     'data-bind' => 'datepicker: begin'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'real_page', 'promas', 'renttrack'))),
-                    new Date(array('groups' => array('xml', 'real_page', 'promas', 'renttrack'))),
+                    new NotBlank(
+                        array(
+                            'groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page')
+                        )
+                    ),
+                    new Date(array('groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page'))),
                 )
             )
         );
@@ -87,8 +91,12 @@ class ExportType extends AbstractType
                     'data-bind' => 'datepicker: end'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'real_page', 'promas', 'renttrack'))),
-                    new Date(array('groups' => array('xml', 'real_page', 'promas', 'renttrack'))),
+                    new NotBlank(
+                        array(
+                            'groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page')
+                        )
+                    ),
+                    new Date(array('groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page'))),
                 )
             )
         );
@@ -99,10 +107,11 @@ class ExportType extends AbstractType
             'choice',
             array(
                 'choices' => array(
-                    'xml' => 'order.report.type.yardi',
-                    'real_page' => 'order.report.type.realpage',
-                    'promas' => 'order.report.type.promas',
-                    'renttrack' => 'order.report.type.renttrack',
+                    'yardi'         => 'order.report.type.yardi',
+                    'real_page'     => 'order.report.type.realpage',
+                    'promas'        => 'order.report.type.promas',
+                    'renttrack'     => 'order.report.type.renttrack',
+                    'yardi_genesis' => 'order.report.type.yardi_genesis',
                 ),
                 'required'    => true,
                 'attr'        => array(
@@ -115,7 +124,7 @@ class ExportType extends AbstractType
                         value: selectedType'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('xml', 'real_page', 'promas', 'renttrack')))
+                    new NotBlank(array('groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page')))
                 ),
             )
         );
@@ -140,7 +149,7 @@ class ExportType extends AbstractType
                     )
                 ),
                 'constraints'    => array(
-                    new NotBlank(array('groups' => array('xml', 'real_page'))),
+                    new NotBlank(array('groups' => array('yardi', 'yardi_genesis', 'real_page'))),
                 ),
                 'query_builder'  => function (EntityRepository $er) use ($groups) {
 
@@ -183,17 +192,17 @@ class ExportType extends AbstractType
                     'class' => 'int',
                     'data-bind' => 'value: propertyId',
                     'row_attr' => array(
-                        'data-bind' => "visible: selectedType() == 'xml'",
+                        'data-bind' => "visible: selectedType() == 'yardi'",
                     )
                 ),
                 'constraints' => array(
                     new Regex(
                         array(
                             'pattern' => '/^[0-9]{1,10}$/',
-                            'groups'  => array('xml')
+                            'groups'  => array('yardi')
                         )
                     ),
-                    new NotBlank(array('groups' => array('xml')))
+                    new NotBlank(array('groups' => array('yardi')))
                 )
             )
         );
@@ -215,7 +224,7 @@ class ExportType extends AbstractType
                     new Regex(
                         array(
                             'pattern' => '/^[0-9]{1,10}$/',
-                            'groups'  => array('csv')
+                            'groups'  => array('real_page')
                         )
                     ),
                     new NotBlank(array('groups' => array('real_page')))

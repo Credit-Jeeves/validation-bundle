@@ -38,40 +38,16 @@ class Export
     public function getReport($dataFromForm)
     {
         $this->setupData($dataFromForm);
-
-        switch ($this->type) {
-            case 'xml':
-                if ($this->makeZip) {
-                    $report = $this->container->get('accounting.export.yardi_archive');
-                } else {
-                    $report = $this->container->get('accounting.export.yardi');
-                }
-                break;
-            case 'real_page':
-                if ($this->makeZip) {
-                    $report = $this->container->get('accounting.export.real_page_archive');
-                } else {
-                    $report = $this->container->get('accounting.export.real_page');
-                }
-                break;
-            case 'promas':
-                if ($this->makeZip) {
-                    $report = $this->container->get('accounting.export.promas_archive');
-                } else {
-                    $report = $this->container->get('accounting.export.promas');
-                }
-                break;
-            case 'renttrack':
-                if ($this->makeZip) {
-                    $report = $this->container->get('accounting.export.renttrack_archive');
-                } else {
-                    $report = $this->container->get('accounting.export.renttrack');
-                }
-                break;
-            default:
-                throw new RuntimeException('Report type is invalid');
+        if ($this->makeZip) {
+            $serviceName = sprintf('accounting.export.%s_archive', $this->type);
+        } else {
+            $serviceName = sprintf('accounting.export.%s', $this->type);
         }
 
-        return $report;
+        if (!$this->container->has($serviceName)) {
+            throw new RuntimeException('Report type('.$this->type.') is invalid.');
+        }
+
+        return $this->container->get($serviceName);
     }
 }

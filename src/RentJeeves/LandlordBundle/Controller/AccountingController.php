@@ -78,7 +78,7 @@ class AccountingController extends Controller
                 $form['type']
             );
         } else {
-            $validationRule = array('xml');
+            $validationRule = array('yardi');
         }
 
         $group = $this->get('core.session.landlord')->getGroup();
