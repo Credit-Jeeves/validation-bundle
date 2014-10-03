@@ -134,7 +134,7 @@ class PropertyController extends Controller
             $invite->setProperty($property);
             $invite->setTenant($this->getUser());
 
-            $this->get('invite.landord')->invite($invite, $this->getUser());
+            $this->get('invite.landlord')->invite($invite, $this->getUser());
 
             return $this->redirect($this->generateUrl('tenant_homepage'), 301);
         }

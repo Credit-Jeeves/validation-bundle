@@ -37,7 +37,7 @@ class InviteType extends AbstractType
             null
         );
         $builder->add(
-            'unit',
+            'unitName',
             null,
             array(
                 'required' => false

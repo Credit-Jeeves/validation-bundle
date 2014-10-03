@@ -35,7 +35,7 @@ class PropertyCommandCase extends BaseTestCase
                 $property->setZip('4444');
             }
             $property->setLatitude('42.7723043');
-            $property->setLongtitude('-84.4863972');
+            $property->setLongitude('-84.4863972');
             $em->persist($property);
             $propertiesList[] = $property;
         }

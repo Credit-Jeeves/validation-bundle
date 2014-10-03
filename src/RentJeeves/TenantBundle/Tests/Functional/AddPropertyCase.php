@@ -121,7 +121,7 @@ class AddPropertyCase extends BaseTestCase
         $this->fillForm(
             $inviteForm,
             array(
-                'rentjeeves_publicbundle_invitetype_unit'                      => 'e3',
+                'rentjeeves_publicbundle_invitetype_unitName'                      => 'e3',
                 'rentjeeves_publicbundle_invitetype_first_name'                => 'Alex',
                 'rentjeeves_publicbundle_invitetype_last_name'                 => 'Sharamko',
                 'rentjeeves_publicbundle_invitetype_email'                     => 'newlandlord@test.com',
@@ -197,7 +197,7 @@ class AddPropertyCase extends BaseTestCase
         $this->fillForm(
             $inviteForm,
             array(
-                'rentjeeves_publicbundle_invitetype_unit'                      => 'e3',
+                'rentjeeves_publicbundle_invitetype_unitName'                      => 'e3',
                 'rentjeeves_publicbundle_invitetype_first_name'                => 'Alex',
                 'rentjeeves_publicbundle_invitetype_last_name'                 => 'Sharamko',
                 'rentjeeves_publicbundle_invitetype_email'                     => 'landlord2@example.com',

@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CoreBundle\Services;
 
+use Geocoder\Result\Geocoded;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -179,8 +180,24 @@ class PropertyProcess
             }
         }
 
+        if ($response = $this->getGoogleGeocode($property->getFullAddress())) {
+            $property = $this->mapGeocodeResponseToProperty($response, $property);
+            $this->validProperties[] = $property;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $address
+     * @return bool|Geocoded
+     */
+    public function getGoogleGeocode($address)
+    {
         try {
-            $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
+            $result = $this->geocoder->using('google_maps')->geocode($address);
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             return false;
@@ -189,32 +206,52 @@ class PropertyProcess
             return false;
         }
 
-        $property->parseGeocodeResponse($result);
-        if (!$this->isSetRequiredFields($property)) {
+        if (!$this->isSetRequiredFields($result)) {
             return false;
         }
 
-        $this->validProperties[] = $property;
-
-        return true;
+        return $result;
     }
 
     /**
+     * @param Geocoded $response
      * @param Property $property
+     * @return Property
+     */
+    public function mapGeocodeResponseToProperty(Geocoded $response, Property $property)
+    {
+        $property->setLatitude($response->getLatitude());
+        $property->setLongitude($response->getLongitude());
+        $property->setZip($response->getZipcode());
+        $property->setArea($response->getRegionCode());
+        $property->setCountry($response->getCountryCode());
+        $property->setCity($response->getCity());
+        if (!$property->getCity()) {
+            $property->setCity($response->getCityDistrict());
+        }
+        $property->setNumber($response->getStreetNumber());
+        $property->setStreet($response->getStreetName());
+        $property->setDistrict($response->getCityDistrict());
+
+        return $property;
+    }
+
+    /**
+     * @param Geocoded $googleResult
      * @return bool
      */
-    protected function isSetRequiredFields(Property $property)
+    protected function isSetRequiredFields(Geocoded $googleResult)
     {
         $fields = array(
-            'number',
-            'jb',
-            'kb',
-            'street',
+            'latitude',
+            'longitude',
+            'streetNumber',
+            'streetName'
         );
 
         foreach ($fields as $field) {
             $method = 'get'.ucfirst($field);
-            $value = $property->$method();
+            $value = $googleResult->$method();
 
             if (empty($value)) {
                 return false;
@@ -222,5 +259,28 @@ class PropertyProcess
         }
 
         return true;
+    }
+
+    /**
+     * @param $address
+     * @return null|Property
+     */
+    public function getPropertyByAddress($address)
+    {
+        $property = new Property();
+
+        if ($googleResult = $this->getGoogleGeocode($address)) {
+            $property = $this->mapGeocodeResponseToProperty($googleResult, $property);
+
+            if ($propertyDB = $this->checkByMinimalArgs($property) or
+                $propertyDB = $this->checkByAllArgs($property)) {
+                /** Property */
+                return $propertyDB;
+            }
+            /** Empty Property */
+            return $property;
+        }
+        /** Error Address not found */
+        return null;
     }
 }

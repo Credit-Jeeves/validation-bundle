@@ -19,10 +19,11 @@ use Doctrine\ORM\EntityManager;
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
- * @Service("invite.landord")
+ * @Service("invite.landlord")
  */
 class InviteLandlord
 {
+    private $isNew = true;
 
     protected $em;
 
@@ -61,8 +62,8 @@ class InviteLandlord
         $contract->setStatus(ContractStatus::PENDING);
         if ($landlordInDb) {
             unset($landlord);
+            $this->isNew = false;
             $landlord = $landlordInDb;
-            $groups = $landlord->getGroups();
             $holding = $landlord->getHolding();
             $group = $landlord->getCurrentGroup();
         } else {
@@ -86,30 +87,48 @@ class InviteLandlord
             $em->flush();
         }
 
-        $property = $invite->getProperty();
-        $isSingleProperty = $invite->getIsSingle();
-        if ($isSingleProperty) {
-            $property->setIsSingle(true);
-            $em->flush($property);
+        if ($unit = $invite->getUnit()) {
+            $property = $unit->getProperty();
+            $isSingleProperty = $property->isSingle();
+            $unitName = $unit->getName();
         } else {
-            $unitName = $invite->getUnit();
-            $contract->setSearch($unitName);
+            $property = $invite->getProperty();
         }
 
-        $group->addGroupProperty($property);
-        $contract->setProperty($property);
-        $contract->setTenant($tenant);
-        $contract->setHolding($holding);
-        $contract->setGroup($group);
+        if ($property) {
+            // Create contract only if we have property
+            isset($isSingleProperty) || $isSingleProperty = $invite->getIsSingle();
+            if ($isSingleProperty) {
+                $property->setIsSingle(true);
+                $em->flush($property);
+            } else {
+                isset($unitName) || $unitName = $invite->getUnitName();
+                $contract->setSearch($unitName);
+            }
+
+            $group->addGroupProperty($property);
+            $contract->setProperty($property);
+            $contract->setTenant($tenant);
+            $contract->setHolding($holding);
+            $contract->setGroup($group);
+        }
 
         $em->persist($group);
-        $em->persist($contract);
+        !$property || $em->persist($contract);
         $em->persist($landlord);
-        
+
         $em->flush();
 
         $this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract);
 
         return $landlord;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return $this->isNew;
     }
 }

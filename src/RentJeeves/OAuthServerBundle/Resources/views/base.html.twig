@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}{{ 'project_name'|trans }}{% endblock %}</title>
+    {{ render(controller('CoreBundle:Session:js')) }}
+    {% stylesheets
+    '@OAuthServerBundle/Resources/public/css/main.css'
+    '@CoreBundle/Resources/public/css/buttons.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+
+    {% endstylesheets %}
+
+    {% javascripts
+        '@CoreBundle/Resources/public/js/jquery-1.9.1.min.js'
+        '@CoreBundle/Resources/public/js/jquery.placeholder.min.js'
+        '@CoreBundle/Resources/public/js/date.js'
+        '@FOSJsRoutingBundle/Resources/public/js/router.js'
+        '@CoreBundle/Resources/public/js/jquery.cookie.js'
+        '@CoreBundle/Resources/public/js/session.js'
+        '@CoreBundle/Resources/public/js/Format.js'
+        'bundles/bazingajstranslation/js/translator.min.js'
+        '@OAuthServerBundle/Resources/public/js/main.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% block google_analytics %}
+        {% if application == 'rj' %}
+            {% include 'RjCoreBundle::google_analytics.html.twig' %}
+        {% else %}
+            {% include 'CoreBundle::google_analytics.html.twig' %}
+        {% endif %}
+    {% endblock %}
+    {% block head_javascripts %}
+        {{ include(
+            'RjComponentBundle:Blocks:reject.html.twig'
+        ) }}
+    {% endblock %}
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
+    {% if 'dev' == env %}
+        <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    {% else %}
+        <script src="/bundles/fosjsrouting/js/{{ application }}_{{ env }}.js"></script>
+    {% endif %}
+    <link href="{{ asset('bundles/oauthserver/css/logos.css') }}" rel="stylesheet" type="text/css" />
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+    {% block stylesheets %}{% endblock %}
+    {% block google_api %}{% endblock %}
+    <!--[if gte IE 9]>
+    <style type="text/css">
+        .gradient {
+            filter: none;
+        }
+    </style>
+    <![endif]-->
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/core/css/main-ie-8.css') }}" />
+    <![endif]-->
+</head>
+<body>
+{% block alert %}{% endblock %}
+{% block header %}{% endblock %}
+<div class="header">
+    <div class="site-logo"></div>
+    <div class="info-block">
+        {% block info %}
+            {% include 'OAuthServerBundle::infoBlock.html.twig' %}
+        {% endblock %}
+    </div>
+    {% block partner_logo %}{% endblock %}
+</div>
+<div class="clearboth"></div>
+<div class="section">
+    <div class="page-body">
+        <div class="page-content">
+            <div class="top-block block-content ">{% block top_content %}{% endblock %}</div>
+            {% block content %}{% endblock %}
+            <div class="bottom-block block-content">{% block bottom_content %}{% endblock %}</div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    {% block footer %}
+        <div class="buttons-box clearfix">
+            {% block action_buttons %}{% endblock %}
+        </div>
+        <div class="accreditations">
+            <img id="nortonsecurity" width="" height="72" alt="Norton Secured" src="{{ asset('bundles/oauthserver/images/logo-norton-secured.png') }}">
+        </div>
+    {% endblock %}
+</div>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

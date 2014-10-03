@@ -75,14 +75,14 @@ class IframeCase extends BaseTestCase
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype').length > 0");
-        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
+        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unitName'));
 
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype'));
         $this->fillForm(
             $form,
             array(
                 'rentjeeves_publicbundle_invitetenanttype_invite_is_single'                 => false,
-                'rentjeeves_publicbundle_invitetenanttype_invite_unit'                      => '',
+                'rentjeeves_publicbundle_invitetenanttype_invite_unitName'                      => '',
                 'rentjeeves_publicbundle_invitetenanttype_invite_first_name'                => 'Met',
                 'rentjeeves_publicbundle_invitetenanttype_invite_last_name'                 => 'Torr',
                 'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'landlord@ya.ru',
@@ -105,7 +105,7 @@ class IframeCase extends BaseTestCase
             $form,
             array(
                 'rentjeeves_publicbundle_invitetenanttype_invite_is_single'                 => true,
-                'rentjeeves_publicbundle_invitetenanttype_invite_unit'                      => '',
+                'rentjeeves_publicbundle_invitetenanttype_invite_unitName'                      => '',
                 'rentjeeves_publicbundle_invitetenanttype_invite_first_name'                => 'Met',
                 'rentjeeves_publicbundle_invitetenanttype_invite_last_name'                 => 'Torr',
                 'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'landlord@ya.ru',
@@ -145,7 +145,7 @@ class IframeCase extends BaseTestCase
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype').length > 0");
-        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
+        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unitName'));
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
@@ -207,7 +207,7 @@ class IframeCase extends BaseTestCase
             $form,
             array(
                 'rentjeeves_publicbundle_invitetenanttype_invite_is_single'                 => false,
-                'rentjeeves_publicbundle_invitetenanttype_invite_unit'                      => 'e3',
+                'rentjeeves_publicbundle_invitetenanttype_invite_unitName'                      => 'e3',
                 'rentjeeves_publicbundle_invitetenanttype_invite_first_name'                => 'Alex',
                 'rentjeeves_publicbundle_invitetenanttype_invite_last_name'                 => 'Sharamko',
                 'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'landlord@ya.ru',
@@ -388,7 +388,7 @@ class IframeCase extends BaseTestCase
             $this->timeout,
             "$('#rentjeeves_publicbundle_invitetenanttype_invite_first_name').length > 0"
         );
-        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
+        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unitName'));
     }
 
     /**
@@ -509,7 +509,7 @@ class IframeCase extends BaseTestCase
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype').length > 0");
-        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
+        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unitName'));
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype'));
         $this->fillForm(
             $form,

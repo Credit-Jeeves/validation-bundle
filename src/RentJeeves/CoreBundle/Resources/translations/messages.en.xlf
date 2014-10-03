@@ -215,6 +215,31 @@
                 <source>continue</source>
                 <target>Continue</target>
             </trans-unit>
+            <trans-unit id="connect">
+                <source>connect</source>
+                <target>Connect</target>
+            </trans-unit>
+            <trans-unit id="connect.info_block">
+                <source>connect.info_block</source>
+                <target>
+                <![CDATA[Connect %appName% to RentTrack to allow %appName% to set up payments and view transaction history.
+                %appName% will not be able to access your payment account details and you can revoke access anytime.]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="signup.info_block">
+                <source>signup.info_block</source>
+                <target>Set up your RentTrack account.</target>
+            </trans-unit>
+            <trans-unit id="authorization.main_info">
+                <source>authorization.main_info</source>
+                <target>Allow %appName% to access your account.</target>
+            </trans-unit>
+            <trans-unit id="authorization.additional_info">
+                <source>authorization.additional_info</source>
+                <target>
+                <![CDATA[%appName% will use your <strong>%email%</strong> account. You can revoke access anytime by visiting your Settings.]]>
+                </target>
+            </trans-unit>
             <trans-unit id="success.active">
                 <source>success.active</source>
                 <target>You have successfully activated your account. Please login.</target>

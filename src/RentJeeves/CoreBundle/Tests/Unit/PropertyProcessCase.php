@@ -32,12 +32,12 @@ class PropertyProcessCase extends BaseTestCase
         $propertyFirst->setNumber('3850');
         $propertyFirst->setZip('48823');
         $propertyFirst->setLatitude(42.7723043);
-        $propertyFirst->setLongtitude(-84.4863972);
+        $propertyFirst->setLongitude(-84.4863972);
         $propertyFirst->setCountry('US');
 
         $propertySecond = clone $propertyFirst;
         $propertySecond->setLatitude(42.772304);
-        $propertySecond->setLongtitude(-84.486397);
+        $propertySecond->setLongitude(-84.486397);
 
 
         $property = $propertyProcess->checkPropertyDuplicate(

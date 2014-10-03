@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -347,7 +348,7 @@ abstract class Unit
      * @param Holding $holding
      * @return Unit
      */
-    public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding = null)
+    public function setHolding(Holding $holding = null)
     {
         $this->holding = $holding;
         return $this;
@@ -369,7 +370,7 @@ abstract class Unit
      * @param Group $group
      * @return Unit
      */
-    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group = null)
+    public function setGroup(Group $group = null)
     {
         $this->group = $group;
         return $this;

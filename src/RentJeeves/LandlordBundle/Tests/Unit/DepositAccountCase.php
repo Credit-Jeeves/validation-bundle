@@ -24,7 +24,7 @@ class DepositAccountCase extends BaseTestCase
     {
         $this->load(true);
         $container = $this->getContainer();
-        $inviteLandlordService = $container->get('invite.landord');
+        $inviteLandlordService = $container->get('invite.landlord');
         $em = $container->get('doctrine.orm.entity_manager');
         $this->assertTrue($inviteLandlordService instanceof InviteLandlord);
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
@@ -43,7 +43,7 @@ class DepositAccountCase extends BaseTestCase
 
         $invite = new Invite();
         $invite->setEmail('example@mail.com');
-        $invite->setUnit('1A');
+        $invite->setUnitName('1A');
         $invite->setFirstName('Ivan');
         $invite->setLastName('Drachka');
         $invite->setPhone('109813313');
