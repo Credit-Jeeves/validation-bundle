@@ -92,6 +92,50 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("R")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getR()
+    {
+        return "R";
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Transaction ID")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisTransactionId()
+    {
+        return $this->getHeartlandTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Resident ID")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisResidentId()
+    {
+        return $this->getTenantExternalId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Description")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisDescription()
+    {
+        return sprintf(
+            '%s %s',
+            $this->getContract()->getTenantRentAddress(),
+            $this->getHeartlandBatchId()
+        );
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Unit Number")
      * @Serializer\Groups({"realPageReport"})
      *
@@ -115,7 +159,7 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"realPageReport"})
+     * @Serializer\Groups({"realPageReport", "YardiGenesis"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -695,7 +739,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Amount")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "YardiGenesis"})
      * @Serializer\Type("double")
      * @Serializer\XmlElement(cdata=false)
      *

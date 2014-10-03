@@ -228,6 +228,14 @@ class OrderRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    public function getOrdersForYardiGenesis(
+        $propertyId,
+        $start,
+        $end
+    ) {
+        return $this->getOrdersForRealPageReport($propertyId, $start, $end);
+    }
+
     public function getOrdersForRealPageReport(
         $propertyId,
         $start,

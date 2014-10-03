@@ -12,12 +12,10 @@ use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use DateTime;
 
 /**
- * @Service("accounting.export.real_page")
+ * @Service("accounting.export.yardi_genesis")
  */
-class RealPageReport extends ExportReport
+class YardiGenesisReport extends ExportReport
 {
-    protected $buildingId;
-
     protected $em;
     protected $serializer;
     protected $softDeleteableControl;
@@ -25,7 +23,7 @@ class RealPageReport extends ExportReport
     /**
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.default_entity_manager"),
-     *     "serializer" = @Inject("export.serializer.real_page"),
+     *     "serializer" = @Inject("export.serializer.yardi_genesis"),
      *     "softDeleteableControl" = @Inject("soft.deleteable.control")
      * })
      */
@@ -34,7 +32,7 @@ class RealPageReport extends ExportReport
         $this->em = $em;
         $this->serializer = $serializer;
         $this->softDeleteableControl = $softDeleteableControl;
-        $this->type = 'real_page';
+        $this->type = 'yardi_genesis';
         $this->fileType = 'csv';
     }
 
@@ -61,33 +59,21 @@ class RealPageReport extends ExportReport
         $this->softDeleteableControl->disable();
 
         $this->validateSettings($settings);
-        $this->setRealPageParams($settings);
 
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
         $propertyId = $settings['property']->getId();
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForRealPageReport($propertyId, $beginDate, $endDate);
-    }
-
-    public function getBuildingId()
-    {
-        return $this->buildingId;
-    }
-
-    protected function setRealPageParams($params)
-    {
-        $this->buildingId = $params['buildingId'];
+        return $orderRepository->getOrdersForYardiGenesis($propertyId, $beginDate, $endDate);
     }
 
     protected function validateSettings($settings)
     {
         if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
-            !isset($settings['begin']) || !isset($settings['end']) ||
-            !isset($settings['buildingId'])
+            !isset($settings['begin']) || !isset($settings['end'])
         ) {
-            throw new ExportException('Not enough parameters for OnePage report');
+            throw new ExportException('Not enough parameters for Yardi Genesis report');
         }
     }
 
@@ -97,7 +83,7 @@ class RealPageReport extends ExportReport
         $endDate = new DateTime($params['end']);
 
         $this->filename = sprintf(
-            'OnePage_%s_%s.csv',
+            'YardiGenesis_%s_%s.csv',
             $beginDate->format('Ymd'),
             $endDate->format('Ymd')
         );

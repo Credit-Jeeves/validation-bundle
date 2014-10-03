@@ -433,4 +433,93 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $columns[1]);
         $this->assertEquals('15235678', $columns[13]);
     }
+
+
+    /**
+     * @test
+     */
+    public function yardiGenesisCsvFormat()
+    {
+        $this->load(true);
+        //$this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('yardi_genesis');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(3, count($errors));
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $property->selectOption(1);
+
+        $this->page->pressButton('order.report.download');
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\n", $csv);
+        $this->assertTrue(isset($csvArr[0]));
+
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
+        $this->assertEquals('R', $csvArr[0]);
+        $this->assertEquals('123123', $csvArr[1]);
+        $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[3]);
+        $this->assertEquals('08/14/2014', $csvArr[4]);
+        $this->assertEquals('1500', $csvArr[5]);
+    }
+
+    /**
+     * @test
+     */
+    public function yardiGenesisBatchReport()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('yardi_genesis');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(3, count($errors));
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $property->selectOption(1);
+        $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
+        $makeZip->check();
+
+        $this->page->pressButton('order.report.download');
+
+        $csvZip = $this->session->getDriver()->getContent();
+
+        $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
+        file_put_contents($testFile, $csvZip);
+
+        $archive = new ZipArchive();
+        $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
+        $this->assertEquals(13, $archive->numFiles);
+        $file = $archive->getFromIndex(1);
+        $rows = explode("\n", trim($file));
+        $this->assertEquals(4, count($rows));
+        $csvArr = str_getcsv($rows[0]);
+        $this->assertEquals('R', $csvArr[0]);
+        $this->assertEquals('456456', $csvArr[1]);
+        $this->assertEquals('770 Broadway, Manhattan #2-a 325698', $csvArr[3]);
+        $this->assertEquals('08/24/2014', $csvArr[4]);
+        $this->assertEquals('1500', $csvArr[5]);
+    }
 }

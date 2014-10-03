@@ -2659,6 +2659,10 @@
                 <source>order.report.type.renttrack</source>
                 <target>Standard Export(CSV)</target>
             </trans-unit>
+            <trans-unit id="order.report.type.yardi_genesis">
+                <source>order.report.type.yardi_genesis</source>
+                <target>Yardi Genesis(CSV)</target>
+            </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>
                 <target>Include Transactions from All Groups</target>
