@@ -782,7 +782,15 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This free and optional activity helps to establish or build credit history. Available after your first successful online payment.</target>
+                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This free and optional activity helps to establish or build credit history.</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.available">
+                <source>info.reporting.available</source>
+                <target>Available after your first successful online payment.</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.coming_soon">
+                <source>info.reporting.coming_soon</source>
+                <target>This feature is coming soon for roommates.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
@@ -1017,7 +1025,7 @@
             </trans-unit>
             <trans-unit id="next_payment_date">
                 <source>next_payment_date</source>
-                <target>Next Payment Date</target>
+                <target>Start On Date</target>
             </trans-unit>
             <trans-unit id="norton_secured">
                 <source>norton_secured</source>
@@ -1065,7 +1073,7 @@
             </trans-unit>
             <trans-unit id="contract.payment.date.next">
                 <source>contract.payment.date.next</source>
-                <target>Next Payment Date</target>
+                <target>Start On Date</target>
             </trans-unit>
             <trans-unit id="contract.payment.recurring">
                 <source>contract.payment.recurring</source>
@@ -1897,7 +1905,7 @@
             </trans-unit>
             <trans-unit id="help.popup">
                 <source>help.popup</source>
-                <target>Enter the monthly rent amount and due date according to your lease. The next payment date should correspond with the due date - if the next month is June and the Due Date is the 1st, enter June 1st. Finally, specify a month-to-month lease or a specific end date.</target>
+                <target>Enter the monthly rent amount and due date according to your lease. The start on date should correspond with the due date - if the next month is June and the Due Date is the 1st, enter June 1st. Finally, specify a month-to-month lease or a specific end date.</target>
             </trans-unit>
             <trans-unit id="order.type.cash">
                 <source>order.type.cash</source>
@@ -1966,6 +1974,10 @@
             <trans-unit id="property.id">
                 <source>property.id</source>
                 <target>PropertyID</target>
+            </trans-unit>
+            <trans-unit id="building.id">
+                <source>building.id</source>
+                <target>Building ID</target>
             </trans-unit>
             <trans-unit id="account.id">
                 <source>account.id</source>
@@ -2227,6 +2239,10 @@
             <trans-unit id="is.integrated">
                 <source>is.integrated</source>
                 <target>Is Integrated?</target>
+            </trans-unit>
+            <trans-unit id="is.reporting_off">
+                <source>is.reporting_off</source>
+                <target>Reporting Off?</target>
             </trans-unit>
             <trans-unit id="info.payment.date">
                 <source>info.payment.date</source>

@@ -51,6 +51,18 @@ abstract class GroupSettings
     /**
      * @ORM\Column(
      *      type="boolean",
+     *      name="is_reporting_off",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $isReportingOff = false;
+
+    /**
+     * @ORM\Column(
+     *      type="boolean",
      *      name="pay_balance_only",
      *      options={
      *          "default":0
@@ -280,5 +292,21 @@ abstract class GroupSettings
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsReportingOff()
+    {
+        return $this->isReportingOff;
+    }
+
+    /**
+     * @param bool $isReportingOff
+     */
+    public function setIsReportingOff($isReportingOff)
+    {
+        $this->isReportingOff = $isReportingOff;
     }
 }

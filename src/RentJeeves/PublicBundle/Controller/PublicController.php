@@ -257,7 +257,7 @@ class PublicController extends Controller
             $contractProcess->createContractFromTenantSide(
                 $tenant,
                 $propertyForm,
-                $unit->getName(),
+                $unit->getActualName(),
                 $tenantType->getWaitingContract()
             );
 
