@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Model\Holding;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -245,23 +246,40 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.tenant', 't');
         $query->where(
             '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today))' .
+            ' AND (c.paidTo < :date OR c.finishAt < :today ))' .
             ' AND c.id IN (SELECT IDENTITY(o.contract) FROM DataBundle:Operation o WHERE' .
             ' o.contract = c.id )'
         );
+        $query->andWhere('c.id NOT IN (
+            SELECT con.id FROM RentJeeves\DataBundle\Entity\Contract con
+            INNER JOIN con.operations op
+            INNER JOIN op.order ord
+            WHERE ord.status = :pending AND MONTH(op.paidFor) = :month AND YEAR(op.paidFor) = :year and op.type = :rent
+            )
+        ');
+
+        $today = new DateTime();
         $query->setParameter('group', $group);
-        $query->setParameter('date', new DateTime());
-        $query->setParameter('today', new DateTime());
+        $query->setParameter('date', $today->format('Y-m-d'));
+        $query->setParameter('today', $today->format('Y-m-d'));
         $query->setParameter('status1', ContractStatus::FINISHED);
         $query->setParameter('status2', ContractStatus::DELETED);
+
+        $query->setParameter('month', $today->format('n'));
+        $query->setParameter('year', $today->format('Y'));
+        $query->setParameter('pending', OrderStatus::PENDING);
+        $query->setParameter('rent', OperationType::RENT);
+
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $this->applySortOrder($query, $sortField, $sortOrder);
+
         if ($offset) {
             $query->setFirstResult($offset);
         }
         if ($limit) {
             $query->setMaxResults($limit);
         }
+
         return $query;
     }
 
