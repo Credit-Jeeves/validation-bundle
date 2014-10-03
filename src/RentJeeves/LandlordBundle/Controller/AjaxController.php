@@ -679,12 +679,8 @@ class AjaxController extends Controller
         );
         $contracts = $query->getQuery()->execute();
         $paidForArr = array();
-        $today = new DateTime();
         /** @var Contract $contract */
         foreach ($contracts as $contract) {
-            if ($contract->hasPaymentPendingForMonth($today->format('n'), $today->format('Y'))) {
-                continue;
-            }
             $contract->setStatusShowLateForce(true);
             $item = $contract->getItem();
             $item['paidForArr'] = $this->get('checkout.paid_for')->getArray($contract);

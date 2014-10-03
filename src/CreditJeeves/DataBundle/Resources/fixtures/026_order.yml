@@ -79,7 +79,7 @@ fixtures:
     updated_at: '-2 days'
   rjOrder_66:
     user: Tenant_6
-    status: pending
+    status: new
     type: heartland_card
     sum: 3700
     created_at: 'now'
