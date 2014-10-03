@@ -28,11 +28,11 @@ class InviteLandlordType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $submittedData = $event->getData();
-            if(isset($submittedData['unit_id'])) {
+            if (isset($submittedData['unit_id'])) {
                 $submittedData['unit'] = $submittedData['unit_id'];
                 unset($submittedData['unit_id']);
             }
-            if(isset($submittedData['property_id'])) {
+            if (isset($submittedData['property_id'])) {
                 $submittedData['property'] = $submittedData['property_id'];
                 unset($submittedData['property_id']);
             }

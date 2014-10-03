@@ -5,10 +5,6 @@ namespace RentJeeves\ApiBundle\ResponseEntity;
 use RentJeeves\DataBundle\Entity\Unit as Entity;
 use JMS\Serializer\Annotation as Serializer;
 
-/**
- * Class Unit
- * @package RentJeeves\ApiBundle\ResponseEntity
- */
 class Unit
 {
     /**

@@ -89,7 +89,7 @@ class InviteLandlord
 
         if ($unit = $invite->getUnit()) {
             $property = $unit->getProperty();
-            $isSingleProperty = (bool) $property->getIsSingle();
+            $isSingleProperty = $property->isSingle();
             $unitName = $unit->getName();
         } else {
             $property = $invite->getProperty();
@@ -127,7 +127,7 @@ class InviteLandlord
     /**
      * @return bool
      */
-    public function IsNew()
+    public function isNew()
     {
         return $this->isNew;
     }

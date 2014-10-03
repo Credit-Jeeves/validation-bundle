@@ -4,17 +4,12 @@ namespace RentJeeves\ApiBundle\Services;
 
 use CreditJeeves\CoreBundle\Translation\Translator;
 use Doctrine\ORM\EntityManager;
-use FOS\RestBundle\Util\Codes;
-use Gedmo\DoctrineExtensions;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 
 /**
- * Class ProcessAssignment
- * @package RentJeeves\ApiBundle\Services
- *
  * @DI\Service("landlord.assignment")
  */
 class LandlordAssignment

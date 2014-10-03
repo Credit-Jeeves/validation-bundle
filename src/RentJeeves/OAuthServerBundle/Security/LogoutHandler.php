@@ -13,10 +13,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
-
 /**
- * Class LogoutSuccessHandler
- * @package RentJeeves\OAuthServerBundle\Security
  * @DI\Service("oauth_server.logout_handler")
  */
 class LogoutHandler implements LogoutHandlerInterface
@@ -49,9 +46,5 @@ class LogoutHandler implements LogoutHandlerInterface
      */
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
-//        echo 'test';exit;
-//        if ($url = $request->query->get('redirect')) {
-            return $response->headers->set('location', 'http://google.com');
-//        }
     }
 }

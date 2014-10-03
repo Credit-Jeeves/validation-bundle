@@ -6,10 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Landlord as Entity;
 
-/**
- * Class Landlord
- * @package RentJeeves\ApiBundle\ResponseEntity
- */
 class Landlord
 {
     /**

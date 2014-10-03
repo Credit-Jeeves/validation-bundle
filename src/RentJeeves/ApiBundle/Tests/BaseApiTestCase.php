@@ -24,7 +24,8 @@ class BaseApiTestCase extends BaseTestCase
     protected function assertResponse(Response $response, $statusCode = 200, $format = 'html')
     {
         $this->assertEquals(
-            $statusCode, $response->getStatusCode(),
+            $statusCode,
+            $response->getStatusCode(),
             $response->getContent()
         );
 

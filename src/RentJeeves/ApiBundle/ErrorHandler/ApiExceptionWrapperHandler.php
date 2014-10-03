@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ApiBundle\ErrorHandler;
 
-use RentJeeves\ApiBundle\ErrorHandler\ExceptionWrapper;
 use FOS\RestBundle\View\ExceptionWrapperHandlerInterface;
 
 class ApiExceptionWrapperHandler implements ExceptionWrapperHandlerInterface
