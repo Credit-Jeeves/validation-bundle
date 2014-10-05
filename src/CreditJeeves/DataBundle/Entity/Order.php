@@ -122,6 +122,26 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Amount")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisAmount()
+    {
+        return $this->getTotalAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Date")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisDate()
+    {
+        return $this->getCreatedAt()->format('m/d/Y');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Description")
      * @Serializer\Groups({"YardiGenesis"})
      */
@@ -159,7 +179,7 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"realPageReport", "YardiGenesis"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -739,7 +759,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Amount")
-     * @Serializer\Groups({"soapYardiRequest", "YardiGenesis"})
+     * @Serializer\Groups({"soapYardiRequest"})
      * @Serializer\Type("double")
      * @Serializer\XmlElement(cdata=false)
      *

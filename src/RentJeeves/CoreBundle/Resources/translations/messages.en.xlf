@@ -1969,7 +1969,7 @@
             </trans-unit>
             <trans-unit id="redirect.wait.notification">
                 <source>redirect.wait.notification</source>
-                <target><![CDATA[Please wait while we redirect you to payment processor's online Merchant Application.]]></target>
+                <target><![CDATA[Please wait while we establish a secure connection to our processor's Online Merchant Application.]]></target>
             </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
@@ -2682,11 +2682,11 @@
             </trans-unit>
             <trans-unit id="order.report.type.renttrack">
                 <source>order.report.type.renttrack</source>
-                <target>Standard Export(CSV)</target>
+                <target>Standard Export (CSV)</target>
             </trans-unit>
             <trans-unit id="order.report.type.yardi_genesis">
                 <source>order.report.type.yardi_genesis</source>
-                <target>Yardi Genesis(CSV)</target>
+                <target>Yardi Genesis (CSV)</target>
             </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>
