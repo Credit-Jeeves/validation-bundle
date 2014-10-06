@@ -34,7 +34,7 @@ class PaidFor
             $return = $this->makeDatesFromDate($paidTo);
         }
         if (!$contract->getOperations()->count()) {
-            return $return;
+            return $this->returnDefaultValue($return);
         }
         $balances = array();
         $paidForDate = $contract->getOperations()->first()->getPaidFor();
@@ -70,7 +70,7 @@ class PaidFor
             $return = array_slice($return, (static::RESULTS_COUNT * -1), static::RESULTS_COUNT, true);
         }
 
-        return $return;
+        return $this->returnDefaultValue($return);
     }
 
     protected function getNow()
@@ -92,5 +92,14 @@ class PaidFor
             $return += $this->createItem($date);
         } while ($date->modify('+1 month') < $now);
         return $return;
+    }
+
+    protected function returnDefaultValue(array $value)
+    {
+        if (!count($value)) {
+            $date = clone $this->getNow();
+            return $this->createItem($date) + $this->createItem($date->modify('+1 month'));
+        }
+        return $value;
     }
 }
