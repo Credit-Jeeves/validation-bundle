@@ -44,10 +44,6 @@ class PaymentReportCommand extends ContainerAwareCommand
                     ->synchronize($makeArchive);
                 $output->writeln(sprintf('Amount of synchronized deposits: %s', $result));
 
-                $job = new Job('api:yardi:push-batch-receipts', ['--app=rj']);
-                $em->persist($job);
-                $em->flush($job);
-
                 break;
             case 'reversal':
                 $result = $this
@@ -55,10 +51,6 @@ class PaymentReportCommand extends ContainerAwareCommand
                     ->get('payment.reversal_report')
                     ->synchronize($makeArchive);
                 $output->writeln(sprintf('Amount of synchronized reversal payments: %s', $result));
-
-                $job = new Job('api:yardi:push-reversal-receipts', ['--app=rj']);
-                $em->persist($job);
-                $em->flush($job);
 
                 break;
             default:
