@@ -12,7 +12,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\BaseTestCase;
 
-class StartDateCase extends BaseTestCase
+class PaidForCase extends BaseTestCase
 {
     /**
      * @test
@@ -99,6 +99,28 @@ class StartDateCase extends BaseTestCase
             $paidFor->createItem($dateTime) +
             $paidFor->createItem($dateTime->modify('+2 month')) +
             $paidFor->createItem($dateTime->modify('+1 month')),
+            $paidFor->getArray($contract)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getArrayDefault()
+    {
+        $date = new DateTime();
+        $contract = new Contract();
+        $contract->setRent(1000);
+
+        $paidFor = $this->getMock('RentJeeves\CheckoutBundle\Services\PaidFor', array('getNow'), array(), '', false);
+        $paidFor->expects($this->any())
+            ->method('getNow')
+            ->will($this->returnValue(new DateTime()));
+
+
+        $this->assertEquals(
+            $paidFor->createItem($date) +
+            $paidFor->createItem($date->modify('+1 month')),
             $paidFor->getArray($contract)
         );
     }
