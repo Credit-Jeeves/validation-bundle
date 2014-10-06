@@ -52,7 +52,7 @@ class PayCase extends BaseTestCase
 
     /**
      * Turn off by Alexandr
-     * %test
+     * @test
      */
     public function dayRange()
     {
@@ -221,7 +221,7 @@ class PayCase extends BaseTestCase
 
     /**
      * @dataProvider provider
-     * %test
+     * @test
      */
     public function recurring($summary, $skipVerification, $infoMessage, $payBalanceOnly)
     {
@@ -426,7 +426,7 @@ class PayCase extends BaseTestCase
      * Choose an existing payment account that is registered to another deposit
      * account to make sure we can register the old token to a new merchant.
      *
-     * %test
+     * @test
      */
     public function registerAccountToAdditionalMerchant()
     {
@@ -590,7 +590,7 @@ class PayCase extends BaseTestCase
     }
 
     /**
-     * %test
+     * @test
      */
     public function oneTimePayment()
     {

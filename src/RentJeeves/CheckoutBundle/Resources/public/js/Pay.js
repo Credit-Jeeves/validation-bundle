@@ -537,11 +537,7 @@ function Pay(parent, contractId) {
     if (contract.payment) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
     }
-    //if (isNaN(this.payment.startMonth())) {
-    //    var startDate = new Date();
-    //    this.payment.startMonth(startDate.getMonth() + 1);
-    //}
-
+    
     jQuery('#pay-popup').dialog({
         width: 650,
         modal: true,
