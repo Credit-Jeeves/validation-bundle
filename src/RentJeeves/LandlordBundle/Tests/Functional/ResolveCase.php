@@ -9,7 +9,7 @@ use RentJeeves\CoreBundle\DateTime;
  */
 class ResolveCase extends BaseTestCase
 {
-    const CONTRACTS_COUNT = 4;
+    const CONTRACTS_COUNT = 3;
 
     /**
      * @test

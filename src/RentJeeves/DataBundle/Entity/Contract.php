@@ -947,6 +947,9 @@ class Contract extends Base
      */
     public function hasPaymentPendingForMonth($month, $year)
     {
+        $requiredMonth = new DateTime();
+        $requiredMonth->setDate($year, $month, 1);
+
         $operations = $this->getOperations();
         $count = $operations->count();
         for ($i = 1; $i <= $count; $i++) {
@@ -957,13 +960,12 @@ class Contract extends Base
             if ($operation->getType() == OperationType::RENT) {
                 $order = $operation->getOrder();
                 $paidFor = $operation->getPaidFor();
+                $paymentMonth = new DateTime();
+                $paymentMonth->setDate($paymentMonth->format('Y'), $paymentMonth->format('n'), 1);
 
                 if ($order && $paidFor) {
-                    $paymentMonth = (int) $paidFor->format('n');
-                    $paymentYear = (int) $paidFor->format('Y');
                     if (($order->getStatus() == OrderStatus::PENDING)
-                        && (($paymentMonth + $paymentYear) >= ($month + $year))) {
-
+                        && ($paymentMonth == $requiredMonth)) {
                         return true;
                     }
                 }
