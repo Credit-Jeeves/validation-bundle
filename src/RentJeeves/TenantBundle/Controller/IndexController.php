@@ -45,9 +45,10 @@ class IndexController extends Controller
         $isReporting = $contractRepo->countReporting($tenant);
         $countReportingIsOffContracts = $contractRepo->countContractsWithReportingIsOff($tenant);
         $countCurrentContracts = $contractRepo->countTenantContractsByStatus($tenant, ContractStatus::CURRENT);
-        // reporting is not allowed when all contracts are to groups with reportingIsOff = true
-        $reportingIsOff = $countReportingIsOffContracts == $countCurrentContracts;
-        $hasAccessToOptInReporting = $countCurrentContracts > 0 && !$reportingIsOff;
+
+        // if ANY associated contracts have groups with reportingIsOff = true, turn off for now
+        $reportingIsOff = $countReportingIsOffContracts > 0;
+        $hasAccessToOptInReporting = $countCurrentContracts > 0;
 
         return array(
             'isReporting' => $isReporting,
