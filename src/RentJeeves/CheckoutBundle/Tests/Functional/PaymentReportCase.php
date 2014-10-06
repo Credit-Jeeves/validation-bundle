@@ -40,7 +40,6 @@ class PaymentReportCase extends BaseTestCase
     {
         return array(
             array('369369', 'complete', 'returned'),
-            array('258258', 'pending', 'cancelled'),
             array('123123', 'complete', 'refunded'),
             array('456456', 'complete', 'cancelled'),
         );
