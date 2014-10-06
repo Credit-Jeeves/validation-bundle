@@ -4,6 +4,8 @@ namespace RentJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Entity\PartnerCode;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use RentJeeves\CoreBundle\Services\TUReporting;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,9 +18,16 @@ class TenantListener
 {
     protected $request;
 
+    protected $tuReporting;
+
     public function setRequest($request)
     {
         $this->request = $request;
+    }
+
+    public function setTuReporting(TUReporting $tuReporting)
+    {
+        $this->tuReporting = $tuReporting;
     }
 
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -48,5 +57,32 @@ class TenantListener
         $em->persist($partnerCode);
 
         $this->request->cookies->set('clearAffiliate', true);
+    }
+
+    public function preUpdate(LifecycleEventArgs $eventArgs)
+    {
+        $this->turnOnTransUnionReporting($eventArgs);
+    }
+
+    public function turnOnTransUnionReporting(LifecycleEventArgs $eventArgs)
+    {
+        $tenant = $eventArgs->getEntity();
+        if (!$tenant instanceof Tenant) {
+            return;
+        }
+
+        if (!$eventArgs->hasChangedField('is_verified')) {
+            return;
+        }
+
+        $contracts = $tenant->getContracts();
+        $em = $eventArgs->getEntityManager();
+        /**
+         * @var Contract $contract
+         */
+        foreach ($contracts as $contract) {
+            $this->tuReporting->turnOnTransUnionReporting($contract);
+            $em->persist($contract);
+        }
     }
 }

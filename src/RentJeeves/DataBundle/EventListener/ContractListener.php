@@ -79,11 +79,13 @@ class ContractListener
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof Contract) {
+        $contract = $eventArgs->getEntity();
+        if (!$contract instanceof Contract) {
             return;
         }
-        $this->checkContract($entity);
+        $this->checkContract($contract);
+        $tuReporting = $this->container->get('contract.trans_union_reporting');
+        $tuReporting->turnOnTransUnionReporting($contract);
     }
 
     /**

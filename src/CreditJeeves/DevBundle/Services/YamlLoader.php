@@ -18,7 +18,7 @@ use Khepin\YamlFixturesBundle\Loader\YamlLoader as KhepinYamlLoader;
  */
 class YamlLoader extends KhepinYamlLoader
 {
-    
+
     const LOCALE = 'locale';
 
     /**
@@ -32,6 +32,7 @@ class YamlLoader extends KhepinYamlLoader
     public function __construct(\AppKernel $kernel, $bundles, $directory, $dateTimeClass)
     {
         parent::__construct($kernel, $bundles, $directory, $dateTimeClass);
+
     }
 
     /**
@@ -49,6 +50,7 @@ class YamlLoader extends KhepinYamlLoader
             $fixture = $this->getFixtureClass($persistence);
             $fixture = new $fixture($fixture_data, $this, $this->dateTimeClass);
             $fixture->load($this->getManager($persistence), func_get_args());
+
         }
 
         if (!is_null($this->acl_manager)) {
@@ -118,5 +120,18 @@ class YamlLoader extends KhepinYamlLoader
         }
 
         return false;
+    }
+
+    /**
+     * @return string classname
+     */
+    public function getFixtureClass($persistence)
+    {
+        $classes = array(
+            'orm'       => 'CreditJeeves\DevBundle\Services\OrmYamlFixture',
+            'mongodb'   => 'Khepin\YamlFixturesBundle\Fixture\MongoYamlFixture'
+        );
+
+        return $classes[$persistence];
     }
 }
