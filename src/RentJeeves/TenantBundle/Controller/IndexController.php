@@ -48,7 +48,7 @@ class IndexController extends Controller
 
         // if ANY associated contracts have groups with reportingIsOff = true, turn off for now
         $reportingIsOff = $countReportingIsOffContracts > 0;
-        $hasAccessToOptInReporting = $countCurrentContracts > 0;
+        $hasAccessToOptInReporting = $countCurrentContracts > 0 && !$reportingIsOff;
 
         return array(
             'isReporting' => $isReporting,
