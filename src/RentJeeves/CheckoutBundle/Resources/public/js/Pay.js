@@ -131,15 +131,7 @@ function Pay(parent, contractId) {
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
 
-    if (contract.paidTo !== undefined) {
-        var paymentDate = new Date(contract.paidTo);
-    } else if(contract.startAt !== undefined) {
-        var paymentDate = new Date(contract.startAt);
-    } else {
-        var paymentDate = new Date();
-    }
-
-    this.payment = new Payment(this, paymentDate);
+    this.payment = new Payment(this);
     this.payment.contractId = contract.id;
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
@@ -147,6 +139,17 @@ function Pay(parent, contractId) {
     var paidForArr = parent.getPaidForArrContractById(contractId);
     this.payment.paidForOptions(associativeArrayToOptions(paidForArr));
     this.payment.dueDates(contract.groupSetting.dueDays);
+    for (var i = 0; i < 12; i++) {
+        var tempDate = new Date(2000, i, 1);
+        this.payment.startMonths.push({number: tempDate.format('n'), name: tempDate.format('M')});
+    }
+
+    var today = new Date();
+    var year = parseInt(today.format('Y'));
+    for (var i = 1; i < 10; i++) {
+        this.payment.startYears.push({number: year, name: year});
+        year += 1;
+    }
 
     this.isDueDay = function(date) {
         if (-1 == contract.groupSetting.dueDays.indexOf(date.getDate())) {
@@ -534,10 +537,10 @@ function Pay(parent, contractId) {
     if (contract.payment) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
     }
-    if (isNaN(this.payment.startMonth())) {
-        var startDate = new Date();
-        this.payment.startMonth(startDate.getMonth() + 1);
-    }
+    //if (isNaN(this.payment.startMonth())) {
+    //    var startDate = new Date();
+    //    this.payment.startMonth(startDate.getMonth() + 1);
+    //}
 
     jQuery('#pay-popup').dialog({
         width: 650,

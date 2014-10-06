@@ -13,6 +13,10 @@ class StartDateValidator extends ConstraintValidator
         $nowDateTime = new DateTime();
         $dateValidation = DateTime::createFromFormat('Y-m-d', $value);
 
+        if (!$dateValidation) {
+            return $this->context->addViolation($constraint->messageEmptyStartDate);
+        }
+
         if ($dateValidation > $nowDateTime) {
             return;
         }

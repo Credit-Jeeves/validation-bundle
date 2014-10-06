@@ -52,7 +52,7 @@ class PayCase extends BaseTestCase
 
     /**
      * Turn off by Alexandr
-     * @test
+     * %test
      */
     public function dayRange()
     {
@@ -114,8 +114,114 @@ class PayCase extends BaseTestCase
     }
 
     /**
-     * @dataProvider provider
      * @test
+     */
+    public function shouldForceUserToSetStartDate()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->updateGroupSettings(false);
+        $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
+        $this->page->pressButton('contract-pay-2');
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        // recurring + don't choose day, year, month
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(1, $errors);
+        $this->assertEquals('payment.start_date.error.empty_date', $errors[0]->getText());
+
+        // recurring + don't choose year
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(1, $errors);
+        $this->assertEquals('payment.start_date.error.empty_date', $errors[0]->getText());
+
+        // one_time and empty start_date
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(1, $errors);
+        $this->assertEquals('payment.start_date.error.empty_date', $errors[0]->getText());
+
+        // one_time and filled startDate ==> then payment in the past error
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => '1/1/2014',
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.overlay-trigger').is(':visible')");
+
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(2, $errors);
+        $this->assertEquals('payment.start_date.error.past', $errors[0]->getText());
+
+        // correct case
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '20',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+        // everything set up fine: we are on the Source step
+        $this->page->clickLink('payment.account.new');
+
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+        $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
+        $closeButton->click();
+    }
+
+    /**
+     * @dataProvider provider
+     * %test
      */
     public function recurring($summary, $skipVerification, $infoMessage, $payBalanceOnly)
     {
@@ -320,7 +426,7 @@ class PayCase extends BaseTestCase
      * Choose an existing payment account that is registered to another deposit
      * account to make sure we can register the old token to a new merchant.
      *
-     * @test
+     * %test
      */
     public function registerAccountToAdditionalMerchant()
     {
@@ -484,7 +590,7 @@ class PayCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * %test
      */
     public function oneTimePayment()
     {
