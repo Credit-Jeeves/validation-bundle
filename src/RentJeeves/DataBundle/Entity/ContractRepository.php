@@ -16,6 +16,7 @@ use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Entity\Property;
 
 class ContractRepository extends EntityRepository
 {
@@ -300,6 +301,29 @@ class ContractRepository extends EntityRepository
         );
         $query->setParameter('tenant', $tenant->getId());
         $query = $query->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    /**
+     * If all tenant contracts belong to groups with reportingIsOff
+     * @param Tenant $tenant
+     */
+    public function countContractsWithReportingIsOff(Tenant $tenant)
+    {
+        $query = $this->createQueryBuilder('contract');
+
+        $query->select('count(contract.id)');
+        $query->innerJoin('contract.group', 'group');
+        $query->innerJoin('group.groupSettings', 'groupSettings');
+
+        $query->where('contract.tenant = :tenant');
+        $query->andWhere('contract.status = :status');
+        $query->andWhere('groupSettings.isReportingOff = 1');
+
+        $query->setParameter('tenant', $tenant->getId());
+        $query->setParameter('status', ContractStatus::CURRENT);
+        $query = $query->getQuery();
+
         return $query->getSingleScalarResult();
     }
 
@@ -740,5 +764,36 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->iterate();
+    }
+
+    public function findContractByHoldingPropertyResidentUnit(
+        Holding $holding,
+        Property $property,
+        $residentId,
+        $unitName
+    ) {
+        $query = $this->createQueryBuilder('c');
+        $query->select('c');
+        $query->innerJoin('c.unit', 'u');
+        $query->innerJoin('c.group', 'g');
+        $query->innerJoin('g.groupSettings', 'gs');
+        $query->innerJoin('c.tenant', 't');
+        $query->innerJoin('t.residentsMapping', 'rm');
+
+        $query->where('c.status in (:statuses)');
+        $query->andWhere('c.property = :propertyId');
+        $query->andWhere('c.holding = :holdingId');
+        $query->andWhere('gs.isIntegrated = 1');
+        $query->andWhere('u.name = :unitName');
+        $query->andWhere('rm.residentId = :residentId');
+
+        $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
+        $query->setParameter('propertyId', $property->getId());
+        $query->setParameter('holdingId', $holding->getId());
+        $query->setParameter('unitName', $unitName);
+        $query->setParameter('residentId', $residentId);
+        $query = $query->getQuery();
+
+        return $query->execute();
     }
 }

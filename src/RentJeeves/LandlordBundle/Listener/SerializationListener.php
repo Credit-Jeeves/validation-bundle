@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Listener;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
@@ -26,7 +27,12 @@ class SerializationListener implements EventSubscriberInterface
     /**
      * @Inject("accounting.export.yardi", required = true)
      */
-    public $reportOrder;
+    public $yardiReport;
+
+    /**
+     * @Inject("accounting.export.real_page", required = true)
+     */
+    public $realPageReport;
 
     /**
      * @inheritdoc
@@ -38,6 +44,11 @@ class SerializationListener implements EventSubscriberInterface
                 'event'  => 'serializer.pre_serialize',
                 'class'  => 'CreditJeeves\DataBundle\Entity\Operation',
                 'method' => 'onPreSerializeOperation'
+            ),
+            array(
+                'event'  => 'serializer.pre_serialize',
+                'class'  => 'CreditJeeves\DataBundle\Entity\Order',
+                'method' => 'onPreSerializeOrder'
             ),
         );
     }
@@ -55,6 +66,22 @@ class SerializationListener implements EventSubscriberInterface
          * @var $operation Operation
          */
         $operation = $event->getObject();
-        $operation->setPropertyId($this->reportOrder->getPropertyId());
+        $operation->setPropertyId($this->yardiReport->getPropertyId());
+    }
+
+    public function onPreSerializeOrder(ObjectEvent $event)
+    {
+        $context = $event->getContext();
+        $groups = $context->attributes->values();
+        $format = $context->getFormat();
+
+        if ($format != 'csv' || !in_array('realPageReport', $groups[0])) {
+            return;
+        }
+        /**
+         * @var Order $order
+         */
+        $order = $event->getObject();
+        $order->setBuildingId($this->realPageReport->getBuildingId());
     }
 }

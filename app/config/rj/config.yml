@@ -96,6 +96,7 @@ sonata_admin:
                 - sonata.admin.property_mapping
 
 twig:
+    exception_controller: 'RentJeeves\ApiBundle\Controller\ExceptionController::showAction'
     globals:
         application: rj
         google_maps_key: %google_maps_key%
@@ -149,3 +150,47 @@ bazinga_geocoder:
         google_maps:
             api_key:  %google_maps_key%
             use_ssl:  true
+
+be_simple_soap:
+    clients:
+        yardi_resident:
+            wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20.html.twig
+        yardi_payment:
+            wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20_SysBatch.html.twig
+
+fos_rest:
+    param_fetcher_listener: 'force'
+    body_listener: true
+    format_listener: true
+    view:
+        view_response_listener: 'force'
+        formats:
+            xml: false
+            json: true
+        templating_formats:
+            html: true
+        force_redirects:
+            html: true
+        failed_validation: HTTP_BAD_REQUEST
+        default_engine: twig
+        exception_wrapper_handler: RentJeeves\ApiBundle\ErrorHandler\ApiExceptionWrapperHandler
+    exception:
+        codes:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
+            'Symfony\Component\Routing\Exception\MethodNotAllowedException': 405
+            'Symfony\Component\HttpKernel\Exception\HttpException': 400
+        messages:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
+            'Symfony\Component\HttpKernel\Exception\HttpException': true
+            'Symfony\Component\Routing\Exception\MethodNotAllowedException': true
+    routing_loader:
+        default_format: json
+    serializer:
+        serialize_null: true
+
+sensio_framework_extra:
+    view:
+      annotations: false
+    router:
+      annotations: true

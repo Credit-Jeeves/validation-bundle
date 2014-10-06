@@ -42,6 +42,8 @@ class AppRjKernel extends AppKernel
             new Sonata\BlockBundle\SonataBlockBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
             new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
             new Fp\JsFormValidatorBundle\FpJsFormValidatorBundle(),
@@ -58,10 +60,12 @@ class AppRjKernel extends AppKernel
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
             new CreditJeeves\AdminBundle\AdminBundle(),
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
+            new BeSimple\SoapBundle\BeSimpleSoapBundle(),
 
             // Must be last in the list
             new RentJeeves\AdminBundle\RjAdminBundle(),
             new RentJeeves\DataBundle\RjDataBundle(),
+            new RentJeeves\ExternalApiBundle\ExternalApiBundle(),
             new RentJeeves\TenantBundle\TenantBundle(),
             new RentJeeves\LandlordBundle\LandlordBundle(),
             new RentJeeves\PublicBundle\RjPublicBundle(),
@@ -70,7 +74,8 @@ class AppRjKernel extends AppKernel
             new RentJeeves\CheckoutBundle\RjCheckoutBundle(),
             new RentJeeves\ExperianBundle\RjExperianBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
-            new BeSimple\SoapBundle\BeSimpleSoapBundle(),
+            new RentJeeves\ApiBundle\RjApiBundle(),
+            new RentJeeves\OAuthServerBundle\OAuthServerBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test', 'migration'))) {

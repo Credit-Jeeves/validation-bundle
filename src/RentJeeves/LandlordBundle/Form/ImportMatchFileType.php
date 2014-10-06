@@ -3,8 +3,8 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use RentJeeves\DataBundle\Entity\Property;
-use RentJeeves\LandlordBundle\Accounting\ImportMapping as ImportMapping;
-use RentJeeves\LandlordBundle\Accounting\ImportStorage;
+use RentJeeves\LandlordBundle\Accounting\Import\ImportMapping as ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\ImportStorage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;

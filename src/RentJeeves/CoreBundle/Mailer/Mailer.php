@@ -44,7 +44,7 @@ class Mailer extends BaseMailer
             'nameLandlord'          => $landlord->getFirstName(),
             'fullNameTenant'        => $tenant->getFullName(),
             'nameTenant'            => $tenant->getFirstName(),
-            'address'               => $contract->getProperty()->getAddress(),
+            'address'               => ($contract->getProperty()) ? $contract->getProperty()->getAddress() : null,
             'unitName'              => ($contract->getUnit())? $contract->getUnit()->getName() : null,
             'inviteCode'            => $landlord->getInviteCode(),
         );
@@ -431,6 +431,22 @@ class Mailer extends BaseMailer
                     $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting
                 'number' => $order->getHeartlandTransactionId(),
             )
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function sendPushBatchReceiptsReport(Landlord $landlord, $data)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjPushBatchReceiptsReport',
+            array('data' => $data),
+            $landlord->getEmail(),
+            $landlord->getCulture()
         );
     }
 }

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
+use RentJeeves\DataBundle\Entity\OrderExternalApi;
 
 /**
  * @ORM\MappedSuperclass
@@ -132,10 +133,22 @@ abstract class Order
     protected $operations;
 
     /**
-     * @ORM\OneToMany(targetEntity = "\RentJeeves\DataBundle\Entity\JobRelatedOrder", mappedBy = "order")
+     * @ORM\OneToMany(
+     *      targetEntity = "\RentJeeves\DataBundle\Entity\JobRelatedOrder",
+     *      mappedBy = "order"
+     * )
      * @Serializer\Exclude
      */
     protected $jobs;
+
+    /**
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\OrderExternalApi",
+     *      mappedBy = "order"
+     * )
+     * @Serializer\Exclude
+     */
+    protected $sentOrder;
 
     public function __construct()
     {
@@ -143,7 +156,24 @@ abstract class Order
         $this->authorizes = new ArrayCollection();
         $this->heartlands = new ArrayCollection();
         $this->operations = new ArrayCollection();
+        $this->sentOrder  = new ArrayCollection();
         $this->created_at = new DateTime();
+    }
+
+    /**
+     * @param OrderExternalApi $externalApi
+     */
+    public function addSendOrder(OrderExternalApi $sentOrder)
+    {
+        $this->sentOrder->add($sentOrder);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSentOrder()
+    {
+        return $this->sentOrder;
     }
 
     /**

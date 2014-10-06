@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting;
+namespace RentJeeves\LandlordBundle\Accounting\Import;
 
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ContractWaiting;

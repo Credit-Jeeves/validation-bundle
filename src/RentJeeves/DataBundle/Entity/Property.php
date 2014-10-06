@@ -1,11 +1,11 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Traits\AddressTrait;
-use Geocoder\Result\Geocoded;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 
@@ -66,42 +66,6 @@ class Property extends Base
         return $property;
     }
 
-    public function parseGeocodeResponse(Geocoded $response)
-    {
-        $this->setLatitude($response->getLatitude());
-        $this->setLongtitude($response->getLongitude());
-        $this->setZip($response->getZipcode());
-        $this->setArea($response->getRegionCode());
-        $this->setCountry($response->getCountryCode());
-        $this->setCity($response->getCity());
-        if (!$this->getCity()) {
-            $this->setCity($response->getCityDistrict());
-        }
-        $this->setNumber($response->getStreetNumber());
-        $this->setStreet($response->getStreetName());
-        $this->setDistrict($response->getCityDistrict());
-        return $this;
-    }
-
-    public function setLatitude($data)
-    {
-        return $this->setJb($data);
-    }
-
-    public function setLongtitude($data)
-    {
-        return $this->setKb($data);
-    }
-
-    public function getLatitude()
-    {
-        return $this->getJb();
-    }
-
-    public function getLongtitude()
-    {
-        return $this->getKb();
-    }
     /**
      *  jb = latitude, kb = longitude
      *
@@ -306,5 +270,16 @@ class Property extends Base
     public function getFullAddress()
     {
         return $this->fullAddress();
+    }
+
+    /**
+     * @param Group $group
+     * @return bool
+     */
+    public function hasGroup(Group $group)
+    {
+        return !!$this->getPropertyGroups()->filter(function (Group $entity) use ($group) {
+            return $entity->getId() === $group->getId();
+        });
     }
 }

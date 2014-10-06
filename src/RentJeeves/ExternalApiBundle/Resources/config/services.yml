@@ -1,0 +1,34 @@
+parameters:
+    besimple.soap.client.builder.class: 'RentJeeves\ExternalApiBundle\Soap\SoapClientBuilder'
+    soap.client.factory.class: 'RentJeeves\ExternalApiBundle\Soap\SoapClientFactory'
+    soap.client.yardi.payment.class:  'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient'
+    soap.client.yardi.resident.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient'
+
+services:
+    soap.client.factory:
+        class:            "%soap.client.factory.class%"
+        arguments:
+          - "@service_container"
+    soap.client.yardi.payment:
+        class:            "%soap.client.yardi.payment.class%"
+        arguments:
+            - "@soap.wsdl.twig.renderer"
+            - "@besimple.soap.client.yardi_payment"
+            - "@fp_badaboom.exception_catcher"
+            - "@jms_serializer"
+            - "@kernel"
+            - "%soap.api.yardi.entity%"
+            - "%soap.api.yardi.license%"
+            - "%soap.api.yardi.path_to_classes%"
+    soap.client.yardi.resident:
+        class:            "%soap.client.yardi.resident.class%"
+        arguments:
+            - "@soap.wsdl.twig.renderer"
+            - "@besimple.soap.client.yardi_resident"
+            - "@fp_badaboom.exception_catcher"
+            - "@jms_serializer"
+            - "@kernel"
+            - "%soap.api.yardi.entity%"
+            - "%soap.api.yardi.license%"
+            - "%soap.api.yardi.path_to_classes%"
+

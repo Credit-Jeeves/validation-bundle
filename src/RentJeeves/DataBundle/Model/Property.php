@@ -653,4 +653,24 @@ abstract class Property
     {
         return $this->google_reference;
     }
+
+    public function setLatitude($data)
+    {
+        return $this->setJb($data);
+    }
+
+    public function setLongitude($data)
+    {
+        return $this->setKb($data);
+    }
+
+    public function getLatitude()
+    {
+        return $this->getJb();
+    }
+
+    public function getLongitude()
+    {
+        return $this->getKb();
+    }
 }

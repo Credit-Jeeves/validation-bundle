@@ -117,7 +117,7 @@ abstract class Holding
     protected $residentsMapping;
 
     /**
-     * @ORM\OneToMany(
+     * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\PropertyMapping",
      *     mappedBy="holding",
      *     cascade={
@@ -154,7 +154,7 @@ abstract class Holding
     /**
      * @param YardiSettings $yardiSettings
      */
-    public function setYardiSettings(YardiSettings $yardiSettings)
+    public function setYardiSettings(YardiSettings $yardiSettings = null)
     {
         $this->yardiSettings = $yardiSettings;
     }

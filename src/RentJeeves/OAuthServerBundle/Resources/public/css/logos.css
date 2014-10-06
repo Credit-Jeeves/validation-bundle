@@ -1,0 +1,15 @@
+.site-logo {
+    background-image: url("/bundles/rjpublic/images/logo_rj.png");
+    float: left;
+    height: 61px;
+    width: 338px;
+    background-repeat: no-repeat;
+    margin-left: 26px;
+}
+
+.user-logout {
+    font-size: 12px;
+}
+.info-block {
+    margin-right: 30px;
+}

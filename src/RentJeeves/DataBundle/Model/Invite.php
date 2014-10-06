@@ -31,7 +31,7 @@ abstract class Invite
      *     minMessage="error.user.first_name.short",
      *     maxMessage="error.user.first_name.long",
      *     groups={
-     *         "invite",
+     *         "invite", "inviteByApi"
      *     }
      * )     
      */
@@ -47,7 +47,7 @@ abstract class Invite
      *     minMessage="error.user.first_name.short",
      *     maxMessage="error.user.first_name.long",
      *     groups={
-     *         "invite",
+     *         "invite", "inviteByApi"
      *     }
      * )     
      */
@@ -67,26 +67,34 @@ abstract class Invite
      * @Assert\NotBlank(
      *     message="error.user.last_name.empty",
      *     groups={
-     *         "invite",
+     *         "invite", "inviteByApi"
      *     }
      * )
      * @Assert\Email(
      *     groups={
-     *         "invite",
+     *         "invite", "inviteByApi"
      *     }
      * )
      */
     protected $email;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="unit", type="string", length=50, nullable=true)
-     *
-     * @var Unit
+     * @ORM\ManyToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
+     *     inversedBy="unit"
+     * )
+     * @ORM\JoinColumn(
+     *     name="unit_id",
+     *     referencedColumnName="id"
+     * )
      */
     protected $unit;
-
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="unitName", type="string", length=50, nullable=true)
+     */
+    protected $unitName;
 
     /**
      * @ORM\OneToOne(
@@ -227,24 +235,47 @@ abstract class Invite
     /**
      * Set unit
      *
-     * @param string $unit
+     * @param \RentJeeves\DataBundle\Entity\Unit $unit
      * @return Invite
      */
-    public function setUnit($unit)
+    public function setUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
     {
         $this->unit = $unit;
-    
+
         return $this;
     }
 
     /**
      * Get unit
      *
-     * @return string 
+     * @return \RentJeeves\DataBundle\Entity\Unit
      */
     public function getUnit()
     {
         return $this->unit;
+    }
+
+    /**
+     * Set unit name
+     *
+     * @param string $unitName
+     * @return Invite
+     */
+    public function setUnitName($unitName)
+    {
+        $this->unitName = $unitName;
+    
+        return $this;
+    }
+
+    /**
+     * Get unit name
+     *
+     * @return string 
+     */
+    public function getUnitName()
+    {
+        return $this->unitName;
     }
 
     /**

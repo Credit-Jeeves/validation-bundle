@@ -112,7 +112,7 @@
             </trans-unit>
             <trans-unit id="terms.service">
                 <source>terms.service</source>
-                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentTrack, LLC under the Fair Credit Reporting Act authorizing RentTrack LLC to obtain information from your personal credit profile or other information from a credit reporting agency. You authorize RentTrack LLC to obtain such information solely to verify your identity, provide you with your score and aggregated credit information, and pre-qualify you for custom offers.</target>
+                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentTrack, LLC under the Fair Credit Reporting Act authorizing RentTrack LLC to obtain information from your personal credit profile or other information from a credit reporting agency. You authorize RentTrack LLC to obtain such information solely to verify your identity, provide you with your score and aggregated credit information, and pre-qualify you for custom offers. You also understand that once you verify your identity, your rent payments will be reported automatically to TransUnion, but you must Opt-In to Experian RentBureau.</target>
             </trans-unit>
             <trans-unit id="terms.service.pre-link">
                 <source>terms.service.pre-link</source>
@@ -214,6 +214,31 @@
             <trans-unit id="continue">
                 <source>continue</source>
                 <target>Continue</target>
+            </trans-unit>
+            <trans-unit id="connect">
+                <source>connect</source>
+                <target>Connect</target>
+            </trans-unit>
+            <trans-unit id="connect.info_block">
+                <source>connect.info_block</source>
+                <target>
+                <![CDATA[Connect %appName% to RentTrack to allow %appName% to set up payments and view transaction history.
+                %appName% will not be able to access your payment account details and you can revoke access anytime.]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="signup.info_block">
+                <source>signup.info_block</source>
+                <target>Set up your RentTrack account.</target>
+            </trans-unit>
+            <trans-unit id="authorization.main_info">
+                <source>authorization.main_info</source>
+                <target>Allow %appName% to access your account.</target>
+            </trans-unit>
+            <trans-unit id="authorization.additional_info">
+                <source>authorization.additional_info</source>
+                <target>
+                <![CDATA[%appName% will use your <strong>%email%</strong> account. You can revoke access anytime by visiting your Settings.]]>
+                </target>
             </trans-unit>
             <trans-unit id="success.active">
                 <source>success.active</source>
@@ -757,11 +782,19 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This free and optional activity helps to establish or build credit history. Available after your first successful online payment.</target>
+                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This free and optional activity helps to establish or build credit history.</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.available">
+                <source>info.reporting.available</source>
+                <target>Available after your first successful online payment.</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.coming_soon">
+                <source>info.reporting.coming_soon</source>
+                <target>This feature is coming soon for roommates.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
-                <target>Property can't be empty.</target>
+                <target>Please select your rental above.</target>
             </trans-unit>
             <trans-unit id="error.file.empty">
                 <source>error.file.empty</source>
@@ -992,7 +1025,7 @@
             </trans-unit>
             <trans-unit id="next_payment_date">
                 <source>next_payment_date</source>
-                <target>Next Payment Date</target>
+                <target>Start On Date</target>
             </trans-unit>
             <trans-unit id="norton_secured">
                 <source>norton_secured</source>
@@ -1040,7 +1073,7 @@
             </trans-unit>
             <trans-unit id="contract.payment.date.next">
                 <source>contract.payment.date.next</source>
-                <target>Next Payment Date</target>
+                <target>Start On Date</target>
             </trans-unit>
             <trans-unit id="contract.payment.recurring">
                 <source>contract.payment.recurring</source>
@@ -1217,6 +1250,10 @@
                 <source>popup.tenant.get.first.free</source>
                 <target>First One Free</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.always.free">
+                <source>popup.tenant.always.free</source>
+                <target>Always Free</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.pay.e-check">
                 <source>popup.tenant.pay.e-check</source>
                 <target>Pay Rent by E-Check*</target>
@@ -1235,7 +1272,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
-                <target>Build Credit History (opt-in)</target>
+                <target>Build Credit History</target>
             </trans-unit>
             <trans-unit id="popup.tenant.support">
                 <source>popup.tenant.support</source>
@@ -1336,7 +1373,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
-                <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly </target>
+                <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly credit services.</target>
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
@@ -1872,7 +1909,7 @@
             </trans-unit>
             <trans-unit id="help.popup">
                 <source>help.popup</source>
-                <target>Enter the monthly rent amount and due date according to your lease. The next payment date should correspond with the due date - if the next month is June and the Due Date is the 1st, enter June 1st. Finally, specify a month-to-month lease or a specific end date.</target>
+                <target>Enter the monthly rent amount and due date according to your lease. The start on date should correspond with the due date - if the next month is June and the Due Date is the 1st, enter June 1st. Finally, specify a month-to-month lease or a specific end date.</target>
             </trans-unit>
             <trans-unit id="order.type.cash">
                 <source>order.type.cash</source>
@@ -1934,9 +1971,17 @@
                 <source>landlord.alert.verify_email</source>
                 <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="landlord">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
             </trans-unit>
+            <trans-unit id="redirect.wait.notification">
+                <source>redirect.wait.notification</source>
+                <target><![CDATA[Please wait while we establish a secure connection to our processor's Online Merchant Application.]]></target>
+            </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
                 <target>PropertyID</target>
+            </trans-unit>
+            <trans-unit id="building.id">
+                <source>building.id</source>
+                <target>Building ID</target>
             </trans-unit>
             <trans-unit id="account.id">
                 <source>account.id</source>
@@ -2198,6 +2243,10 @@
             <trans-unit id="is.integrated">
                 <source>is.integrated</source>
                 <target>Is Integrated?</target>
+            </trans-unit>
+            <trans-unit id="is.reporting_off">
+                <source>is.reporting_off</source>
+                <target>Reporting Off?</target>
             </trans-unit>
             <trans-unit id="info.payment.date">
                 <source>info.payment.date</source>
@@ -2637,7 +2686,11 @@
             </trans-unit>
             <trans-unit id="order.report.type.renttrack">
                 <source>order.report.type.renttrack</source>
-                <target>Standard Export(CSV)</target>
+                <target>Standard Export (CSV)</target>
+            </trans-unit>
+            <trans-unit id="order.report.type.yardi_genesis">
+                <source>order.report.type.yardi_genesis</source>
+                <target>Yardi Genesis (CSV)</target>
             </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>
@@ -2750,6 +2803,30 @@
             <trans-unit id="deposit.date.range">
                 <source>deposit.date.range</source>
                 <target>Deposit Date Range:</target>
+            </trans-unit>
+            <trans-unit id="common.test.setting">
+                <source>common.test.setting</source>
+                <target>Test setting</target>
+            </trans-unit>
+            <trans-unit id="common.test.setting.successfully">
+                <source>common.test.setting.successfully</source>
+                <target>Test Successfully</target>
+            </trans-unit>
+            <trans-unit id="yardi.sync_balance.label">
+                <source>yardi.sync_balance.label</source>
+                <target>Sync balance?</target>
+            </trans-unit>
+            <trans-unit id="common.status">
+                <source>common.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="common.type_ach_cc">
+                <source>common.type_ach_cc</source>
+                <target><![CDATA[Type ACH/CC]]></target>
+            </trans-unit>
+            <trans-unit id="common.batch_id">
+                <source>common.batch_id</source>
+                <target>Batch ID</target>
             </trans-unit>
         </body>
     </file>

@@ -1,0 +1,70 @@
+{% extends 'OAuthServerBundle::base.html.twig' %}
+
+{% block stylesheets %}
+    {% stylesheets
+        '@UserBundle/Resources/public/css/jquery.reject.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block top_content %}
+<div class="connect-info-block">
+    {{ 'connect.info_block' | trans({'%appName%' : clientName}) | raw }}
+</div>
+{% endblock %}
+{% block content %}
+    <div class="form">
+        {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="row-10"></div>
+            <div class="flash-notice">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('defense') %}
+        <div class="row-10"></div>
+            <div class="flash-error">
+                {{ flashMessage|trans }}
+            </div>
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('error') %}
+        <div class="row-10"></div>
+            <div class="flash-error">
+                {{ flashMessage|trans }}
+            </div>
+        {% endfor %}
+        <form action="{{ path("oauth_server_login_check") }}" method="post" id="login_form">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+            <input type="submit" id="submitBtn"/>
+                {% if error %}
+                    <div class="login-error">{{ error|trans({}, 'FOSUserBundle') }}</div>
+                {% endif %}
+                <div class="row-10">
+                    <label class="form-label login-label" for="username">{{ 'login.email' | trans }}</label>
+                    <input class="login-input"
+                           type="text"
+                           id="username"
+                           name="_username"
+                           value="{{ last_username }}"
+                           required="required"
+                           autocomplete="off"
+                            />
+                </div>
+                <div class="row-10">
+                    <label class="form-label login-label" for="password">{{ 'login.password' | trans }}</label>
+                    <input autocomplete="off" class="login-input" type="password" id="password" name="_password" required="required"/>
+                </div>
+        </form>
+    </div>
+    <div class="create-block-logins row-20">
+        <h2>{{ 'login.new_user_question' | trans }}</h2>
+        <a id="create-user" href="{{ path('fos_oauth_server_registration') }}">» {{ 'login.create_user' | trans }} </a>
+    </div>
+{% endblock content %}
+
+{% block action_buttons %}
+    <div class="buttons left">
+        <button id="cancelBtn" type="button" class="button grey"><span>{{ 'cancel' | trans }}</span></button>
+        <button id="connectBtn" type="button" class="button"><span>Connect</span></button>
+    </div>
+{% endblock %}

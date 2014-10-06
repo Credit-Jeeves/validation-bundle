@@ -328,7 +328,7 @@ class PublicController extends Controller
 
         if ($user->getInvite()) {
             $invite = $user->getInvite();
-            $this->get('invite.landord')->invite($invite, $user);
+            $this->get('invite.landlord')->invite($invite, $user);
             $em->remove($invite);
         }
 

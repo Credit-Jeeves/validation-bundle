@@ -64,8 +64,8 @@ class PromasReport extends ExportReport
     {
         $this->softDeleteableControl->disable();
 
-        $beginDate = $settings['begin'].' 00:00:00';
-        $endDate = $settings['end'].' 23:59:59';
+        $beginDate = $settings['begin'];
+        $endDate = $settings['end'];
         $group = $settings['landlord']->getGroup();
 
         $orderRepository = $this->em->getRepository('DataBundle:Order');

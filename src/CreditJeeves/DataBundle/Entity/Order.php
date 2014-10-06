@@ -25,6 +25,13 @@ class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
+    protected $buildingId = null;
+
+    public function setBuildingId($buildingId)
+    {
+        $this->buildingId = $buildingId;
+    }
+
     /**
      * @return DateTime
      */
@@ -41,13 +48,6 @@ class Order extends BaseOrder
         return $paidFor ? $paidFor->format('Y-m-d\TH:i:s') : '';
     }
 
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Property")
-     * @Serializer\Groups({"csvReport"})
-     *
-     * @return string
-     */
     public function getPropertyAddress()
     {
         $contract = $this->getContract();
@@ -82,8 +82,82 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Unit")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\SerializedName("BuildingId")
+     * @Serializer\Groups({"realPageReport"})
+     */
+    public function getBuilding()
+    {
+        return $this->buildingId;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("R")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getR()
+    {
+        return "R";
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Transaction ID")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisTransactionId()
+    {
+        return $this->getHeartlandTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Resident ID")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisResidentId()
+    {
+        return $this->getTenantExternalId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Amount")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisAmount()
+    {
+        return $this->getTotalAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Date")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisDate()
+    {
+        return $this->getCreatedAt()->format('m/d/Y');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Description")
+     * @Serializer\Groups({"YardiGenesis"})
+     */
+    public function getYardiGenesisDescription()
+    {
+        return sprintf(
+            '%s %s',
+            $this->getContract()->getTenantRentAddress(),
+            $this->getHeartlandBatchId()
+        );
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Unit Number")
+     * @Serializer\Groups({"realPageReport"})
      *
      * @return string
      */
@@ -105,7 +179,7 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -113,7 +187,7 @@ class Order extends BaseOrder
      */
     public function getActualPaymentTransactionDate()
     {
-        return $this->getCreatedAt()->format('Y-m-d\TH:i:s');
+        return $this->getCreatedAt()->format('m/d/Y');
     }
 
 
@@ -155,7 +229,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TotalAmount")
-     * @Serializer\Groups({"csvReport", "promasReport"})
+     * @Serializer\Groups({"realPageReport", "promasReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -199,7 +273,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("First_Name")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      *
      * @return string
@@ -221,7 +295,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Last_Name")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -243,7 +317,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Code")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -266,8 +340,22 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("DocumentNumber")
+     * @Serializer\Groups({"realPageReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getRealPageDocumentNumber()
+    {
+        return $this->getHeartlandTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Description")
-     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Groups({"realPageReport"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -276,11 +364,10 @@ class Order extends BaseOrder
     public function getDescription()
     {
         return sprintf(
-            '%s #%s %s %d',
+            '%s #%s BATCH# %d',
             $this->getPropertyAddress(),
             $this->getUnitName(),
-            $this->getCode(),
-            $this->getHeartlandTransactionId()
+            $this->getHeartlandBatchId()
         );
     }
 
@@ -630,5 +717,85 @@ class Order extends BaseOrder
     public function __toString()
     {
         return (string)$this->getId();
+    }
+
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("DocumentNumber")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getDocumentNumber()
+    {
+        return $this->getHeartlandTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("TransactionDate")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getTransactionDate()
+    {
+        return $this->getCreatedAt()->format('Y-m-d');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("CustomerID")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getCustomerID()
+    {
+        return $this->getTenantExternalId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Amount")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("double")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return double
+     */
+    public function getYardiAmount()
+    {
+        return $this->getTotalAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Comment")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->getContract()->getProperty()->getFullAddress();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PropertyPrimaryID")
+     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getPropertyPrimaryID()
+    {
+        $mapping = $this->getContract()->getProperty()->getPropertyMapping();
+        return $mapping->first()->getExternalPropertyId();
     }
 }

@@ -24,8 +24,8 @@ class Invite extends Base
      */
     public function validate(ExecutionContextInterface $context)
     {
-        if ((!$this->isSingle && empty($this->unit)) || ($this->isSingle && !empty($this->unit))) {
-            $context->addViolationAt('unit', 'invite.error.specify_unit_or_mark_single');
+        if ((!$this->isSingle && empty($this->unitName)) || ($this->isSingle && !empty($this->unitName))) {
+            $context->addViolationAt('unitName', 'invite.error.specify_unit_or_mark_single');
         }
     }
 
