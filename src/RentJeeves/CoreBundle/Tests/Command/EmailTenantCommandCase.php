@@ -89,6 +89,7 @@ class EmailTenantCommandCase extends BaseTestCase
      */
     public function executeLate()
     {
+        $this->markTestSkipped('We no longer send late emails');
         $this->load(false);
         $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
