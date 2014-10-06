@@ -112,7 +112,7 @@
             </trans-unit>
             <trans-unit id="terms.service">
                 <source>terms.service</source>
-                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentTrack, LLC under the Fair Credit Reporting Act authorizing RentTrack LLC to obtain information from your personal credit profile or other information from a credit reporting agency. You authorize RentTrack LLC to obtain such information solely to verify your identity, provide you with your score and aggregated credit information, and pre-qualify you for custom offers.</target>
+                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentTrack, LLC under the Fair Credit Reporting Act authorizing RentTrack LLC to obtain information from your personal credit profile or other information from a credit reporting agency. You authorize RentTrack LLC to obtain such information solely to verify your identity, provide you with your score and aggregated credit information, and pre-qualify you for custom offers. You also understand that once you verify your identity, your rent payments will be reported automatically to TransUnion, but you must Opt-In to Experian RentBureau.</target>
             </trans-unit>
             <trans-unit id="terms.service.pre-link">
                 <source>terms.service.pre-link</source>
@@ -794,7 +794,7 @@
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
-                <target>Property can't be empty.</target>
+                <target>Please select your rental above.</target>
             </trans-unit>
             <trans-unit id="error.file.empty">
                 <source>error.file.empty</source>
@@ -1250,6 +1250,10 @@
                 <source>popup.tenant.get.first.free</source>
                 <target>First One Free</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.always.free">
+                <source>popup.tenant.always.free</source>
+                <target>Always Free</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.pay.e-check">
                 <source>popup.tenant.pay.e-check</source>
                 <target>Pay Rent by E-Check*</target>
@@ -1268,7 +1272,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
-                <target>Build Credit History (opt-in)</target>
+                <target>Build Credit History</target>
             </trans-unit>
             <trans-unit id="popup.tenant.support">
                 <source>popup.tenant.support</source>
@@ -1369,7 +1373,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
-                <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly </target>
+                <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly credit services.</target>
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
