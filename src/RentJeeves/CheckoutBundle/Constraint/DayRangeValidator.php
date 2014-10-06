@@ -16,22 +16,7 @@ class DayRangeValidator extends ConstraintValidator
             return;
         }
 
-        $day = (int) $date->format('j');
-        if ($constraint->openDay <= $constraint->closeDay &&
-            $constraint->closeDay >= $day && $constraint->openDay <= $day
-        ) {
-            return;
-        }
-
-        if ($constraint->openDay >= $constraint->closeDay &&
-            $constraint->openDay <= $day
-        ) {
-            return;
-        }
-
-        if ($constraint->openDay >= $constraint->closeDay &&
-            $constraint->closeDay >= $day
-        ) {
+        if (self::inRange($date, $constraint->openDay, $constraint->closeDay)) {
             return;
         }
 
@@ -44,5 +29,29 @@ class DayRangeValidator extends ConstraintValidator
         );
 
         return $this->context->addViolation($message);
+    }
+
+    public static function inRange(DateTime $date, $openDay, $closeDay)
+    {
+        $day = (int) $date->format('j');
+        if ($openDay <= $closeDay &&
+            $closeDay >= $day && $openDay <= $day
+        ) {
+            return true;
+        }
+
+        if ($openDay >= $closeDay &&
+            $openDay <= $day
+        ) {
+            return true;
+        }
+
+        if ($openDay >= $closeDay &&
+            $closeDay >= $day
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

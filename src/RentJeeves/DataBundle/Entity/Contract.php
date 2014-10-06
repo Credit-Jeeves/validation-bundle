@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -615,6 +616,9 @@ class Contract extends Base
     }
 
     /**
+     * @TODO make it with serializer, it's sucks currently
+     * @TODO remove EntityManager Entity must not use it
+     *
      * @param EntityManager $em
      *
      * @return array
@@ -682,6 +686,14 @@ class Contract extends Base
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
         // display only integrated balance
         $result['balance'] = $isIntegrated ? sprintf('$%s', $this->getIntegratedBalance()) : '';
+        $result['in_day_range'] = DayRangeValidator::inRange(
+            new DateTime(),
+            $groupSettings->getOpenDate(),
+            $groupSettings->getCloseDate()
+        );
+        $result['open_day'] = $groupSettings->getOpenDate();
+        $result['close_day'] = $groupSettings->getCloseDate();
+
         return $result;
     }
 
