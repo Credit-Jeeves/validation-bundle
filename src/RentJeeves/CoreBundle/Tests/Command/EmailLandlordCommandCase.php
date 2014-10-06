@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\CoreBundle\Tests\Command;
 
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CoreBundle\Command\EmailLandlordCommand;
@@ -77,8 +79,27 @@ class EmailLandlordCommandCase extends BaseTestCase
         $application->add(new EmailLandlordCommand());
         $plugin = $this->registerEmailListener();
         $plugin->clean();
+
         $command = $application->find('Email:landlord');
         $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+                '--type' => 'paid'
+            )
+        );
+        $this->assertNotNull($count = $plugin->getPreSendMessages());
+        $this->assertCount(0, $count);
+
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('ivan@rentrack.com');
+        // this tenant has only one order
+        $order = $tenant->getOrders()->first();
+        $order->setStatus(OrderStatus::PENDING);
+        $em->flush($order);
+        $plugin->clean();
+
         $commandTester->execute(
             array(
                 'command' => $command->getName(),

@@ -251,13 +251,15 @@ class ContractRepository extends EntityRepository
             ' AND c.id IN (SELECT IDENTITY(o.contract) FROM DataBundle:Operation o WHERE' .
             ' o.contract = c.id )'
         );
-        $query->andWhere('c.id NOT IN (
-            SELECT con.id FROM RentJeeves\DataBundle\Entity\Contract con
-            INNER JOIN con.operations op
-            INNER JOIN op.order ord
-            WHERE ord.status = :pending AND MONTH(op.paidFor) = :month AND YEAR(op.paidFor) = :year and op.type = :rent
-            )
-        ');
+        $query->andWhere(
+            'c.id NOT IN (
+                SELECT con.id FROM RentJeeves\DataBundle\Entity\Contract con
+                INNER JOIN con.operations op
+                INNER JOIN op.order ord
+                WHERE ord.status = :pending AND MONTH(op.paidFor) = :month
+                AND YEAR(op.paidFor) = :year and op.type = :rent
+            )'
+        );
 
         $today = new DateTime();
         $query->setParameter('group', $group);
