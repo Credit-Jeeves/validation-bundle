@@ -1,8 +1,8 @@
-function Payment(parent, paidTo) {
+function Payment(parent) {
     var self = this;
 
     this.checkDueDate = function () {
-        if (isNaN(self.startYear()) || isNaN(self.startMonth())) {
+        if (!self.startYear() || !self.startMonth() || !self.dueDate()) {
             return null;
         }
         var dayInMonth = Date.getDaysInMonth(parseInt(self.startYear()), parseInt(self.startMonth()) - 1);
@@ -45,8 +45,10 @@ function Payment(parent, paidTo) {
         }
     }, this);
 
-    this.startMonth = ko.observable(paidTo.toString("M"));
-    this.startYear = ko.observable(paidTo.toString("yyyy"));
+    this.startMonth = ko.observable('');
+    this.startMonths = ko.observableArray([]);
+    this.startYear = ko.observable('');
+    this.startYears = ko.observableArray([]);
     this.dueDate = ko.observable();
     this.dueDates = ko.observable([]);
     this.dueDate.subscribe(function(newValue) {
@@ -58,10 +60,10 @@ function Payment(parent, paidTo) {
     this.startMonth.subscribe(function(newValue) {
         self.checkDueDate();
     });
-    this.dueDate(paidTo.toString("d"));
+    this.dueDate(null);
     this.startDate = ko.computed({
         read: function() {
-            if (isNaN(self.startYear()) || isNaN(self.startMonth())) {
+            if (!self.startYear() || !self.startMonth() || !self.dueDate()) {
                 return null;
             }
             var dayInMonth = Date.getDaysInMonth(parseInt(self.startYear()), parseInt(self.startMonth()) - 1);
@@ -90,12 +92,15 @@ function Payment(parent, paidTo) {
     this.type.subscribe(function(newValue) {
         if ('one_time' == newValue) {
             self.ends('cancelled');
-            self.startDate(paidTo.toString("M/d/yyyy"));
+            //self.startDate(null);
+            self.dueDate(null);
+            self.startMonth(null);
+            self.startYear(null);
         }
         if ('recurring' == newValue) {
-            self.dueDate(paidTo.toString("d"));
-            self.startMonth(paidTo.toString("M"));
-            self.startYear(paidTo.toString("yyyy"));
+            self.dueDate(null);
+            self.startMonth(null);
+            self.startYear(null);
         }
     });
 

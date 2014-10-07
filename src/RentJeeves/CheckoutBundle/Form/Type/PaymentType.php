@@ -150,8 +150,10 @@ class PaymentType extends AbstractType
                 ),
                 'attr' => array(
                     'class' => 'original',
-                    'html' => '<div class="tooltip-box type3 pie-el" ' .
-                                    'data-bind="visible: \'recurring\' == payment.type()">' .
+                    'html' =>
+                        // green message box for recurring payment
+                        '<div class="tooltip-box type3 pie-el" ' .
+                        'data-bind="visible: (\'recurring\' == payment.type() && !!payment.startDate())">' .
                         '<h4 data-bind="' .
                             'text: \'checkout.recurring.\' + payment.frequency() + \'.tooltip.title-%DUE_DAY%\', ' .
                             'i18n: {\'DUE_DAY\': payment.dueDate}' .
@@ -165,7 +167,22 @@ class PaymentType extends AbstractType
                                 '\'SETTLE_DAYS\': settleDays, ' .
                                 '\'ENDS_ON\': getLastPaymentDay' .
                             '}' .
-                        '"></p></div>',
+                        '"></p></div>' .
+                        // green message box for empty start_date
+                        '<div class="tooltip-box type3 pie-el" data-bind="visible: !payment.startDate()">' .
+                        '<h4 data-bind="text: Translator.trans(\'checkout.payment.choose_date.title\')"></h4>' .
+                        '<p data-bind="text: Translator.trans(\'checkout.payment.choose_date.text\')"></p>' .
+                        '</div>' .
+                        // green message box for one_time payment
+                        '<div class="tooltip-box type3 pie-el" ' .
+                        'data-bind="visible: (\'one_time\' == payment.type() && !!payment.startDate())">'.
+                        '<h4 data-bind="i18n: {\'START\': payment.startDate, \'SETTLE\': settle}">' .
+                        'checkout.one_time.tooltip.title-%START%-%SETTLE%' .
+                        '</h4>' .
+                        '<p data-bind="i18n: {\'AMOUNT\': getTotal, \'START\': payment.startDate}">' .
+                        'checkout.one_time.tooltip.text-%AMOUNT%-%START%' .
+                        '</p></div>'
+                    ,
                     'data-bind' => 'value: payment.type',
                     'row_attr' => array(
                         'data-bind' => ''
@@ -211,7 +228,7 @@ class PaymentType extends AbstractType
                 'attr' => array(
                     'class' => 'original',
                     'data-bind' => "options: payment.dueDates," .
-                        "value: payment.dueDate",
+                        "value: payment.dueDate, optionsCaption: ''",
                     'box_attr' => array(
                         'data-bind' => 'visible: \'monthly\' == payment.frequency()'
                     )
@@ -237,7 +254,13 @@ class PaymentType extends AbstractType
                 'choices' => $months,
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: payment.startMonth',
+                    'data-bind' => '
+                        options: payment.startMonths,
+                        value: payment.startMonth,
+                        optionsCaption: "",
+                        optionsText: "name",
+                        optionsValue: "number"
+                        ',
                     'row_attr' => array(
                         'data-bind' => 'visible: \'recurring\' == payment.type()'
                     )
@@ -254,7 +277,13 @@ class PaymentType extends AbstractType
                 'choices' => array_combine($years, $years),
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: payment.startYear',
+                    'data-bind' => '
+                        options: payment.startYears,
+                        value: payment.startYear,
+                        optionsCaption: "",
+                        optionsText: "name",
+                        optionsValue: "number"
+                        ',
                     'row_attr' => array(
                         'data-bind' => 'visible: \'recurring\' == payment.type()'
                     )
@@ -275,27 +304,14 @@ class PaymentType extends AbstractType
                 'attr'            => array(
                     'class' => 'datepicker-field',
                     'row_attr'  => array(
-                        'data-bind' => 'visible: \'one_time\' == payment.type()'.
-                                       '|| contract.groupSetting.pay_balance_only'
+                        'data-bind' => 'visible: \'one_time\' == payment.type()
+                            || contract.groupSetting.pay_balance_only'
                     ),
                     'data-bind' => 'datepicker: payment.startDate, ' .
                         'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',
-                    'html'      => '<div class="tooltip-box type3 pie-el">' .
-                    '<h4 data-bind="i18n: {\'START\': payment.startDate, \'SETTLE\': settle}">' .
-                    'checkout.one_time.tooltip.title-%START%-%SETTLE%' .
-                    '</h4>' .
-                    '<p data-bind="i18n: {\'AMOUNT\': getTotal, \'START\': payment.startDate}">' .
-                    'checkout.one_time.tooltip.text-%AMOUNT%-%START%' .
-                    '</p></div>',
                 ),
                 'invalid_message' => 'checkout.error.date.valid',
                 'constraints'     => array(
-                    new NotBlank(
-                        array(
-                            'groups'  => array('one_time'),
-                            'message' => 'checkout.error.date.empty',
-                        )
-                    ),
                     new Date(
                         array(
                             'groups'  => array('one_time'),
