@@ -135,7 +135,8 @@ class Payment
     /**
      * @ORM\Column(name="due_date", type="integer")
      * @Assert\NotBlank(
-     *      message="checkout.error.dueDate.empty"
+     *      message="checkout.error.dueDate.empty",
+     *      groups={"paymentWizard"}
      * )
      * @Serializer\SerializedName("dueDate")
      * @Serializer\Groups({"payRent"})
@@ -147,7 +148,8 @@ class Payment
     /**
      * @ORM\Column(name="start_month", type="integer")
      * @Assert\NotBlank(
-     *      message="checkout.error.startMonth.empty"
+     *      message="checkout.error.startMonth.empty",
+     *      groups={"paymentWizard"}
      * )
      * @Serializer\SerializedName("startMonth")
      * @Serializer\Groups({"payRent"})
@@ -159,7 +161,8 @@ class Payment
     /**
      * @ORM\Column(name="start_year", type="integer")
      * @Assert\NotBlank(
-     *      message="checkout.error.startYear.empty"
+     *      message="checkout.error.startYear.empty",
+     *      groups={"paymentWizard"}
      * )
      * @Serializer\SerializedName("startYear")
      * @Serializer\Groups({"payRent"})

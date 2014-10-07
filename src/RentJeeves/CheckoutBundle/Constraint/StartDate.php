@@ -11,4 +11,6 @@ class StartDate extends Constraint
     public $messageDateInPast = 'payment.start_date.error.past';
 
     public $messageDateCutoffTime = 'payment.start_date.error.cutoff.time';
+
+    public $messageEmptyStartDate = 'payment.start_date.error.empty_date';
 }

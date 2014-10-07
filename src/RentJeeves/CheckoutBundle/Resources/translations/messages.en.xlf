@@ -166,7 +166,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.dueDate.empty">
                 <source>checkout.error.dueDate.empty</source>
-                <target>Type is required.</target>
+                <target>You must specify due date.</target>
             </trans-unit>
             <trans-unit id="checkout.error.dueDate.invalid">
                 <source>checkout.error.dueDate.invalid</source>
@@ -533,6 +533,14 @@
             <trans-unit id="checkout.error.card_account_name.empty">
                 <source>checkout.error.card_account_name.empty</source>
                 <target>Name On Card can not be empty</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.choose_date.title">
+                <source>checkout.payment.choose_date.title</source>
+                <target>Choose a Date</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.choose_date.text">
+                <source>checkout.payment.choose_date.text</source>
+                <target>Please select a date for your payment.</target>
             </trans-unit>
         </body>
     </file>
