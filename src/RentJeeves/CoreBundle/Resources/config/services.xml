@@ -21,7 +21,14 @@
                     strict="false"
                 />
             </call>
+            <call method="setTuReporting">
+                <argument
+                        type="service"
+                        id="contract.trans_union_reporting"
+                />
+            </call>
             <tag name="doctrine.event_listener" event="prePersist" method="prePersist"/>
+            <tag name="doctrine.event_listener" event="preUpdate" method="preUpdate"/>
         </service>
 
         <service id="fixed_date_time" class="JMS\Serializer\Handler\DateHandler">
