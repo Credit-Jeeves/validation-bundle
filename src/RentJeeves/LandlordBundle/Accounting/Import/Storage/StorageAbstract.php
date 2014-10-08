@@ -1,0 +1,58 @@
+<?php
+
+namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
+
+use RentJeeves\LandlordBundle\Exception\ImportStorageException;
+
+abstract class StorageAbstract implements StorageInterface
+{
+    const IMPORT_MAPPING = 'importMapping';
+
+    const IMPORT_STORAGE_TYPE = 'importStorageType';
+
+    const IMPORT_OFFSET_START = 'importOffsetStart';
+
+    protected $session;
+
+    protected $mapping;
+
+    protected $availableTypes = array('csv', 'yardi');
+
+    public function setMapping(array $mappedData)
+    {
+        $this->session->set(self::IMPORT_MAPPING, json_encode($mappedData));
+    }
+
+    public function getMapping()
+    {
+        if (empty($this->mapping)) {
+            $this->mapping = json_decode($this->session->get(self::IMPORT_MAPPING), true);
+        }
+
+        return $this->mapping;
+    }
+
+    public function setStorageType($type)
+    {
+        if (!in_array($type, $this->availableTypes)) {
+            throw new ImportStorageException(sprintf('Not available type "%s"', $type));
+        }
+
+        $this->session->set(self::IMPORT_STORAGE_TYPE, $type);
+    }
+
+    public function getStorageType()
+    {
+        return $this->session->get(self::IMPORT_STORAGE_TYPE);
+    }
+
+    public function getOffsetStart()
+    {
+        return $this->session->get(self::IMPORT_OFFSET_START, 0);
+    }
+
+    public function setOffsetStart($start)
+    {
+        return $this->session->set(self::IMPORT_OFFSET_START, $start);
+    }
+}

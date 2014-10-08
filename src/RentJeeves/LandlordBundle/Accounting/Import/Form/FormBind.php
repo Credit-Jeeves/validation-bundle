@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting\Import;
+namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -14,7 +14,7 @@ use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use Symfony\Component\Form\Form;
 use RentJeeves\CoreBundle\DateTime;
 
-trait ImportFormBind
+trait FormBind
 {
     /**
      * Return array of errors and persisting entity, also fill emailSendingQueue if needed

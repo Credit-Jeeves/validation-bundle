@@ -25,3 +25,25 @@
 .button-box {
     height: 33px;
 }
+
+.checkbox  {
+    margin-left: 20px !important;
+    margin-top: 0px !important;
+    width:auto !important;
+}
+.checkbox>span{
+    width: auto !important;
+}
+#import_file_type_propertyId_row {
+    margin-top: -40px;
+    position: absolute;
+}
+.fields-box input[type="checkbox"] {
+    width: 14px;
+}
+#import_file_type_onlyException_box {
+    margin-left: 72px !important;
+}
+#import_file_type_onlyException_box {
+    display: none;
+}

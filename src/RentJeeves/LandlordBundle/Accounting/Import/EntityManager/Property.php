@@ -1,18 +1,16 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting\Import;
+namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
-
-use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit;
 
-trait ImportProperty
+trait Property
 {
     protected $propertyList = array();
 
     /**
-     * @return Property|null
+     * @return EntityProperty|null
      */
     protected function getProperty($row)
     {
@@ -20,7 +18,7 @@ trait ImportProperty
             return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
         }
         /**
-         * @var $property Property
+         * @var $property EntityProperty
          */
         $property =  $this->mapping->createProperty($row);
         $key = md5($property->getFullAddress());
@@ -36,8 +34,8 @@ trait ImportProperty
         if (!$isValid) {
             return $this->tryMapPropertyByUnit(
                 $property,
-                $row[ImportMapping::KEY_UNIT],
-                $row[ImportMapping::KEY_UNIT_ID]
+                $row[Mapping::KEY_UNIT],
+                $row[Mapping::KEY_UNIT_ID]
             );
         }
         $property = $this->propertyProcess->checkPropertyDuplicate(
@@ -51,11 +49,13 @@ trait ImportProperty
     }
 
     /**
+     * @param EntityProperty $property
      * @param $unitName
      * @param $unitId
-     * @return null|\RentJeeves\DataBundle\Entity\Property
+     *
+     * @return null|Property
      */
-    protected function tryMapPropertyByUnit(Property $property, $unitName, $unitId)
+    protected function tryMapPropertyByUnit(EntityProperty $property, $unitName, $unitId)
     {
         /**
          * @var $unit Unit

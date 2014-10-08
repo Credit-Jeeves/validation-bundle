@@ -15,7 +15,7 @@ trait FormErrors
      *
      * @return array
      */
-    private function getFormChildErrors(FormInterface $child, $name)
+    protected function getFormChildErrors(FormInterface $child, $name)
     {
         if (empty($this->translator)) {
             $this->translator = $this->get('translator.default');
@@ -37,7 +37,7 @@ trait FormErrors
      *
      * @return array
      */
-    private function getFormErrors(FormInterface $form, $name = null)
+    protected function getFormErrors(FormInterface $form, $name = null)
     {
         $return = array();
         if (!$form->isValid()) {

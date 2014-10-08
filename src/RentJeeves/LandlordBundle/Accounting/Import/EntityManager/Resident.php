@@ -1,12 +1,13 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting\Import;
+namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 
 use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
-trait ImportResident
+trait Resident
 {
     /**
      * @var array
@@ -41,29 +42,29 @@ trait ImportResident
     }
 
     /**
-     * @param Tenant $tenant
+     * @param EntityTenant $tenant
      * @param array $row
      *
      * @return ResidentMapping
      */
-    protected function createResident(Tenant $tenant, array $row)
+    protected function createResident(EntityTenant $tenant, array $row)
     {
         $residentMapping = new ResidentMapping();
         $residentMapping->setTenant($tenant);
         $residentMapping->setHolding($this->user->getHolding());
-        $residentMapping->setResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
-        $this->addResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
+        $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
+        $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
 
         return $residentMapping;
     }
 
     /**
-     * @param Tenant $tenant
+     * @param EntityTenant $tenant
      * @param array $row
      *
      * @return ResidentMapping
      */
-    public function getResident(Tenant $tenant, array $row)
+    public function getResident(EntityTenant $tenant, array $row)
     {
         if (is_null($tenant->getId())) {
             return $this->createResident($tenant, $row);
@@ -73,7 +74,7 @@ trait ImportResident
             array(
                 'tenant'        => $tenant->getId(),
                 'holding'       => $this->user->getHolding()->getId(),
-                'residentId'    => $row[ImportMapping::KEY_RESIDENT_ID],
+                'residentId'    => $row[Mapping::KEY_RESIDENT_ID],
             )
         );
 

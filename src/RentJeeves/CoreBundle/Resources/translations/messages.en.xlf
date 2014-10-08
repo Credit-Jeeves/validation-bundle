@@ -18,6 +18,10 @@
                 <source>rj.footer.title</source>
                 <target>RentTrack, at your service.</target>
             </trans-unit>
+            <trans-unit id="import.onlyException">
+                <source>import.onlyException</source>
+                <target><![CDATA[Only Review New Tenants & Exceptions.]]></target>
+            </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
                 <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" and "Pay Rent. Build Credit History." are trademarks.</target>
@@ -2322,11 +2326,15 @@
             </trans-unit>
             <trans-unit id="accounting.file.import">
                 <source>accounting.file.import</source>
-                <target>Accounting File Import</target>
+                <target>Accounting Import</target>
+            </trans-unit>
+            <trans-unit id="common.property_id">
+                <source>common.property_id</source>
+                <target>Property ID</target>
             </trans-unit>
             <trans-unit id="import.file">
                 <source>import.file</source>
-                <target>Import File</target>
+                <target>Import</target>
             </trans-unit>
             <trans-unit id="match.fields">
                 <source>match.fields</source>
@@ -2648,6 +2656,18 @@
                 <source>common.property.id</source>
                 <target>Property ID</target>
             </trans-unit>
+            <trans-unit id="yardi.import.error.getResidents">
+                <source>yardi.import.error.getResidents</source>
+                <target>Can not get resident from yardi api.</target>
+            </trans-unit>
+            <trans-unit id="yardi.import.message.download.resident">
+                <source>yardi.import.message.download.resident</source>
+                <target>Fetching list of residents from accounting system, please stand by.</target>
+            </trans-unit>
+            <trans-unit id="yardi.import.message.download.contracts">
+                <source>yardi.import.message.download.contracts</source>
+                <target>Fetching lease contracts for resident %RESIDENT_ID%.</target>
+            </trans-unit>
             <trans-unit id="landlord.form.import.multiple.property">
                 <source>landlord.form.import.multiple.property</source>
                 <target><![CDATA[(Multi-Property Import)]]></target>
@@ -2772,6 +2792,22 @@
             <trans-unit id="settings.plans.cancel.no">
                 <source>settings.plans.cancel.no</source>
                 <target>No, Do Nothing</target>
+            </trans-unit>
+             <trans-unit id="yardi.import.error.file_type_empty">
+                 <source>yardi.import.error.file_type_empty</source>
+                 <target>Please choose source file type</target>
+             </trans-unit>
+             <trans-unit id="common.source">
+                 <source>common.source</source>
+                 <target>Source</target>
+             </trans-unit>
+            <trans-unit id="common.csv">
+                <source>common.csv</source>
+                <target>CSV</target>
+            </trans-unit>
+            <trans-unit id="import.integrated_api">
+                <source>import.integrated_api</source>
+                <target>Integrated API</target>
             </trans-unit>
             <trans-unit id="payment_form.start_date.error_range">
                 <source>payment_form.start_date.error_range</source>

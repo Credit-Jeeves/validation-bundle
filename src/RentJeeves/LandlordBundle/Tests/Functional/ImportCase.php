@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Model\Unit;
-use RentJeeves\LandlordBundle\Accounting\Import\ImportMapping as Import;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -20,33 +20,33 @@ use RentJeeves\CoreBundle\DateTime;
 class ImportCase extends BaseTestCase
 {
     protected $mapFile = array(
-        '1' => Import::KEY_UNIT,
-        '4' => Import::KEY_RESIDENT_ID,
-        '5' => Import::KEY_TENANT_NAME,
-        '7' => Import::KEY_RENT,
-        '10'=> Import::KEY_MOVE_IN,
-        '11'=> Import::KEY_LEASE_END,
-        '12'=> Import::KEY_MOVE_OUT,
-        '13'=> Import::KEY_BALANCE,
-        '14'=> Import::KEY_EMAIL,
+        '1' => ImportMapping::KEY_UNIT,
+        '4' => ImportMapping::KEY_RESIDENT_ID,
+        '5' => ImportMapping::KEY_TENANT_NAME,
+        '7' => ImportMapping::KEY_RENT,
+        '10'=> ImportMapping::KEY_MOVE_IN,
+        '11'=> ImportMapping::KEY_LEASE_END,
+        '12'=> ImportMapping::KEY_MOVE_OUT,
+        '13'=> ImportMapping::KEY_BALANCE,
+        '14'=> ImportMapping::KEY_EMAIL,
     );
 
     protected $mapMultiplePropertyFile = array(
-        '1' => Import::KEY_RESIDENT_ID,
-        '2' => Import::KEY_TENANT_NAME,
-        '3' => Import::KEY_RENT,
-        '4' => Import::KEY_BALANCE,
-        '5' => Import::KEY_UNIT_ID,
-        '6' => Import::KEY_STREET,
-        '8' => Import::KEY_UNIT,
-        '9' => Import::KEY_CITY,
-        '10'=> Import::KEY_STATE,
-        '11'=> Import::KEY_ZIP,
-        '13'=>Import::KEY_MOVE_IN,
-        '14'=>Import::KEY_LEASE_END,
-        '15'=>Import::KEY_MOVE_OUT,
-        '16'=>Import::KEY_MONTH_TO_MONTH,
-        '17'=>Import::KEY_EMAIL,
+        '1' => ImportMapping::KEY_RESIDENT_ID,
+        '2' => ImportMapping::KEY_TENANT_NAME,
+        '3' => ImportMapping::KEY_RENT,
+        '4' => ImportMapping::KEY_BALANCE,
+        '5' => ImportMapping::KEY_UNIT_ID,
+        '6' => ImportMapping::KEY_STREET,
+        '8' => ImportMapping::KEY_UNIT,
+        '9' => ImportMapping::KEY_CITY,
+        '10'=> ImportMapping::KEY_STATE,
+        '11'=> ImportMapping::KEY_ZIP,
+        '13'=> ImportMapping::KEY_MOVE_IN,
+        '14'=> ImportMapping::KEY_LEASE_END,
+        '15'=> ImportMapping::KEY_MOVE_OUT,
+        '16'=> ImportMapping::KEY_MONTH_TO_MONTH,
+        '17'=> ImportMapping::KEY_EMAIL,
     );
 
     protected function getFilePathByName($fileName)
@@ -1107,19 +1107,19 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         $mapFile = array(
-            '1' => Import::KEY_RESIDENT_ID,
-            '2' => Import::KEY_TENANT_NAME,
-            '3' => Import::KEY_RENT,
-            '4' => Import::KEY_BALANCE,
-            '5' => Import::KEY_UNIT_ID,
-            '6' => Import::KEY_STREET,
-            '7' => Import::KEY_CITY,
-            '8' => Import::KEY_STATE,
-            '9' => Import::KEY_ZIP,
-            '10'=> Import::KEY_MOVE_IN,
-            '11'=> Import::KEY_LEASE_END,
-            '12'=> Import::KEY_MOVE_OUT,
-            '14'=> Import::KEY_EMAIL,
+            '1' => ImportMapping::KEY_RESIDENT_ID,
+            '2' => ImportMapping::KEY_TENANT_NAME,
+            '3' => ImportMapping::KEY_RENT,
+            '4' => ImportMapping::KEY_BALANCE,
+            '5' => ImportMapping::KEY_UNIT_ID,
+            '6' => ImportMapping::KEY_STREET,
+            '7' => ImportMapping::KEY_CITY,
+            '8' => ImportMapping::KEY_STATE,
+            '9' => ImportMapping::KEY_ZIP,
+            '10'=> ImportMapping::KEY_MOVE_IN,
+            '11'=> ImportMapping::KEY_LEASE_END,
+            '12'=> ImportMapping::KEY_MOVE_OUT,
+            '14'=> ImportMapping::KEY_EMAIL,
         );
         for ($i = 1; $i <= 15; $i++) {
             if (isset($mapFile[$i])) {
@@ -1206,15 +1206,15 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         $mapFile = array(
-            '1' => Import::KEY_UNIT,
-            '2' => Import::KEY_RESIDENT_ID,
-            '3' => Import::KEY_TENANT_NAME,
-            '4' => Import::KEY_RENT,
-            '5' => Import::KEY_MOVE_IN,
-            '6' => Import::KEY_LEASE_END,
-            '7' => Import::KEY_MOVE_OUT,
-            '8' => Import::KEY_BALANCE,
-            '9' => Import::KEY_EMAIL,
+            '1' => ImportMapping::KEY_UNIT,
+            '2' => ImportMapping::KEY_RESIDENT_ID,
+            '3' => ImportMapping::KEY_TENANT_NAME,
+            '4' => ImportMapping::KEY_RENT,
+            '5' => ImportMapping::KEY_MOVE_IN,
+            '6' => ImportMapping::KEY_LEASE_END,
+            '7' => ImportMapping::KEY_MOVE_OUT,
+            '8' => ImportMapping::KEY_BALANCE,
+            '9' => ImportMapping::KEY_EMAIL,
         );
         for ($i = 1; $i <= 15; $i++) {
             if (isset($mapFile[$i])) {
@@ -1256,15 +1256,15 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         $mapFile = array(
-            '1' => Import::KEY_UNIT,
-            '2' => Import::KEY_RESIDENT_ID,
-            '3' => Import::KEY_TENANT_NAME,
-            '4' => Import::KEY_RENT,
-            '5' => Import::KEY_MOVE_IN,
-            '6' => Import::KEY_LEASE_END,
-            '7' => Import::KEY_MOVE_OUT,
-            '8' => Import::KEY_BALANCE,
-            '9' => Import::KEY_EMAIL,
+            '1' => ImportMapping::KEY_UNIT,
+            '2' => ImportMapping::KEY_RESIDENT_ID,
+            '3' => ImportMapping::KEY_TENANT_NAME,
+            '4' => ImportMapping::KEY_RENT,
+            '5' => ImportMapping::KEY_MOVE_IN,
+            '6' => ImportMapping::KEY_LEASE_END,
+            '7' => ImportMapping::KEY_MOVE_OUT,
+            '8' => ImportMapping::KEY_BALANCE,
+            '9' => ImportMapping::KEY_EMAIL,
         );
         for ($i = 1; $i <= 15; $i++) {
             if (isset($mapFile[$i])) {
@@ -1360,6 +1360,40 @@ class ImportCase extends BaseTestCase
             )
         );
         $this->assertEquals(1, count($contracts));
+        $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function yardiBaseImport()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
+        $this->assertNotNull($yardiRadio = $this->page->findAll('css', '.radio'));
+        $yardiRadio[1]->click();
+        $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
+        $propertyId->setValue('rnttrk01');
+        $submitImport->click();
+
+        $this->session->wait(
+            60000,
+            "$('.errorMessage').length <= 0"
+        );
+        $this->waitReviewAndPost();
+        for ($i = 0; $i <= 3; $i++) {
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+            $submitImportFile->click();
+            $this->waitReviewAndPost();
+        }
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
         $this->logout();
     }
 }

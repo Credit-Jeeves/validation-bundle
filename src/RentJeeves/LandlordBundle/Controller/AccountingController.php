@@ -2,25 +2,24 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
-use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
-use RentJeeves\LandlordBundle\Accounting\Import\ImportMapping;
-use RentJeeves\LandlordBundle\Accounting\Import\ImportProcess;
-use RentJeeves\LandlordBundle\Accounting\Import\ImportStorage;
+use RentJeeves\LandlordBundle\Accounting\Import\ImportFactory;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\Yardi;
 use RentJeeves\LandlordBundle\Accounting\AccountingPermission as Permission;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract as ImportHandler;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use RentJeeves\LandlordBundle\Form\ExportType;
 use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
 use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -129,6 +128,9 @@ class AccountingController extends Controller
         );
 
         $form->handleRequest($this->get('request'));
+        $importFactory = $this->get('accounting.import.factory');
+        $importFactory->clearSessionAllImports();
+
         if (!$form->isValid()) {
             return array(
                 'form'      => $form->createView(),
@@ -136,29 +138,9 @@ class AccountingController extends Controller
             );
         }
 
-        $file = $form['attachment']->getData();
-        $property = $form['property']->getData();
-        $textDelimiter = $form['textDelimiter']->getData();
-        $fieldDelimiter = $form['fieldDelimiter']->getData();
-        $dateFormat = $form['dateFormat']->getData();
-        $tmpDir = sys_get_temp_dir();
-        $newFileName = uniqid().'.csv';
-        $file->move($tmpDir, $newFileName);
-        /**
-         * @var ImportStorage $importStorage
-         */
-        $importStorage = $this->get('accounting.import.storage');
-
-        $importStorage->setFieldDelimiter($fieldDelimiter);
-        $importStorage->setTextDelimiter($textDelimiter);
-        $importStorage->setFilePath($newFileName);
-        if ($property instanceof Property) {
-            $importStorage->setPropertyId($property->getId());
-            $importStorage->setIsMultipleProperty(false);
-        } else {
-            $importStorage->setIsMultipleProperty(true);
-        }
-        $importStorage->setDateFormat($dateFormat);
+        $importStorage = $importFactory->getStorage($form['fileType']->getData());
+        $importStorage->setImportData($form);
+        $importStorage->setStorageType($form['fileType']->getData());
 
         return $this->redirect($this->generateUrl('accounting_match_file'));
     }
@@ -175,15 +157,18 @@ class AccountingController extends Controller
         $this->checkAccessToAccounting();
         try {
             /**
-             * @var ImportStorage $importStorage
+             * @var $importFactory ImportFactory
              */
-            $importStorage = $this->get('accounting.import.storage');
-            $data = $importStorage->getImportData();
-            /**
-             * @var ImportMapping $importMapping
-             */
-            $importMapping = $this->get('accounting.import.mapping');
-            $data = $importMapping->getDataForMapping();
+            $importFactory = $this->get('accounting.import.factory');
+            $importStorage = $importFactory->getStorage();
+            $importMapping = $importFactory->getMapping();
+
+            if ($importMapping->isNeedManualMapping()) {
+                $data = $importStorage->getImportData();
+                $data = $importMapping->getDataForMapping();
+            } else {
+                return $this->redirect($this->generateUrl('accounting_import'));
+            }
         } catch (ImportStorageException $e) {
             return $this->redirect($this->generateUrl('accounting_import_file'));
         } catch (ImportMappingException $e) {
@@ -197,7 +182,7 @@ class AccountingController extends Controller
             new ImportMatchFileType(
                 count($dataView),
                 $this->get('translator'),
-                $this->get('accounting.import.storage')
+                $importStorage
             )
         );
         $form->handleRequest($this->get('request'));
@@ -224,23 +209,22 @@ class AccountingController extends Controller
     public function importAction(Request $request)
     {
         $this->checkAccessToAccounting();
-        /**
-         * @var ImportStorage $importStorage
-         */
-        $importStorage = $this->get('accounting.import.storage');
         try {
-            $data = $importStorage->getImportData();
+            /**
+             * @var $importFactory ImportFactory
+             */
+            $importFactory = $this->get('accounting.import.factory');
+            $importStorage = $importFactory->getStorage();
+            $importStorage->clearDataBeforeReview();
+            $importMapping = $importFactory->getMapping();
+            if ($importMapping->isNeedManualMapping()) {
+                $importStorage->getImportData();
+            }
         } catch (ImportStorageException $e) {
             return $this->redirect($this->generateUrl('accounting_import_file'));
         }
 
-        if (empty($data[ImportStorage::IMPORT_MAPPING])) {
-            return $this->redirect($this->generateUrl('accounting_import_file'));
-        }
-        /**
-         * @var $importProcess ImportProcess
-         */
-        $importProcess = $this->get('accounting.import.process');
+        $importProcess = $importFactory->getHandler();
         $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm(
             new ResidentMapping(),
             new UnitMapping(),
@@ -258,6 +242,8 @@ class AccountingController extends Controller
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
             'formContract'            => $formContract->createView(),
             'formContractFinish'      => $formContractFinish->createView(),
+            'importStorage'           => $importStorage,
+            'importMapping'           => $importMapping,
             //Make it string because it's var for js and I want boolean
             'isMultipleProperty'      => ($importStorage->isMultipleProperty())? "true" : "false",
         );
@@ -285,28 +271,27 @@ class AccountingController extends Controller
         }
 
         /**
-         * @var ImportStorage $importStorage
+         * @var $importFactory ImportFactory
          */
-        $importStorage = $this->get('accounting.import.storage');
-        /**
-         * @var ImportMapping $importMapping
-         */
-        $importMapping = $this->get('accounting.import.mapping');
+        $importFactory = $this->get('accounting.import.factory');
+        $importStorage = $importFactory->getStorage();
+        $importMapping = $importFactory->getMapping();
+
         $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($newRows) {
-            $importStorage->setFileLine($importStorage->getFileLine() + ImportProcess::ROW_ON_PAGE);
+            $importStorage->setOffsetStart($importStorage->getOffsetStart() + ImportHandler::ROW_ON_PAGE);
         }
 
         $rows = array();
-        /**
-         * @var $importProcess ImportProcess
-         */
-        $importProcess = $this->get('accounting.import.process');
-        $total = $importMapping->countLines();
+
+        $importProcess = $importFactory->getHandler();
+        $total = $importMapping->getTotal();
 
         if ($total > 0) {
             $rows = $importProcess->getImportModelCollection();
+        } else {
+            $importStorage->clearSession();
         }
 
         $context = new SerializationContext();
@@ -347,9 +332,10 @@ class AccountingController extends Controller
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
         /**
-         * @var $importProcess ImportProcess
+         * @var $importFactory ImportFactory
          */
-        $importProcess = $this->get('accounting.import.process');
+        $importFactory = $this->get('accounting.import.factory');
+        $importProcess = $importFactory->getHandler();
         $data = $request->request->all();
         $result['formErrors'] = $importProcess->saveForms($data);
 
@@ -363,20 +349,117 @@ class AccountingController extends Controller
     {
         $this->checkAccessToAccounting();
         /**
-         * @var ImportStorage $importStorage
+         * @var $importFactory ImportFactory
          */
-        $importStorage = $this->get('accounting.import.storage');
+        $importFactory = $this->get('accounting.import.factory');
+        $importStorage = $importFactory->getStorage();
+        return $importStorage->isValid();
+    }
 
+    /**
+     * @Route(
+     *     "/import/residents/yardi",
+     *     name="accounting_import_residents_yardi",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getResidentsYardi()
+    {
+        $holding = $this->getUser()->getHolding();
+        /**
+         * @var $importFactory ImportFactory
+         */
+        $importFactory = $this->get('accounting.import.factory');
+        $mapping = $importFactory->getMapping();
+        $storage = $importFactory->getStorage();
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $propertyMapping PropertyMapping
+         */
+        $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+            array(
+                'property'              => $storage->getImportPropertyId(),
+                'holding'               => $holding->getId(),
+                'externalPropertyId'    => $storage->getImportExternalPropertyId(),
+            )
+        );
+
+        if (empty($propertyMapping)) {
+            /**
+             * @var $property Property
+             */
+            $property = $em->getRepository('RjDataBundle:Property')->find($storage->getImportPropertyId());
+            $propertyMapping = new PropertyMapping();
+            $propertyMapping->setHolding($holding);
+            $propertyMapping->setProperty($property);
+            $propertyMapping->setExternalPropertyId($storage->getImportExternalPropertyId());
+            $property->setPropertyMapping($propertyMapping);
+            $em->persist($propertyMapping);
+            $em->flush();
+        } else {
+            $property = $propertyMapping->getProperty();
+        }
+        if ($storage->getImportLoaded() === false) {
+            $residents = $mapping->getResidents($holding, $property);
+            $residents = array_values($residents);
+        } else {
+            $residents = array();
+        }
+        $response = new Response($this->get('jms_serializer')->serialize($residents, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/import/resident/yardi/{residentId}/{isLast}",
+     *     name="accounting_import_resident_data_yardi",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getResidentData($residentId, $isLast = 0)
+    {
+        $holding = $this->getUser()->getHolding();
+        $request = $this->get('request');
+        $moveOutDate = $request->request->get('name');
+
+        /**
+         * @var $importFactory ImportFactory
+         */
+        $importFactory = $this->get('accounting.import.factory');
+        $mapping = $importFactory->getMapping();
+        $storage = $importFactory->getStorage();
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $propertyMapping PropertyMapping
+         */
+        $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+            array(
+                'property'              => $storage->getImportPropertyId(),
+                'holding'               => $holding->getId(),
+                'externalPropertyId'    => $storage->getImportExternalPropertyId(),
+            )
+        );
         try {
-            $data = $importStorage->getImportData();
-        } catch (ImportStorageException $e) {
-            return false;
+            $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $residentId);
+            $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate);
+            if (!$residentLeaseFile instanceof ResidentLeaseFile) {
+                $responseData = array('result' => false);
+            } else {
+                $responseData = array('result' => true);
+            }
+        } catch (Exception $e) {
+            $responseData = array('result' => false, 'message' => $e->getMessage(), 'ty' => $storage->getFilePath());
         }
 
-        if (empty($data[ImportStorage::IMPORT_MAPPING])) {
-            return false;
+        if ($isLast) {
+            $storage->setImportLoaded(true);
         }
 
-        return true;
+        $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 }
