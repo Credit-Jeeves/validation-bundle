@@ -232,6 +232,8 @@ class PropertyProcess
         $property->setNumber($response->getStreetNumber());
         $property->setStreet($response->getStreetName());
         $property->setDistrict($response->getCityDistrict());
+
+        return $property;
     }
 
     /**
