@@ -181,7 +181,7 @@ class PropertyProcess
         }
 
         if ($response = $this->getGoogleGeocode($property->getFullAddress())) {
-            $property = $this->mapGeocodeResponseToProperty($response, $property);
+            $this->mapGeocodeResponseToProperty($response, $property);
             $this->validProperties[] = $property;
 
             return true;
@@ -232,8 +232,6 @@ class PropertyProcess
         $property->setNumber($response->getStreetNumber());
         $property->setStreet($response->getStreetName());
         $property->setDistrict($response->getCityDistrict());
-
-        return $property;
     }
 
     /**

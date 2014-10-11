@@ -8,6 +8,10 @@ use RentJeeves\DataBundle\Entity\UnitMapping;
 
 trait ImportUnit
 {
+    protected $externalUnitIdList = array();
+
+    protected $unitList = array();
+
     /**
      * @param $row
      *
@@ -32,7 +36,7 @@ trait ImportUnit
         );
 
         if ($this->group) {
-            $params['group'] = $this->group;
+            $params['group'] = $this->group->getId();
         }
 
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
@@ -42,7 +46,7 @@ trait ImportUnit
         }
 
         if ($holding = $this->group->getHolding()) {
-            $params['holding'] = $holding;
+            $params['holding'] = $holding->getId();
         }
 
         if (!empty($params['name']) && !empty($params['property'])) {
@@ -51,6 +55,14 @@ trait ImportUnit
 
         if (!empty($unit)) {
             return $unit;
+        }
+        $key = '';
+        foreach ($params as $param) {
+            $key .= $params."_";
+        }
+
+        if (array_key_exists($key, $this->unitList)) {
+            return $this->unitList[$key];
         }
 
         $unit = new Unit();
@@ -61,6 +73,8 @@ trait ImportUnit
         $unit->setHolding($this->group->getHolding());
         $unit->setGroup($this->group);
 
+        $this->unitList[$key] = $unit;
+
         return $unit;
     }
 
@@ -70,19 +84,29 @@ trait ImportUnit
      */
     public function getUnitMapping(array $row)
     {
+        $externalUnitId = $row[ImportMapping::KEY_UNIT_ID];
+
+        if (array_key_exists($externalUnitId, $this->externalUnitIdList)) {
+            return $this->externalUnitIdList[$externalUnitId];
+        }
+
         if (!$this->storage->isMultipleProperty()) {
-            return new UnitMapping();
+            $unitMapping = new UnitMapping();
+            $this->externalUnitIdList[$externalUnitId] = $unitMapping;
+            return $unitMapping;
         }
 
         $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
             array(
-                'externalUnitId' => $row[ImportMapping::KEY_UNIT_ID],
+                'externalUnitId' => $externalUnitId,
             )
         );
-        if (!$unitMapping) {
+        if (empty($unitMapping)) {
             $unitMapping = new UnitMapping();
-            $unitMapping->setExternalUnitId($row[ImportMapping::KEY_UNIT_ID]);
+            $unitMapping->setExternalUnitId($externalUnitId);
         }
+
+        $this->externalUnitIdList[$externalUnitId] = $unitMapping;
 
         return $unitMapping;
     }
