@@ -58,7 +58,7 @@ trait ImportUnit
         }
         $key = '';
         foreach ($params as $param) {
-            $key .= $params."_";
+            $key .= $param."_";
         }
 
         if (array_key_exists($key, $this->unitList)) {
