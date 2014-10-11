@@ -41,11 +41,7 @@ class ResidentDataManager
 
     public function getResidents(Holding $holding, Property $property)
     {
-        /** @var ResidentDataClient $residentClient */
-        $residentClient = $this->clientFactory->getClient(
-            $holding->getYardiSettings(),
-            SoapClientEnum::RESIDENT_DATA
-        );
+        $residentClient = $this->getApiClient($holding);
 
         $residents = $residentClient->getResidents($property->getPropertyMapping()->first()->getExternalPropertyId());
 
@@ -62,5 +58,26 @@ class ResidentDataManager
         );
 
         return $currentResidents;
+    }
+
+    public function getResidentData(Holding $holding, Property $property, $residentId)
+    {
+        $propertyId = $property->getPropertyMapping()->first()->getExternalPropertyId();
+        $residentClient = $this->getApiClient($holding);
+        $resident = $residentClient->getResidentData($propertyId, $residentId);
+
+        return $resident->getLeaseFiles()->getLeaseFile();
+    }
+
+    /**
+     * @param Holding $holding
+     * @return ResidentDataClient
+     */
+    protected function getApiClient(Holding $holding)
+    {
+        return $this->clientFactory->getClient(
+            $holding->getYardiSettings(),
+            SoapClientEnum::RESIDENT_DATA
+        );
     }
 }

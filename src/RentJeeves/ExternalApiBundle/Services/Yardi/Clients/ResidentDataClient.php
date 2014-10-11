@@ -3,6 +3,8 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 
+use RentJeeves\CoreBundle\DateTime;
+
 class ResidentDataClient extends AbstractClient
 {
     protected $mapping = array(
@@ -29,6 +31,30 @@ class ResidentDataClient extends AbstractClient
 
         return $this->processRequest(
             'GetResidents',
+            $parameters
+        );
+    }
+
+    public function getResidentData($propertyId, $residentId)
+    {
+        $parameters = array(
+            'GetResidentData' => array_merge(
+                $this->getLoginCredentials(),
+                [
+                    'YardiPropertyId' => $propertyId,
+                    'TenantCode' => $residentId,
+                    'IncludeLedger' => false,
+                    'LedgerAsOfDate' => new DateTime(),
+                    'IncludeLeaseCharges' => false,
+                    'IncludeVehicleInfo' => false,
+                    'IncludeRoommateData' => false,
+                    'IncludeEmployerData' =>false,
+                ]
+            )
+        );
+
+        return $this->processRequest(
+            'GetResidentData',
             $parameters
         );
     }
