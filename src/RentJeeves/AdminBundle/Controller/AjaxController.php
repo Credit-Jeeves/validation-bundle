@@ -13,7 +13,7 @@ use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -142,11 +142,11 @@ class AjaxController extends Controller
         }
         $clientFactory = $this->get('soap.client.factory');
         /**
-         * @var $resident ResidentClient
+         * @var $resident ResidentTransactionsClient
          */
         $resident = $clientFactory->getClient(
             $yardiSettings,
-            SoapClientEnum::RESIDENT
+            SoapClientEnum::RESIDENT_TRANSACTIONS
         );
 
         $result = $resident->getPropertyConfigurations();

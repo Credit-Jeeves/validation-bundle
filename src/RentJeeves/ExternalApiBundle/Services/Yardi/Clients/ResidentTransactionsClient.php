@@ -3,10 +3,8 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionLoginResponse;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
 
-class ResidentClient extends AbstractClient
+class ResidentTransactionsClient extends AbstractClient
 {
     protected $mapping = array(
         'GetPropertyConfigurations' => array(

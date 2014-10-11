@@ -18,7 +18,7 @@ class ResidentClientCase extends Base
 
         $resident = $clientFactory->getClient(
             $this->getYardiSettings(),
-            SoapClientEnum::RESIDENT
+            SoapClientEnum::RESIDENT_TRANSACTIONS
         );
 
         $result = $resident->getPropertyConfigurations();
