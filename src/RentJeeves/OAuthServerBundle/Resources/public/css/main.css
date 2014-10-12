@@ -80,13 +80,14 @@ h5 {
 }
 
 .connect-info-block {
-    width: 400px;
+    max-width: 400px;
     margin: auto;
 }
 
 .form {
-    margin: 20px auto;
-    width: 330px;
+    padding: 0 10px;
+    margin: auto;
+    max-width: 400px;
 }
 
 /** Main content part **/
@@ -107,7 +108,7 @@ h5 {
 }
 
 .block-content {
-    width: 600px;
+    padding: 0 10px;
     margin: auto;
 }
 
@@ -129,15 +130,8 @@ h5 {
     padding: 20px 0;
     text-align: center;
     background-color: #dcdcdc;
-    height: 46px;
 }
 
-.footer .accreditations {
-    position: relative;
-    top: -130%;
-    float: right;
-    padding: 0 20px;
-}
 /** additional styles **/
 .row-20 {
     margin-top: 20px;
@@ -243,6 +237,7 @@ input[type="email"] {
     border-radius: 4px 4px 4px 4px;
     box-shadow: 0 0 1px 1px #D7D7D7 inset;
     padding: 3px 10px;
+    width: 90%;
 }
 
 input {
@@ -507,4 +502,13 @@ input[type="submit"] {
 }
 .required b {
     color: #C00;
+}
+
+@media all and (orientation: landscape) {
+    .footer .accreditations {
+        position: relative;
+        bottom: 60px;
+        float: right;
+        padding: 0 20px;
+    }
 }
