@@ -181,7 +181,7 @@ class PropertyProcess
         }
 
         if ($response = $this->getGoogleGeocode($property->getFullAddress())) {
-            $property = $this->mapGeocodeResponseToProperty($response, $property);
+            $this->mapGeocodeResponseToProperty($response, $property);
             $this->validProperties[] = $property;
 
             return true;
