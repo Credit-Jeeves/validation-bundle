@@ -365,7 +365,7 @@ class Order extends BaseOrder
     {
         return sprintf(
             '%s #%s BATCH# %d',
-            $this->getPropertyAddress(),
+            str_replace(",","",$this->getPropertyAddress()), // RealPage import doesn't honor quoted strings
             $this->getUnitName(),
             $this->getHeartlandBatchId()
         );
