@@ -54,7 +54,9 @@ class ResidentDataManager
 
         $currentResidents = array_filter(
             $residents,
-            function ($resident) { return $resident->getStatus() == self::CURRENT_RESIDENT; }
+            function ($resident) {
+                return $resident->getStatus() == self::CURRENT_RESIDENT;
+            }
         );
 
         return $currentResidents;
