@@ -287,8 +287,8 @@ abstract class AbstractClient implements SoapClientInterface
                 );
             }
 
-            $responce = $this->soapClient->__soapCall($function, $params);
-            $resultXmlResponse = $this->processXmlResponse($responce, $function);
+            $response = $this->soapClient->__soapCall($function, $params);
+            $resultXmlResponse = $this->processXmlResponse($response, $function);
 
             if ($resultXmlResponse) {
                 return $resultXmlResponse;
@@ -298,7 +298,7 @@ abstract class AbstractClient implements SoapClientInterface
                 return null;
             }
 
-            $resultNumericResponse = $this->processNumericResponse($responce, $function);
+            $resultNumericResponse = $this->processNumericResponse($response, $function);
             if ($resultNumericResponse) {
                 return $resultNumericResponse;
             }

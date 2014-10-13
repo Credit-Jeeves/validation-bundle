@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:types>
+<s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData">
+<s:element name="GetPropertyConfigurations">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetPropertyConfigurationsResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPropertyConfigurationsResult">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetResidents">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="MoveOut1" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetResidentsResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentsResult">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetResidentData">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TenantCode" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="IncludeLedger" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="LedgerAsOfDate" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="IncludeLeaseCharges" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="IncludeVehicleInfo" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="IncludeRoommateData" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="IncludeEmployerData" type="s:boolean" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetResidentDataResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentDataResult">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="UpdateResidentData">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XmlDoc">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="UpdateResidentDataResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateResidentDataResult">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="ImportTenantLeaseDocumentPDF">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="DataBase" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TenantCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="AttachmentType" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Attachment" type="s:base64Binary" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="ImportTenantLeaseDocumentPDFResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ImportTenantLeaseDocumentPDFResult">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetTenantLeaseDocuments">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TenantCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetTenantLeaseDocumentsResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTenantLeaseDocumentsResult">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetTenantDocument">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="YardiPropertyId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="TenantCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetTenantDocumentResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTenantDocumentResult" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetAttachmentTypes">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetAttachmentTypesResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAttachmentTypesResult">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetPermissions">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ServerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Platform" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceEntity" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="InterfaceLicense" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetPermissionsResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPermissionsResult">
+                <s:complexType mixed="true">
+                    <s:sequence>
+                        <s:any />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="GetVersionNumber">
+    <s:complexType />
+</s:element>
+<s:element name="GetVersionNumberResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVersionNumberResult" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+<s:element name="Ping">
+    <s:complexType />
+</s:element>
+<s:element name="PingResponse">
+    <s:complexType>
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PingResult" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+</s:element>
+</s:schema>
+</wsdl:types>
+<wsdl:message name="GetPropertyConfigurationsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPropertyConfigurations" />
+</wsdl:message>
+<wsdl:message name="GetPropertyConfigurationsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPropertyConfigurationsResponse" />
+</wsdl:message>
+<wsdl:message name="GetResidentsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidents" />
+</wsdl:message>
+<wsdl:message name="GetResidentsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentsResponse" />
+</wsdl:message>
+<wsdl:message name="GetResidentDataSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentData" />
+</wsdl:message>
+<wsdl:message name="GetResidentDataSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentDataResponse" />
+</wsdl:message>
+<wsdl:message name="UpdateResidentDataSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateResidentData" />
+</wsdl:message>
+<wsdl:message name="UpdateResidentDataSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateResidentDataResponse" />
+</wsdl:message>
+<wsdl:message name="ImportTenantLeaseDocumentPDFSoapIn">
+    <wsdl:part name="parameters" element="tns:ImportTenantLeaseDocumentPDF" />
+</wsdl:message>
+<wsdl:message name="ImportTenantLeaseDocumentPDFSoapOut">
+    <wsdl:part name="parameters" element="tns:ImportTenantLeaseDocumentPDFResponse" />
+</wsdl:message>
+<wsdl:message name="GetTenantLeaseDocumentsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTenantLeaseDocuments" />
+</wsdl:message>
+<wsdl:message name="GetTenantLeaseDocumentsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTenantLeaseDocumentsResponse" />
+</wsdl:message>
+<wsdl:message name="GetTenantDocumentSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTenantDocument" />
+</wsdl:message>
+<wsdl:message name="GetTenantDocumentSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTenantDocumentResponse" />
+</wsdl:message>
+<wsdl:message name="GetAttachmentTypesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAttachmentTypes" />
+</wsdl:message>
+<wsdl:message name="GetAttachmentTypesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAttachmentTypesResponse" />
+</wsdl:message>
+<wsdl:message name="GetPermissionsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPermissions" />
+</wsdl:message>
+<wsdl:message name="GetPermissionsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPermissionsResponse" />
+</wsdl:message>
+<wsdl:message name="GetVersionNumberSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVersionNumber" />
+</wsdl:message>
+<wsdl:message name="GetVersionNumberSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVersionNumberResponse" />
+</wsdl:message>
+<wsdl:message name="PingSoapIn">
+    <wsdl:part name="parameters" element="tns:Ping" />
+</wsdl:message>
+<wsdl:message name="PingSoapOut">
+    <wsdl:part name="parameters" element="tns:PingResponse" />
+</wsdl:message>
+<wsdl:portType name="ItfResidentDataSoap">
+    <wsdl:operation name="GetPropertyConfigurations">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of the Property Configuration with the Database. The Unique Interface Entity name is needed in order to return the Property ID(s) the Third-Party has access to. </wsdl:documentation>
+        <wsdl:input message="tns:GetPropertyConfigurationsSoapIn" />
+        <wsdl:output message="tns:GetPropertyConfigurationsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidents">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of residents and roommates within a property.</wsdl:documentation>
+        <wsdl:input message="tns:GetResidentsSoapIn" />
+        <wsdl:output message="tns:GetResidentsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentData">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows export of data for a single resident with options for ledger transactions, lease charges, vehicle info, roommate info, and employer data.</wsdl:documentation>
+        <wsdl:input message="tns:GetResidentDataSoapIn" />
+        <wsdl:output message="tns:GetResidentDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateResidentData">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows the update of resident information according to the Resident Data permission configured by the client. </wsdl:documentation>
+        <wsdl:input message="tns:UpdateResidentDataSoapIn" />
+        <wsdl:output message="tns:UpdateResidentDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ImportTenantLeaseDocumentPDF">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows for the import of a document to a Voyager install and attaches it to a tenant record. The tenant must have executed the LeaseSign event. </wsdl:documentation>
+        <wsdl:input message="tns:ImportTenantLeaseDocumentPDFSoapIn" />
+        <wsdl:output message="tns:ImportTenantLeaseDocumentPDFSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTenantLeaseDocuments">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the attachment names for a given tenant code.</wsdl:documentation>
+        <wsdl:input message="tns:GetTenantLeaseDocumentsSoapIn" />
+        <wsdl:output message="tns:GetTenantLeaseDocumentsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTenantDocument">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the attachment for a given tenant code as a string. Only returns the attachment of the Attachment Type setup for the vendor.</wsdl:documentation>
+        <wsdl:input message="tns:GetTenantDocumentSoapIn" />
+        <wsdl:output message="tns:GetTenantDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAttachmentTypes">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the attachment types defined in a database.</wsdl:documentation>
+        <wsdl:input message="tns:GetAttachmentTypesSoapIn" />
+        <wsdl:output message="tns:GetAttachmentTypesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPermissions">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Allows a third party vendor to view the features of Resident Data they have read and/or write access to.</wsdl:documentation>
+        <wsdl:input message="tns:GetPermissionsSoapIn" />
+        <wsdl:output message="tns:GetPermissionsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns current version number of Interfaces concatenated with Resident Data Plugin version (XX_Y)</wsdl:documentation>
+        <wsdl:input message="tns:GetVersionNumberSoapIn" />
+        <wsdl:output message="tns:GetVersionNumberSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+        <wsdl:input message="tns:PingSoapIn" />
+        <wsdl:output message="tns:PingSoapOut" />
+    </wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="ItfResidentDataSoap" type="tns:ItfResidentDataSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetPropertyConfigurations">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetPropertyConfigurations" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidents">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetResidents" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentData">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetResidentData" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateResidentData">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/UpdateResidentData" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportTenantLeaseDocumentPDF">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/ImportTenantLeaseDocumentPDF" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTenantLeaseDocuments">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetTenantLeaseDocuments" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTenantDocument">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetTenantDocument" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttachmentTypes">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetAttachmentTypes" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPermissions">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetPermissions" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetVersionNumber" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+        <soap:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/Ping" style="document" />
+        <wsdl:input>
+            <soap:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+</wsdl:binding>
+<wsdl:binding name="ItfResidentDataSoap12" type="tns:ItfResidentDataSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetPropertyConfigurations">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetPropertyConfigurations" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidents">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetResidents" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentData">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetResidentData" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateResidentData">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/UpdateResidentData" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImportTenantLeaseDocumentPDF">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/ImportTenantLeaseDocumentPDF" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTenantLeaseDocuments">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetTenantLeaseDocuments" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTenantDocument">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetTenantDocument" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttachmentTypes">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetAttachmentTypes" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPermissions">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetPermissions" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionNumber">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/GetVersionNumber" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Ping">
+        <soap12:operation soapAction="http://tempuri.org/YSI.Interfaces.WebServices/ItfResidentData/Ping" style="document" />
+        <wsdl:input>
+            <soap12:body use="literal" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap12:body use="literal" />
+        </wsdl:output>
+    </wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="ItfResidentData">
+    <wsdl:port name="ItfResidentDataSoap" binding="tns:ItfResidentDataSoap">
+        <soap:address location="{{ url }}WebServices/ItfResidentData.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ItfResidentDataSoap12" binding="tns:ItfResidentDataSoap12">
+        <soap12:address location="{{ url }}WebServices/ItfResidentData.asmx" />
+    </wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

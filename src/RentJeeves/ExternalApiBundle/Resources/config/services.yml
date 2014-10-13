@@ -2,15 +2,16 @@ parameters:
     besimple.soap.client.builder.class: 'RentJeeves\ExternalApiBundle\Soap\SoapClientBuilder'
     soap.client.factory.class: 'RentJeeves\ExternalApiBundle\Soap\SoapClientFactory'
     soap.client.yardi.payment.class:  'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient'
-    soap.client.yardi.resident.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient'
+    soap.client.yardi.resident_transactions.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'
+    soap.client.yardi.resident_data.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient'
 
 services:
     soap.client.factory:
-        class:            "%soap.client.factory.class%"
+        class: "%soap.client.factory.class%"
         arguments:
           - "@service_container"
     soap.client.yardi.payment:
-        class:            "%soap.client.yardi.payment.class%"
+        class: "%soap.client.yardi.payment.class%"
         arguments:
             - "@soap.wsdl.twig.renderer"
             - "@besimple.soap.client.yardi_payment"
@@ -20,11 +21,22 @@ services:
             - "%soap.api.yardi.entity%"
             - "%soap.api.yardi.license%"
             - "%soap.api.yardi.path_to_classes%"
-    soap.client.yardi.resident:
-        class:            "%soap.client.yardi.resident.class%"
+    soap.client.yardi.resident_transactions:
+        class: "%soap.client.yardi.resident_transactions.class%"
         arguments:
             - "@soap.wsdl.twig.renderer"
-            - "@besimple.soap.client.yardi_resident"
+            - "@besimple.soap.client.yardi_resident_transactions"
+            - "@fp_badaboom.exception_catcher"
+            - "@jms_serializer"
+            - "@kernel"
+            - "%soap.api.yardi.entity%"
+            - "%soap.api.yardi.license%"
+            - "%soap.api.yardi.path_to_classes%"
+    soap.client.yardi.resident_data:
+        class: "%soap.client.yardi.resident_data.class%"
+        arguments:
+            - "@soap.wsdl.twig.renderer"
+            - "@besimple.soap.client.yardi_resident_data"
             - "@fp_badaboom.exception_catcher"
             - "@jms_serializer"
             - "@kernel"

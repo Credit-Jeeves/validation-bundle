@@ -1,12 +1,12 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Tests\Unit;
+namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients;
 
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
-use RentJeeves\ExternalApiBundle\Tests\Unit\BaseClientCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients\BaseClientCase as Base;
 
-class ResidentClientCase extends Base
+class ResidentTransactionsClientCase extends Base
 {
     /**
      * @test
@@ -18,7 +18,7 @@ class ResidentClientCase extends Base
 
         $resident = $clientFactory->getClient(
             $this->getYardiSettings(),
-            SoapClientEnum::RESIDENT
+            SoapClientEnum::RESIDENT_TRANSACTIONS
         );
 
         $result = $resident->getPropertyConfigurations();

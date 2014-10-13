@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
@@ -83,8 +83,11 @@ class ResidentBalanceSynchronizer
     {
         $repo = $this->em->getRepository('RjDataBundle:Property');
 
-        /** @var $residentClient ResidentClient */
-        $residentClient = $this->clientFactory->getClient($holding->getYardiSettings(), SoapClientEnum::RESIDENT);
+        /** @var $residentClient ResidentTransactionsClient */
+        $residentClient = $this->clientFactory->getClient(
+            $holding->getYardiSettings(),
+            SoapClientEnum::RESIDENT_TRANSACTIONS
+        );
         $propertySets = ceil($repo->countContractPropertiesByHolding($holding) / self::COUNT_PROPERTIES_PER_SET);
         for ($offset = 1; $offset <= $propertySets; $offset++) {
             $properties = $repo->findContractPropertiesByHolding($holding, $offset, self::COUNT_PROPERTIES_PER_SET);

@@ -153,8 +153,10 @@ bazinga_geocoder:
 
 be_simple_soap:
     clients:
-        yardi_resident:
+        yardi_resident_transactions:
             wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20.html.twig
+        yardi_resident_data:
+            wsdl: ExternalApiBundle:Yardi:ItfResidentData.html.twig
         yardi_payment:
             wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20_SysBatch.html.twig
 
