@@ -69,10 +69,26 @@ class ParamFetcher extends Base
     {
         $config = $this->params[$name];
 
-        if (!empty($config->encoder) && $this->container->has($config->encoder)) {
-            $encoder = $this->container->get($config->encoder);
-            if ($encoder instanceof AttributeEncoderInterface) {
-                return $encoder;
+        if (!empty($config->encoder)) {
+            $encoder = $config->encoder;
+
+            !is_array($encoder) || $encoder = array_shift($config->encoder);
+
+            if ($this->container->has($encoder)) {
+                $encoder = $this->container->get($encoder);
+
+                if(is_array($config->encoder)) foreach ($config->encoder as $method => $parameters) {
+                    $method = 'set' . ucfirst($method);
+
+                    if (method_exists($encoder, $method)) {
+                        is_array($parameters) || $parameters = [$parameters];
+                        call_user_func_array([$encoder, $method], $parameters);
+                    }
+                }
+
+                if ($encoder instanceof AttributeEncoderInterface) {
+                    return $encoder;
+                }
             }
         }
 

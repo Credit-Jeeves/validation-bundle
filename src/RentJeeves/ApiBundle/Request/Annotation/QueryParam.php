@@ -10,6 +10,6 @@ use FOS\RestBundle\Controller\Annotations\QueryParam as Base;
  */
 class QueryParam extends Base
 {
-    /** @var string */
-    public $encoder;
+    /** @var mixed */
+    public $encoder = null;
 }

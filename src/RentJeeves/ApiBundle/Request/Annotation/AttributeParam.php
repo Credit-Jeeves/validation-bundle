@@ -10,6 +10,6 @@ use FOS\RestBundle\Controller\Annotations\Param;
  */
 class AttributeParam extends Param
 {
-    /** @var  string */
-    public $encoder;
+    /** @var mixed */
+    public $encoder = null;
 }

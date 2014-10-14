@@ -10,6 +10,6 @@ use FOS\RestBundle\Controller\Annotations\RequestParam as Base;
  */
 class RequestParam extends Base
 {
-    /** @var  string  */
-    public $encoder;
+    /** @var mixed */
+    public $encoder = null;
 }

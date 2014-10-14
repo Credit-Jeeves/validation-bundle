@@ -15,4 +15,25 @@ interface AttributeEncoderInterface
      * @return mixed Decoded Value
      */
     public function decode($encodedValue);
+
+    /**
+     * Means can be encoded
+     * @param $value
+     * @return bool
+     */
+    public function isValidForEncryption($value);
+
+    /**
+     * Means can be decoded
+     * @param $encodedValue
+     * @return bool
+     */
+    public function isValidForDecryption($encodedValue);
+
+    /**
+     * $sipNotValid default = true
+     * @param bool $isSkip
+     * @return $this
+     */
+    public function setSkipNotValid($isSkip);
 }

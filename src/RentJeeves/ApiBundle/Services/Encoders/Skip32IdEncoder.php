@@ -6,26 +6,74 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Skip32 as Cipher;
 
 /**
- * @DI\Service("api.id_obfuscator")
+ * @DI\Service("skip32.id_encoder")
  */
-class Skip32IdEncoder implements IdEncoderInterface
+class Skip32IdEncoder extends Encoder implements IdEncoderInterface
 {
     const DEFAULT_KEY = '0123456789abcdef0123';
 
     protected $cipher;
 
-    public function __construct($key = self::DEFAULT_KEY)
+    /**
+     * @param string $key
+     * @param bool $skipNotValid
+     */
+    public function __construct($key = self::DEFAULT_KEY, $skipNotValid = false)
     {
         $this->cipher = new Cipher($key);
+        $this->skipNotValid = $skipNotValid;
     }
 
     public function encode($integerId)
     {
-        return $this->cipher->enc($integerId);
+        if ($this->isValidForEncryption($integerId)) {
+            return $this->cipher->enc($integerId);
+        } elseif ($this->skipNotValid) {
+            return $integerId;
+        }
+
+        throw new EncoderValidationException(sprintf('Value "%s" isn\'t correct Id.', $integerId));
     }
 
     public function decode($encodedId)
     {
-        return $this->cipher->dec($encodedId);
+        if ($this->isValidForDecryption($encodedId)) {
+            return $this->cipher->dec($encodedId);
+        } elseif ($this->skipNotValid) {
+            return $encodedId;
+        }
+
+        throw new EncoderValidationException(sprintf('Value "%s" isn\'t correct encrypted Id.', $encodedId));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isValidForEncryption($value)
+    {
+        return $this->validate($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isValidForDecryption($encodedValue)
+    {
+        return $this->validate($encodedValue);
+    }
+
+    protected function validate($value)
+    {
+        if (is_int($value)) {
+            return true;
+        }
+
+        if (is_numeric($value)) {
+            $int = (int) $value;
+
+            return (strlen($value) === strlen($int) and $int == $value);
+        }
+
+        return false;
     }
 }
