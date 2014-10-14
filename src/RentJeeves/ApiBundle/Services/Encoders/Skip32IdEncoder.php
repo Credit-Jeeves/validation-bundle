@@ -8,7 +8,7 @@ use Skip32 as Cipher;
 /**
  * @DI\Service("skip32.id_encoder")
  */
-class Skip32IdEncoder extends Encoder implements IdEncoderInterface
+class Skip32IdEncoder extends Encoder
 {
     const DEFAULT_KEY = '0123456789abcdef0123';
 
@@ -32,7 +32,7 @@ class Skip32IdEncoder extends Encoder implements IdEncoderInterface
             return $integerId;
         }
 
-        throw new EncoderValidationException(sprintf('Value "%s" isn\'t correct Id.', $integerId));
+        throw new ValidationEncoderException(sprintf('Value "%s" isn\'t correct integer Id.', $integerId));
     }
 
     public function decode($encodedId)
@@ -43,7 +43,7 @@ class Skip32IdEncoder extends Encoder implements IdEncoderInterface
             return $encodedId;
         }
 
-        throw new EncoderValidationException(sprintf('Value "%s" isn\'t correct encrypted Id.', $encodedId));
+        throw new ValidationEncoderException(sprintf('Value "%s" isn\'t correct encrypted Id.', $encodedId));
     }
 
     /**

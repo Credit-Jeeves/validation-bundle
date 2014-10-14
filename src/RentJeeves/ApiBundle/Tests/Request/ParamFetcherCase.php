@@ -102,7 +102,13 @@ class ParamFetcherCase extends BaseTestCase
 
         $this->request = new Request($query, $request, $attributes);
 
-        return new ParamFetcher($this->getContainer(), $this->paramReader, $this->request, $this->violationFormatter, $this->validator);
+        return new ParamFetcher(
+            $this->getContainer(),
+            $this->paramReader,
+            $this->request,
+            $this->violationFormatter,
+            $this->validator
+        );
     }
 
     /**
@@ -117,7 +123,13 @@ class ParamFetcherCase extends BaseTestCase
      *
      * @dataProvider configuredParamDataProvider
      */
-    public function configuredParam($queryParams, $requestParams, $attributeParams, $expectedParams, $expectedAttributes)
+    public function configuredParam(
+        $queryParams,
+        $requestParams,
+        $attributeParams,
+        $expectedParams,
+        $expectedAttributes
+    )
     {
         $queryFetcher = $this->getParamFetcher($queryParams, $requestParams, $attributeParams);
         $queryFetcher->setController($this->controller);
@@ -153,7 +165,7 @@ class ParamFetcherCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException        \RentJeeves\ApiBundle\Services\Encoders\EncoderValidationException
+     * @expectedException        \RentJeeves\ApiBundle\Services\Encoders\ValidationEncoderException
      * @expectedExceptionMessage Value "TEST" isn't correct encrypted Id.
      */
     public function exceptionNotValidDecryptionValue()

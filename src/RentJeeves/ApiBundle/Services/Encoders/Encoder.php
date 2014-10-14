@@ -15,7 +15,7 @@ abstract class Encoder implements AttributeEncoderInterface
             return $value;
         }
 
-        throw new EncoderValidationException;
+        throw new ValidationEncoderException;
     }
 
     /**
@@ -27,7 +27,7 @@ abstract class Encoder implements AttributeEncoderInterface
             return $encodedValue;
         }
 
-        throw new EncoderValidationException;
+        throw new ValidationEncoderException;
     }
 
     /**
@@ -54,5 +54,24 @@ abstract class Encoder implements AttributeEncoderInterface
         $this->skipNotValid = $isSkip;
 
         return $this;
+    }
+
+    public function __set($name, $value)
+    {
+        $setter = 'set' . ucfirst($name);
+
+        if (method_exists($this, $setter)) {
+            return $this->$setter($value);
+        }
+
+        if (method_exists($this,'get'.$name)) {
+            throw new EncoderException(
+                sprintf('Property "%s.%s" is read only.', get_class($this), $name)
+            );
+        } else {
+            throw new EncoderException(
+                sprintf('Property "%s.%s" is not defined.', get_class($this), $name)
+            );
+        }
     }
 }

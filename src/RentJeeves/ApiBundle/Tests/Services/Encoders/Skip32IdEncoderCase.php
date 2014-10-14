@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ApiBundle\Tests\Services\Encoders;
 
-use RentJeeves\ApiBundle\Services\Encoders\IdEncoderInterface;
+use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class Skip32IdEncoderCase extends BaseTestCase
@@ -22,9 +22,9 @@ class Skip32IdEncoderCase extends BaseTestCase
      */
     public function encode($id, $resultId)
     {
-        /** @var IdEncoderInterface $obfuscator */
-        $obfuscator = $this->getContainer()->get('api.id_obfuscator');
-        $encodedId = $obfuscator->encode($id);
+        /** @var AttributeEncoderInterface $encoder */
+        $encoder = $this->getContainer()->get('skip32.id_encoder');
+        $encodedId = $encoder->encode($id);
 
         $this->assertEquals($encodedId, $resultId);
     }
@@ -35,10 +35,21 @@ class Skip32IdEncoderCase extends BaseTestCase
      */
     public function decode($resultId, $encodedId)
     {
-        /** @var IdEncoderInterface $obfuscator */
-        $obfuscator = $this->getContainer()->get('api.id_obfuscator');
-        $id = $obfuscator->decode($encodedId);
+        /** @var AttributeEncoderInterface $encoder */
+        $encoder = $this->getContainer()->get('skip32.id_encoder');
+        $id = $encoder->decode($encodedId);
 
         $this->assertEquals($id, $resultId);
+    }
+
+    /**
+     * @test
+     * @expectedException        \RentJeeves\ApiBundle\Services\Encoders\ValidationEncoderException
+     * @expectedExceptionMessage Value "TEST" isn't correct encrypted Id.
+     */
+    public function exception()
+    {
+        $encoder = $this->getContainer()->get('skip32.id_encoder');
+        $encoder->decode('TEST');
     }
 }
