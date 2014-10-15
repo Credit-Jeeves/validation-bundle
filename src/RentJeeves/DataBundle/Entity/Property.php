@@ -211,7 +211,11 @@ class Property extends Base
             $unit = $this->getUnits()->first();
             if (!$unit) {
                 throw new \LogicException(
-                    sprintf('Standalone property "%s" has no unit.', $this->getAddress())
+                    sprintf(
+                        'Standalone property "%s" with id "%s" has no unit.',
+                        $this->getAddress(),
+                        $this->getId()
+                    )
                 );
             }
             return $unit;

@@ -158,7 +158,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('APPLEGATE', $csvArr[5]);
         $this->assertEquals('PMTCRED', $csvArr[6]);
         $this->assertEquals(123123, $csvArr[7]);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a BATCH# 125478', $csvArr[8]);
+        $this->assertEquals('770 Broadway Manhattan New York NY 10003 #2-a BATCH# 125478', $csvArr[8]);
     }
 
     /**
@@ -207,7 +207,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals(88, $columns[0]);
         $this->assertEquals('2-a', $columns[1]);
         $this->assertEquals(1500, $columns[3]);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a BATCH# 325698', $columns[8]);
+        $this->assertEquals('770 Broadway Manhattan New York NY 10003 #2-a BATCH# 325698', $columns[8]);
     }
 
     /**
