@@ -289,7 +289,7 @@ class TransUnionReportRecord
 
     public function getAmountPastDue()
     {
-        $amount = $this->getBalance() > 0 ? $this->getBalance() : 0;
+        $amount = $this->contract->getUncollectedBalance() > 0 ? $this->contract->getUncollectedBalance() : 0;
 
         return str_pad((int)$amount, 9, '0', STR_PAD_LEFT);
     }
