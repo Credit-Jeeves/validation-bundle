@@ -64,7 +64,7 @@ abstract class Encoder implements AttributeEncoderInterface
             return $this->$setter($value);
         }
 
-        if (method_exists($this,'get'.$name)) {
+        if (method_exists($this, 'get'.$name)) {
             throw new EncoderException(
                 sprintf('Property "%s.%s" is read only.', get_class($this), $name)
             );

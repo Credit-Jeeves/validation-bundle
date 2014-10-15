@@ -129,8 +129,7 @@ class ParamFetcherCase extends BaseTestCase
         $attributeParams,
         $expectedParams,
         $expectedAttributes
-    )
-    {
+    ) {
         $queryFetcher = $this->getParamFetcher($queryParams, $requestParams, $attributeParams);
         $queryFetcher->setController($this->controller);
 
