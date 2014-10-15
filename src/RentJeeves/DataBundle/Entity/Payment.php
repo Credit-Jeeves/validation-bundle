@@ -107,9 +107,13 @@ class Payment extends Base
             $now->modify('first day of next month');
             $month = $now->format('m');
             $year = $now->format('Y');
-        } else { // 5. If the day is Ok, month and year should be the current ones
+        } else { // 5. If the day is Ok, month and year should be the current ones unless NOW is before START_DATE
             $month = $currentMonth;
             $year = $currentYear;
+            if ($now < $this->getStartDate()) {
+                $month = $this->getStartMonth();
+                $year = $this->getStartYear();
+            }
         }
         // modify and setDate do not work together, so we need to take non modified 'now'
         $now = $this->getNow();
