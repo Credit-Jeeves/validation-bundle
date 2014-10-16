@@ -289,7 +289,7 @@ class TransUnionReportRecord
 
     public function getAmountPastDue()
     {
-        $amount = $this->contract->getUncollectedBalance() > 0 ? $this->contract->getUncollectedBalance() : 0;
+        $amount = $this->getBalance() > 0 ? $this->getBalance() : 0;
 
         return str_pad((int)$amount, 9, '0', STR_PAD_LEFT);
     }
@@ -399,12 +399,23 @@ class TransUnionReportRecord
 
     protected function getBalance()
     {
-        $isIntegratedGroup = $this->contract->getGroup()->getGroupSettings()->getIsIntegrated();
-        if ($isIntegratedGroup) {
-            return $this->contract->getIntegratedBalance();
+        $interval = $this->getUnpaidInterval();
+        $leaseStatus = $this->getLateLeaseStatus($interval);
+        // if lease status not current but contract not finished (then contract is late)
+        if ($leaseStatus != self::LEASE_STATUS_CURRENT && $this->contract->getStatus() != ContractStatus::FINISHED) {
+            $isIntegratedGroup = $this->contract->getGroup()->getGroupSettings()->getIsIntegrated();
+            if ($isIntegratedGroup) {
+                return $this->contract->getIntegratedBalance();
+            } else {
+                return $this->contract->getBalance();
+            }
         }
 
-        return $this->contract->getBalance();
+        if ($this->contract->getStatus() == ContractStatus::FINISHED) {
+            return $this->contract->getUncollectedBalance();
+        }
+
+        return 0;
     }
 
     protected function getFormattedRentAmount()
