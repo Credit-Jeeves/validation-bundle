@@ -3,8 +3,8 @@
 namespace RentJeeves\ApiBundle\Services\ResourceUrlGenerator;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
-use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlGenerateMeta;
+use RentJeeves\ApiBundle\Services\Encoders\EncoderFactory;
+use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Routing\Router;
 
@@ -19,39 +19,43 @@ class ResourceUrlGenerator
 
     protected $router;
 
-    protected $container;
+    protected $encoderFactory;
+
     /**
      * @DI\InjectParams({
-     *     "router"    = @DI\Inject("router"),
-     *     "container" = @DI\Inject("service_container"),
-     *     "metaReader" = @DI\Inject("api.resource_url_generator.meta_reader")
+     *     "router"         = @DI\Inject("router"),
+     *     "encoderFactory" = @DI\Inject("encoder_factory"),
+     *     "metaReader"     = @DI\Inject("api.resource_url_generator.meta_reader")
      * })
      */
-    public function __construct(Router $router, Container $container, MetaReaderInterface $metaReader)
+    public function __construct(Router $router, EncoderFactory $encoderFactory, MetaReaderInterface $metaReader)
     {
         $this->router = $router;
-        $this->container = $container;
+        $this->encoderFactory = $encoderFactory;
         $this->metaReader = $metaReader;
     }
 
     public function generate($resource)
     {
-        $config = $this->setup($resource);
+        $config = $this->getConfig($resource);
 
-        return $this->generateUrl($config, $resource);
+        return $this->router->generate(
+            $config->prefix . $config->actionName,
+            [$config->attributeName => $this->encodeAttribute($resource->{$config->attributeName}, $config->encoder)]
+        );
     }
 
     /**
      * @param $resource
-     * @return UrlGenerateMeta
-     * @throws UrlGenerateException
+     * @return UrlResourceMeta
+     * @throws UrlGeneratorException
      */
-    protected function setup($resource)
+    protected function getConfig($resource)
     {
         $config = $this->metaReader->read($resource);
 
         if (!$config) {
-            throw new UrlGenerateException("Resource doesn't have configuration @UrlGenerateMeta");
+            throw new UrlGeneratorException("Resource doesn't have configuration @UrlResourceMeta");
         }
 
         ($config->prefix !== null) || $config->prefix = $this->defaultPrefix;
@@ -59,47 +63,12 @@ class ResourceUrlGenerator
         return $config;
     }
 
-    protected function generateUrl(UrlGenerateMeta $config, $resource)
+    protected function encodeAttribute($attribute, $encoderConfig)
     {
-        $getter = 'get' . ucfirst($config->id);
-
-        return $this->router->generate(
-            $config->prefix . $config->actionName,
-            [$config->id => $this->encodedId($resource->$getter(), $config->encoder)]
-        );
-    }
-
-    protected function encodedId($id, $encoderConfig = null)
-    {
-        if ($encoder = $this->getEncoder($encoderConfig)) {
-            return $encoder->encode($id);
+        if ($encoder = $this->encoderFactory->getEncoder($encoderConfig)) {
+            return $encoder->encode($attribute);
         }
 
-        return $id;
-    }
-
-    protected function getEncoder($encoderConfig)
-    {
-        if ($encoderConfig) {
-            $encoderServiceId = is_array($encoderConfig) ? array_shift($encoderConfig) : $encoderConfig;
-
-            if ($this->container->has($encoderServiceId)) {
-                $encoder = $this->container->get($encoderServiceId);
-
-                $parameters = $encoderConfig;
-
-                if (is_array($parameters)) {
-                    foreach ($parameters as $name => $values) {
-                        $encoder->$name = $values;
-                    }
-                }
-
-                if ($encoder instanceof AttributeEncoderInterface) {
-                    return $encoder;
-                }
-            }
-        }
-
-        return null;
+        return $attribute;
     }
 }

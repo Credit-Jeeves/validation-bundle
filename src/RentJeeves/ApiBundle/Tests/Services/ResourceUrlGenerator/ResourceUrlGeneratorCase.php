@@ -2,8 +2,9 @@
 
 namespace RentJeeves\ApiBundle\Tests\Services\ResourceUrlGenerator;
 
-use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlGenerateMeta;
+use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\ResourceUrlGenerator;
+use RentJeeves\ApiBundle\Tests\Services\ResourceUrlGenerator\Fixtures\TestResource;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class ResourceUrlGeneratorCase extends BaseTestCase
@@ -12,6 +13,11 @@ class ResourceUrlGeneratorCase extends BaseTestCase
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $metaReader;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $encoderFactory;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -29,11 +35,11 @@ class ResourceUrlGeneratorCase extends BaseTestCase
     public function setup()
     {
         $this->metaReader = $this
-            ->getMockBuilder('RentJeeves\ApiBundle\Services\ResourceUrlGenerator\UrlGenerateMetaReader')
+            ->getMockBuilder('RentJeeves\ApiBundle\Services\ResourceUrlGenerator\ResourceUrlMetaReader')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $annotation = new UrlGenerateMeta(
+        $annotation = new UrlResourceMeta(
             [
                 'prefix' => '',
                 'actionName' => 'test'
@@ -45,6 +51,16 @@ class ResourceUrlGeneratorCase extends BaseTestCase
             ->method('read')
             ->will($this->returnValue($annotation));
 
+        $this->encoderFactory = $this
+            ->getMockBuilder('RentJeeves\ApiBundle\Services\Encoders\EncoderFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->encoderFactory
+            ->expects($this->any())
+            ->method('getEncoder')
+            ->will($this->returnValue(null));
+
         $this->router = $this
             ->getMockBuilder('Symfony\Component\Routing\Router')
             ->disableOriginalConstructor()
@@ -55,17 +71,13 @@ class ResourceUrlGeneratorCase extends BaseTestCase
             ->method('generate')
             ->will($this->returnValue(true));
 
-        $this->resource = $this->getMock('RentJeeves\ApiBundle\Tests\Services\ResourceUrlGenerator\TestResource');
-
-        $this->resource
-            ->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue(1));
+        $this->resource = $this
+            ->getMock('RentJeeves\ApiBundle\Tests\Services\ResourceUrlGenerator\Fixtures\TestResource');
     }
 
     public function getResourceUrlGenerator()
     {
-        return new ResourceUrlGenerator($this->router, $this->getContainer(), $this->metaReader);
+        return new ResourceUrlGenerator($this->router, $this->encoderFactory, $this->metaReader);
     }
 
     /**

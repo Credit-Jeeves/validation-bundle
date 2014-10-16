@@ -8,20 +8,17 @@ use Doctrine\Common\Annotations\Annotation;
  * @Annotation
  * @Target("CLASS")
  */
-class UrlGenerateMeta
+class UrlResourceMeta
 {
     /** @var mixed */
-    public $prefix = null;
+    public $prefix;
 
     /** @var string */
-    public $actionName = null;
+    public $actionName;
 
-    /**
-     * Means property for get when generate url like /url/{id}
-     * @var string
-     */
-    public $id = 'id';
+    /** @var string */
+    public $attributeName = 'id';
 
     /** @var  mixed */
-    public $encoder = null;
+    public $encoder;
 }
