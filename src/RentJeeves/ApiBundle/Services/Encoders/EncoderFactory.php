@@ -4,7 +4,6 @@ namespace RentJeeves\ApiBundle\Services\Encoders;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\Container;
-use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface as Encoder;
 
 /**
  * @DI\Service("encoder_factory")
@@ -19,7 +18,7 @@ class EncoderFactory
 
     /**
      * @param $encoderConfig
-     * @return null|Encoder
+     * @return null|AttributeEncoderInterface
      */
     public function getEncoder($encoderConfig)
     {
@@ -29,7 +28,7 @@ class EncoderFactory
             if ($this->container->has($encoderServiceId)) {
                 $encoder = $this->container->get($encoderServiceId);
 
-                if ($encoder instanceof Encoder) {
+                if ($encoder instanceof AttributeEncoderInterface) {
 
                     $parameters = $encoderConfig;
 
