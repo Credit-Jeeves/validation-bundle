@@ -13,8 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ValidatorInterface as Validator;
 use Doctrine\Common\Util\ClassUtils;
 use JMS\DiExtraBundle\Annotation as DI;
-use InvalidArgumentException,
-    ReflectionClass;
+use InvalidArgumentException;
+use ReflectionClass;
 
 /**
  * @DI\Service("fos_rest.request.param_fetcher")
