@@ -8,11 +8,13 @@ use FOS\RestBundle\Request\ParamReader;
 use FOS\RestBundle\Util\ViolationFormatterInterface as ViolationFormatter;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use RentJeeves\ApiBundle\Services\Encoders\EncoderFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ValidatorInterface as Validator;
 use Doctrine\Common\Util\ClassUtils;
 use JMS\DiExtraBundle\Annotation as DI;
+use InvalidArgumentException;
+use ReflectionClass;
 
 /**
  * @DI\Service("fos_rest.request.param_fetcher")
@@ -21,7 +23,7 @@ class ParamFetcher extends Base
 {
     protected $paramReader;
 
-    protected $container;
+    protected $encoderFactory;
 
     protected $request;
 
@@ -35,7 +37,7 @@ class ParamFetcher extends Base
 
     /**
      * @DI\InjectParams({
-     *     "container"          = @DI\Inject("service_container"),
+     *     "encoderFactory"     = @DI\Inject("encoder_factory"),
      *     "paramReader"        = @DI\Inject("fos_rest.request.param_fetcher.reader"),
      *     "request"            = @DI\Inject("request", strict=false),
      *     "violationFormatter" = @DI\Inject("fos_rest.violation_formatter"),
@@ -43,13 +45,13 @@ class ParamFetcher extends Base
      * })
      */
     public function __construct(
-        Container $container,
+        EncoderFactory $encoderFactory,
         ParamReader $paramReader,
         Request $request,
         ViolationFormatter $violationFormatter,
         Validator $validator = null
     ) {
-        $this->container = $container;
+        $this->encoderFactory = $encoderFactory;
         $this->paramReader = $paramReader;
         $this->request = $request;
         parent::__construct($paramReader, $request, $violationFormatter, $validator);
@@ -70,23 +72,7 @@ class ParamFetcher extends Base
         $config = $this->params[$name];
 
         if (!empty($config->encoder)) {
-            $encoder = is_array($config->encoder) ? array_shift($config->encoder) : $config->encoder;
-
-            if ($this->container->has($encoder)) {
-                $encoder = $this->container->get($encoder);
-
-                $parameters = $config->encoder;
-
-                if (is_array($parameters)) {
-                    foreach ($parameters as $name => $values) {
-                        $encoder->$name = $values;
-                    }
-                }
-
-                if ($encoder instanceof AttributeEncoderInterface) {
-                    return $encoder;
-                }
-            }
+            return $this->encoderFactory->getEncoder($config->encoder);
         }
 
         return null;
@@ -155,24 +141,24 @@ class ParamFetcher extends Base
     /**
      * Initialize the parameters
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function initParams()
     {
         // controller is callable parameters and contains Controller and Action
 
         if (empty($this->controller)) {
-            throw new \InvalidArgumentException('Controller and method needs to be set via setController');
+            throw new InvalidArgumentException('Controller and method needs to be set via setController');
         }
 
         if (!is_array($this->controller) || empty($this->controller[0]) || !is_object($this->controller[0])) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Controller needs to be set as a class instance (closures/functions are not supported)'
             );
         }
 
         list($class, $method) = $this->controller;
-        $reflectionClass = new \ReflectionClass(ClassUtils::getClass($class));
+        $reflectionClass = new ReflectionClass(ClassUtils::getClass($class));
 
         $this->params = $this->paramReader->read($reflectionClass, $method);
     }

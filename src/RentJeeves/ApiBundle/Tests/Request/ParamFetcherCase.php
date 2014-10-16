@@ -39,6 +39,11 @@ class ParamFetcherCase extends BaseTestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
+    private $encoderFactory;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
     private $constraint;
 
     /**
@@ -85,6 +90,8 @@ class ParamFetcherCase extends BaseTestCase
 
         $this->validator = $this->getMock('Symfony\Component\Validator\ValidatorInterface');
         $this->violationFormatter = $this->getMock('FOS\RestBundle\Util\ViolationFormatterInterface');
+
+        $this->encoderFactory = $this->getContainer()->get('encoder_factory');
     }
 
     /**
@@ -103,7 +110,7 @@ class ParamFetcherCase extends BaseTestCase
         $this->request = new Request($query, $request, $attributes);
 
         return new ParamFetcher(
-            $this->getContainer(),
+            $this->encoderFactory,
             $this->paramReader,
             $this->request,
             $this->violationFormatter,
