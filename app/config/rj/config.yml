@@ -147,6 +147,7 @@ bazinga_geocoder:
         cache:
             adapter:  geocode_cache_adapter
             provider: google_maps
+            lifetime: 3456000 # 40 days
         google_maps:
             api_key:  %google_maps_key%
             use_ssl:  true
