@@ -55,7 +55,8 @@ class YardiVersion
             foreach ($holdings as $holding) {
                 /** @var ResidentClient $residentClient */
                 $residentClient = $this->clientFactory->getClient(
-                    $holding->getYardiSettings(), SoapClientEnum::RESIDENT
+                    $holding->getYardiSettings(),
+                    SoapClientEnum::RESIDENT
                 );
                 $version = $residentClient->getVersionNumber();
                 $this->logMessage(sprintf("Current version for holding %s is %s", $holding->getName(), $version));
