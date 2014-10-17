@@ -85,21 +85,31 @@ class PaidFor
 
     protected function makeDatesFromDate(DateTime $start)
     {
-        $now = $this->getNow()->modify('+1 month');
+        $now = clone $this->getNow();
+        $now->modify('+1 month');
+
         $date = clone $start;
         $return = array();
         do {
             $return += $this->createItem($date);
         } while ($date->modify('+1 month') < $now);
+        
         return $return;
     }
 
     protected function returnDefaultValue(array $value)
     {
-        if (!count($value)) {
-            $date = clone $this->getNow();
-            return $this->createItem($date) + $this->createItem($date->modify('+1 month'));
+        $date = clone $this->getNow();
+
+        if (!array_search($date->format('M'), $value)) {
+            $value += $this->createItem($date);
         }
+        if (!array_search($date->modify('+1 month')->format('M'), $value)) {
+            $value += $this->createItem($date);
+        }
+
+        ksort($value);
+
         return $value;
     }
 }
