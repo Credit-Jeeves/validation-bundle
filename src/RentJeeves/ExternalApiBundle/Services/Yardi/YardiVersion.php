@@ -51,12 +51,16 @@ class YardiVersion
     public function run()
     {
         try {
-            /** @var Holding $holding */
-            $holding = $this->em->getRepository('DataBundle:Holding')->findHoldingsWithYardiSettings(0, 1)[0];
-            /** @var ResidentClient $residentClient */
-            $residentClient = $this->clientFactory->getClient($holding->getYardiSettings(), SoapClientEnum::RESIDENT);
-            $version = $residentClient->getVersionNumber();
-            $this->logMessage(sprintf("Current version is %s", $version));
+            $holdings = $this->em->getRepository('DataBundle:Holding')->findHoldingsWithYardiSettings(0, 1000);
+            foreach ($holdings as $holding) {
+                /** @var ResidentClient $residentClient */
+                $residentClient = $this->clientFactory->getClient(
+                    $holding->getYardiSettings(),
+                    SoapClientEnum::RESIDENT
+                );
+                $version = $residentClient->getVersionNumber();
+                $this->logMessage(sprintf("Current version for holding %s is %s", $holding->getName(), $version));
+            }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logMessage($e->getMessage());
