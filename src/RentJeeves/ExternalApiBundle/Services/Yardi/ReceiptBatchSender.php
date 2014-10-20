@@ -292,7 +292,7 @@ class ReceiptBatchSender
                 } else {
                     $this->cancelBatch($yardiBatchId);
                 }
-                $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId);
+                $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
                 throw $e;
             }
 
@@ -521,7 +521,7 @@ class ReceiptBatchSender
 
             $this->em->persist($orderExternalApi);
 
-            $typePayment = Payment::getType(
+            $type = Payment::getType(
                 $this->paymentClient->getSettings(),
                 $order->getType()
             );
@@ -543,7 +543,7 @@ class ReceiptBatchSender
                         ]
                     ];
             }
-            $this->requests[$holding->getId()][$group->getId()][$yardiBatchId][$typePayment][self::REQUEST_SUCCESSFUL]++;
+            $this->requests[$holding->getId()][$group->getId()][$yardiBatchId][$type][self::REQUEST_SUCCESSFUL]++;
         }
 
         $this->em->flush();
