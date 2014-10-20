@@ -170,19 +170,16 @@ class ReceiptBatchSender
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logMessage(sprintf("Failed push receipts: \n%s", $e->getMessage()));
-            $this->cancelBatch();
         }
     }
 
-    protected function cancelBatch()
+    protected function cancelBatch($batchId)
     {
         try {
-            foreach ($this->batchIds as $batchId) {
-                $this->paymentClient->cancelReceiptBatch($batchId);
-                $this->logMessage(sprintf("Cancel batch \n%s", $batchId));
-                if ($this->paymentClient->isError()) {
-                    throw new Exception(sprintf("Can't cancel batch with id: %s", $bathId));
-                }
+            $this->paymentClient->cancelReceiptBatch($batchId);
+            $this->logMessage(sprintf("Cancel batch \n%s", $batchId));
+            if ($this->paymentClient->isError()) {
+                throw new Exception(sprintf("Can't cancel batch with id: %s", $batchId));
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
@@ -288,9 +285,12 @@ class ReceiptBatchSender
                 } else {
                     $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId);
                 }
+                $this->paymentClient->closeReceiptBatch($yardiBatchId);
             } catch (Exception $e) {
                 if (empty($yardiBatchId) || !isset($yardiBatchId)) {
                     $yardiBatchId = 'undefined';
+                } else {
+                    $this->cancelBatch($yardiBatchId);
                 }
                 $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId);
                 throw $e;
@@ -376,6 +376,7 @@ class ReceiptBatchSender
             )
         );
         $this->batchIds[$key] = $yardiBatchId;
+
         return $yardiBatchId;
     }
 
