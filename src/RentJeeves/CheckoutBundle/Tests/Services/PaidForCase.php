@@ -91,14 +91,16 @@ class PaidForCase extends BaseTestCase
 
 
         $paidFor = $this->getMock('RentJeeves\CheckoutBundle\Services\PaidFor', array('getNow'), array(), '', false);
-        $paidFor->expects($this->once())
+        $paidFor->expects($this->exactly(2))
             ->method('getNow')
             ->will($this->returnValue($now));
+        $nowDate = clone $now;
 
         $this->assertEquals(
             $paidFor->createItem($dateTime) +
             $paidFor->createItem($dateTime->modify('+2 month')) +
-            $paidFor->createItem($dateTime->modify('+1 month')),
+            $paidFor->createItem($dateTime->modify('+1 month')) +
+            $paidFor->createItem($nowDate->modify('+1 month')),
             $paidFor->getArray($contract)
         );
     }
@@ -118,6 +120,41 @@ class PaidForCase extends BaseTestCase
             ->will($this->returnValue(new DateTime()));
 
 
+        $this->assertEquals(
+            $paidFor->createItem($date) +
+            $paidFor->createItem($date->modify('+1 month')),
+            $paidFor->getArray($contract)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getNowArrayDefault()
+    {
+        $date = new DateTime();
+        $paidTo = clone $date;
+        $startAt = clone $paidTo;
+        $paidForDate = clone $paidTo;
+        $paidTo->modify('+2 day');
+        $paidTo->setTime(0, 0, 0);
+        $contract = new Contract();
+        $contract->setStartAt($startAt->modify('-1 month '));
+        $contract->setPaidTo($paidTo);
+        $contract->setRent(1000);
+        $order = new Order();
+        $order->setStatus(OrderStatus::COMPLETE);
+        $operation1 = new Operation();
+        $operation1->setAmount(500);
+        $operation1->setType(OperationType::RENT);
+        $operation1->setPaidFor(clone $paidForDate);
+        $operation1->setOrder(clone $order);
+        $operation1->setContract($contract);
+        $contract->addOperation($operation1);
+        $paidFor = $this->getMock('RentJeeves\CheckoutBundle\Services\PaidFor', array('getNow'), array(), '', false);
+        $paidFor->expects($this->any())
+            ->method('getNow')
+            ->will($this->returnValue(new DateTime()));
         $this->assertEquals(
             $paidFor->createItem($date) +
             $paidFor->createItem($date->modify('+1 month')),
