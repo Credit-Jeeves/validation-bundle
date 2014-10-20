@@ -52,8 +52,12 @@ class YardiBatchReceiptMailer
                 $globalByGroup = array();
                 foreach ($batchIds as $batchId => $typePayments) {
                     foreach ($typePayments as $typePayment => $status) {
+                        if ($typePayment == 'payment_batch_id') {
+                            continue;
+                        }
                         $data = array();
-                        $data['bratchId'] = $batchId;
+                        $data['batchId'] = $batchId;
+                        $data['payment_batch_id'] = $typePayments['payment_batch_id'];
                         $data['type'] = $typePayment;
                         if ($status[ReceiptBatchSender::REQUEST_SUCCESSFUL] > 0) {
                             $dataSuccessfully = array();

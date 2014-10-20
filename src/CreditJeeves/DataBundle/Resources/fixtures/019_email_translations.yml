@@ -1368,11 +1368,14 @@ fixtures:
              <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>
                 {{ 'common.batch_id'| trans }}
              </th>
+             <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;" nowrap>
+                {{ 'yardi.accounting_batch_id'| trans }}
+             </th>
              <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">
                 {{ 'common.type_ach_cc'| trans }}
              </th>
              <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">
-                {{ 'common.total'| trans }}
+                {{ 'yardi.email.number_of_payments'| trans }}
              </th>
              <th style="padding:3px;border: 1px solid #4E4E4E;background: #ccc;">
                 {{ 'common.status'| trans }}
@@ -1383,7 +1386,10 @@ fixtures:
               {% for value in data %}
                 <tr>
                   <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
-                    {{ value['bratchId'] }}
+                    {{ value['payment_batch_id'] }}
+                  </td>
+                  <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
+                    {{ value['batchId'] }}
                   </td>
                   <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
                     {{ value['type'] }}
