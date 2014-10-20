@@ -162,7 +162,7 @@ class ReceiptBatchSender
             while ($holdings = $this->getHoldingRepository()
                 ->findHoldingsWithYardiSettings($startPagination, self::LIMIT_HOLDING)
             ) {
-                $this->pushHoldingReceipts($holdings);
+                $this->pushHoldingReceipts($holdings, $depositDate);
                 $startPagination += self::LIMIT_HOLDING;
                 $this->em->clear();
                 gc_collect_cycles();
@@ -200,7 +200,7 @@ class ReceiptBatchSender
     /**
      * @param $holdings
      */
-    protected function pushHoldingReceipts($holdings)
+    protected function pushHoldingReceipts($holdings, DateTime $depositDate)
     {
         foreach ($holdings as $holding) {
             $this->logMessage(
@@ -219,7 +219,7 @@ class ReceiptBatchSender
                     $holding->getId()
                 )
             );
-            $this->mailer->send($this->requests);
+            $this->mailer->send($this->requests, $depositDate);
         }
     }
 

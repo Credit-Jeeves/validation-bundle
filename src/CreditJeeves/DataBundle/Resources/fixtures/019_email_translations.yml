@@ -1358,7 +1358,7 @@ fixtures:
     value:  |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block email %}
-       The following batch deposits for (deposit-date) were uploaded to your accounting system.
+       The following batch deposits for {{ data['deposit_date']|date('Y-m-d') }} were uploaded to your accounting system.
        Please review and post the batches.
        <br />
        <br />
@@ -1383,7 +1383,7 @@ fixtures:
            </tr>
          </thead>
          <tbody>
-              {% for value in data %}
+              {% for value in data['data'] %}
                 <tr>
                   <td style="padding:3px;border: 1px solid #4E4E4E;{{ cycle(['background: #eee;', ''], loop.index) }}">
                     {{ value['payment_batch_id'] }}

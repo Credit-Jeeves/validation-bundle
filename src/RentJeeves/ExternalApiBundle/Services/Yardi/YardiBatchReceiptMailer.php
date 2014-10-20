@@ -44,7 +44,7 @@ class YardiBatchReceiptMailer
      *
      * @param array $request
      */
-    public function send(array $request)
+    public function send(array $request, $depositDate)
     {
         foreach ($request as $holdingId => $groups) {
             $globalByHolding = array();
@@ -80,13 +80,21 @@ class YardiBatchReceiptMailer
                 if (empty($globalByGroup)) {
                     continue;
                 }
-                $this->sendEmailToLandlordByGroup($groupId, $globalByGroup);
+                $emailData = [
+                    'deposit_date' => $depositDate,
+                    'data' => $globalByGroup,
+                ];
+                $this->sendEmailToLandlordByGroup($groupId, $emailData);
             }
 
             if (empty($globalByHolding)) {
                 continue;
             }
-            $this->sendEmailToLandlordByHolding($holdingId, $globalByHolding);
+            $emailData = [
+                'deposit_date' => $depositDate,
+                'data' => $globalByHolding,
+            ];
+            $this->sendEmailToLandlordByHolding($holdingId, $emailData);
         }
     }
 
