@@ -125,7 +125,6 @@ trait ImportContract
         $today = new DateTime();
         if ($import->getMoveOut() !== null) {
             $contract->setFinishAt($import->getMoveOut());
-            $this->isFinishedContract($contract);
             if ($import-getMoveOut() <= $today) { // only finish the contract if MoveOut is today or earlier
                 $this->isFinishedContract($contract);
             }
