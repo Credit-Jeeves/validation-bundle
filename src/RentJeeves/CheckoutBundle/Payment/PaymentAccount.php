@@ -15,6 +15,8 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use Payum\Heartland\Soap\Base\TokenPaymentMethod;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use \RuntimeException;
 
 class PaymentAccount
@@ -31,24 +33,24 @@ class PaymentAccount
         return $this->payum;
     }
 
-    public function getTokenRequest(Form $paymentAccountType, User $user)
+    public function getTokenRequest(PaymentAccountData $paymentAccountData, User $user)
     {
         $request = new GetTokenRequest();
 
-        /** @var PaymentAccount $paymentAccountEntity */
-        $paymentAccountEntity = $paymentAccountType->getData();
+        /** @var PaymentAccountEntity $paymentAccountEntity */
+        $paymentAccountEntity = $paymentAccountData->getEntity();
         $request->getAccountHolderData()->setEmail($user->getEmail());
         $request->getAccountHolderData()->setFirstName($user->getFirstName());
         $request->getAccountHolderData()->setLastName($user->getLastName());
         $request->getAccountHolderData()->setPhone($user->getPhone());
 
         if (PaymentAccountTypeEnum::CARD == $paymentAccountEntity->getType()) {
-            $ccMonth = $paymentAccountType->get('ExpirationMonth')->getData();
-            $ccYear = $paymentAccountType->get('ExpirationYear')->getData();
+            $ccMonth = $paymentAccountData->get('expiration_month');
+            $ccYear = $paymentAccountData->get('expiration_year');
             $paymentAccountEntity->setCcExpiration(new DateTime("last day of {$ccYear}-{$ccMonth}"));
 
             /** @var Address $address */
-            if ($address = $paymentAccountType->get('address_choice')->getData()) {
+            if ($address = $paymentAccountData->get('address_choice')) {
                 // TODO: address is a Proxy, but should be Entity
                 $paymentAccountEntity->setAddress($address);
             } else {
@@ -56,13 +58,13 @@ class PaymentAccount
             }
             $paymentAccountEntity->getAddress()->setUser($user);
 
-            $request->getAccountHolderData()->setNameOnCard($paymentAccountType->get('CardAccountName')->getData());
+            $request->getAccountHolderData()->setNameOnCard($paymentAccountData->get('account_name'));
             $request->getAccountHolderData()->setAddress($paymentAccountEntity->getAddress()->getAddress());
             $request->getAccountHolderData()->setCity($paymentAccountEntity->getAddress()->getCity());
             $request->getAccountHolderData()->setState($paymentAccountEntity->getAddress()->getArea());
             $request->getAccountHolderData()->setZip($paymentAccountEntity->getAddress()->getZip());
 
-            $request->setAccountNumber($paymentAccountType->get('CardNumber')->getData());
+            $request->setAccountNumber($paymentAccountData->get('card_number'));
             $request->setExpirationMonth($ccMonth);
             $request->setExpirationYear($ccYear);
             $request->setPaymentMethod(TokenPaymentMethod::CREDIT);
@@ -72,16 +74,16 @@ class PaymentAccount
                 $paymentAccountEntity->setAddress(null);
             }
 
-            $fullName = trim($paymentAccountType->get('PayorName')->getData());
+            $fullName = trim($paymentAccountData->get('account_name'));
             $lastSpacePosition = strrpos($fullName, ' ');
             $firstName = substr($fullName, 0, $lastSpacePosition);
             $lastName = substr($fullName, $lastSpacePosition + 1);
 
             $request->getAccountHolderData()->setFirstName($firstName);
             $request->getAccountHolderData()->setLastName($lastName);
-            $request->setRoutingNumber($paymentAccountType->get('RoutingNumber')->getData());
-            $request->setAccountNumber($paymentAccountType->get('AccountNumber')->getData());
-            $ACHDepositType = $paymentAccountType->get('ACHDepositType')->getData();
+            $request->setRoutingNumber($paymentAccountData->get('routing_number'));
+            $request->setAccountNumber($paymentAccountData->get('account_number'));
+            $ACHDepositType = $paymentAccountData->get('ach_deposit_type');
 
             if (ACHDepositType::UNASSIGNED == $ACHDepositType) {
                 $request->setACHDepositType(ACHDepositType::CHECKING);

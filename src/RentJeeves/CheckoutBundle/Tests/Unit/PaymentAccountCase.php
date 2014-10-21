@@ -77,6 +77,8 @@ class PaymentAccountCase extends BaseTestCase
         );
 
         $paymentAccountType->submit($testData);
+
+        $paymentAccountType = $this->getContainer()->get("payment_account.type.mapper")->map($paymentAccountType);
         $tokenRequest = $paymentAccount->getTokenRequest(
             $paymentAccountType,
             $user
