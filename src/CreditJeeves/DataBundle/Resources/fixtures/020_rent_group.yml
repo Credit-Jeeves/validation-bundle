@@ -2,6 +2,7 @@ model: CreditJeeves\DataBundle\Entity\Group
 fixtures:
   RentGroup_1:
     name:           Test Rent Group
+    statementDescriptor: Test Rent
     holding:        rjHolding_1
     type:           rent
     code:           DXC6KXOAGX
@@ -9,47 +10,55 @@ fixtures:
     updated_at: '2012-11-29 14:35:44'
   RentGroup_2:
     name:          Sea side Rent Group
+    statementDescriptor: Sea side Rent
     holding:        rjHolding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_3:
     name:           Campus Rent Group
+    statementDescriptor: Campus Rent
     holding:        rjHolding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_4:
     name:           Western Rent Group
+    statementDescriptor: Western Rent
     holding:        rjHolding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_5:
     name:           Kharkov Rent Group
+    statementDescriptor: Kharkov Rent
     holding:        rjHolding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_6:
     name:           Rent Group
+    statementDescriptor: Rent Group
     holding:        rjHolding_2
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_7:
     name:           Rent Group
+    statementDescriptor: Rent Group
     holding:        rjHolding_3
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_8:
     name:           Rent Group
+    statementDescriptor: Rent Group
     holding:        rjHolding_4
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentTrackCorp:
     name:           RentTrackCorp
+    statementDescriptor: RentTrackCorp
     code:           RentTrackCorp
     type:           generic

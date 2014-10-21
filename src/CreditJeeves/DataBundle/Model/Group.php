@@ -359,6 +359,19 @@ abstract class Group
      */
     protected $waitingContracts;
 
+    /**
+    * @ORM\Column(
+     *     type="string",
+     *     name="statement_descriptor",
+     *     nullable=true
+     * )
+    * @Assert\Length(
+     *     max = 14,
+     *     maxMessage="error.statement_descriptor.too_long"
+     * )
+     */
+    protected $statementDescriptor;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -1168,5 +1181,21 @@ abstract class Group
     public function getWaitingContracts()
     {
         return $this->waitingContracts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatementDescriptor()
+    {
+        return $this->statementDescriptor;
+    }
+
+    /**
+     * @param string $statementDescriptor
+     */
+    public function setStatementDescriptor($statementDescriptor)
+    {
+        $this->statementDescriptor = $statementDescriptor;
     }
 }

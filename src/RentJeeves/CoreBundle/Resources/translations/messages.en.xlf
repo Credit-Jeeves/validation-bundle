@@ -2844,6 +2844,14 @@
                 <source>yardi.email.number_of_payments</source>
                 <target># of payments</target>
             </trans-unit>
+            <trans-unit id="error.statement_descriptor.too_long">
+                <source>error.statement_descriptor.too_long</source>
+                <target>Statement Descriptor is too long.</target>
+            </trans-unit>
+            <trans-unit id="error.statement_descriptor.empty">
+                <source>error.statement_descriptor.empty</source>
+                <target>Statement Descriptor should not be empty.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
