@@ -4,6 +4,7 @@ namespace RentJeeves\ApiBundle\Response;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\ApiBundle\Response\Exception\ResponseResourceException;
 use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\ResourceUrlGenerator;
 

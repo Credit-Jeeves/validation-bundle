@@ -5,6 +5,7 @@ namespace RentJeeves\ApiBundle\Response;
 use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\ApiBundle\Response\Exception\InvalidResponseResourceException;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
@@ -34,7 +35,9 @@ class ResponseFactory
             return $response;
         }
 
-        throw new InvalidResponseResourceException('Response not exist.');
+        throw new InvalidResponseResourceException(
+            sprintf('Response entity "%s" does not exist.', $reflectClass->getShortName())
+        );
     }
 
     protected function getResponseResourceServiceId($response)

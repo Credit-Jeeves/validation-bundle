@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Response;
+namespace RentJeeves\ApiBundle\Response\Exception;
 
 class InvalidResponseResourceException extends ResponseResourceException
 {
