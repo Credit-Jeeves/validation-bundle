@@ -2,6 +2,8 @@
 
 namespace RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper;
 
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
+
 class PaymentAccount
 {
     protected $entity;
@@ -20,13 +22,14 @@ class PaymentAccount
     public function setEntity($entity)
     {
         $this->entity = $entity;
+
         return $this;
     }
 
     /**
      * @param $attributeName
      * @return mixed
-     * @throws InvalidAttributeName
+     * @throws InvalidAttributeNameException
      */
     public function get($attributeName)
     {
@@ -34,7 +37,7 @@ class PaymentAccount
             return $this->attrs[$attributeName];
         }
 
-        throw new InvalidAttributeName;
+        throw new InvalidAttributeNameException(sprintf('Attribute "%s" is invalid', $attributeName));
     }
 
     /**

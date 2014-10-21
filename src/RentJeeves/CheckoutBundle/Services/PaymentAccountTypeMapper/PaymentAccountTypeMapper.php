@@ -2,8 +2,9 @@
 
 namespace RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper;
 
-use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as TenantSiteForm;
-use RentJeeves\LandlordBundle\Form\BillingAccountType as LandlordSiteForm;
+use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as TenantPaymentAccount;
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMappe\Exception\PaymentAccountTypeMapException;
+use RentJeeves\LandlordBundle\Form\BillingAccountType as LandlordPaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\Form;
@@ -14,40 +15,36 @@ use Symfony\Component\Form\Form;
 class PaymentAccountTypeMapper
 {
     /**
-     * @var PaymentAccount
-     */
-    protected $paymentAccountData;
-
-    /**
      * @param Form $paymentAccountType
      * @return PaymentAccount
-     * @throws PaymentAccountTypeMapperException
+     * @throws PaymentAccountTypeMapException
      */
     public function map(Form $paymentAccountType)
     {
-        if (TenantSiteForm::NAME == $paymentAccountType->getName()) {
-            $this->mapTenantSiteForm($paymentAccountType);
-        } elseif (LandlordSiteForm::NAME == $paymentAccountType->getName()) {
-            $this->mapLandlordSiteForm($paymentAccountType);
+        if (TenantPaymentAccount::NAME == $paymentAccountType->getName()) {
+            $paymentAccountData = $this->mapTenantAccountTypeForm($paymentAccountType);
+        } elseif (LandlordPaymentAccount::NAME == $paymentAccountType->getName()) {
+            $paymentAccountData = $this->mapLandlordAccountTypeForm($paymentAccountType);
         } else {
-            throw new PaymentAccountTypeMapperException('Unknown payment type mapping');
+            throw new PaymentAccountTypeMapException('Unknown payment account type mapping');
         }
 
-        return $this->paymentAccountData;
+        return $paymentAccountData;
     }
 
-    public function mapTenantSiteForm($paymentAccountType)
+    public function mapTenantAccountTypeForm(Form $paymentAccountType)
     {
-        $this->paymentAccountData = new PaymentAccount();
+        $paymentAccountData = new PaymentAccount();
 
-        $this->paymentAccountData->setEntity($paymentAccountType->getData());
+        $paymentAccountData->setEntity($paymentAccountType->getData());
 
         if (PaymentAccountTypeEnum::BANK == $paymentAccountType->get('type')->getData()) {
-            $this->paymentAccountData->set('account_name', $paymentAccountType->get('PayorName')->getData());
+            $paymentAccountData->set('account_name', $paymentAccountType->get('PayorName')->getData());
         } elseif (PaymentAccountTypeEnum::CARD == $paymentAccountType->get('type')->getData()) {
-            $this->paymentAccountData->set('account_name', $paymentAccountType->get('CardAccountName')->getData());
+            $paymentAccountData->set('account_name', $paymentAccountType->get('CardAccountName')->getData());
         }
-        $this->paymentAccountData
+
+        $paymentAccountData
             ->set('expiration_month', $paymentAccountType->get('ExpirationMonth')->getData())
             ->set('expiration_year', $paymentAccountType->get('ExpirationYear')->getData())
             ->set('address_choice', $paymentAccountType->get('address_choice')->getData())
@@ -55,18 +52,22 @@ class PaymentAccountTypeMapper
             ->set('routing_number', $paymentAccountType->get('RoutingNumber')->getData())
             ->set('account_number', $paymentAccountType->get('AccountNumber')->getData())
             ->set('ach_deposit_type', $paymentAccountType->get('ACHDepositType')->getData());
+
+        return $paymentAccountData;
     }
 
-    public function mapLandlordSiteForm($paymentAccountType)
+    public function mapLandlordAccountTypeForm(Form $paymentAccountType)
     {
-        $this->paymentAccountData = new PaymentAccount();
+        $paymentAccountData = new PaymentAccount();
 
-        $this->paymentAccountData->setEntity($paymentAccountType->getData());
+        $paymentAccountData->setEntity($paymentAccountType->getData());
 
-        $this->paymentAccountData
+        $paymentAccountData
             ->set('account_name', $paymentAccountType->get('PayorName')->getData())
             ->set('routing_number', $paymentAccountType->get('RoutingNumber')->getData())
             ->set('account_number', $paymentAccountType->get('AccountNumber')->getData())
             ->set('ach_deposit_type', $paymentAccountType->get('ACHDepositType')->getData());
+
+        return $paymentAccountData;
     }
 }
