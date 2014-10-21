@@ -2832,6 +2832,14 @@
                 <source>common.batch_id</source>
                 <target>Batch ID</target>
             </trans-unit>
+            <trans-unit id="yardi.accounting_batch_id">
+                <source>yardi.accounting_batch_id</source>
+                <target>Accounting Batch ID</target>
+            </trans-unit>
+            <trans-unit id="yardi.email.number_of_payments">
+                <source>yardi.email.number_of_payments</source>
+                <target># of payments</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

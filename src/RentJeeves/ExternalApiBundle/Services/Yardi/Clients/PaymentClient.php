@@ -30,7 +30,7 @@ class PaymentClient extends AbstractClient
     /**
      * @param DateTime $depositDate
      * @param string $yardiPropertyId
-     * @param null $batchDescription
+     * @param null $batchId
      * @param null $depositMemo
      *
      * @return integer|null
@@ -38,7 +38,7 @@ class PaymentClient extends AbstractClient
     public function openReceiptBatchDepositDate(
         DateTime $depositDate,
         $yardiPropertyId,
-        $batchDescription = null,
+        $batchId = null,
         $depositMemo = null
     ) {
         $this->debugMessage('Run OpenReceiptBatch_DepositDate');
@@ -47,7 +47,7 @@ class PaymentClient extends AbstractClient
                 $this->getLoginCredentials(),
                 array(
                     'YardiPropertyId'   => $yardiPropertyId,
-                    'BatchDescription'  => $batchDescription,
+                    'BatchDescription'  => 'RentTrack Batch #' . $batchId,
                     'DepositDate'       => $depositDate,
                     'DepositMemo'       => $depositMemo
                 )
