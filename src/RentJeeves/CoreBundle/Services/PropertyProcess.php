@@ -197,7 +197,7 @@ class PropertyProcess
     public function getGoogleGeocode($address)
     {
         try {
-            $result = $this->geocoder->using('google_maps')->geocode($address);
+            $result = $this->geocoder->using('cache')->geocode($address);
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             return false;
