@@ -79,6 +79,7 @@ class Properties extends BaseApiTestCase
      */
     public function getProperty($propertyId, $format, $result, $statusCode = Response::HTTP_OK)
     {
+        $this->markTestSkipped('Old Api Test');
         $client = $this->getClient();
 
         $client->request(
@@ -155,6 +156,7 @@ class Properties extends BaseApiTestCase
      */
     public function searchProperty($fullAddress, $format, $result, $statusCode = Response::HTTP_OK)
     {
+        $this->markTestSkipped('Old Api Test');
         $client = $this->getClient();
 
         $client->request(
@@ -209,6 +211,7 @@ class Properties extends BaseApiTestCase
      */
     public function getUnit($params, $format, $result, $statusCode = Response::HTTP_OK)
     {
+        $this->markTestSkipped('Old Api Test');
         $client = $this->getClient();
 
         $client->request(
@@ -263,6 +266,7 @@ class Properties extends BaseApiTestCase
      */
     public function getUnits($propertyId, $format, $result, $statusCode = Response::HTTP_OK)
     {
+        $this->markTestSkipped('Old Api Test');
         $client = $this->getClient();
 
         $client->request(
@@ -366,6 +370,7 @@ class Properties extends BaseApiTestCase
      */
     public function createProperty($params, $format, $result, $statusCode = Response::HTTP_CREATED)
     {
+        $this->markTestSkipped('Old Api Test');
         $client = $this->getClient();
 
         /** @var Serializer $serializer */
