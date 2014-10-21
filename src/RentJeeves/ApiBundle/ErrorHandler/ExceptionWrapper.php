@@ -3,39 +3,59 @@
 namespace RentJeeves\ApiBundle\ErrorHandler;
 
 
+use CreditJeeves\CoreBundle\Translation\Translator;
 use Symfony\Component\Form\Form;
+use \Exception;
 
 class ExceptionWrapper
 {
-    private $errors;
+    private $errors = [];
+
+    /**
+     * @var Translator
+     */
+    protected $trans;
 
     public function __construct($data, $trans = null)
     {
-        if (isset($data['errors']) && ($data['errors'] instanceof Form)) {
-            $this->errors = $this->prepareErrors($data['errors']);
-        } elseif (isset($data['errors']) && is_array($data['errors'])) {
-            foreach ($data['errors'] as $error) {
-                $errorDescription = new ErrorDescription();
-                $errorDescription->message = $error;
-                $this->errors[] = $errorDescription;
-            }
-        } else {
-            $errorDescription = new ErrorDescription();
-            $errorDescription->message = $data['message'];
-            $this->errors[] = $errorDescription;
+        $this->trans = $trans;
+
+        switch ($data) {
+            case (isset($data['errors']) && ($data['errors'] instanceof Form)):
+                $this->errors = $this->getFormErrors($data['errors']);
+                break;
+            case (isset($data['errors']) && is_array($data['errors'])):
+                foreach ($data['errors'] as $error) {
+                    if (self::isCanBeConvertedToString($error)) {
+                        $this->errors[] = $this->getErrorDescription(strval($error));
+                    } else {
+                        $this->errors[] = $this->getErrorDescription('Unknown Error Type for wrapping.');
+                    }
+                }
+                break;
+            case (isset($data['message'])):
+                $this->errors[] = $this->getErrorDescription($data['message']);
+                break;
+            case ($data instanceof ErrorDescription):
+                $this->errors[] = $data;
+                break;
+            case ($data instanceof Exception):
+                $this->errors[] = $this->getErrorDescription($data->getMessage());
+                break;
+            case self::isCanBeConvertedToString($data):
+                $this->errors[] = $this->getErrorDescription(strval($data));
+                break;
+            default:
+                $this->errors[] = $this->getErrorDescription('Unknown Error Type for wrapping.');
         }
     }
 
+    /**
+     * @return array<RentJeeves\ApiBundle\ErrorHandler\ErrorDescription>
+     */
     public function getErrors()
     {
         return $this->errors;
-    }
-
-    protected function prepareErrors(Form $form)
-    {
-        $errors = $this->getFormErrors($form);
-
-        return $errors;
     }
 
     /**
@@ -48,9 +68,14 @@ class ExceptionWrapper
         $errorMessages = array();
         if (!$child->isValid()) {
             foreach ($child->getErrors() as $error) {
-                $errorMessages[] = $this->getErrorDescription($error->getMessage(), $name, $child->getData());
+                $errorMessages[] = $this->getErrorDescription(
+                    $error->getMessage(),
+                    $name,
+                    $child->getData()
+                );
             }
         }
+
         return $errorMessages;
     }
 
@@ -87,12 +112,36 @@ class ExceptionWrapper
     {
         $errorDescription = new ErrorDescription();
 
+        if ($this->trans instanceof Translator) {
+            $message = $this->trans->trans(
+                $message,
+                [
+                    '%parameter%' => $parameter,
+                    '%value%' => $value
+                ]
+            );
+        }
+
         $errorDescription->message = $message;
-
         $errorDescription->parameter = $parameter;
-
         $errorDescription->value = $value;
 
         return $errorDescription;
+    }
+
+    /**
+     * @param $variable
+     * @return bool
+     */
+    protected static function isCanBeConvertedToString($variable)
+    {
+        if (!is_array($variable) &&
+            ((!is_object($variable) && settype($variable, 'string') !== false) ||
+            (is_object($variable) && method_exists($variable, '__toString')))
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
