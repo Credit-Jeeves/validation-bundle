@@ -96,15 +96,15 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/environment.git"
+            "url": "git@github.com:Credit-Jeeves/environment.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/Payum.git"
+            "url": "git@github.com:Credit-Jeeves/Payum.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/PayumBundle.git"
+            "url": "git@github.com:Credit-Jeeves/PayumBundle.git"
         },
         {
             "type": "git",
@@ -116,23 +116,23 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/BadaBoom.git"
+            "url": "git@github.com:Credit-Jeeves/BadaBoom.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/FpBadaBoomBundle.git"
+            "url": "git@github.com:Credit-Jeeves/FpBadaBoomBundle.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/SensioGeneratorBundle.git"
+            "url": "git@github.com:Credit-Jeeves/SensioGeneratorBundle.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/KhepinYamlFixturesBundle.git"
+            "url": "git@github.com:Credit-Jeeves/KhepinYamlFixturesBundle.git"
         },
         {
             "type": "git",
-            "url": "https://github.com/66Ton99/migrations"
+            "url": "https://github.com/Credit-Jeeves/migrations"
         },
         {
             "type": "git",
@@ -140,7 +140,7 @@
         },
         {
             "type": "git",
-            "url":"git@github.com:66Ton99/APYJsFormValidationBundle.git"
+            "url":"git@github.com:Credit-Jeeves/APYJsFormValidationBundle.git"
         },
         {
             "type": "git",
@@ -152,23 +152,23 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/JMSJobQueueBundle.git"
+            "url": "git@github.com:Credit-Jeeves/JMSJobQueueBundle.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/validation-bundle.git"
+            "url": "git@github.com:Credit-Jeeves/validation-bundle.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/DoctrineExtensions.git"
+            "url": "git@github.com:Credit-Jeeves/DoctrineExtensions.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/BackupRestoreBundle.git"
+            "url": "git@github.com:Credit-Jeeves/BackupRestoreBundle.git"
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/doctrine2.git"
+            "url": "git@github.com:Credit-Jeeves/doctrine2.git"
         },
         {
             "type": "git",

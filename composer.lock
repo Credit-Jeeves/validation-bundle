@@ -111,7 +111,7 @@
             "target-dir": "APY/JsFormValidationBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/APYJsFormValidationBundle.git",
+                "url": "git@github.com:Credit-Jeeves/APYJsFormValidationBundle.git",
                 "reference": "dae9335b50abc7af602c8ec0763b38f6b48df944"
             },
             "require": {
@@ -233,7 +233,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/DoctrineExtensions.git",
+                "url": "git@github.com:Credit-Jeeves/DoctrineExtensions.git",
                 "reference": "d2d13683874d6b26e5d9c61215ad81f53cad505e"
             },
             "require": {
@@ -381,7 +381,7 @@
             "target-dir": "Braincrafted/Bundle/≤ValidationBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/validation-bundle.git",
+                "url": "git@github.com:Credit-Jeeves/validation-bundle.git",
                 "reference": "d2ef9856815c232200bd22515a58735607a4865c"
             },
             "require": {
@@ -1269,7 +1269,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/66Ton99/migrations",
+                "url": "https://github.com/Credit-Jeeves/migrations",
                 "reference": "00136deed9f41eaea05aa63b16f2d48126b6c14c"
             },
             "require": {
@@ -1320,7 +1320,7 @@
             "version": "dev-preUpdate",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/doctrine2.git",
+                "url": "git@github.com:Credit-Jeeves/doctrine2.git",
                 "reference": "605981b1060e5da2b66323e303cc926733d3630d"
             },
             "archive": {
@@ -1545,7 +1545,7 @@
             "version": "dev-ton",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/BadaBoom.git",
+                "url": "git@github.com:Credit-Jeeves/BadaBoom.git",
                 "reference": "1a5eda3b2c6c00a0d3dbd790989844e563c80993"
             },
             "require": {
@@ -1600,7 +1600,7 @@
             "target-dir": "Fp/BadaBoomBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/FpBadaBoomBundle.git",
+                "url": "git@github.com:Credit-Jeeves/FpBadaBoomBundle.git",
                 "reference": "ce0b687ac67c67fd9cc546c54ff79a24ebc89884"
             },
             "require": {
@@ -2375,7 +2375,7 @@
             "version": "dev-ton",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/environment.git",
+                "url": "git@github.com:Credit-Jeeves/environment.git",
                 "reference": "e0571175e4ee7d3e6d7867354cc141972520fb14"
             },
             "require": {
@@ -2673,7 +2673,7 @@
             "target-dir": "JMS/JobQueueBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/JMSJobQueueBundle.git",
+                "url": "git@github.com:Credit-Jeeves/JMSJobQueueBundle.git",
                 "reference": "e5a9e87719868dbb311b54ee43e3d9da71369af1"
             },
             "require": {
@@ -3626,7 +3626,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/Payum.git",
+                "url": "git@github.com:Credit-Jeeves/Payum.git",
                 "reference": "ebf48abb53a63889a17db62ec6fe61034c2e2c7b"
             },
             "require": {
@@ -3688,7 +3688,7 @@
             "target-dir": "Payum/Bundle/PayumBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/PayumBundle.git",
+                "url": "git@github.com:Credit-Jeeves/PayumBundle.git",
                 "reference": "248837181a7f961334f173cd52e1086a9802f64a"
             },
             "require": {
@@ -4070,7 +4070,7 @@
             "target-dir": "Sensio/Bundle/GeneratorBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/SensioGeneratorBundle.git",
+                "url": "git@github.com:Credit-Jeeves/SensioGeneratorBundle.git",
                 "reference": "e4e4f02c76216defff453603753eaa843a5c7e51"
             },
             "require": {
@@ -5802,7 +5802,7 @@
             "target-dir": "ENC/Bundle/BackupRestoreBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/BackupRestoreBundle.git",
+                "url": "git@github.com:Credit-Jeeves/BackupRestoreBundle.git",
                 "reference": "4bb8882241a554490be7218d1244537373fba56b"
             },
             "require": {
@@ -6075,7 +6075,7 @@
             "target-dir": "Khepin/YamlFixturesBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:66Ton99/KhepinYamlFixturesBundle.git",
+                "url": "git@github.com:Credit-Jeeves/KhepinYamlFixturesBundle.git",
                 "reference": "2fb10549549c9a365e322a97d82f86fe2085c077"
             },
             "require": {
@@ -6141,12 +6141,12 @@
             "target-dir": "Ton/EmailBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/66Ton99/EmailBundle.git",
+                "url": "https://github.com/Credit-Jeeves/EmailBundle.git",
                 "reference": "7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/66Ton99/EmailBundle/zipball/7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
+                "url": "https://api.github.com/repos/Credit-Jeeves/EmailBundle/zipball/7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
                 "reference": "7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
                 "shasum": ""
             },
