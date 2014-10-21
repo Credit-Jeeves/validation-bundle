@@ -3,43 +3,27 @@
 namespace RentJeeves\ApiBundle\ErrorHandler;
 
 
-use JMS\Serializer\Annotation as Serializer;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Form;
 
 class ExceptionWrapper
 {
-    /**
-     * @Serializer\Type("string")
-     * @Serializer\Groups({"RentJeevesApi"})
-     */
-    private $status;
-
-    /**
-     * @Serializer\Type("integer")
-     * @Serializer\Groups({"RentJeevesApi"})
-     */
-    private $statusCode;
-
-    /**
-     * @Serializer\Type("string")
-     * @Serializer\Groups({"RentJeevesApi"})
-     */
-    private $messages;
-
-    /**
-     * @Serializer\Type("array<string>")
-     * @Serializer\Groups({"RentJeevesApi"})
-     */
     private $errors;
 
-    public function __construct($data)
+    public function __construct($data, $trans = null)
     {
-        $this->status = 'error';
-        $this->statusCode = $data['status_code'];
-        if (isset($data['errors']) && ($data['errors'] instanceof FormInterface)) {
+        if (isset($data['errors']) && ($data['errors'] instanceof Form)) {
             $this->errors = $this->prepareErrors($data['errors']);
+        } elseif (isset($data['errors']) && is_array($data['errors'])) {
+            foreach ($data['errors'] as $error) {
+                $errorDescription = new ErrorDescription();
+                $errorDescription->message = $error;
+                $this->errors[] = $errorDescription;
+            }
+        } else {
+            $errorDescription = new ErrorDescription();
+            $errorDescription->message = $data['message'];
+            $this->errors[] = $errorDescription;
         }
-        $this->messages = $data['message'];
     }
 
     public function getErrors()
@@ -47,20 +31,68 @@ class ExceptionWrapper
         return $this->errors;
     }
 
-    public function getMessages()
+    protected function prepareErrors(Form $form)
     {
-        return $this->messages;
+        $errors = $this->getFormErrors($form);
+
+        return $errors;
     }
 
-    protected function prepareErrors(FormInterface $form)
+    /**
+     * @param Form $child
+     * @param string $name
+     * @return array
+     */
+    protected function getFormChildErrors(Form $child, $name = '_globals')
     {
-        $errors = [];
-        foreach ($form->getIterator() as $element) {
-            /** @var FormInterface $element */
-            if (count($element->getErrors()) > 0) {
-                $errors[$element->getName()] = $element->getErrorsAsString();
+        $errorMessages = array();
+        if (!$child->isValid()) {
+            foreach ($child->getErrors() as $error) {
+                $errorMessages[] = $this->getErrorDescription($error->getMessage(), $name, $child->getData());
             }
         }
-        return $errors;
+        return $errorMessages;
+    }
+
+    /**
+     * @param Form $form
+     * @param string $name
+     *
+     * @return array
+     */
+    protected function getFormErrors(Form $form, $name = null)
+    {
+        $errorMessages = [];
+        if (!$form->isValid()) {
+            if (null === $name) {
+                $name = $form->getName();
+                $errorMessages = $this->getFormChildErrors($form);
+            } else {
+                $errorMessages = $this->getFormChildErrors($form, $name);
+            }
+
+            $name = $name ? $name . '_' : $name;
+            /** @var Form $child */
+            foreach ($form as $child) {
+                $errorMessages = arrayMergeRecursive(
+                    $errorMessages,
+                    $this->getFormErrors($child, $name . $child->getName())
+                );
+            }
+        }
+        return $errorMessages;
+    }
+
+    protected function getErrorDescription($message, $parameter = null, $value = null)
+    {
+        $errorDescription = new ErrorDescription();
+
+        $errorDescription->message = $message;
+
+        $errorDescription->parameter = $parameter;
+
+        $errorDescription->value = $value;
+
+        return $errorDescription;
     }
 }

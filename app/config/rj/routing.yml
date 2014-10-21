@@ -116,10 +116,10 @@ jms_jobs_cancel_job:
     path: /admin/job/{id}/cancel
 
 #REST
-rest_api :
+rest_api_tenant_v1:
   type : rest
-  resource : "routing_rest.yml"
-  prefix: /api
+  resource : "routing_rest_api_tenant_v1.yml"
+  prefix: /api/tenant/v1
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
