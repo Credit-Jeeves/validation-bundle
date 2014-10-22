@@ -39,9 +39,9 @@ class ReceiptBatchSender
 
     const LIMIT_HOLDING = 50;
 
-    const REQUEST_SUCCESSFUL = 'successfully';
+    const REQUEST_SUCCESSFUL = 'Success';
 
-    const REQUEST_FAILED = 'failed';
+    const REQUEST_FAILED = 'Failed';
 
     /**
      * @var EntityManager
@@ -162,7 +162,7 @@ class ReceiptBatchSender
             while ($holdings = $this->getHoldingRepository()
                 ->findHoldingsWithYardiSettings($startPagination, self::LIMIT_HOLDING)
             ) {
-                $this->pushHoldingReceipts($holdings);
+                $this->pushHoldingReceipts($holdings, $depositDate);
                 $startPagination += self::LIMIT_HOLDING;
                 $this->em->clear();
                 gc_collect_cycles();
@@ -170,19 +170,16 @@ class ReceiptBatchSender
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logMessage(sprintf("Failed push receipts: \n%s", $e->getMessage()));
-            $this->cancelBatch();
         }
     }
 
-    protected function cancelBatch()
+    protected function cancelBatch($batchId)
     {
         try {
-            foreach ($this->batchIds as $batchId) {
-                $this->paymentClient->cancelReceiptBatch($batchId);
-                $this->logMessage(sprintf("Cancel batch \n%s", $batchId));
-                if ($this->paymentClient->isError()) {
-                    throw new Exception(sprintf("Can't cancel batch with id: %s", $bathId));
-                }
+            $this->paymentClient->cancelReceiptBatch($batchId);
+            $this->logMessage(sprintf("Cancel batch \n%s", $batchId));
+            if ($this->paymentClient->isError()) {
+                throw new Exception(sprintf("Can't cancel batch with id: %s", $batchId));
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
@@ -203,7 +200,7 @@ class ReceiptBatchSender
     /**
      * @param $holdings
      */
-    protected function pushHoldingReceipts($holdings)
+    protected function pushHoldingReceipts($holdings, DateTime $depositDate)
     {
         foreach ($holdings as $holding) {
             $this->logMessage(
@@ -222,7 +219,7 @@ class ReceiptBatchSender
                     $holding->getId()
                 )
             );
-            $this->mailer->send($this->requests);
+            $this->mailer->send($this->requests, $depositDate);
         }
     }
 
@@ -284,15 +281,18 @@ class ReceiptBatchSender
                 );
 
                 if ($result === true) {
-                    $this->saveSuccessfullRequest($holding, $ordersReceiptBatch, $yardiBatchId);
+                    $this->saveSuccessfullRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
                 } else {
-                    $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId);
+                    $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
                 }
+                $this->paymentClient->closeReceiptBatch($yardiBatchId);
             } catch (Exception $e) {
                 if (empty($yardiBatchId) || !isset($yardiBatchId)) {
                     $yardiBatchId = 'undefined';
+                } else {
+                    $this->cancelBatch($yardiBatchId);
                 }
-                $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId);
+                $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
                 throw $e;
             }
 
@@ -376,6 +376,7 @@ class ReceiptBatchSender
             )
         );
         $this->batchIds[$key] = $yardiBatchId;
+
         return $yardiBatchId;
     }
 
@@ -455,12 +456,13 @@ class ReceiptBatchSender
 
     /**
      * @param Holding $holding
+     * @param $yardiBatchId
      * @param $batchId
      */
-    protected function fillRequestDefaultData(Holding $holding, $batchId)
+    protected function fillRequestDefaultData(Holding $holding, $yardiBatchId, $batchId)
     {
         if (!isset($this->requests[$holding->getId()])) {
-            $batchId = (empty($batchId))? 'undefined' : $batchId;
+            $yardiBatchId = (empty($yardiBatchId))? 'undefined' : $yardiBatchId;
             $this->requests[$holding->getId()] = array();
             $settings = $this->paymentClient->getSettings();
             $groups = $holding->getGroups();
@@ -469,22 +471,26 @@ class ReceiptBatchSender
              */
             foreach ($groups as $group) {
                 $this->requests[$holding->getId()][$group->getId()] = array(
-                    $batchId => array()
+                    $yardiBatchId => array()
                 );
                 $this->requests[$holding->getId()]
                     [$group->getId()]
-                    [$batchId]
+                    [$yardiBatchId]
                     [Payment::formatType($settings->getPaymentTypeACH())] = array(
                         self::REQUEST_FAILED => 0,
                         self::REQUEST_SUCCESSFUL => 0,
                     );
                 $this->requests[$holding->getId()]
                     [$group->getId()]
-                    [$batchId]
+                    [$yardiBatchId]
                     [Payment::formatType($settings->getPaymentTypeCC())] = array(
                         self::REQUEST_FAILED => 0,
                         self::REQUEST_SUCCESSFUL => 0,
                     );
+                $this->requests[$holding->getId()]
+                    [$group->getId()]
+                    [$yardiBatchId]
+                    ['payment_batch_id'] = $batchId;
             }
         }
     }
@@ -494,16 +500,16 @@ class ReceiptBatchSender
      * @param $orders
      * @param $batchId
      */
-    protected function saveSuccessfullRequest(Holding $holding, $orders, $batchId)
+    protected function saveSuccessfullRequest(Holding $holding, $orders, $yardiBatchId, $batchId)
     {
         $this->logMessage(
             sprintf(
                 "Successfully Request holding: %s batch: %s",
                 $holding->getId(),
-                $batchId
+                $yardiBatchId
             )
         );
-        $this->fillRequestDefaultData($holding, $batchId);
+        $this->fillRequestDefaultData($holding, $yardiBatchId, $batchId);
         /**
          * @var $order Order
          */
@@ -515,13 +521,29 @@ class ReceiptBatchSender
 
             $this->em->persist($orderExternalApi);
 
-            $typePayment = Payment::getType(
+            $type = Payment::getType(
                 $this->paymentClient->getSettings(),
                 $order->getType()
             );
 
+            $settings = $this->paymentClient->getSettings();
+
             $group = $order->getContract()->getGroup();
-            $this->requests[$holding->getId()][$group->getId()][$batchId][$typePayment][self::REQUEST_SUCCESSFUL]++;
+            if (!isset($this->requests[$holding->getId()][$group->getId()][$yardiBatchId])) {
+                $this->requests[$holding->getId()][$group->getId()][$yardiBatchId] =
+                    [
+                        'payment_batch_id' => $batchId,
+                        Payment::formatType($settings->getPaymentTypeACH()) => [
+                            self::REQUEST_FAILED => 0,
+                            self::REQUEST_SUCCESSFUL => 0,
+                        ],
+                        Payment::formatType($settings->getPaymentTypeCC()) => [
+                            self::REQUEST_FAILED => 0,
+                            self::REQUEST_SUCCESSFUL => 0,
+                        ]
+                    ];
+            }
+            $this->requests[$holding->getId()][$group->getId()][$yardiBatchId][$type][self::REQUEST_SUCCESSFUL]++;
         }
 
         $this->em->flush();
@@ -530,18 +552,18 @@ class ReceiptBatchSender
     /**
      * @param Holding $holding
      * @param $orders
-     * @param $batchId
+     * @param $yardiBatchId
      */
-    protected function saveFailedRequest(Holding $holding, $orders, $batchId)
+    protected function saveFailedRequest(Holding $holding, $orders, $yardiBatchId, $batchId)
     {
         $this->logMessage(
             sprintf(
                 "Failed Request holding: %s batch: %s",
                 $holding->getId(),
-                $batchId
+                $yardiBatchId
             )
         );
-        $this->fillRequestDefaultData($holding, $batchId);
+        $this->fillRequestDefaultData($holding, $yardiBatchId, $batchId);
         /**
          * @var $order Order
          */
@@ -551,7 +573,22 @@ class ReceiptBatchSender
                 $order->getType()
             );
             $group = $order->getContract()->getGroup();
-            $this->requests[$holding->getId()][$group->getId()][$batchId][$typePayment][self::REQUEST_FAILED]++;
+            $settings = $this->paymentClient->getSettings();
+            if (!isset($this->requests[$holding->getId()][$group->getId()][$yardiBatchId])) {
+                $this->requests[$holding->getId()][$group->getId()][$yardiBatchId] =
+                    [
+                        'payment_batch_id' => $batchId,
+                        Payment::formatType($settings->getPaymentTypeACH()) => [
+                            self::REQUEST_FAILED => 0,
+                            self::REQUEST_SUCCESSFUL => 0,
+                        ],
+                        Payment::formatType($settings->getPaymentTypeCC()) => [
+                            self::REQUEST_FAILED => 0,
+                            self::REQUEST_SUCCESSFUL => 0,
+                        ]
+                    ];
+            }
+            $this->requests[$holding->getId()][$group->getId()][$yardiBatchId][$typePayment][self::REQUEST_FAILED]++;
         }
     }
 }

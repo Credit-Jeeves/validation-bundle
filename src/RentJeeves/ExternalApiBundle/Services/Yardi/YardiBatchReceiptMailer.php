@@ -44,7 +44,7 @@ class YardiBatchReceiptMailer
      *
      * @param array $request
      */
-    public function send(array $request)
+    public function send(array $request, $depositDate)
     {
         foreach ($request as $holdingId => $groups) {
             $globalByHolding = array();
@@ -52,8 +52,12 @@ class YardiBatchReceiptMailer
                 $globalByGroup = array();
                 foreach ($batchIds as $batchId => $typePayments) {
                     foreach ($typePayments as $typePayment => $status) {
+                        if ($typePayment == 'payment_batch_id') {
+                            continue;
+                        }
                         $data = array();
-                        $data['bratchId'] = $batchId;
+                        $data['batchId'] = $batchId;
+                        $data['payment_batch_id'] = $typePayments['payment_batch_id'];
                         $data['type'] = $typePayment;
                         if ($status[ReceiptBatchSender::REQUEST_SUCCESSFUL] > 0) {
                             $dataSuccessfully = array();
@@ -76,13 +80,21 @@ class YardiBatchReceiptMailer
                 if (empty($globalByGroup)) {
                     continue;
                 }
-                $this->sendEmailToLandlordByGroup($groupId, $globalByGroup);
+                $emailData = [
+                    'deposit_date' => $depositDate,
+                    'data' => $globalByGroup,
+                ];
+                $this->sendEmailToLandlordByGroup($groupId, $emailData);
             }
 
             if (empty($globalByHolding)) {
                 continue;
             }
-            $this->sendEmailToLandlordByHolding($holdingId, $globalByHolding);
+            $emailData = [
+                'deposit_date' => $depositDate,
+                'data' => $globalByHolding,
+            ];
+            $this->sendEmailToLandlordByHolding($holdingId, $emailData);
         }
     }
 

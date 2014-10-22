@@ -15,6 +15,10 @@ class ResidentTransactionsClient extends AbstractClient
             self::MAPPING_FIELD_STD_CLASS    => 'GetResidentTransactions_LoginResult',
             self::MAPPING_DESERIALIZER_CLASS => 'GetResidentTransactionsLoginResponse',
         ),
+        'GetVersionNumber' => array(
+            self::MAPPING_FIELD_STD_CLASS    => 'GetVersionNumberResult',
+            self::MAPPING_DESERIALIZER_CLASS => 'GetVersionNumberResponse',
+        ),
     );
 
     /**
@@ -49,6 +53,16 @@ class ResidentTransactionsClient extends AbstractClient
 
         return $this->processRequest(
             'GetResidentTransactions_Login',
+            $parameters
+        );
+    }
+
+    public function getVersionNumber()
+    {
+        $parameters = ['GetVersionNumber' => []];
+
+        return $this->processRequest(
+            'GetVersionNumber',
             $parameters
         );
     }

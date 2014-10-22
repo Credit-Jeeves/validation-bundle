@@ -1963,6 +1963,10 @@
                 <source>landlord.hps.complete_application</source>
                 <target><![CDATA[Please complete your merchant application by filling out <a href="%complete_url%" target="_blank">this form</a> through our payment processor.]]></target>
             </trans-unit>
+            <trans-unit id="landlord.hps.contact_us_message">
+                <source>landlord.hps.contact_us_message</source>
+                <target>Please contact us at help@renttrack.com or call 866-841-9090 x2 to set up your merchant account.</target>
+            </trans-unit>
             <trans-unit id="landlord.payment_account.set_up_message">
                 <source>landlord.payment_account.set_up_message</source>
                 <target><![CDATA[Please visit your <a href="%payment_account_url%">account settings</a> to set up a payment account.]]></target>
@@ -2831,6 +2835,14 @@
             <trans-unit id="common.batch_id">
                 <source>common.batch_id</source>
                 <target>Batch ID</target>
+            </trans-unit>
+            <trans-unit id="yardi.accounting_batch_id">
+                <source>yardi.accounting_batch_id</source>
+                <target>Accounting Batch ID</target>
+            </trans-unit>
+            <trans-unit id="yardi.email.number_of_payments">
+                <source>yardi.email.number_of_payments</source>
+                <target># of payments</target>
             </trans-unit>
         </body>
     </file>
