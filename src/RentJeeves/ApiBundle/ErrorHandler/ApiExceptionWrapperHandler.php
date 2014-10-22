@@ -12,6 +12,6 @@ class ApiExceptionWrapperHandler implements ExceptionWrapperHandlerInterface
      */
     public function wrap($data)
     {
-        return new ExceptionWrapper($data);
+        return (new ExceptionWrapper($data))->getErrors();
     }
 }

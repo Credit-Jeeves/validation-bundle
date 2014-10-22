@@ -1,0 +1,4 @@
+payment_accounts:
+  type:         rest
+  resource:     "@RjApiBundle/Controller/Tenant/PaymentAccountsController.php"
+  name_prefix:  api_
