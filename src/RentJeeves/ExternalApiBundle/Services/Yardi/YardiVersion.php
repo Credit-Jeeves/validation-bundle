@@ -2,12 +2,11 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -53,10 +52,10 @@ class YardiVersion
         try {
             $holdings = $this->em->getRepository('DataBundle:Holding')->findHoldingsWithYardiSettings(0, 1000);
             foreach ($holdings as $holding) {
-                /** @var ResidentClient $residentClient */
+                /** @var ResidentTransactionsClient $residentClient */
                 $residentClient = $this->clientFactory->getClient(
                     $holding->getYardiSettings(),
-                    SoapClientEnum::RESIDENT
+                    SoapClientEnum::RESIDENT_TRANSACTIONS
                 );
                 $version = $residentClient->getVersionNumber();
                 $this->logMessage(sprintf("Current version for holding %s is %s", $holding->getName(), $version));
