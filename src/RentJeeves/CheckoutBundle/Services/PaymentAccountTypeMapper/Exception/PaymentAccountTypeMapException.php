@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMappe\Exception;
+namespace RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception;
 
 class PaymentAccountTypeMapException extends \Exception
 {

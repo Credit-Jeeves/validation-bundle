@@ -2,16 +2,20 @@
 
 namespace RentJeeves\ApiBundle\Tests;
 
+use Doctrine\ORM\EntityManager;
 use FOS\OAuthServerBundle\Entity\Client;
 use OAuth2\IOAuth2Storage;
-use RentJeeves\DataBundle\Entity\LandlordRepository;
+use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
 
 class BaseApiTestCase extends BaseTestCase
 {
-    const ACCESS_TOKEN = 'api_test_case';
+    const URL_PREFIX = '/api/tenant/v1';
+
+    const TENANT_ACCESS_TOKEN = 'api_tenant_test_case';
 
     protected static $instance = false;
 
@@ -20,6 +24,15 @@ class BaseApiTestCase extends BaseTestCase
         'json'=> ['application/json','application/x-json'],
         'xml'=> ['text/xml','application/xml','application/x-xml'],
     ];
+
+    /** @var  EntityManager */
+    private $em;
+
+    /** @var  AttributeEncoderInterface */
+    private $idEncoder;
+
+    /** @var  AttributeEncoderInterface */
+    private $urlEncoder;
 
     protected function assertResponse(Response $response, $statusCode = 200, $format = 'html')
     {
@@ -64,17 +77,16 @@ class BaseApiTestCase extends BaseTestCase
         /** @var IOAuth2Storage $oauthStorage */
         $oauthStorage = $this->getContainer()->get('fos_oauth_server.storage');
 
-        $em = $this->getContainer()->get('doctrine')->getManager();
-
-        $repo = $em->getRepository('DataBundle:Client');
+        $repo = $this->getEntityRepository('DataBundle:Client');
         /** @var Client $oauthClient */
         $oauthClient = $repo->find(1);
-        /** @var LandlordRepository $repo */
-        $repo = $em->getRepository('RjDataBundle:Tenant');
 
-        $user = $repo->findOneBy(['email' => 'tenant11@example.com']);
-
-        $oauthStorage->createAccessToken(static::ACCESS_TOKEN, $oauthClient, $user, 0);
+        $oauthStorage->createAccessToken(
+            static::TENANT_ACCESS_TOKEN,
+            $oauthClient,
+            $this->getTenant(),
+            0
+        );
     }
 
     protected function getClient()
@@ -84,6 +96,54 @@ class BaseApiTestCase extends BaseTestCase
             $this->prepareOAuthAuthorization();
             self::$instance = true;
         }
+
         return parent::createClient();
+    }
+
+    protected function getEntityRepository($entityPath)
+    {
+        if (!$this->em) {
+            $this->em = $this->getContainer()->get('doctrine')->getManager();
+        }
+
+        return $this->em->getRepository($entityPath);
+    }
+
+    /**
+     * @return null|Tenant
+     */
+    protected function getTenant()
+    {
+        return $this
+            ->getEntityRepository('RjDataBundle:Tenant')
+            ->findOneBy(['email' => 'tenant11@example.com']);
+    }
+
+    /**
+     * @param string $idEncoderServiceId
+     * @param bool $refresh
+     * @return AttributeEncoderInterface
+     */
+    protected function getIdEncoder($idEncoderServiceId = 'api.default_id_encoder', $refresh = false)
+    {
+        if ($refresh || !$this->idEncoder) {
+            $this->idEncoder = $this->getContainer()->get($idEncoderServiceId);
+        }
+
+        return $this->idEncoder;
+    }
+
+    /**
+     * @param string $urlEncoderServiceId
+     * @param bool $refresh
+     * @return AttributeEncoderInterface
+     */
+    protected function getUrlEncoder($urlEncoderServiceId = 'api.default_url_encoder', $refresh = false)
+    {
+        if ($refresh || !$this->urlEncoder) {
+            $this->urlEncoder = $this->getContainer()->get($urlEncoderServiceId);
+        }
+
+        return $this->urlEncoder;
     }
 }
