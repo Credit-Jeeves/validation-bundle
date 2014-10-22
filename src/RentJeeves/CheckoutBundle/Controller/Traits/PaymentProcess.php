@@ -40,7 +40,7 @@ trait PaymentProcess
     }
 
     /**
-     * @param PaymentAccountType $paymentAccountType
+     * @param Form $paymentAccountType
      *
      * @return JsonResponse
      */
@@ -68,7 +68,8 @@ trait PaymentProcess
             throw new RuntimeException('Merchant name is not installed');
         }
 
-        $tokenRequest = $this->get('payment.account')->getTokenRequest($paymentAccountType, $user);
+        $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
+        $tokenRequest = $this->get('payment.account')->getTokenRequest($paymentAccountMapped, $user);
         $token = $this->get('payment.account')->getTokenResponse($tokenRequest, $merchantName);
 
         $paymentAccountEntity->setToken($token);

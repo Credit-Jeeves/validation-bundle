@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class BillingAccountType extends AbstractType
 {
+    const NAME = 'billingAccountType';
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -217,6 +219,6 @@ class BillingAccountType extends AbstractType
 
     public function getName()
     {
-        return 'billingAccountType';
+        return static::NAME;
     }
 }
