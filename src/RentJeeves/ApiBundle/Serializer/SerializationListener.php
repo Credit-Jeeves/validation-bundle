@@ -25,16 +25,20 @@ class SerializationListener implements EventSubscriberInterface
         return [
             [
                 'event' => 'serializer.pre_serialize',
-                'class' => 'RentJeeves\DataBundle\Entity\Unit',
+                'class' => 'RentJeeves\DataBundle\Entity\PaymentAccount',
                 'method' => 'onPreSerialize'
-            ]
+            ],
+            [
+                'event' => 'serializer.pre_serialize',
+                'class' => 'Proxies\__CG__\RentJeeves\DataBundle\Entity\PaymentAccount',
+                'method' => 'onPreSerialize'
+            ],
         ];
     }
 
     public function onPreSerialize(PreSerializeEvent $event)
     {
         $useWrapper = $event->getContext()->attributes->get('use_wrapper');
-
         $useWrapper = ($useWrapper instanceof Option) ? $useWrapper->get() : false;
         if ($useWrapper) {
             $event->setType('NeedWrapped');

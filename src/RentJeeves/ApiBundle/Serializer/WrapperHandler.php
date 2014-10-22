@@ -6,11 +6,19 @@ use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
-use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\ApiBundle\ResponseEntity\Unit as UnitWrapper;
+use RentJeeves\ApiBundle\Response\ResponseFactory;
 
 class WrapperHandler implements SubscribingHandlerInterface
 {
+    /**
+     * @var ResponseFactory
+     */
+    protected $responseFactory;
+
+    public function __construct(ResponseFactory $responseFactory)
+    {
+        $this->responseFactory = $responseFactory;
+    }
 
     /**
      * {@inheritdoc}
@@ -22,21 +30,21 @@ class WrapperHandler implements SubscribingHandlerInterface
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format' => 'json',
                 'type' => 'NeedWrapped',
-                'method' => 'wrapUnit',
+                'method' => 'wrap',
             ]
         ];
     }
 
 
-    public function wrapUnit(
+    public function wrap(
         JsonSerializationVisitor $visitor,
-        Unit $unit,
+        $object,
         array $type,
         Context $context
     ) {
-        $unit = new UnitWrapper($unit);
-        $type['name'] = get_class($unit);
+        $object = $this->responseFactory->getResponse($object);
+        $type['name'] = get_class($object);
 
-        return $visitor->getNavigator()->accept($unit, $type, $context);
+        return $visitor->getNavigator()->accept($object, $type, $context);
     }
 }

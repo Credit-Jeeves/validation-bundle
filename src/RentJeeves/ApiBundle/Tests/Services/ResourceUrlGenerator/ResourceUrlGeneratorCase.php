@@ -97,6 +97,6 @@ class ResourceUrlGeneratorCase extends BaseTestCase
 
         $url = $this->getContainer()->get('api.resource_url_generator')->generate($resource);
 
-        $this->assertEquals($url, '/rj_test.php/login?id=1');
+        $this->assertEquals($url, 'http://localhost/rj_test.php/login?id=1');
     }
 }

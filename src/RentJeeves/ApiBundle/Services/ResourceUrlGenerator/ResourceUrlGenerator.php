@@ -41,7 +41,8 @@ class ResourceUrlGenerator
 
         return $this->router->generate(
             $config->prefix . $config->actionName,
-            [$config->attributeName => $this->encodeAttribute($resource->{$config->attributeName}, $config->encoder)]
+            [$config->attributeName => $this->encodeAttribute($resource->{$config->attributeName}, $config->encoder)],
+            true
         );
     }
 
