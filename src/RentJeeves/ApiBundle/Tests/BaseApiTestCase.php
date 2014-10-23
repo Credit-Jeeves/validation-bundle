@@ -34,6 +34,8 @@ class BaseApiTestCase extends BaseTestCase
     /** @var  AttributeEncoderInterface */
     private $urlEncoder;
 
+    private $tenantEmail= 'tenant11@example.com';
+
     protected function assertResponse(Response $response, $statusCode = 200, $format = 'html')
     {
         $this->assertEquals(
@@ -109,6 +111,17 @@ class BaseApiTestCase extends BaseTestCase
         return $this->em->getRepository($entityPath);
     }
 
+    protected function setTenantEmail($email)
+    {
+        $this->tenantEmail = $email;
+        static::$instance = false;
+    }
+
+    protected function getTenantEmail()
+    {
+        return $this->tenantEmail;
+    }
+
     /**
      * @return null|Tenant
      */
@@ -116,7 +129,7 @@ class BaseApiTestCase extends BaseTestCase
     {
         return $this
             ->getEntityRepository('RjDataBundle:Tenant')
-            ->findOneBy(['email' => 'tenant11@example.com']);
+            ->findOneBy(['email' => $this->tenantEmail]);
     }
 
     /**

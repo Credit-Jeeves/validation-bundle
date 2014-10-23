@@ -2,7 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper;
 
-use RentJeeves\ApiBundle\Forms\Enum\BankACHType;
+use RentJeeves\ApiBundle\Forms\Enum\ACHDepositType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as TenantPaymentAccount;
 use RentJeeves\ApiBundle\Forms\PaymentAccountType as ApiPaymentAccount;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\PaymentAccountTypeMapException;
@@ -90,17 +90,18 @@ class PaymentAccountTypeMapper
                 ->set('account_number', $paymentAccountType->get('bank')->get('account')->getData())
                 ->set(
                     'ach_deposit_type',
-                    BankACHType::getMapValue(
+                    ACHDepositType::getMapValue(
                         $paymentAccountType->get('bank')->get('type')->getData()
                     )
                 );
         } elseif (PaymentAccountTypeEnum::CARD == $paymentAccountType->get('type')->getData()) {
             $expirationDate = $paymentAccountType->get('card')->getData()->getExpiration();
             $paymentAccountData
-                ->set('expiration_month', $expirationDate->month)
-                ->set('expiration_year', $expirationDate->year)
+                ->set('expiration_month', $expirationDate->format('m'))
+                ->set('expiration_year', $expirationDate->format('Y'))
                 ->set('address_choice', null)
-//                ->set('address_choice', $paymentAccountType->get('card')->get('billing_address_url')->getData())
+                // TODO add to form billing_address_url for exists addresses
+                // $paymentAccountType->get('card')->get('billing_address_url')->getData()
                 ->set('card_number', $paymentAccountType->get('card')->get('account')->getData());
         }
 

@@ -37,7 +37,7 @@ class PaymentAccountsController extends Controller
      *     statusCodes={
      *         200="Returned when successful",
      *         204="No content with such parameters",
-     *         500="Something wrong in request"
+     *         500="Internal Server Error"
      *     }
      * )
      * @Rest\Get("/payment_accounts")
@@ -67,15 +67,15 @@ class PaymentAccountsController extends Controller
      *     statusCodes={
      *         200="Returned when successful",
      *         404="Payment Account not found",
-     *         400="Error validate data",
-     *         500="Something wrong in request"
+     *         400="Error validating data. Please check parameters and retry.",
+     *         500="Internal Server Error"
      *     }
      * )
      * @Rest\Get("/payment_accounts/{id}")
      * @Rest\View(serializerGroups={"Base", "PaymentAccountDetails"})
      * @AttributeParam(
-     *   name="id",
-     *   encoder = "api.default_id_encoder"
+     *     name="id",
+     *     encoder = "api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
@@ -104,42 +104,41 @@ class PaymentAccountsController extends Controller
      *     description="Create a payment account.",
      *     statusCodes={
      *         200="Returned when successful",
-     *         404="Payment Account not found",
-     *         400="Error validate data",
-     *         500="Something wrong in request"
+     *         400="Error validating data. Please check parameters and retry.",
+     *         500="Internal Server Error"
      *     }
      * )
      * @Rest\Post("/payment_accounts")
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=201)
      * @RequestParam(
-     *      name="contract_url",
-     *      encoder="api.default_url_encoder",
-     *      description="Resource url for Contract."
+     *     name="contract_url",
+     *     encoder="api.default_url_encoder",
+     *     description="Resource url for Contract."
      * )
      * @RequestParam(
-     *      name="type",
-     *      requirements="bank|card",
-     *      description="Payment account type should be only 'bank' or 'card'."
+     *     name="type",
+     *     requirements="bank|card",
+     *     description="Payment account type should be only 'bank' or 'card'."
      * )
      * @RequestParam(
-     *      name="nickname",
-     *      description="Payment account nickname."
+     *     name="nickname",
+     *     description="Payment account nickname."
      * )
      * @RequestParam(
-     *      name="name",
-     *      description="Means name of checking account or credit card signer."
+     *     name="name",
+     *     description="Name on credit card or account holder."
      * )
      * @RequestParam(
-     *      name="bank",
-     *      array=true,
-     *      strict=false,
-     *      description="Required if type is bank."
+     *     name="bank",
+     *     array=true,
+     *     strict=false,
+     *     description="Required if type is bank."
      * )
      * @RequestParam(
-     *      name="card",
-     *      array=true,
-     *      strict=false,
-     *      description="Required if type is card."
+     *     name="card",
+     *     array=true,
+     *     strict=false,
+     *     description="Required if type is card."
      * )
      *
      * @throws BadRequestHttpException
@@ -157,49 +156,49 @@ class PaymentAccountsController extends Controller
      * @ApiDoc(
      *     resource=true,
      *     section="Tenant Payment Account",
-     *     description="Create a payment account.",
+     *     description="Update a payment account.",
      *     statusCodes={
      *         200="Returned when successful",
      *         404="Payment Account not found",
-     *         400="Error validate data",
-     *         500="Something wrong in request"
+     *         400="Error validating data. Please check parameters and retry.",
+     *         500="Internal Server Error"
      *     }
      * )
      * @Rest\Put("/payment_accounts/{id}")
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
      * @AttributeParam(
-     *   name="id",
-     *   encoder = "api.default_id_encoder"
+     *     name="id",
+     *     encoder = "api.default_id_encoder"
      * )
      * @RequestParam(
-     *      name="contract_url",
-     *      encoder="api.default_url_encoder",
-     *      description="Resource url for Contract."
+     *     name="contract_url",
+     *     encoder="api.default_url_encoder",
+     *     description="Resource url for Contract."
      * )
      * @RequestParam(
-     *      name="type",
-     *      requirements="bank|card",
-     *      description="Payment account type should be only 'bank' or 'card'."
+     *     name="type",
+     *     requirements="bank|card",
+     *     description="Payment account type should be only 'bank' or 'card'."
      * )
      * @RequestParam(
-     *      name="nickname",
-     *      description="Payment account nickname."
+     *     name="nickname",
+     *     description="Payment account nickname."
      * )
      * @RequestParam(
-     *      name="name",
-     *      description="Means name of checking account or credit card signer."
+     *     name="name",
+     *     description="Name on credit card or account holder."
      * )
      * @RequestParam(
-     *      name="bank",
-     *      array=true,
-     *      strict=false,
-     *      description="Required if type is bank."
+     *     name="bank",
+     *     array=true,
+     *     strict=false,
+     *     description="Required if type is bank."
      * )
      * @RequestParam(
-     *      name="card",
-     *      array=true,
-     *      strict=false,
-     *      description="Required if type is card."
+     *     name="card",
+     *     array=true,
+     *     strict=false,
+     *     description="Required if type is card."
      * )
      *
      * @throws NotFoundHttpException

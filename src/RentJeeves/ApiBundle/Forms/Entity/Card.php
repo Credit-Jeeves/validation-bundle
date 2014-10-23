@@ -2,8 +2,8 @@
 
 namespace RentJeeves\ApiBundle\Forms\Entity;
 
+use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
-use stdClass;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
@@ -19,7 +19,7 @@ class Card
      *      groups={"card"}
      * )
      */
-    public $account;
+    protected $account;
 
     /**
      * @Assert\NotBlank(groups={"card"})
@@ -29,14 +29,14 @@ class Card
      *      groups={"card"}
      * )
      */
-    public $cvv;
+    protected $cvv;
 
     /**
      * Format needs to be yyyyy-mm
      *
      * @Assert\NotBlank(groups={"card"})
      * @Assert\Regex(
-     *      pattern="/^[0-9]{4}-[0-9]{2}$/",
+     *      pattern="/^20[0-9]{2}-(0[1-9]{1}|1[0-2]{1})$/",
      *      message="api.errors.payment_accounts.card.expiration.invalid_format",
      *      groups={"card"}
      * )
@@ -86,22 +86,44 @@ class Card
      */
     public function isExpirationDateValid()
     {
-        if (substr($this->expiration, -2) > 12 || $this->expiration < date('Y-m')) {
+        $now = new DateTime();
+        $exp = new DateTime($this->expiration);
+        $exp->modify($exp->format('Y-m-t'));
+
+        if ($exp < $now) {
             return false;
         }
 
         return true;
     }
 
+    public function getAccount()
+    {
+        return $this->account;
+    }
+
+    public function setAccount($account)
+    {
+        $this->account = $account;
+    }
+
+    public function getCvv()
+    {
+        return $this->cvv;
+    }
+
+    public function setCvv($cvv)
+    {
+        $this->cvv = $cvv;
+    }
+
+    /**
+     * @return DateTime
+     */
     public function getExpiration()
     {
         if (!empty($this->expiration) && is_string($this->expiration)) {
-            $expiration = new stdClass();
-
-            $expiration->year = substr($this->expiration, 0, 4);
-            $expiration->month = substr($this->expiration, -2);
-
-            $this->expiration = $expiration;
+            $this->expiration = new DateTime($this->expiration);
         }
 
         return $this->expiration;

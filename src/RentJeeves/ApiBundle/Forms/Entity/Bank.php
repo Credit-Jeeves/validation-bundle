@@ -9,20 +9,50 @@ class Bank
     /**
      * @Assert\NotBlank(groups={"bank"})
      */
-    public $routing;
+    protected $routing;
 
     /**
      * @Assert\NotBlank(groups={"bank"})
      */
-    public $account;
+    protected $account;
 
     /**
      * @Assert\NotBlank(groups={"bank"})
      * @Assert\Choice(
      *      message="api.errors.payment_accounts.bank.type",
-     *      callback={"RentJeeves\ApiBundle\Forms\Enum\BankACHType", "all"},
+     *      callback={"RentJeeves\ApiBundle\Forms\Enum\ACHDepositType", "all"},
      *      groups={"bank"}
      * )
      */
-    public $type;
+    protected $type;
+
+    public function getRouting()
+    {
+        return $this->routing;
+    }
+
+    public function setRouting($routing)
+    {
+        $this->routing = $routing;
+    }
+
+    public function getAccount()
+    {
+        return $this->account;
+    }
+
+    public function setAccount($account)
+    {
+        $this->account = $account;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 }

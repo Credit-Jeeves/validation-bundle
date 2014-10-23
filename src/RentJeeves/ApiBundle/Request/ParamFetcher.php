@@ -109,8 +109,6 @@ class ParamFetcher extends Base
             $this->request->request->set($config->getKey(), $value);
         } elseif ($config instanceof QueryParam) {
             $this->request->query->set($config->getKey(), $value);
-        } else {
-            $param = null;
         }
 
         return $this->paramsValue[$name] = $value;

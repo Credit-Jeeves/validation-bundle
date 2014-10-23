@@ -24,6 +24,7 @@ class CardPaymentAccountType extends AbstractType
 
         $builder->add('cvv');
 
+        // this is hook for mapping billing_address to address field on parent form entity
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();
             if ($form->getParent() && $form->getParent()->getData()) {

@@ -55,23 +55,11 @@ class PaymentAccountType extends AbstractType
 
         $builder->add('bank', new BankPaymentAccountType(), [
             'mapped' => false,
-            'constraints' => new NotBlank(
-                [
-                    'groups' => ['bank'],
-                    'message' => 'TEST MESSAGE',
-                ]
-            )
         ]);
 
 
         $builder->add('card', new CardPaymentAccountType(), [
             'mapped' => false,
-            'constraints' => new NotBlank(
-                [
-                    'groups' => ['card'],
-                    'message' => 'TEST MESSAGE',
-                ]
-            )
         ]);
     }
 
