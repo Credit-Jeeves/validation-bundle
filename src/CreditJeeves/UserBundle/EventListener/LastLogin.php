@@ -54,13 +54,14 @@ class LastLogin implements EventSubscriberInterface
     {
 
         $user = $event->getAuthenticationToken()->getUser();
+        $ip = $event->getRequest()->getClientIp();
         if ($user instanceof UserInterface) {
             $lastLogin = $user->getLastLogin();
             if (empty($lastLogin) & 'applicant' == $user->getType()) {
                 $this->mailer->sendWelcomeEmailToUser($user);
             }
-
             $user->setLastLogin(new \DateTime());
+            $user->setlastIp($ip);
             $this->em->persist($user);
             $this->em->flush();
         }
