@@ -76,7 +76,7 @@ class PayRent extends Pay
         }
         $tenant = $contract->getTenant();
         $billTransaction->setID3(sprintf("%s %s", $tenant->getFirstName(), $tenant->getLastName()));
-        $billTransaction->setID4($contract->getGroup()->getName());
+        $billTransaction->setID4($contract->getGroup()->getID4StatementDescriptor());
 
         if (PaymentTypeEnum::ONE_TIME == $payment->getType() ||
             date('n') == $payment->getEndMonth() && date('Y') == $payment->getEndYear()

@@ -131,4 +131,9 @@ class Group extends BaseGroup
 
         return $this->depositAccount;
     }
+
+    public function getID4StatementDescriptor()
+    {
+        return $this->getStatementDescriptor() ?: substr($this->getName(), 0, 14);
+    }
 }

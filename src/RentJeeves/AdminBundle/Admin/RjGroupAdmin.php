@@ -114,7 +114,7 @@ class RjGroupAdmin extends Admin
 
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $contrainer = $this->getConfigurationPool()->getContainer();
+        $container = $this->getConfigurationPool()->getContainer();
         $formMapper
             ->with('Details')
                 ->add(
@@ -130,6 +130,7 @@ class RjGroupAdmin extends Admin
                     )
                 )
                 ->add('name')
+                ->add('statementDescriptor', null, ['label' => 'ID4', 'required' => true])
             ->end()
             ->with('Deposit Account')
                 // admin.deposit_account.merchant_name
@@ -201,7 +202,7 @@ class RjGroupAdmin extends Admin
             ->with('Settings')
                 ->add(
                     'groupSettings',
-                    $contrainer->get('form.group_settings'),
+                    $container->get('form.group_settings'),
                     array(
                     ),
                     array(
