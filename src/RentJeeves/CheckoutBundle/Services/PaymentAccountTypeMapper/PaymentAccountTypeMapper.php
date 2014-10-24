@@ -2,8 +2,10 @@
 
 namespace RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper;
 
+use RentJeeves\ApiBundle\Forms\Enum\ACHDepositType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as TenantPaymentAccount;
-use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMappe\Exception\PaymentAccountTypeMapException;
+use RentJeeves\ApiBundle\Forms\PaymentAccountType as ApiPaymentAccount;
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\PaymentAccountTypeMapException;
 use RentJeeves\LandlordBundle\Form\BillingAccountType as LandlordPaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -25,6 +27,8 @@ class PaymentAccountTypeMapper
             $paymentAccountData = $this->mapTenantAccountTypeForm($paymentAccountType);
         } elseif (LandlordPaymentAccount::NAME == $paymentAccountType->getName()) {
             $paymentAccountData = $this->mapLandlordAccountTypeForm($paymentAccountType);
+        } elseif (ApiPaymentAccount::NAME == $paymentAccountType->getName()) {
+            $paymentAccountData = $this->mapApiAccountTypeForm($paymentAccountType);
         } else {
             throw new PaymentAccountTypeMapException('Unknown payment account type mapping');
         }
@@ -67,6 +71,39 @@ class PaymentAccountTypeMapper
             ->set('routing_number', $paymentAccountType->get('RoutingNumber')->getData())
             ->set('account_number', $paymentAccountType->get('AccountNumber')->getData())
             ->set('ach_deposit_type', $paymentAccountType->get('ACHDepositType')->getData());
+
+        return $paymentAccountData;
+    }
+
+    public function mapApiAccountTypeForm(Form $paymentAccountType)
+    {
+        $paymentAccountData = new PaymentAccount();
+
+        $paymentAccountData->setEntity($paymentAccountType->getData());
+
+        $paymentAccountData
+            ->set('account_name', $paymentAccountType->get('name')->getData());
+
+        if (PaymentAccountTypeEnum::BANK == $paymentAccountType->get('type')->getData()) {
+            $paymentAccountData
+                ->set('routing_number', $paymentAccountType->get('bank')->get('routing')->getData())
+                ->set('account_number', $paymentAccountType->get('bank')->get('account')->getData())
+                ->set(
+                    'ach_deposit_type',
+                    ACHDepositType::getMapValue(
+                        $paymentAccountType->get('bank')->get('type')->getData()
+                    )
+                );
+        } elseif (PaymentAccountTypeEnum::CARD == $paymentAccountType->get('type')->getData()) {
+            $expirationDate = $paymentAccountType->get('card')->getData()->getExpiration();
+            $paymentAccountData
+                ->set('expiration_month', $expirationDate->format('m'))
+                ->set('expiration_year', $expirationDate->format('Y'))
+                ->set('address_choice', null)
+                // TODO add to form billing_address_url for exists addresses
+                // $paymentAccountType->get('card')->get('billing_address_url')->getData()
+                ->set('card_number', $paymentAccountType->get('card')->get('account')->getData());
+        }
 
         return $paymentAccountData;
     }

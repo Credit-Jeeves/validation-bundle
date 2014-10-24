@@ -15,3 +15,4 @@ services:
         tags:
             - { name: "jms_serializer.handler", type: "%collection.class%", format: json, method: serializeCollection }
     api.default_id_encoder: @skip32.id_encoder
+    api.default_url_encoder: @resource.url_encoder
