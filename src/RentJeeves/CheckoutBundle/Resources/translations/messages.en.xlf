@@ -88,7 +88,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.amountOther.min">
                 <source>checkout.error.amountOther.min</source>
-                <target>Other Amount should be 1 or more.</target>
+                <target>Other Amount should be 0 or more.</target>
             </trans-unit>
             <trans-unit id="checkout.error.amountOther.valid">
                 <source>checkout.error.amountOther.valid</source>

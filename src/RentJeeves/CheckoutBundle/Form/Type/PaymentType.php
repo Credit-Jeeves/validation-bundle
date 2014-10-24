@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Callback;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use DateTime;
 
 class PaymentType extends AbstractType
@@ -117,7 +118,21 @@ class PaymentType extends AbstractType
                     'class' => 'half-of-right',
                     'data-bind' => 'value: payment.amountOther'
                 ),
-                'invalid_message' => 'checkout.error.amountOther.valid'
+                'constraints'     => array(
+                    new  Assert\Range(
+                        array(
+                            'min' => 0,
+                            'minMessage' => 'checkout.error.amountOther.min',
+                            'invalidMessage' => 'checkout.error.amountOther.valid'
+                        )
+                    ),
+                    new Type(
+                        array(
+                            'type' => 'numeric',
+                            'message' => 'checkout.error.amountOther.valid'
+                        )
+                    )
+                )
             )
         );
 
