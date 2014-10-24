@@ -54,9 +54,15 @@ class JobAdmin extends Admin
                         }
                         $queryBuilder->innerJoin(
                             $alias . '.relatedEntities',
-                            're',
-                            Expr\Join::WITH,
-                            "re.payment = :payment_id"
+                            're'
+                        );
+                        $queryBuilder->where('re instance of RentJeeves\DataBundle\Entity\JobRelatedPayment');
+                        $queryBuilder->andWhere(
+                            're.id in (
+                                select jrp.id
+                                from RentJeeves\DataBundle\Entity\JobRelatedPayment jrp
+                                where jrp.payment = :payment_id
+                            )'
                         );
                         $queryBuilder->setParameter('payment_id', (int)$value['value']);
 
