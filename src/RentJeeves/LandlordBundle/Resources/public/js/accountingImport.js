@@ -100,7 +100,7 @@ function accountingImport() {
             return Translator.trans('import.status.error');
         }
 
-        if (data.contract.status == 'finished' && data.move_out !== null) {
+        if (data.contract.status == 'finished' || data.move_out !== null) {
             return Translator.trans('import.status.ended');
         }
 
