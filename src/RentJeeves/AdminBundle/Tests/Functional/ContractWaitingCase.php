@@ -32,7 +32,7 @@ class ContractWaitingCase extends BaseTestCase
         $this->assertNotNull($input = $this->page->findAll('css', 'input'));
         $this->assertEquals(10, count($input));
         $input[0]->setValue("200");
-        $input[1]->setValue("residentId");
+        $input[1]->setValue("615");
         $input[2]->setValue("test@mail.com");
         $input[3]->setValue("FirstName");
         $input[4]->setValue("LastName");
