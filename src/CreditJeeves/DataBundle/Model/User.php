@@ -640,6 +640,16 @@ abstract class User extends BaseUser
      */
     protected $partnerCode;
 
+    /**
+     * @ORM\Column(
+     *     type = "string",
+     *     name = "last_ip",
+     *     nullable = true,
+     *     length = 35
+     * )
+     */
+    protected $lastIp;
+
     public function __construct()
     {
         parent::__construct();
@@ -1954,5 +1964,21 @@ abstract class User extends BaseUser
     public function getPartnerCode()
     {
         return $this->partnerCode;
+    }
+
+    /**
+     * @param string $lastIp
+     */
+    public function setLastIp($lastIp)
+    {
+        $this->lastIp = $lastIp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastIp()
+    {
+        return $this->lastIp;
     }
 }
