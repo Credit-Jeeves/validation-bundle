@@ -1382,8 +1382,8 @@ class ImportCase extends BaseTestCase
         $submitImport->click();
 
         $this->session->wait(
-            60000,
-            "$('.errorMessage').length <= 0"
+            70000,
+            "$('.submitImportFile>span').length > 0"
         );
         $this->waitReviewAndPost();
         for ($i = 0; $i <= 3; $i++) {

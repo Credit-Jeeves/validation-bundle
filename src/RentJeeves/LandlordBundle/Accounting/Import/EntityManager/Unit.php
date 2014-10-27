@@ -5,6 +5,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
 trait Unit
 {

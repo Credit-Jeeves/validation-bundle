@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -422,7 +423,7 @@ class AccountingController extends Controller
     {
         $holding = $this->getUser()->getHolding();
         $request = $this->get('request');
-        $moveOutDate = $request->request->get('name');
+        $moveOutDate = $request->request->get('moveOutDate');
 
         /**
          * @var $importFactory ImportFactory
@@ -450,7 +451,7 @@ class AccountingController extends Controller
                 $responseData = array('result' => true);
             }
         } catch (Exception $e) {
-            $responseData = array('result' => false, 'message' => $e->getMessage(), 'ty' => $storage->getFilePath());
+            $responseData = array('result' => false);
         }
 
         if ($isLast) {
