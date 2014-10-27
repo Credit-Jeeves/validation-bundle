@@ -793,18 +793,19 @@ class ImportCase extends BaseTestCase
         );
         $this->waitReviewAndPost();
         $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
-        $this->assertEquals(5, count($errorFields));
+        $this->assertEquals(4, count($errorFields));
 
         $this->assertEquals('', $errorFields[0]->getValue());
         $this->assertEquals('', $errorFields[1]->getValue());
         $this->assertEquals('& Adelai', $errorFields[2]->getValue());
         $this->assertEquals('Carol Acha.Mo', $errorFields[3]->getValue());
-        $this->assertEquals('Matthew &', $errorFields[4]->getValue());
 
         $trs = $this->getParsedTrsByStatus();
 
-        $this->assertEquals(1, count($trs), "Count statuses is wrong");
-        $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
+        $this->assertEquals(2, count($trs), "Count statuses is wrong");
+        $this->assertEquals(8, count($trs['import.status.waiting']), "All contracts should be waiting");
+        $this->assertEquals(1, count($trs['import.status.ended']), "All contracts should be waiting");
+
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
@@ -818,9 +819,6 @@ class ImportCase extends BaseTestCase
 
         $this->assertNotNull($lastName3 = $this->page->find('css', '.3_last_name'));
         $lastName3->setValue('AchaMo');
-
-        $this->assertNotNull($firstName4 = $this->page->find('css', '.4_first_name'));
-        $firstName4->setValue('Mattew');
 
         $submitImportFile->click();
 
@@ -889,7 +887,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->isSingle());
 
-        $this->assertEquals(20, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
+        $this->assertEquals(19, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
     }
 
     /**
