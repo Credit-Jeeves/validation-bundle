@@ -4,8 +4,6 @@ namespace RentJeeves\ApiBundle\Controller\Tenant;
 
 use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Util\Codes;
-use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Forms\PaymentAccountType;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
@@ -43,7 +41,7 @@ class PaymentAccountsController extends Controller
      * @Rest\Get("/payment_accounts")
      * @Rest\View(serializerGroups={"Base", "PaymentAccountDetails"})
      *
-     * @return ResponseCollection|View
+     * @return ResponseCollection
      */
     public function getPaymentAccountsAction()
     {
