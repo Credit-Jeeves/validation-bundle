@@ -17,12 +17,20 @@ trait Property
         if (!$this->storage->isMultipleProperty()) {
             return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
         }
+
         /**
          * @var $property EntityProperty
          */
         $property =  $this->mapping->createProperty($row);
-        $key = md5($property->getFullAddress());
+        if ($propertyByUnit = $this->tryMapPropertyByUnit(
+            $property,
+            $row[Mapping::KEY_UNIT],
+            $row[Mapping::KEY_UNIT_ID]
+        )) {
+            return $propertyByUnit;
+        }
 
+        $key = md5($property->getFullAddress());
         if (array_key_exists($key, $this->propertyList)) {
             return $this->propertyList[$key];
         }
@@ -32,11 +40,7 @@ trait Property
         );
 
         if (!$isValid) {
-            return $this->tryMapPropertyByUnit(
-                $property,
-                $row[Mapping::KEY_UNIT],
-                $row[Mapping::KEY_UNIT_ID]
-            );
+            return null;
         }
         $property = $this->propertyProcess->checkPropertyDuplicate(
             $property,
