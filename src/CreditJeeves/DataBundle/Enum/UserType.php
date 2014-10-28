@@ -38,4 +38,9 @@ class UserType extends Enum
      * @var string
      */
     const LANDLORD = 'landlord';
+
+    /**
+     * @var string
+     */
+    const PARTNER = 'partner';
 }

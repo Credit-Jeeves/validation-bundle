@@ -730,12 +730,15 @@ abstract class User extends BaseUser
                     'ROLE_DEALER',
                     'ROLE_ADMIN',
                     'ROLE_TENANT',
-                    'ROLE_LANDLORD'
+                    'ROLE_LANDLORD',
+                    'ROLE_PARTNER'
                 );
             case UserType::TETNANT:
                 return array('ROLE_TENANT');
             case UserType::LANDLORD:
                 return array('ROLE_LANDLORD');
+            case UserType::PARTNER:
+                return array('ROLE_PARTNER');
         }
         throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }
