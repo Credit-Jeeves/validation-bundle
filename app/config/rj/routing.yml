@@ -118,7 +118,7 @@ jms_jobs_cancel_job:
 #REST
 rest_api_tenant_v1:
   type : rest
-  resource : "routing_rest_api_tenant_v1.yml"
+  resource: "@RjApiBundle/Resources/config/routing.yml"
   prefix: /api/tenant/v1
 
 NelmioApiDocBundle:
