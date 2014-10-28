@@ -56,6 +56,11 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '#contract-resolve-late .checkbox'));
         $this->assertCount(2, $checkboxes, 'Wrong number of checkboxes');
         $checkboxes[1]->click();
+        $this->assertNotNull(
+            $inputs = $this->page->findAll('css', '#contract-resolve-late input[type=text]')
+        );
+        $this->assertCount(2, $inputs, 'Wrong number of inputs');
+        $inputs[1]->setValue(date("m/d/y"));
         $this->assertNotNull($buttons = $this->page->findAll('css', '#blockPopupEditProperty button.button'));
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
         $buttons[0]->click();

@@ -8,6 +8,13 @@
         <h1>{{ 'conflict.resolve.title' | trans() }}</h1>
 
         <div class="clearfix halfs-box">
+            <div class="attention-box pie-el" data-bind="visible: countErrorsEnded() > 0">
+                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+                <ul class="default" data-bind="foreach: $root.errorsEnded">
+                    <li data-bind="text: $data"></li>
+                </ul>
+            </div>
+            <div class="row-20"></div>
             {% include 'RjComponentBundle:ContractsList:_tenantInfoBlock.html.twig' %}
             <div class="half-box right">
                 <h4>{{ 'conflict.resolve.options' | trans() }}</h4>
@@ -59,7 +66,23 @@
                             </select>
                         </div>
                         <div class="clearboth"></div>
+                        <div class="row-10"></div>
                     </li>
+
+                    <li>
+                        <label class="created-at-label floatleft" for="created-on">
+                            {{ 'contract.paid.paid_on' | trans }}
+                        </label>
+
+                         <div class="created-at-date floatleft">
+                                <input type="text" name="createdAt" class="half-of-right datepicker"
+                                       placeholder="mm/dd/YYYY" value=""
+                                       data-bind="datepicker: createdAt, datepickerOptions: {dateFormat: 'm/d/yy'}"
+                                />
+                        </div>
+                        <div class="clearboth"></div>
+                    </li>
+
                     <li>
                         <div class="row-10"></div>
                         {{ 'contract.resolve.warning' | trans }}

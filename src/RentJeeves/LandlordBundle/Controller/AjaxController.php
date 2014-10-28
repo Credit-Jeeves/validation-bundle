@@ -822,11 +822,6 @@ class AjaxController extends Controller
         if (isset($data['amount'])) {
             $amount = $data['amount'];
         }
-        try {
-            $paidFor = new DateTime($data['paid_for']);
-        } catch (Exception $e) {
-            return new BadRequestHttpException('Invalid input', $e);
-        }
         /** @var Contract $contract */
         $contract = $this->getDoctrine()
             ->getManager()
@@ -840,14 +835,27 @@ class AjaxController extends Controller
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
-                if ($amount) {
+                    if ($amount) {
+                        $paidFor = new DateTime($data['paid_for']);
+                        $createdAt = DateTime::createFromFormat('m/d/Y', $data['created_at']);
+                        $errors = DateTime::getLastErrors();
+                        if ($errors['warning_count'] > 0 || $errors['error_count'] > 0) {
+                            return new JsonResponse(
+                                array(
+                                    'status'  => 'error',
+                                    'errors'  => array(
+                                        'Invalid date',
+                                    )
+                                )
+                            );
+                        }
                     // Create order
                     $order = new Order();
                     $order->setUser($tenant);
                     $order->setSum($amount);
                     $order->setStatus(OrderStatus::COMPLETE);
                     $order->setType(OrderType::CASH);
-                    $em->persist($order);
+                    $order->setCreatedAt($createdAt);
                     // Create operation
                     $operation = new Operation();
                     $operation->setOrder($order);
@@ -855,12 +863,22 @@ class AjaxController extends Controller
                     $operation->setContract($contract);
                     $operation->setAmount($amount);
                     $operation->setPaidFor($paidFor);
+                    $operation->setCreatedAt($createdAt);
                     $em->persist($operation);
                     $contract->shiftPaidTo($amount);
                     $contract->setBalance($contract->getBalance() - $amount);
                     if ($contract->getSettings()->getIsIntegrated()) {
                         $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
                     }
+                }else{
+                    return new JsonResponse(
+                            array(
+                                'status'  => 'error',
+                                'errors'  => array(
+                                    'Invalid amount',
+                                )
+                            )
+                        );
                 }
                 // Change paid to date
                 $contract->setStatus(ContractStatus::CURRENT);
@@ -872,7 +890,11 @@ class AjaxController extends Controller
                 break;
         }
         // TODO blank page detection
-        return new JsonResponse(array());
+        return new JsonResponse(
+            array(
+                'status'  => 'successful',
+            )
+        );
     }
 
     /* Payments */

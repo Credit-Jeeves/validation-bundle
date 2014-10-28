@@ -1066,6 +1066,10 @@
                 <source>contract.paid.paid_for</source>
                 <target>For Month of</target>
             </trans-unit>
+            <trans-unit id="contract.paid.paid_on">
+                <source>contract.paid.paid_on</source>
+                <target>Paid on</target>
+            </trans-unit>
             <trans-unit id="contract.resolve.warning">
                 <source>contract.resolve.warning</source>
                 <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to assist RentTrack with any associated disputes arising from the information you provide.</target>
