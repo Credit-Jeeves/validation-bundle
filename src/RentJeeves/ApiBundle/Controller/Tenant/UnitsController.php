@@ -21,8 +21,8 @@ class UnitsController extends Controller
      *
      * @ApiDoc(
      *     resource=true,
-     *     section="Tenant Unit",
-     *     description="This call allows the application to get all units present in systems filter by params.",
+     *     section="Unit",
+     *     description="Get all units for a given address.",
      *     statusCodes={
      *         200="Returned when successful",
      *         204="No content with such parameters",
@@ -89,11 +89,11 @@ class UnitsController extends Controller
      *
      * @ApiDoc(
      *     resource=true,
-     *     section="Tenant Payment Account",
-     *     description="This call allows the application to get details information about payment account by id.",
+     *     section="Unit",
+     *     description="Get details for a specific unit.",
      *     statusCodes={
      *         200="Returned when successful",
-     *         404="Payment Account not found",
+     *         404="Unit not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
      *     }
