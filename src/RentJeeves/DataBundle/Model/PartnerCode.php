@@ -1,7 +1,8 @@
 <?php
 
-namespace CreditJeeves\DataBundle\Model;
+namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
 
@@ -19,13 +20,13 @@ abstract class PartnerCode
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Partner"
+     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerService"
      * )
      */
     protected $partner;
 
     /**
-     * @ORM\OneToOne(targetEntity="\CreditJeeves\DataBundle\Entity\User", inversedBy="partnerCode")
+     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="partnerCode")
      */
     protected $user;
 
@@ -82,15 +83,15 @@ abstract class PartnerCode
     }
 
     /**
-     * @param Partner $partner
+     * @param PartnerService $partner
      */
-    public function setPartner(Partner $partner)
+    public function setPartner(PartnerService $partner)
     {
         $this->partner = $partner;
     }
 
     /**
-     * @return Partner
+     * @return PartnerService
      */
     public function getPartner()
     {

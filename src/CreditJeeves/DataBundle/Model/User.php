@@ -11,6 +11,7 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Entity\PartnerCode;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
@@ -632,7 +633,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToOne(
-     *      targetEntity="\CreditJeeves\DataBundle\Entity\PartnerCode",
+     *      targetEntity="RentJeeves\DataBundle\Entity\PartnerCode",
      *      mappedBy="user",
      *      cascade={"all"},
      *      orphanRemoval=true

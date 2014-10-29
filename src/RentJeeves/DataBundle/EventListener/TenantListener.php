@@ -2,7 +2,7 @@
 
 namespace RentJeeves\DataBundle\EventListener;
 
-use CreditJeeves\DataBundle\Entity\PartnerCode;
+use RentJeeves\DataBundle\Entity\PartnerCode;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use RentJeeves\CoreBundle\Services\TUReporting;
 use RentJeeves\DataBundle\Entity\Contract;

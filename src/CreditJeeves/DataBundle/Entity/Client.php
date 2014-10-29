@@ -26,6 +26,15 @@ class Client extends BaseClient
      */
     protected $name;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerService",
+     *     mappedBy="client",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     */
+    protected $partnerService;
+
     public function getName()
     {
         return $this->name;
@@ -34,5 +43,26 @@ class Client extends BaseClient
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return PartnerService
+     */
+    public function getPartnerService()
+    {
+        return $this->partnerService;
+    }
+
+    /**
+     * @param PartnerService $partnerService
+     */
+    public function setPartnerService($partnerService)
+    {
+        $this->partnerService = $partnerService;
+    }
+
+    public function __toString()
+    {
+        return $this->getName() ?: '';
     }
 }
