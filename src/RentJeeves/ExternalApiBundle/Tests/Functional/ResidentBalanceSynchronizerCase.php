@@ -25,7 +25,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $balanceSyncronizer = $this->getContainer()->get('yardi.resident_balance_sync');
         $balanceSyncronizer->run();
         $updatedContract = $repo->find($contract->getId());
-        $this->assertEquals(4360.5, $updatedContract->getIntegratedBalance());
+        $this->assertGreaterThan(4360.5, $updatedContract->getIntegratedBalance());
     }
 
     /**
@@ -59,8 +59,8 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
 
         $this->assertEquals(0, $contractWaiting->getIntegratedBalance());
 
-        $balanceSyncronizer = $this->getContainer()->get('yardi.resident_balance_sync');
-        $balanceSyncronizer->run();
+        $balanceSynchronizer = $this->getContainer()->get('yardi.resident_balance_sync');
+        $balanceSynchronizer->run();
 
         $repo = $em->getRepository('RjDataBundle:ContractWaiting');
         $updatedContractWaiting = $repo->findByHoldingPropertyUnitResident(
@@ -70,6 +70,6 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
             't0011984'
         );
         $this->assertNotNull($updatedContractWaiting);
-        $this->assertEquals(4360.5, $updatedContractWaiting->getIntegratedBalance());
+        $this->assertGreaterThan(4360.5, $updatedContractWaiting->getIntegratedBalance());
     }
 }
