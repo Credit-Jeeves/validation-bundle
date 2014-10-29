@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * @DI\Service("checkout.paid_for")
@@ -30,6 +31,9 @@ class PaidFor
     public function getArray(Contract $contract)
     {
         $return = array();
+        if ($contract->getStatus() == ContractStatus::INVITE || $contract->getStatus() == ContractStatus::APPROVED) {
+            return $this->returnDefaultValue($return);
+        }
         if ($paidTo = $contract->getPaidToWithDueDate()) {
             $return = $this->makeDatesFromDate($paidTo);
         }
