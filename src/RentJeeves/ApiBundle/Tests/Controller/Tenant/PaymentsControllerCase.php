@@ -8,15 +8,17 @@ use RentJeeves\DataBundle\Entity\Payment;
 
 class PaymentControllerCase extends BaseApiTestCase
 {
-
-    public function testShow()
+    /**
+     * @test
+     */
+    public function getPayment()
     {
         $id = 1;
         $this->setTenantEmail('tenant11@example.com');
 
         $client = $this->getClient();
         $repo = $this->getEntityRepository('RjDataBundle:Payment');
-        $result = $repo->findOneByIdForUser($id, $this->getTenant()->getUsername());
+        $result = $repo->findOneByIdForUser($id, $this->getTenant());
 
         $client->request(
             'GET',
@@ -38,7 +40,7 @@ class PaymentControllerCase extends BaseApiTestCase
         $this->assertEquals($result->getStartYear(), $answer["year"]);
         $this->assertEquals($result->getEndMonth(), $answer["end_month"]);
         $this->assertEquals($result->getEndYear(), $answer["end_year"]);
-        $this->assertEquals(date("Y-m", $result->getPaidFor()->getTimestamp()), $answer["paid_for"]);
+        $this->assertEquals($result->getPaidFor()->format("Y-m"), $answer["paid_for"]);
         $this->assertEquals($result->getStatus(), $answer["status"]);
         $this->assertEquals($result->getContract()->getId(), $answer["contract_url"]);
         $this->assertEquals($result->getPaymentAccountId(), $answer["payment_account_url"]);

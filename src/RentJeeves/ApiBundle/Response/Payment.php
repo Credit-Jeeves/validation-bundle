@@ -5,7 +5,6 @@ namespace RentJeeves\ApiBundle\Response;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
-use RentJeeves\DataBundle\Entity\PaymentAccount as Entity;
 
 /**
  * @DI\Service("response_resource.payment")
@@ -167,13 +166,7 @@ class Payment extends ResponseResource
     public function getPaidFor()
     {
         $paidFor = $this->entity->getPaidFor();
-        $paidForFormatted = "";
-
-        if ($paidFor !== Null) {
-            $paidForFormatted = date("Y-m", $paidFor->getTimestamp());
-        }
-
-        return $paidForFormatted;
+        return $paidFor ? $paidFor->format('Y-m') : "";
     }
 
 

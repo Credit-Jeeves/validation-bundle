@@ -41,7 +41,7 @@ class PaymentsController extends Controller
         $payment = $this
             ->getDoctrine()
             ->getRepository('RjDataBundle:Payment')
-            ->findOneByIdForUser($id, $this->getUser()->getUsername());
+            ->findOneByIdForUser($id, $this->getUser());
 
         if ($payment) {
             return $this->get('response_resource.payment')->setEntity($payment);

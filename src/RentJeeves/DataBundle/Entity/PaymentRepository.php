@@ -161,18 +161,18 @@ class PaymentRepository extends EntityRepository
 
     /**
      * @param int $id
+     * @param User $user
      *
      * @return Payment | null
      */
-    public function findOneByIdForUser($id, $username)
+    public function findOneByIdForUser($id, $user)
     {
         $query = $this->createQueryBuilder('p');
         $query->innerJoin('p.paymentAccount', 'pa');
-        $query->innerJoin('pa.user', 'u');
         $query->andWhere('p.id = :id');
-        $query->andWhere('u.username = :username');
+        $query->andWhere('pa.user = :user');
         $query->setParameter('id', $id);
-        $query->setParameter('username', $username);
+        $query->setParameter('user', $user);
 
         return $query->getQuery()->getOneOrNullResult();
 

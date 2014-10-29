@@ -6,7 +6,10 @@ use RentJeeves\TestBundle\BaseTestCase;
 class PaymentResourceCase extends BaseTestCase
 {
 
-    public function testGetPaymentByUserId()
+    /**
+     * @test
+     */
+    public function getPaymentByUserId()
     {
         $this->load(true);
         $container = $this->getContainer();
