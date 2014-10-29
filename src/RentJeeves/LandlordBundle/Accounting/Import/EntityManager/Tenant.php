@@ -8,6 +8,9 @@ use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mappi
 
 trait Tenant
 {
+
+    protected $usersEmail = array();
+
     /**
      * @param array $row
      *
@@ -22,6 +25,7 @@ trait Tenant
         );
 
         if (!empty($tenant)) {
+            $this->fillUsersEmail($tenant);
             return $tenant;
         }
 
@@ -39,7 +43,22 @@ trait Tenant
         $tenant->setEmailCanonical($row[Mapping::KEY_EMAIL]);
         $tenant->setPassword(md5(md5(1)));
         $tenant->setCulture($this->locale);
-
+        $this->fillUsersEmail($tenant);
         return $tenant;
+    }
+
+    protected function fillUsersEmail(EntityTenant $tenant)
+    {
+        $email = $tenant->getEmail();
+        if (empty($email)) {
+            return;
+        }
+
+        if (isset($this->usersEmail[$email])) {
+            $this->usersEmail[$email]++;
+            return;
+        }
+
+        $this->usersEmail[$email] = 1;
     }
 }

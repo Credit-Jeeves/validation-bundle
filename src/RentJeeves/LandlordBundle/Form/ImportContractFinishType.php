@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use RentJeeves\LandlordBundle\Accounting\AccountingImport;
+use RentJeeves\LandlordBundle\Accounting\Import\Form\FormInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ImportContractFinishType extends AbstractType
 {
+    const NAME = 'import_contract_finish';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -52,6 +54,6 @@ class ImportContractFinishType extends AbstractType
 
     public function getName()
     {
-        return 'import_contract_finish';
+        return self::NAME;
     }
 }

@@ -2816,6 +2816,12 @@
                     Please come back between days %OPEN_DAY% and %CLOSE_DAY%.
                 </target>
             </trans-unit>
+            <trans-unit id="import.user.already_used">
+                <source>import.user.already_used</source>
+                <target>
+                    This email address is already used for a different resident ID.
+                </target>
+            </trans-unit>
             <trans-unit id="transaction.status.text.complete">
                 <source>transaction.status.text.complete</source>
                 <target>PAID</target>

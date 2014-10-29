@@ -5,7 +5,6 @@ namespace RentJeeves\LandlordBundle\Form;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,6 +20,7 @@ use CreditJeeves\CoreBundle\Translation\Translator;
  */
 class ImportNewUserWithContractType extends AbstractType
 {
+    const NAME = 'import_new_user_with_contract';
 
     protected $tenant;
 
@@ -117,6 +117,6 @@ class ImportNewUserWithContractType extends AbstractType
 
     public function getName()
     {
-        return 'import_new_user_with_contract';
+        return self::NAME;
     }
 }

@@ -186,6 +186,7 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function getImport(array $row, $lineNumber)
     {
         $import = new ModelImport();
+        $import->setNumber($lineNumber);
         $tenant = $this->getTenant($row);
         $import->setEmail($row[Mapping::KEY_EMAIL]);
         $import->setTenant($tenant);
@@ -219,6 +220,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
         if ($contractWaiting->getId() && !$import->getContract()->getId()) {
             $import->setHasContractWaiting(true);
+            $import->setContractWaiting($contractWaiting);
             $tenant->setFirstName($contractWaiting->getFirstName());
             $tenant->setLastName($contractWaiting->getLastName());
         } elseif ($contract->getId() && $contractWaiting->getId()) {
@@ -238,10 +240,23 @@ abstract class HandlerAbstract implements HandlerInterface
             $import->setForm($form);
         }
 
+        $this->setErrors($import);
+
+        return $import;
+    }
+
+    /**
+     * @param Import $import
+     */
+    protected function setErrors(Import $import)
+    {
+        $errors[$import->getNumber()] = array();
+        $form = $import->getForm();
+        $lineNumber = $import->getNumber();
         if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
-            $errors = $this->runFormValidation($form, $lineNumber, $token);
+            $errors = $this->runFormValidation($form, $lineNumber, $import->getCsrfToken());
             if ($this->isUsedResidentId($import->getResidentMapping())) {
-                $errors[$lineNumber][$form->getName()][Mapping::KEY_RESIDENT_ID] = $this->translator
+                $errors[$lineNumber][uniqid()][Mapping::KEY_RESIDENT_ID] = $this->translator
                     ->trans(
                         'error.residentId.already_use'
                     );
@@ -249,8 +264,17 @@ abstract class HandlerAbstract implements HandlerInterface
             $import->setErrors($errors);
         }
 
+        if (isset($this->usersEmail[$import->getTenant()->getEmail()]) &&
+            $this->usersEmail[$import->getTenant()->getEmail()] > 1
+        ) {
+            $errors[$import->getNumber()][uniqid()]['tenant_email'] =
+                $this->translator->trans(
+                    'import.user.already_used'
+                );
+            $import->setIsSkipped(true);
+        }
 
-        return $import;
+        $import->setErrors($errors);
     }
 
     /**

@@ -65,6 +65,7 @@ trait Contract
     {
         $tenant = $import->getTenant();
         $property = $this->getProperty($row);
+
         if (!$tenant->getId() || !$property) {
             $contract = $this->createContract($row, $tenant);
         } else {
