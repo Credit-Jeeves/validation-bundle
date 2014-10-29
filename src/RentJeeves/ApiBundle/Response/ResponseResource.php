@@ -23,6 +23,12 @@ abstract class ResponseResource
     public $encoder;
 
     /**
+     * @var ResponseFactory
+     * @DI\Inject("response_resource.factory")
+     */
+    public $resourceFactory;
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"Base"})
      *
@@ -61,5 +67,10 @@ abstract class ResponseResource
         throw new ResponseResourceException(
             sprintf('Property "%s.%s" is not defined.', get_class($this), $name)
         );
+    }
+
+    public function __toString()
+    {
+        return $this->getUrl();
     }
 }

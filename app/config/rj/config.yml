@@ -181,8 +181,6 @@ fos_rest:
         codes: ~
     routing_loader:
         default_format: json
-    serializer:
-        serialize_null: true
 
 sensio_framework_extra:
     view:
