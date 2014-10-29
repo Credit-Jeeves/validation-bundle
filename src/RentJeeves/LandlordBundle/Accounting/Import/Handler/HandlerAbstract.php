@@ -118,6 +118,7 @@ abstract class HandlerAbstract implements HandlerInterface
         } catch (Exception $e) {
             return null;
         }
+
         $errors = DateTime::getLastErrors();
 
         if (!empty($errors['warning_count']) || !empty($errors['errors'])) {
@@ -189,6 +190,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $import->setEmail($row[Mapping::KEY_EMAIL]);
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
+
         if ($this->mapping->isSkipped($row)) {
             $import->setIsSkipped(true);
         }
@@ -225,6 +227,13 @@ abstract class HandlerAbstract implements HandlerInterface
             $this->em->flush();
         }
 
+        if (!$import->getIsSkipped() &&
+            is_null($contract->getId()) &&
+            $this->contractInPast($contract)
+        ) {
+            $import->setIsSkipped(true);
+        }
+
         if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
             $import->setForm($form);
         }
@@ -239,6 +248,7 @@ abstract class HandlerAbstract implements HandlerInterface
             }
             $import->setErrors($errors);
         }
+
 
         return $import;
     }
@@ -258,6 +268,7 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $form->submit($submittedData);
+
         if (!$form->isValid()) {
             return array(
                 $lineNumber => $this->getFormErrors($form)

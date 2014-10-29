@@ -181,13 +181,17 @@ trait Contract
      */
     protected function isFinishedContract(EntityContract $contract)
     {
-        $today = new DateTime();
-        if (($finishAt = $contract->getFinishAt()) && $finishAt <= $today) { //set status of contract to finished...
+        if ($this->contractInPast($contract)) {
             $contract->setStatus(ContractStatus::FINISHED);
-
             return true;
         }
 
         return false;
+    }
+
+    protected function contractInPast(EntityContract $contract)
+    {
+        $today = new DateTime();
+        return ($contract->getFinishAt() && $contract->getFinishAt() < $today)? true : false;
     }
 }
