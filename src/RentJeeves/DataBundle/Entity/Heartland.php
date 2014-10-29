@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
@@ -283,5 +284,23 @@ class Heartland extends Base
         }
 
         return $depositAccount->getAccountNumber();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Type")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"soapYardiReversed"})
+     * @Serializer\Type("string")
+     *
+     * @return string
+     */
+    public function getReversal()
+    {
+        /** @var YardiSettings $yardiSettings */
+        $yardiSettings = $this->getContract()->getHolding()->getYardiSettings();
+        $order = $this->getOrder();
+
+        return $yardiSettings->getReversalType($order);
     }
 }

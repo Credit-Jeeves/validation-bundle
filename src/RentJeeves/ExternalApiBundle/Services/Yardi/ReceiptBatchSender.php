@@ -324,7 +324,7 @@ class ReceiptBatchSender
             'xml',
             $context
         );
-        $xml = $this->prepareXml($xml);
+        $xml = YardiXmlCleaner::prepareXml($xml);
         $this->paymentClient->addReceiptsToBatch(
             $batchId,
             $xml
@@ -435,26 +435,6 @@ class ReceiptBatchSender
     }
 
     /**
-     * @param $xml
-     * @return string
-     */
-    protected function prepareXml($xml)
-    {
-        if (empty($xml)) {
-            return $xml;
-        }
-
-        $domXml = new DOMDocument();
-        $domXml->loadXML($xml);
-        $xmlOut = $domXml->saveXML($domXml->documentElement);
-        $xmlOut = '<ns1:TransactionXml>'.$xmlOut;
-        $xmlOut = $xmlOut.'</ns1:TransactionXml>';
-        $xmlOut = str_replace(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"', '', $xmlOut);
-
-        return $xmlOut;
-    }
-
-    /**
      * @param Holding $holding
      * @param $yardiBatchId
      * @param $batchId
@@ -523,7 +503,7 @@ class ReceiptBatchSender
 
             $type = Payment::getType(
                 $this->paymentClient->getSettings(),
-                $order->getType()
+                $order
             );
 
             $settings = $this->paymentClient->getSettings();
@@ -570,7 +550,7 @@ class ReceiptBatchSender
         foreach ($orders as $order) {
             $typePayment = Payment::getType(
                 $this->paymentClient->getSettings(),
-                $order->getType()
+                $order
             );
             $group = $order->getContract()->getGroup();
             $settings = $this->paymentClient->getSettings();

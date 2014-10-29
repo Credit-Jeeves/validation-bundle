@@ -2,7 +2,10 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
+use DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionLoginResponse;
+use SoapVar;
 
 class ResidentTransactionsClient extends AbstractClient
 {
@@ -19,6 +22,15 @@ class ResidentTransactionsClient extends AbstractClient
             self::MAPPING_FIELD_STD_CLASS    => 'GetVersionNumberResult',
             self::MAPPING_DESERIALIZER_CLASS => 'GetVersionNumberResponse',
         ),
+        'ImportResidentTransactions_DepositDate' => array(
+            self::MAPPING_FIELD_STD_CLASS    => 'ImportResidentTransactions_DepositDateResult',
+            self::MAPPING_DESERIALIZER_CLASS => 'Messages',
+        ),
+        'ImportResidentTransactions_Login' => array(
+            self::MAPPING_FIELD_STD_CLASS    => 'ImportResidentTransactions_LoginResult',
+            self::MAPPING_DESERIALIZER_CLASS => 'Messages',
+        ),
+
     );
 
     /**
@@ -40,6 +52,10 @@ class ResidentTransactionsClient extends AbstractClient
         );
     }
 
+    /**
+     * @param string $propertyId
+     * @return GetResidentTransactionLoginResponse
+     */
     public function getResidentTransactions($propertyId)
     {
         $parameters = array(
@@ -63,6 +79,43 @@ class ResidentTransactionsClient extends AbstractClient
 
         return $this->processRequest(
             'GetVersionNumber',
+            $parameters
+        );
+    }
+
+    // Could not get a successful result with this method.
+    public function importResidentTransactionsDepositDate($transactionXml, DateTime $depositDate, $depositMemo = null)
+    {
+        $parameters = array(
+            'ImportResidentTransactions_DepositDate' => array_merge(
+                $this->getLoginCredentials(),
+                array(
+                    'TransactionXml' => new SoapVar($transactionXml, 147),
+                    'DepositDate' => $depositDate,
+                    'DepositMemo' => $depositMemo,
+                )
+            ),
+        );
+
+        return $this->processRequest(
+            'ImportResidentTransactions_DepositDate',
+            $parameters
+        );
+    }
+
+    public function importResidentTransactionsLogin($transactionXml)
+    {
+        $parameters = array(
+            'ImportResidentTransactions_Login' => array_merge(
+                $this->getLoginCredentials(),
+                array(
+                    'TransactionXml' => new SoapVar($transactionXml, 147)
+                )
+            ),
+        );
+
+        return $this->processRequest(
+            'ImportResidentTransactions_Login',
             $parameters
         );
     }

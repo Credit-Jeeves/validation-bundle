@@ -10,7 +10,7 @@ class RtCustomer
     /**
      * @Serializer\SerializedName("RTServiceTransactions")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\RtServiceTransactions")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      */
     protected $rtServiceTransactions;
 
