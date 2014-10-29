@@ -53,7 +53,7 @@ class Payment extends ResponseResource
      */
     public function getStatus()
     {
-        return (string)$this->entity->getStatus();
+        return $this->entity->getStatus();
     }
 
     /**
@@ -87,7 +87,7 @@ class Payment extends ResponseResource
      */
     public function getOther()
     {
-        return number_format($this->entity->getOther(), 2);
+        return number_format($this->entity->getOther(), 2, ".", ""); # no thousands separator
     }
 
     /**
