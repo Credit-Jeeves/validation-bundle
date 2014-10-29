@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use JMS\Serializer\Annotation as Serializer;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -10,19 +11,18 @@ use Exception;
 
 class Payment
 {
-
     /**
      * @Serializer\SerializedName("Type")
      * @Serializer\XmlAttribute
      * @Serializer\Type("string")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      */
     protected $type;
 
     /**
      * @Serializer\SerializedName("Detail")
      * @Serializer\Type("CreditJeeves\DataBundle\Entity\Order")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      */
     protected $detail;
 
@@ -30,26 +30,24 @@ class Payment
     {
         $this->setDetail($order);
 
-        $orderType = $order->getType();
-        $this->type = self::getType($yardiSettings, $orderType);
+        $this->type = self::getType($yardiSettings, $order);
     }
 
-    public static function getType(YardiSettings $yardiSettings, $orderType)
+    public static function getType(YardiSettings $yardiSettings, Order $order)
     {
-        switch ($orderType) {
-            case OrderType::HEARTLAND_BANK:
-                $type = $yardiSettings->getPaymentTypeACH();
-                break;
-            case OrderType::HEARTLAND_CARD:
-                $type = $yardiSettings->getPaymentTypeCC();
-                break;
-            default:
-                throw new Exception(
-                    sprintf(
-                        "Order type '%s' can't be process. Provide yardi settings for it.",
-                        $orderType
-                    )
-                );
+        // When reversing any type of receipt, always use a payment type of “Other”.
+        if (in_array($order->getStatus(), [OrderStatus::RETURNED, OrderStatus::REFUNDED])) {
+            return YardiSettings::REVERSAL_PAYMENT_TYPE;
+        }
+
+        $type = $yardiSettings->getOrderType($order);
+        if (!$type) {
+            throw new Exception(
+                sprintf(
+                    "Order type '%s' can't be process. Provide yardi settings for it.",
+                    $order->getType()
+                )
+            );
         }
 
         return self::formatType($type);
@@ -68,9 +66,6 @@ class Payment
         $this->detail = $detail;
     }
 
-    /**
-     * @return Order
-     */
     public function getDetail()
     {
         return $this->detail;

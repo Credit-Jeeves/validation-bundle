@@ -87,4 +87,44 @@ class UnitRepository extends EntityRepository
 
         return $query->getOneOrNullResult();
     }
+
+    public function getUnitWithLandlord($id)
+    {
+        return $this
+            ->createQueryBuilder('u')
+            ->innerJoin('u.property', 'p')
+            ->innerJoin('u.group', 'g')
+            ->innerJoin('u.holding', 'h')
+            ->where('u.id = :unit')
+            ->setParameter('unit', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function getUnitsByAddress($params)
+    {
+        $number = $params['number'];
+        $street = $params['street'];
+        $state = $params['state'];
+        $city = $params['city'];
+        $zip = $params['zip'];
+
+        return $this
+            ->createQueryBuilder('u')
+            ->innerJoin('u.property', 'p')
+            ->innerJoin('u.group', 'g')
+            ->innerJoin('u.holding', 'h')
+            ->where('p.number = :number')
+            ->andWhere('p.street = :street')
+            ->andWhere('p.area = :state')
+            ->andWhere('p.city = :city')
+            ->andWhere('p.zip = :zip')
+            ->setParameter('number', $number)
+            ->setParameter('street', $street)
+            ->setParameter('state', $state)
+            ->setParameter('city', $city)
+            ->setParameter('zip', $zip)
+            ->getQuery()
+            ->getResult();
+    }
 }

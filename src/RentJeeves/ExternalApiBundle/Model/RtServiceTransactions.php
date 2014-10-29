@@ -9,7 +9,7 @@ class RtServiceTransactions
 {
     /**
      * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\Transactions>")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      * @Serializer\XmlList(inline = true, entry="Transactions")
      * @Serializer\XmlKeyValuePairs
      */

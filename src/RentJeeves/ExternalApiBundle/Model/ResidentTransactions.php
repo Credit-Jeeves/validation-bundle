@@ -14,7 +14,7 @@ class ResidentTransactions
     /**
      * @Serializer\SerializedName("Property")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\Property")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      */
     protected $property;
 
