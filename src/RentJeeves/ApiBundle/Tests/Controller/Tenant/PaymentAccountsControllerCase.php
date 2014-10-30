@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Tests\RestApi\Tenant;
+namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
 use JMS\Serializer\Serializer;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
@@ -296,7 +296,6 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
                     ],
                     [
                         'parameter' => 'card_billing_address_city',
-                        'value' => null,
                         'message' => 'error.user.city.empty'
                     ],
                     [
@@ -313,12 +312,10 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
                 [
                     [
                         'parameter' => 'bank_routing',
-                        'value' => null,
                         'message' => 'This value should not be blank.'
                     ],
                     [
                         'parameter' => 'bank_account',
-                        'value' => null,
                         'message' => 'This value should not be blank.'
                     ],
                     [

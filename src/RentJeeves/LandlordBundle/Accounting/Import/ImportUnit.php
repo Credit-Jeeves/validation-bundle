@@ -84,6 +84,10 @@ trait ImportUnit
      */
     public function getUnitMapping(array $row)
     {
+        if (!isset($row[ImportMapping::KEY_UNIT_ID])) {
+            return new UnitMapping();
+        }
+
         $externalUnitId = $row[ImportMapping::KEY_UNIT_ID];
 
         if (array_key_exists($externalUnitId, $this->externalUnitIdList)) {

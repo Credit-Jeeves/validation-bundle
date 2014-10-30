@@ -74,7 +74,7 @@ abstract class ContractWaiting
      * )
      * @Assert\NotBlank
      * @Assert\Length(
-     *     min=5,
+     *     min=1,
      *     max=128
      * )
      */

@@ -123,6 +123,8 @@ trait ImportContract
         }
 
         $today = new DateTime();
+        $leaseEnd = $this->getDateByField($row[ImportMapping::KEY_LEASE_END]);
+
         if ($import->getMoveOut() !== null) {
             $contract->setFinishAt($import->getMoveOut());
             if ($import->getMoveOut() <= $today) { // only finish the contract if MoveOut is today or earlier
@@ -132,8 +134,14 @@ trait ImportContract
             strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
             $contract->setFinishAt(null);
+        } elseif (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
+            strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH]) == 'N' &&
+            $leaseEnd <= $today
+        ) {
+            $contract->setFinishAt($leaseEnd);
+            $this->isFinishedContract($contract);
         } else {
-            $contract->setFinishAt($this->getDateByField($row[ImportMapping::KEY_LEASE_END]));
+            $contract->setFinishAt($leaseEnd);
         }
 
         return $contract;

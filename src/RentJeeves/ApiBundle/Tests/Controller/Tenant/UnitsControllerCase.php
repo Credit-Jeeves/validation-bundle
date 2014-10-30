@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Tests\RestApi\Tenant;
+namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 
