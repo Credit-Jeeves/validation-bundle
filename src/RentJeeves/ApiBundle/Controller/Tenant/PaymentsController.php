@@ -7,7 +7,6 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 
-
 class PaymentsController extends Controller
 {
 

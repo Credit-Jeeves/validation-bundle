@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Tests\RestApi\Tenant;
+namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
 use JMS\Serializer\Serializer;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
@@ -45,5 +45,4 @@ class PaymentControllerCase extends BaseApiTestCase
         $this->assertEquals($result->getContract()->getId(), $answer["contract_url"]);
         $this->assertEquals($result->getPaymentAccountId(), $answer["payment_account_url"]);
     }
-
 }

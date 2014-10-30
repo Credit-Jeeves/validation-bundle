@@ -3,7 +3,13 @@ payment_accounts:
   resource:     "@RjApiBundle/Controller/Tenant/PaymentAccountsController.php"
   name_prefix:  api_
 
+units:
+  type:         rest
+  resource:     "@RjApiBundle/Controller/Tenant/UnitsController.php"
+  name_prefix:  api_
+
 payments:
   type:         rest
   resource:     "@RjApiBundle/Controller/Tenant/PaymentsController.php"
   name_prefix:  api_
+

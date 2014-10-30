@@ -15,10 +15,15 @@ class PaymentResourceCase extends BaseTestCase
         $container = $this->getContainer();
         $em = $container->get('doctrine');
 
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com'
+            )
+        );
+
         $repo = $em->getRepository('RjDataBundle:Payment');
-        $payment = $repo->findOneByIdForUser(1, 'tenant11@example.com');
+        $payment = $repo->findOneByIdForUser(1, $tenant);
 
         $this->assertEquals('recurring', $payment->getType());
     }
-
 }

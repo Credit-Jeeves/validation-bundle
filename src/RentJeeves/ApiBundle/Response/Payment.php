@@ -166,8 +166,7 @@ class Payment extends ResponseResource
     public function getPaidFor()
     {
         $paidFor = $this->entity->getPaidFor();
+
         return $paidFor ? $paidFor->format('Y-m') : "";
     }
-
-
 }
