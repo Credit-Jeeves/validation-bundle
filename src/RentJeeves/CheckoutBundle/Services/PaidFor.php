@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * @DI\Service("checkout.paid_for")
@@ -27,9 +28,12 @@ class PaidFor
      *   key string Date in format 'Y-m-d'
      *   val string Month in format 'M'
      */
-    public function getArray(Contract $contract)
+    public function getBaseArray(Contract $contract)
     {
         $return = array();
+        if ($contract->getStatus() == ContractStatus::INVITE || $contract->getStatus() == ContractStatus::APPROVED) {
+            return $this->returnDefaultValue($return);
+        }
         if ($paidTo = $contract->getPaidToWithDueDate()) {
             $return = $this->makeDatesFromDate($paidTo);
         }
@@ -73,6 +77,35 @@ class PaidFor
         return $this->returnDefaultValue($return);
     }
 
+    /**
+     * Return array of months(add current and next) to pay based on contract
+     *
+     * @param Contract $contract
+     *
+     * @return array Payed for dates
+     *   key string Date in format 'Y-m-d'
+     *   val string Month in format 'M'
+     */
+    public function getArray(Contract $contract)
+    {
+        if ($contract->getStatus() == ContractStatus::INVITE || $contract->getStatus() == ContractStatus::APPROVED) {
+            return $this->returnDefaultValue();
+        }
+
+        $return = $this->getBaseArray($contract);
+
+        $date = clone $this->getNow();
+        if (!array_search($date->format('M'), $return)) {
+            $return += $this->createItem($date);
+        }
+        if (!array_search($date->modify('+1 month')->format('M'), $return)) {
+            $return += $this->createItem($date);
+        }
+        ksort($return);
+
+        return $return;
+    }
+
     protected function getNow()
     {
         return new DateTime();
@@ -97,18 +130,12 @@ class PaidFor
         return $return;
     }
 
-    protected function returnDefaultValue(array $value)
+    protected function returnDefaultValue(array $value = [])
     {
-        $date = clone $this->getNow();
-
-        if (!array_search($date->format('M'), $value)) {
-            $value += $this->createItem($date);
+        if (!count($value)) {
+            $date = clone $this->getNow();
+            return $this->createItem($date) + $this->createItem($date->modify('+1 month'));
         }
-        if (!array_search($date->modify('+1 month')->format('M'), $value)) {
-            $value += $this->createItem($date);
-        }
-
-        ksort($value);
 
         return $value;
     }
