@@ -8,12 +8,13 @@ units:
   resource:     "@RjApiBundle/Controller/Tenant/UnitsController.php"
   name_prefix:  api_
 
-#payments:
-#  type:         rest
-#  resource:     "@RjApiBundle/Controller/Tenant/PaymentsController.php"
-#  name_prefix:  api_
+payments:
+  type:         rest
+  resource:     "@RjApiBundle/Controller/Tenant/PaymentsController.php"
+  name_prefix:  api_
 
 contracts:
   type:         rest
   resource:     "@RjApiBundle/Controller/Tenant/ContractsController.php"
   name_prefix:  api_
+

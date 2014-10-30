@@ -36,7 +36,7 @@ class BaseApiTestCase extends BaseTestCase
 
     private $tenantEmail= 'tenant11@example.com';
 
-    protected function assertResponse(Response $response, $statusCode = 200, $format = 'html')
+    protected function assertResponse(Response $response, $statusCode = 200, $format = 'json')
     {
         $this->assertEquals(
             $statusCode,
@@ -62,7 +62,7 @@ class BaseApiTestCase extends BaseTestCase
         $this->assertEquals($result, $data, 'Response is incorrect.');
     }
 
-    protected function parseContent($content, $format)
+    protected function parseContent($content, $format = 'json')
     {
         /** @var Serializer $serializer */
         $serializer = $this->getContainer()->get('jms_serializer');
