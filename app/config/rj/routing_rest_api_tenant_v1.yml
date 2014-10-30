@@ -1,9 +1,0 @@
-payment_accounts:
-  type:         rest
-  resource:     "@RjApiBundle/Controller/Tenant/PaymentAccountsController.php"
-  name_prefix:  api_
-
-units:
-  type:         rest
-  resource:     "@RjApiBundle/Controller/Tenant/UnitsController.php"
-  name_prefix:  api_
