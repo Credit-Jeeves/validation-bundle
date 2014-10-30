@@ -65,7 +65,7 @@ class PromasArchive extends ExportReport
         $orders = $this->exportReport->getData($settings);
         /** @var Order $order */
         foreach ($orders as $order) {
-            $transactionBatchId = $order->getHeartlandBatchId();
+            $transactionBatchId = $order->getCompleteTransaction()->getBatchId();
             $result[$transactionBatchId][] = $order;
         }
 

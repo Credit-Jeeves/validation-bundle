@@ -62,7 +62,7 @@ class YardiArchive extends ExportReport
         $operations = $this->exportReport->getData($settings);
         /** @var Operation $operation */
         foreach ($operations as $operation) {
-            $transactionBatchId = $operation->getOrder()->getHeartlandBatchId();
+            $transactionBatchId = $operation->getOrder()->getCompleteTransaction()->getBatchId();
             $result[$transactionBatchId][] = $operation;
         }
 
