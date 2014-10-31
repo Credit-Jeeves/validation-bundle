@@ -1,52 +1,79 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting\Import;
+namespace RentJeeves\LandlordBundle\Accounting\Import\Handler;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
-use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
-use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
-use CreditJeeves\CoreBundle\Translation\Translator;
 use RentJeeves\CoreBundle\DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Validator\Validator;
+use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
+use JMS\DiExtraBundle\Annotation\Inject;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- *
- * @Service("accounting.import.process")
  */
-class ImportProcess
+abstract class HandlerAbstract implements HandlerInterface
 {
-    use FormErrors;
-    use ImportForms;
-    use ImportContract;
-    use ImportTenant;
-    use ImportResident;
-    use ImportProperty;
-    use ImportOperation;
-    use ImportFormBind;
-    use ImportUnit;
-
     const ROW_ON_PAGE = 9;
 
+    use FormErrors;
+
     /**
+     * @Inject("doctrine.orm.default_entity_manager")
      * @var EntityManager
      */
-    protected $em;
+    public $em;
+
+    /**
+     * @Inject("form.factory")
+     * @var
+     */
+    public $formFactory;
+
+    /**
+     * @Inject("form.csrf_provider")
+     * @var CsrfTokenManagerAdapter
+     */
+    public $formCsrfProvider;
+
+    /**
+     * @Inject("project.mailer")
+     * @var Mailer
+     */
+    public $mailer;
+
+    /**
+     * @Inject("validator")
+     * @var Validator
+     */
+    public $validator;
+
+    /**
+     * @Inject("%kernel.default_locale%")
+     * @var string
+     */
+    public $locale;
+
+    /**
+     * @Inject("property.process")
+     */
+    public $propertyProcess;
+
+    /**
+     * @Inject("contract.process")
+     * @var ContractProcess
+     */
+    public $contractProcess;
 
     /**
      * @var Landlord
@@ -59,16 +86,6 @@ class ImportProcess
     protected $group;
 
     /**
-     * @var CsrfTokenManagerAdapter
-     */
-    protected $formCsrfProvider;
-
-    /**
-     * @var Mailer
-     */
-    protected $mailer;
-
-    /**
      * @var ImportMapping
      */
     protected $mapping;
@@ -79,81 +96,16 @@ class ImportProcess
     protected $storage;
 
     /**
-     * @var Validator
-     */
-    protected $validator;
-
-    /**
      * @var bool
      */
     protected $isCreateCsrfToken = false;
-
-    /**
-     * @var string
-     */
-    protected $locale;
 
     /**
      * @var array
      */
     protected $emailSendingQueue = array();
 
-    /**
-     * @var Google
-     */
-    protected $propertyProcess;
 
-    /**
-     * @var ContractProcess
-     */
-    protected $contractProcess;
-
-    /**
-     * @InjectParams({
-     *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
-     *     "translator"       = @Inject("translator"),
-     *     "sessionUser"      = @Inject("core.session.landlord"),
-     *     "formFactory"      = @Inject("form.factory"),
-     *     "translator"       = @Inject("translator"),
-     *     "formCsrfProvider" = @Inject("form.csrf_provider"),
-     *     "mailer"           = @Inject("project.mailer"),
-     *     "storage"          = @Inject("accounting.import.storage"),
-     *     "mapping"          = @Inject("accounting.import.mapping"),
-     *     "validator"        = @Inject("validator"),
-     *     "propertyProcess"  = @Inject("property.process"),
-     *     "contractProcess"  = @Inject("contract.process"),
-     *     "locale"           = @Inject("%kernel.default_locale%")
-     * })
-     */
-    public function __construct(
-        EntityManager $em,
-        Translator $translator,
-        SessionUser $sessionUser,
-        FormFactory $formFactory,
-        Translator $translator,
-        CsrfTokenManagerAdapter $formCsrfProvider,
-        Mailer $mailer,
-        ImportStorage $storage,
-        ImportMapping $mapping,
-        Validator $validator,
-        PropertyProcess $propertyProcess,
-        ContractProcess $contractProcess,
-        $locale
-    ) {
-        $this->em               = $em;
-        $this->user             = $sessionUser->getUser();
-        $this->group            = $sessionUser->getGroup();
-        $this->formFactory      = $formFactory;
-        $this->translator       = $translator;
-        $this->formCsrfProvider = $formCsrfProvider;
-        $this->mailer           = $mailer;
-        $this->mapping          = $mapping;
-        $this->storage          = $storage;
-        $this->validator        = $validator;
-        $this->locale           = $locale;
-        $this->propertyProcess  = $propertyProcess;
-        $this->contractProcess  = $contractProcess;
-    }
 
     /**
      * @param $field
@@ -166,6 +118,7 @@ class ImportProcess
         } catch (Exception $e) {
             return null;
         }
+
         $errors = DateTime::getLastErrors();
 
         if (!empty($errors['warning_count']) || !empty($errors['errors'])) {
@@ -234,9 +187,10 @@ class ImportProcess
     {
         $import = new ModelImport();
         $tenant = $this->getTenant($row);
-        $import->setEmail($row[ImportMapping::KEY_EMAIL]);
+        $import->setEmail($row[Mapping::KEY_EMAIL]);
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
+
         if ($this->mapping->isSkipped($row)) {
             $import->setIsSkipped(true);
         }
@@ -244,7 +198,7 @@ class ImportProcess
         $import->setContract($contract = $this->getContract($import, $row));
 
         if ($contract && !$property = $contract->getProperty()) {
-            $import->setAddress($row[ImportMapping::KEY_STREET].','.$row[ImportMapping::KEY_CITY]);
+            $import->setAddress($row[Mapping::KEY_STREET].','.$row[Mapping::KEY_CITY]);
         }
 
         $token      = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
@@ -256,6 +210,7 @@ class ImportProcess
 
         $import->setResidentMapping($this->getResident($tenant, $row));
         $import->setUnitMapping($this->getUnitMapping($row));
+
         $contractWaiting = $this->getContractWaiting(
             $import->getTenant(),
             $import->getContract(),
@@ -272,6 +227,13 @@ class ImportProcess
             $this->em->flush();
         }
 
+        if (!$import->getIsSkipped() &&
+            is_null($contract->getId()) &&
+            $this->contractInPast($contract)
+        ) {
+            $import->setIsSkipped(true);
+        }
+
         if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
             $import->setForm($form);
         }
@@ -279,12 +241,14 @@ class ImportProcess
         if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
             $errors = $this->runFormValidation($form, $lineNumber, $token);
             if ($this->isUsedResidentId($import->getResidentMapping())) {
-                $errors[$lineNumber][$form->getName()][ImportMapping::KEY_RESIDENT_ID] = $this->translator->trans(
-                    'error.residentId.already_use'
-                );
+                $errors[$lineNumber][$form->getName()][Mapping::KEY_RESIDENT_ID] = $this->translator
+                    ->trans(
+                        'error.residentId.already_use'
+                    );
             }
             $import->setErrors($errors);
         }
+
 
         return $import;
     }
@@ -304,6 +268,7 @@ class ImportProcess
         }
 
         $form->submit($submittedData);
+
         if (!$form->isValid()) {
             return array(
                 $lineNumber => $this->getFormErrors($form)
@@ -339,7 +304,7 @@ class ImportProcess
      */
     public function getImportModelCollection()
     {
-        $data       = $this->mapping->getFileData($this->storage->getFileLine(), $rowCount = self::ROW_ON_PAGE);
+        $data       = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
         $collection = new ArrayCollection(array());
 
         foreach ($data as $key => $values) {
@@ -431,7 +396,7 @@ class ImportProcess
             return;
         }
         /**
-         * @var $contract Contract
+         * @var $contract EntityContract
          */
         foreach ($this->emailSendingQueue as $contract) {
             $this->mailer->sendRjTenantInvite(

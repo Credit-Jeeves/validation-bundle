@@ -3,8 +3,8 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use RentJeeves\DataBundle\Entity\Property;
-use RentJeeves\LandlordBundle\Accounting\Import\ImportMapping as ImportMapping;
-use RentJeeves\LandlordBundle\Accounting\Import\ImportStorage;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -23,7 +23,7 @@ class ImportMatchFileType extends AbstractType
 
     protected $storage;
 
-    public function __construct($number, Translator $translator, ImportStorage $storage)
+    public function __construct($number, Translator $translator, StorageCsv $storage)
     {
         $this->numberRow  = $number;
         $this->translator = $translator;

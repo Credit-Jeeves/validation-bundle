@@ -1,5 +1,7 @@
-function accountingImport() {
+function accountingImport(superclass) {
     var self = this;
+    this.superclass = superclass;
+    this.source = ko.observable('');
     this.isMultipleProperty = ko.observable(false);
     this.fieldsWhichNotContaintInForm = [
         "import_new_user_with_contract_contract_residentMapping_residentId",
@@ -13,7 +15,8 @@ function accountingImport() {
     ];
 
     this.rowsTotal = ko.observable(0);
-    this.errorLoadDataMessage = ko.observable('');
+    this.loadDataMessage = ko.observable('');
+    this.classLoadDataMessage = ko.observable('errorMessage');
     this.isFinishReview =  ko.observable(false);
     this.rows = ko.observableArray([]);
     this.formErrors = ko.observableArray([]);
@@ -30,11 +33,11 @@ function accountingImport() {
                 self.rows([]);
                 self.rowsTotal(0);
                 self.setProcessing(false);
-                self.errorLoadDataMessage(Translator.trans('import.error.flush'));
+                self.loadDataMessage(Translator.trans('import.error.flush'));
             },
             success: function(response) {
                 self.setProcessing(false);
-                self.errorLoadDataMessage(response.message);
+                self.loadDataMessage(response.message);
                 if (response.error === false) {
                     var errors = new Array();
                     //Fill error by line
@@ -74,7 +77,7 @@ function accountingImport() {
     }
 
     this.isVisibleTable = function() {
-        if (self.errorLoadDataMessage().length == 0 && self.rows().length > 0) {
+        if (self.loadDataMessage().length == 0 && self.rows().length > 0) {
             return true;
         }
         return false;
@@ -174,7 +177,7 @@ function accountingImport() {
             data: forms,
             error: function() {
                 self.setProcessing(false);
-                self.errorLoadDataMessage(Translator.trans('import.error.flush'));
+                self.loadDataMessage(Translator.trans('import.error.flush'));
             },
             success: function(response) {
                 var errorsLen = jQuery.map(response.formErrors, function(n, i) { return i; }).length;

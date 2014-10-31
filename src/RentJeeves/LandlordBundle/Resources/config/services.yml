@@ -1,0 +1,16 @@
+parameters:
+    import.mapping.csv.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingCsv
+    import.mapping.yardi.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi
+
+services:
+    accounting.import.mapping.csv:
+        class: "%import.mapping.csv.class%"
+        arguments:
+            - "@accounting.import.storage.csv"
+            - "@import.reader.csv"
+    accounting.import.mapping.yardi:
+        class: "%import.mapping.yardi.class%"
+        arguments:
+            - "@accounting.import.storage.yardi"
+            - "@import.reader.csv"
+            - "@yardi.resident_data"

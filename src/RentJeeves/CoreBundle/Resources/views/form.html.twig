@@ -31,6 +31,7 @@
         {% set _attrOr = attr %}
         {% set attr = form.vars.attr.box_attr|default({}) %}
         {% set attr = attr|merge({'class': 'fields-box'}) %}
+        {% set labelAttr = form.vars.label_attr %}
         {% set _orId = id %}
         {% set id = id ~ '_box' %}
 
@@ -38,7 +39,7 @@
             {% if _attrOr.no_box is not defined %}<div {{ block('widget_attributes') }}>{% endif %}
                 {% set id = _orId %}
                 {% set attr = _attrOr %}
-                <label class="checkbox" for="{{ id }}">
+                <label class="checkbox" for="{{ id }}" {% for key, attr in labelAttr %}{{ key }}="{{ attr }}" {% endfor %}>
                     {{ block('checkbox_widget') }}
                     <span>{{ label|trans({}, translation_domain) }}</span>
                 </label>

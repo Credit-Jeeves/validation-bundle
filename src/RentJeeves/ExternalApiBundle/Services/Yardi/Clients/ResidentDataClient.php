@@ -43,7 +43,7 @@ class ResidentDataClient extends AbstractClient
                 [
                     'YardiPropertyId' => $propertyId,
                     'TenantCode' => $residentId,
-                    'IncludeLedger' => false,
+                    'IncludeLedger' => true,
                     'LedgerAsOfDate' => new DateTime(),
                     'IncludeLeaseCharges' => false,
                     'IncludeVehicleInfo' => false,

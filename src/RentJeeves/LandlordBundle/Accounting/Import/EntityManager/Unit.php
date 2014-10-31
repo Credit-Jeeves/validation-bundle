@@ -1,12 +1,13 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting\Import;
+namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
-use RentJeeves\DataBundle\Entity\Property;
-use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\Property as EntityProperty;
+use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
-trait ImportUnit
+trait Unit
 {
     protected $externalUnitIdList = array();
 
@@ -17,7 +18,7 @@ trait ImportUnit
      *
      * @return Unit
      */
-    protected function getUnit(array $row, Property $property = null)
+    protected function getUnit(array $row, EntityProperty $property = null)
     {
         if (is_null($property)) {
             return null;
@@ -27,12 +28,12 @@ trait ImportUnit
             return $property->getSingleUnit();
         }
 
-        if (empty($row[ImportMapping::KEY_UNIT])) {
+        if (empty($row[Mapping::KEY_UNIT])) {
             return null;
         }
 
         $params = array(
-            'name' => $row[ImportMapping::KEY_UNIT],
+            'name' => $row[Mapping::KEY_UNIT],
         );
 
         if ($this->group) {
@@ -65,8 +66,8 @@ trait ImportUnit
             return $this->unitList[$key];
         }
 
-        $unit = new Unit();
-        $unit->setName($row[ImportMapping::KEY_UNIT]);
+        $unit = new EntityUnit();
+        $unit->setName($row[Mapping::KEY_UNIT]);
         if ($property) {
             $unit->setProperty($property);
         }
@@ -84,11 +85,11 @@ trait ImportUnit
      */
     public function getUnitMapping(array $row)
     {
-        if (!isset($row[ImportMapping::KEY_UNIT_ID])) {
+        if (!array_key_exists(Mapping::KEY_UNIT_ID, $row)) {
             return new UnitMapping();
         }
 
-        $externalUnitId = $row[ImportMapping::KEY_UNIT_ID];
+        $externalUnitId = $row[Mapping::KEY_UNIT_ID];
 
         if (array_key_exists($externalUnitId, $this->externalUnitIdList)) {
             return $this->externalUnitIdList[$externalUnitId];

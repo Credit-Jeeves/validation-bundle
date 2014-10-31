@@ -7,7 +7,7 @@
             <span>{{ 'import.file'|trans }}</span>
         </span>
     </li>
-    <li class="step2 {% if step == 'step2' %}active{% endif %}">
+    <li data-bind='visible: ($root.source() === "csv")? true : false' class="step2 {% if step == 'step2' %}active{% endif %}">
         <span class="step">
             <span>{{ 'match.fields'|trans }}</span>
         </span>

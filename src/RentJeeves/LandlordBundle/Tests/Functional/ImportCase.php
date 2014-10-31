@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Model\Unit;
-use RentJeeves\LandlordBundle\Accounting\Import\ImportMapping as Import;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -20,33 +20,33 @@ use RentJeeves\CoreBundle\DateTime;
 class ImportCase extends BaseTestCase
 {
     protected $mapFile = array(
-        '1' => Import::KEY_UNIT,
-        '4' => Import::KEY_RESIDENT_ID,
-        '5' => Import::KEY_TENANT_NAME,
-        '7' => Import::KEY_RENT,
-        '10'=> Import::KEY_MOVE_IN,
-        '11'=> Import::KEY_LEASE_END,
-        '12'=> Import::KEY_MOVE_OUT,
-        '13'=> Import::KEY_BALANCE,
-        '14'=> Import::KEY_EMAIL,
+        '1' => ImportMapping::KEY_UNIT,
+        '4' => ImportMapping::KEY_RESIDENT_ID,
+        '5' => ImportMapping::KEY_TENANT_NAME,
+        '7' => ImportMapping::KEY_RENT,
+        '10'=> ImportMapping::KEY_MOVE_IN,
+        '11'=> ImportMapping::KEY_LEASE_END,
+        '12'=> ImportMapping::KEY_MOVE_OUT,
+        '13'=> ImportMapping::KEY_BALANCE,
+        '14'=> ImportMapping::KEY_EMAIL,
     );
 
     protected $mapMultiplePropertyFile = array(
-        '1' => Import::KEY_RESIDENT_ID,
-        '2' => Import::KEY_TENANT_NAME,
-        '3' => Import::KEY_RENT,
-        '4' => Import::KEY_BALANCE,
-        '5' => Import::KEY_UNIT_ID,
-        '6' => Import::KEY_STREET,
-        '8' => Import::KEY_UNIT,
-        '9' => Import::KEY_CITY,
-        '10'=> Import::KEY_STATE,
-        '11'=> Import::KEY_ZIP,
-        '13'=>Import::KEY_MOVE_IN,
-        '14'=>Import::KEY_LEASE_END,
-        '15'=>Import::KEY_MOVE_OUT,
-        '16'=>Import::KEY_MONTH_TO_MONTH,
-        '17'=>Import::KEY_EMAIL,
+        '1' => ImportMapping::KEY_RESIDENT_ID,
+        '2' => ImportMapping::KEY_TENANT_NAME,
+        '3' => ImportMapping::KEY_RENT,
+        '4' => ImportMapping::KEY_BALANCE,
+        '5' => ImportMapping::KEY_UNIT_ID,
+        '6' => ImportMapping::KEY_STREET,
+        '8' => ImportMapping::KEY_UNIT,
+        '9' => ImportMapping::KEY_CITY,
+        '10'=> ImportMapping::KEY_STATE,
+        '11'=> ImportMapping::KEY_ZIP,
+        '13'=> ImportMapping::KEY_MOVE_IN,
+        '14'=> ImportMapping::KEY_LEASE_END,
+        '15'=> ImportMapping::KEY_MOVE_OUT,
+        '16'=> ImportMapping::KEY_MONTH_TO_MONTH,
+        '17'=> ImportMapping::KEY_EMAIL,
     );
 
     protected function getFilePathByName($fileName)
@@ -181,9 +181,9 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(5, count($trs), "Count statuses is wrong");
         $this->assertEquals(1, count($trs['import.status.error']), "Error contract on first page is wrong number");
         $this->assertEquals(2, count($trs['import.status.new']), "New contract on first page is wrong number");
-        $this->assertEquals(3, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
+        $this->assertEquals(4, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract on first page is wrong number");
-        $this->assertEquals(2, count($trs['import.status.ended']), "Ended contract on first page is wrong number");
+        $this->assertEquals(1, count($trs['import.status.ended']), "Ended contract on first page is wrong number");
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
         $this->assertEquals(2, count($errorFields));
 
@@ -231,7 +231,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
         //Check notify tenant invite for new user
-        $this->assertCount(10, $this->getEmails(), 'Wrong number of emails');
+        $this->assertCount(9, $this->getEmails(), 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -263,7 +263,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('0', $contract->getIntegratedBalance());
         // startAt should be the first day of next month b/c this contract has no payments yet
         $this->assertEquals('11/09/2013', $contract->getStartAt()->format('m/d/Y'));
-        $this->assertEquals('11/08/2014', $contract->getFinishAt()->format('m/d/Y'));
+        $this->assertEquals('11/08/2015', $contract->getFinishAt()->format('m/d/Y'));
 
         /**
          * @var $tenant Tenant
@@ -488,9 +488,13 @@ class ImportCase extends BaseTestCase
             $this->assertEquals(
                 count($trs['import.status.waiting']),
                 1,
-                "Waiting contract on first page is wrong number"
+                "Waiting contract on first page is wrong number ".$i
             );
-            $this->assertEquals(1, count($trs['import.status.ended']), "Ended contract on first page is wrong number");
+            $this->assertEquals(
+                1,
+                count($trs['import.status.skip']),
+                "Skip contract on first page is wrong number ".$i
+            );
 
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
@@ -666,7 +670,7 @@ class ImportCase extends BaseTestCase
             1,
             "Match contract on first page has wrong count"
         );
-        $this->assertEquals(1, count($trs['import.status.ended']), "Ended contract on first page is wrong number");
+        $this->assertEquals(1, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
@@ -793,18 +797,18 @@ class ImportCase extends BaseTestCase
         );
         $this->waitReviewAndPost();
         $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
-        $this->assertEquals(4, count($errorFields));
+        $this->assertEquals(5, count($errorFields));
 
         $this->assertEquals('', $errorFields[0]->getValue());
         $this->assertEquals('', $errorFields[1]->getValue());
         $this->assertEquals('& Adelai', $errorFields[2]->getValue());
         $this->assertEquals('Carol Acha.Mo', $errorFields[3]->getValue());
+        $this->assertEquals('Matthew &', $errorFields[4]->getValue());
 
         $trs = $this->getParsedTrsByStatus();
 
-        $this->assertEquals(2, count($trs), "Count statuses is wrong");
-        $this->assertEquals(8, count($trs['import.status.waiting']), "All contracts should be waiting");
-        $this->assertEquals(1, count($trs['import.status.ended']), "All contracts should be waiting");
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
 
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
@@ -819,6 +823,9 @@ class ImportCase extends BaseTestCase
 
         $this->assertNotNull($lastName3 = $this->page->find('css', '.3_last_name'));
         $lastName3->setValue('AchaMo');
+
+        $this->assertNotNull($lastName4 = $this->page->find('css', 'input.4_first_name'));
+        $lastName4->setValue('Matthew');
 
         $submitImportFile->click();
 
@@ -887,7 +894,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->isSingle());
 
-        $this->assertEquals(19, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
+        $this->assertEquals(20, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
     }
 
     /**
@@ -1105,19 +1112,19 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         $mapFile = array(
-            '1' => Import::KEY_RESIDENT_ID,
-            '2' => Import::KEY_TENANT_NAME,
-            '3' => Import::KEY_RENT,
-            '4' => Import::KEY_BALANCE,
-            '5' => Import::KEY_UNIT_ID,
-            '6' => Import::KEY_STREET,
-            '7' => Import::KEY_CITY,
-            '8' => Import::KEY_STATE,
-            '9' => Import::KEY_ZIP,
-            '10'=> Import::KEY_MOVE_IN,
-            '11'=> Import::KEY_LEASE_END,
-            '12'=> Import::KEY_MOVE_OUT,
-            '14'=> Import::KEY_EMAIL,
+            '1' => ImportMapping::KEY_RESIDENT_ID,
+            '2' => ImportMapping::KEY_TENANT_NAME,
+            '3' => ImportMapping::KEY_RENT,
+            '4' => ImportMapping::KEY_BALANCE,
+            '5' => ImportMapping::KEY_UNIT_ID,
+            '6' => ImportMapping::KEY_STREET,
+            '7' => ImportMapping::KEY_CITY,
+            '8' => ImportMapping::KEY_STATE,
+            '9' => ImportMapping::KEY_ZIP,
+            '10'=> ImportMapping::KEY_MOVE_IN,
+            '11'=> ImportMapping::KEY_LEASE_END,
+            '12'=> ImportMapping::KEY_MOVE_OUT,
+            '14'=> ImportMapping::KEY_EMAIL,
         );
         for ($i = 1; $i <= 15; $i++) {
             if (isset($mapFile[$i])) {
@@ -1204,15 +1211,15 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         $mapFile = array(
-            '1' => Import::KEY_UNIT,
-            '2' => Import::KEY_RESIDENT_ID,
-            '3' => Import::KEY_TENANT_NAME,
-            '4' => Import::KEY_RENT,
-            '5' => Import::KEY_MOVE_IN,
-            '6' => Import::KEY_LEASE_END,
-            '7' => Import::KEY_MOVE_OUT,
-            '8' => Import::KEY_BALANCE,
-            '9' => Import::KEY_EMAIL,
+            '1' => ImportMapping::KEY_UNIT,
+            '2' => ImportMapping::KEY_RESIDENT_ID,
+            '3' => ImportMapping::KEY_TENANT_NAME,
+            '4' => ImportMapping::KEY_RENT,
+            '5' => ImportMapping::KEY_MOVE_IN,
+            '6' => ImportMapping::KEY_LEASE_END,
+            '7' => ImportMapping::KEY_MOVE_OUT,
+            '8' => ImportMapping::KEY_BALANCE,
+            '9' => ImportMapping::KEY_EMAIL,
         );
         for ($i = 1; $i <= 15; $i++) {
             if (isset($mapFile[$i])) {
@@ -1254,15 +1261,15 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         $mapFile = array(
-            '1' => Import::KEY_UNIT,
-            '2' => Import::KEY_RESIDENT_ID,
-            '3' => Import::KEY_TENANT_NAME,
-            '4' => Import::KEY_RENT,
-            '5' => Import::KEY_MOVE_IN,
-            '6' => Import::KEY_LEASE_END,
-            '7' => Import::KEY_MOVE_OUT,
-            '8' => Import::KEY_BALANCE,
-            '9' => Import::KEY_EMAIL,
+            '1' => ImportMapping::KEY_UNIT,
+            '2' => ImportMapping::KEY_RESIDENT_ID,
+            '3' => ImportMapping::KEY_TENANT_NAME,
+            '4' => ImportMapping::KEY_RENT,
+            '5' => ImportMapping::KEY_MOVE_IN,
+            '6' => ImportMapping::KEY_LEASE_END,
+            '7' => ImportMapping::KEY_MOVE_OUT,
+            '8' => ImportMapping::KEY_BALANCE,
+            '9' => ImportMapping::KEY_EMAIL,
         );
         for ($i = 1; $i <= 15; $i++) {
             if (isset($mapFile[$i])) {
@@ -1358,6 +1365,40 @@ class ImportCase extends BaseTestCase
             )
         );
         $this->assertEquals(1, count($contracts));
+        $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function yardiBaseImport()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
+        $this->assertNotNull($yardiRadio = $this->page->findAll('css', '.radio'));
+        $yardiRadio[1]->click();
+        $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
+        $propertyId->setValue('rnttrk01');
+        $submitImport->click();
+
+        $this->session->wait(
+            80000,
+            "$('table').is(':visible')"
+        );
+        $this->waitReviewAndPost();
+        for ($i = 0; $i <= 3; $i++) {
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+            $submitImportFile->click();
+            $this->waitReviewAndPost();
+        }
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
         $this->logout();
     }
 }

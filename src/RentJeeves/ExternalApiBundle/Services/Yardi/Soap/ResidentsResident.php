@@ -20,6 +20,28 @@ class ResidentsResident
     protected $code;
 
     /**
+     * @Serializer\SerializedName("MoveOutDate")
+     * @Serializer\Type("string")
+     */
+    protected $moveOutDate;
+
+    /**
+     * @return mixed
+     */
+    public function getMoveOutDate()
+    {
+        return $this->moveOutDate;
+    }
+
+    /**
+     * @param mixed $moveOutDate
+     */
+    public function setMoveOutDate($moveOutDate)
+    {
+        $this->moveOutDate = $moveOutDate;
+    }
+
+    /**
      * @return mixed
      */
     public function getCode()

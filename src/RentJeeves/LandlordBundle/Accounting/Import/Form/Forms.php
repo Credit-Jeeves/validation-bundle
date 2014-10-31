@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting\Import;
+namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 
 
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -14,13 +14,8 @@ use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
 use Symfony\Component\Form\FormFactory;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 
-trait ImportForms
+trait Forms
 {
-
-    /**
-     * @var FormFactory
-     */
-    protected $formFactory;
 
     /**
      * Creates and returns a Form instance from the type of the form.

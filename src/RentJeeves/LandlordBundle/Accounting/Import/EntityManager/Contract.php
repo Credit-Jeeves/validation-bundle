@@ -1,26 +1,27 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting\Import;
+namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
-use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\CoreBundle\DateTime;
 
-trait ImportContract
+trait Contract
 {
     /**
      * @param $row
      * @param $tenant
      *
-     * @return Contract
+     * @return EntityContract
      */
     protected function createContract(array $row, Tenant $tenant)
     {
-        $contract = new Contract();
+        $contract = new EntityContract();
         if ($tenant->getId()) {
             $contract->setStatus(ContractStatus::APPROVED);
         } else {
@@ -39,13 +40,13 @@ trait ImportContract
             $contract->setUnit($unit);
         }
         $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
-        $moveIn = $this->getDateByField($row[ImportMapping::KEY_MOVE_IN]);
+        $moveIn = $this->getDateByField($row[Mapping::KEY_MOVE_IN]);
         $contract->setStartAt($moveIn);
 
         /**
          * If we don't have unit and property don't have flag is_single set it to single by default
          */
-        if (empty($row[ImportMapping::KEY_UNIT]) && $property && is_null($property->getIsSingle())) {
+        if (empty($row[Mapping::KEY_UNIT]) && $property && is_null($property->getIsSingle())) {
             $property->setIsSingle(true);
         }
 
@@ -69,8 +70,8 @@ trait ImportContract
         } else {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
-                ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[ImportMapping::KEY_UNIT],
-                isset($row[ImportMapping::KEY_UNIT_ID])? $row[ImportMapping::KEY_UNIT_ID] : null
+                ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
+                isset($row[Mapping::KEY_UNIT_ID])? $row[Mapping::KEY_UNIT_ID] : null
             );
 
             if (empty($contract)) {
@@ -78,8 +79,8 @@ trait ImportContract
             }
         }
         //set data from csv file
-        $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
-        $contract->setRent($row[ImportMapping::KEY_RENT]);
+        $contract->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
+        $contract->setRent($row[Mapping::KEY_RENT]);
 
         $paidTo = new DateTime();
         $currentPaidTo = $contract->getPaidTo();
@@ -88,7 +89,7 @@ trait ImportContract
         if ($contract->getId() !== null) {
             // normally, we don't want to mess with paid_to for existing contracts unless
             // it is obvious someone paid outside of RentTrack:
-            if ($row[ImportMapping::KEY_BALANCE] <= 0 && $currentPaidTo <= $paidTo) {
+            if ($row[Mapping::KEY_BALANCE] <= 0 && $currentPaidTo <= $paidTo) {
                 $paidTo->modify('+1 month');
                 // will be in future
                 //if (there is no order with paid_for for this month) {
@@ -105,7 +106,7 @@ trait ImportContract
         } else {
             // this contract is new, so let's set paid_to accordingly
             // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
-            if ($row[ImportMapping::KEY_BALANCE] <= 0) {
+            if ($row[Mapping::KEY_BALANCE] <= 0) {
                 $paidTo->modify('+1 month');
             }
 
@@ -118,24 +119,24 @@ trait ImportContract
             $contract->setPaidTo($paidTo);
         }
 
-        if (!empty($row[ImportMapping::KEY_MOVE_OUT])) {
-            $import->setMoveOut($this->getDateByField($row[ImportMapping::KEY_MOVE_OUT]));
+        if (!empty($row[Mapping::KEY_MOVE_OUT])) {
+            $import->setMoveOut($this->getDateByField($row[Mapping::KEY_MOVE_OUT]));
         }
 
         $today = new DateTime();
-        $leaseEnd = $this->getDateByField($row[ImportMapping::KEY_LEASE_END]);
+        $leaseEnd = $this->getDateByField($row[Mapping::KEY_LEASE_END]);
 
         if ($import->getMoveOut() !== null) {
             $contract->setFinishAt($import->getMoveOut());
             if ($import->getMoveOut() <= $today) { // only finish the contract if MoveOut is today or earlier
                 $this->isFinishedContract($contract);
             }
-        } elseif (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
-            strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
+        } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
+            strtoupper($row[Mapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
             $contract->setFinishAt(null);
-        } elseif (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
-            strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH]) == 'N' &&
+        } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
+            strtoupper($row[Mapping::KEY_MONTH_TO_MONTH]) == 'N' &&
             $leaseEnd <= $today
         ) {
             $contract->setFinishAt($leaseEnd);
@@ -149,7 +150,7 @@ trait ImportContract
 
     public function getContractWaiting(
         Tenant $tenant,
-        Contract $contract,
+        EntityContract $contract,
         ResidentMapping $residentMapping
     ) {
         $contractWaiting = $this->mapping->createContractWaiting(
@@ -183,18 +184,23 @@ trait ImportContract
     /**
      * Modify contract status if needed
      *
-     * @param Contract $contract
+     * @param EntityContract $contract
      * @return bool
      */
-    protected function isFinishedContract(Contract $contract)
+    protected function isFinishedContract(EntityContract $contract)
     {
-        $today = new DateTime();
-        if (($finishAt = $contract->getFinishAt()) && $finishAt <= $today) { //set status of contract to finished...
+        if ($this->contractInPast($contract)) {
             $contract->setStatus(ContractStatus::FINISHED);
 
             return true;
         }
 
         return false;
+    }
+
+    protected function contractInPast(EntityContract $contract)
+    {
+        $today = new DateTime();
+        return ($contract->getFinishAt() && $contract->getFinishAt() < $today)? true : false;
     }
 }

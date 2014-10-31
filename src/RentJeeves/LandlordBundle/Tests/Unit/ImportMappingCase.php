@@ -1,7 +1,8 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Unit;
 
-use RentJeeves\LandlordBundle\Accounting\Import\ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use \DateTime;
 

@@ -13,7 +13,7 @@
                 include(
                     'LandlordBundle:Accounting:importSteps.html.twig',
                     {
-                    'step': 'step1',
+                        'step': 'step1',
                     }
                 )
             }}
@@ -32,6 +32,12 @@
         <div class="clear"></div>
     </div>
 </div>
+    <script type="text/javascript">
+        var importFile = new importFile();
+        $(document).ready(function() {
+            ko.applyBindings(importFile, $('#action_plan_page').get(0));
+        });
+    </script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -41,4 +47,12 @@
     %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
+{% endblock %}
+{% block head_javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@LandlordBundle/Resources/public/js/importFile.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}

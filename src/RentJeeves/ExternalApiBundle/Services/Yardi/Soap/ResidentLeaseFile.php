@@ -49,6 +49,28 @@ class ResidentLeaseFile
     protected $tenantDetails;
 
     /**
+     * @Serializer\SerializedName("Ledger")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileLedger")
+     */
+    protected $ledgerDetails;
+
+    /**
+     * @return mixed
+     */
+    public function getLedgerDetails()
+    {
+        return $this->ledgerDetails;
+    }
+
+    /**
+     * @param mixed $ledgerDetails
+     */
+    public function setLedgerDetails($ledgerDetails)
+    {
+        $this->ledgerDetails = $ledgerDetails;
+    }
+
+    /**
      * @return mixed
      */
     public function getDueDay()

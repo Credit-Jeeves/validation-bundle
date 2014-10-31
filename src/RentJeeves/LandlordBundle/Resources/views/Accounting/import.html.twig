@@ -18,9 +18,10 @@
                     }}
                     <br />
                     <br />
-                    <div class="errorMessage" data-bind="
-                            visible: $root.errorLoadDataMessage().length > 0,
-                            text: $root.errorLoadDataMessage()
+                    <div data-bind="
+                            visible: $root.loadDataMessage().length > 0,
+                            text: $root.loadDataMessage(),
+                            attr: { class: $root.classLoadDataMessage }
                     ">
                     </div>
                     <table id="importTable" class="properties-table zebra-grid" data-bind="visible: $root.isVisibleTable()">
@@ -99,12 +100,18 @@
                     <br />
                     <br />
                     <div class="button-box"  data-bind="visible: $root.isVisibleTable()">
-                        <a href="{{ path("accounting_match_file") }}" class="button small fixed next grey prev">
-                            <span>{{ 'pay_popup.step.previous'|trans }}</span>
-                        </a>
+                        {% if importMapping.isNeedManualMapping %}
+                            <a href="{{ path("accounting_match_file") }}" class="button small fixed next grey prev">
+                                <span>{{ 'pay_popup.step.previous'|trans }}</span>
+                            </a>
+                        {% else %}
+                            <a href="{{ path("accounting_import_file") }}" class="button small fixed next grey prev">
+                                <span>{{ 'pay_popup.step.previous'|trans }}</span>
+                            </a>
+                        {% endif %}
                         <button type="submit"
                                 class="button small submitImportFile"
-                                data-bind="visible: $root.errorLoadDataMessage().length <= 0"
+                                data-bind="visible: $root.loadDataMessage().length == 0"
                         >
                             <span  data-bind="click: function(data, event) { submitForms() }">
                                 {{ 'import.review.and.post'|trans }}
@@ -119,15 +126,25 @@
             <div class="clear"></div>
         </div>
     </div>
-<script type="text/javascript">
-    var accountingImport = new accountingImport();
 
-    $(document).ready(function() {
-        ko.applyBindings(accountingImport, $('#reviewContainer').get(0));
-        accountingImport.isMultipleProperty({{isMultipleProperty}});
-        accountingImport.loadData(false);
-    });
-</script>
+{% endblock %}
+{% block head_javascripts %}
+    <script type="text/javascript">
+        {% autoescape false %}
+        var className = 'accountingImport{{  importStorage.getStorageType|capitalize }}';
+        var isMultipleProperty = '{{ isMultipleProperty }}';
+        {% endautoescape %}
+    </script>
+    {% javascripts
+        '@LandlordBundle/Resources/public/js/extend.js'
+        '@LandlordBundle/Resources/public/js/accountingImport.js'
+        '@LandlordBundle/Resources/public/js/accountingImportCsv.js'
+        '@LandlordBundle/Resources/public/js/accountingImportYardi.js'
+        '@LandlordBundle/Resources/public/js/accountingImportFactory.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {{ parent() }}
 {% endblock %}
 
 {% block stylesheets %}

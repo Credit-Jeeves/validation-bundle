@@ -291,7 +291,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->session->wait($this->timeout+2000, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count of tenants');
 
