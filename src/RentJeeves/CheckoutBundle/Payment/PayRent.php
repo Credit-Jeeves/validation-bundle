@@ -128,7 +128,7 @@ class PayRent extends Pay
 
         $paymentAmount = $payment->getTotal();
         $rent = $contract->getRent();
-        $paidForDates = array_keys($this->paidFor->getArray($contract));
+        $paidForDates = array_keys($this->paidFor->getBaseArray($contract));
         if (empty($paidForDates)) {
             throw new RuntimeException('Can not calculate paid_for');
         }

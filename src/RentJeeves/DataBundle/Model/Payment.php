@@ -267,7 +267,7 @@ class Payment
     /**
      * Get status
      *
-     * @return $thisStatus
+     * @return PaymentStatus
      */
     public function getStatus()
     {

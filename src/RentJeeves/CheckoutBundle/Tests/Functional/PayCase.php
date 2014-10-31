@@ -596,4 +596,52 @@ class PayCase extends BaseTestCase
     {
         $this->markTestIncomplete('FINISH');
     }
+
+    /**
+     * @test
+     */
+    public function validateFieldOther()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->pressButton('contract-pay-2');
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        //don't valid amountOther
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
+                'rentjeeves_checkoutbundle_paymenttype_amountOther' => -10,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(1, $errors);
+        $this->assertEquals('checkout.error.amountOther.min', $errors[0]->getText());
+
+        // valid data
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
+                'rentjeeves_checkoutbundle_paymenttype_amountOther' =>  10,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->assertNotNull($this->page->find('css', '.checkout-plus'));
+    }
 }

@@ -734,8 +734,34 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("DocumentNumber")
+     * @Serializer\Groups({"soapYardiReversed"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getReversedDocumentNumber()
+    {
+        return $this->getCompleteTransaction()->getTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Reversal")
+     * @Serializer\Groups({"soapYardiReversed"})
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\Heartland")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getReversal()
+    {
+        return $this->getReversedTransaction();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TransactionDate")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
@@ -747,7 +773,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("CustomerID")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
@@ -759,7 +785,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Amount")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      * @Serializer\Type("double")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -773,7 +799,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Comment")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -787,7 +813,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PropertyPrimaryID")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -796,6 +822,7 @@ class Order extends BaseOrder
     public function getPropertyPrimaryID()
     {
         $mapping = $this->getContract()->getProperty()->getPropertyMapping();
+
         return $mapping->first()->getExternalPropertyId();
     }
 }

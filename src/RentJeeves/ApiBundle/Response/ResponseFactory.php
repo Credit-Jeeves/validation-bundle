@@ -19,6 +19,11 @@ class ResponseFactory
      */
     public $container;
 
+    /**
+     * @param $entity
+     * @return ResponseResource
+     * @throws InvalidResponseResourceException
+     */
     public function getResponse($entity)
     {
         $reflectClass = new ReflectionClass($entity);

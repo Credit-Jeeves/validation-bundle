@@ -11,7 +11,7 @@ class Transactions
     /**
      * @Serializer\SerializedName("Payment")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\Payment")
-     * @Serializer\Groups({"soapYardiRequest"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
      */
     protected $payment;
 

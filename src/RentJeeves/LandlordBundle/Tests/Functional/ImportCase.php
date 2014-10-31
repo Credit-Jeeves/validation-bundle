@@ -810,6 +810,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(1, count($trs), "Count statuses is wrong");
         $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
 
+
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
         $this->assertNotNull($firstName1 = $this->page->find('css', 'input.1_first_name'));
@@ -823,8 +824,8 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($lastName3 = $this->page->find('css', '.3_last_name'));
         $lastName3->setValue('AchaMo');
 
-        $this->assertNotNull($firstName4 = $this->page->find('css', '.4_first_name'));
-        $firstName4->setValue('Mattew');
+        $this->assertNotNull($lastName4 = $this->page->find('css', 'input.4_first_name'));
+        $lastName4->setValue('Matthew');
 
         $submitImportFile->click();
 
