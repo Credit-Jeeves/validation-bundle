@@ -20,6 +20,26 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Payment extends Base
 {
+    /**
+     *
+     * The 'other' parameter is a calculated value from $amount and $total
+     *
+     * @Assert\Range(
+     *      min=0,
+     *      minMessage="checkout.error.other.min",
+     *      invalidMessage="checkout.error.other.valid"
+     * )
+     * @Serializer\Groups({"payRent"})
+     *
+     * @var double
+     */
+    protected $other;
+
+    public function __construct()
+    {
+        $this->other = 0.0;
+    }
+
     public function checkContract()
     {
         $contract = $this->getContract();
@@ -121,16 +141,48 @@ class Payment extends Base
         return $now->setDate($year, $month, $day);
     }
 
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("amountOther")
-     * @Serializer\Groups({"payRent"})
-     *
-     * @return float|null
-     */
     public function getOther()
     {
-        return ((0 < $this->getTotal())?$this->getTotal() - $this->getAmount() : null);
+        return ($this->total > $this->amount) ? $this->total - $this->amount : 0.0;
+    }
+
+    public function setOther($value)
+    {
+        $this->other = $value;
+        $this->calcTotalFromOther();
+    }
+
+    public function setAmount($value)
+    {
+        parent::setAmount($value);
+        if ($this->other >= 0) {
+            $this->calcTotalFromOther();
+        }
+    }
+
+    private function calcTotalFromOther()
+    {
+        if ($this->amount > 0) {
+            # $amount set before $other
+            $this->total = $this->amount + $this->other;
+        } else {
+            # $other set before $amount
+            $this->total = $this->other;
+        }
+    }
+
+    /*
+     * this maps the API paid_for parameter to the model's paidFor parameter
+     */
+    public function setPaidForApi($date_text)
+    {
+        parent::setPaidFor(new DateTime($date_text));
+    }
+
+    public function getPaidForApi()
+    {
+        $paidFor = parent::getPaidFor();
+        return ($paidFor) ? $paidFor->format("YY-mm") : "";
     }
 
     public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)

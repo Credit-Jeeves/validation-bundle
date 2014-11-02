@@ -108,6 +108,15 @@
                 <target>Total to Pay should be a valid number.</target>
             </trans-unit>
 
+            <trans-unit id="checkout.error.other.min">
+                <source>checkout.error.other.min</source>
+                <target>Other amount to pay should be 1 or more.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.other.valid">
+                <source>checkout.error.other.valid</source>
+                <target>Other amount to pay should be a valid number.</target>
+            </trans-unit>
+
             <trans-unit id="checkout.error.date.empty">
                 <source>checkout.error.date.empty</source>
                 <target>Date is required..</target>

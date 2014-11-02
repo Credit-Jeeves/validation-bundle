@@ -4,12 +4,16 @@ namespace RentJeeves\CheckoutBundle\Controller\Traits;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Payum\Payment;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,5 +86,64 @@ trait PaymentProcess
         $em->flush();
 
         return $paymentAccountEntity;
+    }
+
+    protected function savePayment(Request $request, Form $form, $contractId, $paymentAccountId, $recurring, $pidkiq_enabled)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var Payment $paymentEntity */
+        $paymentEntity = $form->getData();
+
+        /**
+         * @var Contract $contract
+         */
+        if ($contract = $em->getRepository('RjDataBundle:Contract')->find($contractId)) {
+            $paymentEntity->setContract($contract);
+        } else {
+            throw $this->createNotFoundException('Contract does not exist');
+        }
+
+        if ($pidkiq_enabled && !$this->isVerifiedUser($request, $contract)) {
+            throw $this->createNotFoundException('User verification failed');
+        }
+
+        /**
+         * @var PaymentAccount $paymentAccount
+         */
+        if ($paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId)) {
+            $paymentEntity->setPaymentAccount($paymentAccount);
+        }
+
+        $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
+        if (!$payBalanceOnly && $recurring) {
+            $paymentEntity->setEndMonth(null);
+            $paymentEntity->setEndYear(null);
+        }
+
+        $contract->setStatus(ContractStatus::APPROVED);
+        $em->persist($contract);
+        $em->persist($paymentEntity);
+        $em->flush();
+    }
+
+    private function debug($var)
+    {
+        fwrite(STDERR, print_r("DEBUG:" . var_dump($var), TRUE));
+    }
+
+    protected function isVerifiedUser(Request $request, Contract $contract)
+    {
+        $setting = $contract->getGroup()->getGroupSettings();
+        if ($setting->getIsPidVerificationSkipped()) {
+            return true;
+        }
+        $session = $request->getSession();
+        $isValidUser = $session->get('isValidUser', false);
+        if (UserIsVerified::PASSED === $this->getUser()->getIsVerified() || $isValidUser) {
+            return true;
+        }
+
+        return false;
     }
 }
