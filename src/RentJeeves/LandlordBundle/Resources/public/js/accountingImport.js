@@ -17,6 +17,7 @@ function accountingImport(superclass) {
 
     this.rowsTotal = ko.observable(0);
     this.loadDataMessage = ko.observable('');
+    this.downloadImage = ko.observable(false);
     this.classLoadDataMessage = ko.observable('errorMessage');
     this.isFinishReview =  ko.observable(false);
     this.rows = ko.observableArray([]);

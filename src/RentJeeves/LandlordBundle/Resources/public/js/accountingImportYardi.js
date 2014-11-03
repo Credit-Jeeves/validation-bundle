@@ -24,6 +24,7 @@ function accountingImportYardi() {
                 dataType: 'json',
                 error: function () {
                     self.setProcessing(false);
+                    self.downloadImage(false);
                     self.loadDataMessage(Translator.trans('yardi.import.error.getResidents'));
                     self.classLoadDataMessage('errorMessage');
                 },
@@ -42,11 +43,13 @@ function accountingImportYardi() {
         self.loadDataMessage('');
         self.isFinishUploadDataToServer(true);
         self.classLoadDataMessage('');
+        self.downloadImage(false);
         return self.superclass.loadData(false);
     }
 
     this.loadData = function(next) {
         if (self.isFinishUploadDataToServer() === false) {
+            self.downloadImage(true);
             self.loadDataMessage(Translator.trans('yardi.import.message.download.resident'));
             jQuery.ajax({
                 url: Routing.generate('accounting_import_residents_yardi'),
@@ -55,6 +58,7 @@ function accountingImportYardi() {
                 error: function() {
                     self.loadDataMessage(Translator.trans('yardi.import.error.getResidents'));
                     self.classLoadDataMessage('errorMessage');
+                    self.downloadImage(false);
                 },
                 success: function(response) {
                     var length = 0;
