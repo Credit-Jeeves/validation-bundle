@@ -31,12 +31,22 @@ class PartnerUsersAdmin extends Admin
         return '/'.self::TYPE.'_users';
     }
 
+    public function createQuery($context = 'list')
+    {
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+        $query->innerJoin($alias . '.partner', 'partner');
+
+        return $query;
+    }
+
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
             ->addIdentifier('id', null, array('route' => array('name' => 'show')))
             ->add('email')
             ->add('full_name')
+            ->add('type')
             ->add('partner', null, array('label' => 'Partner'))
             ->add(
                 '_action',
@@ -44,10 +54,7 @@ class PartnerUsersAdmin extends Admin
                 array(
                     'actions' => array(
                         'edit' => array(),
-                        'delete' => array(),
-                        'partners' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_partners.html.twig'
-                        ),
+                        'delete' => array()
                     )
                 )
             );
