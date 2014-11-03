@@ -24,7 +24,8 @@ function accountingImportYardi() {
                 dataType: 'json',
                 error: function () {
                     self.setProcessing(false);
-                    self.errorLoadDataMessage(Translator.trans('yardi.import.error.getResidents'));
+                    self.loadDataMessage(Translator.trans('yardi.import.error.getResidents'));
+                    self.classLoadDataMessage('errorMessage');
                 },
                 success: function (response) {
                     i++;
@@ -52,14 +53,15 @@ function accountingImportYardi() {
                 type: 'POST',
                 dataType: 'json',
                 error: function() {
-                    self.errorLoadDataMessage(Translator.trans('yardi.import.error.getResidents'));
+                    self.loadDataMessage(Translator.trans('yardi.import.error.getResidents'));
+                    self.classLoadDataMessage('errorMessage');
                 },
                 success: function(response) {
                     var length = 0;
                     $.each(response, function( key, value ) {
                         length++;
                     });
-                    //length = 3;
+
                     if (length > 0) {
                         self.saveContractData(response, 0, length);
                     } else {
