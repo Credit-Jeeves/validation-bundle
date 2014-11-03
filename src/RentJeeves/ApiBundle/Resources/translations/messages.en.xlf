@@ -26,6 +26,34 @@
                 <source>api.errors.payment_accounts.card.expiration.invalid_expiration</source>
                 <target>Expiration date is invalid. Card is expired.</target>
             </trans-unit>
+            <trans-unit id="api.errors.contracts.property.invalid">
+                <source>api.errors.contracts.property.invalid</source>
+                <target>Address is invalid.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.contracts.property.not_standalone">
+                <source>api.errors.contracts.property.not_standalone</source>
+                <target>Property is not standalone. Please specify unit name.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.property.street.empty">
+                <source>api.errors.property.street.empty</source>
+                <target>Street is required.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.property.number.empty">
+                <source>api.errors.property.number.empty</source>
+                <target><![CDATA[Number is required. Please use format for street like "<street_number> <street_name>".]]></target>
+            </trans-unit>
+            <trans-unit id="api.errors.property.state.empty">
+                <source>api.errors.property.state.empty</source>
+                <target>State is required.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.property.city.empty">
+                <source>api.errors.property.city.empty</source>
+                <target>City is required.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.property.zip.empty">
+                <source>api.errors.property.zip.empty</source>
+                <target>Zip is required.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

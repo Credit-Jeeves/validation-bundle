@@ -3,6 +3,7 @@
 namespace RentJeeves\ApiBundle\Request;
 
 use Doctrine\Common\Annotations\Reader;
+use FOS\RestBundle\Controller\Annotations\Param;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Request\ParamFetcher as Base;
@@ -92,7 +93,7 @@ class ParamFetcher extends Base
         if (isset($this->paramsValue[$name])) {
             return $this->paramsValue[$name];
         }
-
+        /** @var Param $config */
         $config = $this->params[$name];
 
         if ($config instanceof AttributeParam) {
@@ -101,7 +102,7 @@ class ParamFetcher extends Base
 
         $value = parent::get($name, $strict);
 
-        if ($encoder = $this->getEncoder($name)) {
+        if ($encoder = $this->getEncoder($name) and ($config->strict || $value)) {
             $value = $encoder->decode($value);
         }
 
