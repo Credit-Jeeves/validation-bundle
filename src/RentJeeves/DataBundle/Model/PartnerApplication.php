@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class PartnerService
+abstract class PartnerApplication
 {
     /**
      * @ORM\Id
@@ -49,7 +49,7 @@ abstract class PartnerService
     /**
      * @ORM\OneToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Client",
-     *     inversedBy="partnerService"
+     *     inversedBy="partnerApplication"
      * )
      * @ORM\JoinColumn(
      *     name="client_id",

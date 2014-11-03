@@ -3,12 +3,12 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Model\PartnerService as BasePartner;
+use RentJeeves\DataBundle\Model\PartnerApplication as BasePartner;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="partner")
  */
-class PartnerService extends BasePartner
+class PartnerApplication extends BasePartner
 {
 }

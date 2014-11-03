@@ -20,50 +20,50 @@ class Partner extends User
      *     cascade={"all"}
      * )
      */
-    protected $partnerService;
+    protected $partnerApplication;
 
     /**
-     * @return PartnerService
+     * @return PartnerApplication
      */
-    public function getPartnerService()
+    public function getPartnerApplication()
     {
-        return $this->partnerService ? $this->partnerService->getPartner() : null;
+        return $this->partnerApplication ? $this->partnerApplication->getPartner() : null;
     }
 
     /**
-     * @param PartnerUser $partnerService
+     * @param PartnerUser $partnerApplication
      */
-    public function setPartnerService($partnerService)
+    public function setPartnerApplication($partnerApplication)
     {
         if ($this->getId()) {
-            $this->updateUserPartner($partnerService);
+            $this->updateUserPartner($partnerApplication);
         } else {
-            $this->addUserPartner($partnerService);
+            $this->addUserPartner($partnerApplication);
         }
     }
 
     /**
-     * @param PartnerService $partnerService
+     * @param PartnerApplication $partnerApp
      */
-    protected function addUserPartner(PartnerService $partnerService)
+    protected function addUserPartner(PartnerApplication $partnerApp)
     {
         $partnerUser = new PartnerUser();
-        $partnerUser->setPartner($partnerService);
+        $partnerUser->setPartner($partnerApp);
         $partnerUser->setUser($this);
-        $this->partnerService = $partnerUser;
+        $this->partnerApplication = $partnerUser;
     }
 
     /**
-     * @param PartnerService $partnerService
+     * @param PartnerApplication $partnerApp
      */
-    protected function updateUserPartner(PartnerService $partnerService)
+    protected function updateUserPartner(PartnerApplication $partnerApp)
     {
-        $partnerUser = $this->partnerService;
+        $partnerUser = $this->partnerApplication;
         if (!$partnerUser) {
             $partnerUser = new PartnerUser();
             $partnerUser->setUser($this);
         }
-        $partnerUser->setPartner($partnerService);
-        $this->partnerService = $partnerUser;
+        $partnerUser->setPartner($partnerApp);
+        $this->partnerApplication = $partnerUser;
     }
 }

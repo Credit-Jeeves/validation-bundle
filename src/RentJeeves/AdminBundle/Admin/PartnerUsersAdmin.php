@@ -2,22 +2,13 @@
 
 namespace RentJeeves\AdminBundle\Admin;
 
-use CreditJeeves\DataBundle\Enum\GroupType;
 use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\EntityRepository;
-use RentJeeves\DataBundle\Entity\Partner;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Model\PartnerService;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\Request;
-use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PartnerUsersAdmin extends Admin
@@ -47,7 +38,7 @@ class PartnerUsersAdmin extends Admin
             ->addIdentifier('id', null, array('route' => array('name' => 'show')))
             ->add('email')
             ->add('full_name')
-            ->add('partnerService', null, array('label' => 'Partner'))
+            ->add('partnerApplication', null, array('label' => 'Partner'))
             ->add(
                 '_action',
                 'actions',
@@ -67,14 +58,14 @@ class PartnerUsersAdmin extends Admin
     {
         $formMapper
             ->add(
-                'partnerService',
+                'partnerApplication',
                 'entity',
                 array(
                     'label' => 'Partner',
-                    'class' => 'RjDataBundle:PartnerService',
+                    'class' => 'RjDataBundle:PartnerApplication',
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('ps')
-                            ->from('RjDataBundle:PartnerService', 'p');
+                            ->from('RjDataBundle:PartnerApplication', 'p');
                     }
                 )
             )
@@ -115,7 +106,7 @@ class PartnerUsersAdmin extends Admin
     {
         $datagridMapper
             ->add('email')
-            ->add('partnerService.partner', null, array('label' => 'Partner'));
+            ->add('partnerApplication.partner', null, array('label' => 'Partner'));
     }
 
     public function getClassnameLabel()

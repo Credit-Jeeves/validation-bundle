@@ -19,7 +19,7 @@ abstract class PartnerUser
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerService",
+     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerApplication",
      *     inversedBy="partnerUsers"
      * )
      */
@@ -28,7 +28,7 @@ abstract class PartnerUser
     /**
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Partner",
-     *     inversedBy="partnerService"
+     *     inversedBy="partnerApplication"
      * )
      */
     protected $user;

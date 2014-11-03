@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use FOS\OAuthServerBundle\Entity\Client as BaseClient;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\PartnerApplication;
 
 /**
  * @ORM\Table(name="client")
@@ -28,12 +29,12 @@ class Client extends BaseClient
 
     /**
      * @ORM\OneToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerService",
+     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerApplication",
      *     mappedBy="client",
      *     cascade={"persist", "remove", "merge"}
      * )
      */
-    protected $partnerService;
+    protected $partnerApplication;
 
     public function getName()
     {
@@ -46,19 +47,19 @@ class Client extends BaseClient
     }
 
     /**
-     * @return PartnerService
+     * @return PartnerApplication
      */
-    public function getPartnerService()
+    public function getPartnerApplication()
     {
-        return $this->partnerService;
+        return $this->partnerApplication;
     }
 
     /**
-     * @param PartnerService $partnerService
+     * @param PartnerApplication $partnerService
      */
-    public function setPartnerService($partnerService)
+    public function setPartnerApplication($partnerService)
     {
-        $this->partnerService = $partnerService;
+        $this->partnerApplication = $partnerService;
     }
 
     public function __toString()
