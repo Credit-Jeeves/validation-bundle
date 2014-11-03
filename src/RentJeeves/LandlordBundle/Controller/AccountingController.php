@@ -395,7 +395,6 @@ class AccountingController extends Controller
             $propertyMapping->setHolding($holding);
             $propertyMapping->setProperty($property);
             $propertyMapping->setExternalPropertyId($storage->getImportExternalPropertyId());
-            $property->setPropertyMapping($propertyMapping);
             $em->persist($propertyMapping);
             $em->flush();
         } else {
