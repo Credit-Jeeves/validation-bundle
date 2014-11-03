@@ -39,7 +39,7 @@ class SourcesCase extends BaseTestCase
             "jQuery('#payment-account-edit .attention-box li').length"
         );
         $this->assertNotNull($errors = $this->page->findAll('css', '#payment-account-edit .attention-box li'));
-        $this->assertCount(4, $errors);
+        $this->assertCount(3, $errors);
 
         $this->fillForm(
             $form,

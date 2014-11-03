@@ -8,6 +8,8 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -25,6 +27,8 @@ use CreditJeeves\CoreBundle\Translation\Translator;
  */
 class ImportContractType extends AbstractType
 {
+    const NAME = 'import_contract';
+
     protected $isUseToken;
 
     protected $isUseOperation;
@@ -334,6 +338,6 @@ class ImportContractType extends AbstractType
 
     public function getName()
     {
-        return 'import_contract';
+        return self::NAME;
     }
 }

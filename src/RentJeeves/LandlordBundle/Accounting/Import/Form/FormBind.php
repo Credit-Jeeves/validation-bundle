@@ -299,7 +299,7 @@ trait FormBind
             $this->em->detach($unit);
         }
         $tenant = $import->getTenant();
-        if ($tenant->getId()) {
+        if ($tenant->getId() && $this->usersEmail[$tenant->getEmail()] === 1) {
             $this->em->detach($tenant);
         }
         $residentMapping = $import->getResidentMapping();

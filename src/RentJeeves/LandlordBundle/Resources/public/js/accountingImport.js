@@ -7,6 +7,7 @@ function accountingImport(superclass) {
         "import_new_user_with_contract_contract_residentMapping_residentId",
         "import_contract_residentMapping_residentId",
         "resident_id",
+        "tenant_email"
     ];
 
     this.unitName = [
@@ -95,6 +96,10 @@ function accountingImport(superclass) {
     }
 
     this.getStatusText = function(data) {
+        if (data.is_skipped && !self.isValidFieldsWhichNotContainsInForm(data)) {
+            return Translator.trans('import.status.error');
+        }
+
         if (data.is_skipped) {
             return Translator.trans('import.status.skip');
         }

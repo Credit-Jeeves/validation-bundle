@@ -4,6 +4,8 @@ namespace RentJeeves\LandlordBundle\Controller;
 
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
+use RentJeeves\LandlordBundle\Model\Import;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -135,8 +137,9 @@ class AccountingController extends Controller
 
         if (!$form->isValid()) {
             return array(
-                'form'      => $form->createView(),
-                'nGroups' => $this->getGroups()->count(),
+                'form'          => $form->createView(),
+                'nGroups'       => $this->getGroups()->count(),
+                'source'        => $form->get('fileType')->getData()
             );
         }
 
@@ -166,7 +169,7 @@ class AccountingController extends Controller
             $importMapping = $importFactory->getMapping();
 
             if ($importMapping->isNeedManualMapping()) {
-                $data = $importStorage->getImportData();
+                $importStorage->getImportData();
                 $data = $importMapping->getDataForMapping();
             } else {
                 return $this->redirect($this->generateUrl('accounting_import'));
@@ -188,6 +191,7 @@ class AccountingController extends Controller
             )
         );
         $form->handleRequest($this->get('request'));
+
         if ($form->isValid()) {
             $importMapping->setupMapping($form, $data);
             return $this->redirect($this->generateUrl('accounting_import'));
@@ -198,7 +202,7 @@ class AccountingController extends Controller
         return array(
             'error'        => false,
             'data'         => $dataView,
-            'form'         => $form,
+            'form'         => $form
         );
     }
     /**
@@ -216,38 +220,38 @@ class AccountingController extends Controller
              * @var $importFactory ImportFactory
              */
             $importFactory = $this->get('accounting.import.factory');
-            $importStorage = $importFactory->getStorage();
-            $importStorage->clearDataBeforeReview();
-            $importMapping = $importFactory->getMapping();
-            if ($importMapping->isNeedManualMapping()) {
-                $importStorage->getImportData();
+            $storage = $importFactory->getStorage();
+            $storage->clearDataBeforeReview();
+            $mapping = $importFactory->getMapping();
+            if ($mapping->isNeedManualMapping()) {
+                $storage->getImportData();
             }
         } catch (ImportStorageException $e) {
             return $this->redirect($this->generateUrl('accounting_import_file'));
         }
 
-        $importProcess = $importFactory->getHandler();
-        $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm(
+        $handler = $importFactory->getHandler();
+        $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm(
             new ResidentMapping(),
             new UnitMapping(),
             new Unit()
         );
-        $formContract = $importProcess->getContractForm(
+        $formContract = $handler->getContractForm(
             new Tenant(),
             new ResidentMapping(),
             new UnitMapping(),
             new Unit()
         );
-        $formContractFinish = $importProcess->getContractFinishForm();
+        $formContractFinish = $handler->getContractFinishForm();
 
         return array(
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
             'formContract'            => $formContract->createView(),
             'formContractFinish'      => $formContractFinish->createView(),
-            'importStorage'           => $importStorage,
-            'importMapping'           => $importMapping,
+            'importStorage'           => $storage,
+            'importMapping'           => $mapping,
             //Make it string because it's var for js and I want boolean
-            'isMultipleProperty'      => ($importStorage->isMultipleProperty())? "true" : "false",
+            'isMultipleProperty'      => ($storage->isMultipleProperty())? "true" : "false",
         );
     }
 
@@ -276,24 +280,24 @@ class AccountingController extends Controller
          * @var $importFactory ImportFactory
          */
         $importFactory = $this->get('accounting.import.factory');
-        $importStorage = $importFactory->getStorage();
-        $importMapping = $importFactory->getMapping();
+        $storage = $importFactory->getStorage();
+        $mapping = $importFactory->getMapping();
 
         $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($newRows) {
-            $importStorage->setOffsetStart($importStorage->getOffsetStart() + ImportHandler::ROW_ON_PAGE);
+            $storage->setOffsetStart($storage->getOffsetStart() + ImportHandler::ROW_ON_PAGE);
         }
 
         $rows = array();
 
-        $importProcess = $importFactory->getHandler();
-        $total = $importMapping->getTotal();
+        $handler = $importFactory->getHandler();
+        $total = $mapping->getTotal();
 
         if ($total > 0) {
-            $rows = $importProcess->getImportModelCollection();
+            $rows = $handler->getImportModelCollection();
         } else {
-            $importStorage->clearSession();
+            $storage->clearSession();
         }
 
         $context = new SerializationContext();
@@ -337,9 +341,9 @@ class AccountingController extends Controller
          * @var $importFactory ImportFactory
          */
         $importFactory = $this->get('accounting.import.factory');
-        $importProcess = $importFactory->getHandler();
+        $handler = $importFactory->getHandler();
         $data = $request->request->all();
-        $result['formErrors'] = $importProcess->saveForms($data);
+        $result['formErrors'] = $handler->saveForms($data);
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');
@@ -445,6 +449,7 @@ class AccountingController extends Controller
         try {
             $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $residentId);
             $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate);
+
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
                 $responseData = array('result' => false);
             } else {
@@ -456,6 +461,14 @@ class AccountingController extends Controller
 
         if ($isLast) {
             $storage->setImportLoaded(true);
+        }
+
+        if ($storage->isOnlyException()) {
+            /**
+             * @var $handler HandlerYardi
+             */
+            $handler = $importFactory->getHandler();
+            $handler->saveInBackgroundLastMatched();
         }
 
         $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));

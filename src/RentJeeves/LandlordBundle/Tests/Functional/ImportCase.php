@@ -173,19 +173,20 @@ class ImportCase extends BaseTestCase
             "$('.errorField').length > 0"
         );
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertEquals(2, count($errorFields));
-        $this->assertEquals($errorFields[1]->getHtml(), 't0*013202');
+        $this->assertEquals(3, count($errorFields));
+        $this->assertEquals($errorFields[0]->getValue(), '2testmail.com');
+        $this->assertEquals($errorFields[1]->getHtml(), 'tenant11@example.com');
+        $this->assertEquals($errorFields[2]->getHtml(), 't0*013202');
 
         $trs = $this->getParsedTrsByStatus();
 
-        $this->assertEquals(5, count($trs), "Count statuses is wrong");
-        $this->assertEquals(1, count($trs['import.status.error']), "Error contract on first page is wrong number");
+        $this->assertEquals(4, count($trs), "Count statuses is wrong");
+        $this->assertEquals(2, count($trs['import.status.error']), "Error contract on first page is wrong number");
         $this->assertEquals(2, count($trs['import.status.new']), "New contract on first page is wrong number");
         $this->assertEquals(4, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract on first page is wrong number");
-        $this->assertEquals(1, count($trs['import.status.ended']), "Ended contract on first page is wrong number");
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertEquals(2, count($errorFields));
+        $this->assertEquals(3, count($errorFields));
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
@@ -282,15 +283,8 @@ class ImportCase extends BaseTestCase
                 $contractMatch = $contract;
                 continue;
             }
-
-            if ($contract->getUnit()->getName() === '2-a') {
-                $contractEnded = $contract;
-                continue;
-            }
         }
 
-        $this->assertEquals(ContractStatus::FINISHED, $contractEnded->getStatus());
-        $this->assertEquals('03/01/2011', $contractEnded->getFinishAt()->format('m/d/Y'));
         //For match contract we don't need check startAt because it's not updated
         $this->assertEquals('1190', $contractMatch->getRent());
         $this->assertEquals('0', $contractMatch->getIntegratedBalance());
@@ -358,8 +352,8 @@ class ImportCase extends BaseTestCase
             "$('.errorField').length > 0"
         );
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertEquals(3, count($errorFields));
-        $this->assertEquals('t0*013202', $errorFields[2]->getHtml());
+        $this->assertEquals(4, count($errorFields));
+        $this->assertEquals('t0*013202', $errorFields[3]->getHtml());
         //Make sure for this page we don't have operation
         $this->assertNull($errorField = $this->page->find('css', '.import_operation_paidFor'));
 
@@ -1344,7 +1338,8 @@ class ImportCase extends BaseTestCase
             "$('.errorField').length > 0"
         );
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertEquals(1, count($errorFields));
+        $this->assertEquals(2, count($errorFields));
+        $this->assertEquals($errorFields[1]->getHtml(), '14test@mail.com');
         $this->assertEquals($errorFields[0]->getHtml(), 't0016437');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
@@ -1400,5 +1395,41 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
         $this->logout();
+    }
+
+    /**
+     * @test
+     * @depends yardiBaseImport
+     */
+    public function yardiBaseImportOnlyException()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
+        $this->assertNotNull($yardiRadio = $this->page->findAll('css', '.radio'));
+        $yardiRadio[1]->click();
+        $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
+        $propertyId->setValue('rnttrk01');
+        $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
+        $exceptionOnly->check();
+
+        $submitImport->click();
+
+        $this->session->wait(
+            80000,
+            "$('table').is(':visible')"
+        );
+        $this->waitReviewAndPost();
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
     }
 }

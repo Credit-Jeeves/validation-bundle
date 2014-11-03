@@ -1,3 +1,3 @@
 function importFile() {
-    this.source = ko.observable("csv");
+    this.source = ko.observable();
 }

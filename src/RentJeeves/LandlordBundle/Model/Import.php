@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use Symfony\Component\Form\Form;
 
 class Import
@@ -96,6 +97,24 @@ class Import
     protected $email;
 
     protected $isMultipleProperty;
+
+    protected $contractWaiting;
+
+    /**
+     * @return ContractWaiting
+     */
+    public function getContractWaiting()
+    {
+        return $this->contractWaiting;
+    }
+
+    /**
+     * @param ContractWaiting $contractWaiting
+     */
+    public function setContractWaiting(ContractWaiting $contractWaiting)
+    {
+        $this->contractWaiting = $contractWaiting;
+    }
 
     /**
      * @param boolean $hasContractWaiting
