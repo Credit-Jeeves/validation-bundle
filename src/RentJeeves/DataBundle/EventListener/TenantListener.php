@@ -45,7 +45,7 @@ class TenantListener
         }
 
         $em = $eventArgs->getEntityManager();
-        $partner = $em->getRepository('DataBundle:Partner')->findOneByRequestName($affiliateSource);
+        $partner = $em->getRepository('RjDataBundle:PartnerService')->findOneByRequestName($affiliateSource);
         if (!$partner) {
             return;
         }
