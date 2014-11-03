@@ -115,3 +115,7 @@ table tbody tr td {
     font-size: 12px;
     font-weight: 300;
 }
+.left {
+    float: left;
+    padding-right: 3px;
+}
