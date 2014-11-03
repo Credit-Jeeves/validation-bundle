@@ -16,7 +16,7 @@ update cj_applicant_report set raw_data = md5(raw_data);
 
 update cj_holding set name = mid(md5(name),1,16);
 
-update cj_settings set pidkiq_password = NULL, pidkiq_eai = NULL, net_connect_password = NULL, net_connect_eai = NULL;
+update cj_settings set precise_id_user_pwd = NULL, precise_id_eai = NULL, credit_profile_user_pwd = NULL, credit_profile_eai = NULL;
 
 update jms_jobs set stackTrace = NULL;
 
@@ -27,7 +27,7 @@ update rj_deposit_account set merchant_name = md5(merchant_name);
 
 update rj_group_phone set phone = mid(md5(phone),1,10);
 
-update rj_invite set first_name = mid(md5(first_name),1,10), last_name = mid(md5(last_name),1,8), phone = mid(md5(phone),1,10), email = concat(mid(md5(email),1,16),'@example.com'), unit = mid(md5(unit),1,4);
+update rj_invite set first_name = mid(md5(first_name),1,10), last_name = mid(md5(last_name),1,8), phone = mid(md5(phone),1,10), email = concat(mid(md5(email),1,16),'@example.com'), unitName = mid(md5(unitName),1,4);
 
 update rj_payment_account set name = mid(md5(name),1,10), token = concat(left(token, 24),mid(md5(token),1,12));
 update rj_payment_account set cc_expiration = '2017-12-01' where cc_expiration is not NULL;
