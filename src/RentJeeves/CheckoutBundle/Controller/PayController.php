@@ -2,7 +2,6 @@
 namespace RentJeeves\CheckoutBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Address;
-use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\Common\Collections\ArrayCollection;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
@@ -16,7 +15,6 @@ use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -223,21 +221,6 @@ class PayController extends Controller
         );
     }
 
-    protected function isVerifiedUser(Request $request, Contract $contract)
-    {
-        $setting = $contract->getGroup()->getGroupSettings();
-        if ($setting->getIsPidVerificationSkipped()) {
-            return true;
-        }
-        $session = $request->getSession();
-        $isValidUser = $session->get('isValidUser', false);
-        if (UserIsVerified::PASSED === $this->getUser()->getIsVerified() || $isValidUser) {
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * @Route("/exec", name="checkout_pay_exec", options={"expose"=true})
      * @Method({"POST"})
@@ -252,39 +235,35 @@ class PayController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        /** @var Payment $paymentEntity */
-        $paymentEntity = $paymentType->getData();
-
         /**
          * @var Contract $contract
          */
-        if ($contract = $em->getRepository('RjDataBundle:Contract')
-                ->find($paymentType->get('contractId')->getData())
-        ) {
-            $paymentEntity->setContract($contract);
-        } else {
+        $contractId = $paymentType->get('contractId')->getData();
+        if (!$contract = $em->getRepository('RjDataBundle:Contract')->find($contractId)) {
             throw $this->createNotFoundException('Contract does not exist');
         }
-
-        if (!$this->isVerifiedUser($request, $contract)) {
-            throw $this->createNotFoundException('Verification not passed');
+        /**
+         * @var PaymentAccount $paymentAccount
+         */
+        $accountId = $paymentType->get('paymentAccountId')->getData();
+        if (!$paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($accountId)) {
+            throw $this->createNotFoundException('Payment account does not exist');
         }
 
-        if ($paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')
-                ->find($paymentType->get('paymentAccountId')->getData())
-        ) {
-            $paymentEntity->setPaymentAccount($paymentAccount);
-        }
+        $recurring = false;        
         $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
         if (!$payBalanceOnly && 'on' != $paymentType->get('ends')->getData()) {
-            $paymentEntity->setEndMonth(null);
-            $paymentEntity->setEndYear(null);
+            $recurring = true;
         }
-
-        $contract->setStatus(ContractStatus::APPROVED);
-        $em->persist($contract);
-        $em->persist($paymentEntity);
-        $em->flush();
+        
+        $this->savePayment(
+            $request,
+            $paymentType,
+            $contract,
+            $paymentAccount,
+            $recurring,
+            true            # verify user
+        );
 
         return new JsonResponse(
             array(

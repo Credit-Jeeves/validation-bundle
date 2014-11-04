@@ -138,6 +138,8 @@ class Payment
      *      message="checkout.error.dueDate.empty",
      *      groups={"paymentWizard"}
      * )
+     * @Assert\Range(min = 1, max = 31)
+     *
      * @Serializer\SerializedName("dueDate")
      * @Serializer\Groups({"payRent"})
      *
