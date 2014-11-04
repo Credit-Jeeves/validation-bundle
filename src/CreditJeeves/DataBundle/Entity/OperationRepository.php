@@ -115,6 +115,7 @@ class OperationRepository extends EntityRepository
         $query->andWhere('resident.holding = :holding');
         $query->andWhere('ord.status IN (:statuses)');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
+        $query->andWhere('operation.amount > 0');
         $query->andWhere('heartland.status = :completeTransaction');
         $query->orderBy('ord.id', 'ASC');
 
