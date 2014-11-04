@@ -137,7 +137,7 @@ function Pay(parent, contractId) {
     this.payment.endMonth(finishDate.getMonth() + 1);
     this.payment.endYear(finishDate.getYear());
     var paidForArr = parent.getPaidForArrContractById(contractId);
-    this.payment.paidForOptions(associativeArrayToOptions(paidForArr));
+    this.payment.paidForOptions(associativeArrayToOptions(paidForArr, ' '))
     this.payment.dueDates(contract.groupSetting.dueDays);
     for (var i = 0; i < 12; i++) {
         var tempDate = new Date(2000, i, 1);

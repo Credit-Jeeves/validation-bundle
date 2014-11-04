@@ -101,7 +101,13 @@ class PaymentType extends AbstractType
                         'force_row' => false,
                         'template' => 'paidFor-html',
                     ),
-                    'invalid_message' => 'checkout.error.paidFor.invalid',
+                    'constraints' => array(
+                        new NotBlank(
+                            array(
+                                'message' => 'checkout.error.paidFor.invalid'
+                            )
+                        )
+                    )
                 )
             )->addModelTransformer(new DateTimeToStringTransformer())
         );

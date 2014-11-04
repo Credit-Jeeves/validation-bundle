@@ -94,13 +94,12 @@ class PaidForCase extends BaseTestCase
         $paidFor->expects($this->exactly(2))
             ->method('getNow')
             ->will($this->returnValue($now));
-        $nowDate = clone $now;
 
         $this->assertEquals(
             $paidFor->createItem($dateTime) +
             $paidFor->createItem($dateTime->modify('+2 month')) +
             $paidFor->createItem($dateTime->modify('+1 month')) +
-            $paidFor->createItem($nowDate->modify('+1 month')),
+            $paidFor->createItem($dateTime->modify('+1 month')),
             $paidFor->getArray($contract)
         );
     }
