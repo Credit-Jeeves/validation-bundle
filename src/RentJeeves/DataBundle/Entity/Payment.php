@@ -185,9 +185,9 @@ class Payment extends Base
 
     private function setPaidForDayBasedOnContract(DateTime $date)
     {
-        $due_day = $this->getContract()->getDueDate();
-        if ($due_day) {
-            $date = $date->setDate($date->format('Y'), $date->format('m'), $due_day);
+        $dueDay = $this->getContract()->getDueDate();
+        if ($dueDay) {
+            $date = $date->setDate($date->format('Y'), $date->format('m'), $dueDay);
         }
         return $date;
     }
