@@ -52,7 +52,7 @@ abstract class PropertyMapping
     /**
      * @ORM\Column(
      *      type="string",
-     *      name="landlord_property_id",
+     *      name="external_property_id",
      *      length=128,
      *      nullable=false
      * )

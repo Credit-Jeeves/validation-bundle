@@ -2,19 +2,26 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\PropertyAccess\Exception\RuntimeException;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class ImportFileAccountingType extends AbstractType
 {
     protected $group;
+
+    protected $em;
 
     protected $validationGroups;
 
@@ -22,10 +29,11 @@ class ImportFileAccountingType extends AbstractType
         'default', 'yardi', 'csv'
     );
 
-    public function __construct($group, $validationGroups = array('default'))
+    public function __construct($group, $em, $validationGroups = array('default'))
     {
         $this->group = $group;
         $this->setValidationGroup($validationGroups);
+        $this->em = $em;
     }
 
     protected function setValidationGroup($validationGroups)
@@ -241,6 +249,39 @@ class ImportFileAccountingType extends AbstractType
                     'data-bind' => 'visible: ($root.source() == "yardi")',
                 )
             )
+        );
+
+        $self = $this;
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($self) {
+                $data = $event->getData();
+                $form = $event->getForm();
+                /**
+                 * @var $property Property
+                 */
+                $property = $form->get('property')->getData();
+                $propertyId = $form->get('propertyId')->getData();
+                if (!$property || !$propertyId) {
+                    return;
+                }
+
+                $holdingId = $self->group->getHolding()->getId();
+                /**
+                 * @var $propertyMapping PropertyMapping
+                 */
+                $propertyMapping = $self->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+                    array(
+                        'property' => $property->getId(),
+                        'holding'  => $holdingId
+                    )
+                );
+
+                if ($propertyMapping && $propertyMapping->getExternalPropertyId() !== $propertyId) {
+                    $propertyIdField = $form->get('propertyId');
+                    $propertyIdField->addError(new FormError('yardi.import.error.external_property_id'));
+                }
+            }
         );
     }
 

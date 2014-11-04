@@ -128,7 +128,7 @@ class AccountingController extends Controller
     {
         $this->checkAccessToAccounting();
         $form = $this->createForm(
-            new ImportFileAccountingType($this->getCurrentGroup())
+            new ImportFileAccountingType($this->getCurrentGroup(), $this->getDoctrine()->getManager())
         );
 
         $form->handleRequest($this->get('request'));
@@ -386,7 +386,6 @@ class AccountingController extends Controller
             array(
                 'property'              => $storage->getImportPropertyId(),
                 'holding'               => $holding->getId(),
-                'externalPropertyId'    => $storage->getImportExternalPropertyId(),
             )
         );
 
@@ -442,8 +441,7 @@ class AccountingController extends Controller
         $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
             array(
                 'property'              => $storage->getImportPropertyId(),
-                'holding'               => $holding->getId(),
-                'externalPropertyId'    => $storage->getImportExternalPropertyId(),
+                'holding'               => $holding->getId()
             )
         );
         try {
