@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  *          @ORM\UniqueConstraint(
  *              name="unique_index_constraint",
  *              columns={
- *                  "property_id", "holding_id", "landlord_property_id"
+ *                  "property_id", "holding_id"
  *              }
  *          )
  *      }

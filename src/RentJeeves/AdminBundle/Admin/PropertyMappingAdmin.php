@@ -93,7 +93,6 @@ class PropertyMappingAdmin extends Admin
                 $existentPropertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')
                     ->findOneBy(
                         array(
-                            'externalPropertyId' => $propertyMapping->getExternalPropertyId(),
                             'property'     => $propertyMapping->getProperty()->getId(),
                             'holding'    => $propertyMapping->getHolding()->getId(),
                         )

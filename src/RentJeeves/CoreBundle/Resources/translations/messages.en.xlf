@@ -2660,6 +2660,10 @@
                 <source>yardi.import.error.getResidents</source>
                 <target>Can not get resident from yardi api.</target>
             </trans-unit>
+            <trans-unit id="yardi.import.error.external_property_id">
+                <source>yardi.import.error.external_property_id</source>
+                <target>We have different external property ID for this property.</target>
+            </trans-unit>
             <trans-unit id="yardi.import.message.download.resident">
                 <source>yardi.import.message.download.resident</source>
                 <target>Fetching list of residents from accounting system, please stand by.</target>

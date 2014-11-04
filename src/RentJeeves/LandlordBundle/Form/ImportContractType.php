@@ -306,8 +306,8 @@ class ImportContractType extends AbstractType
         }
 
         $errorMessage = $this->translator->trans('error.operation.exist');
-        $amount = $operationField->get('amount')->addError(new FormError($errorMessage));
-        $paidFor = $operationField->get('paidFor')->addError(new FormError($errorMessage));
+        $operationField->get('amount')->addError(new FormError($errorMessage));
+        $operationField->get('paidFor')->addError(new FormError($errorMessage));
     }
 
     public function validateUnit(FormEvent $event)
