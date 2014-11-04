@@ -232,12 +232,34 @@ class PayController extends Controller
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
-        $recurring = ('on' != $paymentType->get('ends')->getData());
+
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * @var Contract $contract
+         */
+        if(!$contract = $em->getRepository('RjDataBundle:Contract')->find($paymentType->get('contractId')->getData())) {
+            throw $this->createNotFoundException('Contract does not exist');
+        }
+	
+        /**
+         * @var PaymentAccount $paymentAccount
+         */
+        if (!$paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentType->get('paymentAccountId')->getData())) {
+            throw $this->createNotFoundException('Payment account does not exist');
+        }
+
+        $recurring = false;        
+        $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
+        if (!$payBalanceOnly && 'on' != $paymentType->get('ends')->getData()) {
+            $recurring = true;
+        }
+        
         $this->savePayment(
             $request,
             $paymentType,
-            $paymentType->get('contractId')->getData(),
-            $paymentType->get('paymentAccountId')->getData(),
+            $contract,
+            $paymentAccount,
             $recurring,
             true); # verify user
 

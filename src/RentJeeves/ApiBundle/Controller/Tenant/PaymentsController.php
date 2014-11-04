@@ -158,7 +158,7 @@ class PaymentsController extends Controller
             $isRecurring = $form->get('type') ==  PaymentTypeEnum::RECURRING;
             $verifyByPidKiq = false; # TODO: add Pid/Kiq support to API. See https://credit.atlassian.net/browse/RT-853
             try {
-                $this->savePayment($request, $form, $contract->getId(), $account->getId(), $isRecurring, $verifyByPidKiq);
+                $this->savePayment($request, $form, $contract, $account, $isRecurring, $verifyByPidKiq);
 
                 return $this->get('response_resource.payment')->setEntity($paymentEntity);
             } catch (RuntimeException $e) {

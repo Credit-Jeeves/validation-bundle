@@ -88,7 +88,7 @@ trait PaymentProcess
         return $paymentAccountEntity;
     }
 
-    protected function savePayment(Request $request, Form $form, $contractId, $paymentAccountId, $recurring, $pidkiq_enabled)
+    protected function savePayment(Request $request, Form $form, $contract, $paymentAccount, $recurring, $pidkiq_enabled)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -98,25 +98,26 @@ trait PaymentProcess
         /**
          * @var Contract $contract
          */
-        if ($contract = $em->getRepository('RjDataBundle:Contract')->find($contractId)) {
+        if ($contract) {
             $paymentEntity->setContract($contract);
         } else {
-            throw $this->createNotFoundException('Contract does not exist');
+            throw $this->createNotFoundException('Contract cannot be null');
+        }
+
+        /**
+         * @var PaymentAccount $paymentAccount
+         */
+        if ($paymentAccount) {
+            $paymentEntity->setPaymentAccount($paymentAccount);
+        } else {
+            throw $this->createNotFoundException('PaymentAccount cannot be null');
         }
 
         if ($pidkiq_enabled && !$this->isVerifiedUser($request, $contract)) {
             throw $this->createNotFoundException('User verification failed');
         }
 
-        /**
-         * @var PaymentAccount $paymentAccount
-         */
-        if ($paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId)) {
-            $paymentEntity->setPaymentAccount($paymentAccount);
-        }
-
-        $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
-        if (!$payBalanceOnly && $recurring) {
+        if ($recurring) {
             $paymentEntity->setEndMonth(null);
             $paymentEntity->setEndYear(null);
         }
