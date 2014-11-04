@@ -110,7 +110,7 @@
 
             <trans-unit id="checkout.error.other.min">
                 <source>checkout.error.other.min</source>
-                <target>Other amount to pay should be 1 or more.</target>
+                <target>Other amount to pay should be 0 or more.</target>
             </trans-unit>
             <trans-unit id="checkout.error.other.valid">
                 <source>checkout.error.other.valid</source>

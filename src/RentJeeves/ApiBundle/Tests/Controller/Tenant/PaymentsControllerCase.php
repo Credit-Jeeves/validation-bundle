@@ -4,6 +4,7 @@ namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
 use JMS\Serializer\Serializer;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
+use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 
 class PaymentControllerCase extends BaseApiTestCase
 {
@@ -52,7 +53,7 @@ class PaymentControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'contract_url' => 'contract_url/656765400',
+                'contract_url' => 'contract_url/1758512013',
                 'payment_account_url' => 'payment_account_url/656765400',
                 'type' =>  'one_time',
                 'rent' =>  1200.00,
@@ -63,7 +64,7 @@ class PaymentControllerCase extends BaseApiTestCase
                 'paid_for' => '2014-08'
             ],
             [
-                'contract_url' => 'contract_url/656765400',
+                'contract_url' => 'contract_url/1758512013',
                 'payment_account_url' => 'payment_account_url/656765400',
                 'type' =>  'recurring',
                 'rent' =>  "600.00",
@@ -119,10 +120,16 @@ class PaymentControllerCase extends BaseApiTestCase
 
         $answer = $this->parseContent($client->getResponse()->getContent(), $format);
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-        $this->assertNotNull(
-            $repo->findOneBy([
-                'id' => $this->getIdEncoder()->decode($answer['id'])
-            ])
-        );
+
+        /** @var PaymentEntity $payment */
+        $payment = $repo->findOneBy([
+            'id' => $this->getIdEncoder()->decode($answer['id'])
+        ]);
+        $this->assertNotNull($payment);
+
+        /* paidFor day shall match contract dueDate */
+        $dueDay = $payment->getContract()->getDueDate();
+        $paidForDay = $payment->getPaidFor()->format('d');
+        $this->assertEquals($dueDay, $paidForDay);
     }
 }

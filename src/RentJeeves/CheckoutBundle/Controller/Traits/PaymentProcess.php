@@ -127,11 +127,6 @@ trait PaymentProcess
         $em->flush();
     }
 
-    private function debug($var)
-    {
-        fwrite(STDERR, print_r("DEBUG:" . var_dump($var), TRUE));
-    }
-
     protected function isVerifiedUser(Request $request, Contract $contract)
     {
         $setting = $contract->getGroup()->getGroupSettings();

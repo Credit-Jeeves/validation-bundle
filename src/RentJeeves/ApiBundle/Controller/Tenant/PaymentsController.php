@@ -91,7 +91,7 @@ class PaymentsController extends Controller
      * @RequestParam(
      *     name="type",
      *     requirements="recurring|one_time",
-     *     description="Payment account type should be only 'recurring' or 'one_time'."
+     *     description="Payment type should be only 'recurring' or 'one_time'."
      * )
      * @RequestParam(
      *     name="rent",
@@ -155,10 +155,10 @@ class PaymentsController extends Controller
             $contract = $form->get('contract_url')->getData();
             /** @var PaymentAccount $account */
             $account = $form->get('payment_account_url')->getData();
-            $is_recurring = $form->get('type') ==  PaymentTypeEnum::RECURRING;
+            $isRecurring = $form->get('type') ==  PaymentTypeEnum::RECURRING;
             $verifyByPidKiq = false; # TODO: add Pid/Kiq support to API. See https://credit.atlassian.net/browse/RT-853
             try {
-                $this->savePayment($request, $form, $contract->getId(), $account->getId(), $is_recurring, $verifyByPidKiq);
+                $this->savePayment($request, $form, $contract->getId(), $account->getId(), $isRecurring, $verifyByPidKiq);
 
                 return $this->get('response_resource.payment')->setEntity($paymentEntity);
             } catch (RuntimeException $e) {
