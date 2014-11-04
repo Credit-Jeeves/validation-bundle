@@ -1,4 +1,4 @@
-model:  RentJeeves\DataBundle\Entity\PartnerApplication
+model:  RentJeeves\DataBundle\Entity\Partner
 fixtures:
   partner_1:
     name: creditcom

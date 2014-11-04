@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class PartnerApplication
+abstract class Partner
 {
     /**
      * @ORM\Id
@@ -37,7 +37,7 @@ abstract class PartnerApplication
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerUser",
+     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerUserMapping",
      *     mappedBy="partner",
      *     cascade={"all"}
      * )
@@ -49,7 +49,7 @@ abstract class PartnerApplication
     /**
      * @ORM\OneToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Client",
-     *     inversedBy="partnerApplication"
+     *     inversedBy="partner"
      * )
      * @ORM\JoinColumn(
      *     name="client_id",
@@ -105,6 +105,14 @@ abstract class PartnerApplication
     public function getClient()
     {
         return $this->client;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPartnerUsers()
+    {
+        return $this->partnerUsers;
     }
 
     /**

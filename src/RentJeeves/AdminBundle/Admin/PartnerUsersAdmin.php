@@ -13,7 +13,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PartnerUsersAdmin extends Admin
 {
-
     const TYPE = UserType::PARTNER;
 
     /**
@@ -38,7 +37,7 @@ class PartnerUsersAdmin extends Admin
             ->addIdentifier('id', null, array('route' => array('name' => 'show')))
             ->add('email')
             ->add('full_name')
-            ->add('partnerApplication', null, array('label' => 'Partner'))
+            ->add('partner', null, array('label' => 'Partner'))
             ->add(
                 '_action',
                 'actions',
@@ -58,14 +57,14 @@ class PartnerUsersAdmin extends Admin
     {
         $formMapper
             ->add(
-                'partnerApplication',
+                'partner',
                 'entity',
                 array(
                     'label' => 'Partner',
-                    'class' => 'RjDataBundle:PartnerApplication',
+                    'class' => 'RjDataBundle:Partner',
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('ps')
-                            ->from('RjDataBundle:PartnerApplication', 'p');
+                            ->from('RjDataBundle:Partner', 'p');
                     }
                 )
             )
@@ -106,7 +105,7 @@ class PartnerUsersAdmin extends Admin
     {
         $datagridMapper
             ->add('email')
-            ->add('partnerApplication.partner', null, array('label' => 'Partner'));
+            ->add('partner.partner', null, array('label' => 'Partner'));
     }
 
     public function getClassnameLabel()

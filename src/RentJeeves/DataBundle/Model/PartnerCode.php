@@ -5,7 +5,6 @@ namespace RentJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
-use RentJeeves\DataBundle\Entity\PartnerApplication;
 
 /**
  * @ORM\MappedSuperclass
@@ -21,7 +20,7 @@ abstract class PartnerCode
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerApplication"
+     *     targetEntity="RentJeeves\DataBundle\Entity\Partner"
      * )
      */
     protected $partner;
@@ -84,15 +83,15 @@ abstract class PartnerCode
     }
 
     /**
-     * @param PartnerApplication $partner
+     * @param Partner $partner
      */
-    public function setPartner(PartnerApplication $partner)
+    public function setPartner(Partner $partner)
     {
         $this->partner = $partner;
     }
 
     /**
-     * @return PartnerApplication
+     * @return Partner
      */
     public function getPartner()
     {

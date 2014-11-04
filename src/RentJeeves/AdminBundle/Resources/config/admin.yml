@@ -196,18 +196,18 @@ services:
             - { name: sonata.admin, manager_type: orm, group: admin, label: "Partners" }
         arguments:
             - ~
-            - RentJeeves\DataBundle\Entity\PartnerApplication
+            - RentJeeves\DataBundle\Entity\Partner
             - 'SonataAdminBundle:CRUD'
         calls:
-#            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_property_mapping.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
     sonata.admin.user_partner:
         class: RentJeeves\AdminBundle\Admin\PartnerUsersAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Users Partner" }
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Partner users" }
         arguments:
             - ~
-            - RentJeeves\DataBundle\Entity\Partner
+            - RentJeeves\DataBundle\Entity\PartnerUser
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class PartnerUser
+abstract class PartnerUserMapping
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -19,7 +19,7 @@ abstract class PartnerUser
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerApplication",
+     *     targetEntity="RentJeeves\DataBundle\Entity\Partner",
      *     inversedBy="partnerUsers"
      * )
      */
@@ -27,8 +27,8 @@ abstract class PartnerUser
 
     /**
      * @ORM\OneToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Partner",
-     *     inversedBy="partnerApplication"
+     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerUser",
+     *     inversedBy="partner"
      * )
      */
     protected $user;
