@@ -264,8 +264,8 @@ abstract class HandlerAbstract implements HandlerInterface
             $import->setErrors($errors);
         }
 
-        if (isset($this->usersEmail[$import->getTenant()->getEmail()]) &&
-            $this->usersEmail[$import->getTenant()->getEmail()] > 1
+        if (isset($this->userEmails[$import->getTenant()->getEmail()]) &&
+            $this->userEmails[$import->getTenant()->getEmail()] > 1
         ) {
             $errors[$import->getNumber()][uniqid()]['tenant_email'] =
                 $this->translator->trans(

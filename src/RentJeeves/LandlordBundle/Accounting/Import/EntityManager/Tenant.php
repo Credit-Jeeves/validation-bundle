@@ -9,7 +9,7 @@ use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mappi
 trait Tenant
 {
 
-    protected $usersEmail = array();
+    protected $userEmails = array();
 
     /**
      * @param array $row
@@ -54,11 +54,11 @@ trait Tenant
             return;
         }
 
-        if (isset($this->usersEmail[$email])) {
-            $this->usersEmail[$email]++;
+        if (isset($this->userEmails[$email])) {
+            $this->userEmails[$email]++;
             return;
         }
 
-        $this->usersEmail[$email] = 1;
+        $this->userEmails[$email] = 1;
     }
 }
