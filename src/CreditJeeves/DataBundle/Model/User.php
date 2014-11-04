@@ -11,6 +11,7 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Entity\PartnerCode;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
@@ -632,7 +633,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToOne(
-     *      targetEntity="\CreditJeeves\DataBundle\Entity\PartnerCode",
+     *      targetEntity="RentJeeves\DataBundle\Entity\PartnerCode",
      *      mappedBy="user",
      *      cascade={"all"},
      *      orphanRemoval=true
@@ -730,12 +731,15 @@ abstract class User extends BaseUser
                     'ROLE_DEALER',
                     'ROLE_ADMIN',
                     'ROLE_TENANT',
-                    'ROLE_LANDLORD'
+                    'ROLE_LANDLORD',
+                    'ROLE_PARTNER'
                 );
             case UserType::TETNANT:
                 return array('ROLE_TENANT');
             case UserType::LANDLORD:
                 return array('ROLE_LANDLORD');
+            case UserType::PARTNER:
+                return array('ROLE_PARTNER');
         }
         throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }

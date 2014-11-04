@@ -1,9 +1,9 @@
 <?php
 
-namespace CreditJeeves\DataBundle\Entity;
+namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\DataBundle\Model\Partner as BasePartner;
+use RentJeeves\DataBundle\Model\Partner as BasePartner;
 
 /**
  * @ORM\Entity

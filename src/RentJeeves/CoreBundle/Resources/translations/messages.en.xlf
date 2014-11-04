@@ -1176,6 +1176,14 @@
                 <source>admin.list.landlords</source>
                 <target>Landlords</target>
             </trans-unit>
+            <trans-unit id="admin.list.partner_users">
+                <source>admin.list.partner_users</source>
+                <target>Users</target>
+            </trans-unit>
+            <trans-unit id="admin.list.partners">
+                <source>admin.list.partners</source>
+                <target>Partners</target>
+            </trans-unit>
             <trans-unit id="settings.deposit">
                 <source>settings.deposit</source>
                 <target>Payment Accounts</target>

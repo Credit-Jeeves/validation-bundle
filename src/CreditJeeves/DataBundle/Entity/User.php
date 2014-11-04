@@ -17,6 +17,14 @@ use RentJeeves\CoreBundle\DateTime;
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="UserType")
+ * @ORM\DiscriminatorMap({
+ *      "tenant" = "RentJeeves\DataBundle\Entity\Tenant",
+ *      "landlord" = "RentJeeves\DataBundle\Entity\Landlord",
+ *      "partner" = "RentJeeves\DataBundle\Entity\PartnerUser",
+ *      "admin" = "Admin",
+ *      "applicant" = "Applicant",
+ *      "dealer" = "Dealer"
+ * })
  * @ORM\Table(name="cj_user")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -90,6 +98,8 @@ abstract class User extends BaseUser
                 return array('ROLE_TENANT');
             case UserType::LANDLORD:
                 return array('ROLE_LANDLORD');
+            case UserType::PARTNER:
+                return array('ROLE_PARTNER');
         }
         throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }

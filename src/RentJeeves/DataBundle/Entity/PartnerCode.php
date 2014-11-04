@@ -1,8 +1,8 @@
 <?php
 
-namespace CreditJeeves\DataBundle\Entity;
+namespace RentJeeves\DataBundle\Entity;
 
-use CreditJeeves\DataBundle\Model\PartnerCode as BasePartnerCode;
+use RentJeeves\DataBundle\Model\PartnerCode as BasePartnerCode;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
