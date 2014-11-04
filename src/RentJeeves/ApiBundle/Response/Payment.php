@@ -9,7 +9,7 @@ use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMet
 /**
  * @DI\Service("response_resource.payment")
  * @UrlResourceMeta(
- *      actionName = "get_payments"
+ *      actionName = "get_payment"
  * )
  */
 class Payment extends ResponseResource
