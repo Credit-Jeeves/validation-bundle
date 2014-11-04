@@ -17,6 +17,14 @@ use RentJeeves\CoreBundle\DateTime;
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="UserType")
+ * @ORM\DiscriminatorMap({
+ *      "tenant" = "RentJeeves\DataBundle\Entity\Tenant",
+ *      "landlord" = "RentJeeves\DataBundle\Entity\Landlord",
+ *      "partner" = "RentJeeves\DataBundle\Entity\PartnerUser",
+ *      "admin" = "Admin",
+ *      "applicant" = "Applicant",
+ *      "dealer" = "Dealer"
+ * })
  * @ORM\Table(name="cj_user")
  * @ORM\HasLifecycleCallbacks()
  */
