@@ -238,14 +238,15 @@ class PayController extends Controller
         /**
          * @var Contract $contract
          */
-        if(!$contract = $em->getRepository('RjDataBundle:Contract')->find($paymentType->get('contractId')->getData())) {
+        $contractId = $paymentType->get('contractId')->getData();
+        if (!$contract = $em->getRepository('RjDataBundle:Contract')->find($contractId)) {
             throw $this->createNotFoundException('Contract does not exist');
         }
-	
         /**
          * @var PaymentAccount $paymentAccount
          */
-        if (!$paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentType->get('paymentAccountId')->getData())) {
+        $accountId = $paymentType->get('paymentAccountId')->getData();
+        if (!$paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($accountId)) {
             throw $this->createNotFoundException('Payment account does not exist');
         }
 
@@ -261,7 +262,8 @@ class PayController extends Controller
             $contract,
             $paymentAccount,
             $recurring,
-            true); # verify user
+            true            # verify user
+        );
 
         return new JsonResponse(
             array(

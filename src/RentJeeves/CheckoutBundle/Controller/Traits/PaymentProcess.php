@@ -88,7 +88,9 @@ trait PaymentProcess
         return $paymentAccountEntity;
     }
 
-    protected function savePayment(Request $request, Form $form, $contract, $paymentAccount, $recurring, $pidkiq_enabled)
+    protected function savePayment(
+        Request $request, Form $form, $contract, $paymentAccount, $recurring, $pidkiq_enabled
+    )
     {
         $em = $this->getDoctrine()->getManager();
 
