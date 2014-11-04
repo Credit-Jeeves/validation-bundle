@@ -25,7 +25,7 @@ class ResidentLeaseFile
     protected $leaseBegin;
 
     /**
-     * @Serializer\SerializedName("LeaseBegin")
+     * @Serializer\SerializedName("LeaseEnd")
      * @Serializer\Type("string")
      */
     protected $leaseEnd;
