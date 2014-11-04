@@ -61,12 +61,12 @@ class HandlerYardi extends HandlerAbstract
         $this->translator       = $translator;
     }
 
-    public function saveInBackgroundLastMatched()
+    public function updateMatchedContracts()
     {
         /**
          * @var $importModel Import
          */
-        $importModel = $this->getLastImportModelFromFile();
+        $importModel = $this->getLastModelFromFile();
         $errors = $importModel->getErrors();
         $errors = $errors[$importModel->getNumber()];
         $contract = $importModel->getContract();
@@ -79,7 +79,7 @@ class HandlerYardi extends HandlerAbstract
         if (empty($errors) &&
             !$importModel->getHasContractWaiting() &&
             !is_null($contract->getId()) &&
-            $this->isBalanceChangeOnlyForContract($contract) &&
+            $this->isChangeImportantField($contract, $repository = 'Contract')&&
             !$this->isContractEndedAndActiveInOurDB($contract)
         ) {
             $this->em->flush($contract);
@@ -92,7 +92,7 @@ class HandlerYardi extends HandlerAbstract
         if (empty($errors) &&
             $importModel->getHasContractWaiting() &&
             !is_null($contractWaiting->getId()) &&
-            $this->isBalanceChangeOnlyForContractWaiting($contractWaiting)
+            $this->isChangeImportantField($contractWaiting, $repository = 'ContractWaiting')
         ) {
             $this->em->flush($contractWaiting);
             $this->removeLastLineInFile();
@@ -101,22 +101,23 @@ class HandlerYardi extends HandlerAbstract
     }
 
     /**
-     * @param ContractWaiting $contractWaiting
+     * @param $contract
+     * @param $repository
      * @return bool
      */
-    protected function isBalanceChangeOnlyForContractWaiting(ContractWaiting $contractWaiting)
+    protected function isChangeImportantField($contract, $repository)
     {
-        $contractInDb = $this->em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
+        $contractInDb = $this->em->getRepository('RjDataBundle:'.$repository)->find($contract->getId());
 
-        if ($contractInDb->getStartAt() !== $contractWaiting->getStartAt()) {
+        if ($contractInDb->getStartAt() !== $contract->getStartAt()) {
             return false;
         }
 
-        if ($contractInDb->getFinishAt() !== $contractWaiting->getFinishAt()) {
+        if ($contractInDb->getFinishAt() !== $contract->getFinishAt()) {
             return false;
         }
 
-        if ($contractInDb->getRent() !== $contractWaiting->getRent()) {
+        if ($contractInDb->getRent() !== $contract->getRent()) {
             return false;
         }
 
@@ -127,7 +128,7 @@ class HandlerYardi extends HandlerAbstract
      * @return mixed
      * @throws ImportHandlerException
      */
-    protected function getLastImportModelFromFile()
+    protected function getLastModelFromFile()
     {
         $data       = $this->mapping->getData($this->mapping->getTotal()-2, $rowCount = 1);
         $collection = new ArrayCollection(array());
@@ -149,25 +150,6 @@ class HandlerYardi extends HandlerAbstract
      * @param ContractEntity $contract
      * @return bool
      */
-    protected function isBalanceChangeOnlyForContract(ContractEntity $contract)
-    {
-        $contractInDb = $this->em->getRepository('RjDataBundle:Contract')->find($contract->getId());
-
-        if ($contractInDb->getStartAt() !== $contract->getStartAt()) {
-            return false;
-        }
-
-        if ($contractInDb->getFinishAt() !== $contract->getFinishAt()) {
-            return false;
-        }
-
-        if ($contractInDb->getRent() !== $contract->getRent()) {
-            return false;
-        }
-
-        return true;
-    }
-
     protected function isContractEndedAndActiveInOurDB(ContractEntity $contract)
     {
         $contractInDb = $this->em->getRepository('RjDataBundle:Contract')->find($contract->getId());

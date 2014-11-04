@@ -466,7 +466,7 @@ class AccountingController extends Controller
              * @var $handler HandlerYardi
              */
             $handler = $importFactory->getHandler();
-            $handler->saveInBackgroundLastMatched();
+            $handler->updateMatchedContracts();
         }
 
         $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
