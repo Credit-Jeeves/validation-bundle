@@ -10,6 +10,66 @@ class PaymentControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:Payment';
 
+    public static function getPaymentsDataProvider()
+    {
+        return [
+            ['json', 200, 'tenant11@example.com'],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider getPaymentsDataProvider
+     */
+    public function getPayments($format, $statusCode, $email)
+    {
+        $this->setTenantEmail($email);
+
+        $client = $this->getClient();
+
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        $tenant = $this->getTenant();
+        $result = $repo->findByUser($tenant);
+
+        $client->request(
+            'GET',
+            self::URL_PREFIX . "/payments.{$format}",
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => static::$formats[$format][0],
+                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
+            ]
+        );
+
+        $this->assertResponse($client->getResponse(), $statusCode, $format);
+
+        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+
+        $this->assertEquals(count($result), count($answer));
+
+        // check first and last element
+        $this->assertEquals(
+            $result[0]->getId(),
+            $this->getIdEncoder()->decode($answer[0]['id'])
+        );
+
+        $this->assertEquals(
+            $result[0]->getId(),
+            $this->getUrlEncoder()->decode($answer[0]['url'])
+        );
+
+        $this->assertEquals(
+            $result[count($result)-1]->getId(),
+            $this->getUrlEncoder()->decode($answer[count($answer) -1]['url'])
+        );
+
+        $this->assertEquals(
+            $this->getIdEncoder()->encode($result[count($result)-1]->getId()),
+            $answer[count($answer) -1]['id']
+        );
+    }
+
     /**
      * @test
      */

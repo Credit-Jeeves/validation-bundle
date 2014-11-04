@@ -43,6 +43,16 @@ class SerializationListener implements EventSubscriberInterface
                 'class' => 'Proxies\__CG__\RentJeeves\DataBundle\Entity\Unit',
                 'method' => 'onPreSerialize'
             ],
+            [
+                'event' => 'serializer.pre_serialize',
+                'class' => 'RentJeeves\DataBundle\Entity\Payment',
+                'method' => 'onPreSerialize'
+            ],
+            [
+                'event' => 'serializer.pre_serialize',
+                'class' => 'Proxies\__CG__\RentJeeves\DataBundle\Entity\Payment',
+                'method' => 'onPreSerialize'
+            ],
         ];
     }
 

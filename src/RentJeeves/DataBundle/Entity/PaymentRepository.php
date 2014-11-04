@@ -177,4 +177,20 @@ class PaymentRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
 
     }
+
+    /**
+     * @param User $user
+     *
+     * @return Array
+     */
+    public function findByUser($user)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->innerJoin('p.paymentAccount', 'pa');
+        $query->andWhere('pa.user = :user');
+        $query->setParameter('user', $user);
+        $query->orderBy('p.paidFor', 'DESC');
+
+        return $query->getQuery()->execute();
+    }
 }

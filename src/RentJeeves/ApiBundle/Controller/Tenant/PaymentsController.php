@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
 use RentJeeves\ApiBundle\Response\Payment as ResponseEntity;
+use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
@@ -24,6 +25,39 @@ use \RuntimeException;
 class PaymentsController extends Controller
 {
     use PaymentProcess;
+
+    /**
+     * @ApiDoc(
+     *     resource=true,
+     *     section="Payment",
+     *     description="Get all payments for tenant.",
+     *     statusCodes={
+     *         200="Returned when successful",
+     *         204="No content with such parameters",
+     *         500="Internal Server Error"
+     *     }
+     * )
+     * @Rest\Get("/payments")
+     * @Rest\View(serializerGroups={"Base", "PaymentDetails"})
+     *
+     * @return ResponseCollection
+     */
+    public function getPaymentsAction()
+    {
+        /** @var Tenant $user */
+        $user = $this->getUser();
+
+        $payments = $this
+            ->getDoctrine()
+            ->getRepository('RjDataBundle:Payment')
+            ->findByUser($user);
+
+        $response = new ResponseCollection($payments);
+
+        if ($response->count() > 0) {
+            return $response;
+        }
+    }
 
     /**
      * @param int $id
@@ -49,7 +83,7 @@ class PaymentsController extends Controller
      * @throws NotFoundHttpException
      * @return ResponseEntity
      */
-    public function getPaymentsAction($id)
+    public function getPaymentAction($id)
     {
         $payment = $this
             ->getDoctrine()
