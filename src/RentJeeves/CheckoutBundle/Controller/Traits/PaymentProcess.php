@@ -89,9 +89,13 @@ trait PaymentProcess
     }
 
     protected function savePayment(
-        Request $request, Form $form, $contract, $paymentAccount, $recurring, $pidkiq_enabled
-    )
-    {
+        Request $request,
+        Form $form,
+        $contract,
+        $paymentAccount,
+        $recurring,
+        $pidkiqEnabled
+    ) {
         $em = $this->getDoctrine()->getManager();
 
         /** @var Payment $paymentEntity */
@@ -115,7 +119,7 @@ trait PaymentProcess
             throw $this->createNotFoundException('PaymentAccount cannot be null');
         }
 
-        if ($pidkiq_enabled && !$this->isVerifiedUser($request, $contract)) {
+        if ($pidkiqEnabled && !$this->isVerifiedUser($request, $contract)) {
             throw $this->createNotFoundException('User verification failed');
         }
 
