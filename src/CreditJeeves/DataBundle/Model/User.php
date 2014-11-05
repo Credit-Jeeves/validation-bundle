@@ -155,6 +155,7 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_admin",
      *         "invite",
+     *         "invitationApi",
      *         "tenant_invite"
      *     }
      * )
@@ -162,6 +163,7 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_admin",
      *         "invite",
+     *         "invitationApi",
      *         "tenant_invite",
      *         "account_landlord",
      *         "api_identity_check",

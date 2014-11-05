@@ -93,8 +93,7 @@ class UnitRepository extends EntityRepository
         return $this
             ->createQueryBuilder('u')
             ->innerJoin('u.property', 'p')
-            ->innerJoin('u.group', 'g')
-            ->innerJoin('u.holding', 'h')
+            ->innerJoin('p.property_groups', 'g')
             ->where('u.id = :unit')
             ->setParameter('unit', $id)
             ->getQuery()
@@ -112,8 +111,7 @@ class UnitRepository extends EntityRepository
         return $this
             ->createQueryBuilder('u')
             ->innerJoin('u.property', 'p')
-            ->innerJoin('u.group', 'g')
-            ->innerJoin('u.holding', 'h')
+            ->innerJoin('p.property_groups', 'g')
             ->where('p.number = :number')
             ->andWhere('p.street = :street')
             ->andWhere('p.area = :state')

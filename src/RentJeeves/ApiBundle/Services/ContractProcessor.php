@@ -1,0 +1,186 @@
+<?php
+
+namespace RentJeeves\ApiBundle\Services;
+
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Enum\GroupType;
+use Doctrine\ORM\EntityManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Exception;
+
+/**
+ * @DI\Service("api.contract.processor")
+ */
+class ContractProcessor
+{
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    protected $locale;
+
+    /**
+     * @var Mailer
+     */
+    protected $mailer;
+
+    /**
+     * @var ContractProcess
+     */
+    protected $contractProcess;
+
+    /**
+     * @var PropertyProcess
+     */
+    protected $propertyProcess;
+
+    /**
+     * @param EntityManager $em
+     * @param Mailer $mailer
+     * @param $locale
+     * @param ContractProcess $contractProcess
+     * @param PropertyProcess $propertyProcess
+     *
+     * @DI\InjectParams({
+     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
+     *     "mailer" = @DI\Inject("project.mailer"),
+     *     "locale" = @DI\Inject("%kernel.default_locale%"),
+     *     "contractProcess" = @DI\Inject("contract.process"),
+     *     "propertyProcess" = @DI\Inject("property.process")
+     * })
+     */
+    public function __construct(
+        EntityManager $em,
+        Mailer $mailer,
+        $locale,
+        ContractProcess $contractProcess,
+        PropertyProcess $propertyProcess
+    ) {
+        $this->em = $em;
+        $this->mailer = $mailer;
+        $this->locale = $locale;
+        $this->contractProcess = $contractProcess;
+        $this->propertyProcess = $propertyProcess;
+    }
+
+    public function process(Form $contractForm, Tenant $tenant)
+    {
+        if ($contractForm->has('unit_url') && $unit = $contractForm->get('unit_url')->getData()) {
+            return $this->processWithExistUnit($unit, $tenant, $contractForm->getData());
+
+        } elseif ($contractForm->has('new_unit') && $newUnitForm = $contractForm->get('new_unit')) {
+            return $this->processWithNewUnit($newUnitForm, $tenant, $contractForm->getData());
+        }
+
+        throw new Exception('Contract can\'t be processed.');
+    }
+
+    public function processWithExistUnit(Unit $unit, Tenant $tenant, Contract $contract)
+    {
+        $contract = $this
+            ->contractProcess
+            ->setContract($contract)
+            ->createContractFromTenantSide($tenant, $unit->getProperty(), $unit->getName());
+
+        $group = $unit->getGroup() ?: $unit->getProperty()->getPropertyGroups()->first();
+
+        foreach ($group->getGroupAgents() as $landlord) {
+            if (!$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
+                throw new Exception('Email can\'t be send. Please contact with administrator.');
+            }
+        }
+
+        return $contract;
+    }
+
+    public function processWithNewUnit(Form $newUnitForm, Tenant $tenant, Contract $contract)
+    {
+        /** @var Property $property */
+        $property = $newUnitForm->get('address')->getData();
+
+        $unitName = $newUnitForm->get('address')->get('unit_name')->getData();
+
+        $property = $this->propertyProcess->checkPropertyDuplicate($property);
+
+        if (!$property) {
+            throw new BadRequestHttpException('api.errors.contracts.property.invalid');
+        }
+
+        if (!$property->getId() && !$unitName) {
+            $property->setIsSingle(true);
+        } elseif ($property->getId() && !$property->getIsSingle() && !$unitName) {
+            throw new BadRequestHttpException('api.errors.contracts.property.not_standalone');
+        }
+
+        $this->em->persist($property);
+        $this->em->flush();
+
+        /** @var Landlord $landlord */
+        $landlord = $newUnitForm->get('landlord')->getData();
+
+        /** @var Landlord $landlordInDb */
+        $landlordInDb = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy([
+            'email' => $landlord->getEmail(),
+        ]);
+
+        if ($landlordInDb) {
+            $landlord = $landlordInDb;
+            $group = $landlord->getCurrentGroup();
+        } else {
+            $landlord->setPassword(md5(md5(1)));
+            $landlord->setCulture($this->locale);
+
+            $holding = new Holding();
+            $holding->setName($landlord->getUsername());
+            $landlord->setHolding($holding);
+
+            $group = new Group();
+            $group->setName($landlord->getUsername());
+            $group->setType(GroupType::RENT);
+            $group->setHolding($holding);
+
+            $holding->addGroup($group);
+            $landlord->setAgentGroups($group);
+
+            $this->em->persist($holding);
+            $this->em->persist($landlord);
+        }
+
+        $group->addGroupProperty($property);
+        $property->addPropertyGroup($group);
+        $this->em->persist($property);
+        $this->em->persist($group);
+
+        $this->em->flush();
+
+        $contracts = $this
+            ->contractProcess
+            ->setContract($contract)
+            ->createContractFromTenantSide($tenant, $property, $unitName);
+
+        if (!is_array($contracts)) {
+            $contracts = [$contracts];
+        }
+
+        foreach ($contracts as $contract) {
+            if (!$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
+                throw new Exception('Email can\'t be send. Please contact with administrator.');
+            }
+        }
+
+        //TODO return last need understand how it will be fix
+        return $contract;
+    }
+}

@@ -23,6 +23,8 @@ class ContractProcess
 
     protected $em;
 
+    protected $contract;
+
     /**
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.default_entity_manager"),
@@ -31,6 +33,13 @@ class ContractProcess
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+    }
+
+    public function setContract(Contract $contract)
+    {
+        $this->contract = $contract;
+
+        return $this;
     }
 
     /**
@@ -48,7 +57,7 @@ class ContractProcess
         ContractWaiting $contractWaiting = null
     ) {
 
-        $contract = new Contract();
+        $contract = $this->contract ?: new Contract();
         $contract->setTenant($tenant);
         $contract->setProperty($property);
         $contract->setStatus(ContractStatus::PENDING);
@@ -83,7 +92,7 @@ class ContractProcess
     }
 
     /**
-     * @param Contract $contract
+     * @param Tenant $tenant
      * @param ContractWaiting $contractWaiting
      *
      * @return Contract
@@ -135,13 +144,18 @@ class ContractProcess
      * @param Tenant $tenant
      * @param Property $property
      * @param $unitName
+     *
+     * @todo Need fix this
+     *
+     * @return array<Contract>
      */
     public function createContractForEachGroup(Tenant $tenant, Property $property, $unitName)
     {
+        $result = [];
         // If there is no such unit we'll send contract for all potential landlords
         $groups = $property->getPropertyGroups();
         foreach ($groups as $group) {
-            $contract = new Contract();
+            $contract = $this->contract ? clone $this->contract : new Contract();
             $contract->setTenant($tenant);
             $contract->setHolding($group->getHolding());
             $contract->setGroup($group);
@@ -149,8 +163,11 @@ class ContractProcess
             $contract->setStatus(ContractStatus::PENDING);
             $contract->setSearch($unitName);
             $this->em->persist($contract);
+            $result[] = $contract;
         }
 
         $this->em->flush();
+
+        return $result;
     }
 }
