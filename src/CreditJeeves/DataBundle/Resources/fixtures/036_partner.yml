@@ -1,5 +1,6 @@
 model:  RentJeeves\DataBundle\Entity\Partner
 fixtures:
   partner_1:
+    client: client_3
     name: creditcom
     request_name: CREDITCOM

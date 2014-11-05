@@ -9,7 +9,6 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PartnerUsersAdmin extends Admin
 {
@@ -29,15 +28,6 @@ class PartnerUsersAdmin extends Admin
     public function getBaseRoutePattern()
     {
         return '/'.self::TYPE.'_users';
-    }
-
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-        $alias = $query->getRootAlias();
-        $query->innerJoin($alias . '.partner', 'partner');
-
-        return $query;
     }
 
     public function configureListFields(ListMapper $listMapper)
@@ -80,32 +70,20 @@ class PartnerUsersAdmin extends Admin
             ->add('email');
 
         $parameterId = $this->request->get($this->getIdParameter());
-
-        if (!empty($parameterId)) {
-             $passwordOptions['required'] = false;
-        } else {
-             $passwordOptions['required'] = true;
-             $passwordOptions['constraints'] = array(
-                 new NotBlank(
-                     array(
-                         'groups'    => 'password',
-                         'message'   => 'Password is required.'
-                     )
-                 )
-             );
+        if (empty($parameterId)) {
+            $formMapper->add(
+                'password',
+                'repeated',
+                array(
+                    'type' => 'password',
+                    'required' => true,
+                    'options' => array('translation_domain' => 'FOSUserBundle'),
+                    'first_options' => array('label' => 'form.password'),
+                    'second_options' => array('label' => 'form.password_confirmation'),
+                    'invalid_message' => 'fos_user.password.mismatch'
+                )
+            );
         }
-        $formMapper->add(
-            'password',
-            'repeated',
-            $passwordOptions + array(
-                'type' => 'password',
-                'options' => array('translation_domain' => 'FOSUserBundle'),
-                'first_options' => array('label' => 'form.password'),
-                'validation_groups' => array('password'),
-                'second_options' => array('label' => 'form.password_confirmation'),
-                'invalid_message' => 'fos_user.password.mismatch'
-            )
-        );
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -118,5 +96,16 @@ class PartnerUsersAdmin extends Admin
     public function getClassnameLabel()
     {
         return 'partner users';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prePersist($user)
+    {
+        $request = $this->getRequest();
+        $formData = $request->request->get($this->getUniqid());
+        $password = $formData['password']['first'];
+        $user->setPassword(md5($password));
     }
 }

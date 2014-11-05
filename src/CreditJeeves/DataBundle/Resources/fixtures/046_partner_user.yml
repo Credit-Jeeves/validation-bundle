@@ -1,0 +1,10 @@
+model: RentJeeves\DataBundle\Entity\PartnerUser
+fixtures:
+    partner_user_1:
+        first_name: Anna
+        last_name: Lee
+        email: anna_lee@example.com
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        culture: %locale%
+        created_at: '-1 days'
+        updated_at: '-1 days'

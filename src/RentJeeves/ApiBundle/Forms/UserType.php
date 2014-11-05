@@ -46,9 +46,11 @@ class UserType extends AbstractType
 
         $builder->add(
             'password',
-            null,
+            'password',
             [
-                'constraints' => new NotBlank(['message' => 'api.errors.user.password_required'])
+                'constraints' => [
+                    new NotBlank(['message' => 'api.errors.user.password_required', 'groups' => 'api']),
+                ]
             ]
         );
     }
