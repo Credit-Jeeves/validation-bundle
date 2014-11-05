@@ -190,11 +190,11 @@ class ResidentBalanceSynchronizer
 
         foreach ($transactions as $transaction) {
             if ($transaction->getCharge()) {
-                $balanceTransaction = $transaction->getCharge()->getDetail()->getBalanceDue();
+                $balanceDue = $transaction->getCharge()->getDetail()->getBalanceDue();
             } else {
-                $balanceTransaction = 0;
+                $balanceDue = 0;
             }
-            $balance += $balanceTransaction;
+            $balance += $balanceDue;
         }
 
         return $balance;
