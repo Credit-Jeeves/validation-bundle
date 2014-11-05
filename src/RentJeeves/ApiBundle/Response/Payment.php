@@ -5,6 +5,8 @@ namespace RentJeeves\ApiBundle\Response;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
+use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Entity\Payment as Entity;
 
 /**
  * @DI\Service("response_resource.payment")
@@ -22,27 +24,29 @@ class Payment extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
-     *
-     * TODO: This should return a URL not an ID. (RT-839)
+     * @Serializer\Type("string")
      *
      * @return string
      */
     public function getContractUrl()
     {
-        return $this->entity->getContract()->getId();
+        return $this
+            ->resourceFactory
+            ->getResponse($this->entity->getContract());
     }
 
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
-     *
-     * TODO: This should return a URL not an ID. (RT-839)
      */
     public function getPaymentAccountUrl()
     {
-        return $this->entity->getPaymentAccountId();
+        return $this
+            ->resourceFactory
+            ->getResponse($this->entity->getPaymentAccount());
     }
 
     /**
