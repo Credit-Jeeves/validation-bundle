@@ -132,7 +132,7 @@ class ReversalReceiptSender
     protected function pushReceipts(YardiSettings $settings, $transactions)
     {
         /** @var $residentClient ResidentClient */
-        $residentClient = $this->clientFactory->getClient($settings, SoapClient::RESIDENT);
+        $residentClient = $this->clientFactory->getClient($settings, SoapClient::RESIDENT_TRANSACTIONS);
 
         /** @var Order $transaction */
         foreach ($transactions as $transaction) {

@@ -250,7 +250,7 @@ class PayController extends Controller
             throw $this->createNotFoundException('Payment account does not exist');
         }
 
-        $recurring = false;        
+        $recurring = false;
         $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
         if (!$payBalanceOnly && 'on' != $paymentType->get('ends')->getData()) {
             $recurring = true;

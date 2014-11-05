@@ -9,6 +9,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -137,6 +138,10 @@ class StorageYardi extends StorageCsv
             $this->initializeParameters();
         }
 
+        $today = new DateTime();
+        $leaseEnd = DateTime::createFromFormat('Y-m-d', $residentData->getLeaseEnd());
+        $monthToMonth = ($today > $leaseEnd)? 'Y' : 'N';
+
         $data = array(
             $residentId,
             $residentData->getUnit()->getIdentification()->getUnitName(),
@@ -147,7 +152,8 @@ class StorageYardi extends StorageCsv
             $residentData->getTenantDetails()->getPersonDetails()->getName()->getLastName(),
             $residentData->getTenantDetails()->getPersonDetails()->getEmail(),
             $moveOutDate,
-            $residentData->getLedgerDetails()->getIdentification()->getBalance()
+            $residentData->getLedgerDetails()->getIdentification()->getBalance(),
+            $monthToMonth
         );
 
         $this->writeCsvToFile($data);
@@ -171,6 +177,7 @@ class StorageYardi extends StorageCsv
             8 => Mapping::KEY_EMAIL,
             9 => Mapping::KEY_MOVE_OUT,
             10 => Mapping::KEY_BALANCE,
+            11 => Mapping::KEY_MONTH_TO_MONTH,
         );
 
         $this->writeCsvToFile($mapping);
