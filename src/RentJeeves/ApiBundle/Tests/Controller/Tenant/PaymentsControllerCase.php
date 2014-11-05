@@ -194,16 +194,22 @@ class PaymentControllerCase extends BaseApiTestCase
 
     public static function editPaymentDataProvider()
     {
+        $paymentsData = self::paymentDataProvider();
+        foreach ($paymentsData as $key => $paymentData) {
+            unset ($paymentData['contract_url']);
+            $paymentsData[$key] = $paymentData;
+        }
+
         return [
             [
                 'json',
                 204,
-                self::paymentDataProvider()[1]
+                $paymentsData[1]
             ],
             [
                 'json',
                 204,
-                self::paymentDataProvider()[0]
+                $paymentsData[0]
             ]
         ];
     }
