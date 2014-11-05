@@ -194,6 +194,11 @@ class PaymentsController extends Controller
      *     encoder = "api.default_id_encoder"
      * )
      * @RequestParam(
+     *     name="contract_url",
+     *     encoder="api.default_url_encoder",
+     *     description="Resource url for Contract."
+     * )
+     * @RequestParam(
      *     name="payment_account_url",
      *     encoder="api.default_url_encoder",
      *     description="Resource url for PaymentAccount."
