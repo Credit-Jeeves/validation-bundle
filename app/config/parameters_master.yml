@@ -7,5 +7,5 @@ parameters:
     database_password: 'passw0rd'
 
     server_name_cj: master.creditjeeves.com
-    server_name_rj: master.creditjeeves.com
+    server_name_rj: master.renttrack.com
     mink.selenium2.wd_host: 'http://10.190.122.196:4444/wd/hub'
