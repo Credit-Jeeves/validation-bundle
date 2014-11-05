@@ -27,7 +27,7 @@ abstract class PartnerUserMapping
 
     /**
      * @ORM\OneToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerUser",
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
      *     inversedBy="partner"
      * )
      */

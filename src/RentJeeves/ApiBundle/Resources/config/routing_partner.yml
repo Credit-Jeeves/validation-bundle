@@ -1,0 +1,4 @@
+users:
+  type:         rest
+  resource:     "@RjApiBundle/Controller/UsersController.php"
+  name_prefix:  api_

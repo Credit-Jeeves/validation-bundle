@@ -1,6 +1,0 @@
-{% if admin.isGranted('EDIT', object)%}
-    <a href="{{ path('admin_partner_list')}}" class="btn edit_link" title="{{ 'admin.list.partners'|trans({}) }}">
-        <i class="icon-list"></i>
-        {{ 'admin.list.partners'|trans({}) }}
-    </a>
-{% endif %}

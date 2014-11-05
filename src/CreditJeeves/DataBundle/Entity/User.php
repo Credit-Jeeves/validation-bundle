@@ -8,6 +8,8 @@ use CreditJeeves\DataBundle\Model\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Entity\Partner;
+use RentJeeves\DataBundle\Entity\PartnerUserMapping;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\True;
@@ -404,5 +406,50 @@ abstract class User extends BaseUser
     {
         $dbo = parent::getDateOfBirth();
         return $dbo?$dbo->format('mdY'):'';
+    }
+
+    /**
+     * @return Partner
+     */
+    public function getPartner()
+    {
+        return $this->partner ? $this->partner->getPartner() : null;
+    }
+
+    /**
+     * @param Partner $partner
+     */
+    public function setPartner($partner)
+    {
+        if ($this->getId()) {
+            $this->updateUserPartner($partner);
+        } else {
+            $this->addUserPartner($partner);
+        }
+    }
+
+    /**
+     * @param Partner $partner
+     */
+    protected function addUserPartner(Partner $partner)
+    {
+        $partnerUserMapping = new PartnerUserMapping();
+        $partnerUserMapping->setPartner($partner);
+        $partnerUserMapping->setUser($this);
+        $this->partner = $partnerUserMapping;
+    }
+
+    /**
+     * @param Partner $partner
+     */
+    protected function updateUserPartner(Partner $partner)
+    {
+        $partnerUserMapping = $this->partner;
+        if (!$partnerUserMapping) {
+            $partnerUserMapping = new PartnerUserMapping();
+            $partnerUserMapping->setUser($this);
+        }
+        $partnerUserMapping->setPartner($partner);
+        $this->partner = $partnerUserMapping;
     }
 }
