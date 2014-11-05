@@ -168,28 +168,10 @@ class Payment extends Base
 
     /*
      * this maps the API paid_for parameter to the model's paidFor parameter
-     *
-     * the API user only specifies the year and month, then we set the day
-     * based on the contract due date.
-     *
-     * TODO: we might want to use the PaidFor service to validate this
-     * within the PaymentType form. See https://credit.atlassian.net/browse/RT-864
-     *
      */
     public function setPaidForApi($date_text)
     {
-        $date = new DateTime($date_text);
-        $specificDate = $this->setPaidForDayBasedOnContract($date);
-        parent::setPaidFor($specificDate);
-    }
-
-    private function setPaidForDayBasedOnContract(DateTime $date)
-    {
-        $due_day = $this->getContract()->getDueDate();
-        if ($due_day) {
-            $date = $date->setDate($date->format('Y'), $date->format('m'), $due_day);
-        }
-        return $date;
+        parent::setPaidFor(new DateTime($date_text));
     }
 
     public function getPaidForApi()

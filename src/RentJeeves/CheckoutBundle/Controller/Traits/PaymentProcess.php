@@ -124,10 +124,26 @@ trait PaymentProcess
             $paymentEntity->setEndYear(null);
         }
 
+        /*
+         * the user only specifies the year and month, so here we set the day
+         * based on the contract due date. If no due date specified we default to
+         * the first day of the month.
+         */
+        if ($paymentEntity->getPaidFor()) {
+            $paymentEntity->setPaidFor($this->mergePaidAndDueDates($paymentEntity->getPaidFor(), $contract));
+        }
+
         $contract->setStatus(ContractStatus::APPROVED);
         $em->persist($contract);
         $em->persist($paymentEntity);
         $em->flush();
+    }
+
+    private function mergePaidAndDueDates(DateTime $paidFor, $contract)
+    {
+        $dueDay = ($contract->getDueDate()) ? $contract->getDueDate() : 1;
+
+        return $paidFor->setDate($paidFor->format('Y'), $paidFor->format('m'), $dueDay);
     }
 
     protected function isVerifiedUser(Request $request, Contract $contract)

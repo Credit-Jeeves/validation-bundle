@@ -172,6 +172,95 @@ class PaymentsController extends Controller
         return $this->processForm($request, new PaymentEntity);
     }
 
+    /**
+     * @param int $id
+     * @param Request $request
+     *
+     * @ApiDoc(
+     *     resource=true,
+     *     section="Payment",
+     *     description="Update a payment.",
+     *     statusCodes={
+     *         200="Returned when successful",
+     *         404="Payment not found",
+     *         400="Error validating data. Please check parameters and retry.",
+     *         500="Internal Server Error"
+     *     }
+     * )
+     * @Rest\Put("/payment/{id}")
+     * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
+     * @AttributeParam(
+     *     name="id",
+     *     encoder = "api.default_id_encoder"
+     * )
+     * @RequestParam(
+     *     name="contract_url",
+     *     encoder="api.default_url_encoder",
+     *     description="Resource url for Contract."
+     * )
+     * @RequestParam(
+     *     name="payment_account_url",
+     *     encoder="api.default_url_encoder",
+     *     description="Resource url for PaymentAccount."
+     * )
+     * @RequestParam(
+     *     name="type",
+     *     requirements="recurring|one_time",
+     *     description="Payment type should be only 'recurring' or 'one_time'."
+     * )
+     * @RequestParam(
+     *     name="rent",
+     *     description="Rent amount. include decimal."
+     * )
+     * @RequestParam(
+     *     name="other",
+     *     description="Extra amount to pay. include decimal."
+     * )
+     * @RequestParam(
+     *     name="day",
+     *     description="Day of the month to initiate transaction. set to 31st to always pay on last day of month."
+     * )
+     * @RequestParam(
+     *     name="month",
+     *     description="For recurring, this is the first month."
+     * )
+     * @RequestParam(
+     *     name="year",
+     *     description="For recurring, this is the first year."
+     * )
+     * @RequestParam(
+     *     name="end_year",
+     *     description="Used only for recurring, optional.",
+     *     default=null,
+     *     nullable=true
+     * )
+     * @RequestParam(
+     *     name="end_month",
+     *     description="Used only for recurring, optional.",
+     *     default=null,
+     *     nullable=true
+     * )
+     * @RequestParam(
+     *     name="paid_for",
+     *     description="What month is the payment for? '2014-09' is paid for September."
+     * )
+     *
+     * @throws NotFoundHttpException
+     * @return ResponseEntity
+     */
+    public function editPaymentAction($id, Request $request)
+    {
+        /** @var PaymentRepository $repo */
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Payment');
+        $paymentEntity = $repo->findOneByIdForUser($id, $this->getUser());
+
+        if ($paymentEntity) {
+            return $this->processForm($request, $paymentEntity, 'PUT');
+        }
+
+        throw new NotFoundHttpException('Payment not found');
+    }
+
     protected function processForm(Request $request, PaymentEntity $entity, $method = 'POST')
     {
         $form = $this->createForm(

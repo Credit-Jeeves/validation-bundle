@@ -159,7 +159,6 @@ class PaymentControllerCase extends BaseApiTestCase
      */
     public function createPayment($format, $statusCode, $requestParams)
     {
-        #$this->setTenantEmail('tenant11@example.com');
         $client = $this->getClient();
 
         /** @var Serializer $serializer */
@@ -191,5 +190,60 @@ class PaymentControllerCase extends BaseApiTestCase
         $dueDay = $payment->getContract()->getDueDate();
         $paidForDay = $payment->getPaidFor()->format('d');
         $this->assertEquals($dueDay, $paidForDay);
+    }
+
+    public static function editPaymentDataProvider()
+    {
+        return [
+            [
+                'json',
+                204,
+                self::paymentDataProvider()[1]
+            ],
+            [
+                'json',
+                204,
+                self::paymentDataProvider()[0]
+            ]
+        ];
+    }
+
+    /**
+     * @test
+     * @depends createPayment
+     * @dataProvider editPaymentDataProvider
+     */
+    public function editPayment($format, $statusCode, $requestParams)
+    {
+        $client = $this->getClient();
+
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        $tenant = $this->getTenant();
+        $result = $repo->findByUser($tenant);
+        $latest = $result[0];
+
+        $encodedId = $this->getIdEncoder()->encode($latest->getId());
+        /** @var Serializer $serializer */
+        $serializer = $this->getContainer()->get('jms_serializer');
+
+        $client->request(
+            'PUT',
+            self::URL_PREFIX . "/payment/{$encodedId}.{$format}",
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => static::$formats[$format][0],
+                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
+            ],
+            $serializer->serialize($requestParams, $format)
+        );
+
+        $this->assertResponse($client->getResponse(), $statusCode, $format);
+
+        /** @var Payment $payment */
+        $payment = $repo->findOneById($latest->getId());
+
+        $this->assertEquals($payment->getType(), $requestParams['type']);
+        $this->assertEquals($payment->getAmount(), $requestParams['rent']);
     }
 }
