@@ -326,7 +326,10 @@ class ContractsControllerCase extends BaseApiTestCase
             'tenant' => $tenant, 'id' => $last->getId()
         ], ['id' => 'DESC']);
 
-        $this->assertEquals(!!$contract->getReportToExperian(), ReportingType::getMapValue($requestParams['experian_reporting']));
+        $this->assertEquals(
+            !!$contract->getReportToExperian(),
+            ReportingType::getMapValue($requestParams['experian_reporting'])
+        );
     }
 
     public static function wrongContractDataProvider()

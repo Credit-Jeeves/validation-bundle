@@ -7,7 +7,6 @@ use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolver;
 
-
 class ContractType extends AbstractType
 {
     const NAME = '';
