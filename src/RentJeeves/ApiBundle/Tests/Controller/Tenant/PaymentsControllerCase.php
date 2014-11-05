@@ -104,8 +104,14 @@ class PaymentControllerCase extends BaseApiTestCase
         $this->assertEquals($result->getEndYear(), $answer["end_year"]);
         $this->assertEquals($result->getPaidFor()->format("Y-m"), $answer["paid_for"]);
         $this->assertEquals($result->getStatus(), $answer["status"]);
-        $this->assertEquals($result->getContract()->getId(), $answer["contract_url"]);
-        $this->assertEquals($result->getPaymentAccountId(), $answer["payment_account_url"]);
+        $this->assertEquals(
+            $result->getContract()->getId(),
+            $this->getUrlEncoder()->decode($answer["contract_url"])
+        );
+        $this->assertEquals(
+            $result->getPaymentAccountId(),
+            $this->getUrlEncoder()->decode($answer["payment_account_url"])
+        );
     }
 
 
@@ -194,16 +200,22 @@ class PaymentControllerCase extends BaseApiTestCase
 
     public static function editPaymentDataProvider()
     {
+        $paymentsData = self::paymentDataProvider();
+        foreach ($paymentsData as $key => $paymentData) {
+            unset ($paymentData['contract_url']);
+            $paymentsData[$key] = $paymentData;
+        }
+
         return [
             [
                 'json',
                 204,
-                self::paymentDataProvider()[1]
+                $paymentsData[1]
             ],
             [
                 'json',
                 204,
-                self::paymentDataProvider()[0]
+                $paymentsData[0]
             ]
         ];
     }

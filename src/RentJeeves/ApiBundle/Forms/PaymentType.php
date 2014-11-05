@@ -24,20 +24,20 @@ class PaymentType extends AbstractType
 
     public function buildForm(FormBuilder $builder, array $options)
     {
-        $builder->add('contract_url', 'entity', [
-            'property_path' => 'contract',
-            'required' => true,
-            'class' => 'RentJeeves\DataBundle\Entity\Contract',
-            'query_builder' => function (ContractRepository $er) {
-                return $er->createQueryBuilder('c')
-                    ->andWhere('c.tenant = :tenant')
-                    ->setParameter(':tenant', $this->tenant);
-            },
-        ]);
+        if ($options['method'] != 'PUT') {
+            $builder->add('contract_url', 'entity', [
+                'property_path' => 'contract',
+                'class' => 'RentJeeves\DataBundle\Entity\Contract',
+                'query_builder' => function (ContractRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->andWhere('c.tenant = :tenant')
+                        ->setParameter(':tenant', $this->tenant);
+                },
+            ]);
+        }
 
         $builder->add('payment_account_url', 'entity', [
             'property_path' => 'payment_account',
-            'required' => true,
             'class' => 'RentJeeves\DataBundle\Entity\PaymentAccount',
             'query_builder' => function (PaymentAccountRepository $er) {
                 return $er->createQueryBuilder('pa')
@@ -68,17 +68,14 @@ class PaymentType extends AbstractType
 
         $builder->add('day', 'integer', [
             'property_path' => 'dueDate',
-            'required' => 'true'
         ]);
 
         $builder->add('month', 'integer', [
             'property_path' => 'startMonth',
-            'required' => 'true'
         ]);
 
         $builder->add('year', 'integer', [
             'property_path' => 'startYear',
-            'required' => 'true'
         ]);
 
         $builder->add('end_month', 'integer', [
