@@ -15,3 +15,12 @@ fixtures:
       - token
       - authorization_code
     name: TestApp
+  client_3:
+    secret: 2qeobwbv72ecosgk4g0w8sokwkco0cwwo0sg4sg0cwskssk880
+    random_id: 3iui2vbjxtwksskk88os8040408ccwwkss80o4c4c88skoc804
+    redirect_uris:
+      - http://localhost
+    allowed_grant_types:
+      - token
+      - authorization_code
+    name: CreditComClient

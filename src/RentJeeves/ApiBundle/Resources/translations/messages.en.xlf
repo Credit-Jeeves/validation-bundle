@@ -54,6 +54,10 @@
                 <source>api.errors.property.zip.empty</source>
                 <target>Zip is required.</target>
             </trans-unit>
+            <trans-unit id="api.errors.user.password_required">
+                <source>api.errors.user.password_required</source>
+                <target>Password is required</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

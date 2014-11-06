@@ -52,7 +52,8 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "account_landlord",
      *         "api_identity_check",
-     *         "import"
+     *         "import",
+     *         "api"
      *     }
      * )
      * @Assert\Length(
@@ -68,7 +69,8 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "account_landlord",
      *         "api_identity_check",
-     *         "import"
+     *         "import",
+     *         "api"
      *     }
      * )
      * @Assert\Regex(
@@ -118,7 +120,8 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "account_landlord",
      *         "api_identity_check",
-     *         "import"
+     *         "import",
+     *         "api"
      *     }
      * )
      * @Assert\Length(
@@ -134,7 +137,8 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "account_landlord",
      *         "api_identity_check",
-     *         "import"
+     *         "import",
+     *         "api"
      *     }
      * )
      * @Assert\Regex(
@@ -156,7 +160,8 @@ abstract class User extends BaseUser
      *         "user_admin",
      *         "invite",
      *         "invitationApi",
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "api"
      *     }
      * )
      * @Assert\Email(
@@ -167,7 +172,8 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "account_landlord",
      *         "api_identity_check",
-     *         "import"
+     *         "import",
+     *         "api"
      *     }
      * )
      * @InviteEmail(
@@ -652,6 +658,15 @@ abstract class User extends BaseUser
      * )
      */
     protected $lastIp;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\PartnerUserMapping",
+     *     mappedBy="user",
+     *     cascade={"all"}
+     * )
+     */
+    protected $partner;
 
     public function __construct()
     {

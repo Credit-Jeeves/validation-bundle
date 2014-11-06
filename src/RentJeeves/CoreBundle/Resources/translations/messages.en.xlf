@@ -1178,7 +1178,7 @@
             </trans-unit>
             <trans-unit id="admin.list.partner_users">
                 <source>admin.list.partner_users</source>
-                <target>Users</target>
+                <target>Partner Users</target>
             </trans-unit>
             <trans-unit id="admin.list.partners">
                 <source>admin.list.partners</source>

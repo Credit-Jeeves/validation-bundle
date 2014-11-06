@@ -1,0 +1,5 @@
+model: RentJeeves\DataBundle\Entity\PartnerUserMapping
+fixtures:
+    partner_user_mapping_1:
+        partner: partner_1
+        user: partner_user_1

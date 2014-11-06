@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Forms\PaymentType;
+use RentJeeves\DataBundle\Entity\PaymentRepository;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
@@ -19,7 +20,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Router;
 use \RuntimeException;
 
 class PaymentsController extends Controller
@@ -194,11 +194,6 @@ class PaymentsController extends Controller
      *     encoder = "api.default_id_encoder"
      * )
      * @RequestParam(
-     *     name="contract_url",
-     *     encoder="api.default_url_encoder",
-     *     description="Resource url for Contract."
-     * )
-     * @RequestParam(
      *     name="payment_account_url",
      *     encoder="api.default_url_encoder",
      *     description="Resource url for PaymentAccount."
@@ -274,14 +269,17 @@ class PaymentsController extends Controller
         if ($form->isValid()) {
             /** @var PaymentEntity $paymentEntity */
             $paymentEntity = $form->getData();
-            /** @var Contract $contract */
-            $contract = $form->get('contract_url')->getData();
-            /** @var PaymentAccount $account */
-            $account = $form->get('payment_account_url')->getData();
-            $isRecurring = $form->get('type') ==  PaymentTypeEnum::RECURRING;
+            $isRecurring = $form->get('type')->getData() ==  PaymentTypeEnum::RECURRING;
             $verifyByPidKiq = false; # TODO: add Pid/Kiq support to API. See https://credit.atlassian.net/browse/RT-853
             try {
-                $this->savePayment($request, $form, $contract, $account, $isRecurring, $verifyByPidKiq);
+                $this->savePayment(
+                    $request,
+                    $form,
+                    $paymentEntity->getContract(),
+                    $paymentEntity->getPaymentAccount(),
+                    $isRecurring,
+                    $verifyByPidKiq
+                );
 
                 return $this->get('response_resource.payment')->setEntity($paymentEntity);
             } catch (RuntimeException $e) {

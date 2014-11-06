@@ -17,4 +17,3 @@ contracts:
   type:         rest
   resource:     "@RjApiBundle/Controller/Tenant/ContractsController.php"
   name_prefix:  api_
-

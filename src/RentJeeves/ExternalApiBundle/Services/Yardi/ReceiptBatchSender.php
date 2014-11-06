@@ -434,6 +434,11 @@ class ReceiptBatchSender
         return $this->em->getRepository('DataBundle:Order');
     }
 
+    protected function getKeyForRequest(Holding $holding, Group $group, $batchId)
+    {
+        return $holding->getId().'_'.$group->getId().'_'.$batchId;
+    }
+
     /**
      * @param Holding $holding
      * @param $yardiBatchId
@@ -441,37 +446,36 @@ class ReceiptBatchSender
      */
     protected function fillRequestDefaultData(Holding $holding, $yardiBatchId, $batchId)
     {
-        if (!isset($this->requests[$holding->getId()])) {
-            $yardiBatchId = (empty($yardiBatchId))? 'undefined' : $yardiBatchId;
-            $this->requests[$holding->getId()] = array();
-            $settings = $this->paymentClient->getSettings();
-            $groups = $holding->getGroups();
-            /**
-             * @var $group Group
-             */
-            foreach ($groups as $group) {
-                $this->requests[$holding->getId()][$group->getId()] = array(
-                    $yardiBatchId => array()
-                );
-                $this->requests[$holding->getId()]
-                    [$group->getId()]
-                    [$yardiBatchId]
-                    [Payment::formatType($settings->getPaymentTypeACH())] = array(
-                        self::REQUEST_FAILED => 0,
-                        self::REQUEST_SUCCESSFUL => 0,
-                    );
-                $this->requests[$holding->getId()]
-                    [$group->getId()]
-                    [$yardiBatchId]
-                    [Payment::formatType($settings->getPaymentTypeCC())] = array(
-                        self::REQUEST_FAILED => 0,
-                        self::REQUEST_SUCCESSFUL => 0,
-                    );
-                $this->requests[$holding->getId()]
-                    [$group->getId()]
-                    [$yardiBatchId]
-                    ['payment_batch_id'] = $batchId;
+        $groups = $holding->getGroups();
+        $settings = $this->paymentClient->getSettings();
+        foreach ($groups as $group) {
+
+            $key = $this->getKeyForRequest($holding, $group, $batchId);
+
+            if (isset($this->requests[$key])) {
+                continue;
             }
+
+            $this->requests[$key]
+            [$group->getId()]
+            [$yardiBatchId]
+            [Payment::formatType($settings->getPaymentTypeACH())] = array(
+                self::REQUEST_FAILED => 0,
+                self::REQUEST_SUCCESSFUL => 0,
+            );
+
+            $this->requests[$key]
+            [$group->getId()]
+            [$yardiBatchId]
+            [Payment::formatType($settings->getPaymentTypeCC())] = array(
+                self::REQUEST_FAILED => 0,
+                self::REQUEST_SUCCESSFUL => 0,
+            );
+
+            $this->requests[$key]
+            [$group->getId()]
+            [$yardiBatchId]
+            ['payment_batch_id'] = $batchId;
         }
     }
 
@@ -506,24 +510,9 @@ class ReceiptBatchSender
                 $order
             );
 
-            $settings = $this->paymentClient->getSettings();
-
             $group = $order->getContract()->getGroup();
-            if (!isset($this->requests[$holding->getId()][$group->getId()][$yardiBatchId])) {
-                $this->requests[$holding->getId()][$group->getId()][$yardiBatchId] =
-                    [
-                        'payment_batch_id' => $batchId,
-                        Payment::formatType($settings->getPaymentTypeACH()) => [
-                            self::REQUEST_FAILED => 0,
-                            self::REQUEST_SUCCESSFUL => 0,
-                        ],
-                        Payment::formatType($settings->getPaymentTypeCC()) => [
-                            self::REQUEST_FAILED => 0,
-                            self::REQUEST_SUCCESSFUL => 0,
-                        ]
-                    ];
-            }
-            $this->requests[$holding->getId()][$group->getId()][$yardiBatchId][$type][self::REQUEST_SUCCESSFUL]++;
+            $key = $this->getKeyForRequest($holding, $group, $batchId);
+            $this->requests[$key][$group->getId()][$yardiBatchId][$type][self::REQUEST_SUCCESSFUL]++;
         }
 
         $this->em->flush();
@@ -553,22 +542,8 @@ class ReceiptBatchSender
                 $order
             );
             $group = $order->getContract()->getGroup();
-            $settings = $this->paymentClient->getSettings();
-            if (!isset($this->requests[$holding->getId()][$group->getId()][$yardiBatchId])) {
-                $this->requests[$holding->getId()][$group->getId()][$yardiBatchId] =
-                    [
-                        'payment_batch_id' => $batchId,
-                        Payment::formatType($settings->getPaymentTypeACH()) => [
-                            self::REQUEST_FAILED => 0,
-                            self::REQUEST_SUCCESSFUL => 0,
-                        ],
-                        Payment::formatType($settings->getPaymentTypeCC()) => [
-                            self::REQUEST_FAILED => 0,
-                            self::REQUEST_SUCCESSFUL => 0,
-                        ]
-                    ];
-            }
-            $this->requests[$holding->getId()][$group->getId()][$yardiBatchId][$typePayment][self::REQUEST_FAILED]++;
+            $key = $this->getKeyForRequest($holding, $group, $batchId);
+            $this->requests[$key][$group->getId()][$yardiBatchId][$typePayment][self::REQUEST_FAILED]++;
         }
     }
 }
