@@ -21,10 +21,10 @@ class ExceptionWrapper
         $this->trans = $trans;
 
         switch ($data) {
-            case (isset($data['errors']) && ($data['errors'] instanceof Form)):
+            case (is_array($data) && !empty($data['errors']) && ($data['errors'] instanceof Form)):
                 $this->errors = $this->getFormErrors($data['errors']);
                 break;
-            case (isset($data['errors']) && is_array($data['errors'])):
+            case (is_array($data) && !empty($data['errors']) && is_array($data['errors'])):
                 foreach ($data['errors'] as $error) {
                     if (self::isCanBeConvertedToString($error)) {
                         $this->errors[] = $this->getErrorDescription(strval($error));
@@ -33,7 +33,7 @@ class ExceptionWrapper
                     }
                 }
                 break;
-            case (isset($data['message'])):
+            case (is_array($data) && isset($data['message'])):
                 $this->errors[] = $this->getErrorDescription($data['message']);
                 break;
             case ($data instanceof ErrorDescription):

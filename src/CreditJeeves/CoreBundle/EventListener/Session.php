@@ -44,7 +44,8 @@ class Session
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$this->security->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        $token = $this->security->getToken();
+        if ($token && !$this->security->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return;
         }
 
