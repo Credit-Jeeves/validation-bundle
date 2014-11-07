@@ -33,6 +33,10 @@ class AccountingContract
 
     public function moveContractToNewUser(Tenant $fromUser, Tenant $toUser)
     {
+        if ($fromUser->getId() === $toUser->getId()) {
+            return;
+        }
+
         $contracts = $fromUser->getContracts();
         /**
          * @var $contractFrom Contract
