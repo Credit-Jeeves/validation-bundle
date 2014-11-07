@@ -83,8 +83,7 @@ class ContractsController extends Controller
      * )
      * @RequestParam(
      *     name="experian_reporting",
-     *     strict=true,
-     *     nullable=true,
+     *     strict=false,
      *     requirements="enabled|disabled",
      *     description="Option for enable reporting to Experian."
      * )

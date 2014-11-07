@@ -22,10 +22,12 @@ class ApiExceptionWrapperHandler implements ExceptionWrapperHandlerInterface
      * @DI\Inject("jms_serializer")
      */
     public $serializer;
+
     /**
      * @DI\Inject("translator")
      */
     public $translator;
+
     /**
      * {@inheritdoc}
      */
@@ -44,7 +46,6 @@ class ApiExceptionWrapperHandler implements ExceptionWrapperHandlerInterface
         $format = $request->attributes->has('_format') ? $request->attributes->get('_format') : 'json';
 
         $context = new SerializationContext();
-
         $context->setGroups([ErrorDescription::ERROR_GROUP]);
 
         $content = $this->serializer->serialize($this->wrap($exception), $format, $context);
@@ -53,7 +54,6 @@ class ApiExceptionWrapperHandler implements ExceptionWrapperHandlerInterface
 
         if ($exception instanceof HttpExceptionInterface) {
             $response->setStatusCode($exception->getStatusCode());
-
             $response->headers->replace($exception->getHeaders());
         }
 
