@@ -153,7 +153,11 @@ class PaidFor
             $this->dueDate = $contract->getDueDate();
             return;
         }
+        if ($group = $contract->getGroup() && $settings = $group->getGroupSettings()) {
+            $this->dueDate = $settings->getDueDate();
+            return;
+        }
 
-        $this->dueDate = 1; // TODO: double check what default value should be used
+        $this->dueDate = 1;
     }
 }
