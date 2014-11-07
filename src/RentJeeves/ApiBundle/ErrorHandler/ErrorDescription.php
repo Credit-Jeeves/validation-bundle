@@ -6,6 +6,7 @@ use JMS\Serializer\Annotation as Serializer;
 
 class ErrorDescription
 {
+    const ERROR_GROUP = 'ApiErrors';
     /**
      * @Serializer\Groups({"ApiErrors"})
      */
