@@ -33,7 +33,6 @@ trait Tenant
              * @var $residentMapping ResidentMapping
              */
             $residentMapping = $tenant->getResidentsMapping()->first();
-
             if ($residentMapping && $residentMapping->getResidentId() !== $row[Mapping::KEY_RESIDENT_ID]) {
                 $tenant = $this->createTenant($row);
                 $this->fillUsersEmail($tenant); //Make it error, because resident ID different
