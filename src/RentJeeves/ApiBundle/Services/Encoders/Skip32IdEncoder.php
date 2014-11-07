@@ -32,7 +32,9 @@ class Skip32IdEncoder extends Encoder
             return $integerId;
         }
 
-        throw new ValidationEncoderException(sprintf('Value "%s" isn\'t correct integer Id.', $integerId));
+        throw new ValidationEncoderException(
+            sprintf('Value "%s" isn\'t correct integer Id.', $integerId)
+        );
     }
 
     public function decode($encodedId)
@@ -43,7 +45,9 @@ class Skip32IdEncoder extends Encoder
             return $encodedId;
         }
 
-        throw new ValidationEncoderException(sprintf('Value "%s" isn\'t correct encrypted Id.', $encodedId));
+        throw new ValidationEncoderException(
+            sprintf('Value "%s" isn\'t correct encrypted Id.', $encodedId)
+        );
     }
 
     /**

@@ -759,7 +759,11 @@ class Contract extends Base
 
     public function __toString()
     {
-        return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
+        if ($this->getProperty()) {
+            return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
+        }
+
+        return '';
     }
 
     /**

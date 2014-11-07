@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ContractType extends AbstractType
 {
@@ -15,11 +16,21 @@ class ContractType extends AbstractType
     {
         $builder->add('unit_url', 'entity', [
             'class' => 'RentJeeves\DataBundle\Entity\Unit',
-            'mapped' => false
+            'mapped' => false,
+            'constraints' => [
+                new NotBlank([
+                    'groups' => ['unit_url']
+                ])
+            ]
         ]);
 
         $builder->add('new_unit', new NewUnitType(), [
-            'mapped' => false
+            'mapped' => false,
+            'constraints' => [
+                new NotBlank([
+                    'groups' => ['new_unit']
+                ])
+            ]
         ]);
 
 

@@ -56,7 +56,9 @@ class ResourceUrlEncoder extends Encoder
             return $this->idEncoder->decode($encodedId);
         }
 
-        throw new ValidationEncoderException;
+        throw new ValidationEncoderException(
+            sprintf('Invalid url resource "%s" for decoding.', $url)
+        );
     }
 
     public function isValidForDecryption($encodedId)
