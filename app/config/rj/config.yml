@@ -97,7 +97,7 @@ sonata_admin:
                 - sonata.admin.partners
 
 twig:
-    exception_controller: 'FOS\RestBundle\Controller\ExceptionController::showAction'
+    exception_controller: FOS\RestBundle\Controller\ExceptionController::showAction
     globals:
         application: rj
         google_maps_key: %google_maps_key%
