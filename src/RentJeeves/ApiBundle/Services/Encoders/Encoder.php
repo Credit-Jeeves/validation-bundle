@@ -6,6 +6,7 @@ namespace RentJeeves\ApiBundle\Services\Encoders;
 abstract class Encoder implements AttributeEncoderInterface
 {
     protected $skipNotValid = false;
+
     /**
      * {@inheritdoc}
      */
@@ -15,7 +16,9 @@ abstract class Encoder implements AttributeEncoderInterface
             return $value;
         }
 
-        throw new ValidationEncoderException;
+        throw new ValidationEncoderException(
+            sprintf('Invalid value "%s" for encoding.', $value)
+        );
     }
 
     /**
@@ -27,7 +30,9 @@ abstract class Encoder implements AttributeEncoderInterface
             return $encodedValue;
         }
 
-        throw new ValidationEncoderException;
+        throw new ValidationEncoderException(
+            sprintf('Invalid value "%s" for decoding.', $encodedValue)
+        );
     }
 
     /**
