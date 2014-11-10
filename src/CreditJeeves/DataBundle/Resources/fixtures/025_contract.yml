@@ -157,6 +157,7 @@ fixtures:
         property: Property_1
         unit:     Unit_1_11
         rent:     2100
+        dueDate:  11
         status:   current
         paidTo:  '-1 days'
         startAt:   '-90 days'

@@ -41,4 +41,4 @@ class ApiTenantEmailValidator extends ConstraintValidator
 
         $this->context->addViolation($this->translator->trans($constraint->message));
     }
-} 
+}

@@ -22,7 +22,7 @@ class PaidFor
     /**
      * @var string
      */
-    protected  $dueDate;
+    protected $dueDate;
 
     /**
      * Return array of months to pay based on contract
