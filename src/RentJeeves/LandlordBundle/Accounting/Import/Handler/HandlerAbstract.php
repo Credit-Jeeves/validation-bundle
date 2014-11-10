@@ -10,6 +10,7 @@ use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\CoreBundle\DateTime;
@@ -423,12 +424,17 @@ abstract class HandlerAbstract implements HandlerInterface
          * @var $contract EntityContract
          */
         foreach ($this->emailSendingQueue as $contract) {
-            $this->mailer->sendRjTenantInvite(
+            $result = $this->mailer->sendRjTenantInvite(
                 $contract->getTenant(),
                 $this->user,
                 $contract,
                 $isImported = "1"
             );
+
+            if ($result === false) {
+                $message = sprintf("Can't send invite email to user %s", $contract->getTenant()->getEmail());
+                throw new ImportHandlerException($message);
+            }
         }
 
         $this->emailSendingQueue = array();
