@@ -60,7 +60,10 @@ class ResolveCase extends BaseTestCase
             $inputs = $this->page->findAll('css', '#contract-resolve-late input[type=text]')
         );
         $this->assertCount(2, $inputs, 'Wrong number of inputs');
-        $inputs[1]->setValue(date("m/d/y"));
+        $date = new DateTime();
+        date_time_set($date, 0, 0);
+        $date->modify('-15 year');
+        $inputs[1]->setValue($date->format('m/d/Y'));
         $this->assertNotNull($buttons = $this->page->findAll('css', '#blockPopupEditProperty button.button'));
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
         $buttons[0]->click();
@@ -69,6 +72,20 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull($contracts = $this->page->findAll('css', '#actions-block table tbody tr'));
         $this->assertCount(static::CONTRACTS_COUNT - 1, $contracts);
         $this->logout();
+
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $operations = $em->getRepository('DataBundle:Operation')->findBy(
+            array(
+                'createdAt' => $date,
+            )
+        );
+        $this->assertCount(1, $operations, 'Wrong count operation');
+        $orders = $em->getRepository('DataBundle:Order')->findBy(
+            array(
+                'created_at' => $date,
+            )
+        );
+        $this->assertCount(1, $orders, 'Wrong count order');
     }
 
     /**

@@ -838,13 +838,14 @@ class AjaxController extends Controller
                     if ($amount) {
                         $paidFor = new DateTime($data['paid_for']);
                         $createdAt = DateTime::createFromFormat('m/d/Y', $data['created_at']);
+                        date_time_set($createdAt, 0, 0);
                         $errors = DateTime::getLastErrors();
                         if ($errors['warning_count'] > 0 || $errors['error_count'] > 0) {
                             return new JsonResponse(
                                 array(
                                     'status'  => 'error',
                                     'errors'  => array(
-                                        'Invalid date',
+                                        'Invalid rent payment date',
                                     )
                                 )
                             );
@@ -856,6 +857,7 @@ class AjaxController extends Controller
                     $order->setStatus(OrderStatus::COMPLETE);
                     $order->setType(OrderType::CASH);
                     $order->setCreatedAt($createdAt);
+                    $em->persist($order);
                     // Create operation
                     $operation = new Operation();
                     $operation->setOrder($order);
