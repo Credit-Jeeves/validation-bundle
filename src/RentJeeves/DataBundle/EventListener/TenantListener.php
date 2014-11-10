@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle\EventListener;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\DataBundle\Entity\PartnerCode;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use RentJeeves\CoreBundle\Services\TUReporting;
@@ -17,7 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 class TenantListener
 {
     protected $request;
-
+    /**
+     * @var TUReporting
+     */
     protected $tuReporting;
 
     public function setRequest($request)
@@ -75,14 +78,19 @@ class TenantListener
             return;
         }
 
+        if ($eventArgs->getNewValue('is_verified') !== UserIsVerified::PASSED) {
+            return;
+        }
+
         $contracts = $tenant->getContracts();
         $em = $eventArgs->getEntityManager();
         /**
          * @var Contract $contract
          */
         foreach ($contracts as $contract) {
-            $this->tuReporting->turnOnTransUnionReporting($contract);
-            $em->persist($contract);
+            if ($this->tuReporting->turnOnTransUnionReporting($contract)) {
+                $em->flush($contract);
+            }
         }
     }
 }

@@ -1,12 +1,14 @@
 <?php
 namespace RentJeeves\DataBundle\EventListener;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
+use JMS\DiExtraBundle\Annotation\Inject;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 
@@ -39,13 +41,61 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 class PaymentListener
 {
     /**
+     * Must inject container for getting service contract.trans_union_reporting
+     * such service exist only in RentTrack and CreditJeeves don't have it and will broken
+     *
+     * @Inject("service_container", required = true)
+     */
+    public $container;
+
+    /**
      * @param LifecycleEventArgs $eventArgs
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-        if ($entity instanceof Payment) {
-            $entity->checkContract();
+        /**
+         * @var $payment Payment
+         */
+        $payment = $eventArgs->getEntity();
+        if (($payment instanceof Payment) === false) {
+            return;
+        }
+
+        $payment->checkContract();
+        $this->turnOnTransUnionReporting($eventArgs);
+    }
+
+    protected function turnOnTransUnionReporting(LifecycleEventArgs $eventArgs)
+    {
+        $payment = $eventArgs->getEntity();
+        if (($payment instanceof Payment) === false) {
+            return;
+        }
+
+        $contract = $payment->getContract();
+
+        /**
+         * $container->has = need for don't broken upload fixtures
+         */
+        if (!$contract || !$this->container->has('contract.trans_union_reporting')) {
+            return;
+        }
+
+        /**
+         * @var $tenant
+         */
+        $tenant = $contract->getTenant();
+
+        if ($tenant->getIsVerified() !== UserIsVerified::PASSED) {
+            return;
+        }
+
+        $em = $eventArgs->getEntityManager();
+        $tuReporting = $this->container->get('contract.trans_union_reporting');
+        $payments = $em->getRepository('RjDataBundle:Payment')->findByUser($tenant);
+
+        if (count($payments) === 0 && $tuReporting->turnOnTransUnionReporting($contract)) {
+            $em->flush($contract);
         }
     }
 

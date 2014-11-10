@@ -11,6 +11,10 @@ class OrmYamlFixture extends Base
         array(
             'class'  =>'RentJeeves\DataBundle\EventListener\ContractListener',
             'events' => array('prePersist')
+        ),
+        array(
+            'class'  =>'RentJeeves\DataBundle\EventListener\PaymentListener',
+            'events' => array('prePersist')
         )
     );
 

@@ -39,6 +39,7 @@ class IndexController extends Controller
      */
     public function paymentReportingAction()
     {
+        /** @var $tenant Tenant */
         $tenant = $this->getUser();
         /** @var ContractRepository $contractRepo */
         $contractRepo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
