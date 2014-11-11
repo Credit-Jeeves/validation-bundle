@@ -63,15 +63,15 @@
                 <target>Date</target>
             </trans-unit>
             <trans-unit id="checkout.paidFor">
-                <source>checkout.paidFor</source>
+                <source>paidFor</source>
                 <target>for</target>
             </trans-unit>
             <trans-unit id="checkout.error.paidFor.invalid">
                 <source>checkout.error.paidFor.invalid</source>
                 <target>Paid for is invalid</target>
             </trans-unit>
-            <trans-unit id="checkout.rent_starting.title">
-                <source>checkout.rent_starting.title-%MONTH%</source>
+            <trans-unit id="checkout.rent_start.title">
+                <source>checkout.rent_start.title</source>
                 <target>Rent starting in %MONTH%</target>
             </trans-unit>
             <trans-unit id="checkout.rent_starting.text">

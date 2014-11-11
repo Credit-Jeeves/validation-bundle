@@ -3,10 +3,11 @@
 namespace RentJeeves\ApiBundle\Forms;
 
 use CreditJeeves\DataBundle\Enum\UserType as UserTypeEnum;
+use RentJeeves\ApiBundle\Validator\ApiTenantEmail;
 use RentJeeves\DataBundle\Validators\LandlordEmail;
-use RentJeeves\DataBundle\Validators\TenantEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
@@ -39,7 +40,7 @@ class UserType extends AbstractType
 
         $builder->add('email', null, [
             'constraints' =>  [
-                new TenantEmail(['groups' => 'tenant_type']),
+                new ApiTenantEmail(['groups' => 'tenant_type']),
                 new LandlordEmail(['groups' => 'landlord_type'])
             ]
         ]);
@@ -48,8 +49,13 @@ class UserType extends AbstractType
             'password',
             'password',
             [
+                'property_path' => 'plainPassword',
                 'constraints' => [
                     new NotBlank(['message' => 'api.errors.user.password_required', 'groups' => 'api']),
+                    new Length([
+                        'min' => 11,
+                        'groups' => 'api'
+                    ])
                 ]
             ]
         );

@@ -59,3 +59,7 @@ div.total-amount {
     color: #000;
     font-weight: bold;
 }
+.paid-for {
+    position: fixed;
+    z-index: 1;
+}

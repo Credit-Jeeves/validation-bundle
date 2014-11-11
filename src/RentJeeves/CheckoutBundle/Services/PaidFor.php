@@ -20,17 +20,21 @@ class PaidFor
     const RESULTS_COUNT = 6;
 
     /**
+     * @var string
+     */
+    protected $dueDate;
+
+    /**
      * Return array of months to pay based on contract
      *
      * @param Contract $contract
      *
-     * @return array Payed for dates
-     *   key string Date in format 'Y-m-d'
-     *   val string Month in format 'M'
+     * @return array
      */
     public function getBaseArray(Contract $contract)
     {
-        $return = array();
+        $return = [];
+        $this->setDueDate($contract);
         if ($contract->getStatus() == ContractStatus::INVITE || $contract->getStatus() == ContractStatus::APPROVED) {
             return $this->returnDefaultValue($return);
         }
@@ -88,6 +92,7 @@ class PaidFor
      */
     public function getArray(Contract $contract)
     {
+        $this->setDueDate($contract);
         if ($contract->getStatus() == ContractStatus::INVITE || $contract->getStatus() == ContractStatus::APPROVED) {
             return $this->returnDefaultValue();
         }
@@ -95,6 +100,7 @@ class PaidFor
         $return = $this->getBaseArray($contract);
 
         $date = clone $this->getNow();
+        $date->setDate(null, null, $this->dueDate);
         if (!array_search($date->format('M'), $return)) {
             $return += $this->createItem($date);
         }
@@ -126,7 +132,7 @@ class PaidFor
         do {
             $return += $this->createItem($date);
         } while ($date->modify('+1 month') < $now);
-        
+
         return $return;
     }
 
@@ -134,9 +140,24 @@ class PaidFor
     {
         if (!count($value)) {
             $date = clone $this->getNow();
+            $date->setDate(null, null, $this->dueDate);
             return $this->createItem($date) + $this->createItem($date->modify('+1 month'));
         }
 
         return $value;
+    }
+
+    protected function setDueDate(Contract $contract)
+    {
+        if ($contract->getDueDate()) {
+            $this->dueDate = $contract->getDueDate();
+            return;
+        }
+        if ($group = $contract->getGroup() && $settings = $group->getGroupSettings()) {
+            $this->dueDate = $settings->getDueDate();
+            return;
+        }
+
+        $this->dueDate = 1;
     }
 }
