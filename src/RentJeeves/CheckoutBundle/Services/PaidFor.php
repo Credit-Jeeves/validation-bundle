@@ -153,7 +153,7 @@ class PaidFor
             $this->dueDate = $contract->getDueDate();
             return;
         }
-        if ($group = $contract->getGroup() && $settings = $group->getGroupSettings()) {
+        if ($contract->getGroup() && $settings = $contract->getGroup()->getGroupSettings()) {
             $this->dueDate = $settings->getDueDate();
             return;
         }

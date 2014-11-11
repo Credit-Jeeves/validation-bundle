@@ -282,6 +282,11 @@ class Contract extends Base
             $result['credit_track_enabled'] = false;
         }
 
+        $result['isIntegrated'] = false;
+        if ($this->getGroup() && $groupSettings = $this->getGroup()->getGroupSettings()) {
+            $result['isIntegrated'] = $groupSettings->getIsIntegrated();
+        }
+
         return $result;
     }
 
