@@ -1516,9 +1516,9 @@
                 <source>login.defence</source>
                 <target>Please, try "%MINUTES_LEFT%" minutes later.</target>
             </trans-unit>
-            <trans-unit id="password.error.old_new_not_match">
-                <source>password.error.old_new_not_match</source>
-                <target>Old Password and New Password do not match</target>
+            <trans-unit id="password.error.old_not_match">
+                <source>password.error.old_not_match</source>
+                <target>The old password you supplied is incorrect.</target>
             </trans-unit>
         </body>
     </file>

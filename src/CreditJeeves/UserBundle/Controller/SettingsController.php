@@ -50,7 +50,7 @@ class SettingsController extends Controller
                 } else {
                     $this->get('session')->getFlashBag()->add(
                         'error',
-                        'password.error.old_new_not_match'
+                        'password.error.old_not_match'
                     );
                 }
             }
