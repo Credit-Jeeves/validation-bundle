@@ -147,6 +147,8 @@ class ExportCase extends BaseTestCase
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
+        $this->assertFalse(strpos($csv, '"'));
+        $this->assertFalse(strpos($csv, '\''));
         $csvArr = explode("\n", $csv);
         $this->assertTrue(isset($csvArr[0]));
 

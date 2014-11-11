@@ -289,7 +289,9 @@ class Order extends BaseOrder
             return null;
         }
 
-        return $tenant->getFirstName();
+        $firstName = str_replace(",", "", $tenant->getFirstName());
+
+        return $firstName;
     }
 
     /**
@@ -311,7 +313,10 @@ class Order extends BaseOrder
         if (!$tenant) {
             return null;
         }
-        return $tenant->getLastName();
+
+        $lastName = str_replace(",", "", $tenant->getLastName());
+
+        return $lastName;
     }
 
     /**

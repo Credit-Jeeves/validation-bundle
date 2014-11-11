@@ -32,6 +32,7 @@ class RealPageCsvSerializer implements ExportSerializerInterface
         $context->setGroups('realPageReport');
         $context->setAttribute('use_header', false);
         $content = $this->serializer->serialize($data, 'csv', $context);
+        $content = str_replace(['\'', '"'], "", $content);  // RealPage requires not to send them any quotes
 
         return $content;
     }
