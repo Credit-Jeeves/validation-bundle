@@ -72,6 +72,11 @@ class ContractListener
         throw new LogicException('Invalid contract parameters');
     }
 
+    protected function turnOnTUReporting(Contract $contract)
+    {
+        $tuReporting = $this->container->get('contract.trans_union_reporting');
+        $tuReporting->turnOnTransUnionReporting($contract);
+    }
     /**
      * Checks contract to contain unit
      *
@@ -84,8 +89,7 @@ class ContractListener
             return;
         }
         $this->checkContract($contract);
-        $tuReporting = $this->container->get('contract.trans_union_reporting');
-        $tuReporting->turnOnTransUnionReporting($contract);
+        $this->turnOnTUReporting($contract);
     }
 
     /**
@@ -139,13 +143,13 @@ class ContractListener
 
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof Contract) {
+        $contract = $eventArgs->getEntity();
+        if (!$contract instanceof Contract) {
             return;
         }
-        $this->monitoringContractAmount($entity, $eventArgs);
-        $this->checkContract($entity);
-        $this->updateBalanceForCurrentStatus($entity, $eventArgs);
+        $this->monitoringContractAmount($contract, $eventArgs);
+        $this->checkContract($contract);
+        $this->updateBalanceForCurrentStatus($contract, $eventArgs);
     }
 
     public function postUpdate(LifecycleEventArgs $eventArgs)
