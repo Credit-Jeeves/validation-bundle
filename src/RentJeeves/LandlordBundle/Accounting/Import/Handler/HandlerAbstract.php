@@ -126,6 +126,22 @@ abstract class HandlerAbstract implements HandlerInterface
             return null;
         }
 
+        $formattedMonth = (int) $date->format('m');
+        $formattedDay = (int) $date->format('j');
+        $formattedYear = (int) $date->format('Y');
+
+        if ($formattedMonth < 1 || $formattedMonth > 12) {
+            return null;
+        }
+
+        if ($formattedDay < 1 || $formattedDay > 31) {
+            return null;
+        }
+
+        if ($formattedYear < 2000 || $formattedYear > 2150) {
+            return null;
+        }
+
         return ($date) ? $date : null;
     }
 

@@ -5,6 +5,7 @@ function accountingImport(superclass) {
     this.isMultipleProperty = ko.observable(false);
     this.fieldsWhichNotContaintInForm = [
         "import_new_user_with_contract_contract_residentMapping_residentId",
+        "import_new_user_with_contract_contract_unitMapping_externalUnitId",
         "import_contract_residentMapping_residentId",
         "resident_id",
         "tenant_email"
