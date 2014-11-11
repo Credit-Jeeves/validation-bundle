@@ -27,32 +27,37 @@ class SettingsController extends Controller
     public function passwordAction()
     {
         $request = $this->get('request');
-        /** @var \CreditJeeves\DataBundle\Entity\User $User */
-        $User = $this->getUser();
-        $sOldPassword = $User->getPassword();
-        $sEmail = $User->getEmail();
-        $form = $this->createForm(new PasswordType(), $User);
+        /** @var \CreditJeeves\DataBundle\Entity\User $user */
+        $user = $this->getUser();
+        $oldPassword = $user->getPassword();
+        $email = $user->getEmail();
+        $form = $this->createForm(new PasswordType(), $user);
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                $User = $form->getData();
+                $user = $form->getData();
                 $reEnteredPassword = $this->container->get('user.security.encoder.digest')
-                    ->encodePassword($User->getPassword(), $User->getSalt());
-                if ($sOldPassword == $reEnteredPassword) {
-                    $aForm = $request->request->get($form->getName());
+                    ->encodePassword($user->getPassword(), $user->getSalt());
+                if ($oldPassword == $reEnteredPassword) {
+                    $formName = $request->request->get($form->getName());
                     $sNewPassword = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['password_new']['Password'], $User->getSalt());
-                    $User->setPassword($sNewPassword);
+                        ->encodePassword($formName['password_new']['Password'], $user->getSalt());
+                    $user->setPassword($sNewPassword);
                     $em = $this->getDoctrine()->getManager();
-                    $em->persist($User);
+                    $em->persist($user);
                     $em->flush();
                     $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
+                } else {
+                    $this->get('session')->getFlashBag()->add(
+                        'error',
+                        'password.error.old_new_not_match'
+                    );
                 }
             }
         }
 
         return array(
-            'sEmail' => $sEmail,
+            'sEmail' => $email,
             'form' => $form->createView(),
         );
     }
