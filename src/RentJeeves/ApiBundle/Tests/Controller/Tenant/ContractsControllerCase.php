@@ -124,6 +124,7 @@ class ContractsControllerCase extends BaseApiTestCase
             [
                 'new_unit' => [
                     'address' => [
+                        'unit_name' => '',
                         'street' => '320 North Dearborn Street',
                         'city' => 'Chicago',
                         'state' => 'IL',
@@ -174,6 +175,7 @@ class ContractsControllerCase extends BaseApiTestCase
             [
                 'new_unit' => [
                     'address' => [
+                        'unit_name' => '',
                         'street' => '44 Test Street',
                         'city' => 'Test',
                         'state' => 'NY',
@@ -187,6 +189,7 @@ class ContractsControllerCase extends BaseApiTestCase
             [
                 'new_unit' => [
                     'address' => [
+                        'unit_name' => '',
                         'street' => '770 Broadway',
                         'city' => 'New York',
                         'state' => 'NY',
@@ -352,6 +355,10 @@ class ContractsControllerCase extends BaseApiTestCase
                 self::contractsDataProvider()[5],
                 [
                     [
+                        'parameter' => 'new_unit_address_unit_name',
+                        'message' => 'api.errors.property.unit_name.specify'
+                    ],
+                    [
                         'parameter' => 'new_unit_address_number',
                         'message' => 'api.errors.property.number.empty'
                     ],
@@ -379,6 +386,10 @@ class ContractsControllerCase extends BaseApiTestCase
                 400,
                 self::contractsDataProvider()[6],
                 [
+                    [
+                        'parameter' => 'new_unit_address_unit_name',
+                        'message' => 'api.errors.property.unit_name.specify'
+                    ],
                     [
                         'parameter' => 'new_unit_address_street',
                         'message' => 'api.errors.property.street.empty'

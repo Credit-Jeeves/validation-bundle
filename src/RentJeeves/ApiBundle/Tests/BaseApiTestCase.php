@@ -13,7 +13,7 @@ use JMS\Serializer\Serializer;
 
 class BaseApiTestCase extends BaseTestCase
 {
-    const URL_PREFIX = '/api/tenant/v1';
+    const URL_PREFIX = '/api/tenant';
 
     const TENANT_ACCESS_TOKEN = 'api_tenant_test_case';
 

@@ -2,6 +2,9 @@
 
 namespace RentJeeves\ApiBundle\Forms;
 
+use RentJeeves\ApiBundle\Forms\DataTransformer\UnitNameTransformer;
+use RentJeeves\ApiBundle\Forms\DataTransformer\StreetTransformerListener;
+use RentJeeves\DataBundle\Entity\Unit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\Form\FormEvent;
@@ -16,77 +19,74 @@ class PropertyType extends AbstractType
 
     public function buildForm(FormBuilder $builder, array $options)
     {
-        $builder->add('unit_name', 'text', [
-            'mapped' => false
-        ]);
+        $builder->add($builder->create('unit_name', 'text', [
+            'mapped' => false,
+            'constraints' => [
+                new NotNull([
+                    'message'   => 'api.errors.property.unit_name.specify',
+                    'groups'    => ['new_unit']
+                ])
+            ],
+            'empty_data' => null
+        ])->addViewTransformer(new UnitNameTransformer()));
 
         $builder->add('street', 'text', [
             'constraints'   => [
-                new NotBlank(
-                    [
-                        'message'   => 'api.errors.property.street.empty',
-                        'groups'    => 'new_unit'
-                    ]
-                )
+                new NotBlank([
+                    'message'   => 'api.errors.property.street.empty',
+                    'groups'    => ['new_unit']
+                ])
             ]
         ]);
 
         $builder->add('number', 'text', [
             'constraints'   => [
-                new NotBlank(
-                    [
-                        'message'   => 'api.errors.property.number.empty',
-                        'groups'    => 'new_unit'
-                    ]
-                )
+                new NotBlank([
+                    'message'   => 'api.errors.property.number.empty',
+                    'groups'    => ['new_unit']
+                ])
             ]
         ]);
 
         $builder->add('state', 'text', [
             'property_path' => 'area',
             'constraints'   => [
-                new NotBlank(
-                    [
-                        'message'   => 'api.errors.property.state.empty',
-                        'groups'    => 'new_unit'
-                    ]
-                )
+                new NotBlank([
+                    'message'   => 'api.errors.property.state.empty',
+                    'groups'    => ['new_unit']
+                ])
             ]
         ]);
 
         $builder->add('city', 'text', [
             'constraints'   => [
-                new NotBlank(
-                    [
-                        'message'   => 'api.errors.property.city.empty',
-                        'groups'    => 'new_unit'
-                    ]
-                )
+                new NotBlank([
+                    'message'   => 'api.errors.property.city.empty',
+                    'groups'    => ['new_unit']
+                ])
             ]
         ]);
 
         $builder->add('zip', 'text', [
             'constraints'   => [
-                new NotBlank(
-                    [
-                        'message'   => 'api.errors.property.zip.empty',
-                        'groups'    => 'new_unit'
-                    ]
-                )
+                new NotBlank([
+                    'message'   => 'api.errors.property.zip.empty',
+                    'groups'    => ['new_unit']
+                ])
             ]
         ]);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $submittedData = $event->getData();
-            if (isset($submittedData['street'])) {
-                if (preg_match('/^([1-9][^\s]*)\s(.+)$/s', $submittedData['street'], $array)) {
-                    $submittedData['number'] = $array[1];
-                    $submittedData['street'] = $array[2];
-                }
+
+            if (isset($submittedData['unit_name']) && $submittedData['unit_name'] === '') {
+                $submittedData['unit_name'] = Unit::SINGLE_PROPERTY_UNIT_NAME;
             }
 
             $event->setData($submittedData);
         });
+
+        $builder->addEventSubscriber(new StreetTransformerListener());
     }
 
     public function setDefaultOptions(OptionsResolver $resolver)

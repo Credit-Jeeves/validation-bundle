@@ -23,8 +23,20 @@
         text:resident_mapping.resident_id,
         attr:
         {
-            'class': $root.getErrorClass($data, ['import_new_user_with_contract_contract_residentMapping_residentId', 'import_contract_residentMapping_residentId', 'resident_id']),
-            'title': $root.getErrorTitle($data, ['import_new_user_with_contract_contract_residentMapping_residentId', 'import_contract_residentMapping_residentId', 'resident_id'])
+            'class': $root.getErrorClass(
+                $data,
+                ['import_new_user_with_contract_contract_residentMapping_residentId',
+                 'import_new_user_with_contract_contract_unitMapping_externalUnitId',
+                 'import_contract_residentMapping_residentId',
+                  'resident_id']
+            ),
+            'title': $root.getErrorTitle(
+                $data,
+                ['import_new_user_with_contract_contract_residentMapping_residentId',
+                 'import_contract_residentMapping_residentId',
+                  'resident_id',
+                 'import_new_user_with_contract_contract_unitMapping_externalUnitId']
+             )
         }
     ">
 

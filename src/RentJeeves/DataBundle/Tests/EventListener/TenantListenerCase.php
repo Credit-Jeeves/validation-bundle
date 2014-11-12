@@ -27,9 +27,17 @@ class TenantListenerCase extends Base
         $contracts = $tenant->getContracts();
         $this->assertNotEmpty($contracts);
         $tenant->setCreatedAt(new \DateTime());
+        $em->flush($tenant);
+        /**
+         * @var Contract $contract
+         */
+        foreach ($contracts as $contract) {
+            $this->assertNull($contract->getTransUnionStartAt());
+            $this->assertFalse($contract->getReportToTransUnion());
+        }
+
         $tenant->setIsVerified(UserIsVerified::PASSED);
-        $em->persist($tenant);
-        $em->flush();
+        $em->flush($tenant);
         $today = new \DateTime();
         $contracts = $tenant->getContracts();
         /**

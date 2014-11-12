@@ -46,11 +46,22 @@ class PaymentAccountType extends AbstractType
         );
 
         $builder->add('nickname', 'text', [
-            'property_path' => 'name'
+            'property_path' => 'name',
+            'constraints'   => [
+                new NotBlank([
+                    'groups' => ['bank', 'card']
+                ])
+            ]
         ]);
 
         $builder->add('name', 'text', [
-            'mapped' => false
+            'mapped' => false,
+            'property_path' => 'signer_name', // added for mapping errors
+            'constraints'   => [
+                new NotBlank([
+                    'groups' => ['bank', 'card']
+                ])
+            ]
         ]);
 
         $builder->add('bank', new BankPaymentAccountType(), [

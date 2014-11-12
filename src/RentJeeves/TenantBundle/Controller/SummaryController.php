@@ -5,7 +5,7 @@ namespace RentJeeves\TenantBundle\Controller;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
-use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
+use CreditJeeves\ExperianBundle\NetConnect\PreciseIDQuestions;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
@@ -111,7 +111,7 @@ class SummaryController extends Controller
         }
 
         /**
-         * @var $pidkiqQuestions PidkiqQuestions
+         * @var $pidkiqQuestions PreciseIDQuestions
          */
         $pidkiqQuestions = $this->get('experian.net_connect.precise_id.questions');
 

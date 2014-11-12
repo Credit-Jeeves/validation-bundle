@@ -34,9 +34,21 @@
                 <source>api.errors.contracts.property.not_standalone</source>
                 <target>Property is not standalone. Please specify unit name.</target>
             </trans-unit>
+            <trans-unit id="api.errors.contract.new_unit.change">
+                <source>api.errors.contract.new_unit.change</source>
+                <target>"new_unit" parameters are only supported in POST requests.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.contract.unit_url.change">
+                <source>api.errors.contract.unit_url.change</source>
+                <target>Update not supported.</target>
+            </trans-unit>
             <trans-unit id="api.errors.property.street.empty">
                 <source>api.errors.property.street.empty</source>
                 <target>Street is required.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.property.unit_name.specify">
+                <source>api.errors.property.unit_name.specify</source>
+                <target>Parameter "unit_name" is required. If address is a single-unit property, set to empty string ("").</target>
             </trans-unit>
             <trans-unit id="api.errors.property.number.empty">
                 <source>api.errors.property.number.empty</source>

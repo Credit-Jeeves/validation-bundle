@@ -282,6 +282,11 @@ class Contract extends Base
             $result['credit_track_enabled'] = false;
         }
 
+        $result['isIntegrated'] = false;
+        if ($this->getGroup() && $groupSettings = $this->getGroup()->getGroupSettings()) {
+            $result['isIntegrated'] = $groupSettings->getIsIntegrated();
+        }
+
         return $result;
     }
 
@@ -759,7 +764,11 @@ class Contract extends Base
 
     public function __toString()
     {
-        return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
+        if ($this->getProperty()) {
+            return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
+        }
+
+        return '';
     }
 
     /**

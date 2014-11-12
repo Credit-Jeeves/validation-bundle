@@ -90,7 +90,7 @@ class ParamFetcher extends Base
             $this->initParams();
         }
 
-        if (isset($this->paramsValue[$name])) {
+        if (array_key_exists($name, $this->paramsValue)) {
             return $this->paramsValue[$name];
         }
         /** @var Param $config */

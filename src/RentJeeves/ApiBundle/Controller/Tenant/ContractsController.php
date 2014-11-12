@@ -83,7 +83,7 @@ class ContractsController extends Controller
      * )
      * @RequestParam(
      *     name="experian_reporting",
-     *     strict=false,
+     *     default="disabled",
      *     requirements="enabled|disabled",
      *     description="Option for enable reporting to Experian."
      * )
@@ -146,9 +146,15 @@ class ContractsController extends Controller
      *     name="id",
      *     encoder = "api.default_id_encoder"
      * )
+     * This is needed for correct parsing url and get id
+     * @RequestParam(
+     *     name="unit_url",
+     *     strict=false,
+     *     encoder="api.default_url_encoder",
+     *     description="Resource url for Unit."
+     * )
      * @RequestParam(
      *     name="experian_reporting",
-     *     strict=true,
      *     requirements="enabled|disabled",
      *     description="Option for enable reporting to Experian."
      * )

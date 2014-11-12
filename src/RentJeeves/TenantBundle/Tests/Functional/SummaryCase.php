@@ -2,6 +2,8 @@
 
 namespace RentJeeves\TenantBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class SummaryCase extends BaseTestCase
@@ -14,6 +16,25 @@ class SummaryCase extends BaseTestCase
         self::$kernel = null;
         $this->load(true);
         $this->setDefaultSession('selenium2');
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com'
+            )
+        );
+        $tenant->setIsVerified(UserIsVerified::NONE);
+        $contracts = $tenant->getContracts();
+        foreach ($contracts as $contract) {
+            if ($contract->getRent() === "987.00") {
+                continue;
+            }
+            $this->assertNull($contract->getTransUnionStartAt());
+            $this->assertFalse($contract->getReportToTransUnion());
+        }
+        $em->flush($tenant);
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
         $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
@@ -42,6 +63,30 @@ class SummaryCase extends BaseTestCase
         $this->assertNotNull($loading = $this->page->find('css', '.loading'));
         $this->session->wait($this->timeout+5000, "window.location.pathname.match('\/summary') === null");
         $this->assertNotNull($summaryPage = $this->page->find('css', '#summary_page'));
+
+        $today = new \DateTime();
+        self::$kernel = null;
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com'
+            )
+        );
+        $contracts = $tenant->getContracts();
+        /**
+         * @var Contract $contract
+         */
+        foreach ($contracts as $contract) {
+            if ($contract->getRent() === "987.00") {
+                continue;
+            }
+            $this->assertNotNull($contract->getTransUnionStartAt());
+            $this->assertTrue($contract->getReportToTransUnion());
+            $this->assertTrue(($contract->getTransUnionStartAt()->format('Ymd') === $today->format('Ymd')));
+        }
     }
 
     /**

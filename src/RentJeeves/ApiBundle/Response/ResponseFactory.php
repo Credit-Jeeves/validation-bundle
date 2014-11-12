@@ -21,11 +21,15 @@ class ResponseFactory
 
     /**
      * @param $entity
-     * @return ResponseResource
+     * @return ResponseResource|null
      * @throws InvalidResponseResourceException
      */
     public function getResponse($entity)
     {
+        if (!is_object($entity)) {
+            return null;
+        }
+
         $reflectClass = new ReflectionClass($entity);
 
         $responseClassName = __NAMESPACE__ . '\\' . $reflectClass->getShortName();

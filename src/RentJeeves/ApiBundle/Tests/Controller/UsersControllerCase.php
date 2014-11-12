@@ -66,7 +66,7 @@ class UsersControllerCase extends BaseApiTestCase
                     'first_name' => 'Tom',
                     'last_name' => 'Ford',
                     'email' => 'tom.ford@mail.com',
-                    'password' => '12345'
+                    'password' => '123450000000'
                 ],
                 201
             ],
@@ -76,7 +76,7 @@ class UsersControllerCase extends BaseApiTestCase
                     'first_name' => 'Max',
                     'last_name' => 'Anderson',
                     'email' => 'maxx@mail.com',
-                    'password' => '321'
+                    'password' => '321321321321'
                 ],
                 201
             ],

@@ -5,7 +5,7 @@ function ResolveLate(parent, data) {
     this.details = ko.observable(data);
     this.resolveValue = ko.observable('email');
     this.amount = ko.observable(data.amount);
-    this.paidForOptions = ko.observableArray(associativeArrayToOptions(data.paidForArr));
+    this.paidForOptions = ko.observableArray(associativeArrayToOptions(data.paidForArr, null));
     this.paidFor = ko.observable(null);
 
     this.isDialogVisible = ko.observable(true);

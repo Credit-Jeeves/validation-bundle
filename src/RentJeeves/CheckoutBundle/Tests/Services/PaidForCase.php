@@ -51,6 +51,7 @@ class PaidForCase extends BaseTestCase
         $contract->setStartAt($startAt->modify('-1 month'));
         $contract->setPaidTo($paidTo);
         $contract->setRent(1000);
+        $contract->setDueDate(28);
 
         $order = new Order();
         $order->setStatus(OrderStatus::COMPLETE);
@@ -94,13 +95,13 @@ class PaidForCase extends BaseTestCase
         $paidFor->expects($this->exactly(2))
             ->method('getNow')
             ->will($this->returnValue($now));
-        $nowDate = clone $now;
 
+        $dateTime->setDate(null, null, 28);
         $this->assertEquals(
             $paidFor->createItem($dateTime) +
             $paidFor->createItem($dateTime->modify('+2 month')) +
             $paidFor->createItem($dateTime->modify('+1 month')) +
-            $paidFor->createItem($nowDate->modify('+1 month')),
+            $paidFor->createItem($dateTime->modify('+1 month')),
             $paidFor->getArray($contract)
         );
     }
@@ -113,6 +114,7 @@ class PaidForCase extends BaseTestCase
         $date = new DateTime();
         $contract = new Contract();
         $contract->setRent(1000);
+        $contract->setDueDate(10);
 
         $paidFor = $this->getMock('RentJeeves\CheckoutBundle\Services\PaidFor', array('getNow'), array(), '', false);
         $paidFor->expects($this->any())
@@ -120,6 +122,7 @@ class PaidForCase extends BaseTestCase
             ->will($this->returnValue(new DateTime()));
 
 
+        $date->setDate(null, null, 10);
         $this->assertEquals(
             $paidFor->createItem($date) +
             $paidFor->createItem($date->modify('+1 month')),

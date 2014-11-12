@@ -35,11 +35,6 @@ class Card
      * Format needs to be yyyyy-mm
      *
      * @Assert\NotBlank(groups={"card"})
-     * @Assert\Regex(
-     *      pattern="/^20[0-9]{2}-(0[1-9]{1}|1[0-2]{1})$/",
-     *      message="api.errors.payment_accounts.card.expiration.invalid_format",
-     *      groups={"card"}
-     * )
      */
     protected $expiration;
 
@@ -52,7 +47,10 @@ class Card
                 ->addViolationAt('account', 'api.errors.payment_accounts.card.account.checksum');
         }
 
-        if (!$this->isExpirationDateValid()) {
+        if (!$this->isDateFormatValid()) {
+            $context
+                ->addViolationAt('expiration', 'api.errors.payment_accounts.card.expiration.invalid_format');
+        } elseif (!$this->isExpirationDateValid()) {
             $context
                 ->addViolationAt('expiration', 'api.errors.payment_accounts.card.expiration.invalid_expiration');
         }
@@ -95,6 +93,18 @@ class Card
         }
 
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDateFormatValid()
+    {
+        if (preg_match('/^20[0-9]{2}-(0[1-9]|1[0-2])$/', $this->expiration)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function getAccount()

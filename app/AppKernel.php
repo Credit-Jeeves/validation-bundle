@@ -148,9 +148,9 @@ abstract class AppKernel extends Kernel
         // prod env
         if ('dev' != $this->getEnvironment()) {
             $recipients = array(
-                'forma@66ton99.org.ua' .
-                ', systems@creditjeeves.com' .
+                'systems@creditjeeves.com' .
                 ', rentmailformapro@yandex.ru' .
+                ', cary@renttrack.com' .
                 ', alexandr.sharamko@gmail.com'
             );
 
