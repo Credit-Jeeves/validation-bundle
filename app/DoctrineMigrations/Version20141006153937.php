@@ -22,6 +22,8 @@ class Version20141006153937 extends AbstractMigration
              SET c.report_to_trans_union = 1, c.trans_union_start_at = NOW()
              WHERE (s.is_reporting_off = 0 OR s.is_reporting_off IS NULL) AND
              STR_TO_DATE(u.created_at, "%Y-%m-%d") >= STR_TO_DATE("2014-09-09", "%Y-%m-%d")
+             AND (c.report_to_trans_union = 0 OR c.report_to_trans_union IS NULL) AND
+             c.trans_union_start_at IS NULL
           '
         );
 
