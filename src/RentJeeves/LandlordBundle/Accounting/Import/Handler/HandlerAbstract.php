@@ -112,7 +112,7 @@ abstract class HandlerAbstract implements HandlerInterface
      * @param $field
      * @return \DateTime|null
      */
-    public function getDateByField($field)
+    public function getDateByField(Import $import, $field)
     {
         try {
             $date = DateTime::createFromFormat($this->storage->getDateFormat(), $field);
@@ -131,14 +131,17 @@ abstract class HandlerAbstract implements HandlerInterface
         $formattedYear = (int) $date->format('Y');
 
         if ($formattedMonth < 1 || $formattedMonth > 12) {
+            $import->setIsValidDateFormat(false);
             return null;
         }
 
         if ($formattedDay < 1 || $formattedDay > 31) {
+            $import->setIsValidDateFormat(false);
             return null;
         }
 
         if ($formattedYear < 2000 || $formattedYear > 2150) {
+            $import->setIsValidDateFormat(false);
             return null;
         }
 

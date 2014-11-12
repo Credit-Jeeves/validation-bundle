@@ -26,6 +26,12 @@ class Import
     protected $hasContractWaiting = false;
 
     /**
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $isValidDateFormat = true;
+
+    /**
      * @Serializer\Type("integer")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -99,6 +105,22 @@ class Import
     protected $isMultipleProperty;
 
     protected $contractWaiting;
+
+    /**
+     * @return mixed
+     */
+    public function getIsValidDateFormat()
+    {
+        return $this->isValidDateFormat;
+    }
+
+    /**
+     * @param mixed $isValidDateFormat
+     */
+    public function setIsValidDateFormat($isValidDateFormat)
+    {
+        $this->isValidDateFormat = $isValidDateFormat;
+    }
 
     /**
      * @return ContractWaiting
