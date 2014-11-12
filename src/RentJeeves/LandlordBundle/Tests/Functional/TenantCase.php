@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -375,7 +376,7 @@ class TenantCase extends BaseTestCase
             array(
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name'  => 'Sharamko',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '7858655392',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'test@email.ru',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_1' => true,
@@ -466,6 +467,170 @@ class TenantCase extends BaseTestCase
         $contract = $contracts->get(0);
         $this->assertEquals(23, $contract->getDueDate());
         $this->assertNotNull($contract->getFinishAt());
+        $this->assertNull($contract->getTransUnionStartAt());
+        $this->assertFalse($contract->getReportToTransUnion());
+        $this->logout();
+        //Test identification
+        $this->setDefaultSession('selenium2');
+        $this->login('test@email.ru', 'pass');
+        $this->assertNotNull(
+            $close = $this->page->find('css', '.ui-dialog-titlebar-close')
+        );
+        $close->click();
+
+        $this->page->clickLink('tabs.summary');
+        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
+        $this->assertNotNull(
+            $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
+        );
+        $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1').val('666')");
+        $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn2').val('30')");
+        $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn3').val('9041')");
+
+
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_street'  => 'Street',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_city'    => 'City',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_area'    => 'CA',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_zip'     => '90210',
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->assertNotNull($form = $this->page->find('css', '#questions'));
+        //Fill correct answer
+        $this->fillForm(
+            $form,
+            array(
+                'questions_OutWalletAnswer1_0' => true,
+                'questions_OutWalletAnswer2_1' => true,
+                'questions_OutWalletAnswer3_2' => true,
+                'questions_OutWalletAnswer4_3' => true,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.3');
+        $this->assertNotNull($loading = $this->page->find('css', '.loading'));
+        $this->session->wait($this->timeout+5000, "window.location.pathname.match('\/summary') === null");
+        $em->refresh($contract);
+        $this->assertNotNull($contract->getTransUnionStartAt());
+        $this->assertTrue($contract->getReportToTransUnion());
+    }
+
+
+    /**
+     * @test
+     * @depends addTenantNoneExist
+     */
+    public function tenantPay()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('test@email.ru', 'pass');
+        $this->assertNotNull($payButton = $this->page->find('css', '.button-contract-pay'));
+        $payButton->click();
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+
+        $this->assertNotNull(
+            $propertyAddress = $this->page->find(
+                'css',
+                '#rentjeeves_checkoutbundle_paymenttype_property_address'
+            )
+        );
+
+        $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
+        $closeButton->click();
+
+        $this->page->pressButton('contract-pay-1');
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_amount'      => '0',
+                'rentjeeves_checkoutbundle_paymenttype_type'        => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1,
+                'rentjeeves_checkoutbundle_paymenttype_amount'      => '1500'
+            )
+        );
+
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumberAgain' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
+            )
+        );
+
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout+ 85000, // local need more time for passed test
+            "!jQuery('#id-source-step').is(':visible')"
+        );
+
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(checkout.make_payment)').is(':visible')"
+        );
+        $payPopup->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "!jQuery('#pay-popup:visible').length"
+        );
+
+        $this->assertNotNull($pay = $this->page->find('css', '#pay-popup'));
+        $this->assertFalse($pay->isVisible());
+        $this->logout();
+
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'test@email.ru',
+            )
+        );
+
+        $contracts = $tenant->getContracts();
+        $this->assertCount(1, $contracts, 'wrong number of contracts');
+
+        /**
+         * @var $contract Contract
+         */
+        $contract = $contracts->get(0);
+        $this->assertNotNull($contract->getTransUnionStartAt());
+        $this->assertTrue($contract->getReportToTransUnion());
     }
 
     /**
