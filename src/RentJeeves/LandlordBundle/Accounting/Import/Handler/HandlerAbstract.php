@@ -10,6 +10,7 @@ use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\CoreBundle\DateTime;
@@ -122,6 +123,22 @@ abstract class HandlerAbstract implements HandlerInterface
         $errors = DateTime::getLastErrors();
 
         if (!empty($errors['warning_count']) || !empty($errors['errors'])) {
+            return null;
+        }
+
+        $formattedMonth = (int) $date->format('m');
+        $formattedDay = (int) $date->format('j');
+        $formattedYear = (int) $date->format('Y');
+
+        if ($formattedMonth < 1 || $formattedMonth > 12) {
+            return null;
+        }
+
+        if ($formattedDay < 1 || $formattedDay > 31) {
+            return null;
+        }
+
+        if ($formattedYear < 2000 || $formattedYear > 2150) {
             return null;
         }
 
@@ -423,12 +440,17 @@ abstract class HandlerAbstract implements HandlerInterface
          * @var $contract EntityContract
          */
         foreach ($this->emailSendingQueue as $contract) {
-            $this->mailer->sendRjTenantInvite(
+            $result = $this->mailer->sendRjTenantInvite(
                 $contract->getTenant(),
                 $this->user,
                 $contract,
                 $isImported = "1"
             );
+
+            if ($result === false) {
+                $message = sprintf("Can't send invite email to user %s", $contract->getTenant()->getEmail());
+                throw new ImportHandlerException($message);
+            }
         }
 
         $this->emailSendingQueue = array();

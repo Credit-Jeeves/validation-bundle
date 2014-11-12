@@ -54,7 +54,7 @@ abstract class UnitMapping
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[A-Za-z_0-9-]{1,128}$/",
+     *     pattern = "/^[A-Za-z_0-9-\s]{1,128}$/",
      *     message = "import.error.external_unit_id",
      *     groups = {
      *         "import"
