@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
+use DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -549,15 +550,18 @@ class TenantCase extends BaseTestCase
             $this->timeout,
             "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
         );
+        $paidFor = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymenttype_paidFor option');
+        $paidFor = $paidFor[1]->getAttribute('value');
         $this->fillForm(
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymenttype_amount'      => '0',
                 'rentjeeves_checkoutbundle_paymenttype_type'        => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '28',
                 'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
                 'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1,
-                'rentjeeves_checkoutbundle_paymenttype_amount'      => '1500'
+                'rentjeeves_checkoutbundle_paymenttype_amount'      => '1500',
+                'rentjeeves_checkoutbundle_paymenttype_paidFor'     => $paidFor,
             )
         );
 
