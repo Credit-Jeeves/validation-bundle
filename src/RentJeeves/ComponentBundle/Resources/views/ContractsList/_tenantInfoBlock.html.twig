@@ -5,7 +5,10 @@
         <p data-bind="text: full_address"></p>
     </div>
     <div class="sub-box">
-        <p>{{ 'conflict.balance' | trans() }}:&nbsp;<strong data-bind="text: balance"></strong></p>
+        <p data-bind="visible: isIntegrated">
+            {{ 'conflict.balance' | trans() }}:&nbsp;
+            <strong data-bind="text: balance"></strong>
+        </p>
         <p>{{ 'conflict.due.date' | trans() }}:&nbsp;<strong data-bind="text: late_date"></strong></p>
         <p class="late" data-bind="text: late"></p>
     </div>

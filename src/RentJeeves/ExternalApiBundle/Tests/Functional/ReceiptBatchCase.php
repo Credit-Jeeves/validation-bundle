@@ -40,8 +40,6 @@ class ReceiptBatchCase extends BaseTestCase
         $receiptBatch->run($date);
         $this->setDefaultSession('goutte');
         $emails = $this->getEmails();
-//        $this->visitEmailsPage();
-//        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $emails, 'Wrong number of emails');
     }
 }

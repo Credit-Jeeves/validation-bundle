@@ -135,6 +135,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
             )
@@ -150,6 +151,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
                 'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
@@ -167,6 +169,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
             )
         );
@@ -197,6 +200,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
                 'rentjeeves_checkoutbundle_paymenttype_dueDate' => '20',
@@ -269,6 +273,7 @@ class PayCase extends BaseTestCase
             $this->fillForm(
                 $form,
                 array(
+                    'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                     'rentjeeves_checkoutbundle_paymenttype_amount' => '0',
                     'rentjeeves_checkoutbundle_paymenttype_type'    => PaymentTypeEnum::RECURRING,
                     'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
@@ -281,6 +286,7 @@ class PayCase extends BaseTestCase
             $this->fillForm(
                 $form,
                 array(
+                    'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                     'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
                     'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
                 )
@@ -302,6 +308,7 @@ class PayCase extends BaseTestCase
                 $this->fillForm(
                     $form,
                     array(
+                        'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                         'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
                         'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
                     )
@@ -310,6 +317,7 @@ class PayCase extends BaseTestCase
                 $this->fillForm(
                     $form,
                     array(
+                        'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                         'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
                     )
                 );
@@ -439,9 +447,15 @@ class PayCase extends BaseTestCase
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
 
         $this->session->wait($this->timeout, "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length");
+        $paidFor = (new DateTime())->setDate(null, null, 11);
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31', // set date to 31 so we can always continue
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $paidFor->format('Y-m-d')
+            )
+        );
 
-        // set date to 31 so we can always continue
-        $form->fillField('rentjeeves_checkoutbundle_paymenttype_dueDate', '31');
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait($this->timeout, "jQuery('#id-source-step:visible').length");
@@ -615,6 +629,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_amountOther' => -10,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
@@ -633,6 +648,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_amountOther' =>  10,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,

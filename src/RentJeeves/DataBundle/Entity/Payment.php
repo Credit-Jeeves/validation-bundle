@@ -104,6 +104,14 @@ class Payment extends Base
         // 2. Get now
         $now = $this->getNow();
 
+        // if payment start_date is in future, use it as a next payment date
+        if ($now < $this->getStartDate()) {
+            $day = $this->getDueDate();
+            $month = $this->getStartMonth();
+            $year = $this->getStartYear();
+            return $now->setDate($year, $month, $day);
+        }
+
         // 3. Get current day, month, year
         $currentDay = $now->format('d');
         $currentMonth = $now->format('m');
@@ -125,10 +133,6 @@ class Payment extends Base
         } else { // 5. If the day is Ok, month and year should be the current ones unless NOW is before START_DATE
             $month = $currentMonth;
             $year = $currentYear;
-            if ($now < $this->getStartDate()) {
-                $month = $this->getStartMonth();
-                $year = $this->getStartYear();
-            }
         }
         // modify and setDate do not work together, so we need to take non modified 'now'
         $now = $this->getNow();

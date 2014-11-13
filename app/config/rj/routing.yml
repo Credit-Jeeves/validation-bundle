@@ -119,7 +119,7 @@ jms_jobs_cancel_job:
 rest_api_tenant_v1:
   type : rest
   resource: "@RjApiBundle/Resources/config/routing_tenant.yml"
-  prefix: /api/tenant/v1
+  prefix: /api/tenant
 
 rest_api_partner:
   type : rest

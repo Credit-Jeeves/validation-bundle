@@ -240,7 +240,7 @@ class PaymentControllerCase extends BaseApiTestCase
 
         $client->request(
             'PUT',
-            self::URL_PREFIX . "/payment/{$encodedId}.{$format}",
+            self::URL_PREFIX . "/payments/{$encodedId}.{$format}",
             [],
             [],
             [
