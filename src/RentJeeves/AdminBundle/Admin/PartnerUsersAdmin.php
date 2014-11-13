@@ -77,6 +77,7 @@ class PartnerUsersAdmin extends Admin
                 array(
                     'type' => 'password',
                     'required' => true,
+                    'property_path' => 'plainPassword',
                     'options' => array('translation_domain' => 'FOSUserBundle'),
                     'first_options' => array('label' => 'form.password'),
                     'second_options' => array('label' => 'form.password_confirmation'),
@@ -96,16 +97,5 @@ class PartnerUsersAdmin extends Admin
     public function getClassnameLabel()
     {
         return 'partner users';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prePersist($user)
-    {
-        $request = $this->getRequest();
-        $formData = $request->request->get($this->getUniqid());
-        $password = $formData['password']['first'];
-        $user->setPassword(md5($password));
     }
 }

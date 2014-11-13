@@ -187,7 +187,7 @@ class PaymentsController extends Controller
      *         500="Internal Server Error"
      *     }
      * )
-     * @Rest\Put("/payment/{id}")
+     * @Rest\Put("/payments/{id}")
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
      * @AttributeParam(
      *     name="id",

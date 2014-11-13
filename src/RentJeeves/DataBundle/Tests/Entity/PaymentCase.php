@@ -22,6 +22,7 @@ class PaymentCase extends BaseTestCase
             array('2014-01-01', 30, '2014-02-27', '2014-02-28'),
             array('2014-01-01', 1, '2014-02-27', '2014-03-01'),
             array('2014-01-01', 1, '2014-03-31', '2014-04-01'),
+            array('2025-01-09', 9, '2015-05-07', '2025-01-09'),
         );
     }
 
@@ -36,7 +37,7 @@ class PaymentCase extends BaseTestCase
             false
         );
         $payment->setStartDate($startDate);
-        $payment->expects($this->exactly(2))
+        $payment->expects($this->any())
             ->method('getNow')
             ->will($this->returnValue(new DateTime($now)));
         $payment->setDueDate($dueDate);

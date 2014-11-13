@@ -7,7 +7,6 @@ use CreditJeeves\DataBundle\Entity\Pidkiq;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\ExperianBundle\NetConnect\PreciseIDQuestions;
-use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
