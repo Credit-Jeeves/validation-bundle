@@ -3,6 +3,7 @@ function accountingImport(superclass) {
     this.superclass = superclass;
     this.source = ko.observable('');
     this.isMultipleProperty = ko.observable(false);
+    this.isInvalidDate = ko.observable(false);
     this.fieldsWhichNotContaintInForm = [
         "import_new_user_with_contract_contract_residentMapping_residentId",
         "import_new_user_with_contract_contract_unitMapping_externalUnitId",
@@ -45,6 +46,10 @@ function accountingImport(superclass) {
                     var errors = new Array();
                     //Fill error by line
                     ko.utils.arrayForEach(response.rows, function (value) {
+                        if (value.is_valid_date_format == false && self.isInvalidDate() == false) {
+                            self.isInvalidDate(true);
+                        }
+
                         if (value.errors.length === 0) {
                             return;
                         }

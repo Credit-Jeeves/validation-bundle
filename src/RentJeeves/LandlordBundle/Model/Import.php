@@ -20,6 +20,12 @@ class Import
     protected $isSkipped;
 
     /**
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $skippedMessage;
+
+    /**
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -105,6 +111,22 @@ class Import
     protected $isMultipleProperty;
 
     protected $contractWaiting;
+
+    /**
+     * @return mixed
+     */
+    public function getSkippedMessage()
+    {
+        return $this->skippedMessage;
+    }
+
+    /**
+     * @param mixed $skippedMessage
+     */
+    public function setSkippedMessage($skippedMessage)
+    {
+        $this->skippedMessage = $skippedMessage;
+    }
 
     /**
      * @return mixed
