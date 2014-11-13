@@ -18,7 +18,7 @@
                     }}
                     <br />
                     <br />
-                    <div class="information-box pie-el"  data-bind="visible: $root.isInvalidDate">
+                    <div class="information-box pie-el"  data-bind="visible: ($root.isValidDateFormat() == false)">
                         {{ "import.error.mapping_date"|trans }}
                     </div>
                     {% image '@LandlordBundle/Resources/public/images/ajax.gif' %}
