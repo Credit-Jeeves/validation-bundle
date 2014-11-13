@@ -11,7 +11,6 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use RentJeeves\DataBundle\Entity\PartnerCode;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
@@ -1972,15 +1971,15 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @param PartnerCode $partnerCode
+     * @param \RentJeeves\DataBundle\Entity\PartnerCode $partnerCode
      */
-    public function setPartnerCode(PartnerCode $partnerCode)
+    public function setPartnerCode(\RentJeeves\DataBundle\Entity\PartnerCode $partnerCode)
     {
         $this->partnerCode = $partnerCode;
     }
 
     /**
-     * @return PartnerCode
+     * @return \RentJeeves\DataBundle\Entity\PartnerCode
      */
     public function getPartnerCode()
     {
