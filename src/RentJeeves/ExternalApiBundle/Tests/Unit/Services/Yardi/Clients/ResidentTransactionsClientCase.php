@@ -2,27 +2,49 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients;
 
+use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients\BaseClientCase as Base;
 
 class ResidentTransactionsClientCase extends Base
 {
     /**
-     * @test
+     * @return ResidentTransactionsClient
      */
-    public function getPropertyConfigurations()
+    protected function getClient()
     {
         $container = $this->getKernel()->getContainer();
         $clientFactory = $container->get('soap.client.factory');
 
-        $resident = $clientFactory->getClient(
+        return $clientFactory->getClient(
             $this->getYardiSettings(),
             SoapClientEnum::RESIDENT_TRANSACTIONS
         );
+    }
 
-        $result = $resident->getPropertyConfigurations();
+    /**
+     * @test
+     */
+    public function getPropertyConfigurations()
+    {
+        $client = $this->getClient();
+        $result = $client->getPropertyConfigurations();
 
         $this->assertTrue($result instanceof GetPropertyConfigurationsResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function getResidentTransactions()
+    {
+        $client = $this->getClient();
+        /**
+         * @var $response GetResidentTransactionsLoginResponse
+         */
+        $response = $client->getResidentTransactions('rnttrk01');
+        $this->assertTrue($response instanceof GetResidentTransactionsLoginResponse);
     }
 }
