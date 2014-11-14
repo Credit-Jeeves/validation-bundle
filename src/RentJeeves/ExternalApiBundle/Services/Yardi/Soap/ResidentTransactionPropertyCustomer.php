@@ -25,6 +25,28 @@ class ResidentTransactionPropertyCustomer
     protected $unit;
 
     /**
+     * @Serializer\SerializedName("PaymentAccepted")
+     * @Serializer\Type("string")
+     */
+    protected $paymentAccepted;
+
+    /**
+     * @return string
+     */
+    public function getPaymentAccepted()
+    {
+        return $this->paymentAccepted;
+    }
+
+    /**
+     * @param string $paymentAccepted
+     */
+    public function setPaymentAccepted($paymentAccepted)
+    {
+        $this->paymentAccepted = $paymentAccepted;
+    }
+
+    /**
      * @param mixed $serviceTransactions
      */
     public function setServiceTransactions($serviceTransactions)
