@@ -38,6 +38,21 @@
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
             </trans-unit>
+            <trans-unit id="import.error.mapping_date">
+                <source>import.error.mapping_date</source>
+                <target>
+                        It appears that the date format you chose for this file is incorrect.
+                        Please verify the date format and try again. Or you can proceed, but you will have to enter dates manually.
+                </target>
+            </trans-unit>
+            <trans-unit id="import.info.skipped1">
+                <source>import.info.skipped1</source>
+                <target>This row was skipped because resident ID = VACANT</target>
+            </trans-unit>
+            <trans-unit id="import.info.skipped2">
+                <source>import.info.skipped2</source>
+                <target>This row was skipped because the lease end is in the past and the lease is not marked as month-to-month.</target>
+            </trans-unit>
             <trans-unit id="rj.footer.contact_us">
                 <source>rj.footer.contact_us</source>
                 <target>Contact Us</target>

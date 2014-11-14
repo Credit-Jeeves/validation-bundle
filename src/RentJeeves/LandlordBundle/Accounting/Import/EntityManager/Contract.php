@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\LandlordBundle\Model\Import;
 
 trait Contract
 {
@@ -19,7 +20,7 @@ trait Contract
      *
      * @return EntityContract
      */
-    protected function createContract(array $row, Tenant $tenant)
+    protected function createContract(array $row, Tenant $tenant, Import $import)
     {
         $contract = new EntityContract();
         if ($tenant->getId()) {
@@ -40,7 +41,7 @@ trait Contract
             $contract->setUnit($unit);
         }
         $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
-        $moveIn = $this->getDateByField($row[Mapping::KEY_MOVE_IN]);
+        $moveIn = $this->getDateByField($import, $row[Mapping::KEY_MOVE_IN]);
         $contract->setStartAt($moveIn);
 
         /**
@@ -67,7 +68,7 @@ trait Contract
         $property = $this->getProperty($row);
 
         if (!$tenant->getId() || !$property) {
-            $contract = $this->createContract($row, $tenant);
+            $contract = $this->createContract($row, $tenant, $import);
         } else {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
@@ -76,7 +77,7 @@ trait Contract
             );
 
             if (empty($contract)) {
-                $contract = $this->createContract($row, $tenant);
+                $contract = $this->createContract($row, $tenant, $import);
             }
         }
         //set data from csv file
@@ -121,11 +122,11 @@ trait Contract
         }
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
-            $import->setMoveOut($this->getDateByField($row[Mapping::KEY_MOVE_OUT]));
+            $import->setMoveOut($this->getDateByField($import, $row[Mapping::KEY_MOVE_OUT]));
         }
 
         $today = new DateTime();
-        $leaseEnd = $this->getDateByField($row[Mapping::KEY_LEASE_END]);
+        $leaseEnd = $this->getDateByField($import, $row[Mapping::KEY_LEASE_END]);
 
         if ($import->getMoveOut() !== null) {
             $contract->setFinishAt($import->getMoveOut());

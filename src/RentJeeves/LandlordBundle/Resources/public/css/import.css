@@ -119,3 +119,7 @@ table tbody tr td {
     float: left;
     padding-right: 3px;
 }
+.information-box {
+    margin-top: -15px;
+    margin-bottom: 10px;
+}
