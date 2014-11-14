@@ -252,4 +252,18 @@ class Tenant extends User
 
         return false;
     }
+
+    public function getResidentForHolding(Holding $holding)
+    {
+        $residentsMapping = $this->getResidentsMapping();
+        /**
+         * @var $residentMapping ResidentMapping
+         */
+        foreach ($residentsMapping as $residentMapping) {
+            if ($residentMapping->getHolding()->getId() === $holding->getId()) {
+                return $residentMapping;
+            }
+        }
+        return null;
+    }
 }

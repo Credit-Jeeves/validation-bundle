@@ -32,6 +32,12 @@ class InviteTenantContractType extends AbstractType
             'contract',
             new ContractType($this->user, $this->group)
         );
+        if ($this->group && $this->group->getGroupSettings()->getIsIntegrated()) {
+            $builder->add(
+                'resident',
+                new TenantResidentMappingType()
+            );
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

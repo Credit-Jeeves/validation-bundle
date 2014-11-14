@@ -6,9 +6,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 use RentJeeves\DataBundle\Entity\Tenant;
 use CreditJeeves\DataBundle\Entity\Holding;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\MappedSuperclass
+ * @UniqueEntity(
+ *     fields={"holding", "residentId"},
+ *     groups={"add_or_edit_tenants"},
+ *     message="add_or_edit_tenants.error.already_exist"
+ * )
  */
 abstract class ResidentMapping
 {
@@ -59,8 +65,10 @@ abstract class ResidentMapping
      *      nullable=false
      * )
      * @Assert\NotBlank(
+     *     message="common.residentId.required",
      *     groups = {
-     *         "import"
+     *         "import",
+     *         "add_or_edit_tenants"
      *     }
      * )
      * @Assert\Length(
