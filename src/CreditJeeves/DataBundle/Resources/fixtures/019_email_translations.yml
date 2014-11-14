@@ -1405,3 +1405,42 @@ fixtures:
             </tbody>
           </table>
       {% endblock %}
+
+
+# rjYardiPaymentAcceptedTurnOn.html
+  translation_42_subject:
+    translatable: email_42
+    locale: %locale%
+    property: subject
+    value: Online Payments Enabled
+
+  translation_42_body:
+    translatable: email_42
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Dear {{ TenantName }},
+        Your property manager has re-enabled online payments. You can now
+        <a href="{{ href }}">log into RentTrack</a> and set up a new payment.
+      {% endblock %}
+
+# rjYardiPaymentAcceptedTurnOff.html
+  translation_43_subject:
+    translatable: email_43
+    locale: %locale%
+    property: subject
+    value: Online Payments Disabled
+
+  translation_43_body:
+    translatable: email_43
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Dear {{ TenantName }},
+        Your property manager has disabled online payments. Any unprocessed payments you had scheduled
+        through RentTrack have been cancelled. Contact your property manager immediately for more information.
+      {% endblock %}

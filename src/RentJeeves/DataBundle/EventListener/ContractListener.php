@@ -10,6 +10,8 @@ use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use Exception;
 
 /**
  * @DI\Service("data.event_listener.contract")
@@ -77,6 +79,7 @@ class ContractListener
         $tuReporting = $this->container->get('contract.trans_union_reporting');
         $tuReporting->turnOnTransUnionReporting($contract);
     }
+
     /**
      * Checks contract to contain unit
      *
@@ -106,8 +109,8 @@ class ContractListener
          * 500.00 - double
          * value the same but contract will close.
          */
-        $oldValue = floatval($eventArgs->getNewValue('rent'));
-        $newValue = floatval($eventArgs->getOldValue('rent'));
+        $newValue = floatval($eventArgs->getNewValue('rent'));
+        $oldValue = floatval($eventArgs->getOldValue('rent'));
 
         if ($oldValue === $newValue) {
             return;
@@ -140,6 +143,75 @@ class ContractListener
         $contract->setBalance($contract->getRent());
     }
 
+    protected function isPaymentAcceptedFieldChange(PreUpdateEventArgs $eventArgs)
+    {
+        if (!$eventArgs->hasChangedField('yardiPaymentAccepted')) {
+            return false;
+        }
+
+        $newValue = (int) $eventArgs->getNewValue('yardiPaymentAccepted');
+        $oldValue = (int) $eventArgs->getOldValue('yardiPaymentAccepted');
+
+        if ($oldValue === $newValue) {
+            return false;
+        }
+        $deniedPaymentStatuses = array(
+            YardiPaymentAccepted::DO_NOT_ACCEPT,
+            YardiPaymentAccepted::CASH_EQUIVALENT
+        );
+
+        if (in_array($newValue, $deniedPaymentStatuses) && in_array($oldValue, $deniedPaymentStatuses)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function closePaymentByYardi(Contract $contract, PreUpdateEventArgs $eventArgs)
+    {
+        if ($this->isPaymentAcceptedFieldChange($eventArgs) === false) {
+            return;
+        }
+
+        $payment = $contract->getActivePayment();
+        if (empty($payment)) {
+            return;
+        }
+
+        $payment->setStatus(PaymentStatus::CLOSE);
+        $eventArgs->getEntityManager()->flush($payment);
+    }
+
+    protected function sendYardiPaymentEmail(Contract $contract, PreUpdateEventArgs $eventArgs)
+    {
+        if ($this->isPaymentAcceptedFieldChange($eventArgs) === false) {
+            return;
+        }
+
+        $newValue = (int) $eventArgs->getNewValue('yardiPaymentAccepted');
+        $result = true;
+
+        switch ($newValue) {
+            case YardiPaymentAccepted::ANY:
+                $result = $this->container->get('project.mailer')
+                    ->sendEmailAcceptYardiPayment($contract->getTenant());
+                break;
+            case YardiPaymentAccepted::DO_NOT_ACCEPT:
+            case YardiPaymentAccepted::CASH_EQUIVALENT:
+                $result = $this->container->get('project.mailer')
+                    ->sendEmailDoNotAcceptYardiPayment($contract->getTenant());
+                break;
+        }
+
+        if ($result !== true) {
+            throw new Exception(
+                sprintf(
+                    "Email(payment yardi permission) don't send for user: %s",
+                    $contract->getTenant()->getEmail()
+                )
+            );
+        }
+    }
 
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
@@ -150,6 +222,8 @@ class ContractListener
         $this->monitoringContractAmount($contract, $eventArgs);
         $this->checkContract($contract);
         $this->updateBalanceForCurrentStatus($contract, $eventArgs);
+        $this->closePaymentByYardi($contract, $eventArgs);
+        $this->sendYardiPaymentEmail($contract, $eventArgs);
     }
 
     public function postUpdate(LifecycleEventArgs $eventArgs)

@@ -131,12 +131,12 @@ abstract class Contract
      *     nullable=false,
      *     name="yardi_payment_accepted",
      *     options={
-     *         "default"="1"
+     *         "default"="0"
      *     }
      * )
      * @Gedmo\Versioned
      */
-    protected $yardiPaymentAccepted = YardiPaymentAccepted::DO_NOT_ACCEPT;
+    protected $yardiPaymentAccepted = YardiPaymentAccepted::ANY;
 
     /**
      * @ORM\Column(

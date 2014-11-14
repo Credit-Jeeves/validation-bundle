@@ -17,7 +17,7 @@ class Version20141114100455 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_contract
                 ADD yardi_payment_accepted ENUM('0','1','2')
-                    COMMENT '(DC2Type:YardiStatus)' DEFAULT '1' NOT NULL"
+                DEFAULT '0' NOT NULL"
         );
     }
 
