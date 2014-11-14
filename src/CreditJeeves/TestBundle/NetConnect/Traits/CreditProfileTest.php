@@ -16,6 +16,8 @@ trait CreditProfileTest
         switch ($tenant->getEmail()) {
             case 'emilio@example.com':
                 return file_get_contents($this->getFixturesDir() . 'emilio.xml');
+            case 'test@email.ru':
+                return file_get_contents($this->getFixturesDir() . 'emilio.xml');
             case 'marion@example.com':
                 return file_get_contents($this->getFixturesDir() . 'marion.xml');
             case 'alex@example.com':
