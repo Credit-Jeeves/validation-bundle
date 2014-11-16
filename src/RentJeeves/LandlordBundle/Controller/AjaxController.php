@@ -835,52 +835,52 @@ class AjaxController extends Controller
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
-                    if ($amount) {
-                        $paidFor = new DateTime($data['paid_for']);
-                        $createdAt = DateTime::createFromFormat('m/d/Y', $data['created_at']);
-                        date_time_set($createdAt, 0, 0);
-                        $errors = DateTime::getLastErrors();
-                        if ($errors['warning_count'] > 0 || $errors['error_count'] > 0) {
-                            return new JsonResponse(
-                                array(
-                                    'status'  => 'error',
-                                    'errors'  => array(
-                                        'Invalid rent payment date',
-                                    )
-                                )
-                            );
-                        }
-                    // Create order
-                    $order = new Order();
-                    $order->setUser($tenant);
-                    $order->setSum($amount);
-                    $order->setStatus(OrderStatus::COMPLETE);
-                    $order->setType(OrderType::CASH);
-                    $order->setCreatedAt($createdAt);
-                    $em->persist($order);
-                    // Create operation
-                    $operation = new Operation();
-                    $operation->setOrder($order);
-                    $operation->setType(OperationType::RENT);
-                    $operation->setContract($contract);
-                    $operation->setAmount($amount);
-                    $operation->setPaidFor($paidFor);
-                    $operation->setCreatedAt($createdAt);
-                    $em->persist($operation);
-                    $contract->shiftPaidTo($amount);
-                    $contract->setBalance($contract->getBalance() - $amount);
-                    if ($contract->getSettings()->getIsIntegrated()) {
-                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
-                    }
-                }else{
-                    return new JsonResponse(
+                if ($amount) {
+                    $paidFor = new DateTime($data['paid_for']);
+                    $createdAt = DateTime::createFromFormat('m/d/Y', $data['created_at']);
+                    date_time_set($createdAt, 0, 0);
+                    $errors = DateTime::getLastErrors();
+                    if ($errors['warning_count'] > 0 || $errors['error_count'] > 0) {
+                        return new JsonResponse(
                             array(
                                 'status'  => 'error',
                                 'errors'  => array(
-                                    'Invalid amount',
+                                    'Invalid rent payment date',
                                 )
                             )
                         );
+                    }
+                // Create order
+                $order = new Order();
+                $order->setUser($tenant);
+                $order->setSum($amount);
+                $order->setStatus(OrderStatus::COMPLETE);
+                $order->setType(OrderType::CASH);
+                $order->setCreatedAt($createdAt);
+                $em->persist($order);
+                // Create operation
+                $operation = new Operation();
+                $operation->setOrder($order);
+                $operation->setType(OperationType::RENT);
+                $operation->setContract($contract);
+                $operation->setAmount($amount);
+                $operation->setPaidFor($paidFor);
+                $operation->setCreatedAt($createdAt);
+                $em->persist($operation);
+                $contract->shiftPaidTo($amount);
+                $contract->setBalance($contract->getBalance() - $amount);
+                if ($contract->getSettings()->getIsIntegrated()) {
+                    $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
+                }
+                } else {
+                    return new JsonResponse(
+                        array(
+                            'status'  => 'error',
+                            'errors'  => array(
+                                'Invalid amount',
+                            )
+                        )
+                    );
                 }
                 // Change paid to date
                 $contract->setStatus(ContractStatus::CURRENT);
