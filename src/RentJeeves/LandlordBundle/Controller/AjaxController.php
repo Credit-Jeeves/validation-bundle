@@ -850,28 +850,28 @@ class AjaxController extends Controller
                             )
                         );
                     }
-                // Create order
-                $order = new Order();
-                $order->setUser($tenant);
-                $order->setSum($amount);
-                $order->setStatus(OrderStatus::COMPLETE);
-                $order->setType(OrderType::CASH);
-                $order->setCreatedAt($createdAt);
-                $em->persist($order);
-                // Create operation
-                $operation = new Operation();
-                $operation->setOrder($order);
-                $operation->setType(OperationType::RENT);
-                $operation->setContract($contract);
-                $operation->setAmount($amount);
-                $operation->setPaidFor($paidFor);
-                $operation->setCreatedAt($createdAt);
-                $em->persist($operation);
-                $contract->shiftPaidTo($amount);
-                $contract->setBalance($contract->getBalance() - $amount);
-                if ($contract->getSettings()->getIsIntegrated()) {
-                    $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
-                }
+                    // Create order
+                    $order = new Order();
+                    $order->setUser($tenant);
+                    $order->setSum($amount);
+                    $order->setStatus(OrderStatus::COMPLETE);
+                    $order->setType(OrderType::CASH);
+                    $order->setCreatedAt($createdAt);
+                    $em->persist($order);
+                    // Create operation
+                    $operation = new Operation();
+                    $operation->setOrder($order);
+                    $operation->setType(OperationType::RENT);
+                    $operation->setContract($contract);
+                    $operation->setAmount($amount);
+                    $operation->setPaidFor($paidFor);
+                    $operation->setCreatedAt($createdAt);
+                    $em->persist($operation);
+                    $contract->shiftPaidTo($amount);
+                    $contract->setBalance($contract->getBalance() - $amount);
+                    if ($contract->getSettings()->getIsIntegrated()) {
+                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
+                    }
                 } else {
                     return new JsonResponse(
                         array(
