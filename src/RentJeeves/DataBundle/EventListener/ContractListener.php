@@ -143,7 +143,7 @@ class ContractListener
         $contract->setBalance($contract->getRent());
     }
 
-    protected function isPaymentAcceptedFieldChange(PreUpdateEventArgs $eventArgs)
+    protected function isPaymentAcceptedFieldChanged(PreUpdateEventArgs $eventArgs)
     {
         if (!$eventArgs->hasChangedField('yardiPaymentAccepted')) {
             return false;
@@ -169,7 +169,7 @@ class ContractListener
 
     protected function closePaymentByYardi(Contract $contract, PreUpdateEventArgs $eventArgs)
     {
-        if ($this->isPaymentAcceptedFieldChange($eventArgs) === false) {
+        if ($this->isPaymentAcceptedFieldChanged($eventArgs) === false) {
             return;
         }
 
@@ -184,7 +184,7 @@ class ContractListener
 
     protected function sendYardiPaymentEmail(Contract $contract, PreUpdateEventArgs $eventArgs)
     {
-        if ($this->isPaymentAcceptedFieldChange($eventArgs) === false) {
+        if ($this->isPaymentAcceptedFieldChanged($eventArgs) === false) {
             return;
         }
 
