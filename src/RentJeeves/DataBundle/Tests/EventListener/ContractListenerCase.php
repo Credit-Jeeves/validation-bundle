@@ -6,8 +6,10 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 
 class ContractListenerCase extends Base
@@ -113,5 +115,78 @@ class ContractListenerCase extends Base
         $em->flush($contract);
 
         $this->assertEquals($rent, $contract->getBalance());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendPaymentEmail()
+    {
+        $this->load(true);
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                "email" => 'tenant11@example.com',
+            )
+        );
+        /**
+         * @var $contract Contract
+         */
+        $contract = $tenant->getContracts()->first();
+        $this->assertEquals($contract->getYardiPaymentAccepted(), YardiPaymentAccepted::ANY);
+
+        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::DO_NOT_ACCEPT);
+        $em->flush($contract);
+        $this->assertCount(1, $message = $plugin->getPreSendMessages());
+        $this->assertEquals('Online Payments Disabled', $message[0]->getSubject());
+
+        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::ANY);
+        $em->flush($contract);
+        $this->assertCount(2, $message = $plugin->getPreSendMessages());
+        $this->assertEquals('Online Payments Enabled', $message[1]->getSubject());
+
+        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::CASH_EQUIVALENT);
+        $em->flush($contract);
+        $this->assertCount(3, $message = $plugin->getPreSendMessages());
+        $this->assertEquals('Online Payments Disabled', $message[2]->getSubject());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldClosePayment()
+    {
+        $this->load(true);
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                "email" => 'tenant11@example.com',
+            )
+        );
+        /**
+         * @var $contract Contract
+         */
+        $contract = $tenant->getContracts()[1];
+        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::DO_NOT_ACCEPT);
+        $activePayment = $contract->getActivePayment();
+        $this->assertNotNull($activePayment);
+        $em->flush($contract);
+        $em->refresh($contract);
+        $activePayment = $contract->getActivePayment();
+        $this->assertNull($activePayment);
     }
 }

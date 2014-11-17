@@ -92,6 +92,14 @@ EOT;
             value = '{$template}'"
         );
 
+        $this->addSql(
+            "INSERT INTO email_translation
+            SET translatable_id = (SELECT id FROM email WHERE name = 'rjPushBatchReceiptsReport.html'),
+            locale = 'en',
+            property = 'subject',
+            value = 'Push Batch Receipts Report'"
+        );
+
     }
 
     public function down(Schema $schema)
