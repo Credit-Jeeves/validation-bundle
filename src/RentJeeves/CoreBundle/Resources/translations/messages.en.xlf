@@ -2925,6 +2925,14 @@
                 <source>error.statement_descriptor.empty</source>
                 <target>Statement Descriptor should not be empty.</target>
             </trans-unit>
+            <trans-unit id="yardi.tenant.property.manager_disabled_payment">
+                <source>property.manager.disabled_payment</source>
+                <target>Your property manager has disabled online payments.</target>
+            </trans-unit>
+            <trans-unit id="yardi.landlord.property.manager_disabled_payment">
+                <source>property.has.disabled_payment</source>
+                <target>Has disabled online payments.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

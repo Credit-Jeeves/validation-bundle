@@ -9,6 +9,7 @@ use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
+use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
 use RentJeeves\DataBundle\Model\Contract as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -199,6 +200,18 @@ class Contract extends Base
         return null;
     }
 
+    public function isDeniedOnYardi()
+    {
+        if (in_array(
+            $this->getYardiPaymentAccepted(),
+            YardiPaymentAccepted::getDeniedValues()
+        )) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @return array
      */
@@ -219,6 +232,8 @@ class Contract extends Base
         $result['address'] = $this->getRentAddress($property, $unit);
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
         $result['property_id'] = $property->getId();
+
+        $result['isYardiPaymentDenied'] = $this->isDeniedOnYardi();
         $result['unit_id'] = null;
         if ($unit) {
             $result['unit_id'] = $unit->getId();
@@ -687,6 +702,7 @@ class Contract extends Base
         $groupSettings = $this->getGroup()->getGroupSettings();
         $isIntegrated = $groupSettings->getIsIntegrated();
         $result['is_integrated'] = $isIntegrated;
+        $result['isYardiPaymentDenied'] = $this->isDeniedOnYardi();
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
         // display only integrated balance

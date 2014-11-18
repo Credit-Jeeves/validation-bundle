@@ -2,12 +2,14 @@
 
 namespace RentJeeves\TenantBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class IndexCase extends BaseTestCase
 {
     /**
-     * @test
+     * test
      */
     public function existPaymentsHistory()
     {
@@ -48,5 +50,75 @@ class IndexCase extends BaseTestCase
         $this->assertNotNull($payments = $this->page->findAll('css', '#tenant-payments table>tbody>tr'));
         $this->assertEquals(2, count($payments));
         $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotAcceptPayment()
+    {
+        $this->load(true);
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com'
+            )
+        );
+        $contracts = $tenant->getContracts();
+        /**
+         * @var $contract Contract
+         */
+        foreach ($contracts as $contract) {
+            $contract->setYardiPaymentAccepted(YardiPaymentAccepted::DO_NOT_ACCEPT);
+            $groupSetting = $contract->getGroup()->getGroupSettings();
+            $groupSetting->setIsIntegrated(true);
+            $em->persist($groupSetting);
+            $em->persist($contract);
+        }
+        $em->flush();
+        $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($denied = $this->page->findAll('css', '.denied'));
+        $this->assertEquals(5, count($denied));
+        for ($i = 0; $i <= 3; $i++) {
+            $this->assertEquals(
+                'yardi.tenant.property.manager_disabled_payment',
+                $denied[0]->getAttribute('title')
+            );
+        }
+    }
+
+    /**
+     * @test
+     * @depends shouldNotAcceptPayment
+     */
+    public function shouldAcceptPayment()
+    {
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com'
+            )
+        );
+        $contracts = $tenant->getContracts();
+        /**
+         * @var $contract Contract
+         */
+        foreach ($contracts as $contract) {
+            $contract->setYardiPaymentAccepted(YardiPaymentAccepted::ANY);
+            $groupSetting = $contract->getGroup()->getGroupSettings();
+            $groupSetting->setIsIntegrated(true);
+            $em->persist($groupSetting);
+            $em->persist($contract);
+        }
+        $em->flush();
+        $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($denied = $this->page->findAll('css', '.denied'));
+        $this->assertEquals(0, count($denied));
     }
 }
