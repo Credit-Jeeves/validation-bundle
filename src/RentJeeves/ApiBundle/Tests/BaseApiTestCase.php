@@ -11,6 +11,10 @@ use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
 
+/**
+ * @method assertEquals
+ * @method assertTrue
+ */
 class BaseApiTestCase extends BaseTestCase
 {
     const URL_PREFIX = '/api/tenant';
@@ -62,6 +66,19 @@ class BaseApiTestCase extends BaseTestCase
         $this->assertEquals($result, $data, 'Response is incorrect.');
     }
 
+    protected function assertFullUrlPath($url)
+    {
+        $urlInfo = parse_url($url);
+
+        $this->assertTrue(isset($urlInfo['scheme']));
+
+        $this->assertTrue(isset($urlInfo['host']));
+
+        $this->assertTrue(isset($urlInfo['path']));
+
+        return $urlInfo;
+    }
+
     protected function parseContent($content, $format = 'json')
     {
         /** @var Serializer $serializer */
@@ -102,13 +119,18 @@ class BaseApiTestCase extends BaseTestCase
         return parent::createClient();
     }
 
-    protected function getEntityRepository($entityPath)
+    protected function getEm()
     {
         if (!$this->em) {
             $this->em = $this->getContainer()->get('doctrine')->getManager();
         }
 
-        return $this->em->getRepository($entityPath);
+        return $this->em;
+    }
+
+    protected function getEntityRepository($entityPath)
+    {
+        return $this->getEm()->getRepository($entityPath);
     }
 
     protected function setTenantEmail($email)
@@ -158,5 +180,81 @@ class BaseApiTestCase extends BaseTestCase
         }
 
         return $this->urlEncoder;
+    }
+
+    /**
+     * @param array $requestParams
+     * @param string $format
+     * @return null|Response
+     */
+    protected function postRequest(array $requestParams = [], $format = 'json')
+    {
+        return $this->request(null, 'POST', $format, null, $requestParams);
+    }
+
+    /**
+     * @param null $attributes
+     * @param array $requestParams
+     * @param string $format
+     * @return null|Response
+     */
+    protected function putRequest($attributes = null, array $requestParams = [], $format = 'json')
+    {
+        return $this->request(null, 'PUT', $format, $attributes, $requestParams);
+    }
+
+    /**
+     * @param null $attributes
+     * @param array $requestParams
+     * @param string $format
+     * @return null|Response
+     */
+    protected function getRequest($attributes = null, array $requestParams = [], $format = 'json')
+    {
+        return $this->request(null, 'GET', $format, $attributes, $requestParams);
+    }
+
+    /**
+     * @param string|null $fullUrl
+     * @param string $method
+     * @param string $format
+     * @param string|null $attributes
+     * @param array $requestParams
+     * @return null|Response
+     */
+    protected function request(
+        $fullUrl = null,
+        $method = 'GET',
+        $format = 'json',
+        $attributes = null,
+        array $requestParams = []
+    ) {
+        /** @var Serializer $serializer */
+        $serializer = $this->getContainer()->get('jms_serializer');
+
+        $client = $this->getClient();
+
+        $params = ($method == 'GET') ? $requestParams : [];
+
+        $client->request(
+            $method,
+            $fullUrl ?: $this->prepareUrl($attributes),
+            $params,
+            [],
+            [
+                'CONTENT_TYPE' => static::$formats[$format][0],
+                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
+            ],
+            ($method != 'GET') ? $serializer->serialize($requestParams, $format) : null
+        );
+
+        return $client->getResponse();
+    }
+
+    protected function prepareUrl($id = null, $format = 'json', $requestUrl = '')
+    {
+        $requestUrl = $requestUrl ?: static::REQUEST_URL;
+
+        return self::URL_PREFIX . '/' . $requestUrl . ( $id ? "/{$id}" : '') . ".{$format}" ;
     }
 }

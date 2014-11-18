@@ -456,4 +456,23 @@ class OrderRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @param User $user
+     * @param array $excludedStatuses
+     * @return mixed
+     */
+    public function getUserOrders(\CreditJeeves\DataBundle\Entity\User $user, array $excludedStatuses = [OrderStatus::NEWONE])
+    {
+        $query = $this->createQueryBuilder('ord');
+        $query->where('ord.user = :user');
+        $query->setParameter('user', $user);
+
+        if (!empty($excludedStatuses)) {
+            $query->andWhere('ord.status not in (:orderStatuses)');
+            $query->setParameter('orderStatuses', $excludedStatuses);
+        }
+
+        return $query->getQuery()->execute();
+    }
 }

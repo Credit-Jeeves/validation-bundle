@@ -2,6 +2,7 @@ model: RentJeeves\DataBundle\Entity\Heartland
 fixtures:
   rjCheckout_1_1:
     order:  rjOrder_1
+    paymentAccount: PaymentAccount_14
     amount: 1500
     transaction_id: 123123
     isSuccessful: true
@@ -33,6 +34,7 @@ fixtures:
   rjCheckout_3_order_error:
     order: rjOrder_3_error
     amount: 1500
+    messages: Heartland Error
     transaction_id: 456555
     isSuccessful: false
     status: complete
@@ -85,6 +87,7 @@ fixtures:
 # finished contract
   rjCheckout_7_1_1:
     order:  rjOrder_3_1
+    paymentAccount: PaymentAccount_14
     amount: 1500
     transaction_id: 369369
     isSuccessful: true
@@ -270,6 +273,7 @@ fixtures:
     order:  rjOrder_3_refunded
     amount: -700
     transaction_id: 65123261
+    messages: Payment was refunded
     isSuccessful: true
     status: reversed
     createdAt: '-29 days'
