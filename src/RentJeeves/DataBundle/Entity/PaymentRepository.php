@@ -71,8 +71,7 @@ class PaymentRepository extends EntityRepository
             OR
             (p.endYear > :year)
             OR
-            (p.endYear = :year AND p.endMonth >= :month)
-            '
+            (p.endYear = :year AND p.endMonth >= :month)'
         );
         if (!empty($ids)) {
             $query->andWhere('p.id IN (:ids)');
@@ -83,7 +82,7 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
         $query->setParameter('startDate', $date->format('Y-m-d'));
-        $query->setParameter('yardiPaymentAccepted', YardiPaymentAccepted::ANY);
+        $query->setParameter('yardiPaymentAccepted', (string) YardiPaymentAccepted::ANY);
 
         $query = $query->getQuery();
         return $query->execute();

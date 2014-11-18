@@ -51,7 +51,7 @@
                 <tbody>
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' %}
-                        <tr class="contracts">
+                        <tr class="contracts static">
                             <td class="font-helvetica">{{ contract.rent }}</td>
                             {% if hasIntegratedBalance %}
                                 <td class="font-helvetica">{{ contract.balance }}</td>

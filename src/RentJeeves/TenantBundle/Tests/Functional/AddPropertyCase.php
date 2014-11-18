@@ -33,7 +33,7 @@ class AddPropertyCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>.static'));
         $this->assertCount(5, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
@@ -53,22 +53,20 @@ class AddPropertyCase extends BaseTestCase
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
-        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>.static'));
         $this->assertCount(6, $tr, 'List of property');
         $this->logout();
     }
 
     /**
      * @test
-     *
-     * @todo strange search for "560 Broadway New York, NY 10012"
      */
     public function invite()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>.static'));
         $this->assertCount(5, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
@@ -121,17 +119,17 @@ class AddPropertyCase extends BaseTestCase
         $this->fillForm(
             $inviteForm,
             array(
-                'rentjeeves_publicbundle_invitetype_unitName'                      => 'e3',
+                'rentjeeves_publicbundle_invitetype_unitName'                  => 'e3',
                 'rentjeeves_publicbundle_invitetype_first_name'                => 'Alex',
                 'rentjeeves_publicbundle_invitetype_last_name'                 => 'Sharamko',
-                'rentjeeves_publicbundle_invitetype_email'                     => 'newlandlord@test.com',
+                'rentjeeves_publicbundle_invitetype_email'                     => 'newlandlord@etest.com',
             )
         );
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $this->page->pressButton('add.property');
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
-        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(5, $tr, 'List of property');
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>.static'));
+        $this->assertCount(6, $tr, 'List of property');
 
         $emails = $this->getEmails();
         $this->assertCount(1, $emails, 'Wrong number of emails');
@@ -146,16 +144,12 @@ class AddPropertyCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#invitelandlordtype'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(6, $errorList, 'Wrong number of pending');
+        $this->assertCount(2, $errorList, 'Wrong number of error');
         $this->fillForm(
             $form,
             array(
                 'invitelandlordtype_landlord_password_Password'          => 'pass',
                 'invitelandlordtype_landlord_password_Verify_Password'   => 'pass',
-                'invitelandlordtype_deposit_nickname'                    => 'nickname',
-                'invitelandlordtype_deposit_AccountNumber'               => '12345678',
-                'invitelandlordtype_deposit_RoutingNumber'               => '12345678',
-                'invitelandlordtype_deposit_ACHDepositType_1'            => true,
                 'invitelandlordtype_landlord_tos'                        => true,
             )
         );
