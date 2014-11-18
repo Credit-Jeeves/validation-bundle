@@ -182,18 +182,24 @@ class AccountingController extends Controller
             );
         }
 
+        $group = $this->get('core.session.landlord')->getGroup();
+        $headerHash = $importMapping::getHeaderFileHash($data);
+        $importMappingChoice = $importMapping->getSelectedImportMapping($headerHash, $group);
+        $defaultMappingValue = $importMappingChoice ? $importMappingChoice->getMappingData() : [] ;
+
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
             new ImportMatchFileType(
                 count($dataView),
                 $this->get('translator'),
-                $importStorage
+                $importStorage,
+                $defaultMappingValue
             )
         );
         $form->handleRequest($this->get('request'));
 
         if ($form->isValid()) {
-            $importMapping->setupMapping($form, $data);
+            $importMapping->setupMapping($form, $data, $group);
             return $this->redirect($this->generateUrl('accounting_import'));
         }
 

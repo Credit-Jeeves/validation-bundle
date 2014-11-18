@@ -8,6 +8,7 @@ services:
         arguments:
             - "@accounting.import.storage.csv"
             - "@import.reader.csv"
+            - "@doctrine.orm.entity_manager"
     accounting.import.mapping.yardi:
         class: "%import.mapping.yardi.class%"
         arguments:

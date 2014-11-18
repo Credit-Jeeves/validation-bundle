@@ -1488,4 +1488,57 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($td = $this->page->find('css', '.line_number_1 td'));
         $this->assertEquals('import.info.skipped2', trim($td->getAttribute('title')));
     }
+
+    /**
+     * @test
+     */
+    public function setsMatchingFieldsForImport()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $filePath = $this->getFilePathByName('import2.csv');
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
+        $submitImportFile->click();
+        // Choose mapping fields
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+        for ($i = 1; $i <= 14; $i++) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            $this->assertEquals('empty_value', $choice->getValue());
+            if (isset($this->mapFile[$i])) {
+                $choice->selectOption($this->mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNotNull($table = $this->page->find('css', 'table#importTable'));
+        $this->logout();
+        // Check that mapping is saved to DB
+        $importMappingChoice = $this->getContainer()->get('doctrine.orm.entity_manager')
+            ->getRepository('RjDataBundle:ImportMappingChoice')->findAll();
+        $this->assertTrue(count($importMappingChoice) > 0);
+
+        // Do import again w/o mapping
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $filePath = $this->getFilePathByName('import2.csv');
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
+        $submitImportFile->click();
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNotNull($table = $this->page->find('css', 'table#importTable'));
+        $this->logout();
+    }
 }

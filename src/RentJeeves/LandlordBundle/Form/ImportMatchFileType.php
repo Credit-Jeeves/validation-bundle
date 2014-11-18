@@ -23,11 +23,14 @@ class ImportMatchFileType extends AbstractType
 
     protected $storage;
 
-    public function __construct($number, Translator $translator, StorageCsv $storage)
+    protected $defaultValue;
+
+    public function __construct($number, Translator $translator, StorageCsv $storage, $defaultValue)
     {
         $this->numberRow  = $number;
         $this->translator = $translator;
         $this->storage = $storage;
+        $this->defaultValue = $defaultValue;
     }
 
     public static function getFieldNameByNumber($i)
@@ -84,6 +87,7 @@ class ImportMatchFileType extends AbstractType
                 'choice',
                 array(
                     'choices'   => $choices,
+                    'data' => (isset($this->defaultValue[$i]) ? $this->defaultValue[$i] : null),
                     'error_bubbling' => false,
                     'mapped'         => false,
                     'attr'           => array(
