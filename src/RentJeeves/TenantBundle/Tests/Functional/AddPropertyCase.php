@@ -26,7 +26,7 @@ class AddPropertyCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function addWithLandlord()
     {
@@ -34,7 +34,7 @@ class AddPropertyCase extends BaseTestCase
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(4, $tr, 'List of property');
+        $this->assertCount(5, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
         $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
@@ -54,12 +54,12 @@ class AddPropertyCase extends BaseTestCase
         $register->click();
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(5, $tr, 'List of property');
+        $this->assertCount(6, $tr, 'List of property');
         $this->logout();
     }
 
     /**
-     * test
+     * @test
      *
      * @todo strange search for "560 Broadway New York, NY 10012"
      */
@@ -69,7 +69,7 @@ class AddPropertyCase extends BaseTestCase
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(4, $tr, 'List of property');
+        $this->assertCount(5, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
         $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");

@@ -9,7 +9,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 class IndexCase extends BaseTestCase
 {
     /**
-     * test
+     * @test
      */
     public function existPaymentsHistory()
     {
