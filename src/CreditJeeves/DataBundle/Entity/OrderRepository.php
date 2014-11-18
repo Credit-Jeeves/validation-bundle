@@ -462,8 +462,10 @@ class OrderRepository extends EntityRepository
      * @param array $excludedStatuses
      * @return mixed
      */
-    public function getUserOrders(\CreditJeeves\DataBundle\Entity\User $user, array $excludedStatuses = [OrderStatus::NEWONE])
-    {
+    public function getUserOrders(
+        \CreditJeeves\DataBundle\Entity\User $user,
+        array $excludedStatuses = [OrderStatus::NEWONE]
+    ) {
         $query = $this->createQueryBuilder('ord');
         $query->where('ord.user = :user');
         $query->setParameter('user', $user);

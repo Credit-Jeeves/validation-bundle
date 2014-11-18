@@ -119,7 +119,7 @@ class OrdersControllerCase extends BaseApiTestCase
         $paidFor = '',
         $message = '',
         $deletePaymentAccount = false
-   ) {
+    ) {
         $paymentSource = '';
         /** Prepare Payment Account */
         if ($paymentAccountId && $deletePaymentAccount) {
