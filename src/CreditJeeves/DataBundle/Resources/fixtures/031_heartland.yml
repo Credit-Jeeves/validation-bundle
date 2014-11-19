@@ -33,7 +33,7 @@ fixtures:
     depositDate: '-21 days'
   rjCheckout_3_order_error:
     order: rjOrder_3_error
-    amount: 1500
+    amount: 3000
     messages: Heartland Error
     transaction_id: 456555
     isSuccessful: false

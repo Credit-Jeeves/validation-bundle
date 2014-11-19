@@ -59,7 +59,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (43)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (39)', $allh2->getText(), 'Wrong count');
 
         $this->assertNotNull($searchPayments_link = $this->page->find('css', '#searchPayments_link'));
         $searchPayments_link->click();
@@ -82,7 +82,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (43)', $allh2->getHtml(), 'Wrong count');
+        $this->assertEquals('payments.total (39)', $allh2->getHtml(), 'Wrong count');
 
         $this->logout();
     }
