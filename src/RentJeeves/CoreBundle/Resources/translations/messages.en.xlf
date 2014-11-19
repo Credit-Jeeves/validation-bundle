@@ -2926,15 +2926,15 @@
                 <target>Statement Descriptor should not be empty.</target>
             </trans-unit>
             <trans-unit id="yardi.tenant.property.manager_disabled_payment">
-                <source>property.manager.disabled_payment</source>
+                <source>yardi.tenant.property.manager_disabled_payment</source>
                 <target>Your property manager has disabled online payments.</target>
             </trans-unit>
             <trans-unit id="yardi.landlord.property.manager_disabled_payment">
-                <source>property.has.disabled_payment</source>
+                <source>yardi.landlord.property.manager_disabled_payment</source>
                 <target>Payments have been disabled for this tenant by the integrated accounting software.</target>
             </trans-unit>
             <trans-unit id="yardi.tenant.property.manager_disabled_payment_description">
-                <source>property.manager.disabled_payment_description</source>
+                <source>yardi.tenant.property.manager_disabled_payment_description</source>
                 <target>Payment Disabled Contact Your Property Manager</target>
             </trans-unit>
         </body>
