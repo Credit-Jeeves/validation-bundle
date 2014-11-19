@@ -140,6 +140,13 @@ class ResidentBalanceSynchronizer
             $contract = reset($contracts);
             $contract->setYardiPaymentAccepted($paymentAccepted);
             $this->em->flush($contract);
+            $this->logMessage(
+                sprintf(
+                    "Update payment accepted to %s, for residentId %s",
+                    $paymentAccepted,
+                    $residentId
+                )
+            );
             return $contract;
         }
 
