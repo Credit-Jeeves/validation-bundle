@@ -2,13 +2,14 @@
 
 namespace RentJeeves\ApiBundle\Forms;
 
+use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolver;
-use Symfony\Component\Validator\Constraints\Blank;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Null;
@@ -31,7 +32,7 @@ class ContractType extends AbstractType
                 ]),
                 new Null([
                     'message' => 'api.errors.contract.unit_url.change',
-                    'groups' => ['edit_contract'],
+                    'groups' => ['edit_contract', 'new_unit'],
                 ])
             ]
         ]);
@@ -48,7 +49,7 @@ class ContractType extends AbstractType
                     'methods' => [
                         [$this, 'isSubmitted']
                     ],
-                    'groups' => ['edit_contract'],
+                    'groups' => ['edit_contract', 'unit_url'],
                 ])
             ],
         ]);
@@ -57,6 +58,15 @@ class ContractType extends AbstractType
         $builder->add('experian_reporting', new ReportingType(), [
             'property_path' => 'reportToExperian'
         ]);
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
+            if ($data instanceof Contract) {
+                if ($data->getReportToExperian() && !$data->getExperianStartAt()) {
+                    $data->setExperianStartAt(new DateTime('now'));
+                }
+            }
+        });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $submittedData = $event->getData();
@@ -98,7 +108,14 @@ class ContractType extends AbstractType
     public function isSubmitted($data, ExecutionContextInterface $context)
     {
         if ($this->submit) {
-            $context->addViolation('api.errors.contract.new_unit.change');
+            switch ($context->getGroup()) {
+                case 'edit_contract' :
+                    $context->addViolation('api.errors.contract.new_unit.change');
+                    break;
+                case 'unit_url' :
+                    $context->addViolation('api.errors.contract.new_unit.unit_url.collision');
+                    break;
+            }
         }
     }
 
