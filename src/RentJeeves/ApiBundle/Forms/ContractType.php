@@ -70,7 +70,7 @@ class ContractType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $submittedData = $event->getData();
-            if (isset($submittedData['new_unit'])) {
+            if (!empty($submittedData['new_unit'])) {
                 $this->submit = true;
             }
         });
