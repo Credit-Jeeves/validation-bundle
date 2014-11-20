@@ -63,7 +63,7 @@ class ContractType extends AbstractType
             $data = $event->getData();
             if ($data instanceof Contract) {
                 if ($data->getReportToExperian() && !$data->getExperianStartAt()) {
-                    $data->setExperianStartAt(new DateTime('now'));
+                    $data->setExperianStartAt(new DateTime());
                 }
             }
         });
@@ -109,10 +109,10 @@ class ContractType extends AbstractType
     {
         if ($this->submit) {
             switch ($context->getGroup()) {
-                case 'edit_contract' :
+                case 'edit_contract':
                     $context->addViolation('api.errors.contract.new_unit.change');
                     break;
-                case 'unit_url' :
+                case 'unit_url':
                     $context->addViolation('api.errors.contract.new_unit.unit_url.collision');
                     break;
             }
