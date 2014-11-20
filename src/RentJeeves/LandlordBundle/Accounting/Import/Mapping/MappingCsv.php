@@ -2,6 +2,9 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReaderImport;
@@ -27,13 +30,17 @@ class MappingCsv extends MappingAbstract
      */
     protected $reader;
 
-    public function __construct(StorageCsv $storage, CsvFileReaderImport $reader)
+    /** @var EntityManager $em */
+    protected $em;
+
+    public function __construct(StorageCsv $storage, CsvFileReaderImport $reader, EntityManager $em)
     {
         $this->storage  = $storage;
         $this->reader   = $reader;
         $data = $this->storage->getImportData();
         $this->reader->setDelimiter($data[StorageCsv::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[StorageCsv::IMPORT_TEXT_DELIMITER]);
+        $this->em = $em;
     }
 
     public function isNeedManualMapping()
@@ -173,8 +180,9 @@ class MappingCsv extends MappingAbstract
      *
      * @param Form $form
      * @param array $data
+     * @param Group $group
      */
-    public function setupMapping(Form $form, array $data)
+    public function setupMapping(Form $form, array $data, Group $group)
     {
         $result = array();
         for ($i=1; $i < count($data[1])+1; $i++) {
@@ -186,6 +194,9 @@ class MappingCsv extends MappingAbstract
 
             $result[$i] = $value;
         }
+
+        $headerHash = self::getHeaderFileHash($data);
+        $this->saveMapping($group, $result, $headerHash);
 
         $this->storage->setMapping($result);
         $this->storage->setOffsetStart(0);
@@ -208,5 +219,45 @@ class MappingCsv extends MappingAbstract
         }
 
         return $skip;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return string
+     */
+    public static function getHeaderFileHash(array $data)
+    {
+        return md5(implode(array_keys($data[1])));
+    }
+
+    /**
+     * @param $headerHash
+     * @param Group $group
+     * @return ImportMappingChoice|null
+     */
+    public function getSelectedImportMapping($headerHash, Group $group)
+    {
+        return $this->em
+            ->getRepository('RjDataBundle:ImportMappingChoice')
+            ->findOneBy(['headerHash' => $headerHash, 'group' => $group]);
+    }
+
+    /**
+     * @param Group $group
+     * @param array $data
+     */
+    protected function saveMapping(Group $group, $data, $headerHash)
+    {
+        $importMappingChoice = $this->getSelectedImportMapping($headerHash, $group);
+
+        if (!$importMappingChoice) {
+            $importMappingChoice = new ImportMappingChoice();
+            $importMappingChoice->setHeaderHash($headerHash);
+            $importMappingChoice->setGroup($group);
+        }
+        $importMappingChoice->setMappingData($data);
+        $this->em->persist($importMappingChoice);
+        $this->em->flush($importMappingChoice);
     }
 }

@@ -88,7 +88,7 @@ function Contract() {
             self.contract(contract);
         }
 
-        if (self.contract().finish.length > 0) {
+        if (self.contract().finish != null && self.contract().finish.length > 0) {
             self.optionsFinishAtEdit('finishAt');
         } else {
             self.optionsFinishAtEdit('monthToMonth');
