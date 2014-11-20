@@ -26,6 +26,28 @@ class ResidentsResident
     protected $moveOutDate;
 
     /**
+     * @Serializer\SerializedName("paymentAccepted")
+     * @Serializer\Type("string")
+     */
+    protected $paymentAccepted;
+
+    /**
+     * @return string
+     */
+    public function getPaymentAccepted()
+    {
+        return $this->paymentAccepted;
+    }
+
+    /**
+     * @param string $paymentAccepted
+     */
+    public function setPaymentAccepted($paymentAccepted)
+    {
+        $this->paymentAccepted = $paymentAccepted;
+    }
+
+    /**
      * @return mixed
      */
     public function getMoveOutDate()

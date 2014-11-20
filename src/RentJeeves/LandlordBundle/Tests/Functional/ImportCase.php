@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
 use RentJeeves\DataBundle\Model\Unit;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -219,13 +220,13 @@ class ImportCase extends BaseTestCase
         $submitImportFile->click();
 
         $this->session->wait(
-            5000,
+            6000,
             "$('.finishedTitle').length > 0"
         );
         $submitImportFile->click();
 
         $this->session->wait(
-            5000,
+            6000,
             "$('.finishedTitle').length > 0"
         );
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
@@ -1369,6 +1370,25 @@ class ImportCase extends BaseTestCase
     public function yardiBaseImport()
     {
         $this->setDefaultSession('selenium2');
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+            array(
+                'yardiPaymentAccepted' => YardiPaymentAccepted::CASH_EQUIVALENT,
+            )
+        );
+        $this->assertEquals(0, count($contract));
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            array(
+                'yardiPaymentAccepted' => YardiPaymentAccepted::DO_NOT_ACCEPT,
+            )
+        );
+        $this->assertEquals(0, count($contractWaiting));
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         //First Step
@@ -1395,6 +1415,19 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
         $this->logout();
+
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+            array(
+                'yardiPaymentAccepted' => YardiPaymentAccepted::CASH_EQUIVALENT,
+            )
+        );
+        $this->assertEquals(1, count($contract));
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            array(
+                'yardiPaymentAccepted' => YardiPaymentAccepted::DO_NOT_ACCEPT,
+            )
+        );
+        $this->assertEquals(1, count($contractWaiting));
     }
 
     /**

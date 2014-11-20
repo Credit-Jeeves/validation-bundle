@@ -3,9 +3,12 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReaderImport;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 
 class MappingYardi extends MappingCsv
@@ -15,14 +18,21 @@ class MappingYardi extends MappingCsv
      */
     protected $residentData;
 
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
     public function __construct(
         StorageYardi $storage,
         CsvFileReaderImport $reader,
-        ResidentDataManager $residentData
+        ResidentDataManager $residentData,
+        EntityManager $em
     ) {
         $this->residentData = $residentData;
         $this->storage = $storage;
         $this->reader = $reader;
+        $this->em = $em;
     }
 
     public function isNeedManualMapping()
@@ -42,7 +52,43 @@ class MappingYardi extends MappingCsv
 
     public function getResidents(Holding $holding, EntityProperty $property)
     {
-        return $this->residentData->getCurrentResidents($holding, $property);
+        $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+            array('holding' => $holding->getId(), 'property'=> $property->getId())
+        );
+
+        if (empty($propertyMapping)) {
+            throw new Exception(
+                sprintf(
+                    "Don't have external property id for property: %s and holding: %s",
+                    $property->getId(),
+                    $holding->getId()
+                )
+            );
+        }
+
+        $externalPropertyId = $propertyMapping->getExternalPropertyId();
+        $transactionData = $this->residentData->getResidentTransactions($holding, $externalPropertyId);
+        $residentsTransaction = $transactionData->getProperty()->getCustomers();
+
+        $residents = $this->residentData->getCurrentResidents($holding, $property);
+
+        /**
+         * @var $resident ResidentsResident
+         */
+        foreach ($residents as $key => $resident) {
+            $tCode = $resident->getCode();
+            /**
+             * @var $residentTransaction ResidentTransactionPropertyCustomer
+             */
+            foreach ($residentsTransaction as $residentTransaction) {
+                if ($residentTransaction->getCustomerId() === $tCode) {
+                    $residents[$key]->setPaymentAccepted($residentTransaction->getPaymentAccepted());
+                    continue;
+                }
+            }
+        }
+
+        return $residents;
     }
 
     public function getContractData(Holding $holding, EntityProperty $property, $residentId)

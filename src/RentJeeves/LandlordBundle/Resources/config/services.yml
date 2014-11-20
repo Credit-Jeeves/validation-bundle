@@ -15,3 +15,5 @@ services:
             - "@accounting.import.storage.yardi"
             - "@import.reader.csv"
             - "@yardi.resident_data"
+            - "@doctrine.orm.entity_manager"
+

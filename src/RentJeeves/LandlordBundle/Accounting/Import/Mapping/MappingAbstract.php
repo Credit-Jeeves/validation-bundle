@@ -76,6 +76,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_UNIT_ID = 'unit_id';
 
+    const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
+
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,

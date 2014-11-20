@@ -415,6 +415,7 @@ class AccountingController extends Controller
         } else {
             $residents = array();
         }
+
         $response = new Response($this->get('jms_serializer')->serialize($residents, 'json'));
         $response->headers->set('Content-Type', 'application/json');
 
@@ -433,6 +434,8 @@ class AccountingController extends Controller
         $holding = $this->getUser()->getHolding();
         $request = $this->get('request');
         $moveOutDate = $request->request->get('moveOutDate');
+        $paymentAccepted = $request->request->get('paymentAccepted');
+
 
         /**
          * @var $importFactory ImportFactory
@@ -452,7 +455,7 @@ class AccountingController extends Controller
         );
         try {
             $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $residentId);
-            $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate);
+            $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
                 $responseData = array('result' => false);
