@@ -144,7 +144,7 @@ abstract class MappingAbstract implements MappingInterface
 
     protected function parseStreet($row)
     {
-        preg_match('/(?:\#|unit)\s?([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
+        preg_match('/(?:\#|apt|unit|ste|rm)\.?\s*([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
 
         if (empty($matches)) {
             return $row;
@@ -164,7 +164,7 @@ abstract class MappingAbstract implements MappingInterface
      */
     protected function parseUnit($row)
     {
-        preg_match('/(?:\#|unit)?\s?([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
+        preg_match('/(?:\#|apt|unit|ste|rm)\.?\s*([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
 
         if (empty($matches)) {
             return $row;
