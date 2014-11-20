@@ -119,6 +119,7 @@
         ko.applyBindings(currentPaymentsViewModel, $('#current-payments').get(0));
         {% if isNewUser %}
             $('#contract-pay-1').click();
+            _gaq.push(['_trackEvent', 'Tenant', 'First Login']);
         {% endif %}
     });
 </script>
