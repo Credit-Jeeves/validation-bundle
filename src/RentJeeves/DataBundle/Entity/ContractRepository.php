@@ -261,6 +261,10 @@ class ContractRepository extends EntityRepository
             )'
         );
 
+        if ($group->getGroupSettings()->getIsIntegrated()) {
+            $query->andWhere('c.reportToExperian = 1 OR c.reportToTransUnion = 1');
+        }
+
         $today = new DateTime();
         $query->setParameter('group', $group);
         $query->setParameter('date', $today->format('Y-m-d'));
