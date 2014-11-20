@@ -178,12 +178,26 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
+     *
+     * If tenantName field contains coma, then everything before coma is last name and everything after coma - firstname
+     *
      * @param $name
      *
      * @return array
      */
     public static function parseName($name)
     {
+        if (strpos($name, ',') !== false) {
+            $names = explode(',', $name);
+            $lastName = array_shift($names);
+            $firstName = implode(' ', array_map('trim', $names));
+
+            return [
+                self::LAST_NAME_TENANT => trim($lastName),
+                self::FIRST_NAME_TENANT => trim($firstName),
+            ];
+        }
+
         $names = explode(' ', $name);
 
         switch (count($names)) {
