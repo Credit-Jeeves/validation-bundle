@@ -30,12 +30,12 @@ class OrdersController extends Controller
      */
     public function getOrdersAction()
     {
-        $order = $this
+        $orders = $this
             ->getDoctrine()
             ->getRepository('DataBundle:Order')
             ->getUserOrders($this->getUser());
 
-        $response = new ResponseCollection($order);
+        $response = new ResponseCollection($orders);
 
         if ($response->count() > 0) {
             return $response;

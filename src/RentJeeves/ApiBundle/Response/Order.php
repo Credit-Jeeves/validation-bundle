@@ -134,7 +134,7 @@ class Order extends ResponseResource
      */
     public function getTotal()
     {
-        return number_format($this->entity->getSum(), 2, '.', '');
+        return $this->entity->getTotalAmount();
     }
 
     /**

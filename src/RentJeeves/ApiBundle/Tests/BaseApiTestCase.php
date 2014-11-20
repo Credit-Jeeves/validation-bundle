@@ -66,7 +66,7 @@ class BaseApiTestCase extends BaseTestCase
         $this->assertEquals($result, $data, 'Response is incorrect.');
     }
 
-    protected function assertFullUrlPath($url)
+    protected function assertFullUrl($url)
     {
         $urlInfo = parse_url($url);
 
@@ -75,8 +75,6 @@ class BaseApiTestCase extends BaseTestCase
         $this->assertTrue(isset($urlInfo['host']));
 
         $this->assertTrue(isset($urlInfo['path']));
-
-        return $urlInfo;
     }
 
     protected function parseContent($content, $format = 'json')

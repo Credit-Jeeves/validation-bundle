@@ -144,11 +144,12 @@ class OrdersControllerCase extends BaseApiTestCase
         $this->assertEquals($orderId, $this->getIdEncoder()->decode($answer['id']));
 
         /** Check URL */
-        $urlInfo = $this->assertFullUrlPath($answer['url']);
+        $this->assertFullUrl($answer['url']);
+        $urlInfo = parse_url($answer['url']);
         $this->assertTrue(strpos($this->prepareUrl($orderEncodedId), $urlInfo['path']) === 0);
 
         /** Check Contract URL */
-        $this->assertFullUrlPath($answer['contract_url']);
+        $this->assertFullUrl($answer['contract_url']);
         $response = $this->request($answer['contract_url']);
         $this->assertResponse($response);
         $contract = $this->parseContent($response->getContent());
@@ -156,7 +157,7 @@ class OrdersControllerCase extends BaseApiTestCase
 
         /** Check Payment account URL */
         if ($paymentAccountId && !$deletePaymentAccount) {
-            $this->assertFullUrlPath($answer['payment_account_url']);
+            $this->assertFullUrl($answer['payment_account_url']);
             $response = $this->request($answer['payment_account_url']);
             $this->assertResponse($response);
             $paymentAccount = $this->parseContent($response->getContent());
