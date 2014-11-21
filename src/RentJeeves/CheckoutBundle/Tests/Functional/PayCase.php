@@ -13,6 +13,18 @@ use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
  */
 class PayCase extends BaseTestCase
 {
+    protected $paidForString;
+    protected $payButtonName;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $contractToSelect = 2;
+        $tenantEmail = 'tenant11@example.com';
+        $this->paidForString = $this->getPaidForDate($tenantEmail, $contractToSelect)->format('Y-m-d');
+        $this->payButtonName = "contract-pay-" . ($contractToSelect);
+    }
+
     public function provider()
     {
         return array(
@@ -48,6 +60,24 @@ class PayCase extends BaseTestCase
             $em->persist($groupSetting);
         }
         $em->flush();
+    }
+
+    private function getPaidForDate($tenantEmail, $contractIndex)
+    {
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(array('email' => $tenantEmail));
+        $contracts = array_reverse($tenant->getContracts()->toArray()); # contract buttons numbered from bottom up
+        /**
+         * @var $contract Contract
+         */
+        $contract = $contracts[$contractIndex - 1];
+        $paidFor = new DateTime();
+        $paidFor = $paidFor->setDate($paidFor->format('Y'), $paidFor->format('m'), $contract->getDueDate());
+
+        return $paidFor;
     }
 
     /**
@@ -87,7 +117,7 @@ class PayCase extends BaseTestCase
         }
         $em->flush();
         $this->login('tenant11@example.com', 'pass');
-        $this->page->pressButton('contract-pay-2');
+        $this->page->pressButton($this->payButtonName);
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
 
         $this->session->wait(
@@ -123,7 +153,7 @@ class PayCase extends BaseTestCase
         $this->updateGroupSettings(false);
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
-        $this->page->pressButton('contract-pay-2');
+        $this->page->pressButton($this->payButtonName);
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
 
@@ -135,7 +165,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
             )
@@ -151,7 +181,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
                 'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
@@ -169,7 +199,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
             )
         );
@@ -200,7 +230,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
                 'rentjeeves_checkoutbundle_paymenttype_dueDate' => '20',
@@ -251,7 +281,7 @@ class PayCase extends BaseTestCase
         $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
         $closeButton->click();
 
-        $this->page->pressButton('contract-pay-2');
+        $this->page->pressButton($this->payButtonName);
 
         if ($payBalanceOnly) {
             $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentbalanceonlytype');
@@ -273,7 +303,7 @@ class PayCase extends BaseTestCase
             $this->fillForm(
                 $form,
                 array(
-                    'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                    'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                     'rentjeeves_checkoutbundle_paymenttype_amount' => '0',
                     'rentjeeves_checkoutbundle_paymenttype_type'    => PaymentTypeEnum::RECURRING,
                     'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
@@ -286,7 +316,7 @@ class PayCase extends BaseTestCase
             $this->fillForm(
                 $form,
                 array(
-                    'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                    'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                     'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
                     'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
                 )
@@ -308,7 +338,7 @@ class PayCase extends BaseTestCase
                 $this->fillForm(
                     $form,
                     array(
-                        'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                        'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                         'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
                         'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
                     )
@@ -317,7 +347,7 @@ class PayCase extends BaseTestCase
                 $this->fillForm(
                     $form,
                     array(
-                        'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                        'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                         'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
                     )
                 );
@@ -438,21 +468,24 @@ class PayCase extends BaseTestCase
      */
     public function registerAccountToAdditionalMerchant()
     {
+        $tenantEmail = 'marion@rentrack.com';
+        $contractToSelect = 2;
+        $payButtonName = "contract-pay-" . $contractToSelect;
+        $paidForString = $this->getPaidForDate($tenantEmail, $contractToSelect)->format('Y-m-d');
+
         $this->setDefaultSession('selenium2');
         $this->load(true);
-        $this->login('marion@rentrack.com', 'pass');
+        $this->login($tenantEmail, 'pass');
 
-        $this->page->pressButton('contract-pay-2');
+        $this->page->pressButton($payButtonName);
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
-
         $this->session->wait($this->timeout, "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length");
-        $paidFor = (new DateTime())->setDate(null, null, 11);
         $this->fillForm(
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31', // set date to 31 so we can always continue
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $paidFor->format('Y-m-d')
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $paidForString
             )
         );
 
@@ -619,7 +652,7 @@ class PayCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->page->pressButton('contract-pay-2');
+        $this->page->pressButton($this->payButtonName);
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
         $this->session->wait(
             $this->timeout,
@@ -629,7 +662,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_amountOther' => -10,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
@@ -648,7 +681,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => (new DateTime())->format('Y-m-d'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_amountOther' =>  10,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
