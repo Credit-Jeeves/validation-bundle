@@ -1,10 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -16,7 +13,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
- * @Assert\Callback(methods={"isEndLaterThanStart"})
+ * @Assert\Callback(methods={"validate"})
  */
 class Payment extends Base
 {
@@ -175,7 +172,15 @@ class Payment extends Base
      */
     public function setPaidForApi($date_text)
     {
-        parent::setPaidFor(new DateTime($date_text));
+        $date = date_parse($date_text);
+        if ($date['year'] &&  $date['month']) {
+            $day = $date['day'] ? $date['day'] : $this->getDueDate();
+            $datePaidFor = new DateTime();
+            $datePaidFor->setDate($date['year'], $date['month'], $day);
+            parent::setPaidFor($datePaidFor);
+        } else {
+            parent::setPaidFor(null);
+        }
     }
 
     public function getPaidForApi()
@@ -184,6 +189,9 @@ class Payment extends Base
         return ($paidFor) ? $paidFor->format("Y-m") : "";
     }
 
+    /**
+     * @param ExecutionContextInterface $validatorContext
+     */
     public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
     {
         if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate() ||
@@ -197,5 +205,54 @@ class Payment extends Base
         if ($end < $this->getStartDate()) {
             $validatorContext->addViolationAt('endMonth', 'contract.error.is_end_later_than_start', array(), null);
         }
+    }
+
+    public function validate(ExecutionContextInterface $context)
+    {
+        $now = $this->getNow();
+
+        if ($this->getStartYear() < $now->format('Y')){
+            $context->addViolationAt('startYear', "payment.year.error.past");
+        }
+
+        if ($this->getEndYear() && $this->getEndYear() < $now->format('Y')){
+            $context->addViolationAt('endYear', "payment.end_year.error.past");
+        }
+
+        $payBalanceOnly = $this->getContract()->getGroup()->getGroupSettings()->getPayBalanceOnly();
+
+        if (!$this->getPaidFor() && !$payBalanceOnly) {
+            $context->addViolationAt(null, 'error.contract.paid_for');
+        }
+         // if month > 12 the method  $end->setDate with this param returned 500
+        if ($this->getStartMonth() < 1 || $this->getStartMonth() > 12){
+            return;
+        }
+
+        $lastDayInStartMonth = new DateTime("last day of {$this->getStartYear()}-{$this->getStartMonth()}");
+
+        if ($lastDayInStartMonth->format('d') < $this->getDueDate()) {
+            $context->addViolationAt('day', ["payment.month.error.number",['%%COUNT%%' => $lastDayInStartMonth->format('d')]]);
+            return;
+        }
+
+        if ($now > $this->getStartDate()) {
+            $context->addViolationAt('dueDate', "payment.start_date.error.past");
+        }
+
+        if ($this->getEndMonth() && ($this->getEndMonth() < 1 || $this->getEndMonth() > 12)) {
+            return;
+        }
+
+        // if month > 12 the method  $end->setDate with this param returned 500
+        if ($this->getEndYear() && $this->getEndMonth()) {
+            $lastDayInEndMonth = new DateTime("last day of {$this->getEndYear()}-{$this->getEndMonth()}");
+            if ($lastDayInEndMonth->format('d') < $this->getDueDate()) {
+                $context->addViolationAt('day',  ["payment.month.error.number",['%%COUNT%%' => $lastDayInEndMonth->format('d')]]);
+                return;
+            }
+        }
+
+        $this->isEndLaterThanStart($context);
     }
 }

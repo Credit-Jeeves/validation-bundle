@@ -26,6 +26,8 @@ class OrdersControllerCase extends BaseApiTestCase
     {
         $this->setTenantEmail($email);
 
+        $this->getClient();
+
         $response = $this->getRequest();
 
         $this->assertResponse($response, $statusCode);
@@ -46,7 +48,7 @@ class OrdersControllerCase extends BaseApiTestCase
     {
         $this->setTenantEmail($email);
 
-        $client = $this->getClient();
+        $this->getClient();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getTenant();

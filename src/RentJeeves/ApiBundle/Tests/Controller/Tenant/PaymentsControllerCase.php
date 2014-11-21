@@ -2,13 +2,15 @@
 
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
-use JMS\Serializer\Serializer;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
+use RentJeeves\DataBundle\Entity\PaymentRepository;
 
 class PaymentControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:Payment';
+
+    const REQUEST_URL = 'payments';
 
     public static function getPaymentsDataProvider()
     {
@@ -25,28 +27,20 @@ class PaymentControllerCase extends BaseApiTestCase
     {
         $this->setTenantEmail($email);
 
-        $client = $this->getClient();
+        $this->getClient();
 
+        /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getTenant();
         $result = $repo->findByUser($tenant);
 
-        $client->request(
-            'GET',
-            self::URL_PREFIX . "/payments.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ]
-        );
+        $response = $this->getRequest();
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
 
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        $answer = $this->parseContent($response->getContent(), $format);
 
-        $this->assertEquals(count($result), count($answer));
+        $this->assertCount(count($result), $answer);
 
         // check first and last element
         $this->assertEquals(
@@ -77,23 +71,19 @@ class PaymentControllerCase extends BaseApiTestCase
     {
         $id = 1;
         $this->setTenantEmail('tenant11@example.com');
+        $this->getClient();
 
-        $client = $this->getClient();
+        /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository('RjDataBundle:Payment');
+        /** @var PaymentEntity $result */
         $result = $repo->findOneByIdForUser($id, $this->getTenant());
 
-        $client->request(
-            'GET',
-            self::URL_PREFIX . "/payments/" . $this->getIdEncoder()->encode($id),
-            [],
-            [],
-            [
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ]
-        );
-        $answer = $this->parseContent($client->getResponse()->getContent());
+        $response = $this->getRequest($this->getIdEncoder()->encode($id));
 
-        $this->assertResponse($client->getResponse());
+        $answer = $this->parseContent($response->getContent());
+
+        $this->assertResponse($response);
+
         $this->assertEquals($result->getType(), $answer["type"]);
         $this->assertEquals($result->getAmount(), $answer["rent"]);
         $this->assertEquals("0.00", $answer["other"]);
@@ -117,6 +107,9 @@ class PaymentControllerCase extends BaseApiTestCase
 
     public static function paymentDataProvider()
     {
+
+        $date = new \DateTime();
+
         return [
             [
                 'contract_url' => 'contract_url/1758512013',
@@ -124,10 +117,10 @@ class PaymentControllerCase extends BaseApiTestCase
                 'type' =>  'one_time',
                 'rent' =>  1200.00,
                 'other' => 75.00,
-                'day' => 1,
-                'month' => 1,
-                'year' => 2014,
-                'paid_for' => '2014-08'
+                'day' => $date->modify('+ 1 day')->format('d'),
+                'month' =>  $date->modify('+ 1 month')->format('m'),
+                'year' => $date->format('Y'),
+                'paid_for' =>  $date->format('Y-m')
             ],
             [
                 'contract_url' => 'contract_url/1758512013',
@@ -135,10 +128,10 @@ class PaymentControllerCase extends BaseApiTestCase
                 'type' =>  'recurring',
                 'rent' =>  "600.00",
                 'other' => "0.00",
-                'day' => 3,
-                'month' => 10,
-                'year' => 2014,
-                'paid_for' => '2014-10'
+                'day' => $date->modify('+ 2 day')->format('d'),
+                'month' => $date->format('m'),
+                'year' => $date->format('Y'),
+                'paid_for' => $date->modify('+ 1 month')->format('Y-m')
             ]
         ];
     }
@@ -165,25 +158,13 @@ class PaymentControllerCase extends BaseApiTestCase
      */
     public function createPayment($format, $statusCode, $requestParams)
     {
-        $client = $this->getClient();
+        $response = $this->postRequest($requestParams);
 
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
+        $this->assertResponse($response, $statusCode, $format);
 
-        $client->request(
-            'POST',
-            self::URL_PREFIX . "/payments.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $answer = $this->parseContent($response->getContent(), $format);
 
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
         /** @var PaymentEntity $payment */
@@ -227,35 +208,148 @@ class PaymentControllerCase extends BaseApiTestCase
      */
     public function editPayment($format, $statusCode, $requestParams)
     {
-        $client = $this->getClient();
-
+        /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getTenant();
         $result = $repo->findByUser($tenant);
+        /** @var PaymentEntity $latest */
         $latest = $result[0];
 
         $encodedId = $this->getIdEncoder()->encode($latest->getId());
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
 
-        $client->request(
-            'PUT',
-            self::URL_PREFIX . "/payments/{$encodedId}.{$format}",
-            [],
-            [],
+        $response = $this->putRequest($encodedId, $requestParams);
+
+        $this->assertResponse($response, $statusCode, $format);
+
+        $this->getEm()->refresh($latest);
+
+        $this->assertEquals($latest->getType(), $requestParams['type']);
+        $this->assertEquals($latest->getAmount(), $requestParams['rent']);
+    }
+
+    // common data for negative result
+    public static function paymentCommonData()
+    {
+        return[
+            'contract_url' => 'contract_url/1758512013',
+            'payment_account_url' => 'payment_account_url/656765400',
+            'type' =>  'one_time',
+            'rent' =>  1200.00,
+            'other' => 75.00
+        ];
+    }
+
+    // data for negative result
+    public static function paymentNegativeDataProvider()
+    {
+        return [
             [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
+                'day' => '- 2',
+                'month' => '0',
+                'year' => '0',
+                'paid_for' => null
             ],
-            $serializer->serialize($requestParams, $format)
-        );
+            [
+                'day' => '0',
+                'month' => '0',
+                'year' => '- 2',
+                'paid_for' => null
+            ],
+            [
+                'day' => '+10',
+                'month' => '0',
+                'year' => '0',
+                'end_month' => '0',
+                'end_year' => '- 2',
+                'paid_for' => null
+            ],
+            [
+                'day' => '+ 2',
+                'month' => '0',
+                'year' => '0',
+                'paid_for' => 'test'
+            ],
+            [
+                'day' => '+ 2',
+                'month' => '13',
+                'year' => '0',
+                'paid_for' => null
+            ],
+        ];
+    }
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+    public static function createPaymentNegativeDataProvider()
+    {
+        return [
+            [
+                'json',
+                400,
+                self::paymentCommonData() + self::paymentNegativeDataProvider()[0],
+                ['payment.start_date.error.past']
+            ],
+            [
+                'json',
+                400,
+                self::paymentCommonData() + self::paymentNegativeDataProvider()[1],
+                ['payment.year.error.past', 'payment.start_date.error.past']
+            ],
+            [
+                'json',
+                400,
+                self::paymentCommonData() + self::paymentNegativeDataProvider()[2],
+                ['contract.error.is_end_later_than_start', 'payment.end_year.error.past']
+            ],
+            [
+                'json',
+                400,
+                self::paymentCommonData() + self::paymentNegativeDataProvider()[3],
+                ['error.contract.paid_for']
+            ],
+            [
+                'json',
+                400,
+                self::paymentCommonData() + self::paymentNegativeDataProvider()[4],
+                ['This value should be 12 or less.']
+            ]
+        ];
+    }
 
-        /** @var Payment $payment */
-        $payment = $repo->findOneById($latest->getId());
+    /**
+     * @test
+     * @dataProvider createPaymentNegativeDataProvider
+     */
+    public function errorResponse($format, $statusCode, $requestParams, $errorMessage)
+    {
+        $date = new \DateTime();
 
-        $this->assertEquals($payment->getType(), $requestParams['type']);
-        $this->assertEquals($payment->getAmount(), $requestParams['rent']);
+        $requestParams['day'] = $date->modify("{$requestParams['day']}  day")->format('d');
+        $requestParams['month'] = $requestParams['month'] ? $requestParams['month'] : $date->modify("{$requestParams['month']}  month")->format('m');
+        $requestParams['year'] = $date->modify("{$requestParams['year']}  year")->format('Y');
+
+        $requestParams['paid_for'] =
+            $requestParams['paid_for'] ?
+                $requestParams['paid_for'] :
+                $date->format('Y') . '-' .   $date->modify("+ 1 month")->format('m');
+
+        if (isset($requestParams['end_month']) && isset( $requestParams['end_year'])) {
+            $requestParams['end_month'] =  $date->modify("{$requestParams['end_month']}  month")->format('m');
+            $requestParams['end_year'] = $date->modify("{$requestParams['end_year']}  year")->format('Y');
+
+        }
+
+        $response = $this->postRequest($requestParams);
+
+        $this->assertResponse($response, $statusCode, $format);
+
+        $responseContent = $this->parseContent($response->getContent(), $format);
+
+        $this->assertCount(count($errorMessage), $responseContent, 'wrong count error');
+
+        $errorContent = [];
+        foreach ($responseContent as $key=>$value) {
+            $errorContent[$value['message']] = $value['message'];
+        }
+
+        $this->assertCount(0, array_diff($errorContent, $errorMessage ), 'wrong count error');
     }
 }
