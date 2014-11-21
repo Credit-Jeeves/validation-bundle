@@ -57,14 +57,19 @@ class OrderListener
         if (!$entity instanceof Order) {
             return;
         }
-        
+
+        if (!$eventArgs->hasChangedField('status')) {
+            return;
+        }
+
+        $this->syncTransactions($entity);
+
         $operations = $entity->getRentOperations();
-        if ($operations->count() == 0 || !$eventArgs->hasChangedField('status')) {
+        if ($operations->count() == 0) {
             return;
         }
 
         $this->updateBalanceContract($eventArgs);
-        $this->syncTransactions($entity);
 
         /** @var Operation $operation */
         foreach ($operations as $operation) {
@@ -304,14 +309,14 @@ class OrderListener
     {
         $transaction = $order->getCompleteTransaction();
 
-        if ($transaction && $transaction->getIsSuccessful() &&
+        if ($transaction &&
             OrderType::HEARTLAND_CARD == $order->getType() &&
             OrderStatus::COMPLETE == $order->getStatus()
         ) {
-            $batchDate = $transaction->getCreatedAt();
+            $batchDate = clone $transaction->getCreatedAt();
             $transaction->setBatchDate($batchDate);
             $businessDaysCalc = $this->container->get('business_days_calculator');
-            $transaction->setDepositDate($businessDaysCalc->getCreditCardBusinessDate($batchDate));
+            $transaction->setDepositDate($businessDaysCalc->getCreditCardBusinessDate(clone $batchDate));
         }
     }
 }

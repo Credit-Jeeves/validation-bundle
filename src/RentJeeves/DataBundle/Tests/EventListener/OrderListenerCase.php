@@ -10,9 +10,11 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 
 class OrderListenerCase extends Base
@@ -440,5 +442,62 @@ class OrderListenerCase extends Base
         $em->flush();
         $em->refresh($contract);
         $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetBatchAndDepositDateForCompleteCCOrdersWhenOnlyOtherAmountExists()
+    {
+        $startAt = new DateTime();
+        $startAt->modify('-5 month');
+        $finishAt = new DateTime();
+        $finishAt->modify('+24 month');
+        /** @var $contract Contract */
+        $contract = $this->getContract($startAt, $finishAt);
+        $operations = $contract->getOperations();
+        $this->assertTrue(($operations->count() === 0));
+
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $order = new Order();
+        $order->setUser($contract->getTenant());
+        $order->setSum(500);
+        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setStatus(OrderStatus::NEWONE);
+
+        $operation = new Operation();
+        $operation->setContract($contract);
+        $operation->setAmount(500);
+        $operation->setType(OperationType::OTHER);
+        $paidFor = new DateTime();
+        $operation->setPaidFor($paidFor);
+        $operation->setOrder($order);
+
+        $transaction = new Heartland();
+        $transaction->setAmount(500);
+        $transaction->setOrder($order);
+        $transaction->setStatus(TransactionStatus::COMPLETE);
+        $transaction->setIsSuccessful(true);
+        $order->addHeartland($transaction);
+
+        $em->persist($operation);
+        $em->persist($transaction);
+        $em->persist($order);
+        $em->flush();
+
+        $this->assertNotNull($transactionId = $transaction->getId());
+        $this->assertNull($transaction->getBatchDate());
+        $this->assertNull($transaction->getDepositDate());
+        
+        // change status to COMPLETE - here is the place where OrderListener:syncTransactions works
+        $order->setStatus(OrderStatus::COMPLETE);
+        $em->flush($order);
+        
+        $this->assertNotNull($newTransaction = $em->find('RjDataBundle:Heartland', $transactionId));
+        $this->assertNotNull($batchDate = $newTransaction->getBatchDate());
+        $this->assertNotNull($depositDate = $newTransaction->getDepositDate());
+        $this->assertEquals((new DateTime())->format('Ymd'), $batchDate->format('Ymd'));
+        $this->assertGreaterThanOrEqual(1, $batchDate->diff($depositDate)->format('%r%a'));
     }
 }
