@@ -9,6 +9,7 @@ use JMS\Serializer\SerializationContext;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\ContractRepository;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -790,6 +791,31 @@ class AjaxController extends Controller
         foreach ($validatorErrors as $error) {
             $errors[] = $translator->trans($error->getMessage());
         }
+
+        if ($contract->getSettings()->getIsIntegrated()) {
+            if ($residentId = trim($details['residentId'])) {
+                $user = $this->getUser();
+                $holding = $user->getHolding();
+                $residentMapping = $tenant->getResidentForHolding($holding);
+                if (empty($residentMapping)) {
+                    $residentMapping = new ResidentMapping();
+                    $residentMapping->setHolding($holding);
+                    $residentMapping->setTenant($tenant);
+                }
+                $residentMapping->setResidentId($residentId);
+                $em->persist($residentMapping);
+
+                $validator = $this->get('validator');
+                $validatorErrorsResidentMapping = $validator->validate($residentMapping, ['add_or_edit_tenants']);
+
+                foreach ($validatorErrorsResidentMapping as $error) {
+                    $errors[] = $translator->trans($error->getMessage());
+                }
+            } else {
+                $errors[] = $translator->trans('common.residentId.required');
+            }
+        }
+        $response = [];
 
         if (!empty($errors)) {
             $response['errors'] = $errors;
