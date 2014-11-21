@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -53,6 +54,7 @@ trait FormBind
 
         $form->submit($postData);
         $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
+
         if ($form->isValid() && $isCsrfTokenValid) {
             //Do save and maybe in future move it to factory pattern, when have more logic
             switch ($form->getName()) {
@@ -170,6 +172,10 @@ trait FormBind
         ResidentMapping $residentMapping,
         $sendInvite
     ) {
+
+        /**
+         * @var $waitingContract ContractWaiting
+         */
         $waitingContract = $this->getContractWaiting(
             $tenant,
             $contract,

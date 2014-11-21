@@ -99,11 +99,19 @@ class PropertyListener
 
     protected function createStandaloneUnit($eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-        $unit = new Unit();
-        $unit->setProperty($entity);
-        $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
-        $entity->addUnit($unit);
+        /**
+         * @var $property Property
+         */
+        $property = $eventArgs->getEntity();
+        /**
+         * @var $unit Unit
+         */
+        $unit = $property->getUnits()->first();
+
+        if ($property->getUnits()->count() === 1 && $unit->getActualName() === Unit::SINGLE_PROPERTY_UNIT_NAME) {
+            return;
+        }
+        $unit = Property::getNewSingleUnit($property);
         $eventArgs->getEntityManager()->persist($unit);
     }
 }
