@@ -25,7 +25,7 @@ fixtures:
     user: Tenant_1
     status: error
     type: heartland_card
-    sum: 1500
+    sum: 3000
     created_at: '-30 days'
     updated_at: '-30 days'
   rjOrder_3_cancelled:

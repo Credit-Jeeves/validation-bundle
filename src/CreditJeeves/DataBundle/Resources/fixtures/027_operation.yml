@@ -368,4 +368,9 @@ fixtures:
     amount: 111
     paidFor: 'now'
     createdAt: 'now'
-
+  rjOperation_3_error_second_rent:
+    order: rjOrder_3_error
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: 'now'

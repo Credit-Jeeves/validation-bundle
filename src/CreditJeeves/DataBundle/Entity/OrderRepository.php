@@ -44,10 +44,11 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * 
+     *
      * @param \CreditJeeves\DataBundle\Entity\Group $group
      * @param string $searchBy
      * @param string $search
+     * @return array
      */
     public function countOrders(\CreditJeeves\DataBundle\Entity\Group $group, $searchBy = '', $search = '')
     {
@@ -67,6 +68,7 @@ class OrderRepository extends EntityRepository
                 $query->setParameter('search', '%'.$item.'%');
             }
         }
+        $query->groupBy('o.id');
         $query = $query->getQuery();
         return $query->getScalarResult();
     }
@@ -79,6 +81,7 @@ class OrderRepository extends EntityRepository
      * @param string $order
      * @param string $searchBy
      * @param string $search
+     * @return mixed
      */
     public function getOrdersPage(
         \CreditJeeves\DataBundle\Entity\Group $group,
@@ -98,6 +101,7 @@ class OrderRepository extends EntityRepository
         $query->leftJoin('t.unit', 'unit');
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
+        $query->groupBy('o.id');
         if (!empty($search) && !empty($searchBy)) {
             $this->applySearchField($searchBy);
             $search = $this->prepareSearch($search);
@@ -455,5 +459,24 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param User $user
+     * @param array $excludedStatuses
+     * @return mixed
+     */
+    public function getUserOrders(User $user, array $excludedStatuses = [OrderStatus::NEWONE])
+    {
+        $query = $this->createQueryBuilder('ord');
+        $query->where('ord.user = :user');
+        $query->setParameter('user', $user);
+
+        if (!empty($excludedStatuses)) {
+            $query->andWhere('ord.status not in (:orderStatuses)');
+            $query->setParameter('orderStatuses', $excludedStatuses);
+        }
+
+        return $query->getQuery()->execute();
     }
 }
