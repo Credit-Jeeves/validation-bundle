@@ -3,7 +3,6 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use Doctrine\ORM\EntityManager;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReaderImport;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager;
@@ -18,21 +17,14 @@ class MappingYardi extends MappingCsv
      */
     protected $residentData;
 
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
     public function __construct(
         StorageYardi $storage,
         CsvFileReaderImport $reader,
-        ResidentDataManager $residentData,
-        EntityManager $em
+        ResidentDataManager $residentData
     ) {
         $this->residentData = $residentData;
         $this->storage = $storage;
         $this->reader = $reader;
-        $this->em = $em;
     }
 
     public function isNeedManualMapping()

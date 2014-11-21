@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
@@ -91,6 +92,14 @@ abstract class MappingAbstract implements MappingInterface
     );
 
     protected $storage;
+
+    /** @var EntityManager $em */
+    protected $em;
+
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
     /**
      * @param Tenant $tenant
