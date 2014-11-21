@@ -14,6 +14,13 @@ use RentJeeves\LandlordBundle\Model\Import;
 
 trait Contract
 {
+    protected function setYardiPaymentAccepted(EntityContract $contract, $row)
+    {
+        if (isset($row[Mapping::KEY_PAYMENT_ACCEPTED])) {
+            $contract->setYardiPaymentAccepted($row[Mapping::KEY_PAYMENT_ACCEPTED]);
+        }
+    }
+
     /**
      * @param $row
      * @param $tenant
@@ -80,6 +87,7 @@ trait Contract
                 $contract = $this->createContract($row, $tenant, $import);
             }
         }
+        $this->setYardiPaymentAccepted($contract, $row);
         //set data from csv file
         $contract->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
         $contract->setRent($row[Mapping::KEY_RENT]);
@@ -161,6 +169,8 @@ trait Contract
             $residentMapping
         );
 
+        $contractWaiting->setYardiPaymentAccepted($contract->getYardiPaymentAccepted());
+
         if (!$contractWaiting->getProperty()) {
             return $contractWaiting;
         }
@@ -177,6 +187,7 @@ trait Contract
             $contractWaitingInDb->setIntegratedBalance($contractWaiting->getIntegratedBalance());
             $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
             $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
+            $contractWaitingInDb->setYardiPaymentAccepted($contractWaiting->getYardiPaymentAccepted());
             return $contractWaitingInDb;
         }
 
