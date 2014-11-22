@@ -38,6 +38,10 @@
                 <source>api.errors.contract.new_unit.change</source>
                 <target>"new_unit" parameters are only supported in POST requests.</target>
             </trans-unit>
+            <trans-unit id="api.errors.contract.new_unit.unit_url.collision">
+                <source>api.errors.contract.new_unit.unit_url.collision</source>
+                <target>You should pass either "new_unit" or "unit_url" parameter -- not both.</target>
+            </trans-unit>
             <trans-unit id="api.errors.contract.unit_url.change">
                 <source>api.errors.contract.unit_url.change</source>
                 <target>Update not supported.</target>
