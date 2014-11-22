@@ -3,7 +3,6 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
@@ -30,17 +29,13 @@ class MappingCsv extends MappingAbstract
      */
     protected $reader;
 
-    /** @var EntityManager $em */
-    protected $em;
-
-    public function __construct(StorageCsv $storage, CsvFileReaderImport $reader, EntityManager $em)
+    public function __construct(StorageCsv $storage, CsvFileReaderImport $reader)
     {
         $this->storage  = $storage;
         $this->reader   = $reader;
         $data = $this->storage->getImportData();
         $this->reader->setDelimiter($data[StorageCsv::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[StorageCsv::IMPORT_TEXT_DELIMITER]);
-        $this->em = $em;
     }
 
     public function isNeedManualMapping()

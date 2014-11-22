@@ -297,6 +297,9 @@ class Contract extends Base
             $result['credit_track_enabled'] = false;
         }
 
+        $residentMapping = $tenant->getResidentForHolding($this->getHolding());
+        $result['residentId'] = $residentMapping ? $residentMapping->getResidentId() : null;
+
         $result['isIntegrated'] = false;
         if ($this->getGroup() && $groupSettings = $this->getGroup()->getGroupSettings()) {
             $result['isIntegrated'] = $groupSettings->getIsIntegrated();

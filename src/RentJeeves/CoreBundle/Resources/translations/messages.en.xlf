@@ -2937,6 +2937,18 @@
                 <source>yardi.tenant.property.manager_disabled_payment_description</source>
                 <target>Payment Disabled Contact Your Property Manager</target>
             </trans-unit>
+            <trans-unit id="common.resident_id">
+                <source>common.resident_id</source>
+                <target>Resident ID</target>
+            </trans-unit>
+            <trans-unit id="add_or_edit_tenants.error.already_exist">
+                <source>add_or_edit_tenants.error.already_exist</source>
+                <target>This Resident ID already assigned to another tenant.</target>
+            </trans-unit>
+            <trans-unit id="common.resident_id.required">
+                <source>common.residentId.required</source>
+                <target>You must map each tenant to a resident ID in your accounting system.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

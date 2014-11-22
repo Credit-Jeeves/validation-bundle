@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
@@ -76,6 +77,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_UNIT_ID = 'unit_id';
 
+    const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
+
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
@@ -89,6 +92,14 @@ abstract class MappingAbstract implements MappingInterface
     );
 
     protected $storage;
+
+    /** @var EntityManager $em */
+    protected $em;
+
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
     /**
      * @param Tenant $tenant
