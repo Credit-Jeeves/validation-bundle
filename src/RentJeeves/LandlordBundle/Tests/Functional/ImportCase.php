@@ -249,8 +249,18 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($tenant);
         $this->assertEquals($tenant->getFirstName(), 'Trent Direnna');
         $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
-        $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
         $this->assertEquals($tenant->getResidentsMapping()->first()->getResidentId(), 't0019851');
+
+        // Check that first and last names are parsed correctly when field contains coma.
+        $tenant2 = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => '19test@mail.com',
+            )
+        );
+        $this->assertNotNull($tenant2);
+        $this->assertEquals('Lisa Maria', $tenant2->getFirstName());
+        $this->assertEquals('Sanders', $tenant2->getLastName());
+
         /**
          * @var $contract Contract
          */

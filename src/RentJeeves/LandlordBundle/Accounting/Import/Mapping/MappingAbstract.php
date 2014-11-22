@@ -155,7 +155,7 @@ abstract class MappingAbstract implements MappingInterface
 
     protected function parseStreet($row)
     {
-        preg_match('/(?:\#|unit)\s?([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
+        preg_match('/(?:\#|apt|unit|ste|rm)\.?\s*([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
 
         if (empty($matches)) {
             return $row;
@@ -175,7 +175,7 @@ abstract class MappingAbstract implements MappingInterface
      */
     protected function parseUnit($row)
     {
-        preg_match('/(?:\#|unit)?\s?([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
+        preg_match('/(?:\#|apt|unit|ste|rm)\.?\s*([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
 
         if (empty($matches)) {
             return $row;
@@ -189,12 +189,26 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
+     *
+     * If tenantName field contains coma, then everything before coma is last name and everything after coma - firstname
+     *
      * @param $name
      *
      * @return array
      */
     public static function parseName($name)
     {
+        if (strpos($name, ',') !== false) {
+            $names = explode(',', $name);
+            $lastName = array_shift($names);
+            $firstName = implode(' ', array_map('trim', $names));
+
+            return [
+                self::LAST_NAME_TENANT => trim($lastName),
+                self::FIRST_NAME_TENANT => trim($firstName),
+            ];
+        }
+
         $names = explode(' ', $name);
 
         switch (count($names)) {
