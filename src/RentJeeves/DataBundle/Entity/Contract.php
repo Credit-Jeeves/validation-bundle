@@ -682,6 +682,7 @@ class Contract extends Base
             $result['isPayment'] = true;
             $result['payment_type'] = $payment->getType();
             $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
+            $result['payment_amount'] = $payment->getTotal();
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
             if (10 < strlen($result['row_payment_source'])) {
