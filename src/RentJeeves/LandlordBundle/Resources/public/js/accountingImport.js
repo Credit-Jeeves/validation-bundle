@@ -115,7 +115,7 @@ function accountingImport(superclass) {
             return Translator.trans('import.status.error');
         }
 
-        if (data.contract.status == 'finished' || data.move_out !== null) {
+        if (data.contract.status == 'finished') {
             return Translator.trans('import.status.ended');
         }
 
