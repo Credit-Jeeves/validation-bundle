@@ -55,6 +55,7 @@ class UnitListener
         }
 
         $property = $entity->getProperty();
+
         if ($property->isSingle() && count($property->getUnits()) > 1) {
             throw new LogicException('Standalone property can not have units');
         }

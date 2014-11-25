@@ -5,6 +5,7 @@ namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 use JMS\Serializer\Serializer;
 use RentJeeves\ApiBundle\Forms\Enum\ReportingType;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
+use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 
 class ContractsControllerCase extends BaseApiTestCase
@@ -200,6 +201,24 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ],
                 'experian_reporting' => 'enabled',
+            ],
+            [
+                'unit_url' => 'unit_url/2511139177', // 0
+                'new_unit' => [
+                    'address' => [
+                        'unit_name' => '',
+                        'street' => '770 Broadway',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003',
+                    ],
+                    'landlord' => [
+                        'email' => 'test_landlord4@gmail.com',
+                    ],
+                ],
+            ],
+            [
+                'experian_reporting' => 'enable',
             ],
         ];
     }
@@ -436,6 +455,22 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ]
             ],
+            [
+                'json',
+                400,
+                self::contractsDataProvider()[9],
+                [
+                    [
+                        'message' => 'api.errors.contract.new_unit.unit_url.collision',
+                        'value' => [],
+                        'parameter' => '_globals',
+                    ],
+                    [
+                        'parameter' => 'unit_url',
+                        'message' => 'This value is not valid.',
+                    ],
+                ]
+            ],
         ];
     }
 
@@ -465,5 +500,128 @@ class ContractsControllerCase extends BaseApiTestCase
         $this->assertResponse($client->getResponse(), $statusCode, $format);
 
         $this->assertResponseContent($client->getResponse()->getContent(), $result, $format);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     */
+    public function wrongEnabledCreate()
+    {
+        $requestParams = [
+            'unit_url' => 'unit_url/2974582658',
+            'experian_reporting' => 'enable',
+        ];
+
+        $this->createContract('json', '400', $requestParams);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     */
+    public function wrongEnabledEdit()
+    {
+        $requestParams = [
+            'experian_reporting' => 'disable',
+        ];
+
+        $this->editContract('json', '400', $requestParams);
+    }
+
+    public static function setExperianReportingStartAtDataProvider()
+    {
+        return [
+            [
+                [
+                    'unit_url' => 'unit_url/2974582658',
+                    'experian_reporting' => 'enabled'
+                ],
+                true,
+                'now'
+            ],
+            [
+                [
+                    'unit_url' => 'unit_url/2974582658',
+                ],
+                false,
+            ],
+            [
+                [
+                    'unit_url' => 'unit_url/2974582658',
+                    'experian_reporting' => 'disabled'
+                ],
+                false,
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider setExperianReportingStartAtDataProvider
+     */
+    public function setExperianReportingStartAt($requestParameters, $reportingStatus, $reportingStartAt = null)
+    {
+        $reportingStartAt = $reportingStartAt ? (new DateTime($reportingStartAt))->format('Y-m-d'): null;
+
+        $this->createContract('json', 201, $requestParameters);
+
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+
+        $tenant = $this->getTenant();
+        /** @var Contract $last */
+        $last = $repo->findOneBy([
+            'tenant' => $tenant,
+        ], ['id' => 'DESC']);
+
+        $this->assertEquals($reportingStatus, $last->getReportToExperian());
+
+        $startAt = $last->getExperianStartAt();
+        !$startAt || $startAt = $last->getExperianStartAt()->format('Y-m-d');
+
+        $this->assertEquals($reportingStartAt, $startAt);
+    }
+
+    public static function updateExperianReportingStartAtDataProvider()
+    {
+        return [
+            [
+                ['experian_reporting' => 'enabled'],
+                true,
+                'now',
+            ],
+            [
+                ['experian_reporting' => 'disabled'],
+                false,
+                'now',
+            ]
+        ];
+    }
+
+    /**
+     * @test
+     * @depends setExperianReportingStartAt
+     * @dataProvider updateExperianReportingStartAtDataProvider
+     */
+    public function updateExperianReportingStartAt($requestParameters, $reportingStatus, $reportingStartAt)
+    {
+        $this->editContract('json', 204, $requestParameters);
+
+        $reportingStartAt = (new DateTime($reportingStartAt))->format('Y-m-d');
+
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+
+        $tenant = $this->getTenant();
+        /** @var Contract $last */
+        $last = $repo->findOneBy([
+            'tenant' => $tenant,
+        ], ['id' => 'DESC']);
+
+        $startAt = $last->getExperianStartAt();
+        !$startAt || $startAt = $last->getExperianStartAt()->format('Y-m-d');
+
+        $this->assertEquals($reportingStatus, $last->getReportToExperian());
+
+        $this->assertEquals($reportingStartAt, $startAt);
     }
 }

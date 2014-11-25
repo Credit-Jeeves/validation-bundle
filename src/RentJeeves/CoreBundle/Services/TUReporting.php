@@ -2,7 +2,6 @@
 namespace RentJeeves\CoreBundle\Services;
 
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
-use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Entity\Contract;
 use DateTime;

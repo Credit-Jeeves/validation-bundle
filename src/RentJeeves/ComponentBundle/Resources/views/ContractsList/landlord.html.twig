@@ -226,6 +226,12 @@
                         <span data-bind="text: email"></span>
                     </div>
                 </div>
+                <div class="form-row clearfix" data-bind="if: isIntegrated">
+                    <label>{{ 'common.resident_id'|trans }}<b>*</b></label>
+                    <div class="fields-box width150">
+                        <input data-bind="value: residentId" type="text" id="resident-edit" class="half-of-right">
+                    </div>
+                </div>
             </div>
             <div class="col">
                 <h4 class="clearfix">
@@ -379,6 +385,12 @@
                     <label>{{ 'email'|trans }}</label>
                     <div class="fields-box">
                         <span class="value" data-bind="text: email"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix width150" data-bind="if: isIntegrated">
+                    <label>{{ 'common.resident_id'|trans }}</label>
+                    <div class="fields-box width150">
+                        <input data-bind="value: residentId" type="text" id="residentId" class="half-of-right">
                     </div>
                 </div>
             </div>
@@ -536,6 +548,14 @@
         <div id="userExistMessageLanlord" class="attention-box pie-el pie-el messageInfoUserAdd">
           {{ 'user.itslandlord'|trans }}
         </div>
+          <div class="attention-box pie-el" data-bind="visible: $root.countErrorsAdd() > 0" style="">
+              <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+              <ul class="default">
+                  <!-- ko foreach: $root.errorsAdd() -->
+                  <li data-bind="text: $data"></li>
+                  <!-- /ko -->
+              </ul>
+          </div>
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'tenant.info'|trans }}</span>
@@ -567,7 +587,14 @@
               {{ form_widget(form.tenant.email) }}
             </div>
           </div>
-          
+            {% if isIntegrated %}
+                <div class="form-row clearfix">
+                    <label>{{ 'common.resident_id'|trans }}<b>*</b></label>
+                    <div class="fields-box width150">
+                        {{ form_widget(form.resident.residentId) }}
+                    </div>
+                </div>
+            {% endif %}
         </div>
         
         <div class="col">
@@ -627,7 +654,9 @@
         </div>
       </div>
       <div class="footer-button-box">
-        <button type="submit"  class="button"><span>{{'invite.tenant'|trans }}</span></button>
+          <button id='submit' data-bind="click: saveTenant" class="button small">
+              <span>{{ 'invite.tenant'|trans }}</span>
+          </button>
         <div class="with-seperator-box">
           <button id="tenant-add-property-button-cancel" class="button grey">
             <span>{{ 'cancel'|trans }}</span></button>
@@ -742,13 +771,19 @@
                 </td>
                 <td class="email-box ellipsis-box">
                   <div data-bind="if: credit_track_enabled">
-                    <div class="clarification csm-icon" style="padding: 5px 28px 5px 0;">
-                      <div data-bind="text: tenant"></div>
-                      <i data-bind="visible: credit_track_enabled" style="top:-3px;right:0;left:initial;"></i>
-                    </div>
+                      <div class="tenantName" data-bind="text: tenant"></div>
+                      <div class="clarification">
+                        <i class="csm-icon" data-bind="visible: credit_track_enabled"></i>
+                        <i class="alert" title="{{ 'yardi.landlord.property.manager_disabled_payment'|trans }}"
+                           data-bind="visible: isIntegrated && isYardiPaymentDenied"></i>
+                      </div>
                   </div>
                   <div data-bind="if: !credit_track_enabled">
-                    <div data-bind="text: tenant"></div>
+                    <div class="tenantName" data-bind="text: tenant"></div>
+                      <div class="clarification">
+                        <i class="alert one" title="{{ 'yardi.landlord.property.manager_disabled_payment'|trans }}"
+                           data-bind="visible: isIntegrated && isYardiPaymentDenied"></i>
+                      </div>
                   </div>
                 </td>
                 <td class="email-box ellipsis-box" data-bind="text: email"></td>

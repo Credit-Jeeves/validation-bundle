@@ -82,3 +82,7 @@ fixtures:
       name: rjReceipt.html
   email_41:
       name: rjPushBatchReceiptsReport.html
+  email_42:
+      name: rjYardiPaymentAcceptedTurnOn.html
+  email_43:
+      name: rjYardiPaymentAcceptedTurnOff.html

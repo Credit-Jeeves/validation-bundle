@@ -131,7 +131,7 @@ class StorageYardi extends StorageCsv
         return true;
     }
 
-    public function saveToFile(ResidentLeaseFile $residentData, $residentId, $moveOutDate)
+    public function saveToFile(ResidentLeaseFile $residentData, $residentId, $moveOutDate, $paymentAccepted)
     {
         $filePath = $this->getFilePath(true);
         if (is_null($filePath)) {
@@ -145,15 +145,16 @@ class StorageYardi extends StorageCsv
         $data = array(
             $residentId,
             $residentData->getUnit()->getIdentification()->getUnitName(),
-            $residentData->getLeaseBegin(), //When contract was started - it's Correct?
-            $residentData->getLeaseEnd(),  // When contract must ended - it's Correct?
+            $residentData->getLeaseBegin(),
+            $residentData->getLeaseEnd(),
             $residentData->getMonthlyRentAmount(),
             $residentData->getTenantDetails()->getPersonDetails()->getName()->getFirstName(),
             $residentData->getTenantDetails()->getPersonDetails()->getName()->getLastName(),
             $residentData->getTenantDetails()->getPersonDetails()->getEmail(),
             $moveOutDate,
             $residentData->getLedgerDetails()->getIdentification()->getBalance(),
-            $monthToMonth
+            $monthToMonth,
+            $paymentAccepted
         );
 
         $this->writeCsvToFile($data);
@@ -178,6 +179,7 @@ class StorageYardi extends StorageCsv
             9 => Mapping::KEY_MOVE_OUT,
             10 => Mapping::KEY_BALANCE,
             11 => Mapping::KEY_MONTH_TO_MONTH,
+            12 => Mapping::KEY_PAYMENT_ACCEPTED,
         );
 
         $this->writeCsvToFile($mapping);

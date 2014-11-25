@@ -19,6 +19,7 @@ class YardiSettings extends Base implements SoapSettingsInterface
     const REVERSAL_TRANSACTION_REVERSE = 'Reverse';
     const PAYMENT_TYPE_CASH = 'cash';
     const PAYMENT_TYPE_CHECK = 'check';
+    const PAYMENT_TYPE_OTHER = 'other';
 
     public function getTemplateParameters()
     {
@@ -52,7 +53,9 @@ class YardiSettings extends Base implements SoapSettingsInterface
         if (strtolower($originalOrderType) == strtolower(self::PAYMENT_TYPE_CASH)) {
             return self::REVERSAL_TRANSACTION_REVERSE;
         }
-        if (strtolower($originalOrderType) == strtolower(self::PAYMENT_TYPE_CHECK)) {
+        if (strtolower($originalOrderType) == strtolower(self::PAYMENT_TYPE_CHECK) ||
+            strtolower($originalOrderType) == strtolower(self::PAYMENT_TYPE_OTHER)
+        ) {
             return self::REVERSAL_TRANSACTION_NSF;
         }
 

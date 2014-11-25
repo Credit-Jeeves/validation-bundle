@@ -6,9 +6,11 @@ use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\LandlordBundle\Form\ContractType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use RentJeeves\LandlordBundle\Form\InviteTenantContractType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use \DateTime;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TenantsController extends Controller
 {
@@ -36,9 +38,12 @@ class TenantsController extends Controller
      * @Route(
      *     "/tenant/invite/save",
      *     name="landlord_invite_save",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
      *     options={"expose"=true}
      * )
      * @Template()
+     * @Method({"POST"})
      */
     public function saveInviteTenantAction()
     {
@@ -65,6 +70,7 @@ class TenantsController extends Controller
             if ($form->isValid()) {
                 $tenant = $form->getData()['tenant'];
                 $contract = $form->getData()['contract'];
+                $residentMapping = isset($form->getData()['resident']) ? $form->getData()['resident'] : null;
                 $finishAtType = $form->get('contract')->get('finishAtType')->getData();
 
                 if ($finishAtType === ContractType::MONTH_TO_MONTH) {
@@ -98,12 +104,34 @@ class TenantsController extends Controller
                 }
                 $em->persist($contract);
                 $em->persist($tenant);
-                $em->flush();
+                
+                if ($residentMapping) {
+                    $residentMapping->setHolding($holding);
+                    $residentMapping->setTenant($tenant);
+                    $em->persist($residentMapping);
 
-                $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
+                    $validator = $this->get('validator');
+                    $errorsResidentMapping = $validator->validate($residentMapping, ['add_or_edit_tenants']);
+                    $translator = $this->get('translator');
+                    foreach ($errorsResidentMapping as $error) {
+                        $errors[] = $translator->trans($error->getMessage());
+                    }
+                }
+            }
+            foreach ($form->getErrors() as $error) {
+                $errors[] = $translator->trans($error->getMessage());
             }
         }
 
-        return $this->redirect($this->generateUrl('landlord_tenants'));
+        $response = [];
+        if (!empty($errors)) {
+            $response['errors'] = $errors;
+            return new JsonResponse($response);
+        }
+
+        $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
+        $em->flush();
+
+        return new JsonResponse($response);
     }
 }

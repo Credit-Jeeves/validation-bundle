@@ -7,6 +7,7 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 
@@ -73,13 +74,26 @@ class ResidentDataManager
 
     /**
      * @param Holding $holding
+     * @param $externalPropertyId
+     *
+     * @return GetResidentTransactionsLoginResponse
+     */
+    public function getResidentTransactions(Holding $holding, $externalPropertyId)
+    {
+        $client = $this->getApiClient($holding, SoapClientEnum::RESIDENT_TRANSACTIONS);
+
+        return $client->getResidentTransactions($externalPropertyId);
+    }
+
+    /**
+     * @param Holding $holding
      * @return ResidentDataClient
      */
-    protected function getApiClient(Holding $holding)
+    protected function getApiClient(Holding $holding, $client = SoapClientEnum::RESIDENT_DATA)
     {
         return $this->clientFactory->getClient(
             $holding->getYardiSettings(),
-            SoapClientEnum::RESIDENT_DATA
+            $client
         );
     }
 }

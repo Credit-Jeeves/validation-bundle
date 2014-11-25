@@ -34,7 +34,7 @@ class ExceptionListener implements EventSubscriberInterface
 
         $handling = true;
 
-        $path = $event->getRequest()->getRequestUri();
+        $path = $event->getRequest()->getPathInfo();
 
         if (strpos($path, '/api/') !== 0) {
             return;

@@ -112,8 +112,12 @@ abstract class HandlerAbstract implements HandlerInterface
      * @param $field
      * @return \DateTime|null
      */
-    public function getDateByField($field)
+    public function getDateByField(Import $import, $field)
     {
+        if (empty($field)) {
+            return null;
+        }
+
         try {
             $date = DateTime::createFromFormat($this->storage->getDateFormat(), $field);
         } catch (Exception $e) {
@@ -123,6 +127,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $errors = DateTime::getLastErrors();
 
         if (!empty($errors['warning_count']) || !empty($errors['errors'])) {
+            $import->setIsValidDateFormat(false);
             return null;
         }
 
@@ -131,14 +136,17 @@ abstract class HandlerAbstract implements HandlerInterface
         $formattedYear = (int) $date->format('Y');
 
         if ($formattedMonth < 1 || $formattedMonth > 12) {
+            $import->setIsValidDateFormat(false);
             return null;
         }
 
         if ($formattedDay < 1 || $formattedDay > 31) {
+            $import->setIsValidDateFormat(false);
             return null;
         }
 
         if ($formattedYear < 2000 || $formattedYear > 2150) {
+            $import->setIsValidDateFormat(false);
             return null;
         }
 
@@ -211,6 +219,9 @@ abstract class HandlerAbstract implements HandlerInterface
 
         if ($this->mapping->isSkipped($row)) {
             $import->setIsSkipped(true);
+            $import->setSkippedMessage(
+                $this->translator->trans('import.info.skipped1')
+            );
         }
 
         $import->setContract($contract = $this->getContract($import, $row));
@@ -251,6 +262,9 @@ abstract class HandlerAbstract implements HandlerInterface
             $this->contractInPast($contract)
         ) {
             $import->setIsSkipped(true);
+            $import->setSkippedMessage(
+                $this->translator->trans('import.info.skipped2')
+            );
         }
 
         if (!$import->getIsSkipped() && $form = $this->getForm($import)) {

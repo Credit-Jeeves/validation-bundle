@@ -38,6 +38,21 @@
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
             </trans-unit>
+            <trans-unit id="import.error.mapping_date">
+                <source>import.error.mapping_date</source>
+                <target>
+                        It appears that the date format you chose for this file is incorrect.
+                        Please verify the date format and try again. Or you can proceed, but you will have to enter dates manually.
+                </target>
+            </trans-unit>
+            <trans-unit id="import.info.skipped1">
+                <source>import.info.skipped1</source>
+                <target>This row was skipped because resident ID = VACANT</target>
+            </trans-unit>
+            <trans-unit id="import.info.skipped2">
+                <source>import.info.skipped2</source>
+                <target>This row was skipped because the lease end is in the past and the lease is not marked as month-to-month.</target>
+            </trans-unit>
             <trans-unit id="rj.footer.contact_us">
                 <source>rj.footer.contact_us</source>
                 <target>Contact Us</target>
@@ -1050,6 +1065,10 @@
             <trans-unit id="contract.paid.paid_for">
                 <source>contract.paid.paid_for</source>
                 <target>For Month of</target>
+            </trans-unit>
+            <trans-unit id="contract.paid.paid_on">
+                <source>contract.paid.paid_on</source>
+                <target>Paid on</target>
             </trans-unit>
             <trans-unit id="contract.resolve.warning">
                 <source>contract.resolve.warning</source>
@@ -2905,6 +2924,30 @@
             <trans-unit id="error.statement_descriptor.empty">
                 <source>error.statement_descriptor.empty</source>
                 <target>Statement Descriptor should not be empty.</target>
+            </trans-unit>
+            <trans-unit id="yardi.tenant.property.manager_disabled_payment">
+                <source>yardi.tenant.property.manager_disabled_payment</source>
+                <target>Your property manager has disabled online payments.</target>
+            </trans-unit>
+            <trans-unit id="yardi.landlord.property.manager_disabled_payment">
+                <source>yardi.landlord.property.manager_disabled_payment</source>
+                <target>Payments have been disabled for this tenant by the integrated accounting software.</target>
+            </trans-unit>
+            <trans-unit id="yardi.tenant.property.manager_disabled_payment_description">
+                <source>yardi.tenant.property.manager_disabled_payment_description</source>
+                <target>Payment Disabled Contact Your Property Manager</target>
+            </trans-unit>
+            <trans-unit id="common.resident_id">
+                <source>common.resident_id</source>
+                <target>Resident ID</target>
+            </trans-unit>
+            <trans-unit id="add_or_edit_tenants.error.already_exist">
+                <source>add_or_edit_tenants.error.already_exist</source>
+                <target>This Resident ID already assigned to another tenant.</target>
+            </trans-unit>
+            <trans-unit id="common.resident_id.required">
+                <source>common.residentId.required</source>
+                <target>You must map each tenant to a resident ID in your accounting system.</target>
             </trans-unit>
         </body>
     </file>
