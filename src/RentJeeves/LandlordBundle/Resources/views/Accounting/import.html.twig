@@ -117,11 +117,9 @@
                         {% endif %}
                         <button type="submit"
                                 class="button small submitImportFile"
-                                data-bind="visible: $root.loadDataMessage().length == 0"
+                                data-bind="visible: $root.loadDataMessage().length == 0, click: submitForms"
                         >
-                            <span  data-bind="click: function(data, event) { submitForms() }">
-                                {{ 'import.review.and.post'|trans }}
-                            </span>
+                            <span>{{ 'import.review.and.post'|trans }}</span>
                         </button>
                     </div>
                     <div data-bind="if: isFinishReview">
