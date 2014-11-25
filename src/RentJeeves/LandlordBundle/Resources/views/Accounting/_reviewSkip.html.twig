@@ -1,7 +1,14 @@
 {% form_theme form "LandlordBundle::form_import.html.twig" %}
 
 <tr  data-bind="attr: {'class': $root.getClassLine($data)}, if: is_skipped || contract.status == 'finished' || !$root.isValidFieldsWhichNotContainsInForm($data)">
-    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
+    <td data-bind="
+            text: $root.getStatusText($data),
+            attr: {
+                'class': $root.getStatusText($data),
+                'title': $data.skipped_message
+            }">
+
+    </td>
     {% if isMultipleProperty == "true"  %}
         <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
             <div data-bind="text: contract.property.full_address"></div>

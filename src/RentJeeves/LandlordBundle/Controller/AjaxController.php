@@ -9,6 +9,7 @@ use JMS\Serializer\SerializationContext;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\ContractRepository;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -791,6 +792,31 @@ class AjaxController extends Controller
             $errors[] = $translator->trans($error->getMessage());
         }
 
+        if ($contract->getSettings()->getIsIntegrated()) {
+            if ($residentId = trim($details['residentId'])) {
+                $user = $this->getUser();
+                $holding = $user->getHolding();
+                $residentMapping = $tenant->getResidentForHolding($holding);
+                if (empty($residentMapping)) {
+                    $residentMapping = new ResidentMapping();
+                    $residentMapping->setHolding($holding);
+                    $residentMapping->setTenant($tenant);
+                }
+                $residentMapping->setResidentId($residentId);
+                $em->persist($residentMapping);
+
+                $validator = $this->get('validator');
+                $validatorErrorsResidentMapping = $validator->validate($residentMapping, ['add_or_edit_tenants']);
+
+                foreach ($validatorErrorsResidentMapping as $error) {
+                    $errors[] = $translator->trans($error->getMessage());
+                }
+            } else {
+                $errors[] = $translator->trans('common.residentId.required');
+            }
+        }
+        $response = [];
+
         if (!empty($errors)) {
             $response['errors'] = $errors;
             return new JsonResponse($response);
@@ -822,11 +848,6 @@ class AjaxController extends Controller
         if (isset($data['amount'])) {
             $amount = $data['amount'];
         }
-        try {
-            $paidFor = new DateTime($data['paid_for']);
-        } catch (Exception $e) {
-            return new BadRequestHttpException('Invalid input', $e);
-        }
         /** @var Contract $contract */
         $contract = $this->getDoctrine()
             ->getManager()
@@ -841,12 +862,27 @@ class AjaxController extends Controller
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
                 if ($amount) {
+                    $paidFor = new DateTime($data['paid_for']);
+                    $createdAt = DateTime::createFromFormat('m/d/Y', $data['created_at']);
+                    date_time_set($createdAt, 0, 0);
+                    $errors = DateTime::getLastErrors();
+                    if ($errors['warning_count'] > 0 || $errors['error_count'] > 0) {
+                        return new JsonResponse(
+                            array(
+                                'status'  => 'error',
+                                'errors'  => array(
+                                    'Invalid rent payment date',
+                                )
+                            )
+                        );
+                    }
                     // Create order
                     $order = new Order();
                     $order->setUser($tenant);
                     $order->setSum($amount);
                     $order->setStatus(OrderStatus::COMPLETE);
                     $order->setType(OrderType::CASH);
+                    $order->setCreatedAt($createdAt);
                     $em->persist($order);
                     // Create operation
                     $operation = new Operation();
@@ -855,12 +891,22 @@ class AjaxController extends Controller
                     $operation->setContract($contract);
                     $operation->setAmount($amount);
                     $operation->setPaidFor($paidFor);
+                    $operation->setCreatedAt($createdAt);
                     $em->persist($operation);
                     $contract->shiftPaidTo($amount);
                     $contract->setBalance($contract->getBalance() - $amount);
                     if ($contract->getSettings()->getIsIntegrated()) {
                         $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
                     }
+                } else {
+                    return new JsonResponse(
+                        array(
+                            'status'  => 'error',
+                            'errors'  => array(
+                                'Invalid amount',
+                            )
+                        )
+                    );
                 }
                 // Change paid to date
                 $contract->setStatus(ContractStatus::CURRENT);
@@ -872,7 +918,11 @@ class AjaxController extends Controller
                 break;
         }
         // TODO blank page detection
-        return new JsonResponse(array());
+        return new JsonResponse(
+            array(
+                'status'  => 'successful',
+            )
+        );
     }
 
     /* Payments */

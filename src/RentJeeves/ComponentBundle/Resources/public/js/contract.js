@@ -23,6 +23,7 @@ function Contract() {
     this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
     this.errorsApprove = ko.observableArray([]);
     this.errorsEdit = ko.observableArray([]);
+    this.errorsAdd = ko.observableArray([]);
     this.statusBeforeTriedSave = ko.observable();
     this.isSingleProperty = ko.observable(true);
 
@@ -88,7 +89,7 @@ function Contract() {
             self.contract(contract);
         }
 
-        if (self.contract().finish.length > 0) {
+        if (self.contract().finish != null && self.contract().finish.length > 0) {
             self.optionsFinishAtEdit('finishAt');
         } else {
             self.optionsFinishAtEdit('monthToMonth');
@@ -202,6 +203,10 @@ function Contract() {
 
     this.countErrorsApprove = ko.computed(function () {
         return parseInt(self.errorsApprove().length);
+    });
+
+    this.countErrorsAdd = ko.computed(function () {
+        return parseInt(self.errorsAdd().length);
     });
 
     this.reviewContract = function (data) {
@@ -396,4 +401,31 @@ function Contract() {
         $('#tenant-end-contract').dialog('close');
         return false;
     }
+
+    this.saveTenant = function () {
+        $('#tenant-edit-property-popup').showOverlay();
+        var formData = $("form#rentjeeves_landlordbundle_invitetenantcontracttype").serialize();
+        var url = $('form#rentjeeves_landlordbundle_invitetenantcontracttype').attr('action') ;
+        if (!$(".error_list").length) {
+            $.ajax({
+                url: url,
+                type: 'POST',
+                timeout: 60000, // 30 secs
+                dataType: 'json',
+                data: formData,
+                success: function(response, textStatus, jqXHR) {
+                    $('#tenant-end-contract').hideOverlay();
+                    if (typeof response.errors == 'undefined') {
+                        $('#tenant-add-property-popup').dialog('close');
+                        $("form#rentjeeves_landlordbundle_invitetenantcontracttype")[0].reset();
+                        DetailsViewModel.errorsAdd([]);
+                        ContractsViewModel.ajaxAction();
+                    } else {
+                        DetailsViewModel.errorsAdd(response.errors);
+                    }
+                }
+            });
+        }
+        return false;
+    };
 }

@@ -32,8 +32,9 @@ class TenantListenerCase extends Base
          * @var Contract $contract
          */
         foreach ($contracts as $contract) {
-            $this->assertNull($contract->getTransUnionStartAt());
-            $this->assertFalse($contract->getReportToTransUnion());
+            $contract->setTransUnionStartAt(null);
+            $contract->setReportToTransUnion(false);
+            $em->flush($contract);
         }
 
         $tenant->setIsVerified(UserIsVerified::PASSED);

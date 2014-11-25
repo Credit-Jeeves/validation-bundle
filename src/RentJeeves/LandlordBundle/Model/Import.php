@@ -20,10 +20,22 @@ class Import
     protected $isSkipped;
 
     /**
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $skippedMessage;
+
+    /**
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $hasContractWaiting = false;
+
+    /**
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $isValidDateFormat = true;
 
     /**
      * @Serializer\Type("integer")
@@ -99,6 +111,38 @@ class Import
     protected $isMultipleProperty;
 
     protected $contractWaiting;
+
+    /**
+     * @return mixed
+     */
+    public function getSkippedMessage()
+    {
+        return $this->skippedMessage;
+    }
+
+    /**
+     * @param mixed $skippedMessage
+     */
+    public function setSkippedMessage($skippedMessage)
+    {
+        $this->skippedMessage = $skippedMessage;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsValidDateFormat()
+    {
+        return $this->isValidDateFormat;
+    }
+
+    /**
+     * @param mixed $isValidDateFormat
+     */
+    public function setIsValidDateFormat($isValidDateFormat)
+    {
+        $this->isValidDateFormat = $isValidDateFormat;
+    }
 
     /**
      * @return ContractWaiting

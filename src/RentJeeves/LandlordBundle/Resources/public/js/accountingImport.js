@@ -3,6 +3,7 @@ function accountingImport(superclass) {
     this.superclass = superclass;
     this.source = ko.observable('');
     this.isMultipleProperty = ko.observable(false);
+    this.isValidDateFormat = ko.observable(true);
     this.fieldsWhichNotContaintInForm = [
         "import_new_user_with_contract_contract_residentMapping_residentId",
         "import_new_user_with_contract_contract_unitMapping_externalUnitId",
@@ -45,6 +46,10 @@ function accountingImport(superclass) {
                     var errors = new Array();
                     //Fill error by line
                     ko.utils.arrayForEach(response.rows, function (value) {
+                        if (value.is_valid_date_format == false && self.isValidDateFormat() == true) {
+                            self.isValidDateFormat(false);
+                        }
+
                         if (value.errors.length === 0) {
                             return;
                         }
@@ -110,7 +115,7 @@ function accountingImport(superclass) {
             return Translator.trans('import.status.error');
         }
 
-        if (data.contract.status == 'finished' || data.move_out !== null) {
+        if (data.contract.status == 'finished') {
             return Translator.trans('import.status.ended');
         }
 

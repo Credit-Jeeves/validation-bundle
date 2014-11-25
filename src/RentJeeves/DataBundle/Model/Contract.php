@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use LogicException;
+use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -123,6 +124,19 @@ abstract class Contract
      * @Serializer\Groups({"RentJeevesImport", "payRent"})
      */
     protected $status;
+
+    /**
+     * @ORM\Column(
+     *     type="YardiPaymentAccepted",
+     *     nullable=false,
+     *     name="yardi_payment_accepted",
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     * @Gedmo\Versioned
+     */
+    protected $yardiPaymentAccepted = YardiPaymentAccepted::ANY;
 
     /**
      * @ORM\Column(
@@ -377,6 +391,22 @@ abstract class Contract
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->histories = new ArrayCollection();
+    }
+
+    /**
+     * @return integer
+     */
+    public function getYardiPaymentAccepted()
+    {
+        return $this->yardiPaymentAccepted;
+    }
+
+    /**
+     * @param integer $yardiPaymentAccepted
+     */
+    public function setYardiPaymentAccepted($yardiPaymentAccepted)
+    {
+        $this->yardiPaymentAccepted = $yardiPaymentAccepted;
     }
 
     /**

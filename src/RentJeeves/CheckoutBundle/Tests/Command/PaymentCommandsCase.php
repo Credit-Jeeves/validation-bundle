@@ -40,8 +40,8 @@ class PaymentCommandsCase extends BaseTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command' => $command->getName(),
-                '--jms-job-id' => $jobId,
+                'command'       => $command->getName(),
+                '--jms-job-id'  => $jobId,
             )
         );
         return $commandTester;

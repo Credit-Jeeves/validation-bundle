@@ -27,6 +27,16 @@ class Property extends Base
         return ShorteningAddressUtility::shrinkAddress($this->getFullAddress());
     }
 
+    public static function getNewSingleUnit($property)
+    {
+        $unit = new Unit();
+        $unit->setProperty($property);
+        $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
+        $property->addUnit($unit);
+        
+        return $unit;
+    }
+
     public function parseGoogleAddress($data)
     {
         $property = array();

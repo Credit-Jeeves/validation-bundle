@@ -28,8 +28,20 @@ trait Unit
             return $property->getSingleUnit();
         }
 
-        if (empty($row[Mapping::KEY_UNIT])) {
-            return null;
+        if (empty($row[Mapping::KEY_UNIT]) && !empty($row[Mapping::KEY_UNIT_ID])) {
+            /**
+             * @var $unitMapping UnitMapping
+             */
+            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
+                array('externalUnitId' => $row[Mapping::KEY_UNIT_ID])
+            );
+            if ($unitMapping) {
+                return $unitMapping->getUnit();
+            } elseif ($property->getIsSingle() === null && !empty($row[Mapping::KEY_UNIT_ID])) {
+                $unit = Property::getNewSingleUnit($property);
+                $property->setIsSingle(true);
+                return $unit;
+            }
         }
 
         $params = array(

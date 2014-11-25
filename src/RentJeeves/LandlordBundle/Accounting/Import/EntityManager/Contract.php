@@ -10,16 +10,24 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\LandlordBundle\Model\Import;
 
 trait Contract
 {
+    protected function setYardiPaymentAccepted(EntityContract $contract, $row)
+    {
+        if (isset($row[Mapping::KEY_PAYMENT_ACCEPTED])) {
+            $contract->setYardiPaymentAccepted($row[Mapping::KEY_PAYMENT_ACCEPTED]);
+        }
+    }
+
     /**
      * @param $row
      * @param $tenant
      *
      * @return EntityContract
      */
-    protected function createContract(array $row, Tenant $tenant)
+    protected function createContract(array $row, Tenant $tenant, Import $import)
     {
         $contract = new EntityContract();
         if ($tenant->getId()) {
@@ -40,7 +48,7 @@ trait Contract
             $contract->setUnit($unit);
         }
         $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
-        $moveIn = $this->getDateByField($row[Mapping::KEY_MOVE_IN]);
+        $moveIn = $this->getDateByField($import, $row[Mapping::KEY_MOVE_IN]);
         $contract->setStartAt($moveIn);
 
         /**
@@ -67,7 +75,7 @@ trait Contract
         $property = $this->getProperty($row);
 
         if (!$tenant->getId() || !$property) {
-            $contract = $this->createContract($row, $tenant);
+            $contract = $this->createContract($row, $tenant, $import);
         } else {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
@@ -76,9 +84,10 @@ trait Contract
             );
 
             if (empty($contract)) {
-                $contract = $this->createContract($row, $tenant);
+                $contract = $this->createContract($row, $tenant, $import);
             }
         }
+        $this->setYardiPaymentAccepted($contract, $row);
         //set data from csv file
         $contract->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
         $contract->setRent($row[Mapping::KEY_RENT]);
@@ -121,11 +130,11 @@ trait Contract
         }
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
-            $import->setMoveOut($this->getDateByField($row[Mapping::KEY_MOVE_OUT]));
+            $import->setMoveOut($this->getDateByField($import, $row[Mapping::KEY_MOVE_OUT]));
         }
 
         $today = new DateTime();
-        $leaseEnd = $this->getDateByField($row[Mapping::KEY_LEASE_END]);
+        $leaseEnd = $this->getDateByField($import, $row[Mapping::KEY_LEASE_END]);
 
         if ($import->getMoveOut() !== null) {
             $contract->setFinishAt($import->getMoveOut());
@@ -160,6 +169,8 @@ trait Contract
             $residentMapping
         );
 
+        $contractWaiting->setYardiPaymentAccepted($contract->getYardiPaymentAccepted());
+
         if (!$contractWaiting->getProperty()) {
             return $contractWaiting;
         }
@@ -176,6 +187,7 @@ trait Contract
             $contractWaitingInDb->setIntegratedBalance($contractWaiting->getIntegratedBalance());
             $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
             $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
+            $contractWaitingInDb->setYardiPaymentAccepted($contractWaiting->getYardiPaymentAccepted());
             return $contractWaitingInDb;
         }
 

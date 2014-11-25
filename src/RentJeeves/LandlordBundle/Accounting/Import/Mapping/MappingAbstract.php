@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
@@ -76,6 +77,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_UNIT_ID = 'unit_id';
 
+    const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
+
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
@@ -89,6 +92,14 @@ abstract class MappingAbstract implements MappingInterface
     );
 
     protected $storage;
+
+    /** @var EntityManager $em */
+    protected $em;
+
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
     /**
      * @param Tenant $tenant
@@ -144,7 +155,7 @@ abstract class MappingAbstract implements MappingInterface
 
     protected function parseStreet($row)
     {
-        preg_match('/(?:\#|unit)\s?([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
+        preg_match('/(?:\#|apt|unit|ste|rm)\.?\s*([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
 
         if (empty($matches)) {
             return $row;
@@ -164,7 +175,7 @@ abstract class MappingAbstract implements MappingInterface
      */
     protected function parseUnit($row)
     {
-        preg_match('/(?:\#|unit)?\s?([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
+        preg_match('/(?:\#|apt|unit|ste|rm)\.?\s*([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
 
         if (empty($matches)) {
             return $row;
@@ -178,12 +189,26 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
+     *
+     * If tenantName field contains coma, then everything before coma is last name and everything after coma - firstname
+     *
      * @param $name
      *
      * @return array
      */
     public static function parseName($name)
     {
+        if (strpos($name, ',') !== false) {
+            $names = explode(',', $name);
+            $lastName = array_shift($names);
+            $firstName = implode(' ', array_map('trim', $names));
+
+            return [
+                self::LAST_NAME_TENANT => trim($lastName),
+                self::FIRST_NAME_TENANT => trim($firstName),
+            ];
+        }
+
         $names = explode(' ', $name);
 
         switch (count($names)) {

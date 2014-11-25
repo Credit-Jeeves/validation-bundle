@@ -51,7 +51,7 @@
                 <tbody>
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' %}
-                        <tr class="contracts">
+                        <tr class="contracts static">
                             <td class="font-helvetica">{{ contract.rent }}</td>
                             {% if hasIntegratedBalance %}
                                 <td class="font-helvetica">{{ contract.balance }}</td>
@@ -59,98 +59,43 @@
                             <td class="font-helvetica">{{ contract.payment_next }}</td>
                             <td class="font-helvetica">{{ contract.full_address }}</td>
                             <td class="font-helvetica">
-                                {% if contract.status == 'pending' %}
-                                    {{ 'contract.status.pending.text' | trans }}
-                                {% elseif contract.payment_status == 'processing' %}
-                                    {{ 'contract.status.processing.text' | trans }}
-                                {% elseif contract.status == 'invite' %}
-                                    {{ 'contract.status.invite.text' | trans }}
-                                {% elseif contract.payment_type == 'recurring' %}
-                                    {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}
-                                {% elseif contract.payment_type == 'one_time' %}
-                                    {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}
-                                {% elseif contract.status == 'approved' %}
-                                    {{ 'contract.status.approved.text' | trans }}
-                                {% elseif contract.status == 'current' %}
-                                    {{ 'contract.status.current.text' | trans }}
-                                {% elseif contract.status == 'finished' %}
-                                    {{ 'contract.status.finished.text' | trans }}
+                                {% if contract.is_integrated and contract.isYardiPaymentDenied %}
+                                    {{ 'yardi.tenant.property.manager_disabled_payment_description'|trans }}
                                 {% else %}
-                                    {{ contract.status | upper }}
+                                    {% if contract.status == 'pending' %}
+                                        {{ 'contract.status.pending.text' | trans }}
+                                    {% elseif contract.payment_status == 'processing' %}
+                                        {{ 'contract.status.processing.text' | trans }}
+                                    {% elseif contract.status == 'invite' %}
+                                        {{ 'contract.status.invite.text' | trans }}
+                                    {% elseif contract.payment_type == 'recurring' %}
+                                        {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}
+                                    {% elseif contract.payment_type == 'one_time' %}
+                                        {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}
+                                    {% elseif contract.status == 'approved' %}
+                                        {{ 'contract.status.approved.text' | trans }}
+                                    {% elseif contract.status == 'current' %}
+                                        {{ 'contract.status.current.text' | trans }}
+                                    {% elseif contract.status == 'finished' %}
+                                        {{ 'contract.status.finished.text' | trans }}
+                                    {% else %}
+                                        {{ contract.status | upper }}
+                                    {% endif %}
                                 {% endif %}
                             </td>
 
                             <td class="font-helvetica">
-                                {% if contract.isPayment %}
-                                    {% set buttonText = 'contract.edit' | trans() %}
+                                {% if contract.is_integrated and contract.isYardiPaymentDenied %}
+                                    <button class="button small button-contract-pay floatleft denied"
+                                            disabled
+                                            title="{{ 'yardi.tenant.property.manager_disabled_payment'|trans }}"
+                                    >
+                                        <span>{{ 'contract.pay' | trans() }}</span>
+                                    </button>
                                 {% else %}
-                                    {% set buttonText = 'contract.pay' | trans() %}
-                                {% endif %}
-
-                                {% if contract.status == 'pending' %}
-                                    <div>
-                                        <button class="button small button-contract-pay floatleft" disabled>
-                                            <span>{{ 'contract.pay' | trans() }}</span>
-                                        </button>
-                                        {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
-                                            <input type="hidden" value="{{ contract.full_address }}">
-                                        </div>#}
-                                    </div>
-                                {% elseif contract.status == 'approved' or contract.status == 'invite' %}
-                                    <div>
-                                        <button class="button small button-contract-pay floatleft"
-                                                data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
-                                                id="contract-pay-{{ loop.revindex }}"
-                                                {% if contract.in_day_range %}
-                                                    {% if contract.payment_status == 'processing' %}
-                                                        disabled
-                                                    {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
-                                                        title="{{ 'tenant.no_balance.alert'|trans }}" disabled
-                                                    {% endif %}
-                                                {% else %}
-                                                    disabled
-                                                    title="{{ 'payment_form.start_date.error_range'|trans(
-                                                        {
-                                                            '%OPEN_DAY%' : contract.open_day,
-                                                            '%CLOSE_DAY%': contract.close_day
-                                                        }
-                                                    ) }}"
-                                                {% endif %}
-                                                >
-
-                                            <span>{{ buttonText }}</span>
-                                        </button>
-                                        {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
-                                            <input type="hidden" value="{{ contract.full_address }}">
-                                        </div>#}
-                                    </div>
-                                {% elseif contract.status == 'current' %}
-                                    <div>
-                                        <button class="button small button-contract-pay floatleft"
-                                                data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
-                                                id="contract-pay-{{ loop.revindex }}"
-                                                {% if contract.in_day_range %}
-                                                    {% if contract.payment_status == 'processing' %}
-                                                        disabled
-                                                    {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
-                                                        title="{{ 'tenant.no_balance.alert'|trans }}" disabled
-                                                    {% endif %}
-                                                {% else %}
-                                                    disabled
-                                                    title="{{ 'payment_form.start_date.error_range'|trans(
-                                                        {
-                                                            '%OPEN_DAY%' : contract.open_day,
-                                                            '%CLOSE_DAY%': contract.close_day
-                                                        }
-                                                    ) }}"
-                                                {% endif %}
-                                                >
-                                            <span>{{ buttonText }}</span>
-                                        </button>
-                                        {#<div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
-                                            <input type="hidden" value="{{ contract.full_address }}">
-                                        </div>#}
-                                    </div>
+                                    {{ include('RjComponentBundle:ContractsList:tenant_pay_button.html.twig',
+                                        { 'contract': contract, 'loop.revindex': loop.revindex }
+                                    ) }}
                                 {% endif %}
                             </td>
                         </tr>

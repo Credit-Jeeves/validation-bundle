@@ -28,11 +28,9 @@ class SummaryCase extends BaseTestCase
         $tenant->setIsVerified(UserIsVerified::NONE);
         $contracts = $tenant->getContracts();
         foreach ($contracts as $contract) {
-            if ($contract->getRent() === "987.00") {
-                continue;
-            }
-            $this->assertNull($contract->getTransUnionStartAt());
-            $this->assertFalse($contract->getReportToTransUnion());
+            $contract->setTransUnionStartAt(null);
+            $contract->setReportToTransUnion(false);
+            $em->flush($contract);
         }
         $em->flush($tenant);
         $this->login('tenant11@example.com', 'pass');
@@ -80,9 +78,6 @@ class SummaryCase extends BaseTestCase
          * @var Contract $contract
          */
         foreach ($contracts as $contract) {
-            if ($contract->getRent() === "987.00") {
-                continue;
-            }
             $this->assertNotNull($contract->getTransUnionStartAt());
             $this->assertTrue($contract->getReportToTransUnion());
             $this->assertTrue(($contract->getTransUnionStartAt()->format('Ymd') === $today->format('Ymd')));

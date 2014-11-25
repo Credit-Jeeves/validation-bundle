@@ -449,4 +449,38 @@ class Mailer extends BaseMailer
             $landlord->getCulture()
         );
     }
+
+    public function sendEmailAcceptYardiPayment(Tenant $tenant)
+    {
+        $context = $this->container->get('router')->getContext();
+        $context->setHost($this->container->getParameter('server_name_rj'));
+
+        $url = $this->container->get('router')->generate(
+            'fos_user_security_login',
+            array(),
+            true
+        );
+
+        return $this->sendBaseLetter(
+            $template = 'rjYardiPaymentAcceptedTurnOn',
+            array(
+                'TenantName' => $tenant->getFullName(),
+                'href'       => $url,
+            ),
+            $tenant->getEmail(),
+            $tenant->getCulture()
+        );
+    }
+
+    public function sendEmailDoNotAcceptYardiPayment(Tenant $tenant)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjYardiPaymentAcceptedTurnOff',
+            array(
+                'TenantName' => $tenant->getFullName()
+            ),
+            $tenant->getEmail(),
+            $tenant->getCulture()
+        );
+    }
 }

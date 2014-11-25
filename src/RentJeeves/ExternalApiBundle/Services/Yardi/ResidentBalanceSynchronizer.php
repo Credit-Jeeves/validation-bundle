@@ -112,6 +112,7 @@ class ResidentBalanceSynchronizer
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
         $residentId = $resident->getCustomerId();
         $unitName = $resident->getUnit()->getUnitId();
+        $paymentAccepted = $resident->getPaymentAccepted();
 
         $contracts = $contractRepo->findContractByHoldingPropertyResidentUnit(
             $holding,
@@ -133,7 +134,19 @@ class ResidentBalanceSynchronizer
         }
 
         if (count($contracts) == 1) {
+            /**
+             * @var $contract Contract
+             */
             $contract = reset($contracts);
+            $contract->setYardiPaymentAccepted($paymentAccepted);
+            $this->em->flush($contract);
+            $this->logMessage(
+                sprintf(
+                    "Update payment accepted to %s, for residentId %s",
+                    $paymentAccepted,
+                    $residentId
+                )
+            );
             return $contract;
         }
 
@@ -163,9 +176,6 @@ class ResidentBalanceSynchronizer
 
         $residents = $residentTransactions->getProperty()->getCustomers();
         foreach ($residents as $resident) {
-            $residentId = $resident->getCustomerId();
-            $unitId = $resident->getUnit()->getUnitId();
-
             $contract = $this->getContract($holding, $property, $resident);
             if (!$contract) {
                 continue;

@@ -17,6 +17,10 @@ fixtures:
         unit:      Unit_1_2
         rent:      1400
         status:    approved
+        reportToTransUnion: true
+        transUnionStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
         paidTo:    'now'
         startAt:   'now'
         finishAt:  '3 months'
@@ -79,6 +83,10 @@ fixtures:
         property: Property_1
         unit:     Unit_1_6
         rent:     1700
+        reportToTransUnion: true
+        transUnionStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
         status:   approved
         paidTo:  '-1 days'
         startAt:   '-9 month -5 days'
@@ -93,6 +101,10 @@ fixtures:
         unit:     Unit_1_6
         rent:     3700
         status:   approved
+        reportToTransUnion: true
+        transUnionStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
         paidTo:  '20 days'
         startAt:   '-90 days'
         finishAt: '-20 days'

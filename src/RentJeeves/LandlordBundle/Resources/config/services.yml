@@ -5,11 +5,15 @@ parameters:
 services:
     accounting.import.mapping.csv:
         class: "%import.mapping.csv.class%"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
         arguments:
             - "@accounting.import.storage.csv"
             - "@import.reader.csv"
     accounting.import.mapping.yardi:
         class: "%import.mapping.yardi.class%"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
         arguments:
             - "@accounting.import.storage.yardi"
             - "@import.reader.csv"

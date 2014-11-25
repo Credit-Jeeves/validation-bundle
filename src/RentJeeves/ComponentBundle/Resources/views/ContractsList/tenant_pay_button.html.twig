@@ -1,0 +1,71 @@
+{% if contract.isPayment %}
+    {% set buttonText = 'contract.edit' | trans() %}
+{% else %}
+    {% set buttonText = 'contract.pay' | trans() %}
+{% endif %}
+
+{% if contract.status == 'pending' %}
+    <div>
+        <button class="button small button-contract-pay floatleft" disabled>
+            <span>{{ 'contract.pay' | trans() }}</span>
+        </button>
+        {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+            <input type="hidden" value="{{ contract.full_address }}">
+        </div>#}
+    </div>
+{% elseif contract.status == 'approved' or contract.status == 'invite' %}
+    <div>
+        <button class="button small button-contract-pay floatleft"
+                data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
+                id="contract-pay-{{ loop.revindex }}"
+                {% if contract.in_day_range %}
+                    {% if contract.payment_status == 'processing' %}
+                        disabled
+                    {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
+                        title="{{ 'tenant.no_balance.alert'|trans }}" disabled
+                    {% endif %}
+                {% else %}
+                    disabled
+                    title="{{ 'payment_form.start_date.error_range'|trans(
+                    {
+                    '%OPEN_DAY%' : contract.open_day,
+                    '%CLOSE_DAY%': contract.close_day
+                    }
+                    ) }}"
+                {% endif %}
+                >
+
+            <span>{{ buttonText }}</span>
+        </button>
+        {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+            <input type="hidden" value="{{ contract.full_address }}">
+        </div>#}
+    </div>
+{% elseif contract.status == 'current' %}
+    <div>
+        <button class="button small button-contract-pay floatleft"
+                data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
+                id="contract-pay-{{ loop.revindex }}"
+                {% if contract.in_day_range %}
+                    {% if contract.payment_status == 'processing' %}
+                        disabled
+                    {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
+                        title="{{ 'tenant.no_balance.alert'|trans }}" disabled
+                    {% endif %}
+                {% else %}
+                    disabled
+                    title="{{ 'payment_form.start_date.error_range'|trans(
+                    {
+                    '%OPEN_DAY%' : contract.open_day,
+                    '%CLOSE_DAY%': contract.close_day
+                    }
+                    ) }}"
+                {% endif %}
+                >
+            <span>{{ buttonText }}</span>
+        </button>
+        {#<div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
+            <input type="hidden" value="{{ contract.full_address }}">
+        </div>#}
+    </div>
+{% endif %}
