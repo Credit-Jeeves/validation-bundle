@@ -13,7 +13,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentClient;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum as SoapClient;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
@@ -131,7 +131,7 @@ class ReversalReceiptSender
 
     protected function pushReceipts(YardiSettings $settings, $transactions)
     {
-        /** @var $residentClient ResidentClient */
+        /** @var $residentClient ResidentTransactionsClient */
         $residentClient = $this->clientFactory->getClient($settings, SoapClient::RESIDENT_TRANSACTIONS);
 
         /** @var Order $transaction */
@@ -140,7 +140,11 @@ class ReversalReceiptSender
             $transactionXml = $this->getTransactionXml($settings, $transaction);
             /** @var Messages $result */
             $result = $residentClient->importResidentTransactionsLogin($transactionXml);
-            $this->logMessage($result->getMessage());
+            if ($result instanceof Messages) {
+                $this->logMessage($result->getMessage());
+            } else {
+                $this->logMessage(sprintf('Failed to reverse payment: %s', $residentClient->getErrorMessage()));
+            }
         }
     }
 
