@@ -132,17 +132,13 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
 
-        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
+        $this->session->wait($this->timeout, "$('#tenant-approve-property-popup').is(':visible')");
 
         $this->page->pressButton('edit.Info');
         $this->session->wait($this->timeout, "$('#unit-edit').val() > 0");
         $this->session->evaluateScript(
             "$('#amount-edit').val(' ');"
         );
-
-        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
 
         $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
         $amount->setValue('7677.00');
@@ -236,6 +232,9 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($endAtRadio);
         if ($isIntegrated) {
             $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'));
+            $this->session->evaluateScript(
+                "$('#resident-edit').val(' ');"
+            );
             $resident->setValue('t123457');
         }
         $endAtRadio->click();
