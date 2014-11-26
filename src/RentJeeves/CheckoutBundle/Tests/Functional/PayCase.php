@@ -218,6 +218,11 @@ class PayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymenttype_start_date' => '1/1/2014',
             )
         );
+        // is disabled datepicker?
+        $this->assertNotNull($detailsDiv = $this->page->find('css', '.col'));
+        $detailsDiv->click();
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
         $this->session->wait($this->timeout, "!$('.overlay-trigger').is(':visible')");
