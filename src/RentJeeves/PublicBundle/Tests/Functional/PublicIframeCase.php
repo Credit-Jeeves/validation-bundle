@@ -40,7 +40,6 @@ class PublicIframeCase extends BaseTestCase
      */
     public function checkTenantAndLandlordButton()
     {
-        $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'management');
         $this->assertNotNull($tenantButton = $this->page->find('css', '#iframe-tenant-button'));
         $this->assertNull($landlordButton = $this->page->find('css', '#iframe-landlord-button'));
