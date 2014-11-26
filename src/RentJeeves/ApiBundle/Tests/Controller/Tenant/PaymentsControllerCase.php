@@ -117,8 +117,8 @@ class PaymentControllerCase extends BaseApiTestCase
                 'type' =>  'one_time',
                 'rent' =>  1200.00,
                 'other' => 75.00,
-                'day' => $date->modify('+ 1 day')->format('d'),
-                'month' =>  $date->modify('+ 1 month')->format('m'),
+                'day' => $date->modify('+ 1 day')->format('j'),
+                'month' =>  $date->modify('+ 1 month')->format('n'),
                 'year' => $date->format('Y'),
                 'paid_for' =>  $date->format('Y-m')
             ],
@@ -128,8 +128,8 @@ class PaymentControllerCase extends BaseApiTestCase
                 'type' =>  'recurring',
                 'rent' =>  "600.00",
                 'other' => "0.00",
-                'day' => $date->modify('+ 2 day')->format('d'),
-                'month' => $date->format('m'),
+                'day' => $date->modify('+ 2 day')->format('j'),
+                'month' => $date->format('n'),
                 'year' => $date->format('Y'),
                 'paid_for' => $date->modify('+ 1 month')->format('Y-m')
             ]
@@ -175,7 +175,7 @@ class PaymentControllerCase extends BaseApiTestCase
 
         /* paidFor day shall match contract dueDate */
         $dueDay = $payment->getContract()->getDueDate();
-        $paidForDay = $payment->getPaidFor()->format('d');
+        $paidForDay = $payment->getPaidFor()->format('j');
         $this->assertEquals($dueDay, $paidForDay);
     }
 
@@ -322,19 +322,21 @@ class PaymentControllerCase extends BaseApiTestCase
     {
         $date = new \DateTime();
 
-        $requestParams['day'] = $date->modify("{$requestParams['day']}  day")->format('d');
-        $requestParams['month'] = $requestParams['month'] ? $requestParams['month'] : $date->modify("{$requestParams['month']}  month")->format('m');
+        $requestParams['day'] = $date->modify("{$requestParams['day']}  day")->format('j');
+
+        $requestParams['month'] =
+            $requestParams['month'] ?:
+                $date->modify("{$requestParams['month']}  month")->format('n');
+
         $requestParams['year'] = $date->modify("{$requestParams['year']}  year")->format('Y');
 
         $requestParams['paid_for'] =
-            $requestParams['paid_for'] ?
-                $requestParams['paid_for'] :
+            $requestParams['paid_for'] ?:
                 $date->format('Y') . '-' .   $date->modify("+ 1 month")->format('m');
 
         if (isset($requestParams['end_month']) && isset( $requestParams['end_year'])) {
-            $requestParams['end_month'] =  $date->modify("{$requestParams['end_month']}  month")->format('m');
+            $requestParams['end_month'] =  $date->modify("{$requestParams['end_month']}  month")->format('n');
             $requestParams['end_year'] = $date->modify("{$requestParams['end_year']}  year")->format('Y');
-
         }
 
         $response = $this->postRequest($requestParams);
@@ -346,7 +348,7 @@ class PaymentControllerCase extends BaseApiTestCase
         $this->assertCount(count($errorMessage), $responseContent, 'wrong count error');
 
         $errorContent = [];
-        foreach ($responseContent as $key=>$value) {
+        foreach ($responseContent as $key => $value) {
             $errorContent[$value['message']] = $value['message'];
         }
 

@@ -11,7 +11,7 @@ class StartDateValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         $nowDateTime = new DateTime();
-        $dateValidation = DateTime::createFromFormat('Y-m-d', $value);
+        $dateValidation = ($value instanceof DateTime) ? $value : DateTime::createFromFormat('Y-m-d', $value);
 
         if (!$dateValidation) {
             return $this->context->addViolation($constraint->messageEmptyStartDate);

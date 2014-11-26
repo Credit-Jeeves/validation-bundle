@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use RentJeeves\CheckoutBundle\Constraint\StartDate;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -60,9 +61,18 @@ class Payment extends Base
         $this->setStartYear($dateTime->format('Y'));
     }
 
+    /**
+     * @StartDate(
+     *    oneTimeUntilValue="21:50",
+     *    groups={"api"}
+     * )
+     */
     public function getStartDate()
     {
-        $date = new DateTime('0000-00-00T00:00:00');
+        if (!$this->getStartYear() || $this->getStartMonth() || $this->getDueDate()) {
+            return null;
+        }
+        $date = new \DateTime('0000-00-00T00:00:00');
         return $date->setDate($this->getStartYear(), $this->getStartMonth(), $this->getDueDate());
     }
 
@@ -170,9 +180,9 @@ class Payment extends Base
     /*
      * this maps the API paid_for parameter to the model's paidFor parameter
      */
-    public function setPaidForApi($date_text)
+    public function setPaidForApi($dateText)
     {
-        $date = date_parse($date_text);
+        $date = date_parse($dateText);
         if ($date['year'] &&  $date['month']) {
             $day = $date['day'] ? $date['day'] : $this->getDueDate();
             $datePaidFor = new DateTime();
@@ -186,6 +196,7 @@ class Payment extends Base
     public function getPaidForApi()
     {
         $paidFor = parent::getPaidFor();
+
         return ($paidFor) ? $paidFor->format("Y-m") : "";
     }
 
@@ -211,33 +222,35 @@ class Payment extends Base
     {
         $now = $this->getNow();
 
-        if ($this->getStartYear() < $now->format('Y')){
+        if ($this->getStartYear() && $this->getStartYear() < $now->format('Y')) {
             $context->addViolationAt('startYear', "payment.year.error.past");
         }
 
-        if ($this->getEndYear() && $this->getEndYear() < $now->format('Y')){
+        if ($this->getEndYear() && $this->getEndYear() < $now->format('Y')) {
             $context->addViolationAt('endYear', "payment.end_year.error.past");
         }
 
-        $payBalanceOnly = $this->getContract()->getGroup()->getGroupSettings()->getPayBalanceOnly();
+        $group = $this->getContract() ? $this->getContract()->getGroup() : null;
+        $payBalanceOnly = $group ? $group->getGroupSettings()->getPayBalanceOnly() : null;
 
         if (!$this->getPaidFor() && !$payBalanceOnly) {
             $context->addViolationAt(null, 'error.contract.paid_for');
         }
          // if month > 12 the method  $end->setDate with this param returned 500
-        if ($this->getStartMonth() < 1 || $this->getStartMonth() > 12){
+        if ($this->getStartMonth() < 1 || $this->getStartMonth() > 12) {
             return;
         }
 
         $lastDayInStartMonth = new DateTime("last day of {$this->getStartYear()}-{$this->getStartMonth()}");
 
         if ($lastDayInStartMonth->format('d') < $this->getDueDate()) {
-            $context->addViolationAt('day', ["payment.month.error.number",['%%COUNT%%' => $lastDayInStartMonth->format('d')]]);
-            return;
-        }
 
-        if ($now > $this->getStartDate()) {
-            $context->addViolationAt('dueDate', "payment.start_date.error.past");
+            $context->addViolationAt(
+                'day',
+                "payment.month.error.number",
+                ['%%COUNT%%' => $lastDayInStartMonth->format('d')]
+            );
+            return;
         }
 
         if ($this->getEndMonth() && ($this->getEndMonth() < 1 || $this->getEndMonth() > 12)) {
@@ -248,7 +261,11 @@ class Payment extends Base
         if ($this->getEndYear() && $this->getEndMonth()) {
             $lastDayInEndMonth = new DateTime("last day of {$this->getEndYear()}-{$this->getEndMonth()}");
             if ($lastDayInEndMonth->format('d') < $this->getDueDate()) {
-                $context->addViolationAt('day',  ["payment.month.error.number",['%%COUNT%%' => $lastDayInEndMonth->format('d')]]);
+                $context->addViolationAt(
+                    'day',
+                    "payment.month.error.number",
+                    ['%%COUNT%%' => $lastDayInEndMonth->format('d')]
+                );
                 return;
             }
         }
