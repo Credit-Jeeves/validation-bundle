@@ -123,3 +123,6 @@ table tbody tr td {
     margin-top: -15px;
     margin-bottom: 10px;
 }
+.import_operation_paidFor {
+    width: 38px !important;
+}
