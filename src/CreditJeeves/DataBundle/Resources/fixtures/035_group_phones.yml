@@ -1,12 +1,12 @@
 model: RentJeeves\DataBundle\Entity\GroupPhone
 fixtures:
   Phone_1_1:
-    phone: 111-22-44
+    phone: 111-222-4444
     isActive: true
     group: RentGroup_1
   Phone_1_2:
-    phone: 555-22-44
+    phone: 555-222-4444
     group: RentGroup_1
   Phone_1_3:
-    phone: 057-71087-35
+    phone: 057-710-3555
     group: RentGroup_1

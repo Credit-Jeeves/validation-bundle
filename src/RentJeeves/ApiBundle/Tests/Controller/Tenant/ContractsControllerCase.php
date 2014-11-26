@@ -12,6 +12,8 @@ class ContractsControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:Contract';
 
+    const REQUEST_URL = 'contracts';
+
     public static function getContractDataProvider()
     {
         return [
@@ -27,24 +29,13 @@ class ContractsControllerCase extends BaseApiTestCase
      */
     public function getContract($id, $format, $statusCode, $checkBalance)
     {
-        $client = $this->getClient();
-
         $encodedId = $this->getIdEncoder()->encode($id);
 
-        $client->request(
-            'GET',
-            self::URL_PREFIX . "/contracts/{$encodedId}.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ]
-        );
+        $response = $this->getRequest($encodedId);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
 
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        $answer = $this->parseContent($response->getContent(), $format);
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getTenant();
@@ -135,7 +126,7 @@ class ContractsControllerCase extends BaseApiTestCase
                         'first_name' => 'Test',
                         'last_name' => 'Name',
                         'email' => 'test_landlord1@gmail.com',
-                        'phone' => '999-555-55-55',
+                        'phone' => '999-555-5555',
                     ],
                 ],
             ],
@@ -167,6 +158,7 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                     'landlord' => [
                         'email' => 'test_landlord3gmail.com',
+                        'phone' => '111-111-111'
                     ],
                 ],
             ],
@@ -255,26 +247,11 @@ class ContractsControllerCase extends BaseApiTestCase
      */
     public function createContract($format, $statusCode, $requestParams)
     {
-        $client = $this->getClient();
+        $response = $this->postRequest($requestParams);
 
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
+        $this->assertResponse($response, $statusCode, $format);
 
-        $client->request(
-            'POST',
-            self::URL_PREFIX . "/contracts.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
-
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
-
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        $answer = $this->parseContent($response->getContent(), $format);
 
         $tenant = $this->getTenant();
 
@@ -315,8 +292,6 @@ class ContractsControllerCase extends BaseApiTestCase
      */
     public function editContract($format, $statusCode, $requestParams)
     {
-        $client = $this->getClient();
-
         $tenant = $this->getTenant();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
@@ -326,30 +301,15 @@ class ContractsControllerCase extends BaseApiTestCase
         ], ['id' => 'DESC']);
 
         $encodedId = $this->getIdEncoder()->encode($last->getId());
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
 
-        $client->request(
-            'PUT',
-            self::URL_PREFIX . "/contracts/{$encodedId}.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
+        $response = $this->putRequest($encodedId, $requestParams);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
 
-        /** @var Contract $contract */
-        $contract = $repo->findOneBy([
-            'tenant' => $tenant, 'id' => $last->getId()
-        ], ['id' => 'DESC']);
+        $this->getEm()->refresh($last);
 
         $this->assertEquals(
-            !!$contract->getReportToExperian(),
+            !!$last->getReportToExperian(),
             ReportingType::getMapValue($requestParams['experian_reporting'])
         );
     }
@@ -397,6 +357,11 @@ class ContractsControllerCase extends BaseApiTestCase
                         'parameter' => 'new_unit_landlord_email',
                         'message' => 'This value is not a valid email address.',
                         'value' => 'test_landlord3gmail.com'
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_phone',
+                        'message' => 'error.user.phone.format',
+                        'value' => '111-111-111'
                     ],
                 ]
             ],
@@ -480,26 +445,11 @@ class ContractsControllerCase extends BaseApiTestCase
      */
     public function wrongCreateContract($format, $statusCode, $requestParams, $result)
     {
-        $client = $this->getClient();
+        $response = $this->postRequest($requestParams);
 
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
+        $this->assertResponse($response, $statusCode, $format);
 
-        $client->request(
-            'POST',
-            self::URL_PREFIX . "/contracts.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
-
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
-
-        $this->assertResponseContent($client->getResponse()->getContent(), $result, $format);
+        $this->assertResponseContent($response->getContent(), $result, $format);
     }
 
     /**
