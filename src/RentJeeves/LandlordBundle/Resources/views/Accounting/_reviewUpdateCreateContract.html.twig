@@ -208,7 +208,7 @@
             "data-bind": "
                 attr: {
                     'visible': has_contract_waiting,
-                    'checked': false,
+                    'checked': (has_contract_waiting && email)? true : false,
                     'class': number+'_sendInvite '+$root.getErrorClass($data, 'import_new_user_with_sendInvite'),
                 }"}
         }
