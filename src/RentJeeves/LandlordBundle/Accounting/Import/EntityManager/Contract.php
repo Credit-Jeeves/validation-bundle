@@ -94,12 +94,15 @@ trait Contract
 
         $paidTo = new DateTime();
         $currentPaidTo = $contract->getPaidTo();
-        $groupDueDate = $this->group->getGroupSettings()->getDueDate();
+        $groupSettings = $this->group->getGroupSettings();
+        $dueDate = ($contract->getDueDate())? $contract->getDueDate() : $groupSettings->getDueDate();
+        $isNeedCreateCashOperation = false;
         //contract is a match
         if ($contract->getId() !== null) {
             // normally, we don't want to mess with paid_to for existing contracts unless
             // it is obvious someone paid outside of RentTrack:
             if ($row[Mapping::KEY_BALANCE] <= 0 && $currentPaidTo <= $paidTo) {
+                $isNeedCreateCashOperation = true;
                 $paidTo->modify('+1 month');
                 // will be in future
                 //if (there is no order with paid_for for this month) {
@@ -108,7 +111,7 @@ trait Contract
                 $paidTo->setDate(
                     $paidTo->format('Y'),
                     $paidTo->format('n'),
-                    $groupDueDate
+                    $dueDate
                 );
 
                 $contract->setPaidTo($paidTo);
@@ -118,15 +121,30 @@ trait Contract
             // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
             if ($row[Mapping::KEY_BALANCE] <= 0) {
                 $paidTo->modify('+1 month');
+                $isNeedCreateCashOperation = true;
             }
 
             $paidTo->setDate(
                 $paidTo->format('Y'),
                 $paidTo->format('n'),
-                $groupDueDate
+                $dueDate
             );
 
             $contract->setPaidTo($paidTo);
+        }
+
+        if ($isNeedCreateCashOperation &&
+            $contract->getStatus() === ContractStatus::CURRENT &&
+            !$this->mapping->hasPaymentMapping($row)
+        ) {
+            $paidFor = new DateTime();
+            $paidFor->setDate(
+                $paidFor->format('Y'),
+                $paidFor->format('n'),
+                $dueDate
+            );
+            $import->setOperation($operation = $this->getOperationByContract($contract, $import, $paidFor));
+            $operation->setCreatedAt($paidFor);
         }
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
