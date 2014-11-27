@@ -194,9 +194,8 @@ class PayCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#pay-popup>div.overlay').is(':visible')");
 
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-        $this->assertCount(2, $errors);
-        $this->assertEquals('payment.month.error.number', $errors[0]->getText());
-        $this->assertEquals('payment.start_date.error.empty_date', $errors[1]->getText());
+        $this->assertCount(1, $errors);
+        $this->assertEquals('payment.start_date.error.empty_date', $errors[0]->getText());
 
         // one_time and empty start_date
         $this->fillForm(
@@ -335,19 +334,28 @@ class PayCase extends BaseTestCase
             $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
 
             $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-            $this->assertCount(2, $errors);
-            $this->assertEquals('payment.month.error.number', $errors[0]->getText());
-            $this->assertEquals('checkout.error.total.min', $errors[1]->getText());
+            $this->assertCount(1, $errors);
+            $this->assertEquals('checkout.error.total.min', $errors[0]->getText());
 
             $dueDate = cal_days_in_month(CAL_GREGORIAN, 2, date('Y'));
-            $this->fillForm(
-                $form,
-                array(
-                    'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
-                    'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
-                    'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
-                )
-            );
+            if (!$infoMessage) {
+                $this->fillForm(
+                    $form,
+                    array(
+                        'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                        'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                        'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                    )
+                );
+            } else {
+                $this->fillForm(
+                    $form,
+                    array(
+                        'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                        'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                    )
+                );
+            }
         }
 
         $this->page->pressButton('pay_popup.step.next');

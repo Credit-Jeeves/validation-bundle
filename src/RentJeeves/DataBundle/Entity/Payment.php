@@ -69,7 +69,7 @@ class Payment extends Base
      */
     public function getStartDate()
     {
-        if (!$this->getStartYear() || $this->getStartMonth() || $this->getDueDate()) {
+        if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate()) {
             return null;
         }
         $date = new \DateTime('0000-00-00T00:00:00');
@@ -85,7 +85,7 @@ class Payment extends Base
 
     public function __toString()
     {
-        return $this->getStartDate()->format('m/d/Y') . ' ' . $this->getType();
+        return ($this->getStartDate() ? $this->getStartDate()->format('m/d/Y') : '') . ' ' . $this->getType();
     }
 
     public function createJob()
@@ -243,8 +243,7 @@ class Payment extends Base
 
         $lastDayInStartMonth = new DateTime("last day of {$this->getStartYear()}-{$this->getStartMonth()}");
 
-        if ($lastDayInStartMonth->format('d') < $this->getDueDate()) {
-
+        if ($this->getType() == PaymentType::ONE_TIME && $lastDayInStartMonth->format('d') < $this->getDueDate()) {
             $context->addViolationAt(
                 'day',
                 "payment.month.error.number",
@@ -253,14 +252,14 @@ class Payment extends Base
             return;
         }
 
+        // if month > 12 the method  $end->setDate with this param returned 500
         if ($this->getEndMonth() && ($this->getEndMonth() < 1 || $this->getEndMonth() > 12)) {
             return;
         }
 
-        // if month > 12 the method  $end->setDate with this param returned 500
         if ($this->getEndYear() && $this->getEndMonth()) {
             $lastDayInEndMonth = new DateTime("last day of {$this->getEndYear()}-{$this->getEndMonth()}");
-            if ($lastDayInEndMonth->format('d') < $this->getDueDate()) {
+            if ($this->getType() == PaymentType::ONE_TIME && $lastDayInEndMonth->format('d') < $this->getDueDate()) {
                 $context->addViolationAt(
                     'day',
                     "payment.month.error.number",

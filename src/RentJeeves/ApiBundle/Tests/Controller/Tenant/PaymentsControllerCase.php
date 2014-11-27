@@ -6,7 +6,7 @@ use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
 
-class PaymentControllerCase extends BaseApiTestCase
+class PaymentsControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:Payment';
 
