@@ -137,7 +137,9 @@ trait PaymentProcess
             $paymentEntity->setPaidFor($this->mergePaidAndDueDates($paymentEntity->getPaidFor(), $contract));
         }
 
-        $contract->setStatus(ContractStatus::APPROVED);
+        if ($contract->getStatus() === ContractStatus::INVITE) {
+            $contract->setStatus(ContractStatus::APPROVED);
+        }
         $em->persist($contract);
         $em->persist($paymentEntity);
         $em->flush();
