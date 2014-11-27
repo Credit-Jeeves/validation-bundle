@@ -379,7 +379,7 @@ class ContractRepository extends EntityRepository
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
-        $query->select('SUM(o.sum) AS amount, h.id, g.id as group_id');
+        $query->select('SUM(operation.amount) AS amount, h.id, g.id as group_id');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('c.operations', 'operation');
