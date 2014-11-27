@@ -27,7 +27,7 @@ fixtures:
         last_name: BREEN
         email: john@rentrack.com
         phone_type: 2
-        phone: 913 76 44 215
+        phone: 913.764.4215
         date_of_birth: '1957-02-19'
         ssn: 666042073
         is_active: true #false
@@ -48,7 +48,7 @@ fixtures:
         last_name: JORDAN
         email: alex@rentrack.com
         phone_type: '2'
-        phone: '8 6037   90319'
+        phone: '860-379-0319'
         date_of_birth: '1951-01-01'
         ssn: '666254052'
         is_active: true
@@ -69,7 +69,7 @@ fixtures:
         last_name: TAYLOR
         email: ola@rentrack.com
         phone_type: '2'
-        phone: '309-74-58-439'
+        phone: '309-745-8439'
         date_of_birth: '1955-09-14'
         ssn: '666302442'
         is_active: true
@@ -111,7 +111,7 @@ fixtures:
         last_name:       Gates
         email:   ivan@rentrack.com
         phone_type:      '2'
-        phone:           '(37529)  118-1804'
+        phone:           '(375)118-1804'
         date_of_birth:   '1980-10-22'
         ssn:             '656803283'
         is_active:       true

@@ -9,7 +9,6 @@ use RentJeeves\ApiBundle\Response\Contract as ResponseEntity;
 use RentJeeves\ApiBundle\Services\ContractProcessor;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
 use RentJeeves\DataBundle\Entity\ContractRepository;
-use RentJeeves\TenantBundle\Services\InviteLandlord;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;

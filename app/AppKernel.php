@@ -199,6 +199,11 @@ abstract class AppKernel extends Kernel
                     ))
                 )
             );
+        } else {
+            $this->chainNodeManager->addSender(
+                'default',
+                new SymfonyExceptionHandlerChainNode(true)
+            );
         }
     }
 }

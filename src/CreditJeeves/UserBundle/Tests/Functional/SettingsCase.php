@@ -59,7 +59,7 @@ class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
             $form,
             array(
                 'contact_phone_type' => 0,
-                'contact_phone' => 123456789,
+                'contact_phone' => 1234567890,
             )
         );
         $submit->click();

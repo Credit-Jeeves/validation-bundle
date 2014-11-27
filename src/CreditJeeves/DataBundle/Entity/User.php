@@ -138,30 +138,6 @@ abstract class User extends BaseUser
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function setPhone($phone)
-    {
-        return parent::setPhone($this->formatPhoneInput($phone));
-    }
-
-    protected function formatPhoneInput($phone)
-    {
-        $phone = trim($phone);
-        $phone = preg_replace(
-            array(
-                '/\s+/',
-                '/\(/',
-                '/\)/',
-                '/-/'
-            ),
-            '',
-            $phone
-        );
-        return $phone;
-    }
-
-    /**
      * @return Order | null
      */
     public function getLastCompleteOrder()

@@ -42,7 +42,7 @@ class AccountCase extends BaseTestCase
                 'account_info_first_name'                         => "Alex",
                 'account_info_last_name'                          => "Sharamko",
                 'account_info_email'                              => "landlord13@yandex.ru",
-                'account_info_phone'                              => "1233331",
+                'account_info_phone'                              => "123.333.1234",
                 'account_info_address_street'                     => 'My Street',
                 'account_info_address_city'                       => 'Test',
                 'account_info_address_zip'                        => '1231',

@@ -45,6 +45,10 @@ abstract class GroupPhone
      *     type="string",
      *     length=50
      * )
+     * @Assert\Regex(
+     *     pattern = "/^(\(\d{3}\)\d{3}-|\d{3}\.\d{3}\.|\d{3}-?\d{3}-?)\d{4}$/",
+     *     message="error.phone.format"
+     * )
      */
     protected $phone;
     
