@@ -64,8 +64,6 @@ security:
         - { path: ^/test,                           role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting,                      role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/new$,                           role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/new/,                           role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/invite,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/message,                        role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/iframe,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
