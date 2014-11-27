@@ -4,40 +4,6 @@ namespace RentJeeves\LandlordBundle\Tests\Unit\Import\Mapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use \DateTime;
 
-class MappingTest extends MappingAbstract
-{
-
-    public function testStreetParse($row)
-    {
-        return $this->parseStreet($row);
-    }
-
-    public function testUnitParse($row)
-    {
-        return $this->parseUnit($row);
-    }
-
-    public function getData($start, $length)
-    {
-        // stub to implement interface
-    }
-
-    public function isSkipped(array $row)
-    {
-        // stub to implement interface
-    }
-
-    public function isNeedManualMapping()
-    {
-        // stub to implement interface
-    }
-
-    public function getTotal()
-    {
-        // stub to implement interface
-    }
-}
-
 class MappingAbstractCase extends \PHPUnit_Framework_TestCase
 {
     protected static $countDateFormat = 0;
