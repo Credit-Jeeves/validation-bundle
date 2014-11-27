@@ -145,7 +145,7 @@ abstract class HandlerAbstract implements HandlerInterface
             return null;
         }
 
-        if ($formattedYear < 2000 || $formattedYear > 2150) {
+        if ($formattedYear < 1900 || $formattedYear > 2250) {
             $import->setIsValidDateFormat(false);
             return null;
         }

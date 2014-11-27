@@ -26,6 +26,7 @@ class DateType extends Base
         if ($value === null) {
             return $value;
         }
+
         if ($value instanceof \DateTime) {
             if ('DateTime' == get_class($value)) {
                 return new DateTime($value->format('c'));
@@ -40,6 +41,10 @@ class DateType extends Base
                 $this->getName(),
                 $platform->getDateFormatString()
             );
+        }
+
+        if ($val->format('U') <= 0) {
+            return null;
         }
 
         return new DateTime($val->format('c'));
