@@ -11,7 +11,6 @@ class GroupCase extends BaseTestCase
      */
     public function settingFirst()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
@@ -30,11 +29,11 @@ class GroupCase extends BaseTestCase
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
 
-        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[4]->click();
-
         $this->assertNotNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
         $this->assertEquals('pay.balance.only.error', $error->getText());
+
+        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
+        $menu[4]->click();
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
         $this->assertCount(4, $checkbox);

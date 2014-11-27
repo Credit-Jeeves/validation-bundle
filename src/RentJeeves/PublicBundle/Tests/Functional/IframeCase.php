@@ -71,7 +71,7 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof $ !== undefined");
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
-        $fillAddress = '350 5th Avenue, Manhattan, New York City, NY 10118, United States';
+        $fillAddress = '150 Amsterdam Avenue, Manhattan, New York, NY 10023';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype').length > 0");
@@ -177,7 +177,7 @@ class IframeCase extends BaseTestCase
             'property.number.not.exist',
             $errors->getHtml()
         );
-        $fillAddress = '350 5th Avenue, Manhattan, New York City, NY 10118, United States';
+        $fillAddress = '150 Amsterdam Avenue, Manhattan, New York, NY 10023';
         $this->fillForm(
             $form,
             array(
