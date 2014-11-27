@@ -8,7 +8,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Knp\Menu\ItemInterface as MenuItemInterface;
-use RentJeeves\AdminBundle\Admin\TenantAdmin;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class ContractAdmin extends Admin
 {
@@ -54,7 +54,8 @@ class ContractAdmin extends Admin
                     'actions' => array(
                         'payments' => array(
                             'template' => 'AdminBundle:CRUD:list__contract_orders.html.twig'
-                        )
+                        ),
+                        'edit' => array(),
                     )
                 )
             );
@@ -154,8 +155,13 @@ class ContractAdmin extends Admin
             ->add('property')
             ->add('unit')
             ->add('search')
-            ->add('status')
+            ->add(
+                'status',
+                'choice',
+                ['choices' => ContractStatus::getStatuses($this->getSubject()->getStatus())]
+            )
             ->add('paidTo')
+            ->add('dueDate')
             ->add('reportToExperian')
             ->add('experianStartAt')
             ->add('reportToTransUnion')
