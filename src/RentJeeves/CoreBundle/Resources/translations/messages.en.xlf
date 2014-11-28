@@ -2853,6 +2853,13 @@
                     This email address is already used for a different resident ID.
                 </target>
             </trans-unit>
+            <trans-unit id="import.unit_mapping.already_used">
+                <source>import.unit_mapping.already_used</source>
+                <target>
+                    This unit is already have resident ID and it's different.
+                    One unit can have just one resident ID.
+                </target>
+            </trans-unit>
             <trans-unit id="transaction.status.text.complete">
                 <source>transaction.status.text.complete</source>
                 <target>PAID</target>

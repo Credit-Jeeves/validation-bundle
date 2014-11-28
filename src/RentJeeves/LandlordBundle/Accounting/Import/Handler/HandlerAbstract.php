@@ -305,6 +305,24 @@ abstract class HandlerAbstract implements HandlerInterface
             $import->setIsSkipped(true);
         }
 
+        $unit = $import->getContract()->getUnit();
+        $existUnitMapping = ($unit) ? $unit->getUnitMapping() : null;
+        $unitMappingImported = $import->getUnitMapping();
+
+        if ($existUnitMapping &&
+            !is_null($unitMappingImported->getExternalUnitId()) &&
+            $existUnitMapping->getExternalUnitId() !== $unitMappingImported->getExternalUnitId()
+        ) {
+            $errors[$import->getNumber()]
+                [uniqid()]
+                ['import_new_user_with_contract_contract_unitMapping_externalUnitId'] =
+                    $this->translator->trans(
+                        'import.unit_mapping.already_used'
+                    );
+            $import->setIsSkipped(true);
+        }
+
+
         $import->setErrors($errors);
     }
 

@@ -177,7 +177,10 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(3, count($errorFields));
         $this->assertEquals($errorFields[0]->getValue(), '2testmail.com');
         $this->assertEquals($errorFields[1]->getHtml(), 'tenant11@example.com');
-        $this->assertEquals($errorFields[2]->getHtml(), 't0*013202');
+        $this->assertEquals(
+            trim($errorFields[2]->getHtml()),
+            '<span data-bind="text:resident_mapping.resident_id">t0*013202</span>'
+        );
 
         $trs = $this->getParsedTrsByStatus();
 
@@ -364,7 +367,10 @@ class ImportCase extends BaseTestCase
         );
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
         $this->assertEquals(4, count($errorFields));
-        $this->assertEquals('t0*013202', $errorFields[3]->getHtml());
+        $this->assertEquals(
+            '<span data-bind="text:resident_mapping.resident_id">t0*013202</span>',
+            trim($errorFields[3]->getHtml())
+        );
         //Make sure for this page we don't have operation
         $this->assertNull($errorField = $this->page->find('css', '.import_operation_paidFor'));
 
