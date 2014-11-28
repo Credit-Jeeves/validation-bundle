@@ -352,6 +352,6 @@ class PaymentsControllerCase extends BaseApiTestCase
             $errorContent[$value['message']] = $value['message'];
         }
 
-        $this->assertCount(0, array_diff($errorContent, $errorMessage ), 'wrong count error');
+        $this->assertCount(0, array_diff($errorContent, $errorMessage), 'wrong count error');
     }
 }
