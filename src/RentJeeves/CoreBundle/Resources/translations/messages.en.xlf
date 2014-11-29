@@ -2848,8 +2848,7 @@
             <trans-unit id="import.unit_mapping.already_used">
                 <source>import.unit_mapping.already_used</source>
                 <target>
-                    This unit already has a resident ID and it's different.
-                    Units can have only one resident ID.
+                    This unit is already exists with a different Unit ID.
                 </target>
             </trans-unit>
             <trans-unit id="transaction.status.text.complete">
