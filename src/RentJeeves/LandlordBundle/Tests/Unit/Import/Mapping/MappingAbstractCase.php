@@ -72,7 +72,6 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array([ "street" => "101 MAIN ST STE. 12"], "101 MAIN ST ", "12"),
             array([ "street" => "2715 P Street #2"], "2715 P Street ", "2"),
             array([ "street" => "2715 P Street #11"], "2715 P Street ", "11"),
-            array([ "street" => "3875 Taylor Road-205"], "3875 Taylor Road", "205"),
         );
     }
 
