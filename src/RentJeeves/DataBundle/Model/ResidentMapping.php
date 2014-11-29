@@ -78,13 +78,6 @@ abstract class ResidentMapping
      *         "import"
      *     }
      * )
-     * @Assert\Regex(
-     *     pattern = "/^[&'\sA-Za-z_0-9,.-]{1,128}$/",
-     *     message = "import.error.residentId",
-     *     groups = {
-     *         "import"
-     *     }
-     * )
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $residentId;
