@@ -4,40 +4,6 @@ namespace RentJeeves\LandlordBundle\Tests\Unit\Import\Mapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use \DateTime;
 
-class MappingTest extends MappingAbstract
-{
-
-    public function testStreetParse($row)
-    {
-        return $this->parseStreet($row);
-    }
-
-    public function testUnitParse($row)
-    {
-        return $this->parseUnit($row);
-    }
-
-    public function getData($start, $length)
-    {
-        // stub to implement interface
-    }
-
-    public function isSkipped(array $row)
-    {
-        // stub to implement interface
-    }
-
-    public function isNeedManualMapping()
-    {
-        // stub to implement interface
-    }
-
-    public function getTotal()
-    {
-        // stub to implement interface
-    }
-}
-
 class MappingAbstractCase extends \PHPUnit_Framework_TestCase
 {
     protected static $countDateFormat = 0;
@@ -104,7 +70,8 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array([ "street" => "101 MAIN ST Unit 12"], "101 MAIN ST " , "12"),
             array([ "street" => "101 MAIN ST RM 12"], "101 MAIN ST ", "12"),
             array([ "street" => "101 MAIN ST STE. 12"], "101 MAIN ST ", "12"),
-            # array([ "street" => "3875 Taylor Road-205"], "3875 Taylor Road", "205"),
+            array([ "street" => "2715 P Street #2"], "2715 P Street ", "2"),
+            array([ "street" => "2715 P Street #11"], "2715 P Street ", "11"),
         );
     }
 
@@ -136,7 +103,8 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array([ "street" => "101 MAIN ST", "unit" => "Unit 12"], "101 MAIN ST", "12"),
             array([ "street" => "101 MAIN ST", "unit" => "RM 12"], "101 MAIN ST", "12"),
             array([ "street" => "101 MAIN ST", "unit" => "STE. 12"], "101 MAIN ST", "12"),
-            # array([ "street" => "3875 Taylor Road-205"], "3875 Taylor Road", "205"),
+            array([ "street" => "2715 P Street #2", "unit" => "P2715 #2"], "2715 P Street ", "2"),
+            array([ "street" => "2715 P Street #11", "unit" => "P2715#11"], "2715 P Street ", "11")
         );
     }
 
