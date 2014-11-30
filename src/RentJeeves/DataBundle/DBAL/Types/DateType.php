@@ -43,10 +43,6 @@ class DateType extends Base
             );
         }
 
-        if ($val->format('U') <= 0) {
-            return null;
-        }
-
         return new DateTime($val->format('c'));
     }
 }
