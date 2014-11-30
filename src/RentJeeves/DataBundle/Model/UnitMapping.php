@@ -53,13 +53,6 @@ abstract class UnitMapping
      *         "import"
      *     }
      * )
-     * @Assert\Regex(
-     *     pattern = "/^[A-Za-z_0-9-\s]{1,128}$/",
-     *     message = "import.error.external_unit_id",
-     *     groups = {
-     *         "import"
-     *     }
-     * )
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $externalUnitId;

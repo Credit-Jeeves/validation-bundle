@@ -79,6 +79,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
+    const UNIT_MATCH_REGEX = '/(?:\#|unit|apt[\.?\s?]+|ste[\.?\s?]+|rm[\.?\s?]+)\.?\s*([a-z0-9]{1,10})/is';
+
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
@@ -155,7 +157,7 @@ abstract class MappingAbstract implements MappingInterface
 
     protected function parseStreet($row)
     {
-        preg_match('/(?:\#|apt|unit|ste|rm)[\.?\s?]+([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
+        preg_match(self::UNIT_MATCH_REGEX, $row[self::KEY_STREET], $matches);
 
         if (empty($matches)) {
             return $row;
@@ -175,7 +177,7 @@ abstract class MappingAbstract implements MappingInterface
      */
     protected function parseUnit($row)
     {
-        preg_match('/(?:\#|apt|unit|ste|rm)[\.?\s?]+([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
+        preg_match(self::UNIT_MATCH_REGEX, $row[self::KEY_UNIT], $matches);
 
         if (empty($matches)) {
             return $row;

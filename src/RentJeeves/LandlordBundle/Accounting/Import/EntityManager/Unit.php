@@ -38,7 +38,7 @@ trait Unit
             if ($unitMapping) {
                 return $unitMapping->getUnit();
             } elseif ($property->getIsSingle() === null && !empty($row[Mapping::KEY_UNIT_ID])) {
-                $unit = Property::getNewSingleUnit($property);
+                $unit = EntityProperty::getNewSingleUnit($property);
                 $property->setIsSingle(true);
                 return $unit;
             }
