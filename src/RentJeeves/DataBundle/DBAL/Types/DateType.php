@@ -26,6 +26,7 @@ class DateType extends Base
         if ($value === null) {
             return $value;
         }
+
         if ($value instanceof \DateTime) {
             if ('DateTime' == get_class($value)) {
                 return new DateTime($value->format('c'));

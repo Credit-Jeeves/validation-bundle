@@ -27,7 +27,6 @@
     ">
     </td>
     <td data-bind="
-        text:resident_mapping.resident_id,
         attr:
         {
             'class': $root.getErrorClass(
@@ -46,7 +45,11 @@
              )
         }
     ">
-
+        <span data-bind="text:resident_mapping.resident_id"> </span>
+        {% if isMultipleProperty == 'true' %}
+            <hr />
+            <span data-bind="html: unit_mapping.external_unit_id"></span>
+        {% endif %}
     </td>
     <td data-bind="text:tenant.first_name"></td>
     <td data-bind="text:tenant.last_name"></td>

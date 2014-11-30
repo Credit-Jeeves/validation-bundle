@@ -199,3 +199,12 @@ td .clarification {
 td .clarification>.one {
     margin-left: 20px;
 }
+
+.footer-button-box .button {
+    height: 39px;
+}
+
+.footer-button-box .button span{
+    line-height: 20px;
+    font-size: 16px;
+}

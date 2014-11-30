@@ -2543,10 +2543,6 @@
               <source>import.error.unit</source>
               <target><![CDATA[Unit name is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
-            <trans-unit id="import.error.residentId">
-              <source>import.error.residentId</source>
-              <target><![CDATA[Resident ID is invalid, it should contain only A-Za-z_0-9-&' and not be blank.]]></target>
-            </trans-unit>
             <trans-unit id="import.error.propertyId">
               <source>import.error.propertyId</source>
               <target><![CDATA[Property ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
@@ -2711,10 +2707,6 @@
                 <source>common.month_to_month</source>
                 <target>Month to Month</target>
             </trans-unit>
-            <trans-unit id="import.error.external_unit_id">
-                <source>import.error.external_unit_id</source>
-                <target>Unit ID is invalid, it should contain only A-Za-z_0-9- and not be blank</target>
-            </trans-unit>
             <trans-unit id="import.unit_id">
                 <source>import.unit_id</source>
                 <target>Unit ID</target>
@@ -2851,6 +2843,12 @@
                 <source>import.user.already_used</source>
                 <target>
                     This email address is already used for a different resident ID.
+                </target>
+            </trans-unit>
+            <trans-unit id="import.unit_mapping.already_used">
+                <source>import.unit_mapping.already_used</source>
+                <target>
+                    This unit is already exists with a different Unit ID.
                 </target>
             </trans-unit>
             <trans-unit id="transaction.status.text.complete">
