@@ -1349,8 +1349,9 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
         $this->assertEquals(2, count($errorFields));
         $this->assertEquals($errorFields[1]->getHtml(), '14test@mail.com');
-        $this->assertEquals(trim($errorFields[0]->getHtml()),
-                        '<span data-bind="text:resident_mapping.resident_id">t0016437</span>'
+        $this->assertEquals(
+            trim($errorFields[0]->getHtml()),
+            '<span data-bind="text:resident_mapping.resident_id">t0016437</span>'
         );
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
