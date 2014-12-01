@@ -15,7 +15,7 @@ use DateTime;
  */
 class TenantCase extends BaseTestCase
 {
-    protected $timeout = 30000;
+    protected $timeout = 35000;
 
     const ALL = 'All (18)';
     const ALL_PLUS_ONE = 'All (19)';
@@ -125,7 +125,7 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull($selectOption = $this->page->find('css', '#holding-group_li_1>span'));
         $selectOption->click();
-        $this->session->wait(1000, "false"); // wait refresh page
+        $this->session->wait(2000, "false"); // wait refresh page
 
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
@@ -245,7 +245,7 @@ class TenantCase extends BaseTestCase
         $edit->click();
 
         $this->session->wait($this->timeout, "$('#tenant-edit-property-popup').is(':visible')");
-
+        $this->session->wait($this->timeout, "$('.loader').is(':visible') === false");
         // for find and check radio need show it (default "display:none")
         $this->session->evaluateScript('$(\'input[name="optionsFinishAtEdit"]\').show();');
         $checkedMonth2Month = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabelM2M input');
