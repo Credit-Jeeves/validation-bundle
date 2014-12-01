@@ -93,7 +93,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("R")
-     * @Serializer\Groups({"YardiGenesis"})
+     * @Serializer\Groups({"YardiGenesis", "YardiGenesisV2"})
      */
     public function getR()
     {
@@ -103,7 +103,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Transaction ID")
-     * @Serializer\Groups({"YardiGenesis"})
+     * @Serializer\Groups({"YardiGenesis", "YardiGenesisV2"})
      */
     public function getYardiGenesisTransactionId()
     {
@@ -113,7 +113,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Resident ID")
-     * @Serializer\Groups({"YardiGenesis"})
+     * @Serializer\Groups({"YardiGenesis", "YardiGenesisV2"})
      */
     public function getYardiGenesisResidentId()
     {
@@ -123,7 +123,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Amount")
-     * @Serializer\Groups({"YardiGenesis"})
+     * @Serializer\Groups({"YardiGenesis", "YardiGenesisV2"})
      */
     public function getYardiGenesisAmount()
     {
@@ -133,7 +133,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"YardiGenesis"})
+     * @Serializer\Groups({"YardiGenesis", "YardiGenesisV2"})
      */
     public function getYardiGenesisDate()
     {
@@ -143,7 +143,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Description")
-     * @Serializer\Groups({"YardiGenesis"})
+     * @Serializer\Groups({"YardiGenesis", "YardiGenesisV2"})
      */
     public function getYardiGenesisDescription()
     {
@@ -152,6 +152,36 @@ class Order extends BaseOrder
             $this->getContract()->getTenantRentAddress(),
             $this->getHeartlandBatchId()
         );
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("empty1")
+     * @Serializer\Groups({"YardiGenesisV2"})
+     */
+    public function getEmpty1()
+    {
+        return '';
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("empty3")
+     * @Serializer\Groups({"YardiGenesisV2"})
+     */
+    public function getEmpty3()
+    {
+        return '';
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("empty2")
+     * @Serializer\Groups({"YardiGenesisV2"})
+     */
+    public function getEmpty2()
+    {
+        return '';
     }
 
     /**

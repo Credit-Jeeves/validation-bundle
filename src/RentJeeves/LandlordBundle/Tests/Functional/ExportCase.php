@@ -437,10 +437,19 @@ class ExportCase extends BaseTestCase
     }
 
 
+    public function providerGenesis()
+    {
+        return array(
+            array('yardi_genesis'),
+            array('yardi_genesis_v2')
+        );
+    }
+
     /**
      * @test
+     * @dataProvider providerGenesis
      */
-    public function yardiGenesisCsvFormat()
+    public function yardiGenesisCsvFormat($genesisType)
     {
         $this->load(true);
         //$this->setDefaultSession('selenium2');
@@ -452,7 +461,7 @@ class ExportCase extends BaseTestCase
         $endD = new DateTime();
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
-        $type->selectOption('yardi_genesis');
+        $type->selectOption($genesisType);
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(3, count($errors));
@@ -475,12 +484,18 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('1500', $csvArr[3]);
         // $this->assertEquals('08/14/2014', $csvArr[4]);   // The Date seems to change with each build each day
         $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
+        if ($genesisType === 'yardi_genesis_v2') {
+            $this->assertEquals('', $csvArr[6]);
+            $this->assertEquals('', $csvArr[7]);
+            $this->assertEquals('', $csvArr[8]);
+        }
     }
 
     /**
      * @test
+     * @dataProvider providerGenesis
      */
-    public function yardiGenesisBatchReport()
+    public function yardiGenesisBatchReport($genesisType)
     {
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
@@ -491,7 +506,7 @@ class ExportCase extends BaseTestCase
         $endD = new DateTime();
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
-        $type->selectOption('yardi_genesis');
+        $type->selectOption($genesisType);
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(3, count($errors));
@@ -523,5 +538,10 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('1500', $csvArr[3]);
         // $this->assertEquals('08/24/2014', $csvArr[4]); // the Date seems to change with each build each day
         $this->assertEquals('770 Broadway, Manhattan #2-a 325698', $csvArr[5]);
+        if ($genesisType === 'yardi_genesis_v2') {
+            $this->assertEquals('', $csvArr[6]);
+            $this->assertEquals('', $csvArr[7]);
+            $this->assertEquals('', $csvArr[8]);
+        }
     }
 }
