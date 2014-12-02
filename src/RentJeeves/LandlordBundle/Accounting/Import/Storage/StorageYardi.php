@@ -22,8 +22,6 @@ class StorageYardi extends StorageCsv
 
     const IMPORT_EXTERNAL_PROPERTY_ID = 'importExternalPropertyId';
 
-    const IMPORT_ONLY_EXCEPTION = 'importOnlyException';
-
     const IMPORT_IS_LOADED = 'importIsLoaded';
 
     const DATE_FORMAT = 'Y-m-d';
@@ -62,11 +60,6 @@ class StorageYardi extends StorageCsv
         return $this->session->get(self::IMPORT_EXTERNAL_PROPERTY_ID);
     }
 
-    public function isOnlyException()
-    {
-        return $this->session->get(self::IMPORT_ONLY_EXCEPTION);
-    }
-
     public function setImportLoaded($importLoaded)
     {
         $this->session->set(self::IMPORT_IS_LOADED, $importLoaded);
@@ -75,11 +68,6 @@ class StorageYardi extends StorageCsv
     public function getImportLoaded()
     {
         return $this->session->get(self::IMPORT_IS_LOADED);
-    }
-
-    public function setOnlyException($exceptionOnly)
-    {
-        $this->session->set(self::IMPORT_ONLY_EXCEPTION, $exceptionOnly);
     }
 
     public function setImportData(FormInterface $form)

@@ -35,7 +35,7 @@ trait Operation
         return false;
     }
 
-    protected function getOperationByContract(EntityContract $contract, ModelImport $import, $paidFor)
+    protected function getOperationByContract(EntityContract $contract, $paidFor)
     {
         if ($this->isDuplicate($contract, $paidFor, $contract->getRent())) {
             return null;
@@ -46,8 +46,6 @@ trait Operation
         $operation->setAmount($contract->getRent());
         $operation->setType(OperationType::RENT);
         $operation->setCreatedAt($paidFor);
-
-        $import->setOperation($operation);
 
         return $operation;
     }

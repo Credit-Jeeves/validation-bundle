@@ -5,6 +5,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Handler;
 use CreditJeeves\DataBundle\Entity\Group as GroupEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
@@ -18,10 +19,8 @@ use RentJeeves\CoreBundle\DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use Symfony\Component\Validator\Validator;
-use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\FormBind;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Group;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Contract;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Operation;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Property;
@@ -29,24 +28,27 @@ use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Resident;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Tenant;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Unit;
 use JMS\DiExtraBundle\Annotation\Inject;
+use RentJeeves\LandlordBundle\Accounting\Import\Traits\OnlyReviewNewTenantsAndExceptionsTrait;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Group;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  */
 abstract class HandlerAbstract implements HandlerInterface
 {
-    const ROW_ON_PAGE = 9;
-
-    use FormErrors;
     use Forms;
-    use FormBind;
-    use Group;
     use Contract;
     use Tenant;
     use Resident;
     use Property;
-    use Operation;
+    use FormBind;
     use Unit;
+    use OnlyReviewNewTenantsAndExceptionsTrait;
+    use Operation;
+    use Group;
+    use FormErrors;
+
+    const ROW_ON_PAGE = 9;
 
     /**
      * @Inject("doctrine.orm.default_entity_manager")

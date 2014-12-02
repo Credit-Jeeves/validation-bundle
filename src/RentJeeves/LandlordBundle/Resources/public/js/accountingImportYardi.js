@@ -1,9 +1,19 @@
 function accountingImportYardi() {
-    var self = this;
 
+    var self = this;
     this.source = ko.observable('yardi');
     this.isFinishUploadDataToServer =  ko.observable(false);
     this.classLoadDataMessage = ko.observable('');
+
+    this.doFinish = function()
+    {
+        self.loadDataMessage('');
+        self.isFinishUploadDataToServer(true);
+        self.classLoadDataMessage('');
+        self.showSpinner(false);
+
+        return self.superclass.loadData(false);
+    }
 
     this.saveContractData = function (residentsId, i, length) {
         if (length > i) {
@@ -25,7 +35,7 @@ function accountingImportYardi() {
                 dataType: 'json',
                 error: function () {
                     self.setProcessing(false);
-                    self.downloadImage(false);
+                    self.showSpinner(false);
                     self.loadDataMessage(Translator.trans('yardi.import.error.getResidents'));
                     self.classLoadDataMessage('errorMessage');
                 },
@@ -39,18 +49,10 @@ function accountingImportYardi() {
         }
     }
 
-    this.doFinish = function()
-    {
-        self.loadDataMessage('');
-        self.isFinishUploadDataToServer(true);
-        self.classLoadDataMessage('');
-        self.downloadImage(false);
-        return self.superclass.loadData(false);
-    }
 
     this.loadData = function(next) {
         if (self.isFinishUploadDataToServer() === false) {
-            self.downloadImage(true);
+            self.showSpinner(true);
             self.loadDataMessage(Translator.trans('yardi.import.message.download.resident'));
             jQuery.ajax({
                 url: Routing.generate('accounting_import_residents_yardi'),
@@ -59,7 +61,7 @@ function accountingImportYardi() {
                 error: function() {
                     self.loadDataMessage(Translator.trans('yardi.import.error.getResidents'));
                     self.classLoadDataMessage('errorMessage');
-                    self.downloadImage(false);
+                    self.showSpinner(false);
                 },
                 success: function(response) {
                     var length = 0;

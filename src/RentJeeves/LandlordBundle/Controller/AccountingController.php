@@ -257,6 +257,7 @@ class AccountingController extends Controller
             'importMapping'           => $mapping,
             //Make it string because it's var for js and I want boolean
             'isMultipleProperty'      => ($storage->isMultipleProperty())? "true" : "false",
+            'importOnlyException'     => ($storage->isOnlyException())? "true" : "false",
         );
     }
 
@@ -479,6 +480,32 @@ class AccountingController extends Controller
 
         $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
         $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/import/update/matched/contracts/csv",
+     *     name="updateMatchedContractsCsv",
+     *     options={"expose"=true}
+     * )
+     */
+    public function updateMatchedContractsCsv()
+    {
+        /**
+         * @var $importFactory ImportFactory
+         */
+        $importFactory = $this->get('accounting.import.factory');
+        $handler = $importFactory->getHandler();
+        $result = $handler->updateMatchedContracts();
+
+        $response = new JsonResponse(
+            array('success' => $result)
+        );
+
+        $statusCode = ($result) ? 200 : 400;
+        $response->setStatusCode($statusCode);
 
         return $response;
     }
