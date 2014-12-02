@@ -153,6 +153,7 @@ class Payment
      *      message="checkout.error.startMonth.empty",
      *      groups={"paymentWizard"}
      * )
+     * @Assert\Range(min = 1, max = 12)
      * @Serializer\SerializedName("startMonth")
      * @Serializer\Groups({"payRent"})
      *
@@ -179,6 +180,7 @@ class Payment
      *      message="checkout.error.endMonth.empty",
      *      groups={"cancelled_on"}
      * )
+     * @Assert\Range(min = 1, max = 12)
      * @Serializer\SerializedName("endMonth")
      * @Serializer\Groups({"payRent"})
      *

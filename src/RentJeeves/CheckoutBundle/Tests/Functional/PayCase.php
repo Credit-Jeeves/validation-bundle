@@ -189,7 +189,9 @@ class PayCase extends BaseTestCase
             )
         );
         $this->page->pressButton('pay_popup.step.next');
-        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+
+        $this->session->wait($this->timeout, "$('#pay-popup>div.overlay').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#pay-popup>div.overlay').is(':visible')");
 
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
         $this->assertCount(1, $errors);
@@ -204,7 +206,9 @@ class PayCase extends BaseTestCase
             )
         );
         $this->page->pressButton('pay_popup.step.next');
-        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+
+        $this->session->wait($this->timeout, "$('#pay-popup>div.overlay').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#pay-popup>div.overlay').is(':visible')");
 
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
         $this->assertCount(1, $errors);
@@ -338,8 +342,8 @@ class PayCase extends BaseTestCase
             $this->assertCount(1, $errors);
             $this->assertEquals('checkout.error.total.min', $errors[0]->getText());
 
+            $dueDate = cal_days_in_month(CAL_GREGORIAN, 2, date('Y'));
             if (!$infoMessage) {
-                $dueDate = cal_days_in_month(CAL_GREGORIAN, date('n'), date('Y'));
                 $this->fillForm(
                     $form,
                     array(
@@ -663,6 +667,7 @@ class PayCase extends BaseTestCase
             $this->timeout,
             "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
         );
+        $dueDate = cal_days_in_month(CAL_GREGORIAN, 2, date('Y') + 1);
         //don't valid amountOther
         $this->fillForm(
             $form,
@@ -671,7 +676,7 @@ class PayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_amountOther' => -10,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => $dueDate,
                 'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
                 'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
             )
@@ -690,7 +695,7 @@ class PayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_amountOther' =>  10,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => $dueDate,
                 'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
                 'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
             )

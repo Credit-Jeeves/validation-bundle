@@ -108,10 +108,10 @@ class BaseApiTestCase extends BaseTestCase
 
     protected function getClient()
     {
-        if (self::$instance != true) {
+        if (static::$instance != true) {
             $this->load(true);
             $this->prepareOAuthAuthorization();
-            self::$instance = true;
+            static::$instance = true;
         }
 
         return parent::createClient();
@@ -149,7 +149,7 @@ class BaseApiTestCase extends BaseTestCase
     {
         return $this
             ->getEntityRepository('RjDataBundle:Tenant')
-            ->findOneBy(['email' => $this->tenantEmail]);
+            ->findOneBy(['email' => $this->getTenantEmail()]);
     }
 
     /**

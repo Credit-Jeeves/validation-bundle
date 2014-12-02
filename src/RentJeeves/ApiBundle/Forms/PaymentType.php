@@ -96,7 +96,8 @@ class PaymentType extends AbstractType
     {
         $resolver->setDefaults([
             'csrf_protection' => false,
-            'data_class' => 'RentJeeves\DataBundle\Entity\Payment'
+            'data_class' => 'RentJeeves\DataBundle\Entity\Payment',
+            'validation_groups' => ['api', 'Default'],
         ]);
     }
 
