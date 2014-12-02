@@ -21,7 +21,7 @@ class ContractCase extends BaseTestCase
         $this->assertNotNull($editContract = $this->page->find('css', 'i.icon-edit'));
         $editContract->getParent()->click();
         $this->assertNotNull($form = $this->page->find('css', 'form'));
-        $this->assertNotNull($submit = $form->find('css','input.btn-primary'));
+        $this->assertNotNull($submit = $form->find('css', 'input.btn-primary'));
         $this->assertCount(7, $fields = $this->page->findAll('css', 'form input'));
         $this->assertCount(21, $fieldsSelected = $this->page->findAll('css', 'form select'));
         $statusTo = $fieldsSelected[5]->getValue();

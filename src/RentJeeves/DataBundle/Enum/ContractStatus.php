@@ -75,7 +75,7 @@ class ContractStatus extends \CreditJeeves\CoreBundle\Enum
             $currentStatus
         );
         $result = [];
-        foreach(($currentStatus + $otherStatuses) as $key => $value) {
+        foreach (($currentStatus + $otherStatuses) as $key => $value) {
             $result[$value]= $value;
         }
         return $result;
