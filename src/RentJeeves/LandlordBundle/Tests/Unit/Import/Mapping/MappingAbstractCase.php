@@ -74,7 +74,8 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array([ "street" => "2715 P Street #11"], "2715 P Street", "11"),
             array([ "street" => "2715 P Street #11"], "2715 P Street", "11"),
             array([ "street" => "527-F SPRING FOREST"], "527 SPRING FOREST", "F"),
-            array([ "street" => "826 Davenport Farm Road"], "826 Davenport Farm Road", null), # was matching "rm" in "farm"
+            # below case checks for matching "rm" in "farm"
+            array([ "street" => "826 Davenport Farm Road"], "826 Davenport Farm Road", null),
         );
     }
 

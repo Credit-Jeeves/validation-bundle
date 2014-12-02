@@ -79,8 +79,6 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
-    const UNIT_MATCH_REGEX = '/(?:-|\#|^\#|^unit|^apt[\.?\s?]+|^ste[\.?\s?]+|^rm[\.?\s?]+|[\.?\s?]+\#|[\.?\s?]+unit|[\.?\s?]+apt[\.?\s?]+|[\.?\s?]+ste[\.?\s?]+|[\.?\s?]+rm[\.?\s?]+)\.?\s*([a-z0-9]{1,10})/is';
-
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
@@ -155,9 +153,18 @@ abstract class MappingAbstract implements MappingInterface
         return $property;
     }
 
+    private function unit_match_regex()
+    {
+        $at_start = '^\#|^unit|^apt[\.?\s?]+|^ste[\.?\s?]+|^rm[\.?\s?]+';
+        $in_middle = '[\.?\s?]+\#|[\.?\s?]+unit|[\.?\s?]+apt[\.?\s?]+|[\.?\s?]+ste[\.?\s?]+|[\.?\s?]+rm[\.?\s?]+';
+        $no_space =  '-|\#';
+
+        return '/(?:'.$no_space.'|'.$at_start.'|'.$in_middle.')\.?\s*([a-z0-9]{1,10})/is';
+    }
+
     protected function parseStreet($row)
     {
-        preg_match(self::UNIT_MATCH_REGEX, $row[self::KEY_STREET], $matches);
+        preg_match($this->unit_match_regex(), $row[self::KEY_STREET], $matches);
 
         if (empty($matches)) {
             return $row;
@@ -177,7 +184,7 @@ abstract class MappingAbstract implements MappingInterface
      */
     protected function parseUnit($row)
     {
-        preg_match(self::UNIT_MATCH_REGEX, $row[self::KEY_UNIT], $matches);
+        preg_match($this->unit_match_regex(), $row[self::KEY_UNIT], $matches);
 
         if (empty($matches)) {
             return $row;
