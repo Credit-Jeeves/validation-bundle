@@ -2145,11 +2145,11 @@
             </trans-unit>
             <trans-unit id="payment.year.error.past">
                 <source>payment.year.error.past</source>
-                <target>Please check your dates. It appears you have set up a payment to year in the past.</target>
+                <target>Please check your dates. The year cannot be in the past.</target>
             </trans-unit>
             <trans-unit id="payment.end_year.error.past">
                 <source>payment.year.error.past</source>
-                <target>Please check your dates. It appears you have set up a payment to ending year in the past.</target>
+                <target>Please check your dates. The ending year cannot be in the past.</target>
             </trans-unit>
             <trans-unit id="payment.month.error.number">
                 <source>payment.month.error.number</source>
