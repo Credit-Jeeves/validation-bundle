@@ -79,7 +79,7 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
-    const UNIT_MATCH_REGEX = '/(?:\#|unit|apt[\.?\s?]+|ste[\.?\s?]+|rm[\.?\s?]+)\.?\s*([a-z0-9]{1,10})/is';
+    const UNIT_MATCH_REGEX = '/(?:-|\#|^\#|^unit|^apt[\.?\s?]+|^ste[\.?\s?]+|^rm[\.?\s?]+|[\.?\s?]+\#|[\.?\s?]+unit|[\.?\s?]+apt[\.?\s?]+|[\.?\s?]+ste[\.?\s?]+|[\.?\s?]+rm[\.?\s?]+)\.?\s*([a-z0-9]{1,10})/is';
 
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
