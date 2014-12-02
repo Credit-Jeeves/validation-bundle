@@ -296,13 +296,13 @@
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
                         <label class="checkbox radio finishAtLabelM2M">
-                            <input type="radio" name="optionsFinishAtEdit" value="monthToMonth" data-bind="checked: $root.optionsFinishAtEdit" >
+                            <input type="radio" class="monthToMonth" name="optionsFinishAtEdit" value="monthToMonth" data-bind="checked: $root.optionsFinishAtEdit" >
                             <i></i>
                             <span>{{ 'when.cancelled' | trans }}</span>
                             <div class="clearboth"></div>
                         </label>
                         <label class="checkbox radio finishAtLabel">
-                            <input type="radio" name="optionsFinishAtEdit" value="finishAt" data-bind="checked: $root.optionsFinishAtEdit" >
+                            <input type="radio" class="finishAt" name="optionsFinishAtEdit" value="finishAt" data-bind="checked: $root.optionsFinishAtEdit" >
                             <i></i>
                             <span class="onFinishAt">{{ 'on' | trans }}</span>
                             <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
