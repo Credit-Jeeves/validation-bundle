@@ -199,7 +199,9 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
         $this->assertNotNull($buttons = $this->page->findAll('css', '#pricing-popup button.button-close'));
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
-        $buttons[0]->click();
+        $this->assertNotNull($buttonClose = $this->page->find('css', '.ui-dialog .ui-dialog-titlebar-close'));
+        $buttonClose->click();
+
         $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
 
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype'));
@@ -213,7 +215,7 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'landlord@ya.ru',
                 'rentjeeves_publicbundle_invitetenanttype_tenant_first_name'                => "Alex",
                 'rentjeeves_publicbundle_invitetenanttype_tenant_last_name'                 => "Sharamko",
-                'rentjeeves_publicbundle_invitetenanttype_tenant_email'                     => "newtenant@test.com",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_email'                     => "newtenant@etest.com",
                 'rentjeeves_publicbundle_invitetenanttype_tenant_password_Password'         => 'pass',
                 'rentjeeves_publicbundle_invitetenanttype_tenant_password_Verify_Password'  => 'pass',
                 'rentjeeves_publicbundle_invitetenanttype_tenant_tos'                       => true,
@@ -242,7 +244,7 @@ class IframeCase extends BaseTestCase
         $this->session->visit($url);
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();
-        $this->login('newtenant@test.com', 'pass');
+        $this->login('newtenant@etest.com', 'pass');
         //$this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->logout();
     }
