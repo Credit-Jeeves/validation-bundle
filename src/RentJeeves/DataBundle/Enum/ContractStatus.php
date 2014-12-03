@@ -60,4 +60,24 @@ class ContractStatus extends \CreditJeeves\CoreBundle\Enum
      * @var string
      */
     const DELETED = 'deleted';
+
+    /**
+     * Returns an array of statuses with currentStatus as a first value
+     *
+     * @param $currentStatus
+     * @return array
+     */
+    public static function getStatuses($currentStatus)
+    {
+        $currentStatus = [$currentStatus => $currentStatus];
+        $otherStatuses = array_diff(
+            ContractStatus::all(),
+            $currentStatus
+        );
+        $result = [];
+        foreach (($currentStatus + $otherStatuses) as $key => $value) {
+            $result[$value]= $value;
+        }
+        return $result;
+    }
 }
