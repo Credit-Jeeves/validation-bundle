@@ -216,6 +216,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $import->setEmail($row[Mapping::KEY_EMAIL]);
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
+        $import->setIsHasPaymentMapping($this->mapping->hasPaymentMapping($row));
 
         if ($this->mapping->isSkipped($row)) {
             $import->setIsSkipped(true);

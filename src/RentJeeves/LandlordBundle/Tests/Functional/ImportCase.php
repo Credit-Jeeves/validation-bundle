@@ -1611,7 +1611,7 @@ class ImportCase extends BaseTestCase
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import _should_create_operation.csv');
+        $filePath = $this->getFilePathByName('import_should_create_operation.csv');
         $attFile->attachFile($filePath);
         $this->setProperty();
         $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));

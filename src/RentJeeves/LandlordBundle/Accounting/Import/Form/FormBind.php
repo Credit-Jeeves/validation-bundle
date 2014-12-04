@@ -206,6 +206,21 @@ trait FormBind
             $contract->setUncollectedBalance($contract->getIntegratedBalance());
         }
 
+        $isIsNeedCreateCashOperation = $this->isNeedCreateCashOperation($contract);
+        $dueDate = $this->getDueDateOfContract($contract);
+        $operation = $import->getOperation();
+
+        $this->movePaidToOfContract($contract, $dueDate);
+
+        if ($isIsNeedCreateCashOperation && empty($operation)) {
+            $operation = $this->attachOperationToImport($import, $dueDate);
+        }
+
+        if ($operation && is_null($operation->getContract()) && $isIsNeedCreateCashOperation) {
+            $this->processingOperationAndOrder($contract->getTenant(), $operation, $contract);
+            $import->setOperation(null);
+        }
+
         $this->em->persist($contract);
     }
 
