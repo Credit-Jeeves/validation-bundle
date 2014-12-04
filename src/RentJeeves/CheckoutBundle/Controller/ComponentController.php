@@ -32,8 +32,7 @@ class ComponentController extends Controller
                 array(),
                 array(),
                 0,
-                0,
-                $this->get('translator')
+                0
             )
         );
         $paymentBalanceOnlyType =  $this->createForm(

@@ -49,8 +49,6 @@ class PaymentType extends AbstractType
      */
     protected $closeDay;
 
-    protected $translator;
-
     /**
      * @param string $oneTimeUntilValue
      */
@@ -59,15 +57,13 @@ class PaymentType extends AbstractType
         array $paidFor,
         $dueDays,
         $openDay,
-        $closeDay,
-        $translator
+        $closeDay
     ) {
         $this->oneTimeUntilValue = $oneTimeUntilValue;
         $this->paidFor = $paidFor;
         $this->dueDays = $dueDays;
         $this->openDay = $openDay;
         $this->closeDay = $closeDay;
-        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -254,9 +250,7 @@ class PaymentType extends AbstractType
                         'data-bind' => 'visible: \'monthly\' == payment.frequency()'
                     )
                 ),
-//                'invalid_message' => 'checkout.error.dueDate.invalid', // TODO have bug in Symfony #6980
-                'invalid_message' => 'Your property manager only accepts payments between ' .
-                    '%OPEN_DATE% and %CLOSE_DATE%.',
+                'invalid_message' => 'checkout.error.dueDate.invalid',
                 'invalid_message_parameters' => array(
                     '%OPEN_DATE%' => current($this->dueDays),
                     '%CLOSE_DATE%' => end($this->dueDays)
@@ -354,7 +348,6 @@ class PaymentType extends AbstractType
                                 'recurring',
                                 'one_time'
                             ),
-                            'translator' => $this->translator,
                             'openDay'    => $this->openDay,
                             'closeDay'   => $this->closeDay
                         )
