@@ -2153,7 +2153,7 @@
             </trans-unit>
             <trans-unit id="payment.month.error.number">
                 <source>payment.month.error.number</source>
-                <target>this month has %%COUNT%% days</target>
+                <target>This month has %count% days</target>
             </trans-unit>
             <trans-unit id="payment.start_date.error.cutoff.time">
                 <source>payment.start_date.error.cutoff.time</source>
