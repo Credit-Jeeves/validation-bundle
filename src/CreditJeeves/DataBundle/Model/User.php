@@ -300,7 +300,7 @@ abstract class User extends BaseUser
      * @ORM\Column(type="string", nullable=true)
      * @Serializer\Type("string")
      * @Assert\Regex(
-     *     pattern = "/^(\(\d{3}\)\d{3}-|\d{3}\.\d{3}\.|\d{3}-?\d{3}-?)\d{4}$/",
+     *     pattern = "/^(\(\d{3}\) ?\d{3}-|\d{3}\.\d{3}\.|\d{3}-?\d{3}-?)\d{4}$/",
      *     message="error.user.phone.format",
      *     groups={
      *         "user_admin",
