@@ -10,6 +10,8 @@ class DateType extends Base
 {
     const FIXED_DATE = 'fixed_date';
 
+    const WRONG_DATE_STRING = '0000-00-00';
+
     /**
      * {@inheritdoc}
      */
@@ -25,6 +27,10 @@ class DateType extends Base
     {
         if ($value === null) {
             return $value;
+        }
+
+        if ($value === self::WRONG_DATE_STRING) {
+            return null;
         }
 
         if ($value instanceof \DateTime) {
