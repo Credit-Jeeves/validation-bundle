@@ -70,18 +70,17 @@ trait Contract
      */
     protected function movePaidToOfContract(EntityContract $contract, $dueDate)
     {
-        if (!$this->isNeedCreateCashOperation($contract)) {
-            return;
+        if ($this->isNeedCreateCashOperation($contract)) {
+            $paidTo = new DateTime();
+            $paidTo->modify('+1 month');
+            $paidTo->setDate(
+                $paidTo->format('Y'),
+                $paidTo->format('n'),
+                $dueDate
+            );
+
+            $contract->setPaidTo($paidTo);
         }
-
-        $paidTo = new DateTime();
-        $paidTo->setDate(
-            $paidTo->format('Y'),
-            $paidTo->format('n'),
-            $dueDate
-        );
-
-        $contract->setPaidTo($paidTo);
     }
 
     /**
