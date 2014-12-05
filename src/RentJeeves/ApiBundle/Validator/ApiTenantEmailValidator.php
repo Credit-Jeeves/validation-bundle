@@ -17,18 +17,14 @@ class ApiTenantEmailValidator extends ConstraintValidator
 {
     protected $em;
 
-    protected $translator;
-
     /**
      * @InjectParams({
-     *     "em" = @Inject("doctrine.orm.entity_manager"),
-     *     "translator" = @Inject("translator"),
+     *     "em" = @Inject("doctrine.orm.entity_manager")
      * })
      */
-    public function __construct(EntityManager $em, Translator $translator)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->translator = $translator;
     }
 
     public function validate($value, Constraint $constraint)
@@ -39,6 +35,6 @@ class ApiTenantEmailValidator extends ConstraintValidator
             return true;
         }
 
-        $this->context->addViolation($this->translator->trans($constraint->message));
+        $this->context->addViolation($constraint->message);
     }
 }

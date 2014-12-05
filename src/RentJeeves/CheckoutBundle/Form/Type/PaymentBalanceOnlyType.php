@@ -21,16 +21,14 @@ class PaymentBalanceOnlyType extends PaymentType
         $dueDays,
         $em,
         $openDay,
-        $closeDay,
-        $translator
+        $closeDay
     ) {
         parent::__construct(
             $oneTimeUntilValue,
             $paidFor,
             $dueDays,
             $openDay,
-            $closeDay,
-            $translator
+            $closeDay
         );
         $this->em = $em;
     }

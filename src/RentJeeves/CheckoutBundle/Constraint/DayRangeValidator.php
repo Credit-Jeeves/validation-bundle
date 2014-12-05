@@ -20,15 +20,10 @@ class DayRangeValidator extends ConstraintValidator
             return;
         }
 
-        $message = $constraint->translator->trans(
-            'payment_form.start_date.error_range',
-            array(
-                '%OPEN_DAY%'      => $constraint->openDay,
-                '%CLOSE_DAY%'     => $constraint->closeDay
-            )
-        );
-
-        return $this->context->addViolation($message);
+        return $this->context->addViolation('payment_form.start_date.error_range', [
+            '%OPEN_DAY%'      => $constraint->openDay,
+            '%CLOSE_DAY%'     => $constraint->closeDay
+        ]);
     }
 
     public static function inRange(DateTime $date, $openDay, $closeDay)

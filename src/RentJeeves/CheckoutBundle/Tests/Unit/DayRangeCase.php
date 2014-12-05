@@ -37,7 +37,6 @@ class DayRangeCase extends BaseTestCase
             $today,
             new DayRange(
                 array(
-                    'translator' => $container->get('translator'),
                     'openDay'    => $openDay,
                     'closeDay'   => $closeDay
                 )

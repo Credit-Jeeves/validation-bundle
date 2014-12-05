@@ -40,3 +40,5 @@ parameters:
     soap.api.yardi.entity: RentTrack
     soap.api.yardi.license: V100057742BP.lic
     soap.api.yardi.path_to_classes: RentJeeves\ExternalApiBundle\Services\Yardi\Soap\
+
+    validator.translation_domain: messages

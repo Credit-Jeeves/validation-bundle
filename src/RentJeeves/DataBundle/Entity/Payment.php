@@ -247,7 +247,7 @@ class Payment extends Base
             $context->addViolationAt(
                 'day',
                 "payment.month.error.number",
-                ['%%COUNT%%' => $lastDayInStartMonth->format('d')]
+                ['%count%' => $lastDayInStartMonth->format('d')]
             );
             return;
         }
@@ -263,7 +263,7 @@ class Payment extends Base
                 $context->addViolationAt(
                     'day',
                     "payment.month.error.number",
-                    ['%%COUNT%%' => $lastDayInEndMonth->format('d')]
+                    ['%count%' => $lastDayInEndMonth->format('d')]
                 );
                 return;
             }

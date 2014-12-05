@@ -82,8 +82,7 @@ class PayController extends Controller
                 $this->container->get('checkout.paid_for')->getArray($contract),
                 array_combine($dueDays, $dueDays),
                 $contract->getGroup()->getGroupSettings()->getOpenDate(),
-                $contract->getGroup()->getGroupSettings()->getCloseDate(),
-                $this->get('translator')
+                $contract->getGroup()->getGroupSettings()->getCloseDate()
             );
         }
         if (!empty($paymentEntity) &&

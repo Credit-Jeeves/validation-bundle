@@ -8,8 +8,6 @@ class DayRange extends Constraint
 {
     public $message = 'payment_form.start_date.error_range';
 
-    public $translator;
-
     public $openDay;
 
     public $closeDay;
