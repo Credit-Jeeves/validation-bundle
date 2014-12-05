@@ -2,6 +2,7 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -75,6 +76,28 @@ class AjaxController extends Controller
 
         return $this->makeJsonResponse($properties);
 
+    }
+
+    /**
+     * @Route(
+     *     "/rj/holding/groups",
+     *     name="admin_rj_holding_groups",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getHoldingGroups(Request $request)
+    {
+        $holdingId = $request->request->get('holdingId');
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $holding Holding
+         */
+        $holding = $em->getRepository('DataBundle:Holding')->find($holdingId);
+        if (empty($holding)) {
+            throw new Exception("Holding not found.");
+        }
+
+        return $this->makeJsonResponse($holding->getGroups());
     }
 
     /**

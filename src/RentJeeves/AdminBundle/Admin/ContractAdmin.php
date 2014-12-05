@@ -1,6 +1,9 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
+use CreditJeeves\DataBundle\Enum\GroupType;
+use Doctrine\ORM\EntityRepository;
+use RentJeeves\DataBundle\Entity\Contract;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -148,12 +151,90 @@ class ContractAdmin extends Admin
 
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $container = $this->getConfigurationPool()->getContainer();
+        $request = $container->get('request');
+        $uniqueId = $request->query->get('uniqid');
+        $params = $request->request->all();
+
+        if (isset($params[$uniqueId]['holding'])) {
+            $holding = $params[$uniqueId]['holding'];
+            $group = $params[$uniqueId]['group'];
+            $property = $params[$uniqueId]['property'];
+        } elseif ($id = $request->get('id')) {
+            $em = $container->get('doctrine.orm.default_entity_manager');
+            /**
+             * @var $contract Contract
+             */
+            $contract = $em->getRepository('RjDataBundle:Contract')->find($id);
+            $holding = $contract->getHolding();
+            $group = $contract->getGroup();
+            $property = $contract->getProperty();
+        }
+
+        if (empty($holding) || empty($group) || empty($property)) {
+            throw new \Exception("Can't find contract by ID.");
+        }
+
         $formMapper
             ->add('tenant')
-            ->add('holding')
-            ->add('group')
-            ->add('property')
-            ->add('unit')
+            ->add(
+                'holding',
+                'entity',
+                array(
+                    'class' => 'DataBundle:Holding',
+                    'required' => true,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('holding')
+                            ->innerJoin('holding.groups', 'gr')
+                            ->where('gr.type = :typeGroup')
+                            ->orderBy('holding.name', 'ASC')
+                            ->setParameter('typeGroup', GroupType::RENT);
+                    }
+                )
+            )
+            ->add(
+                'group',
+                'entity',
+                array(
+                    'class' => 'DataBundle:Group',
+                    'required' => true,
+                    'query_builder' => function (EntityRepository $er) use ($holding) {
+                        return $er->createQueryBuilder('gr')
+                            ->innerJoin('gr.holding', 'h')
+                            ->where('h.id = :holding')
+                            ->setParameter('holding', $holding);
+                    }
+                )
+            )
+            ->add(
+                'property',
+                'entity',
+                array(
+                    'class' => 'RjDataBundle:Property',
+                    'required' => true,
+                    'query_builder' => function (EntityRepository $er) use ($group) {
+                        return $er->createQueryBuilder('pr')
+                            ->innerJoin('pr.property_groups', 'gr')
+                            ->where('gr.id = :group')
+                            ->setParameter('group', $group);
+                    }
+                )
+            )
+            ->add(
+                'unit',
+                'entity',
+                array(
+                    'class' => 'RjDataBundle:Unit',
+                    'required' => true,
+                    'query_builder' => function (EntityRepository $er) use ($group, $property) {
+                        return $er->createQueryBuilder('u')
+                            ->where('u.property = :property')
+                            ->andWhere('u.group = :group')
+                            ->setParameter('group', $group)
+                            ->setParameter('property', $property);
+                    }
+                )
+            )
             ->add('search')
             ->add(
                 'status',
@@ -161,12 +242,19 @@ class ContractAdmin extends Admin
                 ['choices' => ContractStatus::getStatuses($this->getSubject()->getStatus())]
             )
             ->add('paidTo')
-            ->add('dueDate')
             ->add('reportToExperian')
             ->add('experianStartAt')
             ->add('reportToTransUnion')
             ->add('transUnionStartAt')
             ->add('startAt')
-            ->add('finishAt');
+            ->add('finishAt')
+            ->add(
+                'dueDate',
+                'choice',
+                [
+                    'choices' => array_slice(range(0, 31), 1, null, true)
+                ]
+            )
+        ;
     }
 }
