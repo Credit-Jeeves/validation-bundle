@@ -155,11 +155,11 @@ abstract class MappingAbstract implements MappingInterface
 
     private function unitMatchRegex()
     {
-        $at_start = '^\#|^unit|^apt[\.?\s?]+|^ste[\.?\s?]+|^rm[\.?\s?]+';
-        $in_middle = '[\.?\s?]+\#|[\.?\s?]+unit|[\.?\s?]+apt[\.?\s?]+|[\.?\s?]+ste[\.?\s?]+|[\.?\s?]+rm[\.?\s?]+';
-        $no_space =  '-|\#';
+        $atStart = '^\#|^unit|^apt[\.?\s?]+|^ste[\.?\s?]+|^rm[\.?\s?]+';
+        $inMiddle = '[\.?\s?]+\#|[\.?\s?]+unit|[\.?\s?]+apt[\.?\s?]+|[\.?\s?]+ste[\.?\s?]+|[\.?\s?]+rm[\.?\s?]+';
+        $noSpace =  '-|\#';
 
-        return '/(?:'.$no_space.'|'.$at_start.'|'.$in_middle.')\.?\s*([a-z0-9]{1,10})/is';
+        return '/(?:'.$noSpace.'|'.$atStart.'|'.$inMiddle.')\.?\s*([a-z0-9-]{1,10})/is';
     }
 
     protected function parseStreet($row)
