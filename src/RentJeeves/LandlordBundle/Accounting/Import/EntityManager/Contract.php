@@ -64,6 +64,92 @@ trait Contract
     }
 
     /**
+     * @param EntityContract $contract
+     * @param $dueDate
+     * @param $isNeedCreateCashOperation
+     */
+    protected function movePaidToOfContract(EntityContract $contract, $dueDate)
+    {
+        if (!$this->isNeedCreateCashOperation($contract)) {
+            return;
+        }
+
+        $paidTo = new DateTime();
+        $paidTo->setDate(
+            $paidTo->format('Y'),
+            $paidTo->format('n'),
+            $dueDate
+        );
+
+        $contract->setPaidTo($paidTo);
+    }
+
+    /**
+     * @param EntityContract $contract
+     * @return bool
+     */
+    protected function isNeedCreateCashOperation(EntityContract $contract)
+    {
+        $isNeedCreateCashOperation = false;
+        $paidTo = new DateTime();
+        $balance = $contract->getIntegratedBalance();
+        $currentPaidTo = $contract->getPaidTo();
+        if ($contract->getId() !== null) {
+            // normally, we don't want to mess with paid_to for existing contracts unless
+            // it is obvious someone paid outside of RentTrack:
+            if ($balance <= 0 && $currentPaidTo <= $paidTo) {
+                // will be in future
+                //if (there is no order with paid_for for this month) {
+                // create new cash payment on $groupDueDate for this month
+                //}
+                $isNeedCreateCashOperation = true;
+            }
+        } else {
+            // this contract is new, so let's set paid_to accordingly
+            // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
+            if ($balance <= 0) {
+                $isNeedCreateCashOperation = true;
+            }
+        }
+
+        return $isNeedCreateCashOperation;
+    }
+
+    /**
+     * @param Import $import
+     * @param array $row
+     * @param $dueDate
+     */
+    protected function attachOperationToImport(ModelImport $import, $dueDate)
+    {
+        $contract = $import->getContract();
+        if ($contract->getStatus() === ContractStatus::CURRENT &&
+            !$import->isIsHasPaymentMapping()
+        ) {
+            $paidFor = new DateTime();
+            $paidFor->setDate(
+                $paidFor->format('Y'),
+                $paidFor->format('n'),
+                $dueDate
+            );
+            $import->setOperation($operation = $this->getOperationByContract($contract, $import, $paidFor));
+            $operation->setCreatedAt($paidFor);
+
+            return $operation;
+        }
+
+        return null;
+    }
+
+    protected function getDueDateOfContract(EntityContract $contract)
+    {
+        $groupSettings = $this->group->getGroupSettings();
+        $dueDate = ($contract->getDueDate())? $contract->getDueDate() : $groupSettings->getDueDate();
+
+        return $dueDate;
+    }
+
+    /**
      * @param Import $import
      * @param $row
      *
@@ -87,64 +173,17 @@ trait Contract
                 $contract = $this->createContract($row, $tenant, $import);
             }
         }
+        $import->setContract($contract);
         $this->setYardiPaymentAccepted($contract, $row);
         //set data from csv file
         $contract->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
         $contract->setRent($row[Mapping::KEY_RENT]);
+        $dueDate = $this->getDueDateOfContract($contract);
 
-        $paidTo = new DateTime();
-        $currentPaidTo = $contract->getPaidTo();
-        $groupSettings = $this->group->getGroupSettings();
-        $dueDate = ($contract->getDueDate())? $contract->getDueDate() : $groupSettings->getDueDate();
-        $isNeedCreateCashOperation = false;
-        //contract is a match
-        if ($contract->getId() !== null) {
-            // normally, we don't want to mess with paid_to for existing contracts unless
-            // it is obvious someone paid outside of RentTrack:
-            if ($row[Mapping::KEY_BALANCE] <= 0 && $currentPaidTo <= $paidTo) {
-                $isNeedCreateCashOperation = true;
-                $paidTo->modify('+1 month');
-                // will be in future
-                //if (there is no order with paid_for for this month) {
-                // create new cash payment on $groupDueDate for this month
-                //}
-                $paidTo->setDate(
-                    $paidTo->format('Y'),
-                    $paidTo->format('n'),
-                    $dueDate
-                );
+        $isNeedCreateCashOperation = $this->isNeedCreateCashOperation($contract);
 
-                $contract->setPaidTo($paidTo);
-            }
-        } else {
-            // this contract is new, so let's set paid_to accordingly
-            // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
-            if ($row[Mapping::KEY_BALANCE] <= 0) {
-                $paidTo->modify('+1 month');
-                $isNeedCreateCashOperation = true;
-            }
-
-            $paidTo->setDate(
-                $paidTo->format('Y'),
-                $paidTo->format('n'),
-                $dueDate
-            );
-
-            $contract->setPaidTo($paidTo);
-        }
-
-        if ($isNeedCreateCashOperation &&
-            $contract->getStatus() === ContractStatus::CURRENT &&
-            !$this->mapping->hasPaymentMapping($row)
-        ) {
-            $paidFor = new DateTime();
-            $paidFor->setDate(
-                $paidFor->format('Y'),
-                $paidFor->format('n'),
-                $dueDate
-            );
-            $import->setOperation($operation = $this->getOperationByContract($contract, $import, $paidFor));
-            $operation->setCreatedAt($paidFor);
+        if ($isNeedCreateCashOperation) {
+            $this->attachOperationToImport($import, $dueDate);
         }
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
@@ -176,7 +215,7 @@ trait Contract
         return $contract;
     }
 
-    public function getContractWaiting(
+    protected function getContractWaiting(
         Tenant $tenant,
         EntityContract $contract,
         ResidentMapping $residentMapping

@@ -43,7 +43,7 @@ trait Operation
      */
     protected function getOperationByRow(ModelImport $import, array $row)
     {
-        if (!$this->mapping->hasPaymentMapping($row)) {
+        if (!$import->isIsHasPaymentMapping()) {
             return null;
         }
 

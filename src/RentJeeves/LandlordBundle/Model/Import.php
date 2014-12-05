@@ -113,6 +113,27 @@ class Import
     protected $contractWaiting;
 
     /**
+     * @var boolean
+     */
+    protected $isHasPaymentMapping = false;
+
+    /**
+     * @return boolean
+     */
+    public function isIsHasPaymentMapping()
+    {
+        return $this->isHasPaymentMapping;
+    }
+
+    /**
+     * @param boolean $hasPaymentMapping
+     */
+    public function setIsHasPaymentMapping($hasPaymentMapping)
+    {
+        $this->isHasPaymentMapping = $hasPaymentMapping;
+    }
+
+    /**
      * @return mixed
      */
     public function getSkippedMessage()
@@ -366,7 +387,7 @@ class Import
     /**
      * @param Operation $operation
      */
-    public function setOperation(Operation $operation)
+    public function setOperation(Operation $operation = null)
     {
         $this->operation = $operation;
     }
