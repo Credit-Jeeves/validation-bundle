@@ -201,6 +201,7 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
         $this->assertNotNull($buttons = $this->page->findAll('css', '#pricing-popup button.button-close'));
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
+        $this->session->wait($this->timeout, "$('#pricing-popup button.button-close').is(':visible')");
         $buttons[0]->click();
 
         $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
