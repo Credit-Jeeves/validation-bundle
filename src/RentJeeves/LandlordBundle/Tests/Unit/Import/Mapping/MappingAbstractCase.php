@@ -76,6 +76,8 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array([ "street" => "527-F SPRING FOREST"], "527 SPRING FOREST", "F"),
             # below case checks for matching "rm" in "farm"
             array([ "street" => "826 Davenport Farm Road"], "826 Davenport Farm Road", null),
+            # failed for '-' within unit name
+            array([ "street" => "3903 #PP-5 STERLING"], "3903 STERLING", "PP-5"),
         );
     }
 
@@ -110,6 +112,7 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array([ "street" => "2715 P Street #2", "unit" => "P2715 #2"], "2715 P Street", "2"),
             array([ "street" => "2715 P Street #11", "unit" => "P2715#11"], "2715 P Street ", "11"),
             array([ "street" => "5105-A Deveron Street", "unit" => "5105-A"], "5105 Deveron Street", "A"),
+            array([ "street" => "3903 #PP-5 STERLING", "unit" => "3903 #PP-5 STERLING"], "3903 STERLING", "PP-5"),
         );
     }
 

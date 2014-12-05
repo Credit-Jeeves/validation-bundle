@@ -159,7 +159,7 @@ abstract class MappingAbstract implements MappingInterface
         $in_middle = '[\.?\s?]+\#|[\.?\s?]+unit|[\.?\s?]+apt[\.?\s?]+|[\.?\s?]+ste[\.?\s?]+|[\.?\s?]+rm[\.?\s?]+';
         $no_space =  '-|\#';
 
-        return '/(?:'.$no_space.'|'.$at_start.'|'.$in_middle.')\.?\s*([a-z0-9]{1,10})/is';
+        return '/(?:'.$no_space.'|'.$at_start.'|'.$in_middle.')\.?\s*([a-z0-9-]{1,10})/is';
     }
 
     protected function parseStreet($row)
