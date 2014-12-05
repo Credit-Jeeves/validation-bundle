@@ -1,0 +1,15 @@
+{% extends "::base.mobile.html.twig" %}
+
+{% block title %}
+    {{ 'project.renttrack'|trans }}
+{% endblock %}
+
+{% block info %}
+     {{ render(controller('RjComponentBundle:Blocks:info' )) }}
+{% endblock %}
+
+{% block head_javascripts %}
+    {{ include(
+    'RjComponentBundle:Blocks:reject.html.twig'
+    ) }}
+{% endblock %}

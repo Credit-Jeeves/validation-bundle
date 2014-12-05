@@ -1,0 +1,87 @@
+{% extends "RjCoreBundle::layout.mobile.html.twig" %}
+{# extends 'RjCoreBundle::base.mobile.html.twig' #}
+
+
+{% block header %}
+  <div data-role="navbar" data-iconpos="left">
+      <h1>RentTrack</h1>
+    </div>
+
+{% endblock %}
+
+{% block fos_user_content %}
+            {#mobile login view --#}
+            <font color="red">
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+                <div class="flash-notice">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+            {% if app.request.attributes.get('defenseMessage') %}
+                <div class="row-20"></div>
+                <div class="login-error">
+                    {{ app.request.attributes.get('defenseMessage') }}
+                </div>
+            {% endif %}
+            {% for flashMessage in app.session.flashbag.get('error') %}
+                <div class="row-20"></div>
+                <div class="login-error">
+                    {{ flashMessage|trans }}
+                </div>
+            {% endfor %}
+            </font>
+
+            <form action="{{ path("fos_user_security_check") }}" method="post" id="login_form" data-ajax="false">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+                {% if error %}
+                            <div class="login-error">{{ error|trans({}, 'FOSUserBundle') }}</div>
+                {% endif %}
+
+                        <input class="login-input"
+                               type="text"
+                               id="username"
+                               name="_username"
+                               {# value="{{ last_username }}" #}
+                               value="tenant11@example.com"
+                               required="required"
+                               autocomplete="off"
+                                />
+                    <input autocomplete="off" class="login-input" type="password" id="password" name="_password" required="required" value="P@ssW0rd"/>
+                        <input class="button large green"
+                        		data-ajax="false"
+                               type="submit"
+                               id="_submit"
+                               name="_submit"
+                               value="{{ 'login.submit' | trans }}"
+                               value="pass"
+                                />
+                
+        </form>
+    {#
+    {% if 'rj' == application %}
+    <div class="create-block-logins floatleft">
+        <h2>{{ 'login.new_user_question' | trans }}</h2>
+        <a id="create-user" href="{{ path('iframe_new') }}">»  </a>
+    </div>
+    {% endif %}
+    {% if 'cj' == application %}
+    <div class="business-logins floatleft">
+        <h2>Business Logins:</h2>
+        <a href="/dealer.php">» {{ 'login.dealership' | trans }} </a>
+    </div>
+    {% endif %}
+    #}
+    <div class="clearboth"></div>
+    <p class="login-pod-footer">
+        
+        <a href="{{ path('fos_user_resetting_request') }}">{{ 'resetting.title' | trans }}</a>
+    </p>
+    
+  
+    {% endblock %}
+
+    {% block footer %}
+
+    {% endblock %}
+  
+ 

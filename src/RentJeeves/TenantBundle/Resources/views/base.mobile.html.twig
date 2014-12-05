@@ -1,0 +1,68 @@
+{% extends "RjCoreBundle::rj_base.mobile.html.twig" %}
+
+{% block stylesheets %}
+    {% stylesheets  '@ComponentBundle/Resources/public/css/*'
+                    '@RjComponentBundle/Resources/public/css/*'
+                    '@RjPublicBundle/Resources/public/css/footer.css'
+                    '@CoreBundle/Resources/public/css/rj-logos.css'
+                    '@CoreBundle/Resources/public/css/tabs.css'
+                    '@UserBundle/Resources/public/css/login.css'
+                    '@CoreBundle/Resources/public/css/check.css'
+                    '@CoreBundle/Resources/public/css/rent-menu.css'
+                    '@CheckoutBundle/Resources/public/css/checkout.css'
+                    '@TenantBundle/Resources/public/css/alert.css'
+                    '@TenantBundle/Resources/public/css/home.page.css'
+                    '@RjPublicBundle/Resources/public/css/base-font.css'
+    %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+
+{% endblock %}
+{# delete ability is commented out @RjComponentBundle/Resources/public/js/tenant-contracts.js. #}
+{% block head_javascripts %}
+{% javascripts '@RjCoreBundle/Resources/public/js/jquery.slimscroll.js'
+    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+    '@RjCoreBundle/Resources/public/js/formProcess.js'
+    '@RjCoreBundle/Resources/public/js/user-voice.js'
+    '@TenantBundle/Resources/public/js/CurrentPayments.js'
+    '@RjCheckoutBundle/Resources/public/js/Pay.js'
+    '@RjCheckoutBundle/Resources/public/js/Payment.js'
+    '@RjCheckoutBundle/Resources/public/js/PaymentSource.js'
+    '@RjCheckoutBundle/Resources/public/js/Cancel.js'
+    '@CoreBundle/Resources/public/js/Address.js'
+    '@TenantBundle/Resources/public/js/PaymentSources.js'
+    '@RjComponentBundle/Resources/public/js/Payments/TenantPayment.js'
+    '@RjComponentBundle/Resources/public/js/Payments/TenantPaymentMapping.js'
+    '@RjComponentBundle/Resources/public/js/Payments/TenantPaymentsViewModel.js'
+%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+{% block google_api %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart", "gauge"]});
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
+{% endblock %}
+
+{% block alert %}
+    {{ render(controller('RjComponentBundle:Alert:tenant')) }}
+{% endblock %}
+
+{% block tabs %}
+    <div class="top-nav">
+    {{ knp_menu_render('TenantBundle:Builder:mainMenu', { 'template': '::menu.html.twig' }) }}
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {{ render(controller('RjComponentBundle:Footer:index')) }}
+{% endblock %}
+
+{% block partner_logo %}
+    {% if app.user.getPartnerCode() %}
+        <div class="base-creditcom-logo"></div>
+    {% endif %}
+{% endblock %}

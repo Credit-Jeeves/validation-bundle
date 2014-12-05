@@ -1,0 +1,32 @@
+{% extends "TenantBundle::base.mobile.html.twig" %}
+{#
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@CoreBundle/Resources/public/css/styles.css'
+    '@CoreBundle/Resources/public/css/pricing-popup.css'
+    '@TenantBundle/Resources/public/css/isPidVerificationSkipped.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+#}
+
+{#{% block content %}#}
+
+
+{#{% endblock %}#}
+
+
+{#
+
+    <div data-role="panel">
+            {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'TenantBundle:Sources:menu.html.twig' }) }}
+    </div>
+#}
+    {% block content %}
+        {{ render(controller('RjComponentBundle:ContractsList:tenant')) }}
+
+    {% endblock %}
+{#
+        {% include 'RjComponentBundle:PaymentHistory:payments.html.twig' with {'contracts': user.contracts} %}
+#}
