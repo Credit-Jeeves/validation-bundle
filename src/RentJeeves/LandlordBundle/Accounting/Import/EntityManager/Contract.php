@@ -131,8 +131,8 @@ trait Contract
                 $paidFor->format('n'),
                 $dueDate
             );
+
             $import->setOperation($operation = $this->getOperationByContract($contract, $import, $paidFor));
-            $operation->setCreatedAt($paidFor);
 
             return $operation;
         }

@@ -77,6 +77,7 @@ trait Operation
         $operation->setPaidFor($paidFor);
         $operation->setAmount($contract->getRent());
         $operation->setType(OperationType::RENT);
+        $operation->setCreatedAt($paidFor);
 
         $import->setOperation($operation);
 
