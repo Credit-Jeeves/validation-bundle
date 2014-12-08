@@ -50,7 +50,10 @@ class PaymentAdminController extends CRUDController
             $i++;
         }
         if (0 == $i) {
-            $this->request->getSession()->getFlashBag()->add('sonata_flash_warning', 'admin.butch.run.warning');
+            $this->request->getSession()->getFlashBag()->add('
+                'sonata_flash_warning',
+                $this->get('translator')->trans('admin.butch.run.warning')
+            );
         } else {
             $em->flush();
             $this->request->getSession()->getFlashBag()->add(
