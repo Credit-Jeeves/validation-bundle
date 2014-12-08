@@ -211,12 +211,12 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function getImport(array $row, $lineNumber)
     {
         $import = new ModelImport();
+        $import->setHandler($this);
         $import->setNumber($lineNumber);
         $tenant = $this->getTenant($row);
         $import->setEmail($row[Mapping::KEY_EMAIL]);
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
-        $import->setIsHasPaymentMapping($this->mapping->hasPaymentMapping($row));
 
         if ($this->mapping->isSkipped($row)) {
             $import->setIsSkipped(true);
@@ -226,9 +226,6 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $import->setContract($contract = $this->getContract($import, $row));
-        if ($operation = $this->getOperationByRow($import, $row)) {
-            $import->setOperation($operation);
-        }
 
         if ($contract && !$property = $contract->getProperty()) {
             $import->setAddress($row[Mapping::KEY_STREET].','.$row[Mapping::KEY_CITY]);
@@ -236,6 +233,11 @@ abstract class HandlerAbstract implements HandlerInterface
 
         $token      = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $import->setCsrfToken($token);
+
+        if ($operation = $this->getOperationByRow($import, $row)) {
+            $import->setOperation($operation);
+        }
+
         $import->setResidentMapping($this->getResident($tenant, $row));
         $import->setUnitMapping($this->getUnitMapping($row));
 

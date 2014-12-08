@@ -112,14 +112,11 @@ trait FormBind
             }
             $this->em->persist($unitMapping);
         }
-        $this->processingContract($import, $contract);
+
         if (!$contract->getId()) {
             $this->emailSendingQueue[] = $contract;
-        } elseif (!is_null($import->getOperation())) {
-            //see logic in setOperation method
-            $operation = $form->get('operation')->getData();
-            $this->processingOperationAndOrder($import->getTenant(), $operation, $contract);
         }
+
         $residentMapping = $form->get('residentMapping')->getData();
         $this->em->persist($residentMapping);
     }
@@ -151,7 +148,6 @@ trait FormBind
             $waitingContract = $this->getContractWaiting($tenant, $contract, $residentMapping);
             $this->em->persist($waitingContract);
         } else {
-            $this->em->persist($tenant);
             $this->em->persist($residentMapping);
             $this->processingContract($import, $contract);
             if ($data['sendInvite']) {
@@ -172,7 +168,6 @@ trait FormBind
         ResidentMapping $residentMapping,
         $sendInvite
     ) {
-
         /**
          * @var $waitingContract ContractWaiting
          */
@@ -197,39 +192,11 @@ trait FormBind
     }
 
     /**
-     * @param ModelImport $import
-     * @param Contract $contract
-     */
-    protected function processingContract(ModelImport $import, Contract $contract)
-    {
-        if ($contract->getIntegratedBalance() > 0 && $this->isFinishedContract($contract)) {
-            $contract->setUncollectedBalance($contract->getIntegratedBalance());
-        }
-
-        $isIsNeedCreateCashOperation = $this->isNeedCreateCashOperation($contract);
-        $dueDate = $this->getDueDateOfContract($contract);
-        $operation = $import->getOperation();
-
-        $this->movePaidToOfContract($contract, $dueDate);
-
-        if ($isIsNeedCreateCashOperation && empty($operation)) {
-            $operation = $this->attachOperationToImport($import, $dueDate);
-        }
-
-        if ($operation && is_null($operation->getContract()) && $isIsNeedCreateCashOperation) {
-            $this->processingOperationAndOrder($contract->getTenant(), $operation, $contract);
-            $import->setOperation(null);
-        }
-
-        $this->em->persist($contract);
-    }
-
-    /**
      * @param Tenant $tenant
      * @param Operation $operation
      * @param Contract $contract
      */
-    protected function processingOperationAndOrder(Tenant $tenant, Operation $operation, Contract $contract)
+    public function processingOperationAndOrder(Tenant $tenant, Operation $operation, Contract $contract)
     {
         $order = new Order();
         $order->setStatus(OrderStatus::COMPLETE);
@@ -241,9 +208,6 @@ trait FormBind
         $operation->setContract($contract);
         $operation->setOrder($order);
         $contract->addOperation($operation);
-
-        $this->em->persist($order);
-        $this->em->persist($operation);
     }
 
     /**

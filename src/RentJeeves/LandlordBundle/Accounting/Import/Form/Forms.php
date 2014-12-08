@@ -12,7 +12,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Form\ImportContractFinishType;
 use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
-use Symfony\Component\Form\FormFactory;
+use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 
 trait Forms
@@ -43,10 +43,7 @@ trait Forms
      * @return Form
      */
     public function getContractForm(
-        Tenant $tenant,
-        ResidentMapping $residentMapping,
-        UnitMapping $unitMapping,
-        Unit $unit = null,
+        Import $import,
         $isUseToken = true,
         $isUseOperation = true
     ) {
@@ -54,10 +51,7 @@ trait Forms
             new ImportContractType(
                 $this->em,
                 $this->translator,
-                $tenant,
-                $residentMapping,
-                $unitMapping,
-                $unit,
+                $import,
                 $isUseToken,
                 $isUseOperation,
                 $isMultipleProperty = $this->storage->isMultipleProperty()
@@ -73,18 +67,13 @@ trait Forms
      * @return Form
      */
     public function getCreateUserAndCreateContractForm(
-        ResidentMapping $residentMapping,
-        UnitMapping $unitMapping,
-        Unit $unit = null
+        Import $import
     ) {
         return $this->createForm(
             new ImportNewUserWithContractType(
                 $this->em,
                 $this->translator,
-                $residentMapping,
-                $unitMapping,
-                new Tenant(),
-                $unit,
+                $import,
                 $isMultipleProperty = $this->storage->isMultipleProperty()
             )
         );
@@ -110,9 +99,6 @@ trait Forms
         $tenant   = $import->getTenant();
         $contract = $import->getContract();
         $operation = $import->getOperation();
-        $residentMapping = $import->getResidentMapping();
-        $unitMapping = $import->getUnitMapping();
-
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
 
@@ -132,10 +118,7 @@ trait Forms
         ) {
             $isUseOperation = ($import->getOperation() === null || $import->getHasContractWaiting())? false : true;
             $form = $this->getContractForm(
-                $tenant,
-                $residentMapping,
-                $unitMapping,
-                $contract->getUnit(),
+                $import,
                 $isUseToken = true,
                 $isUseOperation
             );
@@ -156,9 +139,7 @@ trait Forms
             empty($contractId)
         ) {
             $form = $this->getCreateUserAndCreateContractForm(
-                $residentMapping,
-                $unitMapping,
-                $contract->getUnit()
+                $import
             );
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
