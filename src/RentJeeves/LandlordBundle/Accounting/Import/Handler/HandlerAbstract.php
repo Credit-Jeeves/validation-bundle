@@ -253,7 +253,6 @@ abstract class HandlerAbstract implements HandlerInterface
         } elseif ($contract->getId() && $contractWaiting->getId()) {
             $this->em->remove($contractWaiting);
             $import->setHasContractWaiting(false);
-            $this->em->flush();
         }
 
         if (!$import->getIsSkipped() &&
