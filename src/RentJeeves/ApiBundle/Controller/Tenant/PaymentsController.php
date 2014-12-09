@@ -13,8 +13,6 @@ use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
 use RentJeeves\ApiBundle\Response\Payment as ResponseEntity;
 use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
-use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -91,7 +89,7 @@ class PaymentsController extends Controller
             ->findOneByIdForUser($id, $this->getUser());
 
         if ($payment) {
-            return $this->get('response_resource.payment')->setEntity($payment);
+            return $this->get('response_resource.factory')->getResponse($payment);
         }
 
         throw new NotFoundHttpException('Payment not found');
@@ -281,7 +279,7 @@ class PaymentsController extends Controller
                     $verifyByPidKiq
                 );
 
-                return $this->get('response_resource.payment')->setEntity($paymentEntity);
+                return $this->get('response_resource.factory')->getResponse($paymentEntity);
             } catch (RuntimeException $e) {
                 $form->addError(new FormError($e->getMessage()));
             }

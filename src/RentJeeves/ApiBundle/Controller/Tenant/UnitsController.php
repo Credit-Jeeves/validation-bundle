@@ -116,7 +116,7 @@ class UnitsController extends Controller
             ->getUnitWithLandlord($id);
 
         if ($unit) {
-            return $this->get('response_resource.unit')->setEntity($unit);
+            return $this->get('response_resource.factory')->getResponse($unit);
         }
 
         throw new NotFoundHttpException('Unit not found');
