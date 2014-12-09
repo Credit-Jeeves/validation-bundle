@@ -81,6 +81,5 @@ security:
         - { path: ^/api/tenant,                     role: ROLE_TENANT }
         - { path: ^/api/partner,                    role: ROLE_PARTNER }
         - { path: ^/admin/,                         role: ROLE_ADMIN, ips: [166.176.58.190, 50.157.126.16, 70.191.93.110, 70.197.20.82, 71.211.222.170, 75.168.20.203, 166.170.14.30, 107.184.229.255, 198.72.148.19, 185.67.87.66, 97.92.80.220, ::1] }
-        - { path: ^/admin/,                         role: ROLE_NO_ACCESS }
         - { path: ^/documentation/api,              role: ROLE_ADMIN }
         - { path: ^/,                               role: ROLE_TENANT }
