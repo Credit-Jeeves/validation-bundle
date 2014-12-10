@@ -1673,7 +1673,12 @@ class ImportCase extends BaseTestCase
             $contract->setPaidTo($paidTo);
             $em->flush($contract);
         } else {
+            $today = new DateTime();
             $this->assertEquals(count($operations = $contract->getOperations()), 1);
+            $this->assertTrue(
+                $contract->getPaidTo()->format('Ym') > $today->format('Ym'),
+                "Contract paidTo date did not advance"
+            );
         }
     }
 }

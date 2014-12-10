@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
@@ -10,10 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\LandlordBundle\Accounting\Import\ImportFactory;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\Yardi;
@@ -237,16 +234,13 @@ class AccountingController extends Controller
         }
 
         $handler = $importFactory->getHandler();
+        $import = new Import();
+        $import->setContract(new Contract());
         $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm(
-            new ResidentMapping(),
-            new UnitMapping(),
-            new Unit()
+            $import
         );
         $formContract = $handler->getContractForm(
-            new Tenant(),
-            new ResidentMapping(),
-            new UnitMapping(),
-            new Unit()
+            $import
         );
         $formContractFinish = $handler->getContractFinishForm();
 

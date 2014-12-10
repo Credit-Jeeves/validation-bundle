@@ -29,7 +29,8 @@ abstract class ResidentMapping
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Tenant",
-     *     inversedBy="residentsMapping"
+     *     inversedBy="residentsMapping",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="tenant_id",

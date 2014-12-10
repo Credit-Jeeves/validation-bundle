@@ -68,7 +68,7 @@ trait Contract
      * @param $dueDate
      * @param $isNeedCreateCashOperation
      */
-    protected function movePaidToOfContract(EntityContract $contract, $dueDate)
+    public function movePaidToOfContract(EntityContract $contract, $dueDate)
     {
         if ($this->isNeedCreateCashOperation($contract)) {
             $paidTo = new DateTime();
@@ -87,7 +87,7 @@ trait Contract
      * @param EntityContract $contract
      * @return bool
      */
-    protected function isNeedCreateCashOperation(EntityContract $contract)
+    public function isNeedCreateCashOperation(EntityContract $contract)
     {
         $isNeedCreateCashOperation = false;
         $paidTo = new DateTime();
@@ -119,7 +119,7 @@ trait Contract
      * @param array $row
      * @param $dueDate
      */
-    protected function attachOperationToImport(ModelImport $import, $dueDate)
+    public function attachOperationToImport(ModelImport$import, $dueDate)
     {
         $contract = $import->getContract();
         if ($contract->getStatus() === ContractStatus::CURRENT &&
@@ -131,8 +131,8 @@ trait Contract
                 $paidFor->format('n'),
                 $dueDate
             );
+
             $import->setOperation($operation = $this->getOperationByContract($contract, $import, $paidFor));
-            $operation->setCreatedAt($paidFor);
 
             return $operation;
         }
@@ -140,9 +140,9 @@ trait Contract
         return null;
     }
 
-    protected function getDueDateOfContract(EntityContract $contract)
+    public static function getDueDateOfContract(EntityContract $contract)
     {
-        $groupSettings = $this->group->getGroupSettings();
+        $groupSettings = $contract->getGroup()->getGroupSettings();
         $dueDate = ($contract->getDueDate())? $contract->getDueDate() : $groupSettings->getDueDate();
 
         return $dueDate;
@@ -256,7 +256,7 @@ trait Contract
      * @param EntityContract $contract
      * @return bool
      */
-    protected function isFinishedContract(EntityContract $contract)
+    public function isFinishedContract(EntityContract $contract)
     {
         if ($this->contractInPast($contract)) {
             $contract->setStatus(ContractStatus::FINISHED);
@@ -267,7 +267,7 @@ trait Contract
         return false;
     }
 
-    protected function contractInPast(EntityContract $contract)
+    public function contractInPast(EntityContract $contract)
     {
         $today = new DateTime();
         return ($contract->getFinishAt() && $contract->getFinishAt() < $today)? true : false;

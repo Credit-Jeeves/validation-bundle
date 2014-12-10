@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
 use Symfony\Component\Form\Form;
 
 class Import
@@ -108,14 +109,41 @@ class Import
      */
     protected $email;
 
+    /**
+     * @var boolean
+     */
     protected $isMultipleProperty;
 
+    /**
+     * @var ContractWaiting
+     */
     protected $contractWaiting;
 
     /**
      * @var boolean
      */
     protected $isHasPaymentMapping = false;
+
+    /**
+     * @var HandlerAbstract
+     */
+    protected $handler;
+
+    /**
+     * @param \RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract $handler
+     */
+    public function setHandler($handler)
+    {
+        $this->handler = $handler;
+    }
+
+    /**
+     * @return \RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract
+     */
+    public function getHandler()
+    {
+        return $this->handler;
+    }
 
     /**
      * @return boolean
