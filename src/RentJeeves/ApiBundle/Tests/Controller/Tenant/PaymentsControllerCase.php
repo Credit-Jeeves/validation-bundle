@@ -15,7 +15,7 @@ class PaymentsControllerCase extends BaseApiTestCase
     public static function getPaymentsDataProvider()
     {
         return [
-            ['json', 200, 'tenant11@example.com'],
+            ['tenant11@example.com'],
         ];
     }
 
@@ -23,18 +23,18 @@ class PaymentsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getPaymentsDataProvider
      */
-    public function getPayments($format, $statusCode, $email)
+    public function getPayments($email, $statusCode = 200, $format = 'json')
     {
         $this->setTenantEmail($email);
 
-        $this->getClient();
+        $this->prepareClient();
 
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getTenant();
         $result = $repo->findByUser($tenant);
 
-        $response = $this->getRequest();
+        $response = $this->getRequest(null, [], $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
@@ -71,7 +71,7 @@ class PaymentsControllerCase extends BaseApiTestCase
     {
         $id = 1;
         $this->setTenantEmail('tenant11@example.com');
-        $this->getClient();
+        $this->prepareClient();
 
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository('RjDataBundle:Payment');
@@ -140,13 +140,9 @@ class PaymentsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'json',
-                201,
                 self::paymentDataProvider()[0],
             ],
             [
-                'json',
-                201,
                 self::paymentDataProvider()[1]
             ]
         ];
@@ -156,9 +152,9 @@ class PaymentsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createPaymentDataProvider
      */
-    public function createPayment($format, $statusCode, $requestParams)
+    public function createPayment($requestParams, $statusCode = 201, $format = 'json')
     {
-        $response = $this->postRequest($requestParams);
+        $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
@@ -189,13 +185,9 @@ class PaymentsControllerCase extends BaseApiTestCase
 
         return [
             [
-                'json',
-                204,
                 $paymentsData[1]
             ],
             [
-                'json',
-                204,
                 $paymentsData[0]
             ]
         ];
@@ -206,7 +198,7 @@ class PaymentsControllerCase extends BaseApiTestCase
      * @depends createPayment
      * @dataProvider editPaymentDataProvider
      */
-    public function editPayment($format, $statusCode, $requestParams)
+    public function editPayment($requestParams, $statusCode = 204, $format = 'json')
     {
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
@@ -217,7 +209,7 @@ class PaymentsControllerCase extends BaseApiTestCase
 
         $encodedId = $this->getIdEncoder()->encode($latest->getId());
 
-        $response = $this->putRequest($encodedId, $requestParams);
+        $response = $this->putRequest($encodedId, $requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
@@ -282,32 +274,22 @@ class PaymentsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'json',
-                400,
                 self::paymentCommonData() + self::paymentNegativeDataProvider()[0],
                 ['payment.start_date.error.past']
             ],
             [
-                'json',
-                400,
                 self::paymentCommonData() + self::paymentNegativeDataProvider()[1],
                 ['payment.year.error.past', 'payment.start_date.error.past']
             ],
             [
-                'json',
-                400,
                 self::paymentCommonData() + self::paymentNegativeDataProvider()[2],
                 ['contract.error.is_end_later_than_start', 'payment.end_year.error.past']
             ],
             [
-                'json',
-                400,
                 self::paymentCommonData() + self::paymentNegativeDataProvider()[3],
                 ['error.contract.paid_for']
             ],
             [
-                'json',
-                400,
                 self::paymentCommonData() + self::paymentNegativeDataProvider()[4],
                 ['This value should be 12 or less.']
             ]
@@ -318,7 +300,7 @@ class PaymentsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createPaymentNegativeDataProvider
      */
-    public function errorResponse($format, $statusCode, $requestParams, $errorMessage)
+    public function errorResponse($requestParams, $errorMessage, $statusCode = 400, $format = 'json')
     {
         $date = new \DateTime();
 
@@ -339,7 +321,7 @@ class PaymentsControllerCase extends BaseApiTestCase
             $requestParams['end_year'] = $date->modify("{$requestParams['end_year']}  year")->format('Y');
         }
 
-        $response = $this->postRequest($requestParams);
+        $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
 

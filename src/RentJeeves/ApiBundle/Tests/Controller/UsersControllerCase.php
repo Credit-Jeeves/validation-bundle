@@ -6,9 +6,10 @@ use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 
 class UsersControllerCase extends BaseApiTestCase
 {
-    const PARTNER_USER_ACCESS_TOKEN = 'test_partner';
+    const USER_ACCESS_TOKEN = 'test_partner';
     const WORK_ENTITY = 'RjDataBundle:Tenant';
     const URL_PREFIX = '/api/partner';
+    const REQUEST_URL = 'users';
 
     public function createTenantDataNegativeProvider()
     {
@@ -21,8 +22,7 @@ class UsersControllerCase extends BaseApiTestCase
                     'email' => 'tom.ford@mail.com',
                     'password' => ''
                 ],
-                400,
-                'api.errors.user.password_required'
+                'api.errors.user.password_required',
             ],
         ];
     }
@@ -31,28 +31,15 @@ class UsersControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createTenantDataNegativeProvider
      */
-    public function errorWhenCreatingUser($requestParams, $statusCode, $errorMessage, $format = 'json')
+    public function errorWhenCreatingUser($requestParams, $errorMessage, $statusCode = 400, $format = 'json')
     {
-        $client = $this->getClient();
+        $this->prepareClient();
 
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
+        $response = $this->postRequest($requestParams, $format);
 
-        $client->request(
-            'POST',
-            self::URL_PREFIX . "/users.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . self::PARTNER_USER_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
+        $this->assertResponse($response, $statusCode, $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
-
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        $answer = $this->parseContent($response->getContent(), $format);
 
         $this->assertEquals($errorMessage, $answer[0]['message']);
     }
@@ -68,7 +55,6 @@ class UsersControllerCase extends BaseApiTestCase
                     'email' => 'tom.ford@mail.com',
                     'password' => '123450000000'
                 ],
-                201
             ],
             [
                 [
@@ -78,7 +64,6 @@ class UsersControllerCase extends BaseApiTestCase
                     'email' => 'maxx@mail.com',
                     'password' => '321321321321'
                 ],
-                201
             ],
         ];
     }
@@ -87,28 +72,15 @@ class UsersControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createTenantDataPositiveProvider
      */
-    public function createUser($requestParams, $statusCode, $format = 'json')
+    public function createUser($requestParams, $statusCode = 201, $format = 'json')
     {
-        $client = $this->getClient();
+        $this->prepareClient();
 
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
+        $response = $this->postRequest($requestParams, $format);
 
-        $client->request(
-            'POST',
-            self::URL_PREFIX . "/users.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . self::PARTNER_USER_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
+        $this->assertResponse($response, $statusCode, $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
-
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        $answer = $this->parseContent($response->getContent(), $format);
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
         $this->assertNotNull($tenant = $repo->findOneBy(['email' => $requestParams['email']]));

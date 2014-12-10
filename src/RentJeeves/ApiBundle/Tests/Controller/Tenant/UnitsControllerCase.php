@@ -8,18 +8,18 @@ class UnitsControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:Unit';
 
+    const REQUEST_URL = 'units';
+
     public static function getUnitsDataProvider()
     {
         return [
             [
-                'json',
                 [
                     'street' => '116 Lexington Avenue',
                     'state' => 'NY',
                     'city' => 'New York',
                     'zip' => '10016'
                 ],
-                200,
                 [
                     'street' => 'Lexington Avenue',
                     'number' => '116',
@@ -29,14 +29,12 @@ class UnitsControllerCase extends BaseApiTestCase
                 ]
             ],
             [
-                'json',
                 [
                     'street' => '770 Broadway',
                     'state' => 'NY',
                     'city' => 'New York',
                     'zip' => '10003'
                 ],
-                200,
                 [
                     'street' => 'Broadway',
                     'number' => '770',
@@ -52,29 +50,19 @@ class UnitsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getUnitsDataProvider
      */
-    public function getUnits($format, $requestParams, $statusCode, $dbRequest)
+    public function getUnits($requestParams, $dbRequest, $statusCode = 200, $format = 'json')
     {
-        $client = $this->getClient();
+        $this->prepareClient();
 
-        $client->request(
-            'GET',
-            self::URL_PREFIX . "/units.{$format}",
-            $requestParams,
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ]
-        );
+        $response = $this->getRequest(null, $requestParams, $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
-
         $result = $repo->getUnitsByAddress($dbRequest);
 
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        $answer = $this->parseContent($response->getContent(), $format);
 
         $this->assertEquals(count($result), count($answer));
 
@@ -104,14 +92,12 @@ class UnitsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'json',
                 [
                     'street' => '1T Test',
                     'state' => 'NY',
                     'city' => 'New York',
                     'zip' => '10001'
                 ],
-                204
             ],
         ];
     }
@@ -120,21 +106,12 @@ class UnitsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getEmptyUnitsDataProvider
      */
-    public function getEmptyUnits($format, $requestParams, $statusCode)
+    public function getEmptyUnits($requestParams, $statusCode = 204, $format = 'json')
     {
-        $client = $this->getClient();
+        $this->prepareClient();
 
-        $client->request(
-            'GET',
-            self::URL_PREFIX . "/units.{$format}",
-            $requestParams,
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ]
-        );
+        $response = $this->getRequest(null, $requestParams, $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
     }
 }

@@ -17,9 +17,9 @@ class ContractsControllerCase extends BaseApiTestCase
     public static function getContractDataProvider()
     {
         return [
-            [ 1, 'json', 200, true ],
-            [ 2, 'json', 200, true ],
-            [ 3, 'json', 200, false],
+            [ 1, true ],
+            [ 2, true ],
+            [ 3, false],
         ];
     }
 
@@ -27,11 +27,11 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getContractDataProvider
      */
-    public function getContract($id, $format, $statusCode, $checkBalance)
+    public function getContract($id, $checkBalance, $format = 'json', $statusCode = 200)
     {
         $encodedId = $this->getIdEncoder()->encode($id);
 
-        $response = $this->getRequest($encodedId);
+        $response = $this->getRequest($encodedId, [], $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
@@ -219,23 +219,15 @@ class ContractsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'json',
-                201,
                 self::contractsDataProvider()[0],
             ],
             [
-                'json',
-                201,
                 self::contractsDataProvider()[1]
             ],
             [
-                'json',
-                201,
                 self::contractsDataProvider()[2]
             ],
             [
-                'json',
-                201,
                 self::contractsDataProvider()[3]
             ],
         ];
@@ -245,9 +237,9 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createContractDataProvider
      */
-    public function createContract($format, $statusCode, $requestParams)
+    public function createContract($requestParams, $format = 'json', $statusCode = 201)
     {
-        $response = $this->postRequest($requestParams);
+        $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
@@ -269,15 +261,11 @@ class ContractsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'json',
-                204,
                 [
                     'experian_reporting' => 'enabled',
                 ]
             ],
             [
-                'json',
-                204,
                 [
                     'experian_reporting' => 'disabled',
                 ]
@@ -287,10 +275,9 @@ class ContractsControllerCase extends BaseApiTestCase
 
     /**
      * @test
-     * @depends createContract
      * @dataProvider editContactDataProvider
      */
-    public function editContract($format, $statusCode, $requestParams)
+    public function editContract($requestParams, $format = 'json', $statusCode = 204)
     {
         $tenant = $this->getTenant();
 
@@ -302,7 +289,7 @@ class ContractsControllerCase extends BaseApiTestCase
 
         $encodedId = $this->getIdEncoder()->encode($last->getId());
 
-        $response = $this->putRequest($encodedId, $requestParams);
+        $response = $this->putRequest($encodedId, $requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
@@ -318,8 +305,6 @@ class ContractsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'json',
-                400,
                 self::contractsDataProvider()[4],
                 [
                     [
@@ -329,8 +314,6 @@ class ContractsControllerCase extends BaseApiTestCase
                 ]
             ],
             [
-                'json',
-                400,
                 self::contractsDataProvider()[5],
                 [
                     [
@@ -366,8 +349,6 @@ class ContractsControllerCase extends BaseApiTestCase
                 ]
             ],
             [
-                'json',
-                400,
                 self::contractsDataProvider()[6],
                 [
                     [
@@ -401,8 +382,6 @@ class ContractsControllerCase extends BaseApiTestCase
                 ]
             ],
             [
-                'json',
-                400,
                 self::contractsDataProvider()[7],
                 [
                     [
@@ -411,8 +390,6 @@ class ContractsControllerCase extends BaseApiTestCase
                 ]
             ],
             [
-                'json',
-                400,
                 self::contractsDataProvider()[8],
                 [
                     [
@@ -421,8 +398,6 @@ class ContractsControllerCase extends BaseApiTestCase
                 ]
             ],
             [
-                'json',
-                400,
                 self::contractsDataProvider()[9],
                 [
                     [
@@ -443,9 +418,9 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider wrongContractDataProvider
      */
-    public function wrongCreateContract($format, $statusCode, $requestParams, $result)
+    public function wrongCreateContract($requestParams, $result, $format = 'json', $statusCode = 400)
     {
-        $response = $this->postRequest($requestParams);
+        $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
@@ -463,7 +438,7 @@ class ContractsControllerCase extends BaseApiTestCase
             'experian_reporting' => 'enable',
         ];
 
-        $this->createContract('json', '400', $requestParams);
+        $this->createContract($requestParams, 'json', '400');
     }
 
     /**
@@ -476,7 +451,7 @@ class ContractsControllerCase extends BaseApiTestCase
             'experian_reporting' => 'disable',
         ];
 
-        $this->editContract('json', '400', $requestParams);
+        $this->editContract($requestParams, 'json', '400');
     }
 
     public static function setExperianReportingStartAtDataProvider()
@@ -514,7 +489,7 @@ class ContractsControllerCase extends BaseApiTestCase
     {
         $reportingStartAt = $reportingStartAt ? (new DateTime($reportingStartAt))->format('Y-m-d'): null;
 
-        $this->createContract('json', 201, $requestParameters);
+        $this->createContract($requestParameters);
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -555,7 +530,7 @@ class ContractsControllerCase extends BaseApiTestCase
      */
     public function updateExperianReportingStartAt($requestParameters, $reportingStatus, $reportingStartAt)
     {
-        $this->editContract('json', 204, $requestParameters);
+        $this->editContract($requestParameters);
 
         $reportingStartAt = (new DateTime($reportingStartAt))->format('Y-m-d');
 
