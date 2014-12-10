@@ -3,7 +3,7 @@
 namespace RentJeeves\ApiBundle\Response;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Process\Exception\RuntimeException;
+use RuntimeException;
 
 class ResponseCollection extends ArrayCollection
 {
@@ -38,6 +38,8 @@ class ResponseCollection extends ArrayCollection
     {
         if (! $value instanceof ResponseResource) {
             $value = clone self::$factory->getResponse($value);
+            // using clone because this factory uses Container for get Resource
+            // and Container doesn't create new object each time
         }
 
         parent::set($key, $value);
@@ -50,6 +52,8 @@ class ResponseCollection extends ArrayCollection
     {
         if (! $value instanceof ResponseResource) {
             $value = clone self::$factory->getResponse($value);
+            // using clone because this factory uses Container for get Resource
+            // and Container doesn't create new object each time
         }
 
         return parent::add($value);

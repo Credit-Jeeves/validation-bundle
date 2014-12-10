@@ -1,10 +1,10 @@
 parameters:
-    reponse_collection_handler.class: RentJeeves\ApiBundle\Serializer\ResponseCollectionHandler
+    response_collection_handler.class: RentJeeves\ApiBundle\Serializer\ResponseCollectionHandler
     collection.class: RentJeeves\ApiBundle\Response\ResponseCollection
 
 services:
     response_collection.handler:
-        class: "%reponse_collection_handler.class%"
+        class: "%response_collection_handler.class%"
         tags:
             - { name: "jms_serializer.handler", type: "%collection.class%", format: json, method: serializeCollection }
     api.default_id_encoder: @skip32.id_encoder
