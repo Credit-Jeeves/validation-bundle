@@ -31,7 +31,7 @@ class UsersControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createTenantDataNegativeProvider
      */
-    public function errorWhenCreatingUser($requestParams, $errorMessage, $statusCode = 400, $format = 'json')
+    public function errorWhenCreatingUser($requestParams, $errorMessage, $format = 'json', $statusCode = 400)
     {
         $this->prepareClient();
 
@@ -72,7 +72,7 @@ class UsersControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createTenantDataPositiveProvider
      */
-    public function createUser($requestParams, $statusCode = 201, $format = 'json')
+    public function createUser($requestParams, $format = 'json', $statusCode = 201)
     {
         $this->prepareClient();
 

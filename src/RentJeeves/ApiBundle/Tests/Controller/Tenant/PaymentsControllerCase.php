@@ -23,7 +23,7 @@ class PaymentsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getPaymentsDataProvider
      */
-    public function getPayments($email, $statusCode = 200, $format = 'json')
+    public function getPayments($email, $format = 'json', $statusCode = 200)
     {
         $this->setTenantEmail($email);
 
@@ -152,7 +152,7 @@ class PaymentsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createPaymentDataProvider
      */
-    public function createPayment($requestParams, $statusCode = 201, $format = 'json')
+    public function createPayment($requestParams, $format = 'json', $statusCode = 201)
     {
         $response = $this->postRequest($requestParams, $format);
 
@@ -195,10 +195,9 @@ class PaymentsControllerCase extends BaseApiTestCase
 
     /**
      * @test
-     * @depends createPayment
      * @dataProvider editPaymentDataProvider
      */
-    public function editPayment($requestParams, $statusCode = 204, $format = 'json')
+    public function editPayment($requestParams, $format = 'json', $statusCode = 204)
     {
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
@@ -300,7 +299,7 @@ class PaymentsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createPaymentNegativeDataProvider
      */
-    public function errorResponse($requestParams, $errorMessage, $statusCode = 400, $format = 'json')
+    public function errorResponse($requestParams, $errorMessage, $format = 'json', $statusCode = 400)
     {
         $date = new \DateTime();
 

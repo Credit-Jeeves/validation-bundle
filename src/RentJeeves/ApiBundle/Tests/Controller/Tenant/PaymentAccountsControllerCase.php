@@ -23,7 +23,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getEmptyPaymentAccountsDataProvider
      */
-    public function getEmptyPaymentAccounts($email, $statusCode = 204, $format = 'json')
+    public function getEmptyPaymentAccounts($email, $format = 'json', $statusCode = 204)
     {
         $this->setTenantEmail($email);
 
@@ -45,7 +45,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getPaymentAccountsDataProvider
      */
-    public function getPaymentAccounts($email, $statusCode = 200, $format = 'json')
+    public function getPaymentAccounts($email, $format = 'json', $statusCode = 200)
     {
         $this->setTenantEmail($email);
 
@@ -160,7 +160,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createPaymentAccountDataProvider
      */
-    public function createPaymentAccount($requestParams, $statusCode = 201, $format = 'json')
+    public function createPaymentAccount($requestParams, $format = 'json', $statusCode = 201)
     {
         $this->prepareClient();
 
@@ -196,10 +196,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
 
     /**
      * @test
-     * @depends createPaymentAccount
      * @dataProvider editPaymentAccountDataProvider
      */
-    public function editPaymentAccount($requestParams, $statusCode = 204, $format = 'json')
+    public function editPaymentAccount($requestParams, $format = 'json', $statusCode = 204)
     {
         $this->prepareClient();
 
@@ -277,7 +276,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider wrongPaymentAccountDataProvider
      */
-    public function wrongEditPaymentAccount($requestParams, $result, $statusCode = 400, $format = 'json')
+    public function wrongEditPaymentAccount($requestParams, $result, $format = 'json', $statusCode = 400)
     {
         $this->prepareClient();
 
@@ -302,7 +301,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider wrongPaymentAccountDataProvider
      */
-    public function wrongCreatePaymentAccount($requestParams, $result, $statusCode = 400, $format = 'json')
+    public function wrongCreatePaymentAccount($requestParams, $result, $format = 'json', $statusCode = 400)
     {
         $this->prepareClient();
 

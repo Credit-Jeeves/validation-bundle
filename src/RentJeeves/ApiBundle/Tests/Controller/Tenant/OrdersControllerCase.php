@@ -22,7 +22,7 @@ class OrdersControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getEmptyOrdersDataProvider
      */
-    public function getEmptyOrders($email, $statusCode = 204, $format = 'json')
+    public function getEmptyOrders($email, $format = 'json', $statusCode = 204)
     {
         $this->setTenantEmail($email);
 
@@ -44,7 +44,7 @@ class OrdersControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getOrdersDataProvider
      */
-    public function getOrders($email, $statusCode = 200, $format = 'json')
+    public function getOrders($email, $format = 'json', $statusCode = 200)
     {
         $this->setTenantEmail($email);
 

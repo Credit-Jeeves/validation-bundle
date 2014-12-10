@@ -50,7 +50,7 @@ class UnitsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getUnitsDataProvider
      */
-    public function getUnits($requestParams, $dbRequest, $statusCode = 200, $format = 'json')
+    public function getUnits($requestParams, $dbRequest, $format = 'json', $statusCode = 200)
     {
         $this->prepareClient();
 
@@ -106,7 +106,7 @@ class UnitsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getEmptyUnitsDataProvider
      */
-    public function getEmptyUnits($requestParams, $statusCode = 204, $format = 'json')
+    public function getEmptyUnits($requestParams, $format = 'json', $statusCode = 204)
     {
         $this->prepareClient();
 
