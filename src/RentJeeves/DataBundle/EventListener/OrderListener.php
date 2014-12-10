@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -40,6 +41,7 @@ class OrderListener
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
             $this->chargePartner($entity);
+            $this->updateStartAtOfContract($eventArgs);
         }
     }
 
@@ -95,58 +97,80 @@ class OrderListener
         }
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
     }
-    
+
+
+    private function updateStartAtOfContract($eventArgs)
+    {
+        $em = $eventArgs->getEntityManager();
+        $uow = $em->getUnitOfWork();
+        $order = $eventArgs->getEntity();
+
+        if (!$startAt = $this->getStartAtOfContract($order, $em)) {
+            return;
+        }
+
+        $contract = $order->getContract();
+        $oldValue = $contract->getStartAt();
+        $contract->setStartAt($startAt);
+        $em->persist($contract);
+        $uow->propertyChanged($contract, 'startAt', $oldValue, $startAt);
+        $uow->scheduleExtraUpdate($contract, array('startAt' => array($oldValue, $startAt)));
+    }
 
     public function postUpdate(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-        if ($entity instanceof Order) {
-            /** @var Operation $operation */
-            $operation = $entity->getOperations()->last();
-            if (!$operation) {
-                return;
-            }
-            $save = false;
-            switch ($operation->getType()) {
-                case OperationType::RENT:
-                case OperationType::OTHER:
-                    $status = $entity->getStatus();
-                    switch ($status) {
-                        case OrderStatus::PENDING:
-                            $this->container->get('project.mailer')->sendPendingInfo($entity);
-                            break;
-                        case OrderStatus::COMPLETE:
-                            $save = true;
-                            $this->container->get('project.mailer')->sendRentReceipt($entity);
-                            break;
-                        case OrderStatus::ERROR:
-                            $this->container->get('project.mailer')->sendRentError($entity);
-                            break;
-                        case OrderStatus::REFUNDED:
-                        case OrderStatus::CANCELLED:
-                        case OrderStatus::RETURNED:
-                            $save = true;
-                            $this->container->get('project.mailer')->sendOrderCancelToTenant($entity);
-                            $this->container->get('project.mailer')->sendOrderCancelToLandlord($entity);
-                            break;
-                    }
-                    break;
-                case OperationType::REPORT:
-                    switch ($entity->getStatus()) {
-                        case OrderStatus::COMPLETE:
-                            $this->container->get('project.mailer')->sendReportReceipt($entity);
-                            break;
-                    }
-                    break;
-            }
-            if ($save) {
-                // changes to contract are made in preUpdate since only there we can check whether the order
-                // status has been changed. But those changes aren't flushed. So the flush is here.
-                $eventArgs->getEntityManager()->flush($operation->getContract());
-                $eventArgs->getEntityManager()->flush($entity->getCompleteTransaction());
-                if ($payment = $operation->getContract()->getActivePayment()) {
-                    $eventArgs->getEntityManager()->flush($payment);
+        $order = $eventArgs->getEntity();
+        if (!$order instanceof Order) {
+            return;
+        }
+
+        $this->updateStartAtOfContract($eventArgs);
+        /** @var Operation $operation */
+        $operation = $order->getOperations()->last();
+        if (!$operation) {
+            return;
+        }
+        $save = false;
+        switch ($operation->getType()) {
+            case OperationType::RENT:
+            case OperationType::OTHER:
+                $status = $order->getStatus();
+                switch ($status) {
+                    case OrderStatus::PENDING:
+                        $this->container->get('project.mailer')->sendPendingInfo($order);
+                        break;
+                    case OrderStatus::COMPLETE:
+                        $save = true;
+                        $this->container->get('project.mailer')->sendRentReceipt($order);
+                        break;
+                    case OrderStatus::ERROR:
+                        $this->container->get('project.mailer')->sendRentError($order);
+                        break;
+                    case OrderStatus::REFUNDED:
+                    case OrderStatus::CANCELLED:
+                    case OrderStatus::RETURNED:
+                        $save = true;
+                        $this->container->get('project.mailer')->sendOrderCancelToTenant($order);
+                        $this->container->get('project.mailer')->sendOrderCancelToLandlord($order);
+                        break;
                 }
+                break;
+            case OperationType::REPORT:
+                switch ($order->getStatus()) {
+                    case OrderStatus::COMPLETE:
+                        $this->container->get('project.mailer')->sendReportReceipt($order);
+                        break;
+                }
+                break;
+        }
+
+        if ($save) {
+            // changes to contract are made in preUpdate since only there we can check whether the order
+            // status has been changed. But those changes aren't flushed. So the flush is here.
+            $eventArgs->getEntityManager()->flush($operation->getContract());
+            $eventArgs->getEntityManager()->flush($order->getCompleteTransaction());
+            if ($payment = $operation->getContract()->getActivePayment()) {
+                $eventArgs->getEntityManager()->flush($payment);
             }
         }
     }
@@ -166,34 +190,22 @@ class OrderListener
         }
     }
 
-    public function postPersist(LifecycleEventArgs $event)
-    {
-        $this->updateStartAtOfContract($event);
-    }
-
     /**
      * When tenant pays first time, set start_at = paid_for for first payment.
      * More description on this page https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
      * See table Possible Paths
      *
-     * @param LifecycleEventArgs $event
+     * @param Order $order
+     * @param EntityManager $em
      */
-    public function updateStartAtOfContract(LifecycleEventArgs $event)
+    private function getStartAtOfContract(Order $order, EntityManager $em)
     {
-        /**
-         * @var $order Order
-         */
-        $order = $event->getEntity();
-        if (!($order instanceof Order)) {
-            return;
-        }
         $contract = $order->getContract();
 
         if (empty($contract)) {
-            return;
+            return false;
         }
 
-        $em = $event->getEntityManager();
         $operation = $em->getRepository('DataBundle:Operation')->findOneBy(
             array(
                 'contract' => $contract->getId(),
@@ -205,7 +217,7 @@ class OrderListener
          * so we must do not change it
          */
         if (!empty($operation)) {
-            return;
+            return false;
         }
 
         $rentOperations = $order->getRentOperations();
@@ -213,7 +225,7 @@ class OrderListener
          * Start_at can be updated only if order contains RENT operations
          */
         if (!$rentOperations->count()) {
-            return;
+            return false;
         }
         /** @var Operation $earliestOperation */
         $earliestOperation = $rentOperations->first();
@@ -223,8 +235,7 @@ class OrderListener
             }
         }
 
-        $contract->setStartAt($earliestOperation->getPaidFor());
-        $em->flush($contract);
+        return $earliestOperation->getPaidFor();
     }
 
     public function updateBalanceContract(LifecycleEventArgs $eventArgs)

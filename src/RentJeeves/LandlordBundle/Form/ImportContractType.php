@@ -226,9 +226,11 @@ class ImportContractType extends AbstractType
             $operation = $handler->attachOperationToImport($this->import, $dueDate);
         }
 
+        $csrfToken = $this->import->getCsrfToken();
+
         if ($operation &&
             is_null($operation->getContract()) &&
-            $isIsNeedCreateCashOperation
+            empty($csrfToken)
         ) {
             $handler->processingOperationAndOrder($contract->getTenant(), $operation, $contract);
         }

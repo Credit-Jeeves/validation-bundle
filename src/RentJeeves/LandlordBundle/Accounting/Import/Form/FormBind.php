@@ -149,7 +149,6 @@ trait FormBind
             $this->em->persist($waitingContract);
         } else {
             $this->em->persist($residentMapping);
-            $this->processingContract($import, $contract);
             if ($data['sendInvite']) {
                 $this->emailSendingQueue[] = $contract;
             }
@@ -202,12 +201,12 @@ trait FormBind
         $order->setStatus(OrderStatus::COMPLETE);
         $order->setType(OrderType::CASH);
         $order->setUser($tenant);
-        $order->addOperation($operation);
         $order->setSum($operation->getAmount());
 
         $operation->setContract($contract);
         $operation->setOrder($order);
-        $contract->addOperation($operation);
+
+        $this->em->persist($order);
     }
 
     /**
