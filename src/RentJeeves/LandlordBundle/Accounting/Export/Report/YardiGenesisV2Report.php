@@ -15,16 +15,28 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $this->type = 'yardi_genesis_v2';
     }
 
+    public function getData($settings)
+    {
+        $this->softDeleteableControl->disable();
+
+        $this->validateSettings($settings);
+
+        $beginDate = $settings['begin'];
+        $endDate = $settings['end'];
+        $orderRepository = $this->em->getRepository('DataBundle:Order');
+
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate);
+    }
 
     protected function generateFilename($params)
     {
-        $beginDate = new DateTime($params['begin']);
-        $endDate = new DateTime($params['end']);
+        $this->filename = 'PayProcV2.csv';
+    }
 
-        $this->filename = sprintf(
-            'YardiGenesisV2_%s_%s.csv',
-            $beginDate->format('Ymd'),
-            $endDate->format('Ymd')
-        );
+    protected function validateSettings($settings)
+    {
+        if (!isset($settings['begin']) || !isset($settings['end'])) {
+            throw new ExportException('Not enough parameters for Yardi Genesis V2 report');
+        }
     }
 }
