@@ -1,17 +1,10 @@
 parameters:
-    wrapper.class: RentJeeves\ApiBundle\Serializer\WrapperHandler
-    wrapper_collection.class: RentJeeves\ApiBundle\Serializer\CollectionWrapperHandler
-    wrapper.type: NeedWrapped
+    response_collection_handler.class: RentJeeves\ApiBundle\Serializer\ResponseCollectionHandler
     collection.class: RentJeeves\ApiBundle\Response\ResponseCollection
 
 services:
-    wrapper.handler:
-        class: "%wrapper.class%"
-        tags:
-            - { name: "jms_serializer.handler", type: "%wrapper.type%", format: json, method: wrap }
-        arguments: [@response_resource.factory]
-    wrapper_collection.handler:
-        class: "%wrapper_collection.class%"
+    response_collection.handler:
+        class: "%response_collection_handler.class%"
         tags:
             - { name: "jms_serializer.handler", type: "%collection.class%", format: json, method: serializeCollection }
     api.default_id_encoder: @skip32.id_encoder

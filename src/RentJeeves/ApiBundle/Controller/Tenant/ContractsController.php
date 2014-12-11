@@ -47,7 +47,7 @@ class ContractsController extends Controller
             ->findOneBy(['tenant' => $this->getUser(), 'id' => $id]);
 
         if ($contract) {
-            return $this->get('response_resource.contract')->setEntity($contract);
+            return $this->get('response_resource.factory')->getResponse($contract);
         }
 
         throw new NotFoundHttpException('Contract not found');

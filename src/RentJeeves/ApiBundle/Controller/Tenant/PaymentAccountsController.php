@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Router;
 use \RuntimeException;
 
 class PaymentAccountsController extends Controller
@@ -87,7 +86,7 @@ class PaymentAccountsController extends Controller
             ->findOneBy(['user' => $this->getUser(), 'id' => $id]);
 
         if ($paymentAccount) {
-            return $this->get('response_resource.payment_account')->setEntity($paymentAccount);
+            return $this->get('response_resource.factory')->getResponse($paymentAccount);
         }
 
         throw new NotFoundHttpException('Payment Account not found');
@@ -232,7 +231,7 @@ class PaymentAccountsController extends Controller
             try {
                 $this->savePaymentAccount($form, $this->getUser(), $contract->getGroup());
 
-                return $this->get('response_resource.payment_account')->setEntity($paymentAccountEntity);
+                return $this->get('response_resource.factory')->getResponse($paymentAccountEntity);
             } catch (RuntimeException $e) {
                 $form->addError(new FormError($e->getMessage()));
             }

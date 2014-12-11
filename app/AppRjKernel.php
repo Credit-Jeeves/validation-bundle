@@ -1,17 +1,21 @@
 <?php
 
-use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\Config\FileLocator;
+use RentJeeves\ApiBundle\Response\ResponseCollection;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
 class AppRjKernel extends AppKernel
 {
+    public function boot()
+    {
+        parent::boot();
+        ResponseCollection::$factory = $this->container->get('response_resource.factory');
+        // Set Api Response Resource Factory here, because ResponseCollection can't work with other factories
+    }
+
     public function registerBundles()
     {
         $bundles = array(
