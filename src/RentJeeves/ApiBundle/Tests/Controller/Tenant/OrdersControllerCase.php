@@ -14,7 +14,7 @@ class OrdersControllerCase extends BaseApiTestCase
     public static function getEmptyOrdersDataProvider()
     {
         return [
-            ['alex@rentrack.com', 204],
+            ['alex@rentrack.com'],
         ];
     }
 
@@ -22,21 +22,21 @@ class OrdersControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getEmptyOrdersDataProvider
      */
-    public function getEmptyOrders($email, $statusCode)
+    public function getEmptyOrders($email, $format = 'json', $statusCode = 204)
     {
         $this->setTenantEmail($email);
 
-        $this->getClient();
+        $this->prepareClient();
 
-        $response = $this->getRequest();
+        $response = $this->getRequest(null, [], $format);
 
-        $this->assertResponse($response, $statusCode);
+        $this->assertResponse($response, $statusCode, $format);
     }
 
     public static function getOrdersDataProvider()
     {
         return [
-            ['tenant11@example.com', 200],
+            ['tenant11@example.com'],
         ];
     }
 
@@ -44,21 +44,21 @@ class OrdersControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getOrdersDataProvider
      */
-    public function getOrders($email, $statusCode)
+    public function getOrders($email, $format = 'json', $statusCode = 200)
     {
         $this->setTenantEmail($email);
 
-        $this->getClient();
+        $this->prepareClient();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getTenant();
         $result = $repo->getUserOrders($tenant);
 
-        $response = $this->getRequest();
+        $response = $this->getRequest(null, [], $format);
 
-        $this->assertResponse($response, $statusCode);
+        $this->assertResponse($response, $statusCode, $format);
 
-        $answer = $this->parseContent($response->getContent());
+        $answer = $this->parseContent($response->getContent(), $format);
 
         $this->assertEquals(count($result), count($answer));
 
