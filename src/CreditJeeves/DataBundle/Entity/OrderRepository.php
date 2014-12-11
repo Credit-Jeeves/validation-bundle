@@ -234,9 +234,9 @@ class OrderRepository extends EntityRepository
     }
 
     public function getOrdersForYardiGenesis(
-        $propertyId,
         $start,
-        $end
+        $end,
+        $propertyId = null
     ) {
         return $this->getOrdersForRealPageReport($propertyId, $start, $end);
     }
@@ -255,11 +255,15 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('o.heartlands', 'heartland');
         $query->where("heartland.depositDate BETWEEN :start AND :end");
         $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
-        $query->andWhere('prop.id = :propId');
+
+        if (!is_null($propertyId)) {
+            $query->andWhere('prop.id = :propId');
+            $query->setParameter('propId', $propertyId);
+        }
+
         $query->andWhere('o.status = :status');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('propId', $propertyId);
         $query->setParameter('status', OrderStatus::COMPLETE);
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();

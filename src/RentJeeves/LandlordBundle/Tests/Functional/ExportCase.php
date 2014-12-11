@@ -464,7 +464,11 @@ class ExportCase extends BaseTestCase
         $type->selectOption($genesisType);
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(3, count($errors));
+        if ($genesisType === 'yardi_genesis_v2') {
+            $this->assertEquals(2, count($errors));
+        } else {
+            $this->assertEquals(3, count($errors));
+        }
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
@@ -475,7 +479,11 @@ class ExportCase extends BaseTestCase
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
-        $csvArr = explode("\n", $csv);
+        if ($genesisType === 'yardi_genesis_v2') {
+            $csvArr = explode("\r", trim($csv));
+        } else {
+            $csvArr = explode("\n", trim($csv));
+        }
         $this->assertTrue(isset($csvArr[0]));
 
         $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
@@ -509,7 +517,11 @@ class ExportCase extends BaseTestCase
         $type->selectOption($genesisType);
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(3, count($errors));
+        if ($genesisType === 'yardi_genesis_v2') {
+            $this->assertEquals(2, count($errors));
+        } else {
+            $this->assertEquals(3, count($errors));
+        }
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
@@ -530,7 +542,11 @@ class ExportCase extends BaseTestCase
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
         $this->assertEquals(13, $archive->numFiles);
         $file = $archive->getFromIndex(1);
-        $rows = explode("\n", trim($file));
+        if ($genesisType === 'yardi_genesis_v2') {
+            $rows = explode("\r", trim($file));
+        } else {
+            $rows = explode("\n", trim($file));
+        }
         $this->assertEquals(4, count($rows));
         $csvArr = str_getcsv($rows[0]);
         $this->assertEquals('R', $csvArr[0]);

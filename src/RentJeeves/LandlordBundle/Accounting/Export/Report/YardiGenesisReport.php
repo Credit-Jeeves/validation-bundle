@@ -65,7 +65,7 @@ class YardiGenesisReport extends ExportReport
         $propertyId = $settings['property']->getId();
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForYardiGenesis($propertyId, $beginDate, $endDate);
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $propertyId);
     }
 
     protected function validateSettings($settings)
@@ -79,13 +79,6 @@ class YardiGenesisReport extends ExportReport
 
     protected function generateFilename($params)
     {
-        $beginDate = new DateTime($params['begin']);
-        $endDate = new DateTime($params['end']);
-
-        $this->filename = sprintf(
-            'YardiGenesis_%s_%s.csv',
-            $beginDate->format('Ymd'),
-            $endDate->format('Ymd')
-        );
+        $this->filename = 'PayProc.csv';
     }
 }
