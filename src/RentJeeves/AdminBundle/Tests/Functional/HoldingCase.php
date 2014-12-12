@@ -16,7 +16,7 @@ class HoldingCase extends BaseTestCase
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
         $tableBlock->clickLink('link_add');
         $this->assertNotNull($textFields = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(8, $textFields);
+        $this->assertCount(9, $textFields);
         $textFields[0]->setValue('Test');
         $this->assertNotNull(
             $links = $this->page->findAll(
@@ -67,7 +67,7 @@ class HoldingCase extends BaseTestCase
             )
         );
         $links[1]->click();
-        $this->assertCount(8, $textFields);
+        $this->assertCount(9, $textFields);
         $textFields[2]->setValue('57742111111111111');
         $this->assertNotNull(
             $test = $this->page->find(
