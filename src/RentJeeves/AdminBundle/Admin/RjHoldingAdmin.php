@@ -88,14 +88,14 @@ class RjHoldingAdmin extends Admin
         if ($yardi && $yardi->getUrl()) {
             $yardi->setHolding($holding);
         } else {
-            $holding->setYardiSettings();
+            $holding->setYardiSettings(null);
         }
 
         $resMan = $holding->getResManSettings();
         if ($resMan && $resMan->getAccountId()) {
             $resMan->setHolding($holding);
         } else {
-            $holding->setResManSettings();
+            $holding->setResManSettings(null);
         }
     }
 
