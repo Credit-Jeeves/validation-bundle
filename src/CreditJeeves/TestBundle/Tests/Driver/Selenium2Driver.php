@@ -14,8 +14,13 @@ class Selenium2Driver extends BaseSelenium2Driver
     const WAIT_TIMES = 4;
     const TIMEOUT = 500000; // 1000000 = 1 second
 
-
     private $session;
+
+    public function start()
+    {
+        parent::start();
+        $this->getWebDriverSession()->window('current')->maximize();
+    }
 
     /**
      * @see Behat\Mink\Driver\DriverInterface::setSession()
