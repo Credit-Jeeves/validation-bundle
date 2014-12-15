@@ -2,12 +2,12 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
-use RentJeeves\DataBundle\Entity\YardiSettings;
-use RentJeeves\ExternalApiBundle\Services\SoapClientInterface;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
+use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
+use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Message;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientBuilder;
-use RentJeeves\ExternalApiBundle\Soap\SoapSettingsInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClient;
 use Exception;
 use RentJeeves\ExternalApiBundle\Soap\SoapWsdlTwigRenderer;
@@ -15,8 +15,11 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
 use \AppRjKernel as Kernel;
 
-abstract class AbstractClient implements SoapClientInterface
+abstract class AbstractClient implements ClientInterface
 {
+    use Debug;
+    use Settings;
+
     const MAPPING_DESERIALIZER_CLASS = 'class';
 
     const MAPPING_FIELD_STD_CLASS = 'field';
@@ -35,11 +38,6 @@ abstract class AbstractClient implements SoapClientInterface
      * @var SoapClientBuilder
      */
     protected $soapClientBuilder;
-
-    /**
-     * @var YardiSettings
-     */
-    protected $settings;
 
     /**
      * @var SoapWsdlTwigRenderer
@@ -70,11 +68,6 @@ abstract class AbstractClient implements SoapClientInterface
      * @var Kernel
      */
     protected $kernel;
-
-    /**
-     * @var boolean
-     */
-    protected $debug = false;
 
     /**
      * @var array
@@ -120,16 +113,6 @@ abstract class AbstractClient implements SoapClientInterface
         $this->pathToSoapClass = $pathToSoapClasses;
     }
 
-    public function setDebug($debug)
-    {
-        $this->debug = $debug;
-    }
-
-    public function isDebugEnabled()
-    {
-        return $this->debug;
-    }
-
     public function build()
     {
         $this->soapClientBuilder->setSettings($this->getSettings());
@@ -137,22 +120,6 @@ abstract class AbstractClient implements SoapClientInterface
         $this->soapClient = $this->soapClientBuilder->build();
 
         return $this;
-    }
-
-    /**
-     * @param SoapSettingsInterface $settings
-     */
-    public function setSettings(SoapSettingsInterface $settings)
-    {
-        $this->settings = $settings;
-    }
-
-    /**
-     * @return YardiSettings
-     */
-    public function getSettings()
-    {
-        return $this->settings;
     }
 
     /**
@@ -274,7 +241,7 @@ abstract class AbstractClient implements SoapClientInterface
      *
      * @return mixed
      */
-    protected function processRequest($function, array $params)
+    public function sendRequest($function, array $params)
     {
         try {
             $this->messages = null;
@@ -376,19 +343,6 @@ abstract class AbstractClient implements SoapClientInterface
     protected function getXmlHeader()
     {
         return '<?xml version="1.0" encoding="UTF-8"?>';
-    }
-
-    /**
-     * @param $var
-     */
-    protected function debugMessage($var)
-    {
-        if (!$this->isDebugEnabled()) {
-            return;
-        }
-        echo "\n";
-        var_dump($var);
-        echo "\n";
     }
 
     public function getFullResponse($show = true)

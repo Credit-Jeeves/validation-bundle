@@ -7,7 +7,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileTenant;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnit;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
-use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
 use RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients\BaseClientCase as Base;
 
 class ResidentDataClientCase extends Base
@@ -22,7 +22,7 @@ class ResidentDataClientCase extends Base
 
         $residentClient = $clientFactory->getClient(
             $this->getYardiSettings(),
-            SoapClientEnum::RESIDENT_DATA
+            YardiClientEnum::RESIDENT_DATA
         );
 
         $result = $residentClient->getResidents('rnttrk01');
@@ -41,7 +41,7 @@ class ResidentDataClientCase extends Base
 
         $residentClient = $clientFactory->getClient(
             $this->getYardiSettings(),
-            SoapClientEnum::RESIDENT_DATA
+            YardiClientEnum::RESIDENT_DATA
         );
 
         $result = $residentClient->getResidentData('rnttrk01', 't0012027');

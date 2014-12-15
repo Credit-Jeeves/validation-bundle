@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
-use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
 use RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients\BaseClientCase as Base;
 
 class PaymentClientCase extends Base
@@ -24,7 +24,7 @@ class PaymentClientCase extends Base
 
         self::$client = $clientFactory->getClient(
             $this->getYardiSettings(),
-            SoapClientEnum::PAYMENT
+            YardiClientEnum::PAYMENT
         );
 
         self::$batchId = self::$client->openReceiptBatchDepositDate(

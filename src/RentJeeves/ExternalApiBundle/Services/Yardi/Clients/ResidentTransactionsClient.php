@@ -46,7 +46,7 @@ class ResidentTransactionsClient extends AbstractClient
             'GetPropertyConfigurations' => $this->getLoginCredentials()
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'GetPropertyConfigurations',
             $parameters
         );
@@ -67,7 +67,7 @@ class ResidentTransactionsClient extends AbstractClient
             )
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'GetResidentTransactions_Login',
             $parameters
         );
@@ -77,7 +77,7 @@ class ResidentTransactionsClient extends AbstractClient
     {
         $parameters = ['GetVersionNumber' => []];
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'GetVersionNumber',
             $parameters
         );
@@ -97,7 +97,7 @@ class ResidentTransactionsClient extends AbstractClient
             ),
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'ImportResidentTransactions_DepositDate',
             $parameters
         );
@@ -114,7 +114,7 @@ class ResidentTransactionsClient extends AbstractClient
             ),
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'ImportResidentTransactions_Login',
             $parameters
         );

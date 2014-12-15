@@ -20,7 +20,7 @@ use RentJeeves\DataBundle\Enum\ExternalApi;
 use RentJeeves\ExternalApiBundle\Model\Payment;
 use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
-use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use JMS\Serializer\Serializer;
 use \Exception;
@@ -414,7 +414,7 @@ class ReceiptBatchSender
     {
         $this->paymentClient = $this->clientFactory->getClient(
             $yardiSettings,
-            SoapClientEnum::PAYMENT
+            YardiClientEnum::PAYMENT
         );
     }
 

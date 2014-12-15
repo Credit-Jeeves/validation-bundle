@@ -29,7 +29,7 @@ class ResidentDataClient extends AbstractClient
             )
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'GetResidents',
             $parameters
         );
@@ -53,7 +53,7 @@ class ResidentDataClient extends AbstractClient
             )
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'GetResidentData',
             $parameters
         );

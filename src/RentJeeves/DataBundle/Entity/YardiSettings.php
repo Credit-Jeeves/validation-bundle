@@ -5,14 +5,14 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\DataBundle\Model\YardiSettings as Base;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\ExternalApiBundle\Soap\SoapSettingsInterface;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="yardi_settings")
  * @ORM\HasLifecycleCallbacks
  */
-class YardiSettings extends Base implements SoapSettingsInterface
+class YardiSettings extends Base implements SettingsInterface
 {
     const REVERSAL_PAYMENT_TYPE = 'Other';
     const REVERSAL_TRANSACTION_NSF = 'NSF';
@@ -21,7 +21,7 @@ class YardiSettings extends Base implements SoapSettingsInterface
     const PAYMENT_TYPE_CHECK = 'check';
     const PAYMENT_TYPE_OTHER = 'other';
 
-    public function getTemplateParameters()
+    public function getParameters()
     {
         return array(
             'url' => $this->getUrl()

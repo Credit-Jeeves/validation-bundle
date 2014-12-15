@@ -1,10 +1,10 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Soap;
+namespace RentJeeves\ExternalApiBundle\Services\ClientsEnum;
 
 use CreditJeeves\CoreBundle\Enum;
 
-class SoapClientEnum extends Enum
+class YardiClientEnum extends Enum
 {
     const RESIDENT_TRANSACTIONS = 'soap.client.yardi.resident_transactions';
 
