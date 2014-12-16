@@ -201,10 +201,10 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(13, $archive->numFiles);
+        $this->assertEquals(7, $archive->numFiles);
         $file = $archive->getFromIndex(1);
         $rows = explode("\n", trim($file));
-        $this->assertEquals(4, count($rows));
+        $this->assertEquals(2, count($rows));
         $columns = str_getcsv($rows[0]);
         $this->assertEquals(88, $columns[0]);
         $this->assertEquals('2-a', $columns[1]);
@@ -560,11 +560,11 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(13, $archive->numFiles);
+        $this->assertEquals(7, $archive->numFiles);
         $file = $archive->getFromIndex(1);
         $rows = explode("\n", trim($file));
 
-        $this->assertEquals(4, count($rows));
+        $this->assertEquals(2, count($rows));
         $csvArr = str_getcsv($rows[0]);
         $this->assertEquals('R', $csvArr[0]);
         $this->assertEquals('456456', $csvArr[1]);
@@ -610,10 +610,10 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(13, $archive->numFiles);
+        $this->assertEquals(7, $archive->numFiles);
         $file = $archive->getFromIndex(1);
         $rows = explode("\r", trim($file));
-        $this->assertEquals(4, count($rows));
+        $this->assertEquals(2, count($rows));
         $csvArr = str_getcsv($rows[0]);
         $this->assertEquals('R', $csvArr[0]);
         $this->assertEquals('456456', $csvArr[1]);

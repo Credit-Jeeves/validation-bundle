@@ -63,9 +63,10 @@ class YardiGenesisReport extends ExportReport
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
         $propertyId = $settings['property']->getId();
+        $groupId = $settings['landlord']->getGroup()->getId();
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $propertyId);
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groupId, $propertyId);
     }
 
     protected function validateSettings($settings)
