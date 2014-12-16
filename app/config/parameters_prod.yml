@@ -9,6 +9,8 @@ parameters:
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
+    mailer_delivery_address: null
+    mailer_disable_delivery: false
     api.admin_dealer_code: 1a1dc91c9073
     api.client_id: 1_qvxzb7ge734ko4ogwcskwksogoc0wskws40gg8oocokwg404s
     api.client_secret: 39uyn651qlk4ssws40sgs44cwsskgccoc0o04ccgsccgooowwo
