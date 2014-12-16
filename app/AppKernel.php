@@ -149,9 +149,7 @@ abstract class AppKernel extends Kernel
         if ('dev' != $this->getEnvironment()) {
             $recipients = array(
                 'systems@creditjeeves.com' .
-                ', rentmailformapro@yandex.ru' .
-                ', cary@renttrack.com' .
-                ', alexandr.sharamko@gmail.com'
+                ', cary@renttrack.com'
             );
 
             $filter = new ExceptionClassFilter();
