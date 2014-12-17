@@ -193,13 +193,17 @@ class ExportType extends AbstractType
                         optionsValue: "id",
                         value: selectedProperty',
                     'row_attr' => array(
-                        'data-bind' => "visible: (selectedType() != 'promas') && (selectedType() != 'renttrack') ",
+                        'data-bind' =>
+                            "visible: (selectedType() != 'promas') &&
+                             (selectedType() != 'renttrack') &&
+                             (selectedType() != 'yardi_genesis_v2')
+                             ",
                     )
                 ),
                 'constraints'    => array(
                     new NotBlank(
                         array(
-                            'groups' => array('yardi', 'yardi_genesis', 'yardi_genesis_v2', 'real_page')
+                            'groups' => array('yardi', 'yardi_genesis', 'real_page')
                         )
                     ),
                 ),
