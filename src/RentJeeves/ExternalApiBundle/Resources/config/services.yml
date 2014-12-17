@@ -4,8 +4,17 @@ parameters:
     soap.client.yardi.payment.class:  'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient'
     soap.client.yardi.resident_transactions.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'
     soap.client.yardi.resident_data.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient'
+    resman.client.class: RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient
 
 services:
+    resman.client:
+        class: "%resman.client.class%"
+        arguments:
+            - "@fp_badaboom.exception_catcher"
+            - "@jms_serializer"
+            - "%resman.integration_partner_id%"
+            - "%resman.api_key%"
+            - "%resman.api_url%"
     soap.client.factory:
         class: "%soap.client.factory.class%"
         arguments:

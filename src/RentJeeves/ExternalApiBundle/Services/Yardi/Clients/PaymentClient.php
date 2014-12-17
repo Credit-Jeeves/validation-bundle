@@ -54,7 +54,7 @@ class PaymentClient extends AbstractClient
             ),
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'OpenReceiptBatch_DepositDate',
             $parameters
         );
@@ -77,7 +77,7 @@ class PaymentClient extends AbstractClient
             ),
         );
 
-        $result = $this->processRequest(
+        $result = $this->sendRequest(
             'PostReceiptBatch',
             $parameters
         );
@@ -108,7 +108,7 @@ class PaymentClient extends AbstractClient
             ),
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'AddReceiptsToBatch',
             $parameters
         );
@@ -126,7 +126,7 @@ class PaymentClient extends AbstractClient
             ),
         );
 
-        return $this->processRequest(
+        return $this->sendRequest(
             'CancelReceiptBatch',
             $parameters
         );

@@ -15,7 +15,7 @@ use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
-use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -169,7 +169,7 @@ class AjaxController extends Controller
          */
         $resident = $clientFactory->getClient(
             $yardiSettings,
-            SoapClientEnum::RESIDENT_TRANSACTIONS
+            YardiClientEnum::RESIDENT_TRANSACTIONS
         );
 
         $result = $resident->getPropertyConfigurations();
