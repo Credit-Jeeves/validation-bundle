@@ -15,7 +15,7 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
- * 
+ *
  * Aliases for this class
  * o - Order
  * p - payment, table rj_payment, class Payment
@@ -132,7 +132,7 @@ class OrderRepository extends EntityRepository
                 break;
         }
         $this->applySortField($sort);
-        
+
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
@@ -236,12 +236,14 @@ class OrderRepository extends EntityRepository
     public function getOrdersForYardiGenesis(
         $start,
         $end,
+        $groupId,
         $propertyId = null
     ) {
-        return $this->getOrdersForRealPageReport($propertyId, $start, $end);
+        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end);
     }
 
     public function getOrdersForRealPageReport(
+        $groupId,
         $propertyId,
         $start,
         $end
@@ -252,9 +254,11 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
         $query->innerJoin('t.unit', 'unit');
+        $query->innerJoin('t.group', 'g');
         $query->innerJoin('o.heartlands', 'heartland');
         $query->where("heartland.depositDate BETWEEN :start AND :end");
         $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+        $query->andWhere('g.id = :groupId');
 
         if (!is_null($propertyId)) {
             $query->andWhere('prop.id = :propId');
@@ -265,6 +269,7 @@ class OrderRepository extends EntityRepository
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
         $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->setParameter('groupId', $groupId);
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
         return $query->execute();

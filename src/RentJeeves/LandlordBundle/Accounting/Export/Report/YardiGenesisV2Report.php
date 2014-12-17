@@ -23,9 +23,10 @@ class YardiGenesisV2Report extends YardiGenesisReport
 
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
+        $groupId = $settings['landlord']->getGroup()->getId();
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate);
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groupId);
     }
 
     protected function generateFilename($params)
