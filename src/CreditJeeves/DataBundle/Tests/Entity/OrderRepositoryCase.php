@@ -70,11 +70,11 @@ class OrderRepositoryCase extends BaseTestCase
     public static function getOrdersForYardiGenesisReportDataProvider()
     {
         $now = new DateTime();
-        $six_months_back = new DateTime();
-        $six_months_back->modify("-6 month");
+        $sixMonthsBack = new DateTime();
+        $sixMonthsBack->modify("-6 month");
 
         return [
-            [$six_months_back, $now],
+            [$sixMonthsBack, $now],
         ];
     }
 

@@ -182,8 +182,7 @@ trait Contract
         $isNeedCreateCashOperation = $this->isNeedCreateCashOperation($contract);
 
         if ($isNeedCreateCashOperation) {
-            // Comment this code because issue RT-809 with not updated paidTo
-            //$this->attachOperationToImport($import, $dueDate);
+            $this->attachOperationToImport($import, $dueDate);
         }
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
