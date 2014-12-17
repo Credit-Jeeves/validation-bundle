@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
@@ -25,13 +26,16 @@ class ImportFileAccountingType extends AbstractType
 
     protected $validationGroups;
 
+    protected $isHoldingAdmin;
+
     protected $availableValidationGroups = array(
         'default', 'yardi', 'csv'
     );
 
-    public function __construct($group, $em, $validationGroups = array('default'))
+    public function __construct(Landlord $landlord, $em, $validationGroups = array('default'))
     {
-        $this->group = $group;
+        $this->group = $landlord->getCurrentGroup();
+        $this->isHoldingAdmin = $landlord->getIsSuperAdmin();
         $this->setValidationGroup($validationGroups);
         $this->em = $em;
     }
@@ -55,13 +59,38 @@ class ImportFileAccountingType extends AbstractType
         $group = $this->group;
 
         $builder->add(
+            'importType',
+            'choice',
+            [
+                'label' => 'import.import_type',
+                'label_attr' => [
+                    'data-bind' => 'visible: ($root.source() == "csv")',
+                ],
+                'attr' => [
+                    'class' => 'original widthSelect',
+                    'data-bind' => 'value: importType, visible: ($root.source() == "csv")',
+                ],
+                'choices' => array_merge([
+                    'single_property' => 'import.import_type.single_property',
+                    'multi_property' => 'import.import_type.multi_property',
+                ], $this->isHoldingAdmin ? ['multi_groups' => 'import.import_type.multi_groups'] : [])
+            ]
+        );
+
+        $builder->add(
             'property',
             'entity',
             array(
-                'empty_value'   => 'landlord.form.import.multiple.property',
+                'empty_value' => 'import.property.empty_value',
+                'error_bubbling' => true,
                 'class'         => 'RjDataBundle:Property',
                 'attr'          => array(
+                    'force_row' => true,
                     'class' => 'original widthSelect',
+                    'data-bind' => 'visible: ($root.importType() == "single_property" || $root.source() == "yardi")',
+                ),
+                'label_attr' => array(
+                    'data-bind' => 'visible: ($root.importType() == "single_property" || $root.source() == "yardi")',
                 ),
                 'required'      => false,
                 'mapped'        => false,
@@ -76,7 +105,8 @@ class ImportFileAccountingType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
-                            'groups'  => array('yardi'),
+                            'groups'  => array('yardi', 'single_property'),
+                            'message' => 'import.errors.single_property_select'
                         )
                     )
                 )
@@ -296,6 +326,9 @@ class ImportFileAccountingType extends AbstractType
                     if ($form->isSubmitted()) {
                         $data = $form->getData();
                         $groups = array('default', $data['fileType']);
+                        if ($data['importType'] == 'single_property') {
+                            $groups = array_merge($groups, ['single_property']);
+                        }
 
                         return $groups;
                     }

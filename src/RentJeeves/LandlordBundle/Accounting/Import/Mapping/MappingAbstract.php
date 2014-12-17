@@ -43,6 +43,8 @@ abstract class MappingAbstract implements MappingInterface
         'dd-M-y' => 'dd-mon-yy (24-Sep-98)',
     );
 
+    const KEY_GROUP_ACCOUNT_NUMBER = 'group_account_number';
+
     const KEY_UNIT = 'unit';
 
     const KEY_RESIDENT_ID = 'resident_id';
@@ -128,7 +130,7 @@ abstract class MappingAbstract implements MappingInterface
 
         $waitingRoom->setFirstName($tenant->getFirstName());
         $waitingRoom->setLastName($tenant->getLastName());
-        $waitingRoom->setGroup($contract->getGroup());
+        !$contract->getGroup() || $waitingRoom->setGroup($contract->getGroup());
 
         $waitingRoom->setResidentId($residentMapping->getResidentId());
 

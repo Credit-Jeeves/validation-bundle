@@ -47,4 +47,23 @@ class GroupRepository extends EntityRepository
 
         return $query->getSingleScalarResult();
     }
+
+    /**
+     * @param $accountNumber
+     * @param Holding $holding
+     * @return null|Group
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getGroupByAccountNumber($accountNumber, Holding $holding)
+    {
+        return $this->createQueryBuilder('g')
+            ->select('g')
+            ->join('g.depositAccount', 'd')
+            ->where('d.accountNumber = :accountNumber')
+            ->andWhere('g.holding = :holding')
+            ->setParameter('accountNumber', $accountNumber)
+            ->setParameter('holding', $holding)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

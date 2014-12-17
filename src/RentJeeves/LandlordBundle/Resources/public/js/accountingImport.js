@@ -2,6 +2,7 @@ function accountingImport(superclass) {
     var self = this;
     this.superclass = superclass;
     this.source = ko.observable('');
+    this.importType = ko.observable('');
     this.isMultipleProperty = ko.observable(false);
     this.isValidDateFormat = ko.observable(true);
     this.fieldsWhichNotContaintInForm = [

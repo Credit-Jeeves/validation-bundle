@@ -2,7 +2,7 @@
 
 <tr data-bind="attr: {'class': $root.getClassLine($data)}, if: (!is_skipped && !has_contract_waiting) && !contract.id && !tenant.id && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)">
     {{ form_start(form) }}
-    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
+    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)+' import_status_text'}"></td>
     {% if isMultipleProperty == 'true' %}
             <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
                 <span data-bind="text: contract.property.full_address">

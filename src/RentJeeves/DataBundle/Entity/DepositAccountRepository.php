@@ -3,7 +3,6 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
-use RentJeeves\DataBundle\Entity\PaymentAccount;
 
 class DepositAccountRepository extends EntityRepository
 {

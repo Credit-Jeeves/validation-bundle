@@ -4,7 +4,7 @@
     <td data-bind="
             text: $root.getStatusText($data),
             attr: {
-                'class': $root.getStatusText($data),
+                'class': $root.getStatusText($data)+' import_status_text',
                 'title': $data.skipped_message
             }">
 

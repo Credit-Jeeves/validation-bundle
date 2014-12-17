@@ -20,6 +20,8 @@ class StorageCsv extends StorageAbstract
 {
     const IS_MULTIPLE_PROPERTY = 'is_multiple_property';
 
+    const IS_MULTIPLE_GROUP = 'is_multiple_group';
+
     const IMPORT_FILE_PATH = 'importFileName';
 
     const IMPORT_PROPERTY_ID = 'importPropertyId';
@@ -56,6 +58,16 @@ class StorageCsv extends StorageAbstract
     public function isMultipleProperty()
     {
         return $this->session->get(self::IS_MULTIPLE_PROPERTY);
+    }
+
+    public function setIsMultiGroup($isMultipleGroup = false)
+    {
+        $this->session->set(self::IS_MULTIPLE_GROUP, $isMultipleGroup);
+    }
+
+    public function isMultiGroup()
+    {
+        return !!$this->session->get(self::IS_MULTIPLE_GROUP);
     }
 
     public function getDateFormat()
@@ -118,6 +130,7 @@ class StorageCsv extends StorageAbstract
     {
         $file = $form['attachment']->getData();
         $property = $form['property']->getData();
+        $importType = $form['importType']->getData();
         $textDelimiter = $form['textDelimiter']->getData();
         $fieldDelimiter = $form['fieldDelimiter']->getData();
         $dateFormat = $form['dateFormat']->getData();
@@ -128,12 +141,17 @@ class StorageCsv extends StorageAbstract
         $this->setFieldDelimiter($fieldDelimiter);
         $this->setTextDelimiter($textDelimiter);
         $this->setFilePath($newFileName);
-        if ($property instanceof Property) {
+
+        $this->setIsMultiGroup(false);
+        $this->setIsMultipleProperty(true);
+
+        if ($importType == 'multi_groups') {
+            $this->setIsMultiGroup(true);
+        } elseif ($property instanceof Property) {
             $this->setPropertyId($property->getId());
             $this->setIsMultipleProperty(false);
-        } else {
-            $this->setIsMultipleProperty(true);
         }
+
         $this->setDateFormat($dateFormat);
     }
 

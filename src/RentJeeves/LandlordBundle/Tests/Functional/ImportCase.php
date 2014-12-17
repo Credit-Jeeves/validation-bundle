@@ -32,7 +32,7 @@ class ImportCase extends BaseTestCase
         '14'=> ImportMapping::KEY_EMAIL,
     );
 
-    protected $mapMultiplePropertyFile = array(
+    protected $mapMultiplePropertyFile = [
         '1' => ImportMapping::KEY_RESIDENT_ID,
         '2' => ImportMapping::KEY_TENANT_NAME,
         '3' => ImportMapping::KEY_RENT,
@@ -48,7 +48,25 @@ class ImportCase extends BaseTestCase
         '15'=> ImportMapping::KEY_MOVE_OUT,
         '16'=> ImportMapping::KEY_MONTH_TO_MONTH,
         '17'=> ImportMapping::KEY_EMAIL,
-    );
+    ];
+
+    protected $mapMultipleGroupFile = [
+        '1' => ImportMapping::KEY_GROUP_ACCOUNT_NUMBER,
+        '2' => ImportMapping::KEY_RESIDENT_ID,
+        '3' => ImportMapping::KEY_TENANT_NAME,
+        '4' => ImportMapping::KEY_RENT,
+        '5' => ImportMapping::KEY_BALANCE,
+        '6' => ImportMapping::KEY_UNIT_ID,
+        '7' => ImportMapping::KEY_STREET,
+        '9' => ImportMapping::KEY_UNIT,
+        '10' => ImportMapping::KEY_CITY,
+        '11'=> ImportMapping::KEY_STATE,
+        '12'=> ImportMapping::KEY_ZIP,
+        '14'=> ImportMapping::KEY_MOVE_IN,
+        '15'=> ImportMapping::KEY_LEASE_END,
+        '16'=> ImportMapping::KEY_MOVE_OUT,
+        '18'=> ImportMapping::KEY_EMAIL,
+    ];
 
     protected function getFilePathByName($fileName)
     {
@@ -58,7 +76,7 @@ class ImportCase extends BaseTestCase
         return $filePath;
     }
 
-    protected function waitReviewAndPost()
+    protected function waitReviewAndPost($waitSubmit = true)
     {
         $this->session->wait(
             10000,
@@ -70,32 +88,31 @@ class ImportCase extends BaseTestCase
             "$('.overlay-trigger').length <= 0"
         );
 
-        $this->session->wait(
-            10000,
-            "$('.submitImportFile>span').is(':visible')"
-        );
+        if ($waitSubmit == true) {
+            $this->session->wait(
+                10000,
+                "$('.submitImportFile>span').is(':visible')"
+            );
+        }
     }
 
     protected function getParsedTrsByStatus()
     {
-        $result = array();
-        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $counterTr = count($tr);
-        for ($k = 0; $k < $counterTr; $k++) {
-            $td = $tr[$k]->findAll('css', 'td');
-            $countedTd = count($td);
-            if ($countedTd > 1 && !empty($td)) {
-                $result[$td[0]->getHtml()][] = $tr[$k];
-            }
+        $result = [];
+        $tds = $this->page->findAll(
+            'css',
+            '#importTable>tbody>tr>td.import_status_text'
+        );
+
+        foreach ($tds as $td) {
+            $result[$td->getHtml()][] = $td->getParent();
         }
 
         return $result;
     }
 
-    protected function fillSecondPageWrongValue()
+    protected function fillSecondPageWrongValue($trs)
     {
-        $trs = $this->getParsedTrsByStatus();
-
         $this->assertNotNull(
             $finishAt = $trs['import.status.new'][1]->find('css', '.import_new_user_with_contract_contract_finishAt')
         );
@@ -135,9 +152,12 @@ class ImportCase extends BaseTestCase
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
-        $this->assertNotNull($error = $this->page->find('css', '.error_list>li'));
-        $this->assertEquals('error.file.empty', $error->getHtml());
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
+        $this->assertCount(2, $errors, 'Wrong number of errors');
+        $this->assertEquals('import.errors.single_property_select', $errors[0]->getHtml());
+        $this->assertEquals('error.file.empty', $errors[1]->getHtml());
 
+        $this->setProperty();
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_failed.csv');
@@ -214,7 +234,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(6, count($trs['import.status.new']), "New contract on first page is wrong number");
         $this->assertEquals(3, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
 
-        $this->fillSecondPageWrongValue();
+        $this->fillSecondPageWrongValue($trs);
 
         $submitImportFile->click();
 
@@ -373,7 +393,7 @@ class ImportCase extends BaseTestCase
         $email->setValue('2test@mail.com');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->waitReviewAndPost();
+        $this->waitReviewAndPost(false);
         //Make sure for this page we have operation
         $today = new DateTime();
         $this->assertNotNull($paidFor = $this->page->findAll('css', '.import_operation_paidFor'));
@@ -384,10 +404,11 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(1, count($amount));
         $amount[0]->setValue('99.99');
 
-        $this->fillSecondPageWrongValue();
+        $trs = $this->getParsedTrsByStatus();
+        $this->fillSecondPageWrongValue($trs);
 
         $submitImportFile->click();
-        $this->waitReviewAndPost();
+        $this->waitReviewAndPost(false);
 
         $this->session->wait(
             5000,
@@ -776,6 +797,8 @@ class ImportCase extends BaseTestCase
 
         //First Step
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
+        $importTypeSelected->selectOption('multi_property');
         $filePath = $this->getFilePathByName('import_multiple.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
@@ -843,26 +866,11 @@ class ImportCase extends BaseTestCase
 
         $submitImportFile->click();
 
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('.overlay-trigger').length > 0"
-        );
-
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('.overlay-trigger').length = 0"
-        );
+        $this->waitReviewAndPost();
 
         $submitImportFile->click();
 
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('.overlay-trigger').length > 0"
-        );
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('.overlay-trigger').length = 0"
-        );
+        $this->waitReviewAndPost(false);
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
@@ -1009,17 +1017,11 @@ class ImportCase extends BaseTestCase
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
-        $this->session->wait(
-            $this->timeout,
-            "$('.errorField').length > 0"
-        );
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->session->wait(
-            $this->timeout,
-            "$('.finishedTitle').length > 0"
-        );
+
+        $this->waitReviewAndPost(false);
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
@@ -1109,6 +1111,8 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
+        $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
+        $importTypeSelected->selectOption('multi_property');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1163,6 +1167,8 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
+        $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
+        $importTypeSelected->selectOption('multi_property');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1492,6 +1498,8 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('skipped_message_and_date_notice.csv');
         $attFile->attachFile($filePath);
+        $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
+        $importTypeSelected->selectOption('multi_property');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1680,5 +1688,78 @@ class ImportCase extends BaseTestCase
                 "Contract paidTo date did not advance"
             );
         }
+    }
+
+    /**
+     * @test
+     */
+    public function importMultipleGroups()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+
+        //First Step
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
+        $importTypeSelected->selectOption('multi_groups');
+        $filePath = $this->getFilePathByName('import_multiple_group.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/y');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        foreach ($this->mapMultipleGroupFile as $i => $choiceOption) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            $choice->selectOption($choiceOption);
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $this->assertNull($errorFields = $this->page->find('css', 'input.errorField'));
+
+
+        $trs = $this->getParsedTrsByStatus();
+
+        $this->assertEquals(2, count($trs), "Count statuses is wrong");
+        $this->assertEquals(
+            1,
+            count($trs['import.status.skip']),
+            "One contract should be skipped, because we don't have such account number"
+        );
+
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+
+        $submitImportFile->click();
+
+        $this->waitReviewAndPost(false);
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+
+        //Check notify tenant invite for new user
+        $this->assertCount(5, $this->getEmails(), 'Wrong number of emails');
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine')->getManager();
+
+        $unitMapping = $em
+            ->getRepository('RjDataBundle:UnitMapping')
+            ->findOneBy(['externalUnitId' => 'SP1152-C']);
+
+        $this->assertNotNull($unitMapping);
+        /** @var \RentJeeves\DataBundle\Entity\Unit $unit */
+        $this->assertNotNull($unit = $unitMapping->getUnit());
+        // We shure that create first contract for this unit
+        $this->assertNotNull($contract = $unit->getContracts()->first());
+        $this->assertEquals(26, $contract->getGroup()->getId());
     }
 }

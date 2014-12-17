@@ -8,19 +8,10 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Operation;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Property;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Resident;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Unit;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Contract;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Tenant;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
-use RentJeeves\LandlordBundle\Accounting\Import\Form\FormBind;
-use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
 use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import;
 
@@ -31,15 +22,6 @@ use RentJeeves\LandlordBundle\Model\Import;
  */
 class HandlerYardi extends HandlerAbstract
 {
-    use Forms;
-    use Contract;
-    use Tenant;
-    use Resident;
-    use Property;
-    use Operation;
-    use FormBind;
-    use Unit;
-
     /**
      * @InjectParams({
      *     "translator"       = @Inject("translator"),
