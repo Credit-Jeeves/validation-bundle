@@ -57,7 +57,7 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_MONTH_TO_MONTH       => $this->translator->trans('common.month_to_month'),
         );
 
-        if ($this->storage->isMultiGroup()) {
+        if ($this->storage->isMultipleGroup()) {
             $choicesRequired[ImportMapping::KEY_GROUP_ACCOUNT_NUMBER] = $this
                 ->translator
                 ->trans('import.group_account_number');

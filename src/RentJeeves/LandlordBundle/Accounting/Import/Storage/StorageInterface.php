@@ -22,7 +22,7 @@ interface StorageInterface
 
     public function isMultipleProperty();
 
-    public function isMultiGroup();
+    public function isMultipleGroup();
 
     public function isValid();
 

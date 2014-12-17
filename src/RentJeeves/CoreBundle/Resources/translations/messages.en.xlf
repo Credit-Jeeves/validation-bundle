@@ -2547,20 +2547,20 @@
               <source>import.review.finish</source>
               <target>Data has been imported.</target>
             </trans-unit>
-            <trans-unit id="import.import_type">
-              <source>import.import_type</source>
+            <trans-unit id="import.type">
+              <source>import.type</source>
               <target>Import Type</target>
             </trans-unit>
-            <trans-unit id="import.import_type.single_property">
-              <source>import.import_type.single_property</source>
+            <trans-unit id="import.type.single_property">
+              <source>import.type.single_property</source>
               <target>Single Group with Single Property</target>
             </trans-unit>
-            <trans-unit id="import.import_type.multi_property">
-              <source>import.import_type.multi_property</source>
+            <trans-unit id="import.type.multi_property">
+              <source>import.type.multi_property</source>
               <target>Single Group with Multiple Properties</target>
             </trans-unit>
-            <trans-unit id="import.import_type.multi_groups">
-              <source>import.import_type.multi_groups</source>
+            <trans-unit id="import.type.multi_groups">
+              <source>import.type.multi_groups</source>
               <target>Multiple Group with Multiple Properties</target>
             </trans-unit>
             <trans-unit id="import.property.empty_value">

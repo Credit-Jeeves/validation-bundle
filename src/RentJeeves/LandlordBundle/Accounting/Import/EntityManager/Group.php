@@ -18,7 +18,7 @@ trait Group
 {
     protected function getGroup(array $row)
     {
-        if (!$this->storage->isMultiGroup()) {
+        if (!$this->storage->isMultipleGroup()) {
             return $this->group;
         }
 

@@ -8,6 +8,7 @@ use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -60,12 +61,12 @@ class StorageCsv extends StorageAbstract
         return $this->session->get(self::IS_MULTIPLE_PROPERTY);
     }
 
-    public function setIsMultiGroup($isMultipleGroup = false)
+    public function setIsMultipleGroup($isMultipleGroup = false)
     {
         $this->session->set(self::IS_MULTIPLE_GROUP, $isMultipleGroup);
     }
 
-    public function isMultiGroup()
+    public function isMultipleGroup()
     {
         return !!$this->session->get(self::IS_MULTIPLE_GROUP);
     }
@@ -142,11 +143,11 @@ class StorageCsv extends StorageAbstract
         $this->setTextDelimiter($textDelimiter);
         $this->setFilePath($newFileName);
 
-        $this->setIsMultiGroup(false);
+        $this->setIsMultipleGroup(false);
         $this->setIsMultipleProperty(true);
 
-        if ($importType == 'multi_groups') {
-            $this->setIsMultiGroup(true);
+        if (ImportType::MULTI_GROUP == $importType) {
+            $this->setIsMultipleGroup(true);
         } elseif ($property instanceof Property) {
             $this->setPropertyId($property->getId());
             $this->setIsMultipleProperty(false);

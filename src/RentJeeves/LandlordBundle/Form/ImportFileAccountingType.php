@@ -6,6 +6,7 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
+use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -20,13 +21,11 @@ use Symfony\Component\Form\FormEvents;
 
 class ImportFileAccountingType extends AbstractType
 {
-    protected $group;
-
     protected $em;
 
     protected $validationGroups;
 
-    protected $isHoldingAdmin;
+    protected $landlord;
 
     protected $availableValidationGroups = array(
         'default', 'yardi', 'csv'
@@ -34,8 +33,7 @@ class ImportFileAccountingType extends AbstractType
 
     public function __construct(Landlord $landlord, $em, $validationGroups = array('default'))
     {
-        $this->group = $landlord->getCurrentGroup();
-        $this->isHoldingAdmin = $landlord->getIsSuperAdmin();
+        $this->landlord = $landlord;
         $this->setValidationGroup($validationGroups);
         $this->em = $em;
     }
@@ -56,13 +54,13 @@ class ImportFileAccountingType extends AbstractType
     }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $group = $this->group;
+        $group = $this->landlord->getCurrentGroup();
 
         $builder->add(
             'importType',
             'choice',
             [
-                'label' => 'import.import_type',
+                'label' => 'import.type',
                 'label_attr' => [
                     'data-bind' => 'visible: ($root.source() == "csv")',
                 ],
@@ -71,9 +69,9 @@ class ImportFileAccountingType extends AbstractType
                     'data-bind' => 'value: importType, visible: ($root.source() == "csv")',
                 ],
                 'choices' => array_merge([
-                    'single_property' => 'import.import_type.single_property',
-                    'multi_property' => 'import.import_type.multi_property',
-                ], $this->isHoldingAdmin ? ['multi_groups' => 'import.import_type.multi_groups'] : [])
+                    ImportType::SINGLE_PROPERTY => 'import.type.single_property',
+                    ImportType::MULTI_PROPERTY => 'import.type.multi_property',
+                ], $this->landlord->getIsSuperAdmin() ? [ImportType::MULTI_GROUP => 'import.type.multi_groups'] : [])
             ]
         );
 
@@ -87,10 +85,14 @@ class ImportFileAccountingType extends AbstractType
                 'attr'          => array(
                     'force_row' => true,
                     'class' => 'original widthSelect',
-                    'data-bind' => 'visible: ($root.importType() == "single_property" || $root.source() == "yardi")',
+                    'data-bind' => 'visible: ($root.importType() == "' .
+                        ImportType::SINGLE_PROPERTY .
+                        '" || $root.source() == "yardi")',
                 ),
                 'label_attr' => array(
-                    'data-bind' => 'visible: ($root.importType() == "single_property" || $root.source() == "yardi")',
+                    'data-bind' => 'visible: ($root.importType() == "' .
+                        ImportType::SINGLE_PROPERTY .
+                        '" || $root.source() == "yardi")',
                 ),
                 'required'      => false,
                 'mapped'        => false,
@@ -296,7 +298,7 @@ class ImportFileAccountingType extends AbstractType
                     return;
                 }
 
-                $holdingId = $self->group->getHolding()->getId();
+                $holdingId = $self->landlord->getCurrentGroup()->getHolding()->getId();
                 /**
                  * @var $propertyMapping PropertyMapping
                  */
@@ -326,7 +328,7 @@ class ImportFileAccountingType extends AbstractType
                     if ($form->isSubmitted()) {
                         $data = $form->getData();
                         $groups = array('default', $data['fileType']);
-                        if ($data['importType'] == 'single_property') {
+                        if (ImportType::SINGLE_PROPERTY == $data['importType']) {
                             $groups = array_merge($groups, ['single_property']);
                         }
 

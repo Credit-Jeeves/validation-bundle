@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
 use RentJeeves\DataBundle\Model\Unit;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
+use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -798,7 +799,7 @@ class ImportCase extends BaseTestCase
         //First Step
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption('multi_property');
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTY);
         $filePath = $this->getFilePathByName('import_multiple.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
@@ -1112,7 +1113,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption('multi_property');
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTY);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1168,7 +1169,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption('multi_property');
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTY);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1499,7 +1500,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('skipped_message_and_date_notice.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption('multi_property');
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTY);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1704,7 +1705,7 @@ class ImportCase extends BaseTestCase
         //First Step
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption('multi_groups');
+        $importTypeSelected->selectOption(ImportType::MULTI_GROUP);
         $filePath = $this->getFilePathByName('import_multiple_group.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
@@ -1727,10 +1728,10 @@ class ImportCase extends BaseTestCase
 
         $trs = $this->getParsedTrsByStatus();
 
-        $this->assertEquals(2, count($trs), "Count statuses is wrong");
-        $this->assertEquals(
+        $this->assertCount(2, $trs, "Count statuses is wrong");
+        $this->assertCount(
             1,
-            count($trs['import.status.skip']),
+            $trs['import.status.skip'],
             "One contract should be skipped, because we don't have such account number"
         );
 
@@ -1744,8 +1745,6 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
-        //Check notify tenant invite for new user
-        $this->assertCount(5, $this->getEmails(), 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -1758,8 +1757,8 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($unitMapping);
         /** @var \RentJeeves\DataBundle\Entity\Unit $unit */
         $this->assertNotNull($unit = $unitMapping->getUnit());
-        // We shure that create first contract for this unit
+        // We sure that only one contract for this unit was created
         $this->assertNotNull($contract = $unit->getContracts()->first());
-        $this->assertEquals(26, $contract->getGroup()->getId());
+        $this->assertEquals('Campus Rent Group', $contract->getGroup()->getName());
     }
 }

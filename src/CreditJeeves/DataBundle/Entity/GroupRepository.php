@@ -57,7 +57,6 @@ class GroupRepository extends EntityRepository
     public function getGroupByAccountNumber($accountNumber, Holding $holding)
     {
         return $this->createQueryBuilder('g')
-            ->select('g')
             ->join('g.depositAccount', 'd')
             ->where('d.accountNumber = :accountNumber')
             ->andWhere('g.holding = :holding')
