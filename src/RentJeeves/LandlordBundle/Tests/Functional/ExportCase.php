@@ -201,10 +201,10 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(13, $archive->numFiles);
+        $this->assertEquals(7, $archive->numFiles);
         $file = $archive->getFromIndex(1);
         $rows = explode("\n", trim($file));
-        $this->assertEquals(4, count($rows));
+        $this->assertEquals(2, count($rows));
         $columns = str_getcsv($rows[0]);
         $this->assertEquals(88, $columns[0]);
         $this->assertEquals('2-a', $columns[1]);
@@ -437,19 +437,52 @@ class ExportCase extends BaseTestCase
     }
 
 
-    public function providerGenesis()
+    /**
+     * @test
+     */
+    public function yardiGenesisCsvFormat()
     {
-        return array(
-            array('yardi_genesis'),
-            array('yardi_genesis_v2')
-        );
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('yardi_genesis');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(3, count($errors));
+
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $property->selectOption(1);
+
+        $this->page->pressButton('order.report.download');
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\n", trim($csv));
+
+        $this->assertTrue(isset($csvArr[0]));
+
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
+        $this->assertEquals('R', $csvArr[0]);
+        $this->assertEquals('123123', $csvArr[1]);
+        $this->assertEquals('1500', $csvArr[3]);
+        // $this->assertEquals('08/14/2014', $csvArr[4]);   // The Date seems to change with each build each day
+        $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
+
     }
 
     /**
      * @test
-     * @dataProvider providerGenesis
      */
-    public function yardiGenesisCsvFormat($genesisType)
+    public function yardiGenesisV2CsvFormat()
     {
         $this->load(true);
         //$this->setDefaultSession('selenium2');
@@ -461,10 +494,11 @@ class ExportCase extends BaseTestCase
         $endD = new DateTime();
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
-        $type->selectOption($genesisType);
+        $type->selectOption('yardi_genesis_v2');
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(3, count($errors));
+        $this->assertEquals(2, count($errors));
+
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
@@ -475,7 +509,7 @@ class ExportCase extends BaseTestCase
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
-        $csvArr = explode("\n", $csv);
+        $csvArr = explode("\r", trim($csv));
         $this->assertTrue(isset($csvArr[0]));
 
         $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
@@ -484,18 +518,15 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('1500', $csvArr[3]);
         // $this->assertEquals('08/14/2014', $csvArr[4]);   // The Date seems to change with each build each day
         $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
-        if ($genesisType === 'yardi_genesis_v2') {
-            $this->assertEquals('', $csvArr[6]);
-            $this->assertEquals('', $csvArr[7]);
-            $this->assertEquals('', $csvArr[8]);
-        }
+        $this->assertEquals('', $csvArr[6]);
+        $this->assertEquals('', $csvArr[7]);
+        $this->assertEquals('', $csvArr[8]);
     }
 
     /**
      * @test
-     * @dataProvider providerGenesis
      */
-    public function yardiGenesisBatchReport($genesisType)
+    public function yardiGenesisBatchReport()
     {
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
@@ -506,10 +537,11 @@ class ExportCase extends BaseTestCase
         $endD = new DateTime();
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
-        $type->selectOption($genesisType);
+        $type->selectOption('yardi_genesis');
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(3, count($errors));
+
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
@@ -528,20 +560,68 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(13, $archive->numFiles);
+        $this->assertEquals(7, $archive->numFiles);
         $file = $archive->getFromIndex(1);
         $rows = explode("\n", trim($file));
-        $this->assertEquals(4, count($rows));
+
+        $this->assertEquals(2, count($rows));
         $csvArr = str_getcsv($rows[0]);
         $this->assertEquals('R', $csvArr[0]);
         $this->assertEquals('456456', $csvArr[1]);
         $this->assertEquals('1500', $csvArr[3]);
         // $this->assertEquals('08/24/2014', $csvArr[4]); // the Date seems to change with each build each day
         $this->assertEquals('770 Broadway, Manhattan #2-a 325698', $csvArr[5]);
-        if ($genesisType === 'yardi_genesis_v2') {
-            $this->assertEquals('', $csvArr[6]);
-            $this->assertEquals('', $csvArr[7]);
-            $this->assertEquals('', $csvArr[8]);
-        }
+    }
+
+    /**
+     * @test
+     */
+    public function yardiGenesisV2BatchReport()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('yardi_genesis_v2');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(2, count($errors));
+
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $property->selectOption(1);
+        $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
+        $makeZip->check();
+
+        $this->page->pressButton('order.report.download');
+
+        $csvZip = $this->session->getDriver()->getContent();
+
+        $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
+        file_put_contents($testFile, $csvZip);
+
+        $archive = new ZipArchive();
+        $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
+        $this->assertEquals(7, $archive->numFiles);
+        $file = $archive->getFromIndex(1);
+        $rows = explode("\r", trim($file));
+        $this->assertEquals(2, count($rows));
+        $csvArr = str_getcsv($rows[0]);
+        $this->assertEquals('R', $csvArr[0]);
+        $this->assertEquals('456456', $csvArr[1]);
+        $this->assertEquals('1500', $csvArr[3]);
+        // $this->assertEquals('08/24/2014', $csvArr[4]); // the Date seems to change with each build each day
+        $this->assertEquals('770 Broadway, Manhattan #2-a 325698', $csvArr[5]);
+        $this->assertEquals('', $csvArr[6]);
+        $this->assertEquals('', $csvArr[7]);
+        $this->assertEquals('', $csvArr[8]);
     }
 }
