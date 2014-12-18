@@ -125,7 +125,11 @@ class AccountingController extends Controller
     {
         $this->checkAccessToAccounting();
         $form = $this->createForm(
-            new ImportFileAccountingType($this->getUser(), $this->getDoctrine()->getManager())
+            new ImportFileAccountingType(
+                $this->getUser()->getIsSuperAdmin(),
+                $this->getCurrentGroup(),
+                $this->getDoctrine()->getManager()
+            )
         );
 
         $form->handleRequest($this->get('request'));

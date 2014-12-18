@@ -2,6 +2,8 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
@@ -25,15 +27,22 @@ class ImportFileAccountingType extends AbstractType
 
     protected $validationGroups;
 
-    protected $landlord;
+    protected $isHoldingAdmin = false;
 
-    protected $availableValidationGroups = array(
+    protected $currentGroup;
+
+    protected $availableValidationGroups = [
         'default', 'yardi', 'csv'
-    );
+    ];
 
-    public function __construct(Landlord $landlord, $em, $validationGroups = array('default'))
-    {
-        $this->landlord = $landlord;
+    public function __construct(
+        $isHoldingAdmin,
+        Group $currentGroup,
+        EntityManager $em,
+        $validationGroups = ['default']
+    ) {
+        $this->currentGroup = $currentGroup;
+        $this->isHoldingAdmin = $isHoldingAdmin;
         $this->setValidationGroup($validationGroups);
         $this->em = $em;
     }
@@ -54,7 +63,7 @@ class ImportFileAccountingType extends AbstractType
     }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $group = $this->landlord->getCurrentGroup();
+        $group = $this->currentGroup;
 
         $builder->add(
             'importType',
@@ -71,7 +80,7 @@ class ImportFileAccountingType extends AbstractType
                 'choices' => array_merge([
                     ImportType::SINGLE_PROPERTY => 'import.type.single_property',
                     ImportType::MULTI_PROPERTIES => 'import.type.multi_property',
-                ], $this->landlord->getIsSuperAdmin() ? [ImportType::MULTI_GROUPS => 'import.type.multi_groups'] : [])
+                ], $this->isHoldingAdmin ? [ImportType::MULTI_GROUPS => 'import.type.multi_groups'] : [])
             ]
         );
 
@@ -287,7 +296,6 @@ class ImportFileAccountingType extends AbstractType
         $builder->addEventListener(
             FormEvents::SUBMIT,
             function (FormEvent $event) use ($self) {
-                $data = $event->getData();
                 $form = $event->getForm();
                 /**
                  * @var $property Property
@@ -298,7 +306,7 @@ class ImportFileAccountingType extends AbstractType
                     return;
                 }
 
-                $holdingId = $self->landlord->getCurrentGroup()->getHolding()->getId();
+                $holdingId = $self->currentGroup->getHolding()->getId();
                 /**
                  * @var $propertyMapping PropertyMapping
                  */
