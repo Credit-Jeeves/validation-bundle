@@ -267,10 +267,6 @@ abstract class HandlerAbstract implements HandlerInterface
         $token      = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $import->setCsrfToken($token);
 
-        if ($operation = $this->getOperationByRow($import, $row)) {
-            $import->setOperation($operation);
-        }
-
         $import->setResidentMapping($this->getResident($tenant, $row));
         $import->setUnitMapping($this->getUnitMapping($row));
 

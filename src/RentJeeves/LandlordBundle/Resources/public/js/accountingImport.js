@@ -120,7 +120,7 @@ function accountingImport(superclass) {
             return Translator.trans('import.status.ended');
         }
 
-        if (data.contract.is_late && data.operation !== null) {
+        if (data.contract.is_late && data.contract.id !== null) {
             return Translator.trans('conflict.resolve.action');
         }
 
@@ -213,11 +213,7 @@ function accountingImport(superclass) {
             var month = jQuery(elementHtml).datepicker('getDate').getMonth() + 1;
             var year = jQuery(elementHtml).datepicker('getDate').getFullYear();
             var fullDate = month + "/" + day + "/" + year;
-            if (datepickerFieldName == 'paid_for') {
-                currentRow.operation[datepickerFieldName] = fullDate;
-            } else {
-                currentRow.contract[datepickerFieldName] = fullDate;
-            }
+            currentRow.contract[datepickerFieldName] = fullDate;
         } catch (e) {
             currentRow.contract[datepickerFieldName] = '';
         }

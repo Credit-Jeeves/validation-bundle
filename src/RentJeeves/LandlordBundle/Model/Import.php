@@ -57,12 +57,6 @@ class Import
     protected $contract;
 
     /**
-     * @Serializer\Type("CreditJeeves\DataBundle\Entity\Operation")
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $operation = null;
-
-    /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\ResidentMapping")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -402,22 +396,6 @@ class Import
     public function setTenant($tenant)
     {
         $this->tenant = $tenant;
-    }
-
-    /**
-     * @return Operation
-     */
-    public function getOperation()
-    {
-        return $this->operation;
-    }
-
-    /**
-     * @param Operation $operation
-     */
-    public function setOperation(Operation $operation = null)
-    {
-        $this->operation = $operation;
     }
 
     /**

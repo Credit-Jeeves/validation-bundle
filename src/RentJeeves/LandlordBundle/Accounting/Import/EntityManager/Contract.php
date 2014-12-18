@@ -131,7 +131,7 @@ trait Contract
      * @param array $row
      * @param $dueDate
      */
-    public function attachOperationToImport(ModelImport$import, $dueDate)
+    public function getOperationByImport(ModelImport $import, $dueDate)
     {
         $contract = $import->getContract();
         if ($contract->getStatus() === ContractStatus::CURRENT &&
@@ -144,7 +144,7 @@ trait Contract
                 $dueDate
             );
 
-            $import->setOperation($operation = $this->getOperationByContract($contract, $import, $paidFor));
+            $operation = $this->getOperationByContract($contract, $import, $paidFor);
 
             return $operation;
         }
@@ -196,10 +196,6 @@ trait Contract
         $dueDate = $this->getDueDateOfContract($contract);
 
         $isNeedCreateCashOperation = $this->isNeedCreateCashOperation($contract);
-
-        if ($isNeedCreateCashOperation) {
-            $this->attachOperationToImport($import, $dueDate);
-        }
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
             $import->setMoveOut($this->getDateByField($import, $row[Mapping::KEY_MOVE_OUT]));
