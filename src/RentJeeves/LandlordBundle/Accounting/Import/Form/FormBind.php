@@ -217,15 +217,17 @@ trait FormBind
      */
     protected function afterBindForm(Contract $contract, $isSingle)
     {
-        $property = $contract->getProperty();
-        $property->setIsSingle($isSingle);
-        $property->addPropertyGroup($this->group);
-        $this->group->addGroupProperty($property);
-        $this->em->flush($this->group);
-        $this->em->flush($property);
+        if ($contract->getGroup()) {
+            $property = $contract->getProperty();
+            $property->setIsSingle($isSingle);
+            $property->addPropertyGroup($contract->getGroup());
+            $contract->getGroup()->addGroupProperty($property);
+            $this->em->flush($contract->getGroup());
+            $this->em->flush($property);
 
-        if ($property->isSingle() && !$contract->getUnit()) {
-            $contract->setUnit($property->getSingleUnit());
+            if ($property->isSingle() && !$contract->getUnit()) {
+                $contract->setUnit($property->getSingleUnit());
+            }
         }
     }
 

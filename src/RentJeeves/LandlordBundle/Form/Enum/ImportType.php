@@ -8,7 +8,7 @@ class ImportType extends Enum
 {
     const SINGLE_PROPERTY = 'single_property';
 
-    const MULTI_PROPERTY = 'multi_property';
+    const MULTI_PROPERTIES = 'multi_properties';
 
-    const MULTI_GROUP = 'multi_group';
+    const MULTI_GROUPS = 'multi_groups';
 }

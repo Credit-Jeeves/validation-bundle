@@ -146,7 +146,7 @@ class StorageCsv extends StorageAbstract
         $this->setIsMultipleGroup(false);
         $this->setIsMultipleProperty(true);
 
-        if (ImportType::MULTI_GROUP == $importType) {
+        if (ImportType::MULTI_GROUPS == $importType) {
             $this->setIsMultipleGroup(true);
         } elseif ($property instanceof Property) {
             $this->setPropertyId($property->getId());

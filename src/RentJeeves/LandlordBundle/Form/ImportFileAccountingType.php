@@ -70,8 +70,8 @@ class ImportFileAccountingType extends AbstractType
                 ],
                 'choices' => array_merge([
                     ImportType::SINGLE_PROPERTY => 'import.type.single_property',
-                    ImportType::MULTI_PROPERTY => 'import.type.multi_property',
-                ], $this->landlord->getIsSuperAdmin() ? [ImportType::MULTI_GROUP => 'import.type.multi_groups'] : [])
+                    ImportType::MULTI_PROPERTIES => 'import.type.multi_property',
+                ], $this->landlord->getIsSuperAdmin() ? [ImportType::MULTI_GROUPS => 'import.type.multi_groups'] : [])
             ]
         );
 

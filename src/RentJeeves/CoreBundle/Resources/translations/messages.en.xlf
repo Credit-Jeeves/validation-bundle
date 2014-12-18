@@ -2561,7 +2561,7 @@
             </trans-unit>
             <trans-unit id="import.type.multi_groups">
               <source>import.type.multi_groups</source>
-              <target>Multiple Group with Multiple Properties</target>
+              <target>Multiple Groups with Multiple Properties</target>
             </trans-unit>
             <trans-unit id="import.property.empty_value">
               <source>import.property.empty_value</source>

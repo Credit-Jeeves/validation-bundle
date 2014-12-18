@@ -799,7 +799,7 @@ class ImportCase extends BaseTestCase
         //First Step
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTY);
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTIES);
         $filePath = $this->getFilePathByName('import_multiple.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
@@ -1113,7 +1113,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTY);
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTIES);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1169,7 +1169,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTY);
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTIES);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1500,7 +1500,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('skipped_message_and_date_notice.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTY);
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTIES);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1705,7 +1705,7 @@ class ImportCase extends BaseTestCase
         //First Step
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
-        $importTypeSelected->selectOption(ImportType::MULTI_GROUP);
+        $importTypeSelected->selectOption(ImportType::MULTI_GROUPS);
         $filePath = $this->getFilePathByName('import_multiple_group.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
