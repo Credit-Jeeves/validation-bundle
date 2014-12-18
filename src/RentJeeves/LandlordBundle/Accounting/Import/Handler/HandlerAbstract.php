@@ -236,6 +236,21 @@ abstract class HandlerAbstract implements HandlerInterface
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
 
+        if (!$this->group) {
+            $import->setIsSkipped(true);
+            $import->setSkippedMessage($this->translator->trans('import.error.empty_group'));
+        }
+
+        if ($this->group && !$this->group->getGroupSettings()->getIsIntegrated()) {
+            $import->setIsSkipped(true);
+            $import->setSkippedMessage(
+                $this->translator->trans(
+                    'import.error.group_not_integrated',
+                    ['%group_name%' => $this->group->getName()]
+                )
+            );
+        }
+
         if ($this->mapping->isSkipped($row)) {
             $import->setIsSkipped(true);
             $import->setSkippedMessage(
@@ -339,11 +354,6 @@ abstract class HandlerAbstract implements HandlerInterface
                         'import.unit_mapping.already_used'
                     );
             $import->setIsSkipped(true);
-        }
-
-        if (!$this->group) {
-            $import->setIsSkipped(true);
-            $import->setSkippedMessage($this->translator->trans('import.error.empty_group'));
         }
 
         $import->setErrors($errors);

@@ -38,6 +38,14 @@
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
             </trans-unit>
+            <trans-unit id="import.error.empty_group">
+                <source>import.error.empty_group</source>
+                <target>Group not found.</target>
+            </trans-unit>
+            <trans-unit id="import.error.group_not_integrated">
+                <source>import.error.group_not_integrated</source>
+                <target>"%group_name%" is not marked as integrated. Please contact help@renttrack.com to adjust your account setup.</target>
+            </trans-unit>
             <trans-unit id="import.error.mapping_date">
                 <source>import.error.mapping_date</source>
                 <target>

@@ -1730,11 +1730,10 @@ class ImportCase extends BaseTestCase
 
         $this->assertCount(2, $trs, "Count statuses is wrong");
         $this->assertCount(
-            1,
+            4,
             $trs['import.status.skip'],
-            "One contract should be skipped, because we don't have such account number"
+            "One contract should be skipped, because we don't have such account number and 3 isn't integrated"
         );
-
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
@@ -1752,13 +1751,13 @@ class ImportCase extends BaseTestCase
 
         $unitMapping = $em
             ->getRepository('RjDataBundle:UnitMapping')
-            ->findOneBy(['externalUnitId' => 'SP1152-C']);
+            ->findOneBy(['externalUnitId' => 'SO1004-M']);
 
         $this->assertNotNull($unitMapping);
         /** @var \RentJeeves\DataBundle\Entity\Unit $unit */
         $this->assertNotNull($unit = $unitMapping->getUnit());
         // We sure that only one contract for this unit was created
         $this->assertNotNull($contract = $unit->getContracts()->first());
-        $this->assertEquals('Campus Rent Group', $contract->getGroup()->getName());
+        $this->assertEquals('Test Rent Group', $contract->getGroup()->getName());
     }
 }
