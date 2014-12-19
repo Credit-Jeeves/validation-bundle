@@ -7,7 +7,7 @@ parameters:
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
-    mailer_delivery_address: 'systems@renttrack.com'  # force all email to be delivered to test mailbox
+    mailer_delivery_address: 'staging@renttrack.com'  # force all email to be delivered to test mailbox
     mailer_disable_delivery: false
 
     session.lifetime:  3600 #in seconds
