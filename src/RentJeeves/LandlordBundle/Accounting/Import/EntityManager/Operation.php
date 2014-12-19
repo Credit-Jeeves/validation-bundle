@@ -47,8 +47,6 @@ trait Operation
         $operation->setType(OperationType::RENT);
         $operation->setCreatedAt($paidFor);
 
-        $import->setOperation($operation);
-
         return $operation;
     }
 }
