@@ -292,10 +292,6 @@ trait FormBind
         if ($residentMapping->getId()) {
             $this->em->detach($residentMapping);
         }
-        $operation = $import->getOperation();
-        if ($operation && $operation->getId()) {
-            $this->em->detach($operation);
-        }
     }
 
     /**

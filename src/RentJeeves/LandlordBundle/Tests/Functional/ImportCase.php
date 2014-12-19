@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
-use CreditJeeves\DataBundle\Entity\Operation;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -143,7 +142,7 @@ class ImportCase extends BaseTestCase
     /**
      * @test
      */
-    public function withoutPayment()
+    public function shouldImportFile()
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
@@ -246,7 +245,7 @@ class ImportCase extends BaseTestCase
         $submitImportFile->click();
 
         $this->session->wait(
-            6000,
+            10000,
             "$('.finishedTitle').length > 0"
         );
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
@@ -341,111 +340,6 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('03/18/2011', $contractNew->getStartAt()->format('m/d/Y'));
         $this->assertEquals('03/31/2015', $contractNew->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
-    }
-
-    /**
-     * @test
-     */
-    public function withPayment()
-    {
-        $this->load(true);
-        $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        //First Step
-        $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $filePath = $this->getFilePathByName('import2.csv');
-        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
-        $submitImportFile->click();
-        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
-        $this->assertNotNull($table = $this->page->find('css', 'table'));
-        //Second step
-        $this->assertNotNull($table = $this->page->find('css', 'table'));
-
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
-        //Map Payment
-        $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column15'));
-        $choice->selectOption('payment_amount');
-        $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column16'));
-        $choice->selectOption('payment_date');
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-        $submitImportFile->click();
-        $this->session->wait(
-            5000,
-            "$('.errorField').length > 0"
-        );
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertEquals(3, count($errorFields));
-        //Make sure for this page we don't have operation
-        $this->assertNull($errorField = $this->page->find('css', '.import_operation_paidFor'));
-
-        $trs = $this->getParsedTrsByStatus();
-        $this->assertNotNull(
-            $email = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_tenant_email')
-        );
-        $email->setValue('2test@mail.com');
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
-        $submitImportFile->click();
-        $this->waitReviewAndPost(false);
-        //Make sure for this page we have operation
-        $today = new DateTime();
-        $this->assertNotNull($paidFor = $this->page->findAll('css', '.import_operation_paidFor'));
-        $this->assertEquals(1, count($paidFor));
-        $paidFor[0]->setValue($today->format('m/d/Y'));
-
-        $this->assertNotNull($amount = $this->page->findAll('css', '.import_operation_amount'));
-        $this->assertEquals(1, count($amount));
-        $amount[0]->setValue('99.99');
-
-        $trs = $this->getParsedTrsByStatus();
-        $this->fillSecondPageWrongValue($trs);
-
-        $submitImportFile->click();
-        $this->waitReviewAndPost(false);
-
-        $this->session->wait(
-            5000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
-
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /**
-         * @var $tenant Tenant
-         */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'marion@rentrack.com',
-            )
-        );
-        $this->assertNotNull($tenant);
-        /**
-         * @var $operation Operation
-         */
-        $operation = $em->getRepository('DataBundle:Operation')->findOneBy(
-            array(
-                'amount' => '99.99',
-                'paidFor'=> $today,
-            )
-        );
-
-        $this->assertNotNull($operation);
-        $user = $operation->getOrder()->getUser();
-        $this->assertNotNull($user);
-        $this->assertEquals($tenant->getEmail(), $user->getEmail());
     }
 
     protected function getWaitingRoom()
@@ -1554,7 +1448,7 @@ class ImportCase extends BaseTestCase
         $this->page->clickLink('tab.accounting');
 
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $filePath = $this->getFilePathByName('import2.csv');
+        $filePath = $this->getFilePathByName('import.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
@@ -1583,7 +1477,7 @@ class ImportCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $filePath = $this->getFilePathByName('import2.csv');
+        $filePath = $this->getFilePathByName('import.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));

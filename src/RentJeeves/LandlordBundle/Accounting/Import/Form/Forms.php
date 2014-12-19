@@ -2,8 +2,6 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 
-
-use CreditJeeves\DataBundle\Entity\Operation;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;

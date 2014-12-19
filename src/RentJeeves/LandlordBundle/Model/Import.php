@@ -2,7 +2,6 @@
 
 namespace RentJeeves\LandlordBundle\Model;
 
-use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
