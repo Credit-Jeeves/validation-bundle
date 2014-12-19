@@ -879,12 +879,10 @@
                 <source>legend.auto</source>
                 <target>Monthly auto payment</target>
             </trans-unit>
-
            <trans-unit id="conflict.resolve.uppercase">
                 <source>conflict.resolve.uppercase</source>
                 <target>RESOLVE</target>
             </trans-unit>
-
            <trans-unit id="conflict.resolve.action">
                 <source>conflict.resolve.action</source>
                 <target>Resolve</target>

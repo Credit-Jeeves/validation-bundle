@@ -54,12 +54,10 @@ class ImportContractType extends AbstractType
         Translator $translator,
         Import $import,
         $token = true,
-        $operation = true,
         $isMultipleProperty = false,
         $sendInvite = true
     ) {
         $this->isUseToken =  $token;
-        $this->isUseOperation = $operation;
         $this->em = $em;
         $this->translator = $translator;
         $this->import = $import;
@@ -178,22 +176,6 @@ class ImportContractType extends AbstractType
             );
         }
 
-        if ($this->isUseOperation) {
-            $builder->add(
-                'operation',
-                new ImportOperationType(),
-                array(
-                    'mapped'=> false
-                )
-            );
-            $builder->addEventListener(
-                FormEvents::SUBMIT,
-                function (FormEvent $event) use ($options, $self) {
-                    $self->processOperation($event);
-                }
-            );
-        }
-
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) use ($self) {
@@ -220,12 +202,12 @@ class ImportContractType extends AbstractType
         $contract = $event->getData();
         $handler = $this->import->getHandler();
         $isIsNeedCreateCashOperation = $handler->isNeedCreateCashOperation($contract);
-        $operation = $this->import->getOperation();
         $dueDate = $handler->getDueDateOfContract($contract);
-        if ($isIsNeedCreateCashOperation && empty($operation)) {
-            $operation = $handler->attachOperationToImport($this->import, $dueDate);
+        if (!$isIsNeedCreateCashOperation) {
+            return;
         }
 
+        $operation = $handler->getOperationByImport($this->import, $dueDate);
         $csrfToken = $this->import->getCsrfToken();
 
         if ($operation &&
@@ -310,46 +292,6 @@ class ImportContractType extends AbstractType
             'externalUnitId' => $this->import->getUnitMapping()->getExternalUnitId(),
         );
         $event->setData($data);
-    }
-
-    protected function processOperation(FormEvent $event)
-    {
-        $form = $event->getForm();
-        if (is_null($this->import->getTenant()->getId())) {
-            return;
-        }
-        /**
-         * @var $contract Contract
-         */
-        $contract = $form->getData();
-        if (is_null($contract->getId())) {
-            return;
-        }
-
-        $operationField = $form->get('operation');
-        /**
-         * @var $operation Operation
-         */
-        $operation = $operationField->getData();
-
-        if (!$operation->getPaidFor() || !$operation->getAmount()) {
-            return;
-        }
-
-        $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
-            $this->import->getTenant(),
-            $contract,
-            $operation->getPaidFor(),
-            $operation->getAmount()
-        );
-
-        if (empty($operation)) {
-            return;
-        }
-
-        $errorMessage = $this->translator->trans('error.operation.exist');
-        $operationField->get('amount')->addError(new FormError($errorMessage));
-        $operationField->get('paidFor')->addError(new FormError($errorMessage));
     }
 
     public function validateUnit(FormEvent $event)

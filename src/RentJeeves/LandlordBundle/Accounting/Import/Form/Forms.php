@@ -44,8 +44,7 @@ trait Forms
      */
     public function getContractForm(
         Import $import,
-        $isUseToken = true,
-        $isUseOperation = true
+        $isUseToken = true
     ) {
         return $this->createForm(
             new ImportContractType(
@@ -53,7 +52,6 @@ trait Forms
                 $this->translator,
                 $import,
                 $isUseToken,
-                $isUseOperation,
                 $isMultipleProperty = $this->storage->isMultipleProperty()
             )
         );
@@ -98,7 +96,6 @@ trait Forms
     {
         $tenant   = $import->getTenant();
         $contract = $import->getContract();
-        $operation = $import->getOperation();
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
 
@@ -116,16 +113,11 @@ trait Forms
             || ($tenantId && empty($contractId))
             || $hasContractWaiting = $import->getHasContractWaiting()
         ) {
-            $isUseOperation = ($import->getOperation() === null || $import->getHasContractWaiting())? false : true;
             $form = $this->getContractForm(
                 $import,
-                $isUseToken = true,
-                $isUseOperation
+                $isUseToken = true
             );
             $form->setData($contract);
-            if ($operation instanceof Operation) {
-                $form->get('operation')->setData($operation);
-            }
             $form->get('residentMapping')->setData($import->getResidentMapping());
             if ($this->storage->isMultipleProperty()) {
                 $form->get('unitMapping')->setData($import->getUnitMapping());
@@ -143,9 +135,6 @@ trait Forms
             );
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
-            if ($operation instanceof Operation) {
-                $form->get('contract')->get('operation')->setData($operation);
-            }
             $form->get('contract')->get('residentMapping')->setData($import->getResidentMapping());
             if ($this->storage->isMultipleProperty()) {
                 $form->get('contract')->get('unitMapping')->setData($import->getUnitMapping());

@@ -63,7 +63,6 @@ class ImportNewUserWithContractType extends AbstractType
                 $this->translator,
                 $this->import,
                 $token = false,
-                $useOperation = false,
                 $this->isMultipleProperty,
                 $sendInvite = false
             ),
