@@ -8,6 +8,7 @@ use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -19,6 +20,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class StorageCsv extends StorageAbstract
 {
     const IS_MULTIPLE_PROPERTY = 'is_multiple_property';
+
+    const IS_MULTIPLE_GROUP = 'is_multiple_group';
 
     const IMPORT_FILE_PATH = 'importFileName';
 
@@ -56,6 +59,16 @@ class StorageCsv extends StorageAbstract
     public function isMultipleProperty()
     {
         return $this->session->get(self::IS_MULTIPLE_PROPERTY);
+    }
+
+    public function setIsMultipleGroup($isMultipleGroup = false)
+    {
+        $this->session->set(self::IS_MULTIPLE_GROUP, $isMultipleGroup);
+    }
+
+    public function isMultipleGroup()
+    {
+        return !!$this->session->get(self::IS_MULTIPLE_GROUP);
     }
 
     public function getDateFormat()
@@ -118,6 +131,7 @@ class StorageCsv extends StorageAbstract
     {
         $file = $form['attachment']->getData();
         $property = $form['property']->getData();
+        $importType = $form['importType']->getData();
         $textDelimiter = $form['textDelimiter']->getData();
         $fieldDelimiter = $form['fieldDelimiter']->getData();
         $dateFormat = $form['dateFormat']->getData();
@@ -128,12 +142,17 @@ class StorageCsv extends StorageAbstract
         $this->setFieldDelimiter($fieldDelimiter);
         $this->setTextDelimiter($textDelimiter);
         $this->setFilePath($newFileName);
-        if ($property instanceof Property) {
+
+        $this->setIsMultipleGroup(false);
+        $this->setIsMultipleProperty(true);
+
+        if (ImportType::MULTI_GROUPS == $importType) {
+            $this->setIsMultipleGroup(true);
+        } elseif ($property instanceof Property) {
             $this->setPropertyId($property->getId());
             $this->setIsMultipleProperty(false);
-        } else {
-            $this->setIsMultipleProperty(true);
         }
+
         $this->setDateFormat($dateFormat);
     }
 

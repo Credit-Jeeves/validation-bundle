@@ -1,12 +1,16 @@
 <?php
 namespace RentJeeves\CoreBundle\Controller\Traits;
 
+use CreditJeeves\CoreBundle\Translation\Translator;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 trait FormErrors
 {
+    /**
+     * @var Translator
+     */
     protected $translator;
 
     /**

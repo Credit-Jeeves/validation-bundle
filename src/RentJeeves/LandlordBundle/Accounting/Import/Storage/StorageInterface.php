@@ -22,6 +22,8 @@ interface StorageInterface
 
     public function isMultipleProperty();
 
+    public function isMultipleGroup();
+
     public function isValid();
 
     public function clearSession();

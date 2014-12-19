@@ -2,7 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
+use CreditJeeves\DataBundle\Entity\Group as EntityGroup;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
+use RentJeeves\DataBundle\Entity\Property as EntityProperty;
+use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -12,6 +15,11 @@ use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\LandlordBundle\Model\Import;
 
+/**
+ * @property EntityGroup group
+ * @method EntityProperty getProperty
+ * @method EntityUnit getUnit
+ */
 trait Contract
 {
     protected function setYardiPaymentAccepted(EntityContract $contract, $row)
@@ -40,14 +48,18 @@ trait Contract
         if ($property) {
             $contract->setProperty($property);
         }
-        $contract->setGroup($this->group);
-        $contract->setHolding($this->group->getHolding());
+        if ($this->group) {
+            $contract->setGroup($this->group);
+            $contract->setHolding($this->group->getHolding());
+        }
         $contract->setTenant($tenant);
 
         if ($unit = $this->getUnit($row, $contract->getProperty())) {
             $contract->setUnit($unit);
         }
-        $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
+        if ($this->group) {
+            $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
+        }
         $moveIn = $this->getDateByField($import, $row[Mapping::KEY_MOVE_IN]);
         $contract->setStartAt($moveIn);
 
@@ -142,10 +154,14 @@ trait Contract
 
     public static function getDueDateOfContract(EntityContract $contract)
     {
-        $groupSettings = $contract->getGroup()->getGroupSettings();
-        $dueDate = ($contract->getDueDate())? $contract->getDueDate() : $groupSettings->getDueDate();
+        if ($contract->getGroup()) {
+            $groupSettings = $contract->getGroup()->getGroupSettings();
+            $dueDate = ($contract->getDueDate())? $contract->getDueDate() : $groupSettings->getDueDate();
 
-        return $dueDate;
+            return $dueDate;
+        }
+
+        return null;
     }
 
     /**

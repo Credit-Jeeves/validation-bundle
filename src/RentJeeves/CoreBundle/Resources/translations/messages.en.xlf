@@ -38,6 +38,14 @@
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
             </trans-unit>
+            <trans-unit id="import.error.empty_group">
+                <source>import.error.empty_group</source>
+                <target>Group not found.</target>
+            </trans-unit>
+            <trans-unit id="import.error.group_not_integrated">
+                <source>import.error.group_not_integrated</source>
+                <target>"%group_name%" is not marked as integrated. Please contact help@renttrack.com to adjust your account setup.</target>
+            </trans-unit>
             <trans-unit id="import.error.mapping_date">
                 <source>import.error.mapping_date</source>
                 <target>
@@ -544,6 +552,10 @@
             <trans-unit id="amount">
                 <source>amount</source>
                 <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="import.group_account_number">
+                <source>import.group_account_number</source>
+                <target>Account Number</target>
             </trans-unit>
             <trans-unit id="import.payment.amount">
                 <source>import.payment.amount</source>
@@ -2542,6 +2554,30 @@
             <trans-unit id="import.review.finish">
               <source>import.review.finish</source>
               <target>Data has been imported.</target>
+            </trans-unit>
+            <trans-unit id="import.type">
+              <source>import.type</source>
+              <target>Import Type</target>
+            </trans-unit>
+            <trans-unit id="import.type.single_property">
+              <source>import.type.single_property</source>
+              <target>Single Group with Single Property</target>
+            </trans-unit>
+            <trans-unit id="import.type.multi_property">
+              <source>import.type.multi_property</source>
+              <target>Single Group with Multiple Properties</target>
+            </trans-unit>
+            <trans-unit id="import.type.multi_groups">
+              <source>import.type.multi_groups</source>
+              <target>Multiple Groups with Multiple Properties</target>
+            </trans-unit>
+            <trans-unit id="import.property.empty_value">
+              <source>import.property.empty_value</source>
+              <target>Select Property</target>
+            </trans-unit>
+            <trans-unit id="import.errors.single_property_select">
+              <source>import.errors.single_property_select</source>
+              <target>Please select property for import.</target>
             </trans-unit>
             <trans-unit id="regexp.error.name">
                 <source>regexp.error.name</source>

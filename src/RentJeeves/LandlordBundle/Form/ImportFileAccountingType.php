@@ -2,9 +2,13 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
+use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -19,19 +23,26 @@ use Symfony\Component\Form\FormEvents;
 
 class ImportFileAccountingType extends AbstractType
 {
-    protected $group;
-
     protected $em;
 
     protected $validationGroups;
 
-    protected $availableValidationGroups = array(
-        'default', 'yardi', 'csv'
-    );
+    protected $isHoldingAdmin = false;
 
-    public function __construct($group, $em, $validationGroups = array('default'))
-    {
-        $this->group = $group;
+    protected $currentGroup;
+
+    protected $availableValidationGroups = [
+        'default', 'yardi', 'csv'
+    ];
+
+    public function __construct(
+        $isHoldingAdmin,
+        Group $currentGroup,
+        EntityManager $em,
+        $validationGroups = ['default']
+    ) {
+        $this->currentGroup = $currentGroup;
+        $this->isHoldingAdmin = $isHoldingAdmin;
         $this->setValidationGroup($validationGroups);
         $this->em = $em;
     }
@@ -52,16 +63,45 @@ class ImportFileAccountingType extends AbstractType
     }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $group = $this->group;
+        $group = $this->currentGroup;
+
+        $builder->add(
+            'importType',
+            'choice',
+            [
+                'label' => 'import.type',
+                'label_attr' => [
+                    'data-bind' => 'visible: ($root.source() == "csv")',
+                ],
+                'attr' => [
+                    'class' => 'original widthSelect',
+                    'data-bind' => 'value: importType, visible: ($root.source() == "csv")',
+                ],
+                'choices' => array_merge([
+                    ImportType::SINGLE_PROPERTY => 'import.type.single_property',
+                    ImportType::MULTI_PROPERTIES => 'import.type.multi_property',
+                ], $this->isHoldingAdmin ? [ImportType::MULTI_GROUPS => 'import.type.multi_groups'] : [])
+            ]
+        );
 
         $builder->add(
             'property',
             'entity',
             array(
-                'empty_value'   => 'landlord.form.import.multiple.property',
+                'empty_value' => 'import.property.empty_value',
+                'error_bubbling' => true,
                 'class'         => 'RjDataBundle:Property',
                 'attr'          => array(
+                    'force_row' => true,
                     'class' => 'original widthSelect',
+                    'data-bind' => 'visible: ($root.importType() == "' .
+                        ImportType::SINGLE_PROPERTY .
+                        '" || $root.source() == "yardi")',
+                ),
+                'label_attr' => array(
+                    'data-bind' => 'visible: ($root.importType() == "' .
+                        ImportType::SINGLE_PROPERTY .
+                        '" || $root.source() == "yardi")',
                 ),
                 'required'      => false,
                 'mapped'        => false,
@@ -76,7 +116,8 @@ class ImportFileAccountingType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
-                            'groups'  => array('yardi'),
+                            'groups'  => array('yardi', 'single_property'),
+                            'message' => 'import.errors.single_property_select'
                         )
                     )
                 )
@@ -255,7 +296,6 @@ class ImportFileAccountingType extends AbstractType
         $builder->addEventListener(
             FormEvents::SUBMIT,
             function (FormEvent $event) use ($self) {
-                $data = $event->getData();
                 $form = $event->getForm();
                 /**
                  * @var $property Property
@@ -266,7 +306,7 @@ class ImportFileAccountingType extends AbstractType
                     return;
                 }
 
-                $holdingId = $self->group->getHolding()->getId();
+                $holdingId = $self->currentGroup->getHolding()->getId();
                 /**
                  * @var $propertyMapping PropertyMapping
                  */
@@ -296,6 +336,9 @@ class ImportFileAccountingType extends AbstractType
                     if ($form->isSubmitted()) {
                         $data = $form->getData();
                         $groups = array('default', $data['fileType']);
+                        if (ImportType::SINGLE_PROPERTY == $data['importType']) {
+                            $groups = array_merge($groups, ['single_property']);
+                        }
 
                         return $groups;
                     }

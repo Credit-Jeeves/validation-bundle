@@ -121,6 +121,12 @@ class MappingCsv extends MappingAbstract
     {
         $mappedData = parent::makeSureAllKeysExist($mappedData);
 
+        if ($this->storage->isMultipleGroup()) {
+            if (!isset($mappedData[self::KEY_GROUP_ACCOUNT_NUMBER])) {
+                $mappedData[self::KEY_GROUP_ACCOUNT_NUMBER] = null;
+            }
+        }
+
         if ($this->storage->isMultipleProperty()) {
             foreach ($this->requiredKeysMultipleProperty as $requiredKey) {
                 if (!isset($mappedData[$requiredKey])) {

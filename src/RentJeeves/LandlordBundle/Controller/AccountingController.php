@@ -125,7 +125,11 @@ class AccountingController extends Controller
     {
         $this->checkAccessToAccounting();
         $form = $this->createForm(
-            new ImportFileAccountingType($this->getCurrentGroup(), $this->getDoctrine()->getManager())
+            new ImportFileAccountingType(
+                $this->getUser()->getIsSuperAdmin(),
+                $this->getCurrentGroup(),
+                $this->getDoctrine()->getManager()
+            )
         );
 
         $form->handleRequest($this->get('request'));
@@ -136,7 +140,8 @@ class AccountingController extends Controller
             return array(
                 'form'          => $form->createView(),
                 'nGroups'       => $this->getGroups()->count(),
-                'source'        => $form->get('fileType')->getData()
+                'source'        => $form->get('fileType')->getData(),
+                'importType'    => $form->get('importType')->getData(),
             );
         }
 

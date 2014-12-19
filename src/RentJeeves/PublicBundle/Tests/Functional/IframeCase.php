@@ -171,8 +171,7 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
         $this->assertEquals(
             'property.number.not.exist',
@@ -185,15 +184,8 @@ class IframeCase extends BaseTestCase
                 'property-search' => $fillAddress,
             )
         );
-        $url = $this->session->getCurrentUrl();
         $propertySearch->click();
-        $this->session->wait($this->timeout+10000, "typeof $ !== undefined");
-        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
-        $searchSubmit->click();
-        $this->session->wait($this->timeout, "document.URL != '{$url}'");
-        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
+        $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "$('#property-search').val() == '{$fillAddress}'");
         //end check search on the not found
         $this->assertNotNull($pricing = $this->page->find('css', '#popup-pricing'));

@@ -62,18 +62,20 @@ trait Property
      */
     protected function tryMapPropertyByUnit(EntityProperty $property, $unitName, $unitId)
     {
-        /**
-         * @var $unit Unit
-         */
-        $unit = $this->em->getRepository('RjDataBundle:Unit')
-            ->getImportUnit(
-                $this->group->getId(),
-                $unitName,
-                $unitId
-            );
-        if ($unit) {
-            $this->propertyList[md5($property->getFullAddress())] = $unit->getProperty();
-            return $unit->getProperty();
+        if ($this->group) {
+            /**
+             * @var $unit Unit
+             */
+            $unit = $this->em->getRepository('RjDataBundle:Unit')
+                ->getImportUnit(
+                    $this->group->getId(),
+                    $unitName,
+                    $unitId
+                );
+            if ($unit) {
+                $this->propertyList[md5($property->getFullAddress())] = $unit->getProperty();
+                return $unit->getProperty();
+            }
         }
 
         return null;

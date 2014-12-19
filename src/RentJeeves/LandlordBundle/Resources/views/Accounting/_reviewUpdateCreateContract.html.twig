@@ -12,7 +12,7 @@
             has_contract_waiting
         )">
     {{ form_start(form) }}
-    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>
+    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)+' import_status_text'}"></td>
     {% if isMultipleProperty == "true" %}
             <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
                 <span data-bind="text: contract.property.full_address">
