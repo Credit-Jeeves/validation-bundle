@@ -181,7 +181,8 @@ trait Contract
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
                 ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
-                isset($row[Mapping::KEY_UNIT_ID])? $row[Mapping::KEY_UNIT_ID] : null
+                isset($row[Mapping::KEY_UNIT_ID])? $row[Mapping::KEY_UNIT_ID] : null,
+                $property->getId()
             );
 
             if (empty($contract)) {
