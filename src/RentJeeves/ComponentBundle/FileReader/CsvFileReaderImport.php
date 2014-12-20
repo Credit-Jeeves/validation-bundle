@@ -12,8 +12,6 @@ use RentJeeves\ComponentBundle\FileReader\CsvFileReader as Base;
  */
 class CsvFileReaderImport extends Base
 {
-    protected $linesTotal = array();
-
     public function read($filename, $offset = null, $rowCount = null)
     {
         $result = array();
@@ -57,18 +55,14 @@ class CsvFileReaderImport extends Base
             $file = $this->getFile($file);
         }
 
-        if (isset($this->linesTotal[$file->getFilename()])) {
-            return $this->linesTotal[$file->getFilename()];
-        }
-
-        $this->linesTotal[$file->getFilename()] = 0;
+        $total = 0;
         // force to seek to last line, won't raise error
         while ($row = $file->current()) {
             $file->next();
-            $this->linesTotal[$file->getFilename()] = $file->key();
+            $total = $file->key();
         }
-        $file->rewind();
-        return $this->linesTotal[$file->getFilename()];
+
+        return $total;
     }
 
     protected function getLine($row, $header, $file, &$result)

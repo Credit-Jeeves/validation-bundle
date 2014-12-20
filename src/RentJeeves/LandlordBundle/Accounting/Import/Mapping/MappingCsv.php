@@ -43,19 +43,6 @@ class MappingCsv extends MappingAbstract
         return true;
     }
 
-    public function getData($offset = null, $rowCount = null)
-    {
-        $mappedData = array();
-        $data       = $this->reader->read($this->storage->getFilePath(), $offset, $rowCount);
-
-        foreach ($data as $key => $values) {
-            $row          = $this->mappingRow($values);
-            $mappedData[] = $row;
-        }
-
-        return $mappedData;
-    }
-
     public function getTotal()
     {
         return $this->reader->countLines($this->storage->getFilePath());

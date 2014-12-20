@@ -1574,6 +1574,9 @@ class ImportCase extends BaseTestCase
             $paidTo = new DateTime();
             $paidTo->modify("-5 days");
             $contract->setPaidTo($paidTo);
+            $startAt = new DateTime();
+            $startAt->modify("-5 month");
+            $contract->setStartAt($startAt);
             $em->flush($contract);
         } else {
             $today = new DateTime();
@@ -1581,6 +1584,10 @@ class ImportCase extends BaseTestCase
             $this->assertTrue(
                 $contract->getPaidTo()->format('Ym') > $today->format('Ym'),
                 "Contract paidTo date did not advance"
+            );
+            $this->assertTrue(
+                $contract->getStartAt()->format('Ym') === $today->format('Ym'),
+                "Contract startAt date did not advance"
             );
         }
     }
@@ -1653,5 +1660,70 @@ class ImportCase extends BaseTestCase
         // We sure that only one contract for this unit was created
         $this->assertNotNull($contract = $unit->getContracts()->first());
         $this->assertEquals('Test Rent Group', $contract->getGroup()->getName());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldOnlyNewAndException()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->setProperty();
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import_only_exception.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/Y');
+        $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
+        $exceptionOnly->check();
+        $submitImportFile->click();
+
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+        for ($i = 1; $i <= 14; $i++) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            if (isset($this->mapFile[$i])) {
+                $choice->selectOption($this->mapFile[$i]);
+            }
+        }
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+
+        $this->session->wait(
+            15000,
+            "$('.errorField').length > 0"
+        );
+
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertEquals(1, count($errorFields));
+        $this->assertEquals($errorFields[0]->getValue(), '2testmail.com');
+
+        $trs = $this->getParsedTrsByStatus();
+
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs['import.status.new']), "New contract on first page is wrong number");
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertNotNull(
+            $email = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_tenant_email')
+        );
+        $email->setValue('2test@mail.com');
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $this->session->wait(
+            6000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
     }
 }

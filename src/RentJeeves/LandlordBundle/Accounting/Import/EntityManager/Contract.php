@@ -144,7 +144,7 @@ trait Contract
                 $dueDate
             );
 
-            $operation = $this->getOperationByContract($contract, $import, $paidFor);
+            $operation = $this->getOperationByContract($contract, $paidFor);
 
             return $operation;
         }

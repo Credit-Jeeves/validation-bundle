@@ -283,12 +283,6 @@ class ImportFileAccountingType extends AbstractType
             array(
                 'label'     => 'import.onlyException',
                 'required'  => false,
-                'attr'      => array(
-                    'data-bind' => 'visible: ($root.source() == "yardi")'
-                ),
-                'label_attr' => array(
-                    'data-bind' => 'visible: ($root.source() == "yardi")',
-                )
             )
         );
 

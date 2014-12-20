@@ -104,6 +104,32 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
+     * @param integer $offset
+     * @param integer $rowCount
+     * @param bool $useMapping
+     *
+     * @return array
+     */
+    public function getData($offset = null, $rowCount = null, $useMapping = true)
+    {
+
+        $data = $this->reader->read($this->storage->getFilePath(), $offset, $rowCount);
+
+        if (!$useMapping) {
+            return $data;
+        }
+
+        $mappedData = array();
+
+        foreach ($data as $key => $values) {
+            $row = $this->mappingRow($values);
+            $mappedData[] = $row;
+        }
+
+        return $mappedData;
+    }
+
+    /**
      * @param Tenant $tenant
      * @param Contract $contract
      * @param ResidentMapping $residentMapping
