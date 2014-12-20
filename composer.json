@@ -114,7 +114,6 @@
             "type": "git",
             "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git"
         },
-
         {
             "type": "git",
             "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git"
@@ -170,6 +169,10 @@
         {
             "type": "git",
             "url": "git@github.com:Credit-Jeeves/BackupRestoreBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git"
         },
         {
             "type": "git",
@@ -258,6 +261,7 @@
         "besimple/soap-client": "dev-master",
         "besimple/soap-server": "dev-master",
         "besimple/wsdl2php": "dev-master",
+        "renttrack/transunion-bundle": "dev-master",
         "proberts/skip32": "dev-master"
     },
     "require-dev": {

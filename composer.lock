@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e36444166d279b9a33b26f720bb3b0a2",
+    "hash": "9ceafa49ecf5d2bc7c5c0933b297bef9",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -320,7 +320,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git",
-                "reference": "9baa26abe1ed6fe8df5e4f9a54a0614e6e6de731"
+                "reference": "d88fdf45f6a28e5cede9944c2563a3b346bd859d"
             },
             "require": {
                 "ass/xmlsecurity": "~1.0",
@@ -4132,6 +4132,47 @@
             "time": "2012-12-21 11:40:51"
         },
         {
+            "name": "renttrack/transunion-bundle",
+            "version": "dev-vantage-score",
+            "target-dir": "RentTrack/TransUnionBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git",
+                "reference": "8c621c04b7268f0bcce72e0255b316a3a93de3b1"
+            },
+            "require": {
+                "besimple/soap-client": "dev-master",
+                "besimple/soap-common": "dev-master",
+                "php": ">=5.4.2",
+                "symfony/framework-bundle": "~2.4"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "RentTrack\\TransUnionBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tatyana Stronina",
+                    "email": "tatyana@renttrack.com"
+                },
+                {
+                    "name": "Cary Penniman",
+                    "email": "cary@renttrack.com"
+                }
+            ],
+            "description": "The bundle allows to interact with TransUnion API",
+            "homepage": "https://github.com/Credit-Jeeves/TransUnionBundle",
+            "keywords": [
+                "trans union api"
+            ],
+            "time": "2014-12-19 11:27:18"
+        },
+        {
             "name": "rj/email-bundle",
             "version": "dev-master",
             "target-dir": "Rj/EmailBundle",
@@ -7014,6 +7055,7 @@
         "besimple/soap-client": 20,
         "besimple/soap-server": 20,
         "besimple/wsdl2php": 20,
+        "renttrack/transunion-bundle": 20,
         "proberts/skip32": 20,
         "behat/mink": 20,
         "behat/mink-zombie-driver": 20,
