@@ -23,8 +23,6 @@ use Doctrine\ORM\EntityManager;
  */
 class InviteLandlord
 {
-    private $isNew = true;
-
     protected $em;
 
     /**
@@ -53,16 +51,12 @@ class InviteLandlord
         $em = $this->em;
         $landlord = new Landlord();
         $contract = new Contract();
-
-        $landlordInDb = $em->getRepository('RjDataBundle:Landlord')->findOneBy(
-            array(
-                'email' => $invite->getEmail(),
-            )
-        );
         $contract->setStatus(ContractStatus::PENDING);
+
+        $landlordInDb = $em->getRepository('RjDataBundle:Landlord')->findOneBy(['email' => $invite->getEmail()]);
+
         if ($landlordInDb) {
             unset($landlord);
-            $this->isNew = false;
             $landlord = $landlordInDb;
             $holding = $landlord->getHolding();
             $group = $landlord->getCurrentGroup();
@@ -73,62 +67,43 @@ class InviteLandlord
             $landlord->setPhone($invite->getPhone());
             $landlord->setEmail($invite->getEmail());
             $landlord->setCulture($this->locale);
+
             $holding = new Holding();
             $holding->setName($landlord->getUsername());
             $landlord->setHolding($holding);
+
             $group = new Group();
             $group->setName($landlord->getUsername());
             $group->setType(GroupType::RENT);
             $group->setHolding($holding);
             $holding->addGroup($group);
             $landlord->setAgentGroups($group);
+
             $em->persist($group);
             $em->persist($holding);
             $em->flush();
         }
 
-        if ($unit = $invite->getUnit()) {
-            $property = $unit->getProperty();
-            $isSingleProperty = $property->isSingle();
-            $unitName = $unit->getName();
+        $property = $invite->getProperty();
+        if ($invite->getIsSingle()) {
+            $property->setIsSingle(true);
+            $em->flush($property);
         } else {
-            $property = $invite->getProperty();
+            $contract->setSearch($invite->getUnitName());
         }
-
-        if ($property) {
-            // Create contract only if we have property
-            isset($isSingleProperty) || $isSingleProperty = $invite->getIsSingle();
-            if ($isSingleProperty) {
-                $property->setIsSingle(true);
-                $em->flush($property);
-            } else {
-                isset($unitName) || $unitName = $invite->getUnitName();
-                $contract->setSearch($unitName);
-            }
-
-            $group->addGroupProperty($property);
-            $contract->setProperty($property);
-            $contract->setTenant($tenant);
-            $contract->setHolding($holding);
-            $contract->setGroup($group);
-        }
+        $group->addGroupProperty($property);
+        $contract->setProperty($property);
+        $contract->setTenant($tenant);
+        $contract->setHolding($holding);
+        $contract->setGroup($group);
 
         $em->persist($group);
-        !$property || $em->persist($contract);
+        $em->persist($contract);
         $em->persist($landlord);
-
         $em->flush();
 
         $this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract);
 
         return $landlord;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNew()
-    {
-        return $this->isNew;
     }
 }

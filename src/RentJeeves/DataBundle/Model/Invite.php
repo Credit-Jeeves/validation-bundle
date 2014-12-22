@@ -79,17 +79,6 @@ abstract class Invite
     protected $email;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
-     *     inversedBy="unit"
-     * )
-     * @ORM\JoinColumn(
-     *     name="unit_id",
-     *     referencedColumnName="id"
-     * )
-     */
-    protected $unit;
-    /**
      * @var string
      *
      * @ORM\Column(name="unitName", type="string", length=50, nullable=true)
@@ -230,29 +219,6 @@ abstract class Invite
     public function getEmail()
     {
         return $this->email;
-    }
-
-    /**
-     * Set unit
-     *
-     * @param \RentJeeves\DataBundle\Entity\Unit $unit
-     * @return Invite
-     */
-    public function setUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
-    {
-        $this->unit = $unit;
-
-        return $this;
-    }
-
-    /**
-     * Get unit
-     *
-     * @return \RentJeeves\DataBundle\Entity\Unit
-     */
-    public function getUnit()
-    {
-        return $this->unit;
     }
 
     /**
