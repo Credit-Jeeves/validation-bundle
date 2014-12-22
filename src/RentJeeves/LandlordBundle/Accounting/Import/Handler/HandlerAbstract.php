@@ -264,14 +264,11 @@ abstract class HandlerAbstract implements HandlerInterface
             $import->setAddress($row[ImportMapping::KEY_STREET].','.$row[ImportMapping::KEY_CITY]);
         }
 
-        $token = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
+        $token      = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $import->setCsrfToken($token);
 
         $import->setResidentMapping($this->getResident($tenant, $row));
-
-        if ($contract && $unit = $contract->getUnit()) {
-            $import->setUnitMapping($this->getUnitMapping($row, $unit));
-        }
+        $import->setUnitMapping($this->getUnitMapping($row));
 
         $contractWaiting = $this->getContractWaiting(
             $import->getTenant(),
