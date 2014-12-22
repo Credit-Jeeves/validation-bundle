@@ -843,7 +843,7 @@
                 <source>error.unit.reserved</source>
                 <target><![CDATA[
                     We're sorry, but we could not find a resident with that name
-                    for specified unit. Please contact your property manager.
+                    for the specified unit. Please contact your property manager or email help@renttrack.com.
                     ]]>
                 </target>
             </trans-unit>
