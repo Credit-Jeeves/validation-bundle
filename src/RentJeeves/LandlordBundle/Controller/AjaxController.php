@@ -35,7 +35,7 @@ use Exception;
 use Symfony\Component\Validator\ConstraintViolation;
 
 /**
- * 
+ *
  * @Route("/ajax")
  *
  */
@@ -220,7 +220,7 @@ class AjaxController extends Controller
         $page = $request->request->all('data');
         $page = $page['data'];
         $data = array('properties' => array(), 'total' => 0, 'pagination' => array());
-    
+
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
         $total = $repo->countProperties($group, $page['searchCollum'], $page['searchText']);
@@ -238,7 +238,7 @@ class AjaxController extends Controller
                 $page['searchCollum'],
                 $page['searchText']
             );
-            
+
             foreach ($properties as $property) {
                 $item = $property->getItem($group);
                 $items[] = $item;
@@ -394,10 +394,9 @@ class AjaxController extends Controller
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
         $user = $this->getUser();
-        $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
         $em = $this->getDoctrine()->getManager();
-        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $holding, $group);
+        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $group);
         foreach ($records as $entity) {
             $em->remove($entity);
             $em->flush();
@@ -407,7 +406,7 @@ class AjaxController extends Controller
         $em->flush();
         return new JsonResponse(array());
     }
-    
+
 
     /* Unit */
 
@@ -425,7 +424,6 @@ class AjaxController extends Controller
     {
         $result = array('property' => '', 'units' => array());
         $user = $this->getUser();
-        $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
@@ -436,7 +434,6 @@ class AjaxController extends Controller
             ->getRepository('RjDataBundle:Unit')
             ->getUnitsArray(
                 $property,
-                $holding,
                 $group
             );
         return new JsonResponse($result);
@@ -512,7 +509,7 @@ class AjaxController extends Controller
                 'isNew' => (empty($unit['id']))? true : false,
             );
         }
-        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $holding, $group);
+        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $group);
         $em = $this->getDoctrine()->getManager();
 
         //Update Current Unit
@@ -550,7 +547,7 @@ class AjaxController extends Controller
         }
 
         $em->flush();
-        $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($property, $holding, $group);
+        $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($property, $group);
         return new JsonResponse($data);
     }
 
@@ -573,7 +570,7 @@ class AjaxController extends Controller
         $page = $request->request->all('data');
         $page = $page['data'];
         $data = array('tenants' => array(), 'total' => 0, 'pagination' => array());
-    
+
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Tenant');
         $total = $repo->countTenants($group);
@@ -696,7 +693,7 @@ class AjaxController extends Controller
         $result['total'] = $total;
         $result['paidForArr'] = $paidForArr;
         $result['pagination'] = $this->datagridPagination($total, $data['limit']);
-        
+
         return new JsonResponse($result);
     }
 
