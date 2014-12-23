@@ -5,9 +5,9 @@ use Doctrine\ORM\EntityRepository;
 
 class UnitRepository extends EntityRepository
 {
-    public function getUnitsArray($property, $holding = null, $group = null)
+    public function getUnitsArray($property, $group = null)
     {
-        $units = $this->getUnits($property, $holding, $group);
+        $units = $this->getUnits($property, $group);
         $result = array();
         foreach ($units as $unit) {
             $item = array();
@@ -18,17 +18,13 @@ class UnitRepository extends EntityRepository
         return $result;
     }
 
-    public function getUnits($property, $holding = null, $group = null)
+    public function getUnits($property, $group = null)
     {
 
         $query = $this->createQueryBuilder('u');
         $query->select('LENGTH(u.name) as co,u');
         $query->where('u.property = :property');
         $query->setParameter('property', $property);
-        if ($holding) {
-            $query->andWhere('u.holding = :holding');
-            $query->setParameter('holding', $holding);
-        }
         if ($group) {
             $query->andWhere('u.group = :group');
             $query->setParameter('group', $group);
