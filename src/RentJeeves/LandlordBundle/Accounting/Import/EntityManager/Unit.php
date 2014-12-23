@@ -40,8 +40,9 @@ trait Unit
             /**
              * @var $unitMapping UnitMapping
              */
-            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
-                array('externalUnitId' => $row[Mapping::KEY_UNIT_ID])
+            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
+                $this->group,
+                $row[Mapping::KEY_UNIT_ID]
             );
             if ($unitMapping) {
                 return $unitMapping->getUnit();
