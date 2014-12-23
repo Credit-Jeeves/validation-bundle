@@ -22,15 +22,6 @@ use RentJeeves\LandlordBundle\Model\Import;
  */
 class HandlerYardi extends HandlerAbstract
 {
-    use Forms;
-    use Contract;
-    use Tenant;
-    use Resident;
-    use Property;
-    use Operation;
-    use FormBind;
-    use Unit;
-    
     /**
      * @InjectParams({
      *     "translator"       = @Inject("translator"),
