@@ -40,8 +40,9 @@ trait Unit
             /**
              * @var $unitMapping UnitMapping
              */
-            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
-                array('externalUnitId' => $row[Mapping::KEY_UNIT_ID])
+            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
+                $this->group,
+                $row[Mapping::KEY_UNIT_ID]
             );
             if ($unitMapping) {
                 return $unitMapping->getUnit();
@@ -102,8 +103,12 @@ trait Unit
      * @param array $row
      * @return UnitMapping
      */
-    public function getUnitMapping(array $row)
+    public function getUnitMapping(array $row, EntityUnit $unit)
     {
+        if (!$unit) {
+            throw new InvalidArgumentException('The unit argument cannot be null.');
+        }
+
         if (!array_key_exists(Mapping::KEY_UNIT_ID, $row)) {
             return new UnitMapping();
         }
@@ -123,6 +128,7 @@ trait Unit
         $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
             array(
                 'externalUnitId' => $externalUnitId,
+                'unit' => $unit
             )
         );
         if (empty($unitMapping)) {
