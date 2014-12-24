@@ -79,7 +79,15 @@
               <!-- ko if: payments().length -->
               <tbody id="payments-block-tbody" data-bind="foreach: payments" class="zebra-grid">
                 <tr>
-                    <td data-bind="attr: {'class': 'actions-status '+style}, text: status, i18n:{}"></td>
+                    <td data-bind="attr: {'class': 'actions-status '+style}">
+                        <span data-bind="text: status, i18n:{}, attr: {'title' : errorMessage}"></span>
+                        <span
+                            class="status-text-helper"
+                            data-bind="visible: $root.isNotSuccessStatus(status)"
+                            style="cursor: pointer">
+                            <img src="{{ asset('bundles/core/images/help-icon.gif') }}">
+                        </span>
+                    </td>
                     <td data-bind="text: finish"></td>
                     <td data-bind="text: address"></td>
                     <td data-bind="text: tenant"></td>
@@ -108,7 +116,15 @@
 
                 <!-- ko foreach: orders -->
                 <tr data-bind="css: $root.toggledZebraCss($parent.batch, $parentContext.$index(), false), visible: !$parent.isDeposit">
-                    <td data-bind="attr: {'class': 'actions-status '+style}, text: $root.getOrderStatusText($parent.isDeposit, $data)"></td>
+                    <td data-bind="attr: {'class': 'actions-status '+style}">
+                        <span data-bind="text: $root.getOrderStatusText($parent.isDeposit, $data), attr: {'title' : errorMessage}"></span>
+                        <span
+                                class="status-text-helper"
+                                data-bind="visible: $root.isNotSuccessStatus($data.status)"
+                                style="cursor: pointer">
+                            <img src="{{ asset('bundles/core/images/help-icon.gif') }}">
+                        </span>
+                    </td>
                     <!-- ko if: $parent.isDeposit -->
                     <td data-bind="text: finish"></td>
                     <!-- /ko -->

@@ -518,6 +518,13 @@ class Order extends BaseOrder
         $result['icon'] = $this->getOrderTypes();
         $status = $this->getStatus();
         $result['status'] = 'order.status.text.'.$status;
+        if ($this->getStatus() == OrderStatus::ERROR) {
+            $result['errorMessage'] = $this->getHeartlandErrorMessage();
+        } else {
+            $result['errorMessage'] = $this->getHeartlandTransaction() ?
+                $this->getHeartlandTransaction()->getMessages() :
+                '';
+        }
         switch ($status) {
             case OrderStatus::COMPLETE:
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
@@ -584,6 +591,10 @@ class Order extends BaseOrder
         $result['status'] = $this->getStatus();
         if ($this->getStatus() == OrderStatus::ERROR) {
             $result['errorMessage'] = $this->getHeartlandErrorMessage();
+        } else {
+            !$this->getHeartlandTransaction() || $result['errorMessage'] = $this
+                ->getHeartlandTransaction()
+                ->getMessages();
         }
         $result['style'] = $this->getOrderStatusStyle();
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
