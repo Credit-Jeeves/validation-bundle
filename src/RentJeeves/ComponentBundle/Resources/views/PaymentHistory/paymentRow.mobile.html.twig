@@ -1,0 +1,117 @@
+<div data-role="page" id="paymentHistory{{ aContract.id }}">
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a href="#contract{{ aContract.id }}" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
+        <h1 class="ui-title" role="heading" aria-level="1">Payment History</h1>
+    </div>
+
+    <div class="ui-content" role="main">
+
+
+{#
+    <div id="address-{{ aContract.id }}" class="tradeline-name">{{ aContract.address }}</div>
+    <div class="clearboth"></div>
+    <div class="tradeline-info rent-info">
+        {% if isActive == true %}
+        <div class="tradeline-status tradeline-O rent-status">{{ aContract.status }}</div>
+        {% else %}
+        <div class="tradeline-status tradeline-C rent-status">{{ aContract.status }}</div>
+        {% endif %}
+        <div class="tradeline-balance"><b>{{ 'rent.monthly.rent' | trans }}: ${{ aContract.rent }}</b></div>
+        <div class="tradeline-last-payment">
+            <span class="tradeline-amount">{{ aContract.last_date }}</span>{{ 'tradeline.last.payment' | trans }}:</br>
+            <span class="tradeline-amount">${{ aContract.last_amount }}</span>{{ 'rent.last.amount' | trans }}:
+        </div>
+    </div>
+
+
+    <div class="tradeline-history">
+        <div class="tradeline-history-toolbar">{{ 'tradeline.history.payment' | trans }} </div>
+        <div class="tradeline-history-date">Updated&nbsp;{{ aContract.updated }}</div>
+        <div class="clearboth"></div>
+
+
+
+        <div class="tradeline-history-body">
+
+
+            <div class="tradeline-history-head">
+                <div class="tradeline-history-year"></div>
+                {% for sMonth in aMonthes %}
+                <div class="tradeline-history-month">{{ sMonth }}</div>
+                {% endfor %}
+                <div class="clearboth"></div>
+            </div>
+
+
+            <div class="clearboth"></div>
+            #}
+
+
+
+            {% for nYear, aData in aContract.history %}
+        <div>{{ nYear }}</div>
+
+        <table data-role="table" class="ui-responsive">
+            <thead>
+            <tr>
+                <td>Month</td>
+                <td>Amount</td>
+                <td>Status</td>
+            </tr>
+            </thead>
+            <tbody>
+
+
+
+
+                    {% if nYear == aContract.balance_year %}
+                        {% set nEmpty = aContract.balance_month - aData | length  %}
+                    {% else %}
+                        {% set nEmpty = 11 - aData | length %}
+                    {% endif %}
+                        {% if nEmpty > 0 %}
+                            {% for i in range (0, nEmpty) %}
+                              <!--<div class="tradeline-history-empty-month payment-history-month"></div>//-->
+                            {% endfor %}
+                        {% endif %}
+
+
+                    {% for nMonth, aStatus in aData %}
+
+                        <tr><td>{{ aMonthes[nMonth-1] }}</td><td>${{ aStatus.amount }}</td><td>Paid{#{{ aStatus.text }}#}</td></tr>
+
+
+                    {% endfor %}
+
+            </tbody>
+        </table>
+
+
+            {% endfor %}
+
+
+    {#
+            <div class="row-10"></div>
+            <div class="">
+                <div class="tradeline-history-year"></div>
+                <a class="tradeline-legend-link"><span>{{ 'common.legend.view' | trans }}</span></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="tradeline-details rent-details">
+        <b>{{ 'tradeline.details.type' | trans }}:</b>&nbsp;{{ 'payments.type.rent' | trans() }}
+        <b>{{ 'tradeline.details.responsibility' | trans }}:</b>&nbsp;{{ 'payments.individual' | trans() }}
+        <b>{{ 'tradeline.details.date_opened' | trans }}:</b>&nbsp;{{ aContract.start }}
+        <b>{{ 'bureau.reporting.experian.title' | trans }}:</b>&nbsp;{{ (aContract.reporting.experian ? 'common.on':'common.off')|trans }}
+        <b>{{ 'bureau.reporting.trans_union.title' | trans }}:</b>&nbsp;{{ (aContract.reporting.trans_union ? 'common.on':'common.off')|trans }}
+        <br /><b><a><span class="reporting-action" id="id-{{ aContract.id }}">{{ 'bureau.reporting.manage' | trans }}</span></a></b>
+    </div>
+    <div class="clearboth"></div>
+
+
+{% include 'RjComponentBundle:PaymentHistory:reporting.html.twig' with {'contract': aContract, 'link': link} %}
+#}
+
+    </div>
+</div>

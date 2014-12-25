@@ -12,7 +12,7 @@ class PaymentHistoryController extends Controller
      * @Template("RjComponentBundle:PaymentHistory:index.html.twig")
      * @return mixed
      */
-    public function indexAction()
+    public function indexAction($mobile = false)
     {
         $user = $this->getUser();
         $active = array();
@@ -87,10 +87,16 @@ class PaymentHistoryController extends Controller
                     break;
             }
         }
-        return array(
+        $pageVars=array(
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,
             'aMonthes' => $aMonthes,
         );
+        if($mobile) {
+            return $this->render('RjComponentBundle:PaymentHistory:index.mobile.html.twig', $pageVars); //mobile template override
+        }else {
+            return $pageVars;
+        }
+
     }
 }

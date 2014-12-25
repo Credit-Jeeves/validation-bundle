@@ -42,4 +42,9 @@ class TenantController extends Controller
         $this->report = $user->getReports()->last();
         $this->score = $user->getScores()->last();
     }
+
+    public function isMobile()
+    {
+        return false;
+    }
 }

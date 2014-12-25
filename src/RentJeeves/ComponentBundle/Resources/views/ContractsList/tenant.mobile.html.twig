@@ -46,7 +46,7 @@
 
             <div class="ui-content" role="main">
 
-            <h1>Current Payments</h1>
+            <h2>Current Payments</h2> <a href="#" class="ui-btn-right ui-btn ui-icon-plus ui-btn-icon-life" data-role="button" role="button"></a>
             {#
             <div class="addPropertyContainer">
                 <center>
@@ -58,8 +58,8 @@
 #}
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
-                    <a href="#contract{{ loop.index }}">
-            <div style="border: 1px solid rgb(140,140,140);border-radius: 5px; padding: 5px;margin-top: 10px;cursor: pointer; background: rgb(210,210,210);">
+                    <a href="#contract{{ loop.index }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
+            <div style="border: 1px solid rgb(140,140,140);border-radius: 5px; padding: 5px;margin-top: 10px;cursor: pointer; background: rgb(250,250,250);">
 
 
                             <b>{{ contract.full_address }}</b>
@@ -102,10 +102,10 @@
         </div>
 
         {% for contract in contracts %}
-            <div data-role="page" id="contract{{ loop.index }}">
+            <div data-role="page" id="contract{{ contract.id }}">
 
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-                    <a href="#main" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
+                    <a href="#main" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
                     <h1 class="ui-title" role="heading" aria-level="1">Current Payment</h1>
                 </div>
 
@@ -144,7 +144,7 @@
                 {% endif %}
                     <br>
 
-                    <button>Payment History</button>
+                    <a href="#paymentHistory{{ contract.id }}"><button{% if contract.status == 'pending' %}disabled{% endif %}>Payment History</button></a>
                     </div>
             </div>
         {% endfor %}

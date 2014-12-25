@@ -72,7 +72,7 @@ class ContractsListController extends Controller
     /**
      * @Template()
      */
-    public function tenantAction()
+    public function tenantAction($mobile = false)
     {
         $tenant = $this->getUser();
         /** @var EntityManager $em */
@@ -105,7 +105,7 @@ class ContractsListController extends Controller
             SerializationContext::create()->setGroups(array('payRent'))
         );
 
-        return array(
+        $pageVars= array(
             'contractsJson' => $contractsJson,
             'contracts'     => $contractsArr,
             'paidForArr'    => $paidForArr,
@@ -113,5 +113,10 @@ class ContractsListController extends Controller
             'isNewUser'     => $isNewUser,
             'hasIntegratedBalance' => $hasIntegratedBalance,
         );
+        if($mobile){
+            return $this->render('RjComponentBundle:ContractsList:tenant.mobile.html.twig', $pageVars); //mobile template override
+        }else{
+            return $pageVars;
+        }
     }
 }

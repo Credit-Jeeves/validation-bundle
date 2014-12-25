@@ -1,0 +1,32 @@
+{% include 'RjComponentBundle:PaymentHistory:legend.html.twig' %}
+{% javascripts '@RjComponentBundle/Resources/public/js/legend.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+{% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
+{% if aActiveContracts | length > 0 or aFinishedContracts | length > 0 %}
+
+        {% for contract in aActiveContracts %}
+            {% include 'RjComponentBundle:PaymentHistory:paymentRow.mobile.html.twig'
+                with {
+                    'aContract': contract,
+                    'isActive': true,
+                    'link': link
+                    }
+            %}
+        {% endfor %}
+        {% for contract in aFinishedContracts %}
+            {% include 'RjComponentBundle:PaymentHistory:paymentRow.mobile.html.twig'
+                with {
+                    'aContract': contract,
+                    'isActive': false,
+                    'link': link
+                }
+            %}
+        {% endfor %}
+
+
+{% javascripts '@RjComponentBundle/Resources/public/js/reporting.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endif %}
