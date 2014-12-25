@@ -15,7 +15,7 @@ use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
-use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum as SoapClient;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum as SoapClient;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 

@@ -6,6 +6,7 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -22,13 +23,7 @@ class ImportNewUserWithContractType extends AbstractType
 {
     const NAME = 'import_new_user_with_contract';
 
-    protected $tenant;
-
-    protected $unit;
-
-    protected $residentMapping;
-
-    protected $unitMapping;
+    protected $import;
 
     protected $em;
 
@@ -44,16 +39,10 @@ class ImportNewUserWithContractType extends AbstractType
     public function __construct(
         EntityManager $em,
         Translator $translator,
-        ResidentMapping $residentMapping,
-        UnitMapping $unitMapping,
-        Tenant $tenant,
-        Unit $unit = null,
+        Import $import,
         $isMultipleProperty = false
     ) {
-        $this->tenant = $tenant;
-        $this->unit = $unit;
-        $this->residentMapping = $residentMapping;
-        $this->unitMapping = $unitMapping;
+        $this->import = $import;
         $this->em = $em;
         $this->translator = $translator;
         $this->isMultipleProperty = $isMultipleProperty;
@@ -72,12 +61,8 @@ class ImportNewUserWithContractType extends AbstractType
             new ImportContractType(
                 $this->em,
                 $this->translator,
-                $this->tenant,
-                $this->residentMapping,
-                $this->unitMapping,
-                $this->unit,
+                $this->import,
                 $token = false,
-                $useOperation = false,
                 $this->isMultipleProperty,
                 $sendInvite = false
             ),

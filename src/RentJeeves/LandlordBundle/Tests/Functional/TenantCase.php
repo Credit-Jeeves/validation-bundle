@@ -106,6 +106,7 @@ class TenantCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->session->getDriver()->resizeWindow(1600, 1200);
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         /**
          * @var $group Group
@@ -125,17 +126,20 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull($selectOption = $this->page->find('css', '#holding-group_li_1>span'));
         $selectOption->click();
-        $this->session->wait(2000, "false"); // wait refresh page
+        $this->session->wait($this->timeout, "false"); // wait refresh page
 
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
 
-        $this->session->wait($this->timeout, "$('#tenant-approve-property-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#tenant-approve-property-popup .footer-button-box').is(':visible')");
 
         $this->page->pressButton('edit.Info');
-        $this->session->wait($this->timeout, "$('#unit-edit').val() > 0");
+        $this->session->wait(
+            $this->timeout+3000,
+            "$('#unit-edit').val() > 0 && $('#unit-edit').is(':visible') && $('#amount-edit').is(':visible')"
+        );
         $this->session->evaluateScript(
             "$('#amount-edit').val(' ');"
         );
@@ -144,6 +148,9 @@ class TenantCase extends BaseTestCase
         $amount->setValue('7677.00');
         if ($isIntegrated) {
             $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'));
+            $this->session->evaluateScript(
+                "$('#resident-edit').val(' ');"
+            );
             $resident->setValue('t12345');
         }
 
@@ -248,8 +255,12 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.loader').is(':visible') === false");
         // for find and check radio need show it (default "display:none")
         $this->session->evaluateScript('$(\'input[name="optionsFinishAtEdit"]\').show();');
-        $checkedMonth2Month = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabelM2M input');
+        $checkedMonth2Month = $this->page->find(
+            'css',
+            '#tenant-edit-property-popup .monthToMonth'
+        );
         $this->assertNotNUll($checkedMonth2Month);
+        $this->assertNotNUll($checkedMonth2Month->getAttribute('checked'));
         $this->assertEquals('monthToMonth', $checkedMonth2Month->getValue());
         $this->assertEquals('true', $checkedMonth2Month->getAttribute('checked'));
         if ($isIntegrated) {

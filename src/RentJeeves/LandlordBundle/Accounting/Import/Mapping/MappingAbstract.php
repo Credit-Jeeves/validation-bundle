@@ -43,6 +43,8 @@ abstract class MappingAbstract implements MappingInterface
         'dd-M-y' => 'dd-mon-yy (24-Sep-98)',
     );
 
+    const KEY_GROUP_ACCOUNT_NUMBER = 'group_account_number';
+
     const KEY_UNIT = 'unit';
 
     const KEY_RESIDENT_ID = 'resident_id';
@@ -79,8 +81,6 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
-    const UNIT_MATCH_REGEX = '/(?:\#|unit|apt[\.?\s?]+|ste[\.?\s?]+|rm[\.?\s?]+)\.?\s*([a-z0-9]{1,10})/is';
-
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
@@ -101,6 +101,32 @@ abstract class MappingAbstract implements MappingInterface
     public function setEntityManager(EntityManager $em)
     {
         $this->em = $em;
+    }
+
+    /**
+     * @param integer $offset
+     * @param integer $rowCount
+     * @param bool $useMapping
+     *
+     * @return array
+     */
+    public function getData($offset = null, $rowCount = null, $useMapping = true)
+    {
+
+        $data = $this->reader->read($this->storage->getFilePath(), $offset, $rowCount);
+
+        if (!$useMapping) {
+            return $data;
+        }
+
+        $mappedData = array();
+
+        foreach ($data as $key => $values) {
+            $row = $this->mappingRow($values);
+            $mappedData[] = $row;
+        }
+
+        return $mappedData;
     }
 
     /**
@@ -130,7 +156,7 @@ abstract class MappingAbstract implements MappingInterface
 
         $waitingRoom->setFirstName($tenant->getFirstName());
         $waitingRoom->setLastName($tenant->getLastName());
-        $waitingRoom->setGroup($contract->getGroup());
+        !$contract->getGroup() || $waitingRoom->setGroup($contract->getGroup());
 
         $waitingRoom->setResidentId($residentMapping->getResidentId());
 
@@ -155,9 +181,18 @@ abstract class MappingAbstract implements MappingInterface
         return $property;
     }
 
+    private function unitMatchRegex()
+    {
+        $atStart = '^\#|^unit|^apt[\.?\s?]+|^ste[\.?\s?]+|^rm[\.?\s?]+';
+        $inMiddle = '[\.?\s?]+\#|[\.?\s?]+unit|[\.?\s?]+apt[\.?\s?]+|[\.?\s?]+ste[\.?\s?]+|[\.?\s?]+rm[\.?\s?]+';
+        $noSpace =  '-|\#';
+
+        return '/(?:'.$noSpace.'|'.$atStart.'|'.$inMiddle.')\.?\s*([a-z0-9-]{1,10})/is';
+    }
+
     protected function parseStreet($row)
     {
-        preg_match(self::UNIT_MATCH_REGEX, $row[self::KEY_STREET], $matches);
+        preg_match($this->unitMatchRegex(), $row[self::KEY_STREET], $matches);
 
         if (empty($matches)) {
             return $row;
@@ -177,7 +212,7 @@ abstract class MappingAbstract implements MappingInterface
      */
     protected function parseUnit($row)
     {
-        preg_match(self::UNIT_MATCH_REGEX, $row[self::KEY_UNIT], $matches);
+        preg_match($this->unitMatchRegex(), $row[self::KEY_UNIT], $matches);
 
         if (empty($matches)) {
             return $row;

@@ -12,7 +12,7 @@
             has_contract_waiting
         )">
     {{ form_start(form) }}
-    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>
+    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)+' import_status_text'}"></td>
     {% if isMultipleProperty == "true" %}
             <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
                 <span data-bind="text: contract.property.full_address">
@@ -162,43 +162,6 @@
                 }
             }
         ) }}
-    </td>
-    <td>
-        <span data-bind="if: operation !== null">
-            {{ form_widget(
-                form.operation.amount,
-                {
-                    "attr":
-                    {
-                        "data-bind":
-                            "value: operation.amount,
-                             attr: {
-                                'class': number+'_amount import_operation_amount '+$root.getErrorClass($data, 'import_contract_operation_amount'),
-                                'title': $root.getErrorTitle($data, 'import_contract_operation_amount')
-                             }
-                            "
-                    }
-                }
-            ) }}
-            {{ form_widget(
-                form.operation.paidFor,
-                {
-                    "attr":
-                    {
-                        "data-bind":
-                            "value: $root.formatDate(operation.paid_for),
-                             datepickerOld: $root.formatDate(operation.paid_for),
-                             datepickerOptions: $root.getDatePickerOptions(),
-                             datepickerFieldName: 'paid_for',
-                             attr: {
-                                'class': number+'_paidFor import_operation_paidFor datepicker '+$root.getErrorClass($data, 'import_contract_operation_paidFor'),
-                                'title': $root.getErrorTitle($data, 'import_contract_operation_paidFor')
-                             }
-                            "
-                    }
-                }
-            ) }}
-        </span>
     </td>
     <td>
         {{ form_widget(

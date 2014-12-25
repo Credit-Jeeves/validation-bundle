@@ -6,9 +6,20 @@ use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\DataBundle\Entity\Landlord;
+use \DateTime;
 
 class OrderRepositoryCase extends BaseTestCase
 {
+
+    protected function setUp()
+    {
+        /**
+         * @var $em EntityManager
+         */
+        $this->em = $this->getContainer()->get('doctrine')->getManager();
+    }
+
     public static function getUserOrdersDataProvider()
     {
         return [
@@ -41,16 +52,11 @@ class OrderRepositoryCase extends BaseTestCase
      */
     public function getUserOrders($count, $userEmail, $excludedStatuses = null)
     {
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine')->getManager();
-
-        $tenantRepo = $em->getRepository('RjDataBundle:Tenant');
+        $tenantRepo = $this->em->getRepository('RjDataBundle:Tenant');
 
         $tenant = $tenantRepo->findOneBy(['email' => $userEmail]);
         /** @var OrderRepository $orderRepo */
-        $orderRepo = $em->getRepository('DataBundle:Order');
+        $orderRepo = $this->em->getRepository('DataBundle:Order');
 
         if ($excludedStatuses !== null) {
             $orders = $orderRepo->getUserOrders($tenant, $excludedStatuses);
@@ -59,5 +65,38 @@ class OrderRepositoryCase extends BaseTestCase
         }
 
         $this->assertEquals($count, count($orders));
+    }
+
+    public static function getOrdersForYardiGenesisReportDataProvider()
+    {
+        $now = new DateTime();
+        $sixMonthsBack = new DateTime();
+        $sixMonthsBack->modify("-6 month");
+
+        return [
+            [$sixMonthsBack, $now],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider getOrdersForYardiGenesisReportDataProvider
+     */
+    public function getOrdersForYardiGenesis($startDate, $endDate)
+    {
+        /** @var Landlord $landlord */
+        $landlord = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(['email' => 'landlord1@example.com']);
+        $groupId = $landlord->getCurrentGroup()->getId();
+
+        /** @var OrderRepository $orderRepo */
+        $orderRepo = $this->em->getRepository('DataBundle:Order');
+        $orders = $orderRepo->getOrdersForYardiGenesis($startDate, $endDate, $groupId);
+
+        $this->assertGreaterThan(0, count($orders), "The report generated no orders and is should have.");
+
+        foreach ($orders as $order) {
+            $actualGroupId = $order->getContract()->getGroup()->getId();
+            $this->assertEquals($groupId, $actualGroupId, "Detected an Order the is not within Group.");
+        }
     }
 }

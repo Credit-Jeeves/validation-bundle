@@ -4,7 +4,7 @@
     <td data-bind="
             text: $root.getStatusText($data),
             attr: {
-                'class': $root.getStatusText($data),
+                'class': $root.getStatusText($data)+' import_status_text',
                 'title': $data.skipped_message
             }">
 
@@ -64,7 +64,6 @@
     <td data-bind="html:contract.rent+'<br/>'+contract.integrated_balance"></td>
     <td data-bind="html:$root.formatDate(contract.startAt)+'<br/>'+$root.formatDate(contract.finishAt)">
     </td>
-    <td></td>
     <td>
         <span  class="finishContract" data-bind="if: contract.status == 'finished' && $data.move_out && !is_skipped && contract.id && $root.isValidFieldsWhichNotContainsInForm($data)">
         {{ form_start(form) }}

@@ -26,6 +26,9 @@ class YardiVersionNumberCommandCase extends BaseTestCase
             ]
         );
 
-        $this->assertEquals('Current version for holding Rent Holding is 7Sv3_1.3', trim($commandTester->getDisplay()));
+        $this->assertEquals(
+            'Current version for holding Rent Holding is 7Sv3.2_1.3',
+            trim($commandTester->getDisplay())
+        );
     }
 }

@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Soap;
 
 use BeSimple\SoapBundle\Soap\SoapClientBuilder as Base;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClient as Client;
 
 class SoapClientBuilder extends Base
@@ -15,7 +16,7 @@ class SoapClientBuilder extends Base
     protected $wsdlRenderer;
 
     /**
-     * @var SoapSettingsInterface
+     * @var SettingsInterface
      */
     protected $settings;
 
@@ -30,10 +31,10 @@ class SoapClientBuilder extends Base
     }
 
     /**
-     * @param SoapSettingsInterface $settings
+     * @param SettingsInterface $settings
      * @return $this
      */
-    public function setSettings(SoapSettingsInterface $settings)
+    public function setSettings(SettingsInterface $settings)
     {
         $this->settings = $settings;
         return $this;

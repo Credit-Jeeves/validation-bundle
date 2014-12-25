@@ -2,11 +2,19 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
+use CreditJeeves\DataBundle\Entity\Group as EntityGroup;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface;
 
+/**
+ * @property EntityManager $em
+ * @property EntityGroup group
+ * @property StorageInterface $storage
+ */
 trait Unit
 {
     protected $externalUnitIdList = array();
@@ -16,7 +24,7 @@ trait Unit
     /**
      * @param $row
      *
-     * @return Unit
+     * @return EntityUnit
      */
     protected function getUnit(array $row, EntityProperty $property = null)
     {
@@ -32,8 +40,9 @@ trait Unit
             /**
              * @var $unitMapping UnitMapping
              */
-            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
-                array('externalUnitId' => $row[Mapping::KEY_UNIT_ID])
+            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
+                $this->group,
+                $row[Mapping::KEY_UNIT_ID]
             );
             if ($unitMapping) {
                 return $unitMapping->getUnit();
@@ -50,16 +59,13 @@ trait Unit
 
         if ($this->group) {
             $params['group'] = $this->group->getId();
+            !$this->group->getHolding() || $params['holding'] = $this->group->getHolding()->getId();
         }
 
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
         } elseif ($this->storage->getPropertyId()) {
             $params['property'] = $this->storage->getPropertyId();
-        }
-
-        if ($holding = $this->group->getHolding()) {
-            $params['holding'] = $holding->getId();
         }
 
         if (!empty($params['name']) && !empty($params['property'])) {
@@ -83,8 +89,10 @@ trait Unit
         if ($property) {
             $unit->setProperty($property);
         }
-        $unit->setHolding($this->group->getHolding());
-        $unit->setGroup($this->group);
+        if ($this->group) {
+            $unit->setGroup($this->group);
+            $unit->setHolding($this->group->getHolding());
+        }
 
         $this->unitList[$key] = $unit;
 
@@ -95,8 +103,12 @@ trait Unit
      * @param array $row
      * @return UnitMapping
      */
-    public function getUnitMapping(array $row)
+    public function getUnitMapping(array $row, EntityUnit $unit)
     {
+        if (!$unit) {
+            throw new InvalidArgumentException('The unit argument cannot be null.');
+        }
+
         if (!array_key_exists(Mapping::KEY_UNIT_ID, $row)) {
             return new UnitMapping();
         }
@@ -116,6 +128,7 @@ trait Unit
         $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
             array(
                 'externalUnitId' => $externalUnitId,
+                'unit' => $unit
             )
         );
         if (empty($unitMapping)) {

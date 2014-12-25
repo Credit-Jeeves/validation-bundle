@@ -112,14 +112,11 @@ trait FormBind
             }
             $this->em->persist($unitMapping);
         }
-        $this->processingContract($import, $contract);
+
         if (!$contract->getId()) {
             $this->emailSendingQueue[] = $contract;
-        } elseif (!is_null($import->getOperation())) {
-            //see logic in setOperation method
-            $operation = $form->get('operation')->getData();
-            $this->processingOperationAndOrder($import->getTenant(), $operation, $contract);
         }
+
         $residentMapping = $form->get('residentMapping')->getData();
         $this->em->persist($residentMapping);
     }
@@ -151,9 +148,7 @@ trait FormBind
             $waitingContract = $this->getContractWaiting($tenant, $contract, $residentMapping);
             $this->em->persist($waitingContract);
         } else {
-            $this->em->persist($tenant);
             $this->em->persist($residentMapping);
-            $this->processingContract($import, $contract);
             if ($data['sendInvite']) {
                 $this->emailSendingQueue[] = $contract;
             }
@@ -172,7 +167,6 @@ trait FormBind
         ResidentMapping $residentMapping,
         $sendInvite
     ) {
-
         /**
          * @var $waitingContract ContractWaiting
          */
@@ -197,38 +191,22 @@ trait FormBind
     }
 
     /**
-     * @param ModelImport $import
-     * @param Contract $contract
-     */
-    protected function processingContract(ModelImport $import, Contract $contract)
-    {
-        if ($contract->getIntegratedBalance() > 0 && $this->isFinishedContract($contract)) {
-            $contract->setUncollectedBalance($contract->getIntegratedBalance());
-        }
-
-        $this->em->persist($contract);
-    }
-
-    /**
      * @param Tenant $tenant
      * @param Operation $operation
      * @param Contract $contract
      */
-    protected function processingOperationAndOrder(Tenant $tenant, Operation $operation, Contract $contract)
+    public function processingOperationAndOrder(Tenant $tenant, Operation $operation, Contract $contract)
     {
         $order = new Order();
         $order->setStatus(OrderStatus::COMPLETE);
         $order->setType(OrderType::CASH);
         $order->setUser($tenant);
-        $order->addOperation($operation);
         $order->setSum($operation->getAmount());
 
         $operation->setContract($contract);
         $operation->setOrder($order);
-        $contract->addOperation($operation);
 
         $this->em->persist($order);
-        $this->em->persist($operation);
     }
 
     /**
@@ -239,15 +217,17 @@ trait FormBind
      */
     protected function afterBindForm(Contract $contract, $isSingle)
     {
-        $property = $contract->getProperty();
-        $property->setIsSingle($isSingle);
-        $property->addPropertyGroup($this->group);
-        $this->group->addGroupProperty($property);
-        $this->em->flush($this->group);
-        $this->em->flush($property);
+        if ($contract->getGroup()) {
+            $property = $contract->getProperty();
+            $property->setIsSingle($isSingle);
+            $property->addPropertyGroup($contract->getGroup());
+            $contract->getGroup()->addGroupProperty($property);
+            $this->em->flush($contract->getGroup());
+            $this->em->flush($property);
 
-        if ($property->isSingle() && !$contract->getUnit()) {
-            $contract->setUnit($property->getSingleUnit());
+            if ($property->isSingle() && !$contract->getUnit()) {
+                $contract->setUnit($property->getSingleUnit());
+            }
         }
     }
 
@@ -311,10 +291,6 @@ trait FormBind
         $residentMapping = $import->getResidentMapping();
         if ($residentMapping->getId()) {
             $this->em->detach($residentMapping);
-        }
-        $operation = $import->getOperation();
-        if ($operation && $operation->getId()) {
-            $this->em->detach($operation);
         }
     }
 

@@ -37,6 +37,7 @@
         $(document).ready(function() {
             ko.applyBindings(importFile, $('#action_plan_page').get(0));
             importFile.source("{{ source }}");
+            importFile.importType("{{ importType }}");
         });
     </script>
 {% endblock %}

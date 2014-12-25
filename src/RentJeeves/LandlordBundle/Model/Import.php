@@ -2,13 +2,13 @@
 
 namespace RentJeeves\LandlordBundle\Model;
 
-use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
 use Symfony\Component\Form\Form;
 
 class Import
@@ -54,12 +54,6 @@ class Import
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $contract;
-
-    /**
-     * @Serializer\Type("CreditJeeves\DataBundle\Entity\Operation")
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $operation = null;
 
     /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\ResidentMapping")
@@ -108,9 +102,57 @@ class Import
      */
     protected $email;
 
+    /**
+     * @var boolean
+     */
     protected $isMultipleProperty;
 
+    /**
+     * @var ContractWaiting
+     */
     protected $contractWaiting;
+
+    /**
+     * @var boolean
+     */
+    protected $isHasPaymentMapping = false;
+
+    /**
+     * @var HandlerAbstract
+     */
+    protected $handler;
+
+    /**
+     * @param \RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract $handler
+     */
+    public function setHandler($handler)
+    {
+        $this->handler = $handler;
+    }
+
+    /**
+     * @return \RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract
+     */
+    public function getHandler()
+    {
+        return $this->handler;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsHasPaymentMapping()
+    {
+        return $this->isHasPaymentMapping;
+    }
+
+    /**
+     * @param boolean $hasPaymentMapping
+     */
+    public function setIsHasPaymentMapping($hasPaymentMapping)
+    {
+        $this->isHasPaymentMapping = $hasPaymentMapping;
+    }
 
     /**
      * @return mixed
@@ -353,22 +395,6 @@ class Import
     public function setTenant($tenant)
     {
         $this->tenant = $tenant;
-    }
-
-    /**
-     * @return Operation
-     */
-    public function getOperation()
-    {
-        return $this->operation;
-    }
-
-    /**
-     * @param Operation $operation
-     */
-    public function setOperation(Operation $operation)
-    {
-        $this->operation = $operation;
     }
 
     /**

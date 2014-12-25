@@ -2,14 +2,16 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Handler;
 
-use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Group as GroupEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
-use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface as ImportStorage;
+use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
@@ -17,17 +19,36 @@ use RentJeeves\CoreBundle\DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use Symfony\Component\Validator\Validator;
-use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
+use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
+use RentJeeves\LandlordBundle\Accounting\Import\Form\FormBind;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Contract;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Operation;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Property;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Resident;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Tenant;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Unit;
 use JMS\DiExtraBundle\Annotation\Inject;
+use RentJeeves\LandlordBundle\Accounting\Import\Traits\OnlyReviewNewTenantsAndExceptionsTrait;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Group;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  */
 abstract class HandlerAbstract implements HandlerInterface
 {
-    const ROW_ON_PAGE = 9;
-
+    use Forms;
+    use Contract;
+    use Tenant;
+    use Resident;
+    use Property;
+    use FormBind;
+    use Unit;
+    use OnlyReviewNewTenantsAndExceptionsTrait;
+    use Operation;
+    use Group;
     use FormErrors;
+
+    const ROW_ON_PAGE = 9;
 
     /**
      * @Inject("doctrine.orm.default_entity_manager")
@@ -77,12 +98,12 @@ abstract class HandlerAbstract implements HandlerInterface
     public $contractProcess;
 
     /**
-     * @var Landlord
+     * @var SessionUser
      */
     protected $user;
 
     /**
-     * @var Group
+     * @var GroupEntity
      */
     protected $group;
 
@@ -105,8 +126,6 @@ abstract class HandlerAbstract implements HandlerInterface
      * @var array
      */
     protected $emailSendingQueue = array();
-
-
 
     /**
      * @param $field
@@ -211,11 +230,28 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function getImport(array $row, $lineNumber)
     {
         $import = new ModelImport();
+        $import->setHandler($this);
         $import->setNumber($lineNumber);
         $tenant = $this->getTenant($row);
-        $import->setEmail($row[Mapping::KEY_EMAIL]);
+        $import->setEmail($row[ImportMapping::KEY_EMAIL]);
+        $this->group = $this->getGroup($row);
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
+
+        if (!$this->group) {
+            $import->setIsSkipped(true);
+            $import->setSkippedMessage($this->translator->trans('import.error.empty_group'));
+        }
+
+        if ($this->group && !$this->group->getGroupSettings()->getIsIntegrated()) {
+            $import->setIsSkipped(true);
+            $import->setSkippedMessage(
+                $this->translator->trans(
+                    'import.error.group_not_integrated',
+                    ['%group_name%' => $this->group->getName()]
+                )
+            );
+        }
 
         if ($this->mapping->isSkipped($row)) {
             $import->setIsSkipped(true);
@@ -225,18 +261,19 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $import->setContract($contract = $this->getContract($import, $row));
-        if ($operation = $this->getOperationByRow($import, $row)) {
-            $import->setOperation($operation);
-        }
 
         if ($contract && !$property = $contract->getProperty()) {
-            $import->setAddress($row[Mapping::KEY_STREET].','.$row[Mapping::KEY_CITY]);
+            $import->setAddress($row[ImportMapping::KEY_STREET].','.$row[ImportMapping::KEY_CITY]);
         }
 
-        $token      = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
+        $token = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $import->setCsrfToken($token);
+
         $import->setResidentMapping($this->getResident($tenant, $row));
-        $import->setUnitMapping($this->getUnitMapping($row));
+
+        if ($contract && $unit = $contract->getUnit()) {
+            $import->setUnitMapping($this->getUnitMapping($row, $unit));
+        }
 
         $contractWaiting = $this->getContractWaiting(
             $import->getTenant(),
@@ -252,7 +289,6 @@ abstract class HandlerAbstract implements HandlerInterface
         } elseif ($contract->getId() && $contractWaiting->getId()) {
             $this->em->remove($contractWaiting);
             $import->setHasContractWaiting(false);
-            $this->em->flush();
         }
 
         if (!$import->getIsSkipped() &&
@@ -285,7 +321,7 @@ abstract class HandlerAbstract implements HandlerInterface
         if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
             $errors = $this->runFormValidation($form, $lineNumber, $import->getCsrfToken());
             if ($this->isUsedResidentId($import->getResidentMapping())) {
-                $errors[$lineNumber][uniqid()][Mapping::KEY_RESIDENT_ID] = $this->translator
+                $errors[$lineNumber][uniqid()][ImportMapping::KEY_RESIDENT_ID] = $this->translator
                     ->trans(
                         'error.residentId.already_use'
                     );
@@ -319,7 +355,6 @@ abstract class HandlerAbstract implements HandlerInterface
                     );
             $import->setIsSkipped(true);
         }
-
 
         $import->setErrors($errors);
     }

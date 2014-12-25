@@ -38,6 +38,14 @@
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
             </trans-unit>
+            <trans-unit id="import.error.empty_group">
+                <source>import.error.empty_group</source>
+                <target>Group not found.</target>
+            </trans-unit>
+            <trans-unit id="import.error.group_not_integrated">
+                <source>import.error.group_not_integrated</source>
+                <target>"%group_name%" is not marked as integrated. Please contact help@renttrack.com to adjust your account setup.</target>
+            </trans-unit>
             <trans-unit id="import.error.mapping_date">
                 <source>import.error.mapping_date</source>
                 <target>
@@ -545,6 +553,10 @@
                 <source>amount</source>
                 <target>Amount</target>
             </trans-unit>
+            <trans-unit id="import.group_account_number">
+                <source>import.group_account_number</source>
+                <target>Account Number</target>
+            </trans-unit>
             <trans-unit id="import.payment.amount">
                 <source>import.payment.amount</source>
                 <target>Payment Amount</target>
@@ -831,7 +843,7 @@
                 <source>error.unit.reserved</source>
                 <target><![CDATA[
                     We're sorry, but we could not find a resident with that name
-                    for specified unit. Please contact your property manager.
+                    for the specified unit. Please contact your property manager or email help@renttrack.com.
                     ]]>
                 </target>
             </trans-unit>
@@ -867,12 +879,10 @@
                 <source>legend.auto</source>
                 <target>Monthly auto payment</target>
             </trans-unit>
-
            <trans-unit id="conflict.resolve.uppercase">
                 <source>conflict.resolve.uppercase</source>
                 <target>RESOLVE</target>
             </trans-unit>
-
            <trans-unit id="conflict.resolve.action">
                 <source>conflict.resolve.action</source>
                 <target>Resolve</target>
@@ -2153,7 +2163,7 @@
             </trans-unit>
             <trans-unit id="payment.month.error.number">
                 <source>payment.month.error.number</source>
-                <target>this month has %%COUNT%% days</target>
+                <target>This month has %count% days</target>
             </trans-unit>
             <trans-unit id="payment.start_date.error.cutoff.time">
                 <source>payment.start_date.error.cutoff.time</source>
@@ -2543,6 +2553,30 @@
               <source>import.review.finish</source>
               <target>Data has been imported.</target>
             </trans-unit>
+            <trans-unit id="import.type">
+              <source>import.type</source>
+              <target>Import Type</target>
+            </trans-unit>
+            <trans-unit id="import.type.single_property">
+              <source>import.type.single_property</source>
+              <target>Single Group with Single Property</target>
+            </trans-unit>
+            <trans-unit id="import.type.multi_property">
+              <source>import.type.multi_property</source>
+              <target>Single Group with Multiple Properties</target>
+            </trans-unit>
+            <trans-unit id="import.type.multi_groups">
+              <source>import.type.multi_groups</source>
+              <target>Multiple Groups with Multiple Properties</target>
+            </trans-unit>
+            <trans-unit id="import.property.empty_value">
+              <source>import.property.empty_value</source>
+              <target>Select Property</target>
+            </trans-unit>
+            <trans-unit id="import.errors.single_property_select">
+              <source>import.errors.single_property_select</source>
+              <target>Please select property for import.</target>
+            </trans-unit>
             <trans-unit id="regexp.error.name">
                 <source>regexp.error.name</source>
                 <target><![CDATA[Names should not have special characters except space, apostrophe, and hyphen (-).]]></target>
@@ -2695,6 +2729,10 @@
                 <source>yardi.import.error.getResidents</source>
                 <target>Can not get resident from yardi api.</target>
             </trans-unit>
+            <trans-unit id="csv.import.error.update_matched_contracts">
+                <source>csv.import.error.update_matched_contracts</source>
+                <target>Cannot update existing contract</target>
+            </trans-unit>
             <trans-unit id="yardi.import.error.external_property_id">
                 <source>yardi.import.error.external_property_id</source>
                 <target>We have different external property ID for this property.</target>
@@ -2702,6 +2740,10 @@
             <trans-unit id="yardi.import.message.download.resident">
                 <source>yardi.import.message.download.resident</source>
                 <target>Fetching list of residents from accounting system, please stand by.</target>
+            </trans-unit>
+            <trans-unit id="csv.import.message.updated_matched_contract">
+                <source>csv.import.message.updated_matched_contract</source>
+                <target>Successfully updated existing contracts. Please stand by...</target>
             </trans-unit>
             <trans-unit id="yardi.import.message.download.contracts">
                 <source>yardi.import.message.download.contracts</source>
@@ -2754,6 +2796,10 @@
             <trans-unit id="order.report.type.yardi_genesis">
                 <source>order.report.type.yardi_genesis</source>
                 <target>Yardi Genesis (CSV)</target>
+            </trans-unit>
+            <trans-unit id="order.report.type.yardi_genesis_v2">
+                <source>order.report.type.yardi_genesis_v2</source>
+                <target>Yardi Genesis V2 (CSV)</target>
             </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>

@@ -22,7 +22,7 @@
                         {{ "import.error.mapping_date"|trans }}
                     </div>
                     {% image '@LandlordBundle/Resources/public/images/ajax.gif' %}
-                        <img src="{{ asset_url }}" class="left" data-bind="visible: $root.downloadImage()" />
+                        <img src="{{ asset_url }}" class="left" data-bind="visible: $root.showSpinner()" />
                     {% endimage %}
                     <div data-bind="
                             visible: $root.loadDataMessage().length > 0,
@@ -61,13 +61,6 @@
                                     {{ 'import.move_in'|trans }}
                                     <hr />
                                     {{ 'import.lease_end'|trans }}
-                                </span>
-                            </th>
-                            <th class="pie-el operation">
-                                <span>
-                                    {{ 'import.pmt.amt'|trans }}
-                                    <br />
-                                    {{ 'import.pmt.date'|trans }}
                                 </span>
                             </th>
                             <th class="pie-el action"><span>{{ 'import.action'|trans }}</span></th>
@@ -136,7 +129,8 @@
     <script type="text/javascript">
         {% autoescape false %}
         var className = 'accountingImport{{  importStorage.getStorageType|capitalize }}';
-        var isMultipleProperty = '{{ isMultipleProperty }}';
+        var isMultipleProperty = JSON.parse('{{ isMultipleProperty }}');
+        var importOnlyException = JSON.parse('{{ importOnlyException }}');
         {% endautoescape %}
     </script>
     {% javascripts

@@ -11,12 +11,19 @@ class HoldingCase extends BaseTestCase
      */
     public function create()
     {
+        $this->load(true);
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
+        $this->assertCount(0, $resManSettings);
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
         $tableBlock->clickLink('link_add');
         $this->assertNotNull($textFields = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(8, $textFields);
+        $this->assertCount(9, $textFields);
         $textFields[0]->setValue('Test');
         $this->assertNotNull(
             $links = $this->page->findAll(
@@ -32,6 +39,8 @@ class HoldingCase extends BaseTestCase
         $textFields[3]->setValue('sdb17\SQL2k8_R2');
         $textFields[4]->setValue('afqoml_70dev');
         $textFields[5]->setValue('SQL Server');
+        $links[2]->click();
+        $textFields[8]->setValue('728192738921738927398');
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
         $this->assertNotNull(
@@ -48,6 +57,7 @@ class HoldingCase extends BaseTestCase
                 '#test'
             )
         );
+
         $test->click();
         $this->session->wait(
             10000,
@@ -67,7 +77,7 @@ class HoldingCase extends BaseTestCase
             )
         );
         $links[1]->click();
-        $this->assertCount(8, $textFields);
+        $this->assertCount(9, $textFields);
         $textFields[2]->setValue('57742111111111111');
         $this->assertNotNull(
             $test = $this->page->find(
@@ -87,5 +97,8 @@ class HoldingCase extends BaseTestCase
         );
         $this->assertNotNull($this->page->find('css', '.alert-error'));
         $this->logout();
+
+        $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
+        $this->assertCount(1, $resManSettings);
     }
 }

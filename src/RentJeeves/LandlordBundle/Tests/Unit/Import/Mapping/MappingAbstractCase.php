@@ -63,15 +63,21 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array([ "street" => "959 Chester Circle"], "959 Chester Circle", null),
             array([ "street" => "5029 Yorkchester Dr"], "5029 Yorkchester Dr", null),
             array([ "street" => "101 MAIN ST"], "101 MAIN ST", null),
-            array([ "street" => "101 MAIN ST APT 12"], "101 MAIN ST ", "12"),
-            array([ "street" => "101 W MAIN ST. APT 12"], "101 W MAIN ST. ", "12"),
-            array([ "street" => "101 MAIN ST S.APT.12"], "101 MAIN ST S." , "12"),
-            array([ "street" => "101 MAIN ST # 12"], "101 MAIN ST ", "12"),
-            array([ "street" => "101 MAIN ST Unit 12"], "101 MAIN ST " , "12"),
-            array([ "street" => "101 MAIN ST RM 12"], "101 MAIN ST ", "12"),
-            array([ "street" => "101 MAIN ST STE. 12"], "101 MAIN ST ", "12"),
-            array([ "street" => "2715 P Street #2"], "2715 P Street ", "2"),
-            array([ "street" => "2715 P Street #11"], "2715 P Street ", "11"),
+            array([ "street" => "101 MAIN ST APT 12"], "101 MAIN ST", "12"),
+            array([ "street" => "101 W MAIN ST. APT 12"], "101 W MAIN ST", "12"),
+            array([ "street" => "101 MAIN ST S.APT.12"], "101 MAIN ST S" , "12"),
+            array([ "street" => "101 MAIN ST # 12"], "101 MAIN ST", "12"),
+            array([ "street" => "101 MAIN ST Unit 12"], "101 MAIN ST" , "12"),
+            array([ "street" => "101 MAIN ST RM 12"], "101 MAIN ST", "12"),
+            array([ "street" => "101 MAIN ST STE. 12"], "101 MAIN ST", "12"),
+            array([ "street" => "2715 P Street #2"], "2715 P Street", "2"),
+            array([ "street" => "2715 P Street #11"], "2715 P Street", "11"),
+            array([ "street" => "2715 P Street #11"], "2715 P Street", "11"),
+            array([ "street" => "527-F SPRING FOREST"], "527 SPRING FOREST", "F"),
+            # below case checks for matching "rm" in "farm"
+            array([ "street" => "826 Davenport Farm Road"], "826 Davenport Farm Road", null),
+            # failed for '-' within unit name
+            array([ "street" => "3903 #PP-5 STERLING"], "3903 STERLING", "PP-5"),
         );
     }
 
@@ -103,8 +109,10 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array([ "street" => "101 MAIN ST", "unit" => "Unit 12"], "101 MAIN ST", "12"),
             array([ "street" => "101 MAIN ST", "unit" => "RM 12"], "101 MAIN ST", "12"),
             array([ "street" => "101 MAIN ST", "unit" => "STE. 12"], "101 MAIN ST", "12"),
-            array([ "street" => "2715 P Street #2", "unit" => "P2715 #2"], "2715 P Street ", "2"),
-            array([ "street" => "2715 P Street #11", "unit" => "P2715#11"], "2715 P Street ", "11")
+            array([ "street" => "2715 P Street #2", "unit" => "P2715 #2"], "2715 P Street", "2"),
+            array([ "street" => "2715 P Street #11", "unit" => "P2715#11"], "2715 P Street ", "11"),
+            array([ "street" => "5105-A Deveron Street", "unit" => "5105-A"], "5105 Deveron Street", "A"),
+            array([ "street" => "3903 #PP-5 STERLING", "unit" => "3903 #PP-5 STERLING"], "3903 STERLING", "PP-5"),
         );
     }
 

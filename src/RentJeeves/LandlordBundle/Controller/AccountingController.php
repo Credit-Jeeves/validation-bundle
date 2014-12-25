@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
@@ -10,10 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\LandlordBundle\Accounting\Import\ImportFactory;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\Yardi;
@@ -128,7 +125,11 @@ class AccountingController extends Controller
     {
         $this->checkAccessToAccounting();
         $form = $this->createForm(
-            new ImportFileAccountingType($this->getCurrentGroup(), $this->getDoctrine()->getManager())
+            new ImportFileAccountingType(
+                $this->getUser()->getIsSuperAdmin(),
+                $this->getCurrentGroup(),
+                $this->getDoctrine()->getManager()
+            )
         );
 
         $form->handleRequest($this->get('request'));
@@ -139,7 +140,8 @@ class AccountingController extends Controller
             return array(
                 'form'          => $form->createView(),
                 'nGroups'       => $this->getGroups()->count(),
-                'source'        => $form->get('fileType')->getData()
+                'source'        => $form->get('fileType')->getData(),
+                'importType'    => $form->get('importType')->getData(),
             );
         }
 
@@ -237,16 +239,13 @@ class AccountingController extends Controller
         }
 
         $handler = $importFactory->getHandler();
+        $import = new Import();
+        $import->setContract(new Contract());
         $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm(
-            new ResidentMapping(),
-            new UnitMapping(),
-            new Unit()
+            $import
         );
         $formContract = $handler->getContractForm(
-            new Tenant(),
-            new ResidentMapping(),
-            new UnitMapping(),
-            new Unit()
+            $import
         );
         $formContractFinish = $handler->getContractFinishForm();
 
@@ -258,6 +257,7 @@ class AccountingController extends Controller
             'importMapping'           => $mapping,
             //Make it string because it's var for js and I want boolean
             'isMultipleProperty'      => ($storage->isMultipleProperty())? "true" : "false",
+            'importOnlyException'     => ($storage->isOnlyException())? "true" : "false",
         );
     }
 
@@ -480,6 +480,32 @@ class AccountingController extends Controller
 
         $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
         $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/import/update/matched/contracts/csv",
+     *     name="updateMatchedContractsCsv",
+     *     options={"expose"=true}
+     * )
+     */
+    public function updateMatchedContractsCsv()
+    {
+        /**
+         * @var $importFactory ImportFactory
+         */
+        $importFactory = $this->get('accounting.import.factory');
+        $handler = $importFactory->getHandler();
+        $result = $handler->updateMatchedContracts();
+
+        $response = new JsonResponse(
+            array('success' => $result)
+        );
+
+        $statusCode = ($result) ? 200 : 400;
+        $response->setStatusCode($statusCode);
 
         return $response;
     }

@@ -8,7 +8,6 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,6 +17,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use CreditJeeves\CoreBundle\Translation\Translator;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\ContractManager;
 
 /**
  * This form for Contract
@@ -33,13 +33,7 @@ class ImportContractType extends AbstractType
 
     protected $isUseOperation;
 
-    protected $tenant;
-
-    protected $unit;
-
-    protected $residentMapping;
-
-    protected $unitMapping;
+    protected $import;
 
     protected $em;
 
@@ -58,23 +52,15 @@ class ImportContractType extends AbstractType
     public function __construct(
         EntityManager $em,
         Translator $translator,
-        Tenant $tenant,
-        ResidentMapping $residentMapping,
-        UnitMapping $unitMapping,
-        Unit $unit = null,
+        Import $import,
         $token = true,
-        $operation = true,
         $isMultipleProperty = false,
         $sendInvite = true
     ) {
         $this->isUseToken =  $token;
-        $this->isUseOperation = $operation;
-        $this->tenant = $tenant;
         $this->em = $em;
         $this->translator = $translator;
-        $this->unit = $unit;
-        $this->residentMapping = $residentMapping;
-        $this->unitMapping = $unitMapping;
+        $this->import = $import;
         $this->isMultipleProperty = $isMultipleProperty;
         $this->sendInvite = $sendInvite;
     }
@@ -167,12 +153,10 @@ class ImportContractType extends AbstractType
             );
         }
 
-        if ($this->unit) {
-            $builder->add(
-                'unit',
-                new ImportUnitType()
-            );
-        }
+        $builder->add(
+            'unit',
+            new ImportUnitType()
+        );
 
         $builder->add(
             'residentMapping',
@@ -192,22 +176,6 @@ class ImportContractType extends AbstractType
             );
         }
 
-        if ($this->isUseOperation) {
-            $builder->add(
-                'operation',
-                new ImportOperationType(),
-                array(
-                    'mapped'=> false
-                )
-            );
-            $builder->addEventListener(
-                FormEvents::SUBMIT,
-                function (FormEvent $event) use ($options, $self) {
-                    $self->processOperation($event);
-                }
-            );
-        }
-
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) use ($self) {
@@ -215,11 +183,67 @@ class ImportContractType extends AbstractType
                 $self->setResidentId($event);
             }
         );
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) use ($self) {
+                $self->setUncollectedBalance($event);
+                $self->createOperation($event);
+                $self->movePaidTo($event);
+            }
+        );
+    }
+
+    public function createOperation(FormEvent $event)
+    {
+        /**
+         * @var $contract Contract
+         */
+        $contract = $event->getData();
+        $handler = $this->import->getHandler();
+        $isIsNeedCreateCashOperation = $handler->isNeedCreateCashOperation($contract);
+        $dueDate = $handler->getDueDateOfContract($contract);
+        if (!$isIsNeedCreateCashOperation) {
+            return;
+        }
+
+        $operation = $handler->getOperationByImport($this->import, $dueDate);
+        $csrfToken = $this->import->getCsrfToken();
+
+        if ($operation &&
+            is_null($operation->getContract()) &&
+            empty($csrfToken)
+        ) {
+            $handler->processingOperationAndOrder($contract->getTenant(), $operation, $contract);
+        }
+    }
+
+    public function movePaidTo(FormEvent $event)
+    {
+        /**
+         * @var $contract Contract
+         */
+        $contract = $event->getData();
+        $handler = $this->import->getHandler();
+        $dueDate = $handler->getDueDateOfContract($contract);
+        $handler->movePaidToOfContract($contract, $dueDate);
+    }
+
+    public function setUncollectedBalance(FormEvent $event)
+    {
+        /**
+         * @var $contract Contract
+         */
+        $contract = $event->getData();
+        $handler = $this->import->getHandler();
+        if ($contract->getIntegratedBalance() > 0 && $handler->isFinishedContract($contract)) {
+            $contract->setUncollectedBalance($contract->getIntegratedBalance());
+        }
     }
 
     public function setUnitName(FormEvent $event)
     {
-        if (!$this->unit) {
+        if (!$unit = $this->import->getContract()->getUnit()) {
             return;
         }
 
@@ -234,7 +258,7 @@ class ImportContractType extends AbstractType
         }
 
         $data['unit'] = array(
-            'name' => $this->unit->getActualName(),
+            'name' => $unit->getActualName(),
         );
 
         $event->setData($data);
@@ -250,7 +274,7 @@ class ImportContractType extends AbstractType
             $data['residentMapping'] = array();
         }
         $data['residentMapping'] = array(
-            'residentId' => $this->residentMapping->getResidentId(),
+            'residentId' => $this->import->getResidentMapping()->getResidentId(),
         );
         $event->setData($data);
     }
@@ -265,49 +289,9 @@ class ImportContractType extends AbstractType
             $data['unitMapping'] = array();
         }
         $data['unitMapping'] = array(
-            'externalUnitId' => $this->unitMapping->getExternalUnitId(),
+            'externalUnitId' => $this->import->getUnitMapping()->getExternalUnitId(),
         );
         $event->setData($data);
-    }
-
-    protected function processOperation(FormEvent $event)
-    {
-        $form = $event->getForm();
-        if (is_null($this->tenant->getId())) {
-            return;
-        }
-        /**
-         * @var $contract Contract
-         */
-        $contract = $form->getData();
-        if (is_null($contract->getId())) {
-            return;
-        }
-
-        $operationField = $form->get('operation');
-        /**
-         * @var $operation Operation
-         */
-        $operation = $operationField->getData();
-
-        if (!$operation->getPaidFor() || !$operation->getAmount()) {
-            return;
-        }
-
-        $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
-            $this->tenant,
-            $contract,
-            $operation->getPaidFor(),
-            $operation->getAmount()
-        );
-
-        if (empty($operation)) {
-            return;
-        }
-
-        $errorMessage = $this->translator->trans('error.operation.exist');
-        $operationField->get('amount')->addError(new FormError($errorMessage));
-        $operationField->get('paidFor')->addError(new FormError($errorMessage));
     }
 
     public function validateUnit(FormEvent $event)

@@ -130,6 +130,7 @@ class IframeCase extends BaseTestCase
     public function iframeNotFound()
     {
         $this->setDefaultSession('selenium2');
+        $this->session->getDriver()->resizeWindow(1600, 1200);
         $this->load(true);
         $this->session->visit($this->getUrl() . 'iframe');
         $this->session->wait($this->timeout, "typeof $ !== undefined");
@@ -170,8 +171,7 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
         $this->assertEquals(
             'property.number.not.exist',
@@ -184,23 +184,17 @@ class IframeCase extends BaseTestCase
                 'property-search' => $fillAddress,
             )
         );
-        $url = $this->session->getCurrentUrl();
         $propertySearch->click();
-        $this->session->wait($this->timeout+10000, "typeof $ !== undefined");
-        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
-        $searchSubmit->click();
-        $this->session->wait($this->timeout, "document.URL != '{$url}'");
-        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
+        $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "$('#property-search').val() == '{$fillAddress}'");
         //end check search on the not found
-        $this->page->clickLink('Pricing');
+        $this->assertNotNull($pricing = $this->page->find('css', '#popup-pricing'));
+        $pricing->click();
         $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
         $this->assertNotNull($buttons = $this->page->findAll('css', '#pricing-popup button.button-close'));
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
-        $this->assertNotNull($buttonClose = $this->page->find('css', '.ui-dialog .ui-dialog-titlebar-close'));
-        $buttonClose->click();
+        $this->session->wait($this->timeout, "$('#pricing-popup button.button-close').is(':visible')");
+        $buttons[0]->click();
 
         $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
 

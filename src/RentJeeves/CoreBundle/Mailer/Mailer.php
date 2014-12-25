@@ -40,14 +40,14 @@ class Mailer extends BaseMailer
 
     public function sendRjLandLordInvite($landlord, $tenant, $contract, $sTemplate = 'rjLandLordInvite')
     {
-        $vars = array(
-            'nameLandlord'          => $landlord->getFirstName(),
-            'fullNameTenant'        => $tenant->getFullName(),
-            'nameTenant'            => $tenant->getFirstName(),
-            'address'               => ($contract->getProperty()) ? $contract->getProperty()->getAddress() : null,
-            'unitName'              => ($contract->getUnit())? $contract->getUnit()->getName() : null,
-            'inviteCode'            => $landlord->getInviteCode(),
-        );
+        $vars = [
+            'nameLandlord'   => $landlord->getFirstName(),
+            'fullNameTenant' => $tenant->getFullName(),
+            'nameTenant'     => $tenant->getFirstName(),
+            'address'        => ($contract->getProperty()) ? $contract->getProperty()->getAddress() : null,
+            'unitName'       => ($contract->getUnit())? $contract->getUnit()->getName() : $contract->getSearch(),
+            'inviteCode'     => $landlord->getInviteCode(),
+        ];
 
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }

@@ -22,7 +22,7 @@ abstract class Group
      * @ORM\Id
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"paymentAccounts"});
+     * @Serializer\Groups({"paymentAccounts", "AdminProperty"});
      */
     protected $id;
 
@@ -116,6 +116,7 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string")
+     * @Serializer\Groups({"AdminProperty"});
      */
     protected $name;
 

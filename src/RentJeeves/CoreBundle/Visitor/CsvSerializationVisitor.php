@@ -29,6 +29,9 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
 
     protected $fp;
 
+    // $eol: probably one of "\r\n", "\n", or for super old macs ^-^ : "\r"
+    protected $eol = "\n";
+
     protected $currentLine = array();
 
     private $headerFlag = false;
@@ -127,6 +130,12 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
         if ($useHeader instanceof PhpOption\Some && $useHeader->get() === false) {
             $this->headerFlag = true;
         }
+
+        $eol = $context->attributes->get('eol');
+        if ($eol instanceof PhpOption\Some && $eol = $eol->get()) {
+            $this->eol = $eol;
+        }
+
     }
 
     /**
@@ -156,11 +165,11 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         if ($this->headerFlag === false) {
-            fputcsv($this->fp, array_keys($this->currentLine), self::DELIMITER, self::ENCLOSURE);
+            $this->fputcsvEol(array_keys($this->currentLine));
             $this->headerFlag = true;
         }
 
-        fputcsv($this->fp, $this->currentLine, self::DELIMITER, self::ENCLOSURE);
+        $this->fputcsvEol($this->currentLine);
         $this->currentLine = array();
     }
 
@@ -203,5 +212,13 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
     {
         $this->fp = fopen('php://temp', 'r+');
         $this->headerFlag = false;
+    }
+
+    protected function fputcsvEol($array)
+    {
+        fputcsv($this->fp, $array, self::DELIMITER, self::ENCLOSURE);
+        if ("\n" != $this->eol && 0 === fseek($this->fp, -1, SEEK_CUR)) {
+            fwrite($this->fp, $this->eol);
+        }
     }
 }

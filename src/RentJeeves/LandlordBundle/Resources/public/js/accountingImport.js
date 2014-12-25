@@ -2,6 +2,7 @@ function accountingImport(superclass) {
     var self = this;
     this.superclass = superclass;
     this.source = ko.observable('');
+    this.importType = ko.observable();
     this.isMultipleProperty = ko.observable(false);
     this.isValidDateFormat = ko.observable(true);
     this.fieldsWhichNotContaintInForm = [
@@ -19,11 +20,13 @@ function accountingImport(superclass) {
 
     this.rowsTotal = ko.observable(0);
     this.loadDataMessage = ko.observable('');
-    this.downloadImage = ko.observable(false);
+    this.showSpinner = ko.observable(false);
     this.classLoadDataMessage = ko.observable('errorMessage');
     this.isFinishReview =  ko.observable(false);
     this.rows = ko.observableArray([]);
     this.formErrors = ko.observableArray([]);
+
+
     this.loadData = function(next) {
         self.setProcessing(true);
         jQuery.ajax({
@@ -119,7 +122,7 @@ function accountingImport(superclass) {
             return Translator.trans('import.status.ended');
         }
 
-        if (data.contract.is_late && data.operation !== null) {
+        if (data.contract.is_late && data.contract.id !== null) {
             return Translator.trans('conflict.resolve.action');
         }
 
@@ -212,11 +215,7 @@ function accountingImport(superclass) {
             var month = jQuery(elementHtml).datepicker('getDate').getMonth() + 1;
             var year = jQuery(elementHtml).datepicker('getDate').getFullYear();
             var fullDate = month + "/" + day + "/" + year;
-            if (datepickerFieldName == 'paid_for') {
-                currentRow.operation[datepickerFieldName] = fullDate;
-            } else {
-                currentRow.contract[datepickerFieldName] = fullDate;
-            }
+            currentRow.contract[datepickerFieldName] = fullDate;
         } catch (e) {
             currentRow.contract[datepickerFieldName] = '';
         }

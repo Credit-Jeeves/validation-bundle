@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -49,6 +50,19 @@ class RjHoldingAdmin extends Admin
                     'sortable'  => 'position',
                 )
             )
+            ->with('ResMan Settings')
+            ->add(
+                'resManSettings',
+                $contrainer->get('form.resman_settings'),
+                array(
+                    'required' => false,
+                ),
+                array(
+                    'edit'      => 'inline',
+                    'inline'    => 'table',
+                    'sortable'  => 'position',
+                )
+            )
             ->end();
     }
 
@@ -62,16 +76,26 @@ class RjHoldingAdmin extends Admin
         $this->setHolding($holding);
     }
 
-    protected function setHolding($holding)
+    /**
+     * @param Holding $holding
+     */
+    protected function setHolding(Holding $holding)
     {
         /**
          * @var $yardi YardiSettings
          */
         $yardi = $holding->getYardiSettings();
-        if ($yardi&& $yardi->getUrl()) {
+        if ($yardi && $yardi->getUrl()) {
             $yardi->setHolding($holding);
         } else {
-            $holding->setYardiSettings();
+            $holding->setYardiSettings(null);
+        }
+
+        $resMan = $holding->getResManSettings();
+        if ($resMan && $resMan->getAccountId()) {
+            $resMan->setHolding($holding);
+        } else {
+            $holding->setResManSettings(null);
         }
     }
 

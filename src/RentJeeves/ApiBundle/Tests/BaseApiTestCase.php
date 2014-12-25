@@ -19,7 +19,7 @@ class BaseApiTestCase extends BaseTestCase
 {
     const URL_PREFIX = '/api/tenant';
 
-    const TENANT_ACCESS_TOKEN = 'api_tenant_test_case';
+    const USER_ACCESS_TOKEN = 'api_tenant_test_case';
 
     protected static $instance = false;
 
@@ -59,7 +59,7 @@ class BaseApiTestCase extends BaseTestCase
         );
     }
 
-    protected function assertResponseContent($content, $result, $format)
+    protected function assertResponseContent($content, $result, $format = 'json')
     {
         $data = $this->parseContent($content, $format);
 
@@ -98,21 +98,28 @@ class BaseApiTestCase extends BaseTestCase
         /** @var Client $oauthClient */
         $oauthClient = $repo->find(1);
 
-        $oauthStorage->createAccessToken(
-            static::TENANT_ACCESS_TOKEN,
-            $oauthClient,
-            $this->getTenant(),
-            0
-        );
+        if (!$oauthStorage->getAccessToken(static::USER_ACCESS_TOKEN)) {
+            $oauthStorage->createAccessToken(
+                static::USER_ACCESS_TOKEN,
+                $oauthClient,
+                $this->getTenant(),
+                0
+            );
+        }
     }
 
-    protected function getClient()
+    protected function prepareClient()
     {
         if (static::$instance != true) {
             $this->load(true);
             $this->prepareOAuthAuthorization();
             static::$instance = true;
         }
+    }
+
+    protected function getClient()
+    {
+        $this->prepareClient();
 
         return parent::createClient();
     }
@@ -241,7 +248,7 @@ class BaseApiTestCase extends BaseTestCase
             [],
             [
                 'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
+                'HTTP_AUTHORIZATION' => 'Bearer ' . static::USER_ACCESS_TOKEN,
             ],
             ($method != 'GET') ? $serializer->serialize($requestParams, $format) : null
         );
@@ -253,6 +260,6 @@ class BaseApiTestCase extends BaseTestCase
     {
         $requestUrl = $requestUrl ?: static::REQUEST_URL;
 
-        return self::URL_PREFIX . '/' . $requestUrl . ( $id ? "/{$id}" : '') . ".{$format}" ;
+        return static::URL_PREFIX . '/' . $requestUrl . ( $id ? "/{$id}" : '') . ".{$format}" ;
     }
 }

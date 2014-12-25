@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
-use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
 use RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients\BaseClientCase as Base;
 
 class ResidentTransactionsClientCase extends Base
@@ -20,7 +20,7 @@ class ResidentTransactionsClientCase extends Base
 
         return $clientFactory->getClient(
             $this->getYardiSettings(),
-            SoapClientEnum::RESIDENT_TRANSACTIONS
+            YardiClientEnum::RESIDENT_TRANSACTIONS
         );
     }
 

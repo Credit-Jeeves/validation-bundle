@@ -2,10 +2,13 @@ parameters:
     database_host: localhost
     database_driver: pdo_mysql
     database_port: null
+
     mailer_transport: mail
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
+    mailer_delivery_address: 'staging@renttrack.com'  # force all email to be delivered to test mailbox
+    mailer_disable_delivery: false
 
     session.lifetime:  3600 #in seconds
     mink.browser_name: 'firefox'
@@ -41,3 +44,9 @@ parameters:
     soap.api.yardi.entity: RentTrack
     soap.api.yardi.license: V100057742BP.lic
     soap.api.yardi.path_to_classes: RentJeeves\ExternalApiBundle\Services\Yardi\Soap\
+
+    validator.translation_domain: messages
+
+    resman.integration_partner_id: 1073
+    resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
+    resman.api_url: https://api.myresman.com/MITS/

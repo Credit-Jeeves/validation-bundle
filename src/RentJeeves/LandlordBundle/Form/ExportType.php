@@ -20,7 +20,7 @@ class ExportType extends AbstractType
     protected $validationGroups;
 
     protected $aviableValidationGroups = array(
-        'yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page'
+        'yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page', 'yardi_genesis_v2'
     );
 
     public function __construct($user, $group = null, $validationGroups = array('yardi'))
@@ -70,10 +70,28 @@ class ExportType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
-                            'groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page')
+                            'groups' => array(
+                                'yardi',
+                                'promas',
+                                'renttrack',
+                                'yardi_genesis',
+                                'yardi_genesis_v2',
+                                'real_page'
+                            )
                         )
                     ),
-                    new Date(array('groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page'))),
+                    new Date(
+                        array(
+                            'groups' => array(
+                                'yardi',
+                                'promas',
+                                'renttrack',
+                                'yardi_genesis',
+                                'yardi_genesis_v2',
+                                'real_page'
+                            )
+                        )
+                    ),
                 )
             )
         );
@@ -93,10 +111,28 @@ class ExportType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
-                            'groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page')
+                            'groups' => array(
+                                'yardi',
+                                'promas',
+                                'renttrack',
+                                'yardi_genesis',
+                                'yardi_genesis_v2',
+                                'real_page'
+                            )
                         )
                     ),
-                    new Date(array('groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page'))),
+                    new Date(
+                        array(
+                            'groups' => array(
+                                'yardi',
+                                'promas',
+                                'renttrack',
+                                'yardi_genesis',
+                                'yardi_genesis_v2',
+                                'real_page'
+                            )
+                        )
+                    ),
                 )
             )
         );
@@ -107,11 +143,12 @@ class ExportType extends AbstractType
             'choice',
             array(
                 'choices' => array(
-                    'yardi'         => 'order.report.type.yardi',
-                    'real_page'     => 'order.report.type.realpage',
-                    'promas'        => 'order.report.type.promas',
-                    'renttrack'     => 'order.report.type.renttrack',
-                    'yardi_genesis' => 'order.report.type.yardi_genesis',
+                    'yardi'             => 'order.report.type.yardi',
+                    'real_page'         => 'order.report.type.realpage',
+                    'promas'            => 'order.report.type.promas',
+                    'renttrack'         => 'order.report.type.renttrack',
+                    'yardi_genesis'     => 'order.report.type.yardi_genesis',
+                    'yardi_genesis_v2'  => 'order.report.type.yardi_genesis_v2',
                 ),
                 'required'    => true,
                 'attr'        => array(
@@ -124,7 +161,18 @@ class ExportType extends AbstractType
                         value: selectedType'
                 ),
                 'constraints' => array(
-                    new NotBlank(array('groups' => array('yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page')))
+                    new NotBlank(
+                        array(
+                            'groups' => array(
+                                'yardi',
+                                'promas',
+                                'renttrack',
+                                'yardi_genesis',
+                                'yardi_genesis_v2',
+                                'real_page'
+                            )
+                        )
+                    )
                 ),
             )
         );
@@ -145,11 +193,19 @@ class ExportType extends AbstractType
                         optionsValue: "id",
                         value: selectedProperty',
                     'row_attr' => array(
-                        'data-bind' => "visible: (selectedType() != 'promas') && (selectedType() != 'renttrack') ",
+                        'data-bind' =>
+                            "visible: (selectedType() != 'promas') &&
+                             (selectedType() != 'renttrack') &&
+                             (selectedType() != 'yardi_genesis_v2')
+                             ",
                     )
                 ),
                 'constraints'    => array(
-                    new NotBlank(array('groups' => array('yardi', 'yardi_genesis', 'real_page'))),
+                    new NotBlank(
+                        array(
+                            'groups' => array('yardi', 'yardi_genesis', 'real_page')
+                        )
+                    ),
                 ),
                 'query_builder'  => function (EntityRepository $er) use ($groups) {
 

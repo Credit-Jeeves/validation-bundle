@@ -1,6 +1,9 @@
 parameters:
     import.mapping.csv.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingCsv
     import.mapping.yardi.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi
+    accounting.export.yardi_genesis_v2.class: RentJeeves\LandlordBundle\Accounting\Export\Report\YardiGenesisV2Report
+    accounting.export.yardi_genesis_v2_archive.class: RentJeeves\LandlordBundle\Accounting\Export\Report\YardiGenesisV2Archive
+    export.serializer.yardi_genesis_v2.class: RentJeeves\LandlordBundle\Accounting\Export\Serializer\YardiGenesisV2CsvSerializer
 
 services:
     accounting.import.mapping.csv:
@@ -18,3 +21,18 @@ services:
             - "@accounting.import.storage.yardi"
             - "@import.reader.csv"
             - "@yardi.resident_data"
+    accounting.export.yardi_genesis_v2:
+        class: "%accounting.export.yardi_genesis_v2.class%"
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@export.serializer.yardi_genesis_v2"
+            - "@soft.deleteable.control"
+    accounting.export.yardi_genesis_v2_archive:
+        class: "%accounting.export.yardi_genesis_v2_archive.class%"
+        arguments:
+            - "@accounting.export.yardi_genesis_v2"
+            - "@export.serializer.yardi_genesis_v2"
+    export.serializer.yardi_genesis_v2:
+        class: "%export.serializer.yardi_genesis_v2.class%"
+        arguments:
+            - "@jms_serializer"

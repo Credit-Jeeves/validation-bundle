@@ -18,6 +18,14 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Payment extends Base
 {
+
+    /**
+     * Time limit for executing a payment
+     *
+     * @var int
+     */
+    const MAXIMUM_RUNTIME_SEC = 600; // 10 minutes
+
     /**
      *
      * The 'other' parameter is a calculated value from $amount and $total
@@ -91,6 +99,7 @@ class Payment extends Base
     public function createJob()
     {
         $job = new Job('payment:pay', array('--app=rj'));
+        $job->setMaxRuntime(self::MAXIMUM_RUNTIME_SEC);
         $job->addRelatedEntity($this);
         return $job;
     }
@@ -247,7 +256,7 @@ class Payment extends Base
             $context->addViolationAt(
                 'day',
                 "payment.month.error.number",
-                ['%%COUNT%%' => $lastDayInStartMonth->format('d')]
+                ['%count%' => $lastDayInStartMonth->format('d')]
             );
             return;
         }
@@ -263,7 +272,7 @@ class Payment extends Base
                 $context->addViolationAt(
                     'day',
                     "payment.month.error.number",
-                    ['%%COUNT%%' => $lastDayInEndMonth->format('d')]
+                    ['%count%' => $lastDayInEndMonth->format('d')]
                 );
                 return;
             }

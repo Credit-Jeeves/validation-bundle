@@ -10,10 +10,12 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:PaymentAccount';
 
+    const REQUEST_URL = 'payment_accounts';
+
     public static function getEmptyPaymentAccountsDataProvider()
     {
         return [
-            ['json', 204, 'alex@rentrack.com'],
+            ['alex@rentrack.com'],
         ];
     }
 
@@ -21,30 +23,21 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getEmptyPaymentAccountsDataProvider
      */
-    public function getEmptyPaymentAccounts($format, $statusCode, $email)
+    public function getEmptyPaymentAccounts($email, $format = 'json', $statusCode = 204)
     {
         $this->setTenantEmail($email);
 
-        $client = $this->getClient();
+        $this->prepareClient();
 
-        $client->request(
-            'GET',
-            self::URL_PREFIX . "/payment_accounts.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ]
-        );
+        $response = $this->getRequest(null, [], $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
     }
 
     public static function getPaymentAccountsDataProvider()
     {
         return [
-            ['json', 200, 'tenant11@example.com'],
+            ['tenant11@example.com'],
         ];
     }
 
@@ -52,30 +45,21 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider getPaymentAccountsDataProvider
      */
-    public function getPaymentAccounts($format, $statusCode, $email)
+    public function getPaymentAccounts($email, $format = 'json', $statusCode = 200)
     {
         $this->setTenantEmail($email);
 
-        $client = $this->getClient();
+        $this->prepareClient();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getTenant();
         $result = $repo->findBy(['user' => $tenant]);
 
-        $client->request(
-            'GET',
-            self::URL_PREFIX . "/payment_accounts.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ]
-        );
+        $response = $this->getRequest(null, [], $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
 
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        $answer = $this->parseContent($response->getContent(), $format);
 
         $this->assertEquals(count($result), count($answer));
 
@@ -164,13 +148,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'json',
-                201,
                 self::paymentAccountsDataProvider()[0],
             ],
             [
-                'json',
-                201,
                 self::paymentAccountsDataProvider()[3]
             ]
         ];
@@ -180,28 +160,15 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider createPaymentAccountDataProvider
      */
-    public function createPaymentAccount($format, $statusCode, $requestParams)
+    public function createPaymentAccount($requestParams, $format = 'json', $statusCode = 201)
     {
-        $client = $this->getClient();
+        $this->prepareClient();
 
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
+        $response = $this->postRequest($requestParams, $format);
 
-        $client->request(
-            'POST',
-            self::URL_PREFIX . "/payment_accounts.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
+        $this->assertResponse($response, $statusCode, $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
-
-        $answer = $this->parseContent($client->getResponse()->getContent(), $format);
+        $answer = $this->parseContent($response->getContent(), $format);
 
         $tenant = $this->getTenant();
 
@@ -219,13 +186,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                'json',
-                204,
                 self::paymentAccountsDataProvider()[0]
             ],
             [
-                'json',
-                204,
                 self::paymentAccountsDataProvider()[3]
             ]
         ];
@@ -233,55 +196,38 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
 
     /**
      * @test
-     * @depends createPaymentAccount
      * @dataProvider editPaymentAccountDataProvider
      */
-    public function editPaymentAccount($format, $statusCode, $requestParams)
+    public function editPaymentAccount($requestParams, $format = 'json', $statusCode = 204)
     {
-        $client = $this->getClient();
+        $this->prepareClient();
 
         $tenant = $this->getTenant();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
+        /** @var PaymentAccount $last */
         $last = $repo->findOneBy([
             'user' => $tenant,
         ], ['id' => 'DESC']);
 
         $encodedId = $this->getIdEncoder()->encode($last->getId());
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
 
-        $client->request(
-            'PUT',
-            self::URL_PREFIX . "/payment_accounts/{$encodedId}.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
+        $response = $this->putRequest($encodedId, $requestParams, $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
 
-        /** @var PaymentAccount $payment */
-        $payment = $repo->findOneBy([
-            'user' => $tenant, 'id' => $last->getId()
-        ], ['id' => 'DESC']);
+        $this->getEm()->refresh($last);
 
-        $this->assertEquals($payment->getType(), $requestParams['type']);
-        $this->assertEquals($payment->getName(), $requestParams['nickname']);
-        $this->assertNotNull($payment->getToken());
+        $this->assertEquals($last->getType(), $requestParams['type']);
+        $this->assertEquals($last->getName(), $requestParams['nickname']);
+        $this->assertNotNull($last->getToken());
     }
 
     public static function wrongPaymentAccountDataProvider()
     {
         return [
             [
-                'json',
-                400,
                 self::paymentAccountsDataProvider()[1],
                 [
                     [
@@ -306,8 +252,6 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
                 ]
             ],
             [
-                'json',
-                400,
                 self::paymentAccountsDataProvider()[2],
                 [
                     [
@@ -332,9 +276,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      * @test
      * @dataProvider wrongPaymentAccountDataProvider
      */
-    public function wrongEditPaymentAccount($format, $statusCode, $requestParams, $result)
+    public function wrongEditPaymentAccount($requestParams, $result, $format = 'json', $statusCode = 400)
     {
-        $client = $this->getClient();
+        $this->prepareClient();
 
         $tenant = $this->getTenant();
 
@@ -345,51 +289,26 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
         ], ['id' => 'DESC']);
 
         $encodedId = $this->getIdEncoder()->encode($last->getId());
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
 
-        $client->request(
-            'PUT',
-            self::URL_PREFIX . "/payment_accounts/{$encodedId}.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
+        $response = $this->putRequest($encodedId, $requestParams, $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
+        $this->assertResponse($response, $statusCode, $format);
 
-        $this->assertResponseContent($client->getResponse()->getContent(), $result, $format);
+        $this->assertResponseContent($response->getContent(), $result, $format);
     }
 
     /**
      * @test
      * @dataProvider wrongPaymentAccountDataProvider
      */
-    public function wrongCreatePaymentAccount($format, $statusCode, $requestParams, $result)
+    public function wrongCreatePaymentAccount($requestParams, $result, $format = 'json', $statusCode = 400)
     {
-        $client = $this->getClient();
+        $this->prepareClient();
 
-        /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('jms_serializer');
+        $response = $this->postRequest($requestParams, $format);
 
-        $client->request(
-            'POST',
-            self::URL_PREFIX . "/payment_accounts.{$format}",
-            [],
-            [],
-            [
-                'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::TENANT_ACCESS_TOKEN,
-            ],
-            $serializer->serialize($requestParams, $format)
-        );
+        $this->assertResponse($response, $statusCode, $format);
 
-        $this->assertResponse($client->getResponse(), $statusCode, $format);
-
-        $this->assertResponseContent($client->getResponse()->getContent(), $result, $format);
+        $this->assertResponseContent($response->getContent(), $result, $format);
     }
 }

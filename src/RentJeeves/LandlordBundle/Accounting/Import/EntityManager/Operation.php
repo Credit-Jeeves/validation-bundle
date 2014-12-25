@@ -35,39 +35,7 @@ trait Operation
         return false;
     }
 
-    /**
-     * @param Import $import
-     * @param $row
-     *
-     * @return Operation|null
-     */
-    protected function getOperationByRow(ModelImport $import, array $row)
-    {
-        if (!$this->mapping->hasPaymentMapping($row)) {
-            return null;
-        }
-
-        $contract = $import->getContract();
-        if ($contract->getStatus() !== ContractStatus::CURRENT) {
-            return null;
-        }
-
-        $amount = $row[Mapping::KEY_PAYMENT_AMOUNT];
-        $paidFor = $this->getDateByField($import, $row[Mapping::KEY_PAYMENT_DATE]);
-
-        if ($paidFor instanceof DateTime && $amount > 0 && $this->isDuplicate($contract, $paidFor, $amount)) {
-            return null;
-        }
-
-        $operation = new EntityOperation();
-        $operation->setPaidFor($paidFor);
-        $operation->setAmount($amount);
-        $operation->setType(OperationType::RENT);
-
-        return $operation;
-    }
-
-    protected function getOperationByContract(EntityContract $contract, ModelImport $import, $paidFor)
+    protected function getOperationByContract(EntityContract $contract, $paidFor)
     {
         if ($this->isDuplicate($contract, $paidFor, $contract->getRent())) {
             return null;
@@ -77,8 +45,7 @@ trait Operation
         $operation->setPaidFor($paidFor);
         $operation->setAmount($contract->getRent());
         $operation->setType(OperationType::RENT);
-
-        $import->setOperation($operation);
+        $operation->setCreatedAt($paidFor);
 
         return $operation;
     }

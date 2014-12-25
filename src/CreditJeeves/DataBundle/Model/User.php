@@ -57,7 +57,7 @@ abstract class User extends BaseUser
      *     }
      * )
      * @Assert\Length(
-     *     min=2,
+     *     min=1,
      *     max=255,
      *     minMessage="error.user.first_name.short",
      *     maxMessage="error.user.first_name.long",
@@ -93,7 +93,7 @@ abstract class User extends BaseUser
      *     nullable=true
      * )
      * @Assert\Length(
-     *     min=2,
+     *     min=1,
      *     max=255,
      *     minMessage="error.user.middleInitial.short",
      *     maxMessage="error.user.middleInitial.long",
@@ -125,7 +125,7 @@ abstract class User extends BaseUser
      *     }
      * )
      * @Assert\Length(
-     *     min=2,
+     *     min=1,
      *     max=255,
      *     minMessage="error.user.last_name.short",
      *     maxMessage="error.user.last_name.long",
@@ -300,7 +300,7 @@ abstract class User extends BaseUser
      * @ORM\Column(type="string", nullable=true)
      * @Serializer\Type("string")
      * @Assert\Regex(
-     *     pattern = "/^(\(\d{3}\)\d{3}-|\d{3}\.\d{3}\.|\d{3}-?\d{3}-?)\d{4}$/",
+     *     pattern = "/^(\(\d{3}\) ?\d{3}-|\d{3}\.\d{3}\.|\d{3}-?\d{3}-?)\d{4}$/",
      *     message="error.user.phone.format",
      *     groups={
      *         "user_admin",

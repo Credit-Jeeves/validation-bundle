@@ -2,6 +2,7 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -14,7 +15,7 @@ use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
-use RentJeeves\ExternalApiBundle\Soap\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -75,6 +76,28 @@ class AjaxController extends Controller
 
         return $this->makeJsonResponse($properties);
 
+    }
+
+    /**
+     * @Route(
+     *     "/rj/holding/groups",
+     *     name="admin_rj_holding_groups",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getHoldingGroups(Request $request)
+    {
+        $holdingId = $request->request->get('holdingId');
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $holding Holding
+         */
+        $holding = $em->getRepository('DataBundle:Holding')->find($holdingId);
+        if (empty($holding)) {
+            throw new Exception("Holding not found.");
+        }
+
+        return $this->makeJsonResponse($holding->getGroups());
     }
 
     /**
@@ -146,7 +169,7 @@ class AjaxController extends Controller
          */
         $resident = $clientFactory->getClient(
             $yardiSettings,
-            SoapClientEnum::RESIDENT_TRANSACTIONS
+            YardiClientEnum::RESIDENT_TRANSACTIONS
         );
 
         $result = $resident->getPropertyConfigurations();

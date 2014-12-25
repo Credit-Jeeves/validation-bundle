@@ -2,29 +2,13 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Handler;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\CoreBundle\Mailer\Mailer;
-use RentJeeves\CoreBundle\Services\ContractProcess;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingCsv;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
-use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
-use Symfony\Component\Form\FormFactory;
-use Symfony\Component\Validator\Validator;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Operation;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Contract;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Property;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Resident;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Tenant;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Unit;
-use RentJeeves\LandlordBundle\Accounting\Import\Form\FormBind;
-use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -33,15 +17,6 @@ use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
  */
 class HandlerCsv extends HandlerAbstract
 {
-    use Forms;
-    use Contract;
-    use Tenant;
-    use Resident;
-    use Property;
-    use Operation;
-    use FormBind;
-    use Unit;
-
     /**
      * @InjectParams({
      *     "translator"       = @Inject("translator"),
@@ -61,5 +36,57 @@ class HandlerCsv extends HandlerAbstract
         $this->translator       = $translator;
         $this->storage          = $storage;
         $this->mapping          = $mapping;
+    }
+
+    public function updateMatchedContracts()
+    {
+        if (!$this->storage->isOnlyException()) {
+            return false;
+        }
+
+        $newFilePath = $this->getNewFilePath();
+        $this->copyHeader($newFilePath);
+        $self = $this;
+        $total = $this->mapping->getTotal();
+        for ($i = 1; $i <= $total; $i++) {
+            $this->updateMatchedContractsWithCallback(
+                function () use ($self) {
+                    $self->removeLastLineInFile();
+                },
+                function () use ($self, $newFilePath) {
+                    $self->moveLine($newFilePath);
+                }
+            );
+        }
+
+        $this->storage->setFilePath(basename($newFilePath));
+
+        return true;
+    }
+
+    public function moveLine($newFilePath)
+    {
+        $lines = file($this->storage->getFilePath());
+        $last = sizeof($lines) - 1 ;
+        $lastLine = $lines[$last];
+        file_put_contents($newFilePath, $lastLine, FILE_APPEND | LOCK_EX);
+
+        $this->removeLastLineInFile();
+    }
+
+    public function copyHeader($newFilePath)
+    {
+        $data = $this->mapping->getDataForMapping(0, 1, false);
+        $header = array_keys($data[1]);
+        $file = fopen($newFilePath, "w");
+        fputcsv($file, $header);
+        fclose($file);
+
+        return $newFilePath;
+    }
+
+    public function getNewFilePath()
+    {
+        return $this->storage->getFileDirectory().uniqid().".csv";
     }
 }

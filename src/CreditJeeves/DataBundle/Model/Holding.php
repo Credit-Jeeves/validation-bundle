@@ -5,6 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Model\YardiSettings;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -141,6 +142,16 @@ abstract class Holding
      */
     protected $yardiSettings;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ResManSettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"},
+     *     fetch="EAGER"
+     * )
+     */
+    protected $resManSettings;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -149,6 +160,22 @@ abstract class Holding
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
+    }
+
+    /**
+     * @return ResManSettings
+     */
+    public function getResManSettings()
+    {
+        return $this->resManSettings;
+    }
+
+    /**
+     * @param ResManSettings $resManSettings
+     */
+    public function setResManSettings(ResManSettings $resManSettings = null)
+    {
+        $this->resManSettings = $resManSettings;
     }
 
     /**

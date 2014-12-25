@@ -42,7 +42,7 @@ class UsersController extends Controller
      *     encoder = "api.default_id_encoder"
      * )
      *
-     * @throws NotFoundHttpException
+     * @throws ResponseResourceException
      */
     public function getUserAction($id)
     {
@@ -87,6 +87,7 @@ class UsersController extends Controller
      * )
      *
      * @throws BadRequestHttpException
+     * @return \Symfony\Component\Form\Form
      */
     public function createUserAction(Request $request)
     {
@@ -110,7 +111,7 @@ class UsersController extends Controller
                 $em->persist($tenant);
                 $em->flush();
 
-                return $this->get('response_resource.tenant')->setEntity($tenant);
+                return $this->get('response_resource.factory')->getResponse($tenant);
             } catch (RuntimeException $e) {
                 $form->addError(new FormError($e->getMessage().$e->getTraceAsString()));
             }
