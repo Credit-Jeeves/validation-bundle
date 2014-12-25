@@ -11,6 +11,13 @@ class ContractWaitingCase extends BaseTestCase
     public function checkMovingContract()
     {
         $this->load(true);
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertCount(1, $contractWaiting);
+
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_contract_waiting'));
@@ -43,12 +50,9 @@ class ContractWaitingCase extends BaseTestCase
 
         $btn[1]->click();
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(0, count($contractWaiting));
+        $this->assertCount(1, $contractWaiting);
 
         $this->setDefaultSession('goutte');
         $emails = $this->getEmails();

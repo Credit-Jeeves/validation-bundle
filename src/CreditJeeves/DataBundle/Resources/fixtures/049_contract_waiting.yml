@@ -1,0 +1,13 @@
+model: RentJeeves\DataBundle\Entity\ContractWaiting
+fixtures:
+    waiting1:
+        property: Property_1
+        unit: Unit_1_1
+        rent: 500
+        residentId: t0013535
+        integratedBalance: 0
+        startAt: now
+        finishAt: +10 month
+        firstName: Tom
+        lastName: Jonson
+        group: RentGroup_1

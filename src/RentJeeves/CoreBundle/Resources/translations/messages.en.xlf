@@ -923,14 +923,9 @@
                 <source>conflict.resolve.ended</source>
                 <target>Update this contract</target>
             </trans-unit>
-            
            <trans-unit id="error.email.already.use">
                 <source>error.email.already.use</source>
                 <target>Email already use in the system.</target>
-            </trans-unit>
-            <trans-unit id="error.residentId.already_use">
-                <source>error.residentId.already_use</source>
-                <target>ResidentId is already used.</target>
             </trans-unit>
             <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
@@ -3012,6 +3007,17 @@
             <trans-unit id="error.contract.paid_for">
                 <source>error.contract.paid_for</source>
                 <target>Paid For invalid</target>
+            </trans-unit>
+            <trans-unit id="error.residentId.already_use">
+                <source>error.residentId.already_use</source>
+                <target>
+                    Accounting ID is already in use in the system by %email%.
+                    You can revoke their invitation first, or contact %support_email% for further assistance.
+                </target>
+            </trans-unit>
+            <trans-unit id="notice.revoke.residentId.multiple_contracts">
+                <source>notice.revoke.residentId.multiple_contracts</source>
+                <target>{1} Are you sure you want to revoke this invitation? The Accounting ID mapping for this resident is in use by other contracts and will not be removed.|{0} Are you sure you want to revoke this invitation? The Accounting ID mapping for this resident will also be removed so you will be be able to use that ID for a different resident.</target>
             </trans-unit>
         </body>
     </file>

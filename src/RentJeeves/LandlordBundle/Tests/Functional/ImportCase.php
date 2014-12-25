@@ -685,6 +685,11 @@ class ImportCase extends BaseTestCase
     public function importMultipleProperties()
     {
         $this->load(true);
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        $this->assertEquals(1, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -772,11 +777,6 @@ class ImportCase extends BaseTestCase
 
         //Check notify tenant invite for new user
         $this->assertCount(0, $this->getEmails(), 'Wrong number of emails');
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine')->getManager();
-
         $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
             array('externalUnitId' => 'SP1152-C')
         );
@@ -800,7 +800,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->isSingle());
 
-        $this->assertEquals(20, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
+        $this->assertEquals(21, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
     }
 
     /**

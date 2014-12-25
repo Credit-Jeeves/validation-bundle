@@ -418,7 +418,8 @@ function Contract() {
     };
 
     this.saveTenant = function () {
-        $('#tenant-edit-property-popup').showOverlay();
+        var ids = '#tenant-edit-property-popup, #tenant-add-property-popup, #tenant-end-contract';
+        $(ids).showOverlay();
         var formData = $("form#rentjeeves_landlordbundle_invitetenantcontracttype").serialize();
         var url = $('form#rentjeeves_landlordbundle_invitetenantcontracttype').attr('action') ;
         if (!$(".error_list").length) {
@@ -429,7 +430,7 @@ function Contract() {
                 dataType: 'json',
                 data: formData,
                 success: function(response, textStatus, jqXHR) {
-                    $('#tenant-end-contract').hideOverlay();
+                    $(ids).hideOverlay();
                     if (typeof response.errors == 'undefined') {
                         $('#tenant-add-property-popup').dialog('close');
                         $("form#rentjeeves_landlordbundle_invitetenantcontracttype")[0].reset();
