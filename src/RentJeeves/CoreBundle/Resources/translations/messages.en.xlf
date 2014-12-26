@@ -1855,6 +1855,10 @@
                 <source>contract.reminder.error.already.send</source>
                 <target>Looks like you sent a reminder just a moment ago. We don't want to start spamming your inbox.</target>
             </trans-unit>
+            <trans-unit id="contract.reminder.sent.successfully">
+                <source>contract.reminder.sent.successfully</source>
+                <target>Reminder has been successfully sent.</target>
+            </trans-unit>
             <trans-unit id="iframe.login.title">
                 <source>iframe.login.title</source>
                 <target>RentTrack Member Log In</target>

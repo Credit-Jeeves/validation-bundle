@@ -190,7 +190,14 @@
     <div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'edit.contract'|trans }}</h1>
         <div class="clearfix col-box" data-bind="with: contract">
-            <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrorsEdit() > 0">
+            <div class="information-box pie-el" data-bind="visible: $root.countNotificationsEdit() > 0">
+                <ul class="default">
+                    <!-- ko foreach: $root.notificationsEdit() -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
+                </ul>
+            </div>
+            <div class="attention-box pie-el" data-bind="visible: $root.countErrorsEdit() > 0">
                 <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
                 <ul class="default">
                     <!-- ko foreach: $root.errorsEdit() -->
