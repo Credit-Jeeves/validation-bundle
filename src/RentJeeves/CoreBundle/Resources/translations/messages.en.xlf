@@ -1655,6 +1655,14 @@
                 <source>order.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="order.status.message.is_empty">
+                <source>order.status.message.is_empty</source>
+                <target>Reason is unknown.</target>
+            </trans-unit>
+            <trans-unit id="order.status.message">
+                <source>order.status.message</source>
+                <target>Reason: %message%</target>
+            </trans-unit>
             <trans-unit id="order.status.text.new">
                 <source>order.status.text.new</source>
                 <target>PENDING</target>
