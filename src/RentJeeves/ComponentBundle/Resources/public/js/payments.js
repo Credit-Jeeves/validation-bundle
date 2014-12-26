@@ -226,11 +226,11 @@ function Payments() {
       return order.amount;
   };
 
-  this.isNotSuccessStatus = function(status)
+  this.isSuccessfulStatus = function(status)
   {
-      if (status != 'order.status.text.new' &&
-          status != 'order.status.text.complete' &&
-          status != 'order.status.text.pending') {
+      if (status == 'order.status.text.new' ||
+          status == 'order.status.text.complete' ||
+          status == 'order.status.text.pending') {
              return true;
       }
 

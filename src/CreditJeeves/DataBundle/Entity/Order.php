@@ -518,13 +518,7 @@ class Order extends BaseOrder
         $result['icon'] = $this->getOrderTypes();
         $status = $this->getStatus();
         $result['status'] = 'order.status.text.'.$status;
-        if ($this->getStatus() == OrderStatus::ERROR) {
-            $result['errorMessage'] = $this->getHeartlandErrorMessage();
-        } else {
-            $result['errorMessage'] = $this->getHeartlandTransaction() ?
-                $this->getHeartlandTransaction()->getMessages() :
-                '';
-        }
+        $result['errorMessage'] = $this->getHeartlandMessage();
         switch ($status) {
             case OrderStatus::COMPLETE:
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
@@ -589,13 +583,7 @@ class Order extends BaseOrder
     {
         $result = array();
         $result['status'] = $this->getStatus();
-        if ($this->getStatus() == OrderStatus::ERROR) {
-            $result['errorMessage'] = $this->getHeartlandErrorMessage();
-        } else {
-            !$this->getHeartlandTransaction() || $result['errorMessage'] = $this
-                ->getHeartlandTransaction()
-                ->getMessages();
-        }
+        $result['errorMessage'] = $this->getHeartlandMessage();
         $result['style'] = $this->getOrderStatusStyle();
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
         $result['property'] = $this->getContract()? $this->getContract()->getRentAddress() : 'N/A';
@@ -671,6 +659,27 @@ class Order extends BaseOrder
         }
 
         return null;
+    }
+
+    /**
+     * @param bool $onlyReversal
+     * @return string
+     */
+    public function getHeartlandMessage($onlyReversal = true)
+    {
+        if (OrderStatus::ERROR == $this->getStatus()) {
+            return $this->getHeartlandErrorMessage();
+        }
+
+        if ($onlyReversal) {
+            if (in_array($this->getStatus(), [OrderStatus::CANCELLED, OrderStatus::RETURNED, OrderStatus::REFUNDED])) {
+                return $this->getReversalDescription();
+            }
+
+            return '';
+        }
+
+        return $this->getHeartlandTransaction() ? $this->getHeartlandTransaction()->getMessages() : '';
     }
 
     /**

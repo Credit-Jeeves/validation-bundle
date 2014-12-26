@@ -33,7 +33,7 @@
                             <span data-bind="text: $root.getStatusText(status()), attr: {title: errorMessage}"></span>
                             <span
                                 class="status-text-helper"
-                                data-bind="visible: $root.isNotSuccessStatus(status())"
+                                data-bind="visible: !$root.isSuccessfulStatus(status())"
                                 style="cursor: pointer">
                                 <img src="{{ asset('bundles/core/images/help-icon.gif') }}">
                             </span>

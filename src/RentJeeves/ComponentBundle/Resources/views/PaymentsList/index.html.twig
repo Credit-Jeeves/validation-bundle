@@ -83,7 +83,7 @@
                         <span data-bind="text: status, i18n:{}, attr: {'title' : errorMessage}"></span>
                         <span
                             class="status-text-helper"
-                            data-bind="visible: $root.isNotSuccessStatus(status)"
+                            data-bind="visible: !$root.isSuccessfulStatus(status)"
                             style="cursor: pointer">
                             <img src="{{ asset('bundles/core/images/help-icon.gif') }}">
                         </span>
@@ -120,7 +120,7 @@
                         <span data-bind="text: $root.getOrderStatusText($parent.isDeposit, $data), attr: {'title' : errorMessage}"></span>
                         <span
                                 class="status-text-helper"
-                                data-bind="visible: $root.isNotSuccessStatus($data.status)"
+                                data-bind="visible: !$root.isSuccessfulStatus($data.status)"
                                 style="cursor: pointer">
                             <img src="{{ asset('bundles/core/images/help-icon.gif') }}">
                         </span>
