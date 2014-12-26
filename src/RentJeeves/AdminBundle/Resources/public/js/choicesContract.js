@@ -1,9 +1,7 @@
 $( document ).ready(function() {
-    console.info('hjjjj');
     var group = $($('select').get(2));
     var property = $($('select').get(3));
     var unit = $($('select').get(4));
-    var holding = $($('select').get(1));
 
     function choice(object, route, callback)
     {
@@ -14,8 +12,7 @@ $( document ).ready(function() {
             dataType: 'json',
             data: {
                 id: object.val(),
-                groupId: group.val(),
-                holdingId: holding.val()
+                groupId: group.val()
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 //window.location.reload();
@@ -40,7 +37,7 @@ $( document ).ready(function() {
             property.append(option);
         });
         runProperty()
-    }
+    };
 
     var propertyCallback = function(data)
     {
@@ -54,22 +51,7 @@ $( document ).ready(function() {
             }
             unit.append(option);
         });
-    }
-
-    var holdingCallback = function(data)
-    {
-        var groupId = group.val();
-        group.html(" ");
-        $.each(data, function( index, value ) {
-            var option = $('<option/>');
-            option.attr({ 'value': value.id }).text(value.name);
-            if (groupId == value.id) {
-                option.attr({ 'selected': true })
-            }
-            group.append(option);
-        });
-        runGroup();
-    }
+    };
 
     function runGroup()
     {
@@ -89,15 +71,6 @@ $( document ).ready(function() {
         );
     }
 
-    function runHolding()
-    {
-        choice(
-            holding,
-            'admin_rj_holding_groups',
-            holdingCallback
-        )
-    }
-
     group.change(function() {
         runGroup();
     });
@@ -105,10 +78,4 @@ $( document ).ready(function() {
     property.change(function() {
         runProperty();
     });
-
-    holding.change(function() {
-        runHolding();
-    })
-
-    //runProperty();
 });

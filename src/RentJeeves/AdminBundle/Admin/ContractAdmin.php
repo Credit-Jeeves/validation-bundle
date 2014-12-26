@@ -155,13 +155,13 @@ class ContractAdmin extends Admin
         $request = $container->get('request');
         $uniqueId = $request->query->get('uniqid');
         $params = $request->request->all();
+        $em = $container->get('doctrine.orm.default_entity_manager');
 
         if (isset($params[$uniqueId]['holding'])) {
-            $holding = $params[$uniqueId]['holding'];
+            $holding = $em->getRepository('DataBundle:Holding')->find($params[$uniqueId]['holding']);
             $group = $params[$uniqueId]['group'];
             $property = $params[$uniqueId]['property'];
         } elseif ($id = $request->get('id')) {
-            $em = $container->get('doctrine.orm.default_entity_manager');
             /**
              * @var $contract Contract
              */
@@ -181,15 +181,9 @@ class ContractAdmin extends Admin
                 'holding',
                 'entity',
                 array(
+                    'disabled' => true,
                     'class' => 'DataBundle:Holding',
-                    'required' => true,
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('holding')
-                            ->innerJoin('holding.groups', 'gr')
-                            ->where('gr.type = :typeGroup')
-                            ->orderBy('holding.name', 'ASC')
-                            ->setParameter('typeGroup', GroupType::RENT);
-                    }
+                    'choices' => [$holding],
                 )
             )
             ->add(
