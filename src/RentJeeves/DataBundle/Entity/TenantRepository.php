@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -172,5 +173,27 @@ class TenantRepository extends EntityRepository
         $query->setMaxResults(1);
 
         return $query;
+    }
+
+    public function getContractsByHoldingAndResident(ResidentMapping $residentMapping, Holding $landlordHolding)
+    {
+        $query = $this->createQueryBuilder('tenant');
+
+        $query->innerJoin(
+            'tenant.contracts',
+            'contract'
+        );
+
+        $query->innerJoin(
+            'tenant.residentsMapping',
+            'resident'
+        );
+
+        $query->where('resident.holding = :holdingId');
+        $query->andWhere('resident.residentId = :residentId');
+        $query->setParameter('holdingId', $landlordHolding->getId());
+        $query->setParameter('residentId', $residentMapping->getResidentId());
+
+        return $query->getQuery()->execute();
     }
 }

@@ -114,8 +114,7 @@
     <div id="tenant-revoke-invotation" class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'Information'|trans }}</h1>
         <div class="clearfix col-box"  data-bind="with: contract">
-            <div class="attention-box pie-el">
-                {{ 'revoke.inv.ask'|trans }}
+            <div class="attention-box pie-el" data-bind="html: revoke_message">
             </div>
             <div class="attention-box pie-el error" style="display: none;">
             </div>

@@ -12,8 +12,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\MappedSuperclass
  * @UniqueEntity(
  *     fields={"holding", "residentId"},
- *     groups={"add_or_edit_tenants"},
- *     message="add_or_edit_tenants.error.already_exist"
+ *     groups={"unique_entity"},
+ *     errorPath="residentId",
+ *     message="error.residentId.already_use"
  * )
  */
 abstract class ResidentMapping
