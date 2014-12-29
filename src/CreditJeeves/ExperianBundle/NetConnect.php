@@ -271,10 +271,13 @@ abstract class NetConnect
                 $testXML . "<!--{$errors}-->"
             );
 
-            throw new Exception(
+            $exception = new Exception(
                 "Generated XML is invalid http://{$this->serverName}/uploads/{$name}",
-                E_ERROR
+                E_PARSE
             );
+            $exception->setWsdlErrors(libxml_get_errors());
+
+            throw $exception;
         }
         libxml_use_internal_errors(false);
     }

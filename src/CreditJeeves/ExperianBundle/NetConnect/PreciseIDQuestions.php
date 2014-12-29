@@ -17,6 +17,7 @@ use CreditJeeves\ExperianBundle\NetConnect\Exception as ExperianException;
  */
 class PreciseIDQuestions
 {
+
     /**
      * @var bool
      */
@@ -188,6 +189,9 @@ class PreciseIDQuestions
             } catch (ExperianException $e) {
                 $this->catcher->handleException($e);
                 switch ($e->getCode()) {
+                    case E_PARSE:
+                        $this->error = $e->getErrorWsdl();
+                        break;
                     case E_USER_ERROR:
                         $this->error = $this->translator->trans('pidkiq.error.attempts');
                         break;
