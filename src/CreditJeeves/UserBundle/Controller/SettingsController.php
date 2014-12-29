@@ -69,6 +69,9 @@ class SettingsController extends Controller
     public function contactAction()
     {
         $request = $this->get('request');
+        /**
+         * @var $cjUser User
+         */
         $cjUser = $this->getUser();
         $sEmail = $cjUser->getEmail();
         $form = $this->createForm(new ContactType(), $cjUser);

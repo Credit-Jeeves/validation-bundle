@@ -123,4 +123,90 @@ class SummaryCase extends BaseTestCase
         );
         $this->assertEquals(3, count($radio));
     }
+
+    /**
+     * @test
+     */
+    public function shouldCatchWsdlErrorNumber()
+    {
+        self::$kernel = null;
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com'
+            )
+        );
+        $tenant->setIsVerified(UserIsVerified::NONE);
+        $tenant->setPhone('-');
+        $contracts = $tenant->getContracts();
+        foreach ($contracts as $contract) {
+            $contract->setTransUnionStartAt(null);
+            $contract->setReportToTransUnion(false);
+            $em->flush($contract);
+        }
+        $em->flush($tenant);
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->clickLink('tabs.summary');
+        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
+        $this->assertNotNull(
+            $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+        $this->assertNotNull(
+            $error = $this->page->find('css', '.attention-box')
+        );
+        $this->assertEquals(
+            "Element 'Number': '-' is not a valid value of the local atomic type.",
+            $error->getText()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCatchWsdlErrorName()
+    {
+        self::$kernel = null;
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com'
+            )
+        );
+        $tenant->setIsVerified(UserIsVerified::NONE);
+        $tenant->setFirstName("Mary Jane");
+        $contracts = $tenant->getContracts();
+        foreach ($contracts as $contract) {
+            $contract->setTransUnionStartAt(null);
+            $contract->setReportToTransUnion(false);
+            $em->flush($contract);
+        }
+        $em->flush($tenant);
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->clickLink('tabs.summary');
+        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
+        $this->assertNotNull(
+            $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+        $this->assertNotNull(
+            $error = $this->page->find('css', '.attention-box')
+        );
+        $this->assertEquals(
+            "Element 'First': 'Mary Jane' is not a valid value of the local atomic type.",
+            $error->getText()
+        );
+    }
 }
