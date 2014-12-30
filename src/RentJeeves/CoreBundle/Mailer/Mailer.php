@@ -57,6 +57,8 @@ class Mailer extends BaseMailer
         $unit = $contract->getUnit();
         $vars = array(
             'fullNameLandlord'      => $landlord->getFullName(),
+            'groupName'             => $contract->getGroup()->getName(),
+            'holdingName'           => $contract->getGroup()->getHolding()->getName(),
             'nameTenant'            => $tenant->getFirstName(),
             'address'               => $contract->getProperty()->getAddress(),
             'rentAddress'           => $contract->getRentAddress(),
@@ -71,6 +73,8 @@ class Mailer extends BaseMailer
     public function sendRjTenantLatePayment($tenant, $landlord, $contract, $sTemplate = 'rjTenantLatePayment')
     {
         $vars = array(
+            'groupName'             => $contract->getGroup()->getName(),
+            'holdingName'           => $contract->getGroup()->getHolding()->getName(),
             'fullNameLandlord'      => $landlord->getFullName(),
             'nameTenant'            => $tenant->getFirstName(),
             'address'               => $contract->getProperty()->getAddress(),
@@ -205,6 +209,8 @@ class Mailer extends BaseMailer
         $unit = $contract->getUnit();
         $vars = array(
             'fullNameLandlord'      => $landlord->getFullName(),
+            'groupName'             => $contract->getGroup()->getName(),
+            'holdingName'           => $contract->getGroup()->getHolding()->getName(),
             'nameTenant'            => $tenant->getFirstName(),
             'address'               => $contract->getProperty()->getAddress(),
             'unitName'              => $unit ? $unit->getName() : '',
@@ -294,7 +300,7 @@ class Mailer extends BaseMailer
         $vars = array(
             'tenantFullName'      => $tenant->getFullName(),
             'landlordFullName'    => $landlord->getFullName(),
-            'uncollectedBalance' => $contract->getUncollectedBalance(),
+            'uncollectedBalance'  => $contract->getUncollectedBalance(),
             'address'             => $contract->getProperty()->getAddress(),
             'unitName'            => $unitName,
         );
