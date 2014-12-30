@@ -327,7 +327,7 @@ class OrderListener
             $batchDate = clone $transaction->getCreatedAt();
             $transaction->setBatchDate($batchDate);
             $businessDaysCalc = $this->container->get('business_days_calculator');
-            $transaction->setDepositDate($businessDaysCalc->getCreditCardBusinessDate(clone $batchDate));
+            $transaction->setDepositDate($businessDaysCalc->getNextBusinessDate(clone $batchDate));
         }
     }
 }

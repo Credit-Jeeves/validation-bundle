@@ -64,6 +64,19 @@ class BusinessDaysCalculatorCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedBusinessDate, $result);
     }
 
+    /**
+     * @test
+     * @dataProvider provideNextParameters
+     */
+    public function shouldCalcNextBusinessDate($startDate, $expectedBusinessDate)
+    {
+        $calc = new BusinessDaysCalculator(0, 0);
+
+        $result = $calc->getNextBusinessDate($startDate);
+
+        $this->assertEquals($expectedBusinessDate, $result);
+    }
+
     public function provideCreditCardsShiftParameters()
     {
         return array(
@@ -93,5 +106,19 @@ class BusinessDaysCalculatorCase extends \PHPUnit_Framework_TestCase
             array(new DateTime("2014-02-08"), 4, new DateTime('2014-02-14')),
             array(new DateTime("2014-02-08"), 5, new DateTime('2014-02-17')),
         );
+    }
+
+    public function provideNextParameters()
+    {
+        return [
+            [new DateTime("2014-12-22"), new DateTime("2014-12-23")], // Mon -> Tue
+            [new DateTime("2014-12-23"), new DateTime("2014-12-24")], // Tue -> Wed
+            [new DateTime("2014-12-24"), new DateTime("2014-12-25")], // Wed -> Thu
+            [new DateTime("2014-12-25"), new DateTime("2014-12-26")], // Thu -> Fri
+            [new DateTime("2014-12-26"), new DateTime("2014-12-29")], // Fri -> Mon
+            [new DateTime("2014-12-27"), new DateTime("2014-12-29")], // Sat -> Mon
+            [new DateTime("2014-12-28"), new DateTime("2014-12-29")], // Sun -> Mon
+            [new DateTime("2014-12-29"), new DateTime("2014-12-30")], // Mon -> Tue
+        ];
     }
 }
