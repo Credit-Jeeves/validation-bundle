@@ -86,6 +86,10 @@
                 <source>admin.form.error.property_mapping</source>
                 <target>This property mapping already exists.</target>
             </trans-unit>
+            <trans-unit id="admin.list.order.jobs_action">
+                <source>admin.list.order.jobs_action</source>
+                <target>Jobs</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

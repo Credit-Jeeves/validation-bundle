@@ -1,7 +1,11 @@
 {% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
 
 {% block field %}
-    <select onchange="changeVerificationStatus(this)" onfocus="savePreviousStatus(this)" user_id="{{ object.getId }}">
+    <select
+        onchange="changeVerificationStatus(this)"
+        onfocus="savePreviousStatus(this)"
+        user_id="{{ object.getId }}"
+        class="sonata-select-status">
         {% for value in object.getAvailableVerificationStatuses %}
             <option value="{{ value }}" {% if object.getIsVerified == value %}selected{% endif %}>{{ value }}</option>
         {% endfor %}

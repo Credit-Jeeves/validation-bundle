@@ -1,7 +1,11 @@
 {% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
 
 {% block field %}
-    <select onchange="changeStatus(this)" onfocus="savePreviousStatus(this)" order_id="{{ object.getId }}">
+    <select
+        onchange="changeStatus(this)"
+        onfocus="savePreviousStatus(this)"
+        order_id="{{ object.getId }}"
+        class="sonata-select-status">
         {% for value in object.getAvailableOrderStatuses %}
             <option value="{{ value }}" {% if object.getStatus == value %}selected{% endif %}>{{ value }}</option>
         {% endfor %}
