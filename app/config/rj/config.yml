@@ -38,9 +38,6 @@ parameters:
         price: 0
         product: 'registration'
 
-    business_days_cc: 1 # credit card
-    business_days_ach: 3 # bank
-
 # parameters for twig
     payment_bank_fee: 0 # feeACH would be processed on heartland side
     payment_card_fee: 2.95% # feeCC

@@ -29,6 +29,9 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
     protected $repo;
     protected $fileReader;
     protected $fileFinder;
+    /**
+     * @var BusinessDaysCalculator
+     */
     protected $businessDaysCalculator;
 
     /**
@@ -39,7 +42,7 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
      *     "businessDaysCalc" = @DI\Inject("business_days_calculator")
      * })
      */
-    public function __construct($em, $fileReader, $fileFinder, $businessDaysCalc)
+    public function __construct($em, $fileReader, $fileFinder, BusinessDaysCalculator $businessDaysCalc)
     {
         $this->em = $em;
         $this->repo = $this->em->getRepository('RjDataBundle:Heartland');
@@ -110,7 +113,7 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
             // if original deposit date exists, set reversal deposit date
             if ($originalDepositDate) {
                 $transactionDate = new DateTime($paymentData['TransactionDate']);
-                $reversalDepositDate = $this->businessDaysCalculator->getBusinessDate($transactionDate, 2);
+                $reversalDepositDate = $this->businessDaysCalculator->getNextBusinessDate($transactionDate);
                 $reversalTransaction->setDepositDate($reversalDepositDate);
                 $reversalTransaction->setBatchId(null);
             }
@@ -134,8 +137,10 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
             $order->setStatus(OrderStatus::REFUNDED);
             $voidTransaction = $this->createReversalTransaction($order, $paymentData);
             $transactionDate = new DateTime($paymentData['TransactionDate']);
-            // Deposit date is 24-48h after transaction date
-            $depositDate = $this->businessDaysCalculator->getBusinessDate($transactionDate, 2);
+            // For reversal, from Heartland:
+            // "The funds would be removed from the merchant’s account on the next business day.
+            // If processed on a Saturday, it would be deducted on Monday."
+            $depositDate = $this->businessDaysCalculator->getNextBusinessDate($transactionDate);
             $voidTransaction->setDepositDate($depositDate);
             $voidTransaction->setBatchId(null);
 
