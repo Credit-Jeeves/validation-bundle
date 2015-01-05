@@ -71,19 +71,28 @@ class ResidentManager
          * @var $errorsResidentMapping ConstraintViolationList
          */
         $errorsResidentMapping = $this->validator->validate($residentMapping, ['unique_entity']);
-        if ($errorsResidentMapping->count() === 1) {
+        $existingMapping = $this->getExistingMapping($residentMapping);
+        if ($errorsResidentMapping->count() === 1 &&
+            ($existingMapping->getTenant()->getEmail() !== $residentMapping->getTenant()->getEmail())
+        ) {
             $errors[] = $this->translator->trans(
                 $errorsResidentMapping->get(0)->getMessage(),
                 array(
-                    '%support_email%' => $this->supportEmail,
-                    '%email%' => $this->getExistingMapping($residentMapping)->getTenant()->getEmail()
+                    '%support_email%'   => $this->supportEmail,
+                    '%email%'           => $existingMapping->getTenant()->getEmail()
                 )
             );
         }
 
+
+
         if (empty($errors)) {
             $this->clearWaitingRoom($landlord, $residentMapping);
-            $this->em->persist($residentMapping);
+            if (empty($existingMapping)) {
+                $this->em->persist($residentMapping);
+            } else {
+                $this->em->detach($residentMapping);
+            }
         }
 
         return $errors;
