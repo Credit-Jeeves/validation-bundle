@@ -299,8 +299,8 @@ fixtures:
         reportToExperian: true
         experianStartAt: '2014-01-01'
         paidTo:    '-27 days'
-        startAt:   '2014-01-01'
-        finishAt:  '2015-01-01'
+        startAt:   '2015-01-01'
+        finishAt:  '2018-01-01'
         createdAt: '2014-01-01'
         updatedAt: '2014-01-01'
     Contract_20:

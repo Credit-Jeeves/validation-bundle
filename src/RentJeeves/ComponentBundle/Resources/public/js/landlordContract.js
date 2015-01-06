@@ -143,6 +143,11 @@ $(document).ready(function () {
                                 $(this).val('Test');
                             }
                         });
+                        $('#rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone').val(1234567890);
+                    }
+
+                    if (response.isIntegrated) {
+                        $('#rentjeeves_landlordbundle_invitetenantcontracttype_resident_residentId').val(response.residentId);
                     }
                 } else {
                     $('.userInfo').show();

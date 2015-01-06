@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -114,6 +115,9 @@ class TenantsController extends Controller
                 if ($residentMapping) {
                     $residentMapping->setHolding($holding);
                     $residentMapping->setTenant($tenant);
+                    /**
+                     * @var $resident ResidentManager
+                     */
                     $resident = $this->get('resident_manager');
                     $errors = array_merge(
                         $errors,

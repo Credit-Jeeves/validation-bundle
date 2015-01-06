@@ -6,7 +6,7 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\TestBundle\BaseTestCase;
 use Doctrine\ORM\EntityManager;
 
-class ResidentCase extends BaseTestCase
+class ResidentManagerCase extends BaseTestCase
 {
     /**
      * @test
@@ -41,7 +41,7 @@ class ResidentCase extends BaseTestCase
         $errors = $resident->validate($landlord, $residentMapping);
         $this->assertCount(1, $errors);
         $this->assertEquals('common.residentId.required', end($errors));
-        $residentMapping->setResidentId('t0013534');
+        $residentMapping->setResidentId('t0011984');
         $errors = $resident->validate($landlord, $residentMapping);
         $this->assertCount(1, $errors);
         $error = end($errors);

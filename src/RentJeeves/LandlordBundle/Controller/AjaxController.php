@@ -12,6 +12,7 @@ use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -1079,13 +1080,28 @@ class AjaxController extends Controller
         $request = $this->get('request');
         $email = $request->request->get('email');
         $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $user Tenant
+         */
         $user = $em->getRepository('DataBundle:User')->findOneBy(
             array('email' => $email)
         );
+        $isIntegrated = $this->getUser()->getCurrentGroup()->getGroupSettings()->getIsIntegrated();
+        if ($user &&
+            $isIntegrated &&
+            $residentMapping = $user->getResidentForHolding($this->getUser()->getHolding())
+        ) {
+            $residentId = ($residentMapping)? $residentMapping->getResidentId() : null;
+        } else {
+            $residentId = null;
+        }
+
 
         $data = array(
-            'userExist' => (!empty($user))? true : false,
-            'isTenant'  => (!empty($user) && $user->getType() === UserType::TETNANT)? true : false,
+            'userExist'     => (!empty($user))? true : false,
+            'isTenant'      => (!empty($user) && $user->getType() === UserType::TETNANT)? true : false,
+            'residentId'    => $residentId,
+            'isIntegrated'  => $isIntegrated
         );
 
         return new JsonResponse($data);
