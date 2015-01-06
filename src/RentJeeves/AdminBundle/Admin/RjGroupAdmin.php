@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\AdminBundle\Form\GroupSettings;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Sonata\AdminBundle\Admin\Admin;
@@ -11,6 +12,8 @@ use CreditJeeves\DataBundle\Enum\GroupType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class RjGroupAdmin extends Admin
 {
@@ -21,7 +24,7 @@ class RjGroupAdmin extends Admin
     const TYPE = 'group';
 
     protected $formOptions = array(
-            'validation_groups' => 'holding'
+            'validation_groups' => ['holding', 'unique_mapping']
     );
 
     /**
@@ -135,7 +138,14 @@ class RjGroupAdmin extends Admin
             ->with('Deposit Account')
                 // admin.deposit_account.merchant_name
                 ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name', 'required' => false))
-                ->add('depositAccount.accountNumber', null, array('label' => 'Account Number', 'required' => false))
+                ->add(
+                    'accountNumberMapping.accountNumber',
+                    null,
+                    array(
+                        'label' => 'Account Number',
+                        'required' => false,
+                    )
+                )
                 ->add(
                     'depositAccount.status',
                     'choice',
@@ -212,6 +222,21 @@ class RjGroupAdmin extends Admin
                     )
                 )
             ->end();
+
+        $self = $this;
+        $formMapper->getFormBuilder()->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($self) {
+                $form = $event->getForm();
+                /** @var Group $group */
+                $group = $form->getData();
+                $accountMapping = $group->getAccountNumberMapping();
+                if (!$accountMapping->getHolding()) {
+                    $holding = $group->getHolding();
+                    $accountMapping->setHolding($holding);
+                }
+            }
+        );
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -301,4 +326,6 @@ class RjGroupAdmin extends Admin
             ->add('created_at')
             ->add('updated_at');
     }
+
+
 }

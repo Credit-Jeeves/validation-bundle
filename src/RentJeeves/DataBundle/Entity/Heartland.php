@@ -279,11 +279,11 @@ class Heartland extends Base
     {
         $contract = $this->getContract();
 
-        if (!$contract || !($depositAccount = $contract->getDepositAccount())) {
+        if (!$contract || !($group = $contract->getGroup())) {
             return null;
         }
 
-        return $depositAccount->getAccountNumber();
+        return $group->getAccountNumber();
     }
 
     /**
