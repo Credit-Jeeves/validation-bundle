@@ -88,11 +88,7 @@ class ResidentManager
 
         if (empty($errors)) {
             $this->clearWaitingRoom($landlord, $residentMapping);
-            if (empty($existingMapping)) {
-                $this->em->persist($residentMapping);
-            } else {
-                $this->em->detach($residentMapping);
-            }
+            $this->em->persist($residentMapping);
         }
 
         return $errors;
