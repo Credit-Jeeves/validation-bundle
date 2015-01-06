@@ -15,12 +15,20 @@ class Extension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFilter('array_values', array($this, 'arrayValues')),
+            new \Twig_SimpleFilter('phone_number', array($this, 'phoneNumber')),
         );
     }
 
     public function arrayValues($array)
     {
         return array_values($array);
+    }
+
+    public function phoneNumber($phone)
+    {
+        $phone = preg_replace('/\D/', '', $phone);
+
+        return ($phone) ? substr($phone, 0, 3) . '-' . substr($phone, 3, 3) . '-' . substr($phone, 6, 4) : '';
     }
 
     public function getName()

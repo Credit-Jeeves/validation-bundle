@@ -1,15 +1,8 @@
-{#
-
-This file is part of the Sonata package.
-
-(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
-
-For the full copyright and license information, please view the LICENSE
-file that was distributed with this source code.
-
-#}
 {% if admin.isGranted('EDIT', object)%}
-    <a href="{{ path('admin_creditjeeves_data_order_list', { "user_id": object.id }) }}" class="btn order_link" title="{{ 'admin.action.orders'|trans({}) }}">
+    <br />
+    <a href="{{ path('admin_creditjeeves_data_order_list', { "user_id": object.id }) }}"
+       class="btn order_link btn-small"
+       title="{{ 'admin.action.orders'|trans({}) }}">
         <i class="icon-order"></i>
         {{ 'admin.action.orders'|trans({}) }}
     </a>

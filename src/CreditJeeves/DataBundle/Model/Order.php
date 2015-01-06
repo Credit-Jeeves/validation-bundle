@@ -482,4 +482,13 @@ abstract class Order
     {
         return $this->heartlands;
     }
+
+    /**
+     * Get Jobs
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getJobs()
+    {
+        return $this->jobs;
+    }
 }

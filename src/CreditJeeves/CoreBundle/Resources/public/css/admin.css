@@ -44,3 +44,38 @@
     filter: progid:DXImageTransform.Microsoft.Alpha(opacity = 20);
     z-index: 50;
 }
+
+.sonata-ba-list-field-email, .sonata-ba-list-field-phone {
+    white-space: nowrap;
+}
+
+.sonata-select-status {
+    width: 100px !important;
+}
+
+.job-status-icon {
+    width: 14px;
+    height: 14px;
+    background-color: #999999;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    border-radius: 7px;
+    vertical-align: middle;
+    display: inline-table;
+}
+
+.job-status-icon.running {
+    background-color: #3a87ad;
+}
+
+.job-status-icon.canceled {
+    background-color: #333333;
+}
+
+.job-status-icon.terminated, .job-status-icon.failed,  .job-status-icon.incomplete {
+    background-color: #b94a48;
+}
+
+.job-status-icon.finished {
+    background-color: #468847;
+}
