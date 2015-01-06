@@ -43,14 +43,14 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('div.attention-box').is(':visible')");
         $this->assertNotNull($errors = $this->page->findAll('css', 'div.attention-box ul.default li'));
         $this->assertCount(1, $errors, 'Wrong number of errors');
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
-        $amount->setValue('200');
         $this->assertNotNull($start = $this->page->find('css', '#contractApproveStart'));
         $start->click();
         $this->session->wait($this->timeout, "$('#ui-datepicker-div .ui-datepicker-today').is(':visible')");
         $this->assertNotNull($today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today'));
         $today->click();
         $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
+        $amount->setValue('200');
         $this->page->pressButton('approve.tenant');
         $this->session->wait($this->timeout, "!$('#tenant-approve-property-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
@@ -445,8 +445,7 @@ class TenantCase extends BaseTestCase
 
             $this->page->pressButton('invite.tenant');
             //Check created contract
-            $this->session->wait(1000, "false");
-            $this->assertNotNull($error = $this->page->find('css', '.attention-box>ul>li'));
+            $this->session->wait(10000, "$('.attention-box>ul>li').length === 1");
             $this->assertEquals('add_or_edit_tenants.error.already_exist', $error->getHtml(), 'Wrong resident id');
             unset($formField['rentjeeves_landlordbundle_invitetenantcontracttype_resident_residentId']);
             $formField += array('rentjeeves_landlordbundle_invitetenantcontracttype_resident_residentId' => 'test1234');
