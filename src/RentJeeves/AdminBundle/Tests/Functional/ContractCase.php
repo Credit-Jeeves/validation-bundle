@@ -25,21 +25,22 @@ class ContractCase extends BaseTestCase
         $this->assertCount(6, $fields = $this->page->findAll('css', 'form input'));
         $this->assertCount(22, $fieldsSelected = $this->page->findAll('css', 'form select'));
         $statusTo = $fieldsSelected[5]->getValue();
-        $dueDateTo = $fields[1]->getValue();
+        $search = $fields[0]->getValue();
         $this->assertFalse($statusTo == 'invite');
-        $this->assertFalse($dueDateTo == 10);
+        $this->assertFalse($search == 10);
         $this->fillForm(
             $form,
             array(
-                $fields[1]->getAttribute('id') => 10,
+                $fields[0]->getAttribute('id') => 10,
                 $fieldsSelected[5]->getAttribute('id') => 'invite'
             )
         );
         $submit->click();
+
         $statusAfter = $fieldsSelected[5]->getValue();
-        $dueDateAfter = $fields[1]->getValue();
+        $searchAfter = $fields[0]->getValue();
         $this->assertTrue($statusAfter == 'invite');
-        $this->assertTrue($dueDateAfter == 10);
+        $this->assertTrue($searchAfter == 10);
         $this->logout();
     }
 }
