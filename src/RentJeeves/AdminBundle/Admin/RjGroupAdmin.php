@@ -326,6 +326,4 @@ class RjGroupAdmin extends Admin
             ->add('created_at')
             ->add('updated_at');
     }
-
-
 }
