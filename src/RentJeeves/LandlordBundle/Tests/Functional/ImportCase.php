@@ -142,6 +142,29 @@ class ImportCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldGetMappingForImport()
+    {
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $group = $em->getRepository('DataBundle:Group')->findOneBy(
+            array(
+                'name' => 'Test Rent Group'
+            )
+        );
+        $externalUnitId = 'AAABBB-7';
+        $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
+            $group,
+            $externalUnitId
+        );
+
+        $this->assertNotNull($unitMapping);
+    }
+
+    /**
+     * @test
+     */
     public function shouldImportFile()
     {
         $this->load(true);

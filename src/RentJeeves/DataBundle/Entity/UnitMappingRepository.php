@@ -9,18 +9,18 @@ class UnitMappingRepository extends EntityRepository
 {
     public function getMappingForImport(Group $group, $externalUnitId)
     {
-        $this->createQueryBuilder('mapping')
+        return $this->createQueryBuilder('mapping')
             ->innerJoin(
                 'mapping.unit',
-                'unit'
+                'u'
             )
             ->innerJoin(
-                'unit.group',
-                'group'
+                'u.group',
+                'g'
             )
-            ->where('group.id = :group')
+            ->where('g.id = :groupId')
             ->andWhere('mapping.externalUnitId = :externalUnitId')
-            ->setParameter('group', $group->getId())
+            ->setParameter('groupId', $group->getId())
             ->setParameter('externalUnitId', $externalUnitId)
             ->getQuery()
             ->getOneOrNullResult();
