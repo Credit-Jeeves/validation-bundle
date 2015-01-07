@@ -67,7 +67,7 @@ class ResidentManagerCase extends BaseTestCase
 
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array(
-                'email' => 'tenant11@example.com'
+                'email' => 'john@rentrack.com'
             )
         );
 
