@@ -411,7 +411,7 @@ class Mailer extends BaseMailer
             'landlordFirstName' => $landlord->getFirstName(),
             'date' => $date,
             'groupName' => $group->getName(),
-            'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
+            'accountNumber' => $group->getAccountNumber(),
             'batches' => $batches,
             'returns' => $returns,
         ];

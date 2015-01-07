@@ -3,7 +3,6 @@ fixtures:
   DepositAccount_1:
     merchantName: Monticeto_Percent
     group:  RentGroup_1
-    accountNumber: 15235678
     status: complete
   DepositAccount_2:
     merchantName: Monticeto_Percent
@@ -12,7 +11,6 @@ fixtures:
   DepositAccount_3:
     merchantName: WestPac
     group: RentGroup_3
-    accountNumber: 12345786
     status: complete
   DepositAccount_4:
     group: RentGroup_4
