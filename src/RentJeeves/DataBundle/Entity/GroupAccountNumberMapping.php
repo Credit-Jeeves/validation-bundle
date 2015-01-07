@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Model\GroupAccountNumberMapping as Base;
 
 /**
  * @ORM\Table(
- *     name="group_account_mapping",
+ *     name="rj_group_account_mapping",
  *     uniqueConstraints={
  *     @ORM\UniqueConstraint(
  *         name="acc_number_constraint",

@@ -13,9 +13,9 @@ class Version20150106122554 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        
+
         $this->addSql(
-            "CREATE TABLE group_account_mapping (
+            "CREATE TABLE rj_group_account_mapping (
                 id INT AUTO_INCREMENT NOT NULL,
                 group_id BIGINT DEFAULT NULL,
                 holding_id BIGINT NOT NULL,
@@ -26,13 +26,13 @@ class Version20150106122554 extends AbstractMigration
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
         $this->addSql(
-            "ALTER TABLE group_account_mapping
+            "ALTER TABLE rj_group_account_mapping
                 ADD CONSTRAINT FK_3E5EA51BFE54D947
                 FOREIGN KEY (group_id)
                 REFERENCES cj_account_group (id)"
         );
         $this->addSql(
-            "ALTER TABLE group_account_mapping
+            "ALTER TABLE rj_group_account_mapping
                 ADD CONSTRAINT FK_3E5EA51B6CD5FBA3
                 FOREIGN KEY (holding_id)
                 REFERENCES cj_holding (id)"
@@ -47,7 +47,7 @@ class Version20150106122554 extends AbstractMigration
         );
 
         $this->addSql(
-            "DROP TABLE group_account_mapping"
+            "DROP TABLE rj_group_account_mapping"
         );
     }
 }
