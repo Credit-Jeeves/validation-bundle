@@ -17,6 +17,9 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
  */
 class HandlerCsv extends HandlerAbstract
 {
+
+    protected $lines = [];
+
     /**
      * @InjectParams({
      *     "translator"       = @Inject("translator"),
@@ -44,21 +47,31 @@ class HandlerCsv extends HandlerAbstract
             return false;
         }
 
+        $this->lines = [];
+        ini_set('auto_detect_line_endings', true);
+
         $newFilePath = $this->getNewFilePath();
         $this->copyHeader($newFilePath);
         $self = $this;
         $total = $this->mapping->getTotal();
+
+        $callbackSuccess = function () use ($self) {
+            $self->removeLastLineInFile();
+        };
+
+        $callbackFailed = function () use ($self, $newFilePath) {
+            $self->moveLine($newFilePath);
+        };
+
         for ($i = 1; $i <= $total; $i++) {
             $this->updateMatchedContractsWithCallback(
-                function () use ($self) {
-                    $self->removeLastLineInFile();
-                },
-                function () use ($self, $newFilePath) {
-                    $self->moveLine($newFilePath);
-                }
+                $callbackSuccess,
+                $callbackFailed
             );
         }
 
+        krsort($this->lines);
+        file_put_contents($newFilePath, implode('', $this->lines), FILE_APPEND | LOCK_EX);
         $this->storage->setFilePath(basename($newFilePath));
 
         return true;
@@ -69,18 +82,16 @@ class HandlerCsv extends HandlerAbstract
         $lines = file($this->storage->getFilePath());
         $last = sizeof($lines) - 1 ;
         $lastLine = $lines[$last];
-        file_put_contents($newFilePath, $lastLine, FILE_APPEND | LOCK_EX);
+        $this->lines[] = $lastLine;
 
         $this->removeLastLineInFile();
     }
 
     public function copyHeader($newFilePath)
     {
-        $data = $this->mapping->getDataForMapping(0, 1, false);
-        $header = array_keys($data[1]);
-        $file = fopen($newFilePath, "w");
-        fputcsv($file, $header);
-        fclose($file);
+        $lines = file($this->storage->getFilePath());
+        $firstLine = reset($lines);
+        file_put_contents($newFilePath, $firstLine, FILE_APPEND | LOCK_EX);
 
         return $newFilePath;
     }
