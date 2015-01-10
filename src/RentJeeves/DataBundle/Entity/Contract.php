@@ -530,7 +530,8 @@ class Contract extends Base
         $start = $this->getStartAt();
         $finish = $this->getFinishAt();
         $startYear = $start->format('Y');
-        $finishYear = $startYear;
+        $currentYear = new DateTime('now');
+        $finishYear = $currentYear->format('Y');
         if ($finish) {
             $finishYear = $finish->format('Y');
         }
