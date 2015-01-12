@@ -29,13 +29,13 @@ parameters:
 
     login.attempts: 1
     login.delay: 1
-    net_connect.precise_id.userpwd: 'renttrack_pid_demo:g6cTBSsGCxjh' #required! # overwritten by DB
+    net_connect.precise_id.userpwd: 'renttrack_pid_demo:5b7EnopiUeuQ' #required! # overwritten by DB
     net_connect.precise_id.eai: 'HRPCX4RA' #required! # overwritten by DB
     net_connect.precise_id.url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
     net_connect.precise_id.dbhost: 'PRECISE_ID_TEST' #required!
     net_connect.precise_id.sub_code: '2279720' #required!
     net_connect.credit_profile.url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnectDemo&serviceVersion=2.0&responseType=text/plain' #required!
-    net_connect.credit_profile.userpwd: 'renttrack_nc_demo:8kpvsaNkXWGY' #required! # overwritten by DB
+    net_connect.credit_profile.userpwd: 'renttrack_nc_demo:9yFUVWGusS7r' #required! # overwritten by DB
     net_connect.credit_profile.eai: 'HRPCX4RA' #required! # overwritten by DB
     net_connect.credit_profile.dbhost: 'STAR' #required!
     net_connect.credit_profile.sub_code: '2266580' #required!
@@ -50,3 +50,9 @@ parameters:
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
     resman.api_url: https://api.myresman.com/MITS/
+
+    pdo.db_options:
+        db_table:        session
+        db_id_col:       session_id
+        db_data_col:     session_value
+        db_time_col:     session_time

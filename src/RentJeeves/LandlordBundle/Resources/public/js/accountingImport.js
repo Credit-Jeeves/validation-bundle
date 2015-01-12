@@ -20,11 +20,13 @@ function accountingImport(superclass) {
 
     this.rowsTotal = ko.observable(0);
     this.loadDataMessage = ko.observable('');
-    this.downloadImage = ko.observable(false);
+    this.showSpinner = ko.observable(false);
     this.classLoadDataMessage = ko.observable('errorMessage');
     this.isFinishReview =  ko.observable(false);
     this.rows = ko.observableArray([]);
     this.formErrors = ko.observableArray([]);
+
+
     this.loadData = function(next) {
         self.setProcessing(true);
         jQuery.ajax({

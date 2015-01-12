@@ -2727,6 +2727,7 @@ label.checkbox input[type="radio"]:checked + i {
   width:80px;
   border-right:0;
   font-weight:normal;
+  padding-right: 5px;
 }
 
 .table-wrap table.properties-table tbody .actions-status.late {

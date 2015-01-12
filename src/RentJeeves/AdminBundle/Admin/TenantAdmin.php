@@ -65,8 +65,14 @@ class TenantAdmin extends Admin
             ->add('first_name')
             ->add('middle_initial')
             ->add('last_name')
-            ->add('email')
-            ->add('phone')
+            ->add('email', 'email')
+            ->add(
+                'phone',
+                'phone',
+                [
+                    'template' => 'AdminBundle:CRUD:list__phone_number.html.twig'
+                ]
+            )
             ->add(
                 'is_verified',
                 'string',

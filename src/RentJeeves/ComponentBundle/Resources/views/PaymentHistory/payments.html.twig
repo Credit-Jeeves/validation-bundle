@@ -16,7 +16,7 @@
             <table class="properties-table zebra-grid contracts-table">
                 <thead>
                     <tr class="contracts">
-                        <th class="font-helvetica" style="width: 75px">{{ 'payment.status' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 88px">{{ 'payment.status' | trans() }}</th>
                         <th class="font-helvetica" style="width: 75px">{{ 'payment.date' | trans() }}</th>
                         <th class="font-helvetica" style="width: 300px">{{ 'payment.property' | trans() }}</th>
                         <th class="font-helvetica" style="width: 70px">{{ 'payment.rent' | trans() }}</th>
@@ -28,8 +28,16 @@
                 <tbody data-bind="foreach: tenantPayments">
                     <tr class="contracts">
                         <td
-                            data-bind="text: $root.getStatusText(status()), css: 'actions-status ' + style(), attr: {title: errorMessage}"
-                            style="text-transform: uppercase"></td>
+                            data-bind="css: 'actions-status ' + style()"
+                            style="text-transform: uppercase">
+                            <span data-bind="text: $root.getStatusText(status()), attr: {title: errorMessage}"></span>
+                            <span
+                                class="status-text-helper"
+                                data-bind="visible: !$root.isSuccessfulStatus(status())"
+                                style="cursor: pointer">
+                                <img src="{{ asset('bundles/core/images/help-icon.gif') }}">
+                            </span>
+                        </td>
                         <td data-bind="text: date"></td>
                         <td data-bind="text: property"></td>
                         <td data-bind="text: rent"></td>

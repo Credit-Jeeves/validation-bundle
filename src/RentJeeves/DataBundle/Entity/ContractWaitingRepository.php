@@ -29,4 +29,15 @@ class ContractWaitingRepository extends EntityRepository
 
         return $query->getOneOrNullResult();
     }
+
+    public function clearResidentContracts($residentId, $groupId)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->delete();
+        $query->where('c.residentId = :residentId');
+        $query->andWhere('c.group = :groupId');
+        $query->setParameter('groupId', $groupId);
+        $query->setParameter('residentId', $residentId);
+        $query->getQuery()->execute();
+    }
 }

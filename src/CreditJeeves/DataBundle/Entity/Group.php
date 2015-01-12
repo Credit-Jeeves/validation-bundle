@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -135,5 +136,33 @@ class Group extends BaseGroup
     public function getID4StatementDescriptor()
     {
         return $this->getStatementDescriptor() ?: substr($this->getName(), 0, 14);
+    }
+
+    public function getAccountNumber()
+    {
+        if ($accountNumberMapping = $this->getAccountNumberMapping()) {
+            return $accountNumberMapping->getAccountNumber();
+        }
+
+        return null;
+    }
+
+    public function setAccountNumber($accountNumber)
+    {
+        if (!$accountNumberMapping = $this->getAccountNumberMapping()) {
+            $accountNumberMapping = new GroupAccountNumberMapping();
+            $this->setAccountNumberMapping($accountNumberMapping);
+        }
+        $accountNumberMapping->setAccountNumber($accountNumber);
+    }
+
+    public function getAccountNumberMapping()
+    {
+        if (!$this->accountNumberMapping) {
+            $this->accountNumberMapping = new GroupAccountNumberMapping();
+            $this->accountNumberMapping->setGroup($this);
+        }
+
+        return $this->accountNumberMapping;
     }
 }

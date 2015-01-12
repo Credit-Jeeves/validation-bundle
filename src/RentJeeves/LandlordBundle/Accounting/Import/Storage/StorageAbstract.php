@@ -12,6 +12,8 @@ abstract class StorageAbstract implements StorageInterface
 
     const IMPORT_OFFSET_START = 'importOffsetStart';
 
+    const IMPORT_ONLY_EXCEPTION = 'importOnlyException';
+
     protected $session;
 
     protected $mapping;
@@ -54,5 +56,15 @@ abstract class StorageAbstract implements StorageInterface
     public function setOffsetStart($start)
     {
         return $this->session->set(self::IMPORT_OFFSET_START, $start);
+    }
+
+    public function setOnlyException($exceptionOnly)
+    {
+        $this->session->set(self::IMPORT_ONLY_EXCEPTION, $exceptionOnly);
+    }
+
+    public function isOnlyException()
+    {
+        return $this->session->get(self::IMPORT_ONLY_EXCEPTION);
     }
 }

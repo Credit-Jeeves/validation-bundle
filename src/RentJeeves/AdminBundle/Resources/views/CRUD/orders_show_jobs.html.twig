@@ -1,0 +1,14 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field%}
+    <ul class="sonata-ba-show-one-to-many">
+        {% for element in value%}
+            <li>
+                <a href="{{ path('jms_jobs_details', { "id": element.job.id }) }}">
+                    {{ element|render_relation_element(field_description) }}
+                </a>
+                <div class="job-status-icon {{ element.job.state }}"></div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

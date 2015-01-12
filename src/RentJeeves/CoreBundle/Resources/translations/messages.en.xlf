@@ -923,14 +923,9 @@
                 <source>conflict.resolve.ended</source>
                 <target>Update this contract</target>
             </trans-unit>
-            
            <trans-unit id="error.email.already.use">
                 <source>error.email.already.use</source>
                 <target>Email already use in the system.</target>
-            </trans-unit>
-            <trans-unit id="error.residentId.already_use">
-                <source>error.residentId.already_use</source>
-                <target>ResidentId is already used.</target>
             </trans-unit>
             <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
@@ -1655,6 +1650,14 @@
                 <source>order.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="order.status.message.is_empty">
+                <source>order.status.message.is_empty</source>
+                <target>Reason is unknown.</target>
+            </trans-unit>
+            <trans-unit id="order.status.message">
+                <source>order.status.message</source>
+                <target>Reason: %message%</target>
+            </trans-unit>
             <trans-unit id="order.status.text.new">
                 <source>order.status.text.new</source>
                 <target>PENDING</target>
@@ -1854,6 +1857,10 @@
             <trans-unit id="contract.reminder.already.send">
                 <source>contract.reminder.error.already.send</source>
                 <target>Looks like you sent a reminder just a moment ago. We don't want to start spamming your inbox.</target>
+            </trans-unit>
+            <trans-unit id="contract.reminder.sent.successfully">
+                <source>contract.reminder.sent.successfully</source>
+                <target>Reminder has been successfully sent.</target>
             </trans-unit>
             <trans-unit id="iframe.login.title">
                 <source>iframe.login.title</source>
@@ -2729,6 +2736,10 @@
                 <source>yardi.import.error.getResidents</source>
                 <target>Can not get resident from yardi api.</target>
             </trans-unit>
+            <trans-unit id="csv.import.error.update_matched_contracts">
+                <source>csv.import.error.update_matched_contracts</source>
+                <target>Cannot update existing contract</target>
+            </trans-unit>
             <trans-unit id="yardi.import.error.external_property_id">
                 <source>yardi.import.error.external_property_id</source>
                 <target>We have different external property ID for this property.</target>
@@ -2736,6 +2747,10 @@
             <trans-unit id="yardi.import.message.download.resident">
                 <source>yardi.import.message.download.resident</source>
                 <target>Fetching list of residents from accounting system, please stand by.</target>
+            </trans-unit>
+            <trans-unit id="csv.import.message.updated_matched_contract">
+                <source>csv.import.message.updated_matched_contract</source>
+                <target>Successfully updated existing contracts. Please stand by...</target>
             </trans-unit>
             <trans-unit id="yardi.import.message.download.contracts">
                 <source>yardi.import.message.download.contracts</source>
@@ -3000,6 +3015,21 @@
             <trans-unit id="error.contract.paid_for">
                 <source>error.contract.paid_for</source>
                 <target>Paid For invalid</target>
+            </trans-unit>
+            <trans-unit id="error.residentId.already_use">
+                <source>error.residentId.already_use</source>
+                <target>
+                    Accounting ID is already in use in the system by %email%.
+                    You can revoke their invitation first, or contact %support_email% for further assistance.
+                </target>
+            </trans-unit>
+            <trans-unit id="notice.revoke.residentId.multiple_contracts">
+                <source>notice.revoke.residentId.multiple_contracts</source>
+                <target>{1} Are you sure you want to revoke this invitation? The Accounting ID mapping for this resident is in use by other contracts and will not be removed.|{0} Are you sure you want to revoke this invitation? The Accounting ID mapping for this resident will also be removed so you will be be able to use that ID for a different resident.</target>
+            </trans-unit>
+            <trans-unit id="error.accountNumber.already_exists">
+                <source>error.accountNumber.already_exists</source>
+                <target>Account number already exists</target>
             </trans-unit>
         </body>
     </file>

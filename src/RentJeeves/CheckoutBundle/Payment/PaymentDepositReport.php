@@ -18,6 +18,9 @@ class PaymentDepositReport implements PaymentSynchronizerInterface
     protected $repo;
     protected $fileReader;
     protected $fileFinder;
+    /**
+     * @var BusinessDaysCalculator
+     */
     protected $businessDaysCalculator;
 
     /**
@@ -28,7 +31,7 @@ class PaymentDepositReport implements PaymentSynchronizerInterface
      *     "businessDaysCalc" = @DI\Inject("business_days_calculator")
      * })
      */
-    public function __construct($em, $fileReader, $fileFinder, $businessDaysCalc)
+    public function __construct($em, $fileReader, $fileFinder, BusinessDaysCalculator $businessDaysCalc)
     {
         $this->em = $em;
         $this->repo = $this->em->getRepository('RjDataBundle:Heartland');
@@ -71,7 +74,7 @@ class PaymentDepositReport implements PaymentSynchronizerInterface
         if ($paymentData['MerchantDepositAmount'] > 0 && !empty($paymentData['MerchantDepositDate'])) {
             $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
             $merchantDepositDate = new DateTime($paymentData['MerchantDepositDate']);
-            $depositDate = $this->businessDaysCalculator->getBusinessDate($merchantDepositDate, 1);
+            $depositDate = $this->businessDaysCalculator->getNextBusinessDate($merchantDepositDate);
             $transaction->setDepositDate($depositDate);
         }
         $this->em->flush();

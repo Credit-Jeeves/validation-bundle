@@ -135,6 +135,7 @@ class StorageCsv extends StorageAbstract
         $textDelimiter = $form['textDelimiter']->getData();
         $fieldDelimiter = $form['fieldDelimiter']->getData();
         $dateFormat = $form['dateFormat']->getData();
+        $onlyException = $form['onlyException']->getData();
         $tmpDir = sys_get_temp_dir();
         $newFileName = uniqid() . '.csv';
         $file->move($tmpDir, $newFileName);
@@ -151,8 +152,11 @@ class StorageCsv extends StorageAbstract
         } elseif ($property instanceof Property) {
             $this->setPropertyId($property->getId());
             $this->setIsMultipleProperty(false);
+        } else {
+            $this->setIsMultipleProperty(true);
         }
 
+        $this->setOnlyException($onlyException);
         $this->setDateFormat($dateFormat);
     }
 

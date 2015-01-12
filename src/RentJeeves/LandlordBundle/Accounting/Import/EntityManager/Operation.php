@@ -35,7 +35,7 @@ trait Operation
         return false;
     }
 
-    protected function getOperationByContract(EntityContract $contract, ModelImport $import, $paidFor)
+    protected function getOperationByContract(EntityContract $contract, $paidFor)
     {
         if ($this->isDuplicate($contract, $paidFor, $contract->getRent())) {
             return null;

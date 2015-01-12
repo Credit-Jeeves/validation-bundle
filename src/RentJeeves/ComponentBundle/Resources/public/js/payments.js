@@ -65,9 +65,23 @@ function Payments() {
               $.each($('#payments-block .sort i'), function( index, value ) {
                   $(this).hide();
               });
+
+              $('.status-text-helper')
+                  .tooltip({
+                      items: 'span',
+                      position: { my: 'left center', at: 'right+30 center' }
+                  })
+                  .off("mouseover")
+                  .on("click", function () {
+                      var message = $(this).prev().attr('title');
+                      $(this).tooltip("option", "content", self.prepareMessage(message));
+                      $(this).tooltip("open");
+
+                      return false;
+                  });
           }
       });
-  }
+  };
 
   this.filterDeposits = function() {
       self.processPayment(true);
@@ -90,6 +104,19 @@ function Payments() {
               self.deposits(response.deposits);
               self.total(response.total);
               self.pages(response.pagination);
+              $('.status-text-helper')
+                  .tooltip({
+                      items: 'span',
+                      position: { my: 'left center', at: 'right+30 center' }
+                  })
+                  .off("mouseover")
+                  .on("click", function () {
+                      var message = $(this).prev().attr('title');
+                      $(this).tooltip("option", "content", self.prepareMessage(message));
+                      $(this).tooltip("open");
+
+                      return false;
+                  });
           }
       });
   };
@@ -189,7 +216,7 @@ function Payments() {
       }
 
       return Translator.trans(order.status);
-  }
+  };
 
   this.getOrderAmount = function(isDeposit, order) {
       if (!isDeposit) {
@@ -197,7 +224,27 @@ function Payments() {
       }
 
       return order.amount;
-  }
+  };
+
+  this.isSuccessfulStatus = function(status)
+  {
+      if (status == 'order.status.text.new' ||
+          status == 'order.status.text.complete' ||
+          status == 'order.status.text.pending') {
+             return true;
+      }
+
+      return false;
+  };
+
+  this.prepareMessage = function(message)
+  {
+      if (message) {
+          return Translator.trans('order.status.message', {"message" : message});
+      }
+
+      return Translator.trans('order.status.message.is_empty');
+  };
 
 
 
