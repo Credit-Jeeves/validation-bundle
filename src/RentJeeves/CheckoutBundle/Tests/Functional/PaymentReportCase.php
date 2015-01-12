@@ -94,6 +94,31 @@ class PaymentReportCase extends BaseTestCase
         $this->assertNotEquals(OrderStatus::COMPLETE, $resultOrder->getStatus());
     }
 
+    /**
+     * @test
+     */
+    public function shouldFillEmptyBatchIdForCompleteTransactions()
+    {
+        $this->load(true);
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $repo = $em->getRepository('RjDataBundle:Heartland');
+
+        $transactionId = 789789;
+        /** @var HeartlandTransaction $transaction */
+        $transaction = $repo->findOneBy(array('transactionId' => $transactionId));
+        $this->assertNotNull($transaction);
+        $this->assertEquals(111555, $transaction->getBatchId());
+        $transaction->setBatchId(null);
+        $em->flush($transaction);
+
+        $paymentReport = $this->getContainer()->get('payment.reversal_report');
+        $paymentReport->synchronize();
+
+        /** @var HeartlandTransaction $resultTransaction */
+        $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));
+        $this->assertEquals(145176, $resultTransaction->getBatchId());
+    }
+
     protected function createOrder($transactionId)
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
