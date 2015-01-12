@@ -54,6 +54,7 @@ first_name = mid(md5(first_name),1,12),
 last_name = mid(md5(last_name),1,12);
 update rj_resident_mapping set resident_id = mid(md5(resident_id),1,12);
 update rj_unit_mapping set external_unit_id = mid(md5(external_unit_id),1,12);
+-- update rj_deposit_account set account_number = FLOOR(RAND() * 500000);
 
 -- RentTrack Sanitization Script - relevant to next release after 3.4
 delete from yardi_settings;
