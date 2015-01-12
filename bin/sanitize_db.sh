@@ -10,7 +10,7 @@ export SNAP_DATE=$(date +"%Y%m%d")
 export DIR="$( dirname "${BASH_SOURCE[0]}" )"
 
 #
-# Environmental Settings
+# Environmental Settings (Ideally these would be command line params)
 #
 export DB_USER="root"
 export DB_NAME="renttrack"

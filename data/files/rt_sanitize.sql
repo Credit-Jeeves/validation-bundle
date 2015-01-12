@@ -42,6 +42,7 @@ update rj_payment_account set cc_expiration = '2025-12-01' where cc_expiration i
 
 -- having real properties and units are useful and is not PII
 -- however it IS a business secret so DO NOT distribute sanitized snapshots
+-- NOTE: keep in mind, that if it can ever be combined with a real name, email, or SSN, then it would be PII.
 
 -- update rj_property set city = mid(md5(city),1,12), zip = mid(md5(zip),1,5), street = mid(md5(street),1,12), number = mid(md5(number),1,6), jb = '34.44943', kb = '-119.709369', google_reference = NULL;
 
