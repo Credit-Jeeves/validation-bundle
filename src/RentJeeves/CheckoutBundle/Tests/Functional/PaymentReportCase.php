@@ -107,7 +107,11 @@ class PaymentReportCase extends BaseTestCase
         /** @var HeartlandTransaction $transaction */
         $transaction = $repo->findOneBy(array('transactionId' => $transactionId));
         $this->assertNotNull($transaction);
-        $this->assertEquals(111555, $transaction->getBatchId());
+
+        // It would be better to add a new transaction fixture to the database,
+        // but then we'd have to fix several related tests that check the exact amount of transactions,
+        // that's why we use one of the existent transactions.
+        $this->assertEquals(111555, $transaction->getBatchId(), 'Verify expected test fixture exists');
         $transaction->setBatchId(null);
         $em->flush($transaction);
 
@@ -116,7 +120,8 @@ class PaymentReportCase extends BaseTestCase
 
         /** @var HeartlandTransaction $resultTransaction */
         $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));
-        $this->assertEquals(145176, $resultTransaction->getBatchId());
+        // 145176 is a value from heartland report file fixture
+        $this->assertEquals(145176, $resultTransaction->getBatchId(), 'Batch id was not updated');
     }
 
     protected function createOrder($transactionId)
