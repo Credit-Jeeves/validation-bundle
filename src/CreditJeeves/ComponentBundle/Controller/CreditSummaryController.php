@@ -10,20 +10,20 @@ class CreditSummaryController extends Controller
     {
         $dateShortFormat = $this->container->getParameter('date_short');
         $sDate = $Report->getCreatedAt()->format($dateShortFormat);
-        
-        $aCreditSummary = $Report->getCreditSummary();
-        $aCreditSummary['collections'] = $Report->getCountTradelineCollections();
-        $aAutomotive = $Report->getAutomotiveSummary();
-        $nAutomotive = isset($aAutomotive['total_open_monthly_payment']) ?
-            $aAutomotive['total_open_monthly_payment'] :
-            0
-        ;
+
         return $this->render(
             'ComponentBundle:CreditSummary:index.html.twig',
             array(
                 'sDate' => $sDate,
-                'aCreditSummary' => $aCreditSummary,
-                'nAutomotive' => $nAutomotive,
+                'total_trade_items_counter' => $Report->getTotalAccounts(),
+                'satisfactory_accounts' => $Report->getTotalAccounts() - $Report->getTotalDerogatoryAccounts(),
+                'now_delinquentderog_counter' => $Report->getTotalDerogatoryAccounts(),
+                'oldest_trade_date' => $Report->getOldestTradelineInYears(),
+                'monthly_payment' => $Report->getTotalMonthlyPayments(),
+                'total_inquiries_counter' => $Report->getNumberOfInquieres(),
+                'total_past_due' => $Report->getBalanceOpenCollectionAccounts(),
+                'collections' => $Report->getTotalOpenCollectionAccounts(),
+                'public_records_count' => $Report->getTotalPublicRecords(),
             )
         );
     }

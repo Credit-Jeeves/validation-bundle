@@ -8,8 +8,8 @@ class TotalTradelinesController extends Controller
 {
     public function indexAction(Report $Report)
     {
-        $nOpened = $Report->getCountApplicantOpenedTradelines();
-        $nClosed = $Report->getCountApplicantClosedTradelines();
+        $nOpened = $Report->getTotalOpenAccounts();
+        $nClosed = $Report->getTotalClosedAccounts();
         $nTotal = $nOpened + $nClosed;
 
         return $this->render(

@@ -2,8 +2,6 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\ArfBundle\Parser\ArfParser;
-use CreditJeeves\ArfBundle\Map\ArfReport;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Score;
 
@@ -23,28 +21,14 @@ class CreditBalanceController extends Controller
 
     public function indexAction(Report $Report, Score $Score)
     {
-        $nTradelines = $Report->getCountApplicantTotalTradelines();
+        $nTradelines = $Report->getTotalAccounts();
         $dateShortFormat = $this->container->getParameter('date_short');
         $sDate = $Report->getCreatedAt()->format($dateShortFormat);
-        
-        $ArfReport = $Report->getArfReport();
 
+        $nRevolvingDept = $Report->getBalanceRevolvingAccounts();
+        $nMortgageDebt = $Report->getBalanceMortgageAccounts();
+        $nInstallmentDebt = $Report->getBalanceInstallmentAccounts();
 
-        $nRevolvingDept = $ArfReport->getValue(
-            ArfParser::SEGMENT_PROFILE_SUMMARY,
-            ArfParser::REPORT_BALANCE_TOTAL_REVOLVING
-        );
-        $nRevolvingDept = $nRevolvingDept ? $nRevolvingDept : 0;
-        $nMortgageDebt = $ArfReport->getValue(
-            ArfParser::SEGMENT_PROFILE_SUMMARY,
-            ArfParser::REPORT_BALANCE_REAL_ESTATE
-        );
-        $nMortgageDebt = $nMortgageDebt ? $nMortgageDebt : 0;
-        $nInstallmentDebt = $ArfReport->getValue(
-            ArfParser::SEGMENT_PROFILE_SUMMARY,
-            ArfParser::REPORT_BALANCE_INSTALLMENT
-        );
-        $nInstallmentDebt = $nInstallmentDebt ? $nInstallmentDebt : 0;
         $nTotal = $nRevolvingDept + $nInstallmentDebt + $nMortgageDebt;
         $nCurrentScore = $Score->getScore();
         $nCurrentScore = $nCurrentScore ? $nCurrentScore : 0;

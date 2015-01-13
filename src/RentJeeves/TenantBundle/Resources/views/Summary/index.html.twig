@@ -61,14 +61,16 @@
         <div class="column-middle floatleft">
             {{ render(controller('ComponentBundle:CreditCardUtilization:index', {'Report': Report})) }}
             <div class="row-20"></div>
-            {{ render(controller('ComponentBundle:MissedPayments:index', {'Report': Report})) }}
-            <div class="row-20"></div>
+            {# Not suppoerted by TransUnion #}
+            {#{{ render(controller('ComponentBundle:MissedPayments:index', {'Report': Report})) }}#}
+            {#<div class="row-20"></div>#}
             {{ render(controller('ComponentBundle:HardInquiries:index', {'Report': Report})) }}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:LoanTypes:index', {'Report': Report})) }}
             <div class="row-20"></div>
-            {{ render(controller('ComponentBundle:CreditAverageAge:index', {'Report': Report})) }}
-            <div class="row-20"></div>
+            {# Not suppoerted by TransUnion #}
+            {#{{ render(controller('ComponentBundle:CreditAverageAge:index', {'Report': Report})) }}#}
+            {#<div class="row-20"></div>#}
             {{ render(controller('ComponentBundle:TotalTradelines:index', {'Report': Report})) }}
         </div>
         {#<div class="column-small floatright">#}
