@@ -14,6 +14,7 @@ use RentJeeves\ExternalApiBundle\Soap\SoapWsdlTwigRenderer;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
 use \AppRjKernel as Kernel;
+use SoapFault;
 
 abstract class AbstractClient implements ClientInterface
 {
@@ -24,6 +25,7 @@ abstract class AbstractClient implements ClientInterface
 
     const MAPPING_FIELD_STD_CLASS = 'field';
 
+    protected $numberOfRetriesTheSameSoapCall = 0;
     /**
      * @var string
      */
@@ -258,19 +260,23 @@ abstract class AbstractClient implements ClientInterface
             $resultXmlResponse = $this->processXmlResponse($response, $function);
 
             if ($resultXmlResponse) {
+                $this->numberOfRetriesTheSameSoapCall = 0;
                 return $resultXmlResponse;
             }
 
             if ($this->isError()) {
+                $this->numberOfRetriesTheSameSoapCall = 0;
                 return null;
             }
 
             $resultNumericResponse = $this->processNumericResponse($response, $function);
             if ($resultNumericResponse) {
+                $this->numberOfRetriesTheSameSoapCall = 0;
                 return $resultNumericResponse;
             }
 
             if ($this->isError()) {
+                $this->numberOfRetriesTheSameSoapCall = 0;
                 return null;
             }
 
@@ -280,13 +286,17 @@ abstract class AbstractClient implements ClientInterface
                     $this->soapClient->__getLastResponse()
                 )
             );
+        } catch (SoapFault $e) {
+            if ($this->numberOfRetriesTheSameSoapCall > 2) {
+                throw $e;
+            }
+            $this->numberOfRetriesTheSameSoapCall++;
+            return $this->sendRequest($function, $params);
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->setErrorMessage($e->getMessage());
             $this->debugMessage($e->getMessage());
         }
-
-        return null;
     }
 
     /**
