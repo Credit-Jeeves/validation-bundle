@@ -34,6 +34,8 @@
 
 {% block content %}
     <div id="summary_page">
+        {{ render(controller('TenantBundle:Index:paymentReporting')) }}
+        <div class="row-20"></div>
         <div class="column-middle floatleft">
             {{ render(controller('ComponentBundle:Score:index', {'user': User})) }}
         </div>
@@ -46,14 +48,12 @@
         </div>
         <div class="clearboth"></div>
         <div class="column-large">
-            {% if not creditTrackEnabled %}
-              <div class="row-20"></div>
-              {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
-            {% endif %}
+            {#{% if not creditTrackEnabled %}#}
+              {#<div class="row-20"></div>#}
+              {#{{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}#}
+            {#{% endif %}#}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:CreditBalance:index', {'Report': Report, 'Score': Score})) }}
-            <div class="row-20"></div>
-            {{ render(controller('TenantBundle:Index:paymentReporting')) }}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:CreditSummary:index', {'Report': Report})) }}
         </div>
