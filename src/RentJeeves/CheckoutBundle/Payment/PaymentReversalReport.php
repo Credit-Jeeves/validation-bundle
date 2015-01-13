@@ -84,6 +84,9 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
                         $this->processCancelledPayment($paymentData);
                     }
                     break;
+                case self::TRANSACTION_TYPE_PAYMENT:
+                    // double check batch ids for successful transactions
+                    $this->fillEmptyBatchId($paymentData);
             }
         }
 
@@ -190,5 +193,19 @@ class PaymentReversalReport implements PaymentSynchronizerInterface
         }
 
         return $transaction;
+    }
+
+    protected function fillEmptyBatchId($paymentData)
+    {
+        if (!$paymentData['BatchID']) {
+            return;
+        }
+        /** @var HeartlandTransaction $transaction */
+        $transaction = $this->findTransaction($paymentData['TransactionID']);
+
+        if ($transaction && !$transaction->getBatchId()) {
+            $transaction->setBatchId($paymentData['BatchID']);
+            $this->em->flush($transaction);
+        }
     }
 }
