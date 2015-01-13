@@ -43,8 +43,17 @@ class ResidentDataManager
     public function getResidents(Holding $holding, Property $property)
     {
         $residentClient = $this->getApiClient($holding);
+        $propertyMapping = $property->getPropertyMappingByHolding($holding);
+        if (empty($propertyMapping)) {
+            throw new \Exception(
+                sprintf(
+                    "PropertyID '%s', don't have external ID",
+                    $property->getId()
+                )
+            );
+        }
 
-        $residents = $residentClient->getResidents($property->getPropertyMapping()->first()->getExternalPropertyId());
+        $residents = $residentClient->getResidents($propertyMapping->getExternalPropertyId());
 
         return $residents->getPropertyResidents()->getResidents()->getResidents();
     }
