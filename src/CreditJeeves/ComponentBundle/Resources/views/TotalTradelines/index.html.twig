@@ -10,7 +10,7 @@
         <div class="pod-header">{{ 'component.tradelines.total' | trans }}: {{ nTotal }}</div>
         <p>
             {{ 'tradelines.total.comment' | trans | replace({'%nOpened%': nOpened, '%nClosed%': nClosed}) }}
-            <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/152399-total-accounts">{{ 'common.learn.more' | trans }}</a>
+            {#<a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/152399-total-accounts">{{ 'common.learn.more' | trans }}</a>#}
         </p>
   </div>
   <div class="clearboth"></div>
@@ -25,7 +25,7 @@
       ]);
       var options = {
         max:        22,
-        width:      400, 
+        width:      400,
         height:     120,
         redFrom:    0,
         redTo:      11,
