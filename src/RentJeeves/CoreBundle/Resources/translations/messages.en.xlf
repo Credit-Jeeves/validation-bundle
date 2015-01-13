@@ -1348,7 +1348,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_3">
                 <source>popup.tenant.footer.note_3</source>
-                <target>*RentTrack charges a technology platform fee of  %payment_percent% per credit card transaction. Some property managers may set a different fee, and may pass eCheck fees to tenants. Any fees will be displayed when setting up your first payment.</target>
+                <target>*RentTrack charges a technology platform fee of 3.25% per credit card transaction. Some property managers may set a different fee, and may pass eCheck fees to tenants. Any fees will be displayed when setting up your first payment.</target>
             </trans-unit>
             <!-- Landlord Invite Popup -->
             <trans-unit id="popup.landlord.title_1">
