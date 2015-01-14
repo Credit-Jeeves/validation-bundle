@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients;
+namespace RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients;
 
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentDataResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentsResponse;
@@ -8,7 +8,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileTenant;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnit;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
-use RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients\BaseClientCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\BaseClientCase as Base;
 
 class ResidentDataClientCase extends Base
 {

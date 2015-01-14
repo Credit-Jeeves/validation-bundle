@@ -1,12 +1,12 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients;
+namespace RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients;
 
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
-use RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients\BaseClientCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\BaseClientCase as Base;
 
 class PaymentClientCase extends Base
 {
