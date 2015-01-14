@@ -155,18 +155,14 @@ class ContractAdmin extends Admin
         $request = $container->get('request');
         $uniqueId = $request->query->get('uniqid');
         $params = $request->request->all();
-        $em = $container->get('doctrine.orm.default_entity_manager');
-        /**
-         * @var $contract Contract
-         */
-        $id = $request->get('id');
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($id);
+        /** @var $contract Contract */
+        $contract = $this->getSubject();
 
-        if (isset($params[$uniqueId]['holding'])) {
-            $holding = $em->getRepository('DataBundle:Holding')->find($params[$uniqueId]['holding']);
+        if (isset($params[$uniqueId]['holding']) && $contract) {
+            $holding = $contract->getHolding(); // disabled for edit
+            $tenant = $contract->getTenant(); // disabled for edit
             $group = $params[$uniqueId]['group'];
             $property = $params[$uniqueId]['property'];
-            $tenant = $params[$uniqueId]['tenant'];
         } elseif ($contract) {
             $holding = $contract->getHolding();
             $group = $contract->getGroup();
