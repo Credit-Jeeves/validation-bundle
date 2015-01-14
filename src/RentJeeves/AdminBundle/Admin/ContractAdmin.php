@@ -155,20 +155,19 @@ class ContractAdmin extends Admin
         $request = $container->get('request');
         $uniqueId = $request->query->get('uniqid');
         $params = $request->request->all();
-        $em = $container->get('doctrine.orm.default_entity_manager');
+        /** @var $contract Contract */
+        $contract = $this->getSubject();
 
-        if (isset($params[$uniqueId]['holding'])) {
-            $holding = $em->getRepository('DataBundle:Holding')->find($params[$uniqueId]['holding']);
+        if (isset($params[$uniqueId]['holding']) && $contract) {
+            $holding = $contract->getHolding(); // disabled for edit
+            $tenant = $contract->getTenant(); // disabled for edit
             $group = $params[$uniqueId]['group'];
             $property = $params[$uniqueId]['property'];
-        } elseif ($id = $request->get('id')) {
-            /**
-             * @var $contract Contract
-             */
-            $contract = $em->getRepository('RjDataBundle:Contract')->find($id);
+        } elseif ($contract) {
             $holding = $contract->getHolding();
             $group = $contract->getGroup();
             $property = $contract->getProperty();
+            $tenant = $contract->getTenant();
         }
 
         if (empty($holding) || empty($group) || empty($property)) {
@@ -176,7 +175,15 @@ class ContractAdmin extends Admin
         }
 
         $formMapper
-            ->add('tenant')
+            ->add(
+                'tenant',
+                'entity',
+                array(
+                    'disabled' => true,
+                    'class' => 'RjDataBundle:Tenant',
+                    'choices' => [$tenant],
+                )
+            )
             ->add(
                 'holding',
                 'entity',
