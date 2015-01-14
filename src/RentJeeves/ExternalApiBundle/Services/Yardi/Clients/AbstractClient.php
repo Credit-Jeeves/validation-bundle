@@ -15,6 +15,7 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
 use \AppRjKernel as Kernel;
 use SoapFault;
+use Symfony\Bridge\Monolog\Logger;
 
 abstract class AbstractClient implements ClientInterface
 {
@@ -25,7 +26,11 @@ abstract class AbstractClient implements ClientInterface
 
     const MAPPING_FIELD_STD_CLASS = 'field';
 
-    protected $numberOfRetriesTheSameSoapCall = 0;
+    const MAX_NUMBER_OF_RETRIES = 2;
+
+    const DEFAULT_NUMBER_OF_RETRIES = 0;
+
+    protected $numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
     /**
      * @var string
      */
@@ -72,6 +77,11 @@ abstract class AbstractClient implements ClientInterface
     protected $kernel;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @var array
      */
     protected $mapping = array();
@@ -96,6 +106,7 @@ abstract class AbstractClient implements ClientInterface
      * @param SoapClient $soapClient
      */
     public function __construct(
+        Logger $logger,
         SoapWsdlTwigRenderer $wsdlRenderer,
         SoapClientBuilder $soapClientBuilder,
         ExceptionCatcher $exceptionCatcher,
@@ -105,6 +116,7 @@ abstract class AbstractClient implements ClientInterface
         $license,
         $pathToSoapClasses
     ) {
+        $this->logger = $logger;
         $this->soapClientBuilder = $soapClientBuilder;
         $this->entity = $entity;
         $this->wsdlRenderer = $wsdlRenderer;
@@ -260,23 +272,23 @@ abstract class AbstractClient implements ClientInterface
             $resultXmlResponse = $this->processXmlResponse($response, $function);
 
             if ($resultXmlResponse) {
-                $this->numberOfRetriesTheSameSoapCall = 0;
+                $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return $resultXmlResponse;
             }
 
             if ($this->isError()) {
-                $this->numberOfRetriesTheSameSoapCall = 0;
+                $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return null;
             }
 
             $resultNumericResponse = $this->processNumericResponse($response, $function);
             if ($resultNumericResponse) {
-                $this->numberOfRetriesTheSameSoapCall = 0;
+                $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return $resultNumericResponse;
             }
 
             if ($this->isError()) {
-                $this->numberOfRetriesTheSameSoapCall = 0;
+                $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return null;
             }
 
@@ -287,10 +299,18 @@ abstract class AbstractClient implements ClientInterface
                 )
             );
         } catch (SoapFault $e) {
-            if ($this->numberOfRetriesTheSameSoapCall > 2) {
+            if ($this->numberOfRetriesTheSameSoapCall > self::MAX_NUMBER_OF_RETRIES) {
                 throw $e;
             }
             $this->numberOfRetriesTheSameSoapCall++;
+            $this->logger->addWarning(
+                sprintf(
+                    "Yardi send request was failed with message: %s. We try again send request. Number of retries: %s",
+                    $e->getMessage(),
+                    $this->numberOfRetriesTheSameSoapCall
+                )
+            );
+
             return $this->sendRequest($function, $params);
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);

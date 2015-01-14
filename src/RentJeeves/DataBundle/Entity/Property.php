@@ -298,6 +298,11 @@ class Property extends Base
         });
     }
 
+    /**
+     * @param Holding $holding
+     * 
+     * @return PropertyMapping
+     */
     public function getPropertyMappingByHolding(Holding $holding)
     {
         /**

@@ -93,8 +93,16 @@ class ResidentBalanceSynchronizer
             $properties = $repo->findContractPropertiesByHolding($holding, $offset, self::COUNT_PROPERTIES_PER_SET);
             /** @var $property Property */
             foreach ($properties as $property) {
-                $mapping = $property->getPropertyMapping()->first();
-                $residentTransactions = $residentClient->getResidentTransactions($mapping->getExternalPropertyId());
+                $propertyMapping = $property->getPropertyMappingByHolding($holding);
+                if (empty($propertyMapping)) {
+                    throw new \Exception(
+                        sprintf(
+                            "PropertyID '%s', don't have external ID",
+                            $property->getId()
+                        )
+                    );
+                }
+                $residentTransactions = $residentClient->getResidentTransactions($propertyMapping->getExternalPropertyId());
                 $this->processResidentTransactions($residentTransactions, $holding, $property);
             }
             $this->em->flush();
@@ -122,10 +130,19 @@ class ResidentBalanceSynchronizer
         );
 
         if (count($contracts) > 1) {
+            $propertyMapping = $property->getPropertyMappingByHolding($holding);
+            if (empty($propertyMapping)) {
+                throw new \Exception(
+                    sprintf(
+                        "PropertyID '%s', don't have external ID",
+                        $property->getId()
+                    )
+                );
+            }
             $this->logMessage(
                 sprintf(
                     "Found more than one contract with property %s, unit %s, resident %s",
-                    $property->getPropertyMapping()->first()->getExternalPropertyId(),
+                    $propertyMapping->getExternalPropertyId(),
                     $unitName,
                     $residentId
                 )
@@ -156,10 +173,21 @@ class ResidentBalanceSynchronizer
             return $contractWaiting;
         }
 
+        $propertyMapping = $property->getPropertyMappingByHolding($holding);
+
+        if (empty($propertyMapping)) {
+            throw new \Exception(
+                sprintf(
+                    "PropertyID '%s', don't have external ID",
+                    $property->getId()
+                )
+            );
+        }
+
         $this->logMessage(
             sprintf(
                 "Could not find contract with property %s, unit %s, resident %s",
-                $property->getPropertyMapping()->first()->getExternalPropertyId(),
+                $propertyMapping->getExternalPropertyId(),
                 $unitName,
                 $residentId
             )
