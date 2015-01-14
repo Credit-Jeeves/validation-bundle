@@ -14,8 +14,15 @@ use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\TestBundle\BaseTestCase as Base;
+use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use RentJeeves\CheckoutBundle\Command\PayCommand;
 
 class OrderListenerCase extends Base
 {
@@ -499,5 +506,82 @@ class OrderListenerCase extends Base
         $this->assertNotNull($depositDate = $newTransaction->getDepositDate());
         $this->assertEquals((new DateTime())->format('Ymd'), $batchDate->format('Ymd'));
         $this->assertGreaterThanOrEqual(1, $batchDate->diff($depositDate)->format('%r%a'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldMovePaymentPaidForWhenOrderIsComplete()
+    {
+        $startAt = (new DateTime())->modify('-5 month');
+        $finishAt = (new DateTime())->modify('+24 month');
+        $contract = $this->getContract($startAt, $finishAt);
+        $payment = $this->createPayment($contract);
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em->persist($payment);
+        $em->flush($payment);
+
+        // Run command "payment:pay"
+        $application = new Application($this->getKernel());
+        $application->add(new PayCommand());
+        $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertGreaterThanOrEqual(1, $jobs);
+        $command = $application->find('payment:pay');
+        $commandTester = new CommandTester($command);
+
+        foreach ($jobs as $job) {
+            $commandTester->execute(
+                array(
+                    'command' => $command->getName(),
+                    '--jms-job-id' => $job->getId(),
+                )
+            );
+        }
+        $this->assertCount(
+            1,
+            $orders = $em->getRepository('DataBundle:Order')->getContractHistory($contract),
+            'One order should be created for the given contract'
+        );
+        $order = $orders[0];
+        $this->assertEquals(OrderStatus::PENDING, $order->getStatus(), 'Verify that order is in PENDING status');
+        $expectedPaidFor = clone $payment->getPaidFor();
+        $expectedPaidFor->modify('+1 month');
+        // here is a moment when payment's paidFor is moved to next month
+        $order->setStatus(OrderStatus::COMPLETE);
+        $em->flush($order);
+
+        $this->assertNotNull($paymentResult = $em->find('RjDataBundle:Payment', $payment->getId()));
+        $actualPaidFor = $paymentResult->getPaidFor();
+        $this->assertEquals($expectedPaidFor->format('mdY'), $actualPaidFor->format('mdY'));
+    }
+
+    protected function createPayment(Contract $contract)
+    {
+        $tenant = $contract->getTenant();
+        $paymentAccount = $tenant->getPaymentAccounts()->filter(
+            function ($paymentAccount) {
+                if (PaymentAccountType::BANK == $paymentAccount->getType()) {
+                    return true;
+                }
+                return false;
+            }
+        )->first();
+
+        $payment = new Payment();
+        $payment->setAmount(999);
+        $payment->setTotal(999);
+        $payment->setType(PaymentType::RECURRING);
+        $payment->setStatus(PaymentStatus::ACTIVE);
+        $payment->setContract($contract);
+        $payment->setPaymentAccount($paymentAccount);
+        $today = new DateTime();
+        $payment->setDueDate($today->format('j'));
+        $payment->setStartMonth($today->format('n'));
+        $payment->setStartYear($today->format('Y'));
+        $paidFor = (new DateTime())->setDate(2015, 1, 1);
+        $payment->setPaidFor($paidFor);
+
+        return $payment;
     }
 }
