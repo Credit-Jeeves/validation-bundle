@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -295,5 +296,24 @@ class Property extends Base
         return !!$this->getPropertyGroups()->filter(function (Group $entity) use ($group) {
             return $entity->getId() === $group->getId();
         });
+    }
+
+    /**
+     * @param Holding $holding
+     * 
+     * @return PropertyMapping
+     */
+    public function getPropertyMappingByHolding(Holding $holding)
+    {
+        /**
+         * @var $propertyMapping PropertyMapping
+         */
+        foreach ($this->getPropertyMapping() as $propertyMapping) {
+            if ($propertyMapping->getHolding()->getId() === $holding->getId()) {
+                return $propertyMapping;
+            }
+        }
+
+        return null;
     }
 }

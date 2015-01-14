@@ -43,8 +43,16 @@ class ResidentDataManager
     public function getResidents(Holding $holding, Property $property)
     {
         $residentClient = $this->getApiClient($holding);
-
-        $residents = $residentClient->getResidents($property->getPropertyMapping()->first()->getExternalPropertyId());
+        $propertyMapping = $property->getPropertyMappingByHolding($holding);
+        if (empty($propertyMapping)) {
+            throw new \Exception(
+                sprintf(
+                    "PropertyID '%s', don't have external ID",
+                    $property->getId()
+                )
+            );
+        }
+        $residents = $residentClient->getResidents($propertyMapping->getExternalPropertyId());
 
         return $residents->getPropertyResidents()->getResidents()->getResidents();
     }
@@ -65,9 +73,17 @@ class ResidentDataManager
 
     public function getResidentData(Holding $holding, Property $property, $residentId)
     {
-        $propertyId = $property->getPropertyMapping()->first()->getExternalPropertyId();
+        $propertyMapping = $property->getPropertyMappingByHolding($holding);
+        if (empty($propertyMapping)) {
+            throw new \Exception(
+                sprintf(
+                    "PropertyID '%s', don't have external ID",
+                    $property->getId()
+                )
+            );
+        }
         $residentClient = $this->getApiClient($holding);
-        $resident = $residentClient->getResidentData($propertyId, $residentId);
+        $resident = $residentClient->getResidentData($propertyMapping->getExternalPropertyId(), $residentId);
 
         return $resident->getLeaseFiles()->getLeaseFile();
     }
