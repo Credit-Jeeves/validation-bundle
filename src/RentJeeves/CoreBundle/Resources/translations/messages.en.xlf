@@ -1151,7 +1151,10 @@
                 <source>contract.property</source>
                 <target>Property</target>
             </trans-unit>
-
+            <trans-unit id="error.contract_details.loading">
+                <source>error.contract_details.loading</source>
+                <target>Contract loading failed.</target>
+            </trans-unit>
             <trans-unit id="contract.error.rent">
                 <source>contract.error.rent</source>
                 <target>Amount could not be empty</target>

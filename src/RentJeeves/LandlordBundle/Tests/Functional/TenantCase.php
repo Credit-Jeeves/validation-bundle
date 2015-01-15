@@ -108,9 +108,7 @@ class TenantCase extends BaseTestCase
         $this->load(true);
         $this->session->getDriver()->resizeWindow(1600, 1200);
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        /**
-         * @var $group Group
-         */
+        /** @var $group Group */
         $group = $em->getRepository('DataBundle:Group')->findOneByName('Sea side Rent Group');
         $setting = $group->getGroupSettings();
         $setting->setIsIntegrated($isIntegrated);
@@ -126,7 +124,7 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull($selectOption = $this->page->find('css', '#holding-group_li_1>span'));
         $selectOption->click();
-        $this->session->wait($this->timeout, "false"); // wait refresh page
+        $this->session->wait($this->timeout - 20000, "false"); // wait refresh page, try set less time
 
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
@@ -134,6 +132,19 @@ class TenantCase extends BaseTestCase
         $approve->click();
 
         $this->session->wait($this->timeout, "$('#tenant-approve-property-popup .footer-button-box').is(':visible')");
+
+        $this->assertNotNull($amountInput = $this->page->find('css', '#amount-approve'));
+        $amount = $amountInput->getValue();
+        $amountInput->setValue('999999999TEST');
+        $this->assertNotNull(
+            $closeBtn = $this->page->find('css', '.ui-dialog-titlebar-close')
+        );
+        $closeBtn->click();
+        $approve->click();
+        $this->session->wait($this->timeout, "$('#tenant-approve-property-popup .footer-button-box').is(':visible')");
+        $this->session->wait($this->timeout, "$('.overlay').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
+        $this->assertEquals($amount, $amountInput->getValue());
 
         $this->page->pressButton('edit.Info');
         $this->session->wait(
