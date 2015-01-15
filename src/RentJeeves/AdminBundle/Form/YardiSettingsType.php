@@ -9,10 +9,9 @@ use RentJeeves\DataBundle\Enum\PaymentTypeACH;
 use RentJeeves\DataBundle\Enum\PaymentTypeCC;
 
 /**
- * Class YardiSettings
  * @Service("form.yardi_settings")
  */
-class YardiSettings extends Base
+class YardiSettingsType extends Base
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)

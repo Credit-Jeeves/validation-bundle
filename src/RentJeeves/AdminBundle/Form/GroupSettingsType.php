@@ -13,10 +13,9 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 
 /**
- * Class GroupSettings
  * @Service("form.group_settings")
  */
-class GroupSettings extends Base
+class GroupSettingsType extends Base
 {
     protected $translator;
 

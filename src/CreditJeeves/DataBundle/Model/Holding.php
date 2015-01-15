@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\AccountingSettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
@@ -152,6 +153,16 @@ abstract class Holding
      */
     protected $resManSettings;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AccountingSettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"},
+     *     fetch="EAGER"
+     * )
+     */
+    protected $accountingSettings;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -160,6 +171,26 @@ abstract class Holding
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
+    }
+
+    /**
+     * @return AccountingSettings
+     */
+    public function getAccountingSettings()
+    {
+        return $this->accountingSettings;
+    }
+
+    /**
+     * @param AccountingSettings $accountingSettings
+     */
+    public function setAccountingSettings(AccountingSettings $accountingSettings)
+    {
+        $this->accountingSettings = $accountingSettings;
+        $accountingSetting = $this->getAccountingSettings();
+        $accountingSetting->setHolding($this);
+
+        return $this;
     }
 
     /**

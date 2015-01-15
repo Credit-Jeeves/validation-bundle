@@ -1,24 +1,31 @@
 <?php
 namespace RentJeeves\AdminBundle\Form;
 
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use JMS\DiExtraBundle\Annotation\Service;
 
-class UserSettings extends Base
+/**
+ * @Service("form.accounting_settings")
+ */
+class AccountingSettingsType extends Base
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'isBaseOrderReport',
-            'checkbox',
+            'apiIntegration',
+            'choice',
             array(
                 'error_bubbling'    => true,
-                'label'             => 'base.order.report',
-                'required'          => false,
+                'choices'           => array_map(
+                    'ucwords',
+                    ApiIntegrationType::cachedTitles()
+                )
             )
         );
-
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -26,13 +33,13 @@ class UserSettings extends Base
         $resolver->setDefaults(
             array(
                 'cascade_validation'    => true,
-                'data_class'            => 'RentJeeves\DataBundle\Entity\UserSettings'
+                'data_class'            => 'RentJeeves\DataBundle\Entity\AccountingSettings'
             )
         );
     }
 
     public function getName()
     {
-        return 'rentjeeves_adminbundle_user_settings';
+        return 'rentjeeves_adminbundle_accounting_settings';
     }
 }
