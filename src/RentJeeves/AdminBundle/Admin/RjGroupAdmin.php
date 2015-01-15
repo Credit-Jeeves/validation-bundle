@@ -2,7 +2,7 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\AdminBundle\Form\GroupSettings;
+use RentJeeves\AdminBundle\Form\GroupSettingsType;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
