@@ -28,6 +28,9 @@ abstract class AbstractClient implements ClientInterface
 
     const MAX_NUMBER_OF_RETRIES = 2;
 
+    //seconds
+    const SLEEP_BETWEEN_RETRIES = 2;
+
     const DEFAULT_NUMBER_OF_RETRIES = 0;
 
     protected $numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
@@ -310,6 +313,7 @@ abstract class AbstractClient implements ClientInterface
                     $this->numberOfRetriesTheSameSoapCall
                 )
             );
+            sleep(self::SLEEP_BETWEEN_RETRIES);
 
             return $this->sendRequest($function, $params);
         } catch (Exception $e) {

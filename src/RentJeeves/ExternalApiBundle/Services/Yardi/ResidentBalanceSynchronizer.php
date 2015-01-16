@@ -102,7 +102,9 @@ class ResidentBalanceSynchronizer
                         )
                     );
                 }
-                $residentTransactions = $residentClient->getResidentTransactions($propertyMapping->getExternalPropertyId());
+                $residentTransactions = $residentClient->getResidentTransactions(
+                    $propertyMapping->getExternalPropertyId()
+                );
                 $this->processResidentTransactions($residentTransactions, $holding, $property);
             }
             $this->em->flush();
