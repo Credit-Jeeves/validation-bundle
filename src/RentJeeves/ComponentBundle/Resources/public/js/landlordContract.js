@@ -12,14 +12,20 @@ $(document).ready(function () {
         autoOpen: false,
         resizable: false,
         modal: true,
-        width: '520px'
+        width: '520px',
+        close: function () {
+            ContractsViewModel.needRefresh().push(DetailsViewModel.contract().id);
+        }
     });
     $('#tenant-edit-property-popup').dialog({
         position: "center",
         autoOpen: false,
         resizable: false,
         modal: true,
-        width: '520px'
+        width: '520px',
+        close: function () {
+            ContractsViewModel.needRefresh().push(DetailsViewModel.contract().id);
+        }
     });
 
     $('#tenant-review-property-popup').dialog({

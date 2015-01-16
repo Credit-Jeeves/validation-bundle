@@ -14,6 +14,7 @@ function Contracts() {
     this.isSearch = ko.observable(false);
     this.notHaveResult = ko.observable(false);
     this.processLoading = ko.observable(true);
+    this.needRefresh = ko.observableArray([]);
 
     this.search = function () {
         var searchCollum = $('#searchFilter').linkselect('val');
@@ -91,6 +92,7 @@ function Contracts() {
             },
             success: function (response) {
                 self.processLoading(false);
+                self.needRefresh([]);
                 self.aContracts([]);
                 self.aContracts(response.contracts);
 
@@ -132,14 +134,63 @@ function Contracts() {
         }
         self.ajaxAction();
     };
+
+    this.loadContract = function (contract, type) {
+        var id, callback, errors;
+
+        switch (type) {
+            case 'edit':
+                id = '#tenant-edit-property-popup';
+                callback = DetailsViewModel.editContract;
+                errors = DetailsViewModel.errorsEdit;
+                break;
+            case 'approve':
+                id = '#tenant-approve-property-popup';
+                callback = DetailsViewModel.approveContract;
+                errors = DetailsViewModel.errorsApprove;
+                break;
+            default:
+                console.log('Unexpected type "' + type + '", loading contract can work only with edit and approve');
+                return false;
+        }
+
+        if (self.needRefresh().indexOf(contract.id) > -1) {
+            $(".ui-dialog-content").dialog("close");
+            $(id).dialog('open');
+            errors([]);
+            $(id).showOverlay();
+
+            $.ajax({
+                url: Routing.generate('landlord_contract_details', {'contractId' : contract.id}),
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    $(id).hideOverlay();
+                    if (response.id && typeof callback === 'function') {
+                        callback(response);
+                    } else {
+                        errors.push(Translator.trans('error.contract_details.loading'));
+                    }
+                },
+                error: function (xhr, status) {
+                    errors.push(Translator.trans('error.contract_details.loading'));
+                }
+            });
+        } else {
+            if (typeof callback === 'function') {
+                callback(contract);
+            }
+        }
+    };
+
     this.editContract = function (data) {
         var position = $('#edit-' + data.id).position();
         data.top = position.top - 300;
-        DetailsViewModel.editContract(data);
+        self.loadContract(data, 'edit');
     };
     this.approveContract = function (data) {
         var position = $('#edit-' + data.id).position();
-        DetailsViewModel.approveContract(data);
+        self.loadContract(data, 'approve');
     };
     this.reviewContract = function (data) {
         var position = $('#edit-' + data.id).position();
