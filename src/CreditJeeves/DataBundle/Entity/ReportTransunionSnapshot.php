@@ -76,7 +76,7 @@ class ReportTransunionSnapshot extends Report
     }
 
     /**
-     * @return mixed
+     * @return Integer
      */
     public function getNumberOfInquiries()
     {
@@ -84,17 +84,15 @@ class ReportTransunionSnapshot extends Report
     }
 
     /**
-     * TODO: What should be here?
-     *
-     * @return mixed
+     * @return String
      */
-    public function getOldestTradelineInYears()
+    public function getDateOfOldestTrade()
     {
         return $this->getSnapshotData('DateOfOldestTrade');
     }
 
     /**
-     * @return mixed
+     * @return Float
      */
     public function getAgeOfCredit()
     {
