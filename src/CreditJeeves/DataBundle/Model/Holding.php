@@ -119,7 +119,7 @@ abstract class Holding
     protected $residentsMapping;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\PropertyMapping",
      *     mappedBy="holding",
      *     cascade={

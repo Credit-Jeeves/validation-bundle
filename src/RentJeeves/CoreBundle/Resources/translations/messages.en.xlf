@@ -2739,6 +2739,10 @@
                 <source>yardi.import.error.getResidents</source>
                 <target>Can not get resident from yardi api.</target>
             </trans-unit>
+            <trans-unit id="resman.import.error.getResidents">
+                <source>resman.import.error.getResidents</source>
+                <target>Can not get resident from resman api.</target>
+            </trans-unit>
             <trans-unit id="csv.import.error.update_matched_contracts">
                 <source>csv.import.error.update_matched_contracts</source>
                 <target>Cannot update existing contract</target>
@@ -2758,6 +2762,10 @@
             <trans-unit id="yardi.import.message.download.contracts">
                 <source>yardi.import.message.download.contracts</source>
                 <target>Fetching lease contracts for resident %RESIDENT_ID%.</target>
+            </trans-unit>
+            <trans-unit id="resman.import.message.download.contracts">
+                <source>resman.import.message.download.contracts</source>
+                <target>Fetching lease contracts.</target>
             </trans-unit>
             <trans-unit id="landlord.form.import.multiple.property">
                 <source>landlord.form.import.multiple.property</source>

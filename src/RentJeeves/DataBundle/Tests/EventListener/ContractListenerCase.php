@@ -9,7 +9,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 
 class ContractListenerCase extends Base
@@ -141,19 +141,19 @@ class ContractListenerCase extends Base
          * @var $contract Contract
          */
         $contract = $tenant->getContracts()->first();
-        $this->assertEquals($contract->getYardiPaymentAccepted(), YardiPaymentAccepted::ANY);
+        $this->assertEquals($contract->getPaymentAccepted(), PaymentAccepted::ANY);
 
-        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::DO_NOT_ACCEPT);
+        $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
         $em->flush($contract);
         $this->assertCount(1, $message = $plugin->getPreSendMessages());
         $this->assertEquals('Online Payments Disabled', $message[0]->getSubject());
 
-        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::ANY);
+        $contract->setPaymentAccepted(PaymentAccepted::ANY);
         $em->flush($contract);
         $this->assertCount(2, $message = $plugin->getPreSendMessages());
         $this->assertEquals('Online Payments Enabled', $message[1]->getSubject());
 
-        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::CASH_EQUIVALENT);
+        $contract->setPaymentAccepted(PaymentAccepted::CASH_EQUIVALENT);
         $em->flush($contract);
         $this->assertCount(3, $message = $plugin->getPreSendMessages());
         $this->assertEquals('Online Payments Disabled', $message[2]->getSubject());
@@ -181,7 +181,7 @@ class ContractListenerCase extends Base
          * @var $contract Contract
          */
         $contract = $tenant->getContracts()[1];
-        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::DO_NOT_ACCEPT);
+        $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
         $activePayment = $contract->getActivePayment();
         $this->assertNotNull($activePayment);
         $em->flush($contract);

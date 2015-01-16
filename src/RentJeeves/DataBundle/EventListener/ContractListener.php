@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use Exception;
 
 /**
@@ -156,8 +156,8 @@ class ContractListener
             return false;
         }
         $deniedPaymentStatuses = array(
-            YardiPaymentAccepted::DO_NOT_ACCEPT,
-            YardiPaymentAccepted::CASH_EQUIVALENT
+            PaymentAccepted::DO_NOT_ACCEPT,
+            PaymentAccepted::CASH_EQUIVALENT
         );
 
         if (in_array($newValue, $deniedPaymentStatuses) && in_array($oldValue, $deniedPaymentStatuses)) {
@@ -192,12 +192,12 @@ class ContractListener
         $result = true;
 
         switch ($newValue) {
-            case YardiPaymentAccepted::ANY:
+            case PaymentAccepted::ANY:
                 $result = $this->container->get('project.mailer')
                     ->sendEmailAcceptYardiPayment($contract->getTenant());
                 break;
-            case YardiPaymentAccepted::DO_NOT_ACCEPT:
-            case YardiPaymentAccepted::CASH_EQUIVALENT:
+            case PaymentAccepted::DO_NOT_ACCEPT:
+            case PaymentAccepted::CASH_EQUIVALENT:
                 $result = $this->container->get('project.mailer')
                     ->sendEmailDoNotAcceptYardiPayment($contract->getTenant());
                 break;

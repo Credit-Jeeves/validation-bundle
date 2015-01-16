@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use Symfony\Component\Form\AbstractType;
@@ -32,7 +33,7 @@ class ImportFileAccountingType extends AbstractType
     protected $currentGroup;
 
     protected $availableValidationGroups = [
-        'default', 'yardi', 'csv'
+        'default', 'integrated_api', 'csv'
     ];
 
     public function __construct(
@@ -96,12 +97,12 @@ class ImportFileAccountingType extends AbstractType
                     'class' => 'original widthSelect',
                     'data-bind' => 'visible: ($root.importType() == "' .
                         ImportType::SINGLE_PROPERTY .
-                        '" || $root.source() == "yardi")',
+                        '" || $root.source() == "integrated_api")',
                 ),
                 'label_attr' => array(
                     'data-bind' => 'visible: ($root.importType() == "' .
                         ImportType::SINGLE_PROPERTY .
-                        '" || $root.source() == "yardi")',
+                        '" || $root.source() == "integrated_api")',
                 ),
                 'required'      => false,
                 'mapped'        => false,
@@ -116,7 +117,7 @@ class ImportFileAccountingType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
-                            'groups'  => array('yardi', 'single_property'),
+                            'groups'  => array('integrated_api', 'single_property'),
                             'message' => 'import.errors.single_property_select'
                         )
                     )
@@ -124,16 +125,26 @@ class ImportFileAccountingType extends AbstractType
             )
         );
 
+        $accountingSettings = $this->currentGroup->getHolding()->getAccountingSettings();
+
+        if (!empty($accountingSettings)) {
+            $choices = array(
+                'csv'               => 'common.csv',
+                'integrated_api'    => 'import.integrated_api',
+            );
+        } else {
+            $choices = array(
+                'csv'               => 'common.csv',
+            );
+        }
+
         $builder->add(
             'fileType',
             'choice',
             array(
-                'choices' => array(
-                    'csv'       => 'common.csv',
-                    'yardi'     => 'import.integrated_api',
-                ),
+                'choices' => $choices,
                 'multiple' => false,
-                'data'  => 'csv',
+                'data' => 'csv',
                 'label' => 'common.source',
                 'attr' => array(
                     'data-bind' => 'checked: source',
@@ -142,13 +153,14 @@ class ImportFileAccountingType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
-                            'groups'  => array('default'),
+                            'groups' => array('default'),
                             'message' => 'yardi.import.error.file_type_empty'
                         )
                     )
                 )
             )
         );
+
 
         $builder->add(
             'attachment',
@@ -262,27 +274,39 @@ class ImportFileAccountingType extends AbstractType
                 'required'  => false,
                 'attr'      => array(
                     'class' => 'half-width original',
-                    'data-bind' => 'visible: ($root.source() == "yardi")'
+                    'data-bind' => 'visible: ($root.source() == "integrated_api")'
                 ),
                 'label_attr' => array(
-                    'data-bind' => 'visible: ($root.source() == "yardi")',
+                    'data-bind' => 'visible: ($root.source() == "integrated_api")',
                 ),
                 'constraints'    => array(
                     new NotBlank(
                         array(
-                            'groups'  => array('yardi'),
+                            'groups'  => array('integrated_api'),
                         )
                     ),
                 ),
             )
         );
 
+
         $builder->add(
             'onlyException',
             'checkbox',
             array(
-                'label'     => 'import.onlyException',
-                'required'  => false,
+                'label' => 'import.onlyException',
+                'required' => false,
+                'attr'      => array(
+                    'class' => 'half-width original',
+                    //@TODO remove it when for resman it's will work
+                    'data-bind' =>
+                        'visible:(!($root.integrationType() == "resman" && $root.source() == "integrated_api"))'
+                ),
+                //@TODO remove it when for resman it's will work
+                'label_attr' => array(
+                    'data-bind' =>
+                        'visible:(!($root.integrationType() == "resman" && $root.source() == "integrated_api"))',
+                ),
             )
         );
 

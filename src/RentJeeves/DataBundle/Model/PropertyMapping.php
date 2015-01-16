@@ -35,7 +35,7 @@ abstract class PropertyMapping
     protected $property;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
      *     inversedBy="propertyMapping"
      * )

@@ -4,7 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
@@ -233,7 +233,7 @@ abstract class ContractWaiting
 
     /**
      * @ORM\Column(
-     *     type="YardiPaymentAccepted",
+     *     type="PaymentAccepted",
      *     nullable=false,
      *     name="yardi_payment_accepted",
      *     options={
@@ -241,22 +241,22 @@ abstract class ContractWaiting
      *     }
      * )
      */
-    protected $yardiPaymentAccepted = YardiPaymentAccepted::ANY;
+    protected $paymentAccepted = PaymentAccepted::ANY;
 
     /**
      * @return integer
      */
-    public function getYardiPaymentAccepted()
+    public function getPaymentAccepted()
     {
-        return $this->yardiPaymentAccepted;
+        return $this->paymentAccepted;
     }
 
     /**
-     * @param integer $yardiPaymentAccepted
+     * @param integer $paymentAccepted
      */
-    public function setYardiPaymentAccepted($yardiPaymentAccepted)
+    public function setPaymentAccepted($paymentAccepted)
     {
-        $this->yardiPaymentAccepted = $yardiPaymentAccepted;
+        $this->paymentAccepted = $paymentAccepted;
     }
 
     /**

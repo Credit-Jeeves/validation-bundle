@@ -11,6 +11,7 @@ use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use DateTime;
+use Symfony\Bridge\Monolog\Logger;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -36,9 +37,9 @@ class StorageYardi extends StorageCsv
      *     "session" = @Inject("session")
      * })
      */
-    public function __construct(Session $session)
+    public function __construct(Session $session, Logger $logger)
     {
-        parent::__construct($session);
+        parent::__construct($session, $logger);
     }
 
     public function setImportPropertyId($propertyId)
@@ -73,7 +74,7 @@ class StorageYardi extends StorageCsv
 
     public function setImportData(FormInterface $form)
     {
-        $this->setImportPropertyId($form['property']->getData());
+        $this->setImportPropertyId($form['property']->getData()->getId());
         $this->setImportExternalPropertyId($form['propertyId']->getData());
         $this->setOnlyException($form['onlyException']->getData());
         $this->setImportLoaded(false);
@@ -120,7 +121,7 @@ class StorageYardi extends StorageCsv
         return true;
     }
 
-    public function saveToFile(ResidentLeaseFile $residentData, $residentId, $moveOutDate, $paymentAccepted)
+    public function saveToFileYardi(ResidentLeaseFile $residentData, $residentId, $moveOutDate, $paymentAccepted)
     {
         $filePath = $this->getFilePath(true);
         if (is_null($filePath)) {

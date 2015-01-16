@@ -9,4 +9,9 @@ class ApiIntegrationType extends Enum
     const YARDI_VOYAGER = 'yardi voyager';
 
     const RESMAN = 'resman';
+
+    public static $importMapping = [
+        self::YARDI_VOYAGER => 'yardi',
+        self::RESMAN        => 'resman'
+    ];
 }

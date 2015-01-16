@@ -2,6 +2,9 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import;
 
+use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Exception;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
@@ -10,19 +13,27 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 
 /**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- *
  * @Service("accounting.import.factory")
  */
 class ImportFactory
 {
+    const CSV = 'csv';
+
+    const INTEGRATED_API = 'integrated_api';
+
+    const BASE_NAME_STORAGE = 'accounting.import.storage';
+
+    const BASE_NAME_MAPPING = 'accounting.import.mapping';
+
+    const BASE_NAME_HANDLER = 'accounting.import.handler';
+
     protected $container;
 
     protected $session;
 
     protected $importType;
 
-    protected $availableImportType = array('csv', 'yardi');
+    protected $availableImportType = array(self::CSV, self::INTEGRATED_API);
 
     /**
      * @InjectParams({
@@ -38,27 +49,75 @@ class ImportFactory
 
     public function getHandler()
     {
-        $serviceName = 'accounting.import.handler.'.$this->importType;
-
-        return $this->getServiceImport($serviceName);
+        return $this->getServiceImport(
+            $this->getServiceName(
+                self::BASE_NAME_HANDLER,
+                $this->importType
+            )
+        );
     }
 
-    public function getStorage($importType = null)
+    /**
+     * @param $importType
+     *
+     * @return string
+     */
+    public function getImportType($importType)
     {
-        if (!empty($importType)) {
-            $serviceName = 'accounting.import.storage.' . $importType;
-        } else {
-            $serviceName = 'accounting.import.storage.' . $this->importType;
+        if (empty($importType)) {
+            return $this->importType;
         }
 
-        return $this->getServiceImport($serviceName);
+        if ($importType === self::INTEGRATED_API) {
+            /** @var $user Landlord */
+            $user = $this->container->get('security.context')->getToken()->getUser();
+            /** @var $holding Holding */
+            $holding = $user->getHolding();
+            $accountingSettings = $holding->getAccountingSettings();
+            if (empty($accountingSettings)) {
+                throw new Exception(
+                    sprintf(
+                        "For this landlord(%s) we don't have accounting setting, please setup api integration type",
+                        $user->getEmail()
+                    )
+                );
+            }
+            $importType = ApiIntegrationType::$importMapping[$accountingSettings->getApiIntegration()];
+        }
+
+        return $importType;
+    }
+
+    /**
+     * @param null $importType
+     * @throws Exception
+     */
+    public function getStorage($importType = null)
+    {
+        return $this->getServiceImport(
+            $this->getServiceName(
+                self::BASE_NAME_STORAGE,
+                $this->getImportType($importType)
+            )
+        );
     }
 
     public function getMapping()
     {
-        $serviceName = 'accounting.import.mapping.'.$this->importType;
+        return $this->getServiceImport(
+            $this->getServiceName(
+                self::BASE_NAME_MAPPING,
+                $this->importType
+            )
+        );
+    }
 
-        return $this->getServiceImport($serviceName);
+    public function clearSessionAllImports()
+    {
+        foreach ($this->availableImportType as $type) {
+            $storage = $this->getStorage($type);
+            $storage->clearSession();
+        }
     }
 
     /**
@@ -79,11 +138,14 @@ class ImportFactory
         );
     }
 
-    public function clearSessionAllImports()
+    /**
+     * @param $baseName
+     * @param $typeSerivce
+     *
+     * @return string
+     */
+    protected function getServiceName($baseName, $typeSerivce)
     {
-        foreach ($this->availableImportType as $type) {
-            $storage = $this->getStorage($type);
-            $storage->clearSession();
-        }
+        return sprintf('%s.%s', $baseName, $typeSerivce);
     }
 }

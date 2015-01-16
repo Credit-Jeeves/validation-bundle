@@ -6,7 +6,10 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Model\Import;
+use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -136,20 +139,31 @@ class AccountingController extends Controller
         $importFactory = $this->get('accounting.import.factory');
         $importFactory->clearSessionAllImports();
 
+        if (($accounting = $this->getCurrentGroup()->getHolding()->getAccountingSettings())) {
+            $integrationType = $accounting->getApiIntegration();
+        } else {
+            $integrationType = null;
+        }
+
         if (!$form->isValid()) {
             return array(
-                'form'          => $form->createView(),
-                'nGroups'       => $this->getGroups()->count(),
-                'source'        => $form->get('fileType')->getData(),
-                'importType'    => $form->get('importType')->getData(),
+                'form'            => $form->createView(),
+                'nGroups'         => $this->getGroups()->count(),
+                'source'          => $form->get('fileType')->getData(),
+                'importType'      => $form->get('importType')->getData(),
+                'integrationType' => $integrationType
             );
         }
 
         $importStorage = $importFactory->getStorage($form['fileType']->getData());
         $importStorage->setImportData($form);
-        $importStorage->setStorageType($form['fileType']->getData());
+        $importStorage->setStorageType(
+            $importFactory->getImportType($form['fileType']->getData())
+        );
 
-        return $this->redirect($this->generateUrl('accounting_match_file'));
+        return $this->redirect(
+            $this->generateUrl('accounting_match_file')
+        );
     }
 
     /**
@@ -377,40 +391,21 @@ class AccountingController extends Controller
      */
     public function getResidentsYardi()
     {
-        $holding = $this->getUser()->getHolding();
-        /**
-         * @var $importFactory ImportFactory
-         */
         $importFactory = $this->get('accounting.import.factory');
         $mapping = $importFactory->getMapping();
         $storage = $importFactory->getStorage();
-        $em = $this->getDoctrine()->getManager();
         /**
-         * @var $propertyMapping PropertyMapping
+         * @var $propertyMappingManager PropertyMappingManager
          */
-        $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
-            array(
-                'property'              => $storage->getImportPropertyId(),
-                'holding'               => $holding->getId(),
-            )
+        $propertyMappingManager = $this->get('property_mapping.manager');
+        $propertyMapping = $propertyMappingManager->createPropertyMapping(
+            $storage->getImportPropertyId(),
+            $storage->getImportExternalPropertyId()
         );
+        $holding = $this->getUser()->getHolding();
 
-        if (empty($propertyMapping)) {
-            /**
-             * @var $property Property
-             */
-            $property = $em->getRepository('RjDataBundle:Property')->find($storage->getImportPropertyId());
-            $propertyMapping = new PropertyMapping();
-            $propertyMapping->setHolding($holding);
-            $propertyMapping->setProperty($property);
-            $propertyMapping->setExternalPropertyId($storage->getImportExternalPropertyId());
-            $em->persist($propertyMapping);
-            $em->flush();
-        } else {
-            $property = $propertyMapping->getProperty();
-        }
         if ($storage->getImportLoaded() === false) {
-            $residents = $mapping->getResidents($holding, $property);
+            $residents = $mapping->getResidents($holding, $propertyMapping->getExternalPropertyId());
             $residents = array_values($residents);
         } else {
             $residents = array();
@@ -418,6 +413,38 @@ class AccountingController extends Controller
 
         $response = new Response($this->get('jms_serializer')->serialize($residents, 'json'));
         $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/import/residents/resman",
+     *     name="accounting_import_residents_resman",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getResidentsResMan()
+    {
+        $importFactory = $this->get('accounting.import.factory');
+        /** @var $mapping MappingResman */
+        $mapping = $importFactory->getMapping();
+        /** @var $storage StorageResman */
+        $storage = $importFactory->getStorage();
+        /** @var $propertyMappingManager PropertyMappingManager  */
+        $propertyMappingManager = $this->get('property_mapping.manager');
+        $propertyMapping = $propertyMappingManager->createPropertyMapping(
+            $storage->getImportPropertyId(),
+            $storage->getImportExternalPropertyId()
+        );
+
+        $residents = $mapping->getResidents($propertyMapping->getExternalPropertyId());
+        $result = $storage->saveToFileResmen($residents);
+
+        $response = new JsonResponse(
+            array('success' => $result)
+        );
+        $response->setStatusCode(($result) ? 200 : 400);
 
         return $response;
     }
@@ -455,7 +482,7 @@ class AccountingController extends Controller
         );
         try {
             $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $residentId);
-            $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
+            $storage->saveToFileYardi($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
                 $responseData = array('result' => false);

@@ -1,0 +1,5 @@
+model: RentJeeves\DataBundle\Entity\AccountingSettings
+fixtures:
+    YardiSetting_1:
+        holding: rjHolding_1
+        apiIntegration: yardi voyager

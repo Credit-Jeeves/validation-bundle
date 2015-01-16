@@ -2,13 +2,16 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\AccountingSettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\DataBundle\Model\Unit;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\LandlordBundle\Form\Enum\ImportType;
@@ -180,7 +183,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('import.errors.single_property_select', $errors[0]->getHtml());
         $this->assertEquals('error.file.empty', $errors[1]->getHtml());
 
-        $this->setProperty();
+        $this->setPropertyFirst();
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_failed.csv');
@@ -196,7 +199,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
         $dateSelector->selectOption('m/d/Y');
         $submitImportFile->click();
@@ -404,7 +407,7 @@ class ImportCase extends BaseTestCase
             $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
             $attFile->attachFile($filePath);
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-            $this->setProperty();
+            $this->setPropertyFirst();
             $submitImportFile->click();
             $this->assertNull($error = $this->page->find('css', '.error_list>li'));
             $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -583,7 +586,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import_waiting_room.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -639,7 +642,7 @@ class ImportCase extends BaseTestCase
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $filePath = $this->getFilePathByName('import_date_format.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $this->assertNotNull($dateFormat = $this->page->find('css', '#import_file_type_dateFormat'));
@@ -685,7 +688,7 @@ class ImportCase extends BaseTestCase
         $this->logout();
     }
 
-    protected function setProperty()
+    protected function setPropertyFirst()
     {
         /**
          * @var $em EntityManager
@@ -702,6 +705,22 @@ class ImportCase extends BaseTestCase
         $propertySelector->selectOption($property->getId());
     }
 
+    protected function setPropertySecond()
+    {
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+            array(
+                'street' => 'Broadway',
+                'number' => '785',
+                'zip'    => '10003'
+            )
+        );
+        $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
+        $propertySelector->selectOption($property->getId());
+    }
     /**
      * @test
      */
@@ -919,7 +938,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import_one_user.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
         $dateSelector->selectOption('m/d/Y');
         $submitImportFile->click();
@@ -992,7 +1011,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import_one_user.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
         $dateSelector->selectOption('m/d/Y');
         $submitImportFile->click();
@@ -1131,7 +1150,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
         $attFile->attachFile($filePath);
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1181,7 +1200,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
         $attFile->attachFile($filePath);
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1250,7 +1269,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import_two_user.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
         $dateSelector->selectOption('m/d/Y');
         $submitImportFile->click();
@@ -1299,6 +1318,7 @@ class ImportCase extends BaseTestCase
         $this->logout();
     }
 
+
     /**
      * @test
      */
@@ -1313,13 +1333,13 @@ class ImportCase extends BaseTestCase
 
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             array(
-                'yardiPaymentAccepted' => YardiPaymentAccepted::CASH_EQUIVALENT,
+                'paymentAccepted' => PaymentAccepted::CASH_EQUIVALENT,
             )
         );
         $this->assertEquals(0, count($contract));
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
             array(
-                'yardiPaymentAccepted' => YardiPaymentAccepted::DO_NOT_ACCEPT,
+                'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
             )
         );
         $this->assertEquals(0, count($contractWaiting));
@@ -1329,7 +1349,7 @@ class ImportCase extends BaseTestCase
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($yardiRadio = $this->page->findAll('css', '.radio'));
         $yardiRadio[1]->click();
         $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
@@ -1353,18 +1373,18 @@ class ImportCase extends BaseTestCase
 
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             array(
-                'yardiPaymentAccepted' => YardiPaymentAccepted::CASH_EQUIVALENT,
+                'paymentAccepted' => PaymentAccepted::CASH_EQUIVALENT,
             )
         );
         $this->assertEquals(1, count($contract));
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
             array(
-                'yardiPaymentAccepted' => YardiPaymentAccepted::DO_NOT_ACCEPT,
+                'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
             )
         );
         $this->assertEquals(1, count($contractWaiting));
     }
-
+    
     /**
      * @test
      * @depends yardiBaseImport
@@ -1377,7 +1397,7 @@ class ImportCase extends BaseTestCase
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($yardiRadio = $this->page->findAll('css', '.radio'));
         $yardiRadio[1]->click();
         $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
@@ -1475,7 +1495,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $submitImportFile->click();
         // Choose mapping fields
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -1504,7 +1524,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
-        $this->setProperty();
+        $this->setPropertyFirst();
         $submitImportFile->click();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1539,7 +1559,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_should_create_operation.csv');
         $attFile->attachFile($filePath);
-        $this->setProperty();
+        $this->setPropertyFirst();
         $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
         $dateSelector->selectOption('m/d/Y');
         $submitImportFile->click();
@@ -1696,7 +1716,7 @@ class ImportCase extends BaseTestCase
         $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $this->setProperty();
+        $this->setPropertyFirst();
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_only_exception.csv');
@@ -1748,5 +1768,65 @@ class ImportCase extends BaseTestCase
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+    }
+
+    /**
+     * @test
+     */
+    public function resmanBaseImport()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var $landlord Landlord */
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
+        /** @var AccountingSettings $accountingSettings */
+        $accountingSettings = $landlord->getHolding()->getAccountingSettings();
+        $accountingSettings->setApiIntegration(ApiIntegrationType::RESMAN);
+        $em->flush($accountingSettings);
+        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
+        // We must make sure the data saved into DB, so we count before import and after
+        $this->assertEquals(23, count($contract));
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertEquals(1, count($contractWaiting));
+
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
+        $this->setPropertySecond();
+        $this->assertNotNull($source = $this->page->findAll('css', '.radio'));
+        $source[1]->click();
+        $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
+        $propertyId->setValue('B342E58C-F5BA-4C63-B050-CF44439BB37D');
+        $submitImport->click();
+
+        $this->session->wait(
+            80000,
+            "$('table').is(':visible')"
+        );
+        $this->waitReviewAndPost();
+        for ($i = 0; $i <= 2; $i++) {
+            if ($i === 1) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(1, $errorFields);
+                $errorFields[0]->setValue('CorrrectName');
+            }
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+            $submitImportFile->click();
+            $this->waitReviewAndPost();
+        }
+
+        $this->logout();
+        // We must make sure the data saved into DB, so we count before import and after
+        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
+        $this->assertEquals(36, count($contract));
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertEquals(15, count($contractWaiting));
     }
 }

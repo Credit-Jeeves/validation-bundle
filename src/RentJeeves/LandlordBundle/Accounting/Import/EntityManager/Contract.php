@@ -25,7 +25,7 @@ trait Contract
     protected function setYardiPaymentAccepted(EntityContract $contract, $row)
     {
         if (isset($row[Mapping::KEY_PAYMENT_ACCEPTED])) {
-            $contract->setYardiPaymentAccepted($row[Mapping::KEY_PAYMENT_ACCEPTED]);
+            $contract->setPaymentAccepted($row[Mapping::KEY_PAYMENT_ACCEPTED]);
         }
     }
 
@@ -238,7 +238,7 @@ trait Contract
             $residentMapping
         );
 
-        $contractWaiting->setYardiPaymentAccepted($contract->getYardiPaymentAccepted());
+        $contractWaiting->setYardiPaymentAccepted($contract->getPaymentAccepted());
 
         if (!$contractWaiting->getProperty()) {
             return $contractWaiting;

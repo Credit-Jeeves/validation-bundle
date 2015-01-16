@@ -3,7 +3,7 @@ namespace RentJeeves\DataBundle\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
 
-class YardiPaymentAccepted extends Enum
+class PaymentAccepted extends Enum
 {
     const ANY = 0;
 
