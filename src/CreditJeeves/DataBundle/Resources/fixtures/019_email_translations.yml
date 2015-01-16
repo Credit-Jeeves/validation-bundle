@@ -557,10 +557,13 @@ fixtures:
       {% block email %}
       Your rent payment to {{ nameHolding }} for {{ address }} is coming up.
       <br /><br />
-      {% if recurring == true %}
+      {% if paymentType == 'recurring' %}
         It looks like you have recurring payments set up, so we'll send you another email when we make your payment.
+        Please note that if you are paying by credit card, you will also pay a technology fee with your rent.
         If you need to change your payment details or cancel your payment,
         please <a href="https://my.renttrack.com/">log in to RentTrack today</a> and make any adjustments.
+      {% elseif paymentType == 'one_time' %}
+        It looks like you already have a payment set up, so we'll send you another email when we make your payment.
       {% else %}
         You do not have recurring payments set up. <a href="https://my.renttrack.com/">Log in to RentTrack today</a>
         to set up a one-time or recurring payment.
