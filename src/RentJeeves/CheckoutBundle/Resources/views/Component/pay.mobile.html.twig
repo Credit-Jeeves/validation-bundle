@@ -1,0 +1,169 @@
+{% form_theme paymentType 'RjCoreBundle::form.html.twig' %}
+{% form_theme paymentBalanceOnlyType 'RjCoreBundle::form.html.twig' %}
+{% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
+
+
+<div data-role="page" id="pay">
+
+
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
+        <h1 class="ui-title" role="heading" aria-level="1">Edit Rent Payment</h1>
+        <a href="#review" onclick="createReview()">Next</a>
+    </div>
+
+        <div class="ui-content" role="main">
+
+            {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
+
+                <form name="rentForm">
+
+                <b>Rent*</b><br>
+
+                <input value="2500.00" name="payRentAmount" id="payRentAmount" onchange="$('#payTotalToPay').html(this.value)"> for
+
+                    <select>
+                        <option value="0">Jan</option>
+                        <option value="1">Feb</option>
+                        <option value="2">Mar</option>
+                        <option value="3">Apr</option>
+                        <option value="4">May</option>
+                        <option value="5">Jun</option>
+                        <option value="6">Jul</option>
+                        <option value="7">Aug</option>
+                        <option value="8">Sep</option>
+                        <option value="9">Oct</option>
+                        <option value="10">Nov</option>
+                        <option value="11">Dev</option>
+                    </select>
+                <br>
+                    <b>Other</b><br>
+                    <input value="e.g. Utilities, Deposit, etc. ">
+                    <br>
+                    <b>Total to pay:</b>
+                    <br>
+                    <span id="payTotalToPay"></span>
+                <br><br>
+
+
+                <h4>How often should we send it?</h4><br>
+                    <br>
+
+                    <div style="float: left">
+                <input type="radio" value="1" name="howMany" id="payHowManyR"> Recurring
+                    </div>
+                    <div style="float: right">
+                <input type="radio" value="0" name="howMany" id="payHowManyO" checked> One Time
+                    </div>
+                    <br>
+                    <br>
+
+                <h4>How would you like to pay your rent?</h4>
+
+                <br>
+
+                <select id="paymentDropdown">
+
+                </select>
+
+
+                <script>
+                    jQuery.each(paymentAccounts,function(i, account){
+                        $("#paymentDropdown").append("<option value='"+account.name+"'>"+account.name+"</option>");
+                    })
+
+                </script>
+                <br>
+
+
+                <br>
+
+                Due*<br>
+
+                <input type="date" id="payDue">
+
+                <br>
+
+                <a href="#review" onclick="createReview()"><input type="button" value="Next"></a>
+
+                <input type="hidden" id="payContractId" name="payContractId">
+
+            </form>
+
+
+        </div>
+
+</div>
+
+<script>
+    function createReview(){
+        $("contractId").html($("#payContractId").val());
+        $("#revRentAmount").html($("#payRentAmount").val())
+        $("#revMethod").html($("#paymentDropdown").val());
+        $("#revSendOn").html($("#payDue").val())
+
+        if($("#payHowManyR").prop("checked")){
+            $("#revRecurring").html("Recurring")
+        }else{
+            $("#revRecurring").html("Single")
+        }
+
+    }
+</script>
+
+<div data-role="page" id="review">
+
+
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a href="#pay" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
+        <h1 class="ui-title" role="heading" aria-level="1">Review</h1>
+        <a href="#review" href="#popupBasic">Pay Rent</a>
+    </div>
+
+    <div class="ui-content" role="main">
+    <b><span id="revRecurring">Single</span> rent payment for <span id="contractAddress"></span></b>
+        <hr>
+        <h4>Who's getting paid:</h4>
+
+    <span id="payTo">
+        John Doe<br>
+        123 State St.<br>
+        Santa Barbara, CA<br>
+        93107<br>
+    </span><br><br>
+
+        <b>
+            Rent Amount:
+        </b>
+
+        $<span id="revRentAmount"></span><br>
+
+        <b>Send on: </b>
+
+        <span id="revSendOn"></span><br>
+
+        <b>Ends: </b>
+
+        <span id="revEnds"></span><br>
+
+        <hr>
+
+        <h4>How You're Paying</h4>
+
+        <b>Method:</b> <span id="revMethod"></span>
+
+        <br><br>
+
+        <a href="#popupBasic" data-rel="popup" data-transition="pop" data-position-to="window">
+        <input type="button" value="Pay Rent">
+        </a>
+
+
+
+        <div data-role="popup" id="popupBasic" data-overlay-theme="b" class="ui-popup ui-body-inherit ui-overlay-shadow ui-corner-all">
+            <p>Payment Scheduled</p>
+        </div>
+
+    </div>
+
+</div>

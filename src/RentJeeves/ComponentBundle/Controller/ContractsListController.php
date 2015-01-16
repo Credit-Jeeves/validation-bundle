@@ -113,7 +113,9 @@ class ContractsListController extends Controller
             'isNewUser'     => $isNewUser,
             'hasIntegratedBalance' => $hasIntegratedBalance,
         );
+
         if($mobile){
+
             return $this->render('RjComponentBundle:ContractsList:tenant.mobile.html.twig', $pageVars); //mobile template override
         }else{
             return $pageVars;

@@ -24,7 +24,7 @@ class ComponentController extends Controller
     /**
      * @Template()
      */
-    public function payAction()
+    public function payAction($mobile = false)
     {
         $paymentType = $this->createForm(
             new PaymentType(
@@ -59,18 +59,23 @@ class ComponentController extends Controller
                 )
             )
         );
-        return array(
+        $pageVars= array(
             'paymentType' => $paymentType->createView(),
             'paymentBalanceOnlyType' => $paymentBalanceOnlyType->createView(),
             'userDetailsType' => $userDetailsType->createView(),
             'questionsType' => $questionsType->createView(),
         );
+        if($mobile){
+            return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars); //mobile template override
+        }else{
+            return $pageVars;
+        }
     }
 
     /**
      * @Template()
      */
-    public function sourceAction()
+    public function sourceAction($mobile = false)
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
 
@@ -88,10 +93,16 @@ class ComponentController extends Controller
             SerializationContext::create()->setGroups(array('paymentAccounts'))
         );
 
-        return array(
+        $pageVars= array(
             'paymentAccountType' => $paymentAccountType->createView(),
             'addressesJson' => $addressesJson,
             'payAccountsJson' => $payAccountsJson,
         );
+
+        if($mobile){
+            return $this->render('RjCheckoutBundle:Component:source.mobile.html.twig', $pageVars); //mobile template override
+        }else{
+            return $pageVars;
+        }
     }
 }

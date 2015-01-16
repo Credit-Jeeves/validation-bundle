@@ -45,6 +45,6 @@ class TenantController extends Controller
 
     public function isMobile()
     {
-        return false;
+        return true;
     }
 }

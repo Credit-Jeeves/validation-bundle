@@ -26,6 +26,55 @@
     {#<h1>{{ 'current_contracts.title' | trans() }}</h1>#}
 
 
+<script>
+
+
+    var contractsJson={{ contractsJson | raw }};
+
+
+    function setupPayForm(id) {
+
+        $("#backToContract").href="contract"+id
+
+        for (i = 0; i < contractsJson.length;i++) {
+            if(contractsJson[i].id==id){
+                jQuery('#payContractId').val(id);
+                contract=contractsJson[i]
+                console.log(contract)
+                $("#payRentAmount").val(contract.rent)
+                $('#payTotalToPay').html(contract.rent)
+                $("#payTo").html(contract.payToName);
+                $("#contractAddress").html(contract.property.number+" "+contract.property.street+", "+contract.property.district+" "+contract.unit.name)
+                if(contract.payment.status=="active"){
+                    if(contract.payment.type=="recurring"){
+                        $("#payHowManyR").prop("checked","true")
+                    }else{
+                        $("#payHowMany").prop("checked","true")
+                    }
+                }
+                $("#revEnds").html(contract.finishAt)
+
+                var today = new Date();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+
+
+                if(mm<10) {
+                    mm='0'+mm
+                }
+
+
+                $("#payDue").val(yyyy+"-"+mm+"-"+(contract.payment.dueDate))
+                break;
+            }
+        }
+
+
+    }
+
+</script>
+
+
 
         <div data-role="page" id="main">
 
@@ -39,14 +88,18 @@
 
             </div>
 
-            <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="background: linear-gradient(to right, rgb(30,30,30) 10%, #e9e9e9 10%);">
-                <a href="#panel" class="ui-btn-left ui-btn ui-icon-bars ui-btn-icon-left" data-role="button" role="button" style="color: rgb(40,40,40);background: transparent;border: none;"></a>
-                <h1 class="ui-title" role="heading" aria-level="1">Renttrack</h1>
+            <div data-role="header" role="banner" class="ui-header ui-bar-inherit">
+                <a href="#panel" class="ui-btn-left ui-btn ui-icon-bars ui-btn-icon-left" data-role="button" role="button" style="background: transparent; border: 0;"></a>
+                <h1 class="ui-title" role="heading" aria-level="1" style="background: transparent;"><img style="width: 100%;" src="/bundles/rjcore/Images/mobile/home-logo.png"></h1>
             </div>
 
-            <div class="ui-content" role="main">
+            <div class="ui-content" role="main" style='background-image: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png);'>
 
-            <h2>Current Payments</h2> <a href="#" class="ui-btn-right ui-btn ui-icon-plus ui-btn-icon-life" data-role="button" role="button"></a>
+            <div style="color: white; font-size: 18pt; font-weight: normal;">Current Payments</div>
+                {#
+                <a href="#" class="ui-btn-right ui-btn ui-icon-plus ui-btn-icon-life" data-role="button" role="button"></a>
+
+                #}
             {#
             <div class="addPropertyContainer">
                 <center>
@@ -59,17 +112,13 @@
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
                     <a href="#contract{{ loop.index }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
-            <div style="border: 1px solid rgb(140,140,140);border-radius: 5px; padding: 5px;margin-top: 10px;cursor: pointer; background: rgb(250,250,250);">
-
-
-                            <b>{{ contract.full_address }}</b>
+            <div style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
+                <a href="#contract{{ loop.index }}" class="ui-btn ui-icon-home ui-btn-icon-left" style="position: absolute; top: 2px; left: 0px;background: none;border: none;"></a>
+                <a href="#contract{{ loop.index }}" class="ui-btn ui-icon-carat-r ui-btn-icon-left" style="position: absolute; top: 32%; right: -4px;background: none;border: none;"></a>
+                            <b style="font-size: 16;">{{ contract.full_address [:25] }}</b>
                         <br>
-                            {{ contract.rent }}
-
-                        <br>
-                            {% if hasIntegratedBalance %}
-                               {{ contract.balance }}
-                            {% endif %}
+                            <span style="font-size: 14;">{{ contract.rent }}</span>
+{#
                         <br>
                                 {% if contract.status == 'pending' %}
                                     {{ 'contract.status.pending.text' | trans }}
@@ -91,8 +140,10 @@
                                     {{ contract.status | upper }}
                                 {% endif %}
                         <br>
-                        <b>Due Next: {{ contract.payment_next }}</b>
-                        <br>
+                #}
+                    <br>
+                        <b style="font-size: 14;">Due Next: {{ contract.payment_next }}</b>
+
                     </div>
                     </a>
                     {% endif %}
@@ -107,6 +158,7 @@
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
                     <a href="#main" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
                     <h1 class="ui-title" role="heading" aria-level="1">Current Payment</h1>
+                    <a href="#pay" onclick="setupPayForm({{ contract.id }})">Pay/Edit</a>
                 </div>
 
                 <div class="ui-content" role="main">
@@ -150,12 +202,11 @@
         {% endfor %}
 
 
+{{ render(controller('RjCheckoutBundle:Component:pay',{'mobile':'true'})) }}
 
-{#
-{{ render(controller('RjCheckoutBundle:Component:pay')) }}
-#}
 
 <script type="text/javascript">
+
     $(document).ready(function() {
         var currentPaymentsViewModel = new CurrentPayments(
             {{ contractsJson | raw }},
@@ -167,5 +218,6 @@
             $('#contract-pay-1').click();
         {% endif %}
     });
-</script>
 
+
+</script>

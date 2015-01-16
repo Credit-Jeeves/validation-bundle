@@ -1,5 +1,6 @@
 {% form_theme paymentAccountType 'RjCoreBundle::form.html.twig' %}
 
+{#
 <div class="form-row clearfix" data-bind="visible: !$root.notEmptyPaymentAccount">
     <div class="fields-box">
         <small><b>*</b>{{ 'required' | trans  }}</small>
@@ -9,6 +10,7 @@
     {{ form_widget(paymentAccountType) }}
     {{ JSFV(paymentAccountType) }}
 </form>
+#}
 
 <script type="text/javascript">
     window.addressesViewModels = [];

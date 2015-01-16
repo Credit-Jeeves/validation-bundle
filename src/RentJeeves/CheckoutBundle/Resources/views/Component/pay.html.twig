@@ -82,14 +82,6 @@
                     <span class="value big left" data-bind="text: '$'+contract.integrated_balance"></span>
                 </div>
             </div>
-            <form data-bind="if: !contract.groupSetting.pay_balance_only" {{ form_enctype(paymentType) }} novalidate method="post">
-                {{ form_widget(paymentType) }}
-                {{ JSFV(paymentType) }}
-            </form>
-            <form data-bind="if: contract.groupSetting.pay_balance_only" {{ form_enctype(paymentBalanceOnlyType) }} novalidate method="post">
-                {{ form_widget(paymentBalanceOnlyType) }}
-                {{ JSFV(paymentBalanceOnlyType) }}
-            </form>
             <script type="text/html" id="paidFor-html">
                 <div class="tooltip-box type3 pie-el">
                     <h4 data-bind="text: 'checkout.rent_start.title', i18n: {'MONTH': getPaidFor}">
@@ -101,7 +93,7 @@
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
-            <div data-bind="visible: $root.notEmptyPaymentAccount" class="form-row clearfix" >
+            <div data-bind="visible: $root.notEmpty" class="form-row clearfix" >
                 <label>{{ 'payment.account' | trans }}*</label>
                 <div class="fields-box payment-accounts">
                     <small ><b>*</b>{{ 'required' | trans }}</small>
