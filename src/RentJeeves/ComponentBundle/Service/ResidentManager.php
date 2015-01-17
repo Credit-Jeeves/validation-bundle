@@ -71,25 +71,51 @@ class ResidentManager
          * @var $errorsResidentMapping ConstraintViolationList
          */
         $errorsResidentMapping = $this->validator->validate($residentMapping, ['unique_entity']);
+<<<<<<< HEAD
         $existingMapping = $this->getExistingMapping($residentMapping);
         if ($errorsResidentMapping->count() === 1 &&
             ($existingMapping->getTenant()->getEmail() !== $residentMapping->getTenant()->getEmail())
         ) {
+=======
+        $existingMappingTenant = $this->getExistingMappingByTenant($residentMapping);
+        $existingMappingResident = $this->getExistingMappingByResidentId($residentMapping);
+
+        if ($errorsResidentMapping->count() === 1) {
+
+>>>>>>> master
             $errors[] = $this->translator->trans(
                 $errorsResidentMapping->get(0)->getMessage(),
                 array(
                     '%support_email%'   => $this->supportEmail,
+<<<<<<< HEAD
                     '%email%'           => $existingMapping->getTenant()->getEmail()
+=======
+                    '%email%'           => $existingMappingResident->getTenant()->getEmail()
+>>>>>>> master
                 )
             );
         }
 
+<<<<<<< HEAD
 
 
         if (empty($errors)) {
             $this->clearWaitingRoom($landlord, $residentMapping);
             $this->em->persist($residentMapping);
         }
+=======
+        //Create action
+        if (empty($errors) && empty($existingMappingTenant)) {
+            $this->clearWaitingRoom($landlord, $residentMapping);
+            $this->em->persist($residentMapping);
+        }
+        //Update action
+        if (empty($error) && !empty($existingMappingTenant)) {
+            $existingMappingTenant->setResidentId($residentMapping->getResidentId());
+            $this->em->persist($existingMappingTenant);
+            unset($residentMapping);
+        }
+>>>>>>> master
 
         return $errors;
     }
@@ -137,15 +163,44 @@ class ResidentManager
      * @param ResidentMapping $residentMapping
      * @return ResidentMapping
      */
+<<<<<<< HEAD
     protected function getExistingMapping(ResidentMapping $residentMapping)
+=======
+    protected function getExistingMappingByTenant(ResidentMapping $residentMapping)
     {
         /**
          * @var $residentMapping ResidentMapping
          */
         $residentMapping = $this->em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
             array(
+                'holding'    => $residentMapping->getHolding()->getId(),
+                'tenant'     => $residentMapping->getTenant()->getId()
+            )
+        );
+
+        return $residentMapping;
+    }
+
+
+    /**
+     * @param ResidentMapping $residentMapping
+     * @return ResidentMapping
+     */
+    protected function getExistingMappingByResidentId(ResidentMapping $residentMapping)
+>>>>>>> master
+    {
+        /**
+         * @var $residentMapping ResidentMapping
+         */
+        $residentMapping = $this->em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
+            array(
+<<<<<<< HEAD
                 'holding' => $residentMapping->getHolding()->getId(),
                 'residentId' => $residentMapping->getResidentId(),
+=======
+                'holding'        => $residentMapping->getHolding()->getId(),
+                'residentId'     => $residentMapping->getResidentId()
+>>>>>>> master
             )
         );
 

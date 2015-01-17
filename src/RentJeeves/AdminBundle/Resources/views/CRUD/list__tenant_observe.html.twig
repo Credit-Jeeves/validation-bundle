@@ -9,7 +9,7 @@ file that was distributed with this source code.
 
 #}
 {% if admin.isGranted('EDIT', object)%}
-    <a href="{{ path('admin_tenant_observe', { "id": object.id }) }}" class="btn observe_link" title="{{ 'action_observe'|trans({}) }}">
+    <a href="{{ path('admin_tenant_observe', { "id": object.id }) }}" class="btn observe_link btn-small" title="{{ 'action_observe'|trans({}) }}">
         <i class="icon-show"></i>
         {{ 'action_observe'|trans({}) }}
     </a>

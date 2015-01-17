@@ -9,6 +9,7 @@ use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface as ImportStorage;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
@@ -273,6 +274,8 @@ abstract class HandlerAbstract implements HandlerInterface
 
         if ($contract && $unit = $contract->getUnit()) {
             $import->setUnitMapping($this->getUnitMapping($row, $unit));
+        } else {
+            $import->setUnitMapping(new UnitMapping());
         }
 
         $contractWaiting = $this->getContractWaiting(

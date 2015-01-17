@@ -80,28 +80,6 @@ class AjaxController extends Controller
 
     /**
      * @Route(
-     *     "/rj/holding/groups",
-     *     name="admin_rj_holding_groups",
-     *     options={"expose"=true}
-     * )
-     */
-    public function getHoldingGroups(Request $request)
-    {
-        $holdingId = $request->request->get('holdingId');
-        $em = $this->getDoctrine()->getManager();
-        /**
-         * @var $holding Holding
-         */
-        $holding = $em->getRepository('DataBundle:Holding')->find($holdingId);
-        if (empty($holding)) {
-            throw new Exception("Holding not found.");
-        }
-
-        return $this->makeJsonResponse($holding->getGroups());
-    }
-
-    /**
-     * @Route(
      *    "/rj/property/units",
      *     name="admin_rj_group_units",
      *     options={"expose"=true}

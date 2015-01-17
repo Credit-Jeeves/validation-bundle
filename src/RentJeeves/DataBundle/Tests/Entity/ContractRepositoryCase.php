@@ -353,7 +353,7 @@ class ContractRepositoryCase extends BaseTestCase
             )
         );
         $this->assertNotNull($unit);
-        $this->assertTrue($unit->getContractsWaiting()->count() === 0);
+        $this->assertTrue($unit->getContractsWaiting()->count() === 1);
 
         $contractWaiting = new ContractWaiting();
         $contractWaiting->setProperty($unit->getProperty());
@@ -380,7 +380,7 @@ class ContractRepositoryCase extends BaseTestCase
             )
         );
         $this->assertNotNull($unit);
-        $this->assertTrue($unit->getContractsWaiting()->count() === 1);
+        $this->assertTrue($unit->getContractsWaiting()->count() === 2);
         $em->remove($unit);
         $em->flush();
         $em->clear();

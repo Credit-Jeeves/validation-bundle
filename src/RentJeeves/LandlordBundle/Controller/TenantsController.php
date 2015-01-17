@@ -2,7 +2,11 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Form\ContractType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -59,7 +63,10 @@ class TenantsController extends Controller
             $merchantName = $group->getMerchantName();
             $canInvite = (!empty($merchantName))? true : false;
         }
+
         $em = $this->getDoctrine()->getManager();
+        $errors = [];
+
         $form = $this->createForm(
             new InviteTenantContractType($this->getUser(), $group)
         );
@@ -104,20 +111,22 @@ class TenantsController extends Controller
                 }
                 $em->persist($contract);
                 $em->persist($tenant);
-                
+
                 if ($residentMapping) {
                     $residentMapping->setHolding($holding);
                     $residentMapping->setTenant($tenant);
-                    $em->persist($residentMapping);
-
-                    $validator = $this->get('validator');
-                    $errorsResidentMapping = $validator->validate($residentMapping, ['add_or_edit_tenants']);
-                    $translator = $this->get('translator');
-                    foreach ($errorsResidentMapping as $error) {
-                        $errors[] = $translator->trans($error->getMessage());
-                    }
+                    /**
+                     * @var $resident ResidentManager
+                     */
+                    $resident = $this->get('resident_manager');
+                    $errors = array_merge(
+                        $errors,
+                        $resident->validate($this->getUser(), $residentMapping)
+                    );
                 }
             }
+
+            $translator = $this->get('translator');
             foreach ($form->getErrors() as $error) {
                 $errors[] = $translator->trans($error->getMessage());
             }

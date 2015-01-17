@@ -1,6 +1,5 @@
 {% if admin.isGranted('EDIT', object) %}
-    <br />
-    <a href="{{ path('admin_cj_report_list', { "user_id": object.id }) }}" class="btn" title="{{ 'action_report'|trans({}) }}">
+    <a href="{{ path('admin_cj_report_list', { "user_id": object.id }) }}" class="btn btn-small" title="{{ 'action_report'|trans({}) }}">
         <i class="icon-report"></i>
         {{ 'action_report'|trans({}) }}
     </a>

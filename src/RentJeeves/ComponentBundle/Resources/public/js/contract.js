@@ -22,6 +22,7 @@ function Contract() {
     this.invite = ko.observable(false);
     this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
     this.errorsApprove = ko.observableArray([]);
+    this.notificationsEdit = ko.observableArray([]);
     this.errorsEdit = ko.observableArray([]);
     this.errorsAdd = ko.observableArray([]);
     this.statusBeforeTriedSave = ko.observable();
@@ -75,12 +76,13 @@ function Contract() {
     this.closeApprove = function (data) {
         $('#tenant-approve-property-popup').dialog('close');
         return false;
-    }
+    };
 
     this.editContract = function (contract) {
 
         self.errorsApprove([]);
         self.errorsEdit([]);
+        self.notificationsEdit([]);
         $('#unit-edit').html(' ');
         $('#tenant-approve-property-popup').dialog('close');
         $('#tenant-edit-property-popup').dialog('open');
@@ -144,6 +146,7 @@ function Contract() {
         self.contract(contract);
         self.errorsApprove([]);
         self.errorsEdit([]);
+        self.notificationsEdit([]);
         $('#unit-edit').html(' ');
         $('#tenant-approve-property-popup').dialog('open');
         self.clearDetails();
@@ -196,6 +199,10 @@ function Contract() {
             }
         });
     };
+
+    this.countNotificationsEdit = ko.computed(function () {
+        return parseInt(self.notificationsEdit().length);
+    });
 
     this.countErrorsEdit = ko.computed(function () {
         return parseInt(self.errorsEdit().length);
@@ -296,6 +303,7 @@ function Contract() {
                 jQuery(id).hideOverlay();
                 self.errorsApprove([]);
                 self.errorsEdit([]);
+                self.notificationsEdit([]);
                 if (typeof response.errors == 'undefined') {
                     $('#tenant-edit-property-popup').dialog('close');
                     $('#tenant-approve-property-popup').dialog('close');
@@ -320,6 +328,7 @@ function Contract() {
             }
         });
     };
+
     this.revokeInvitation = function () {
         jQuery('#tenant-revoke-invotation').showOverlay();
         $.ajax({
@@ -340,21 +349,24 @@ function Contract() {
             }
         });
     };
+
     this.closeRevokeInvitation = function () {
         $('#tenant-edit-property-popup').dialog('open');
         $('#tenant-revoke-invotation').dialog('close');
         return false;
-    }
+    };
 
     this.closeReminderRevoke = function () {
         $('#tenant-edit-property-popup').dialog('close');
         $('#tenant-revoke-invotation').dialog('open');
         return false;
-    }
+    };
+
     this.closeTenantReviewPropertyPopup = function () {
         $('#tenant-review-property-popup').dialog('close');
         return false;
-    }
+    };
+
     this.sendReminderInvition = function () {
         jQuery('#tenant-edit-property-popup').showOverlay();
         $.ajax({
@@ -363,10 +375,13 @@ function Contract() {
             dataType: 'json',
             success: function (response) {
                 jQuery('#tenant-review-property-popup').hideOverlay();
+                self.notificationsEdit([]);
                 if (typeof response.error !== 'undefined') {
                     self.errorsEdit.push(response.error);
+                    self.notificationsEdit([]);
                 } else {
                     self.errorsEdit([]);
+                    self.notificationsEdit.push(Translator.trans('contract.reminder.sent.successfully'));
                 }
                 jQuery('#tenant-edit-property-popup').hideOverlay();
             }
@@ -377,7 +392,7 @@ function Contract() {
         $('#tenant-edit-property-popup').dialog('close');
         $('#tenant-end-contract').dialog('open');
         return false;
-    }
+    };
 
     this.endContractExecute = function () {
         jQuery('#tenant-end-contract').showOverlay();
@@ -394,38 +409,39 @@ function Contract() {
                 self.outstandingBalance(0);
             }
         });
-    }
+    };
 
     this.leaveIntact = function (contract) {
         $('#tenant-edit-property-popup').dialog('open');
         $('#tenant-end-contract').dialog('close');
         return false;
-    }
+    };
 
     this.saveTenant = function () {
-        $('#tenant-edit-property-popup').showOverlay();
+        var id = '#tenant-add-property-popup';
+        $(id).showOverlay();
         var formData = $("form#rentjeeves_landlordbundle_invitetenantcontracttype").serialize();
         var url = $('form#rentjeeves_landlordbundle_invitetenantcontracttype').attr('action') ;
-        if (!$(".error_list").length) {
-            $.ajax({
-                url: url,
-                type: 'POST',
-                timeout: 60000, // 30 secs
-                dataType: 'json',
-                data: formData,
-                success: function(response, textStatus, jqXHR) {
-                    $('#tenant-end-contract').hideOverlay();
-                    if (typeof response.errors == 'undefined') {
-                        $('#tenant-add-property-popup').dialog('close');
-                        $("form#rentjeeves_landlordbundle_invitetenantcontracttype")[0].reset();
-                        DetailsViewModel.errorsAdd([]);
-                        ContractsViewModel.ajaxAction();
-                    } else {
-                        DetailsViewModel.errorsAdd(response.errors);
-                    }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            timeout: 60000, // 30 secs
+            dataType: 'json',
+            data: formData,
+            success: function(response, textStatus, jqXHR) {
+                $(id).hideOverlay();
+                if (typeof response.errors == 'undefined') {
+                    $('#tenant-add-property-popup').dialog('close');
+                    $("form#rentjeeves_landlordbundle_invitetenantcontracttype")[0].reset();
+                    DetailsViewModel.errorsAdd([]);
+                    ContractsViewModel.ajaxAction();
+                } else {
+                    DetailsViewModel.errorsAdd(response.errors);
                 }
-            });
-        }
+            }
+        });
+
         return false;
     };
 }

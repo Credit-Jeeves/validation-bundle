@@ -71,6 +71,33 @@ class JobAdmin extends Admin
                     'field_type' => 'integer'
                 )
             )
+            ->add(
+                'order',
+                'doctrine_orm_callback',
+                array(
+                    'callback' => function ($queryBuilder, $alias, $field, $value) {
+                        if (empty($value['value'])) {
+                            return false;
+                        }
+                        $queryBuilder->innerJoin(
+                            $alias . '.relatedEntities',
+                            're'
+                        );
+                        $queryBuilder->where('re instance of RentJeeves\DataBundle\Entity\JobRelatedOrder');
+                        $queryBuilder->andWhere(
+                            're.id in (
+                                select jro.id
+                                from RentJeeves\DataBundle\Entity\JobRelatedOrder jro
+                                where jro.order = :order_id
+                            )'
+                        );
+                        $queryBuilder->setParameter('order_id', (int)$value['value']);
+
+                        return true;
+                    },
+                    'field_type' => 'integer'
+                )
+            )
             ->add('id')
             ->add('state')
             ->add(

@@ -50,7 +50,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 $reversalData = $repoHeartland->getReversalDepositedInfo($group, $date);
                 $groups[] = [
                     'groupName' => $group->getName(),
-                    'accountNumber' => $group->getDepositAccount()->getAccountNumber(),
+                    'accountNumber' => $group->getAccountNumber(),
                     'batches' => $this->prepareBatchReportData($batchData),
                     'returns' => $reversalData,
                 ];

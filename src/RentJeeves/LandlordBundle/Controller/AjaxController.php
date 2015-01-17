@@ -2,14 +2,17 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\CoreBundle\Translation\Translator;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
+use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -624,9 +627,30 @@ class AjaxController extends Controller
                 $dataRequest['searchCollum'],
                 $dataRequest['searchText']
             );
+            /**
+             * @var $resident ResidentManager
+             */
+            $resident = $this->get('resident_manager');
+            /**
+             * @var $translator Translator
+             */
+            $translator = $this->get('translator');
             /** @var Contract $contract */
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();
+                if ($contract->getStatus() === ContractStatus::INVITE) {
+                    $hasMultipleContracts = $resident->hasMultipleContracts(
+                        $contract->getTenant(),
+                        $this->getUser()->getHolding()
+                    );
+                    $count = ($hasMultipleContracts)? 1 : 0;
+                    $item['revoke_message'] = $translator->transChoice(
+                        'notice.revoke.residentId.multiple_contracts',
+                        $count
+                    );
+                } else {
+                    $item['revoke_message'] = $this->get('translator')->trans('revoke.inv.ask');
+                }
                 $items[] = $item;
             }
         }
@@ -790,27 +814,20 @@ class AjaxController extends Controller
         }
 
         if ($contract->getSettings()->getIsIntegrated()) {
-            if ($residentId = trim($details['residentId'])) {
-                $user = $this->getUser();
-                $holding = $user->getHolding();
-                $residentMapping = $tenant->getResidentForHolding($holding);
-                if (empty($residentMapping)) {
-                    $residentMapping = new ResidentMapping();
-                    $residentMapping->setHolding($holding);
-                    $residentMapping->setTenant($tenant);
-                }
-                $residentMapping->setResidentId($residentId);
-                $em->persist($residentMapping);
-
-                $validator = $this->get('validator');
-                $validatorErrorsResidentMapping = $validator->validate($residentMapping, ['add_or_edit_tenants']);
-
-                foreach ($validatorErrorsResidentMapping as $error) {
-                    $errors[] = $translator->trans($error->getMessage());
-                }
-            } else {
-                $errors[] = $translator->trans('common.residentId.required');
+            $user = $this->getUser();
+            $holding = $user->getHolding();
+            $residentMapping = $tenant->getResidentForHolding($holding);
+            if (empty($residentMapping)) {
+                $residentMapping = new ResidentMapping();
+                $residentMapping->setHolding($holding);
+                $residentMapping->setTenant($tenant);
             }
+            $residentMapping->setResidentId($details['residentId']);
+            $resident = $this->get('resident_manager');
+            $errors = array_merge(
+                $errors,
+                $resident->validate($this->getUser(), $residentMapping)
+            );
         }
         $response = [];
 
@@ -1063,13 +1080,28 @@ class AjaxController extends Controller
         $request = $this->get('request');
         $email = $request->request->get('email');
         $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $user Tenant
+         */
         $user = $em->getRepository('DataBundle:User')->findOneBy(
             array('email' => $email)
         );
+        $isIntegrated = $this->getUser()->getCurrentGroup()->getGroupSettings()->getIsIntegrated();
+        if ($user &&
+            $isIntegrated &&
+            $residentMapping = $user->getResidentForHolding($this->getUser()->getHolding())
+        ) {
+            $residentId = ($residentMapping)? $residentMapping->getResidentId() : null;
+        } else {
+            $residentId = null;
+        }
+
 
         $data = array(
-            'userExist' => (!empty($user))? true : false,
-            'isTenant'  => (!empty($user) && $user->getType() === UserType::TETNANT)? true : false,
+            'userExist'     => (!empty($user))? true : false,
+            'isTenant'      => (!empty($user) && $user->getType() === UserType::TETNANT)? true : false,
+            'residentId'    => $residentId,
+            'isIntegrated'  => $isIntegrated
         );
 
         return new JsonResponse($data);
@@ -1117,6 +1149,15 @@ class AjaxController extends Controller
             $contract
         );
         $em->remove($contract);
+        /**
+         * @var $resident ResidentManager
+         */
+        $resident = $this->get('resident_manager');
+        if (!$resident->hasMultipleContracts($contract->getTenant(), $holding = $this->getUser()->getHolding())) {
+            $residentMapping = $tenant->getResidentForHolding($holding);
+            $em->remove($residentMapping);
+        }
+
         $em->flush();
 
         return new JsonResponse(array());

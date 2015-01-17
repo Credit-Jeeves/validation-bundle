@@ -152,7 +152,7 @@ class DashboardCase extends BaseTestCase
         /*
          * Get first TD with status
          */
-        $this->assertNotNull($td = $this->page->find('css', '#payments-block-tbody td'));
+        $this->assertNotNull($td = $this->page->find('css', '#payments-block-tbody .actions-status span'));
         $this->assertEquals('order.status.text.returned', $td->getHtml());
 
 

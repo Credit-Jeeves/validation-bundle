@@ -56,17 +56,21 @@ class OrderAdmin extends Admin
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('id', null, array('route' => array('name' => 'show')))
-            ->add('created_at', 'date')
-            ->add('updated_at', 'date')
+            ->addIdentifier('id', null, ['route' => ['name' => 'show']])
+            ->add('created_at', 'date', ['format' => 'Y-m-d'])
             ->add('type')
             ->add('status', 'string', ['template' => 'AdminBundle:CRUD:payments_status_choice.html.twig'])
-            ->add('heartland_transaction_ids')
-            ->add('operation_type')
+            ->add('heartland_transaction_ids', 'string', ['label' => 'Transaction Ids'])
             ->add('sum', 'money')
             ->add('group_name', 'string', ['template' => 'AdminBundle:CRUD:payments_group_landlords.html.twig'])
             ->add('user.full_name', 'string', ['template' => 'AdminBundle:CRUD:payments_show_tenant.html.twig'])
-            ->add('user.email');
+            ->add('user.email')
+            ->add('_action', 'actions', [
+                'actions' => [
+                    'show' => [],
+                    'jobs' => ['template' => 'AdminBundle:CRUD:list__order_jobs.html.twig']
+                ]
+            ]);
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -199,6 +203,6 @@ class OrderAdmin extends Admin
             ->add('authorizes', null, array('route' => array('name' => 'show')))
             ->add('heartlands', null, array('route' => array('name' => 'show')))
             ->add('operations', null, array('route' => array('name' => 'show')))
-            ->add('jobs', null, array('route' => array('name' => 'show')));
+            ->add('jobs', null, array('template' => 'AdminBundle:CRUD:orders_show_jobs.html.twig'));
     }
 }

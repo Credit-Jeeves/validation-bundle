@@ -38,9 +38,6 @@ parameters:
         price: 0
         product: 'registration'
 
-    business_days_cc: 1 # credit card
-    business_days_ach: 3 # bank
-
 # parameters for twig
     payment_bank_fee: 0 # feeACH would be processed on heartland side
     payment_card_fee: 2.95% # feeCC
@@ -62,6 +59,7 @@ framework:
         name: rj
         cookie_secure: true
         cookie_httponly: true
+        handler_id: session.handler.pdo
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
 
@@ -140,6 +138,17 @@ payum:
                     options: %authorize_net%
 
 services:
+    pdo:
+        class: PDO
+        arguments:
+            - "mysql:host=%database_host%;dbname=%database_name%"
+            - "%database_user%"
+            - "%database_password%"
+        calls:
+            - [setAttribute, [3, 2]] # \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION
+    session.handler.pdo:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        arguments: ["@pdo", "%pdo.db_options%"]
     geocode_cache_adapter:
         class: "Doctrine\\Common\\Cache\\ApcCache"
 

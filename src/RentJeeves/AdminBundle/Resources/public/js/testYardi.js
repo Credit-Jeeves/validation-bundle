@@ -1,7 +1,7 @@
 $( document ).ready(function() {
 
     var button =$('<button id="test" class="btn" />');
-    button.html(Translator.trans('common.test.setting'))
+    button.html(Translator.trans('common.test.yardi_setting'))
     button.css({"width": "105px"});
     $(".form-actions").append(button.get(0));
 

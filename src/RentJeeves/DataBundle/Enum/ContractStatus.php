@@ -23,7 +23,7 @@ use CreditJeeves\CoreBundle\Enum;
  *
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
-class ContractStatus extends \CreditJeeves\CoreBundle\Enum
+class ContractStatus extends Enum
 {
     /**
      * Contract was ordered by Tenant

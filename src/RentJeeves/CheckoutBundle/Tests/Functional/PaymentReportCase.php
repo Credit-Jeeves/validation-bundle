@@ -94,6 +94,36 @@ class PaymentReportCase extends BaseTestCase
         $this->assertNotEquals(OrderStatus::COMPLETE, $resultOrder->getStatus());
     }
 
+    /**
+     * @test
+     */
+    public function shouldFillEmptyBatchIdForCompleteTransactions()
+    {
+        $this->load(true);
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $repo = $em->getRepository('RjDataBundle:Heartland');
+
+        $transactionId = 789789;
+        /** @var HeartlandTransaction $transaction */
+        $transaction = $repo->findOneBy(array('transactionId' => $transactionId));
+        $this->assertNotNull($transaction);
+
+        // It would be better to add a new transaction fixture to the database,
+        // but then we'd have to fix several related tests that check the exact amount of transactions,
+        // that's why we use one of the existent transactions.
+        $this->assertEquals(111555, $transaction->getBatchId(), 'Verify expected test fixture exists');
+        $transaction->setBatchId(null);
+        $em->flush($transaction);
+
+        $paymentReport = $this->getContainer()->get('payment.reversal_report');
+        $paymentReport->synchronize();
+
+        /** @var HeartlandTransaction $resultTransaction */
+        $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));
+        // 145176 is a value from heartland report file fixture
+        $this->assertEquals(145176, $resultTransaction->getBatchId(), 'Batch id was not updated');
+    }
+
     protected function createOrder($transactionId)
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');

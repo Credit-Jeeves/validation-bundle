@@ -416,7 +416,7 @@ class TenantCase extends BaseTestCase
         $select->click();
         $this->assertNotNull($selectOption = $this->page->find('css', '#holding-group_li_1>span'));
         $selectOption->click();
-        $this->session->wait(1000, "false"); // wait refresh page
+        $this->session->wait(5000, "false"); // wait refresh page
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
 
@@ -425,9 +425,7 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
-        $this->session->wait(1500, "false"); // wait refresh page
-        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(1, $errorList, 'Wrong number of errors');
+        $this->session->wait(3500, "false"); // wait refresh page
 
         $formField = array(
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
@@ -446,7 +444,8 @@ class TenantCase extends BaseTestCase
             $this->page->pressButton('invite.tenant');
             //Check created contract
             $this->session->wait(10000, "$('.attention-box>ul>li').length === 1");
-            $this->assertEquals('add_or_edit_tenants.error.already_exist', $error->getHtml(), 'Wrong resident id');
+            $this->assertNotNull($error = $this->page->find('css', '.attention-box>ul>li'));
+            $this->assertEquals('error.residentId.already_use', $error->getHtml(), 'Wrong resident id');
             unset($formField['rentjeeves_landlordbundle_invitetenantcontracttype_resident_residentId']);
             $formField += array('rentjeeves_landlordbundle_invitetenantcontracttype_resident_residentId' => 'test1234');
         }

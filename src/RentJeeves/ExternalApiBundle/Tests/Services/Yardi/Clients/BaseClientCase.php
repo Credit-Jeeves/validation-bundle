@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services\Yardi\Clients;
+namespace RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients;
 
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
