@@ -4,6 +4,7 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\TenantBundle\Services\InviteLandlord;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteType;
@@ -133,10 +134,17 @@ class PropertyController extends Controller
             $invite = $form->getData();
             $invite->setProperty($property);
             $invite->setTenant($this->getUser());
+            /** @var InviteLandlord $inviteProcessor */
+            $inviteProcessor = $this->get('invite.landlord');
+            $inviteProcessor->invite($invite, $this->getUser());
 
-            $this->get('invite.landlord')->invite($invite, $this->getUser());
+            if (!count($inviteProcessor->getErrors())) {
+                return $this->redirect($this->generateUrl('tenant_homepage'), 301);
+            }
 
-            return $this->redirect($this->generateUrl('tenant_homepage'), 301);
+            foreach ($inviteProcessor->getErrors() as $error) {
+                $form->addError($error);
+            }
         }
 
         return array(

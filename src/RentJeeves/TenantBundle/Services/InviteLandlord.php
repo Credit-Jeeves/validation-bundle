@@ -15,6 +15,8 @@ use CreditJeeves\DataBundle\Enum\Grouptype;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\Validator;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -33,17 +35,26 @@ class InviteLandlord
     protected $locale;
 
     /**
+     * @var Validator
+     */
+    protected $validator;
+
+    protected $errors = [];
+
+    /**
      * @InjectParams({
-     *     "em"     = @Inject("doctrine.orm.entity_manager"),
-     *     "mailer" = @Inject("project.mailer"),
-     *     "locale" = @Inject("%kernel.default_locale%"),
+     *     "em"        = @Inject("doctrine.orm.entity_manager"),
+     *     "mailer"    = @Inject("project.mailer"),
+     *     "locale"    = @Inject("%kernel.default_locale%"),
+     *     "validator" = @Inject("validator")
      * })
      */
-    public function __construct(EntityManager $em, $mailer, $locale)
+    public function __construct(EntityManager $em, $mailer, $locale, $validator)
     {
         $this->em = $em;
         $this->mailer = $mailer;
         $this->locale = $locale;
+        $this->validator = $validator;
     }
 
     public function invite(Invite $invite, $tenant)
@@ -97,6 +108,10 @@ class InviteLandlord
         $contract->setHolding($holding);
         $contract->setGroup($group);
 
+        if (!$this->validate([$contract])) {
+            return false;
+        }
+
         $em->persist($group);
         $em->persist($contract);
         $em->persist($landlord);
@@ -105,5 +120,28 @@ class InviteLandlord
         $this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract);
 
         return $landlord;
+    }
+
+    /**
+     * @return FormError[]
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    protected function validate($entities)
+    {
+        foreach ($entities as $entity) {
+            $errors = $this->validator->validate($entity);
+
+            if ($errors->count()) {
+                foreach ($errors as $error) {
+                    $this->errors[] = new FormError($error->getMessage());
+                }
+            }
+        }
+
+        return !count($this->errors);
     }
 }

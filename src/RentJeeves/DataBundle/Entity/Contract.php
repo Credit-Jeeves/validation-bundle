@@ -20,6 +20,7 @@ use RentJeeves\CoreBundle\DateTime;
 use RuntimeException;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use RentJeeves\DataBundle\Validators\ContractDuplicate;
 
 /**
  * Contract
@@ -28,6 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="rj_contract")
  *
  * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"User", "Default"})
+ * @ContractDuplicate()
  *
  * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
  */
@@ -872,6 +874,14 @@ class Contract extends Base
         if ($this->getFinishAt() < $this->getStartAt()) {
             $validatorContext->addViolationAt('finish', 'contract.error.is_end_later_than_start', array(), null);
         }
+    }
+
+    public function checkDuplicate(ExecutionContextInterface $validatorContext)
+    {
+        if ($this->getStatus() == ContractStatus::DELETED || $this->getStatus() == ContractStatus::FINISHED) {
+            return;
+        }
+
     }
 
     /**

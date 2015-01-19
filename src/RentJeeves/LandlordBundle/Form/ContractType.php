@@ -38,7 +38,7 @@ class ContractType extends AbstractType
         }
         $group = $this->group;
 
-        $builder->add('rent');
+        $builder->add('rent', 'text', array('error_bubbling' => true));
         $builder->add(
             'finishAt',
             'date',
