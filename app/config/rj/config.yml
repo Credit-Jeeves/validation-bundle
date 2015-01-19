@@ -38,6 +38,9 @@ parameters:
         price: 0
         product: 'registration'
 
+    credit_services:
+        credit_summary_vendor: transunion # supported values are 'transunion' or 'experian'
+
 # parameters for twig
     payment_bank_fee: 0 # feeACH would be processed on heartland side
     payment_card_fee: 2.95% # feeCC

@@ -1,14 +1,21 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Controller;
 
+use CreditJeeves\CoreBundle\Enum\ScoreModelType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
+use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\ReportType;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\EntityManager;
 use Guzzle\Http\Exception\CurlException;
+use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
+use RentJeeves\ExternalApiBundle\Services\Transunion\TransUnionUserCreator;
+use RentTrack\TransUnionBundle\CCS\Model\TransUnionUser;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -26,6 +33,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ReportController extends Controller
 {
+    use TransUnionUserCreator;
+
     protected $reportType = ReportType::PREQUAL;
 
     protected $redirect = null;
@@ -36,16 +45,25 @@ class ReportController extends Controller
     protected $creditProfile;
 
     /**
-     * @todo add all rules
+     * @TODO incapsulate this logic to a corresponding report type object
+     * @TODO doesn't work when $isD2c = true and vendor = Transunion
      *
      * @return bool
      */
     protected function isReportLoadAllowed($isD2c = false)
     {
-        if ($isD2c) {
-            return $this->getUser()->getLastCompleteReportOperation();
+        $vendor = $this->container->getParameter('credit_services')['credit_summary_vendor'];
+        switch ($vendor) {
+            case CreditSummaryVendor::EXPERIAN:
+                if ($isD2c) {
+                    return $this->getUser()->getLastCompleteReportOperation();
+                }
+                return !$this->getUser()->getReportsPrequal()->last();
+            case CreditSummaryVendor::TRANSUNION:
+                return !$this->getUser()->getReportsTUSnapshot()->last();
+            default:
+                throw new Exception(sprintf('Unknown credit summary vendor \'%s\'', $vendor));
         }
-        return !$this->getUser()->getReportsPrequal()->last();
     }
 
     /**
@@ -91,23 +109,71 @@ class ReportController extends Controller
         return $this->creditProfile->getResponseOnUserData($this->get('core.session.applicant')->getUser());
     }
 
-    protected function saveArf($isD2c = false)
+    protected function createScore($scoreValue, EntityManager $em)
     {
-        if (!$this->isReportLoadAllowed($isD2c)) {
+        if ($scoreValue > 1000) {
             return false;
         }
 
+        $score = new Score();
+        $score->setUser($this->getUser());
+        $score->setScore($scoreValue);
+        $em->persist($score);
+    }
+
+    protected function saveCreditSummary($isD2c = false)
+    {
         $em = $this->getDoctrine()->getManager();
-        if ($isD2c) {
-            $report = $this->getUser()->getLastCompleteReportOperation()->getReportD2c();
-        } else {
-            $report = new ReportPrequal();
-            $report->setUser($this->getUser());
+        if (!$this->isReportLoadAllowed($isD2c)) {
+            return false;
         }
-        $report->setRawData($this->getArf($isD2c));
-        $em->persist($report);
-        $em->flush();
-        return true;
+        $user = $this->getUser();
+        $vendor = $this->container->getParameter('credit_services')['credit_summary_vendor'];
+        switch ($vendor) {
+            case CreditSummaryVendor::EXPERIAN:
+                if ($isD2c) {
+                    $report = $this->getUser()->getLastCompleteReportOperation()->getReportD2c();
+                } else {
+                    $report = new ReportPrequal();
+                    $report->setUser($user);
+                }
+                $report->setRawData($this->getArf($isD2c));
+                $em->persist($report);
+
+                // RT uses only VANTAGE3
+                $newScore = $report->getArfReport()->getScore(ScoreModelType::VANTAGE3);
+                $this->createScore($newScore, $em);
+
+                $em->flush();
+                return true;
+            case CreditSummaryVendor::TRANSUNION:
+                $transUnionUser = $this->getTransUnionUser($user);
+
+                $snapshot = $this
+                    ->get('transunion.ccs.credit_snapshot')
+                    ->getSnapshot(
+                        $transUnionUser,
+                        $this->container->getParameter('transunion.renttrack_snapshot_bundle')
+                    );
+                $report = new ReportTransunionSnapshot();
+                $report->setRawData($snapshot);
+                $report->setUser($user);
+                $em->persist($report);
+
+                $newScore = $this
+                    ->get('transunion.ccs.vantage_score_3')
+                    ->getScore(
+                        $transUnionUser,
+                        $this->container->getParameter('transunion.renttrack_vantage_score_3_bundle')
+                    );
+
+                $this->createScore($newScore, $em);
+
+                $em->flush();
+                return true;
+            default:
+                throw new Exception(sprintf('Unknown credit summary vendor \'%s\'', $vendor));
+        }
     }
 
     /**
@@ -127,11 +193,11 @@ class ReportController extends Controller
             $session = $this->getRequest()->getSession();
             ignore_user_abort();
             set_time_limit(90);
-            if (false == $session->get('cjIsArfProcessing', false)) {
-                $session->set('cjIsArfProcessing', true);
+            if (false == $session->get('cjIsReportProcessing', false)) {
+                $session->set('cjIsReportProcessing', true);
                 $isD2cReport = $this->get('session')->getFlashBag()->get('isD2cReport');
                 try {
-                    $this->saveArf($isD2cReport);
+                    $this->saveCreditSummary($isD2cReport);
                 } catch (DBALException $e) {
                     $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     $this->get('session')->getFlashBag()->set(
@@ -149,19 +215,19 @@ class ReportController extends Controller
                 } catch (CurlException $e) {
                     $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     $this->get('session')->getFlashBag()->set('isD2cReport', $isD2cReport);
-                    $session->set('cjIsArfProcessing', false);
+                    $session->set('cjIsReportProcessing', false);
                     return new JsonResponse('warning');
                 } catch (Exception $e) {
                     $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     if (4000 == $e->getCode()) {
                         $this->get('session')->getFlashBag()->set('isD2cReport', $isD2cReport);
-                        $session->set('cjIsArfProcessing', false);
+                        $session->set('cjIsReportProcessing', false);
                         return new JsonResponse('warning');
                     } else {
                         throw $e;
                     }
                 }
-                $session->set('cjIsArfProcessing', false);
+                $session->set('cjIsReportProcessing', false);
                 return new JsonResponse('finished');
             }
             return new JsonResponse('processing');
