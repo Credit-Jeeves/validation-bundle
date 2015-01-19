@@ -10,4 +10,5 @@ class ReportType extends Enum
 {
     const D2C = 'd2c';
     const PREQUAL = 'prequal';
+    const TU_SNAPSHOT = 'tu_snapshot';
 }

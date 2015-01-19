@@ -56,3 +56,11 @@ parameters:
         db_id_col:       session_id
         db_data_col:     session_value
         db_time_col:     session_time
+
+    transunion.account_name: 'CC2RentTrack'
+    transunion.password: 'Pfr5Nm$c'
+    transunion.ssl_key: /root/transunion.com/stg.renttrack.com.key
+    transunion.ca_certificate: /root/transunion.com/prodsupCA.pem
+    transunion.ssl_certificate: /root/transunion.com/CC2RentTrack-Test.crt
+    transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
+    transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'

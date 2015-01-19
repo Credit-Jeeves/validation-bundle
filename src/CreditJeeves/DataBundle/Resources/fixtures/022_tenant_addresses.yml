@@ -208,3 +208,13 @@ fixtures:
         area: MI
         zip: '49548'
         is_default: 1
+
+    TenantAddres_22:
+        user: Tenant_22
+        street: 1071 SW  101ST
+        number: ''
+        unit: ''
+        city: HOLLYWOOD
+        area: FL
+        zip: 33025
+        is_default: 1
