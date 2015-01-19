@@ -454,7 +454,7 @@ class TenantCase extends BaseTestCase
 
             $this->page->pressButton('invite.tenant');
             //Check created contract
-            $this->session->wait(10000, "$('.attention-box>ul>li').length === 1");
+            $this->session->wait(12000, "$('.attention-box>ul>li').length === 1");
             $this->assertNotNull($error = $this->page->find('css', '.attention-box>ul>li'));
             $this->assertEquals('error.residentId.already_use', $error->getHtml(), 'Wrong resident id');
             unset($formField['rentjeeves_landlordbundle_invitetenantcontracttype_resident_residentId']);

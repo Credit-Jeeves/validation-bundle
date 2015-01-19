@@ -14,25 +14,12 @@ class ResidentManagerCase extends BaseTestCase
     public function shouldValidate()
     {
         $this->load(true);
-        /**
-         * @var $resident ResidentManager
-         */
+        /** @var $resident ResidentManager */
         $resident = $this->getContainer()->get('resident_manager');
-        /**
-         * @var $em EntityManager
-         */
+        /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'tenant11@example.com'
-            )
-        );
-
-        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneBy(
-            array(
-                'email' => 'landlord1@example.com'
-            )
-        );
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
 
         $residentMapping = new ResidentMapping();
         $residentMapping->setTenant($tenant);
@@ -47,6 +34,7 @@ class ResidentManagerCase extends BaseTestCase
         $error = end($errors);
         $this->assertEquals('error.residentId.already_use', $error);
     }
+
     /**
      * @test
      * @depends shouldValidate
@@ -54,28 +42,15 @@ class ResidentManagerCase extends BaseTestCase
     public function shouldClearWaitingRoom()
     {
         $this->load(true);
-        /**
-         * @var $resident ResidentManager
-         */
+        /** @var $resident ResidentManager */
         $resident = $this->getContainer()->get('resident_manager');
-        /**
-         * @var $em EntityManager
-         */
+        /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
         $this->assertCount(1, $contractsWaiting);
 
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'john@rentrack.com'
-            )
-        );
-
-        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneBy(
-            array(
-                'email' => 'landlord1@example.com'
-            )
-        );
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('john@rentrack.com');
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
 
         $residentMapping = new ResidentMapping();
         $residentMapping->setTenant($tenant);
@@ -93,26 +68,46 @@ class ResidentManagerCase extends BaseTestCase
     public function shouldNotHaveMultipleContracts()
     {
         $this->load(true);
-        /**
-         * @var $em EntityManager
-         */
+        /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'tenant11@example.com'
-            )
-        );
-
-        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneBy(
-            array(
-                'email' => 'landlord1@example.com'
-            )
-        );
-        /**
-         * @var $resident ResidentManager
-         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
+        /** @var $resident ResidentManager */
         $resident = $this->getContainer()->get('resident_manager');
         $hasMultipleContracts = $resident->hasMultipleContracts($tenant, $landlord->getHolding());
         $this->assertFalse($hasMultipleContracts);
+    }
+
+    /**
+     * We check: "Don't create double entity on the residentMapping entity", we check before make changes and count it,
+     * get 2, on the end of test we again count and get 2 - it's means we don't create double entityMapping
+     * 
+     * @test
+     */
+    public function shouldUpdateExistResidentId()
+    {
+        $this->load(true);
+        /** @var $resident ResidentManager */
+        $resident = $this->getContainer()->get('resident_manager');
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
+        $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findAll();
+        $this->assertCount(2, $residentMapping);
+
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setTenant($tenant);
+        $residentMapping->setHolding($landlord->getHolding());
+
+        $errors = $resident->validate($landlord, $residentMapping);
+        $this->assertCount(1, $errors);
+        $this->assertEquals('common.residentId.required', end($errors));
+        $residentMapping->setResidentId('t0011985');
+        $errors = $resident->validate($landlord, $residentMapping);
+        $em->flush();
+        $this->assertCount(0, $errors);
+        $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findAll();
+        $this->assertCount(2, $residentMapping);
     }
 }
