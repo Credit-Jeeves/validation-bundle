@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\ExperianBundle\Command;
 
+use CreditJeeves\CoreBundle\Enum\ScoreModelType;
+use CreditJeeves\DataBundle\Entity\Score;
 use RentJeeves\DataBundle\Entity\Job;
 use Doctrine\ORM\EntityManager;
 use Payum\Request\BinaryMaskStatusRequest;
@@ -49,6 +51,15 @@ class GetCreditProfileCommand extends ContainerAwareCommand
                 $report->setRawData($arf);
                 $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
                 $em->persist($report);
+
+                $newScore = $report->getArfReport()->getScore(ScoreModelType::VANTAGE3);
+                if ($newScore <= 1000) {
+                    $score = new Score();
+                    $score->setUser($report->getUser());
+                    $score->setScore($newScore);
+                    $em->persist($score);
+                }
+
                 $em->flush();
 
                 $output->writeln('OK');
