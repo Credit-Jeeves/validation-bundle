@@ -14,7 +14,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Guzzle\Http\Exception\CurlException;
 use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
-use RentJeeves\ExternalApiBundle\Services\Transunion\TransUnionUserCreator;
+use RentJeeves\ExternalApiBundle\Services\Transunion\TransUnionUserCreatorTrait;
 use RentTrack\TransUnionBundle\CCS\Model\TransUnionUser;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ReportController extends Controller
 {
-    use TransUnionUserCreator;
+    use TransUnionUserCreatorTrait;
 
     protected $reportType = ReportType::PREQUAL;
 

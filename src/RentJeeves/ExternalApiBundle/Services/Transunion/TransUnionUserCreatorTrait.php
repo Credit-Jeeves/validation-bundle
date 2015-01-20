@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Transunion;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentTrack\TransUnionBundle\CCS\Model\TransUnionUser;
 
-trait TransUnionUserCreator
+trait TransUnionUserCreatorTrait
 {
     public function getTransUnionUser(Tenant $user)
     {
