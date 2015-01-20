@@ -8,6 +8,7 @@ use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentEnumType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
@@ -286,7 +287,7 @@ class PayController extends Controller
             throw $this->createNotFoundException("Payment with '{$id}' not found");
         }
 
-        $payment->setStatus(PaymentStatus::CLOSE);
+        $payment->setClosed($this, PaymentCloseReason::USER_CANCELLED);
         $em->persist($payment);
         $em->flush($payment);
         return $this->redirect($request->headers->get('referer'));

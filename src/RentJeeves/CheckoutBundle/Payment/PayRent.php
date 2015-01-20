@@ -12,6 +12,7 @@ use RentJeeves\CheckoutBundle\Services\PaidFor;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -81,7 +82,7 @@ class PayRent extends Pay
         if (PaymentTypeEnum::ONE_TIME == $payment->getType() ||
             date('n') == $payment->getEndMonth() && date('Y') == $payment->getEndYear()
         ) {
-            $payment->setStatus(PaymentStatus::CLOSE);
+            $payment->setClosed($this, PaymentCloseReason::EXECUTED);
             $this->em->persist($payment);
         }
         $this->em->persist($order);

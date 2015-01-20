@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Tests\Entity;
 
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -85,8 +86,38 @@ class PaymentCase extends BaseTestCase
         $doctrineManager->persist($contract);
         $doctrineManager->flush($contract);
         static::$kernel = null;
+        /** @var Payment $payment */
         $payment = $doctrineManager->getRepository('RjDataBundle:Payment')->findOneBy(array('id' => $paymentId));
         $this->assertNotNull($payment);
+        $this->assertCount(2, $payment->getCloseDetails());
+        $this->assertContains(PaymentCloseReason::CONTRACT_DELETED, $payment->getCloseDetails()[1]);
         $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
+        $today = new DateTime();
+        $this->assertEquals($today->format('Y-m-d'), $payment->getUpdatedAt()->format('Y-m-d'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetCloseReasonWhenClosePayment()
+    {
+        $payment = new Payment();
+        $payment->setClosed($this, PaymentCloseReason::CONTRACT_CHANGED);
+
+        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
+        $this->assertCount(2, $payment->getCloseDetails());
+        $this->assertEquals('Class: ' . get_class($this), $payment->getCloseDetails()[0]);
+        $this->assertEquals('Reason: ' . PaymentCloseReason::CONTRACT_CHANGED, $payment->getCloseDetails()[1]);
+    }
+
+    /**
+     * @test
+     * @expectedException \Exception
+     * @expectedExceptionMessage
+     */
+    public function shouldThrowAnExceptionWhenCallerIsNotAnObject()
+    {
+        $payment = new Payment();
+        $payment->setClosed([], PaymentCloseReason::CONTRACT_CHANGED);
     }
 }

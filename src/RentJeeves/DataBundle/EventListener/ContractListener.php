@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
 use Exception;
@@ -178,7 +179,7 @@ class ContractListener
             return;
         }
 
-        $payment->setStatus(PaymentStatus::CLOSE);
+        $payment->setClosed($this, PaymentCloseReason::CONTRACT_CHANGED);
         $eventArgs->getEntityManager()->flush($payment);
     }
 
@@ -236,7 +237,7 @@ class ContractListener
         if ($this->hasToClosePayment) {
             $this->hasToClosePayment = false;
             if ($payment = $entity->getActivePayment()) {
-                $payment->setStatus(PaymentStatus::CLOSE);
+                $payment->setClosed($this, PaymentCloseReason::CONTRACT_CHANGED);
                 $eventArgs->getEntityManager()->persist($payment);
                 $eventArgs->getEntityManager()->flush($payment);
             }
