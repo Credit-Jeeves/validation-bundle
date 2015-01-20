@@ -11,7 +11,7 @@ class CreditCardUtilizationController extends Controller
         return $this->render(
             'ComponentBundle:CreditCardUtilization:index.html.twig',
             array(
-                'nAvailableDebt' => $Report->getUtilization()
+                'availableDebt' => $Report->getUtilization()
             )
         );
     }

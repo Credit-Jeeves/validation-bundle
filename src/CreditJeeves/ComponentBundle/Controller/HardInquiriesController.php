@@ -15,10 +15,10 @@ class HardInquiriesController extends Controller
 
     public function indexAction(Report $Report)
     {
-        $nInquiries = $Report->getNumberOfInquieres();
-        $nMaxDial = self::MAX_DIAL;
-        if ($nInquiries > $nMaxDial) {
-            $nMaxDial = $nInquiries;
+        $inquiries = $Report->getNumberOfInquieres();
+        $maxDial = self::MAX_DIAL;
+        if ($inquiries > $maxDial) {
+            $maxDial = $inquiries;
         }
 
         /** @var HardInquiriesPeriod timePeriod
@@ -33,10 +33,10 @@ class HardInquiriesController extends Controller
         return $this->render(
             'ComponentBundle:HardInquiries:index.html.twig',
             array(
-                'nInquiries' => $nInquiries,
+                'inquiries' => $inquiries,
                 'headerString' => $headerString,
                 'commentString' => $commentString,
-                'nMaxDial' => $nMaxDial,
+                'maxDial' => $maxDial,
             )
         );
     }

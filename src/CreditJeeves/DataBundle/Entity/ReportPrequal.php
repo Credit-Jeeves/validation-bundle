@@ -26,54 +26,54 @@ class ReportPrequal extends Report
 
     public function getUtilization()
     {
-        $ArfReport = $this->getArfReport();
-        $nRevolvingDept = $ArfReport->getValue(
+        $arfReport = $this->getArfReport();
+        $revolvingDept = $arfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_TOTAL_REVOLVING
         );
-        if ($nRevolvingDept == 0) {
-            $nAvailableDebt = 0;
+        if ($revolvingDept == 0) {
+            $availableDebt = 0;
         } else {
-            $nAvailableDebt = 100 - $ArfReport->getValue(
+            $availableDebt = 100 - $arfReport->getValue(
                     ArfParser::SEGMENT_PROFILE_SUMMARY,
                     ArfParser::REPORT_TOTAL_REVOLVING_AVAILABLE_PERCENT
                 );
         }
 
-        return $nAvailableDebt;
+        return $availableDebt;
     }
 
     public function getBalanceRevolvingAccounts()
     {
-        $ArfReport = $this->getArfReport();
-        $nRevolvingDept = $ArfReport->getValue(
+        $arfReport = $this->getArfReport();
+        $revolvingDept = $arfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_TOTAL_REVOLVING
         );
 
-        return $nRevolvingDept ? $nRevolvingDept : 0;
+        return $revolvingDept ? $revolvingDept : 0;
     }
 
     public function getBalanceMortgageAccounts()
     {
-        $ArfReport = $this->getArfReport();
-        $nMortgageDebt = $ArfReport->getValue(
+        $arfReport = $this->getArfReport();
+        $mortgageDebt = $arfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_REAL_ESTATE
         );
 
-        return $nMortgageDebt ? $nMortgageDebt : 0;
+        return $mortgageDebt ? $mortgageDebt : 0;
     }
 
     public function getBalanceInstallmentAccounts()
     {
-        $ArfReport = $this->getArfReport();
-        $nInstallmentDebt = $ArfReport->getValue(
+        $arfReport = $this->getArfReport();
+        $installmentDebt = $arfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_INSTALLMENT
         );
 
-        return $nInstallmentDebt ? $nInstallmentDebt : 0;
+        return $installmentDebt ? $installmentDebt : 0;
     }
 
     public function getTotalAccounts()
@@ -93,13 +93,13 @@ class ReportPrequal extends Report
 
     public function getNumberOfInquieres()
     {
-        $ArfReport = $this->getArfReport();
-        $nInquiries = $ArfReport->getValue(
+        $arfReport = $this->getArfReport();
+        $inquiries = $arfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_INQUIRIES_DURING_LAST_6_MONTHS_COUNTER
         );
 
-        return $nInquiries ? $nInquiries : 0;
+        return $inquiries ? $inquiries : 0;
     }
 
     public function getOldestTradelineInYears()

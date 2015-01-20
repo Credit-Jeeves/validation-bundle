@@ -1,33 +1,28 @@
-{% if collections > 0 %}
+{% if collections >= 0 %}
 <div class="pod-large pod-border pod-padding shadow">
 <div class="summary">
     <h3>{{ 'component.credit.summary' | trans }}</h3>
       <div class="datetime floatright">
-        {{ sDate }}
+        {{ date }}
       </div>
       <div class="col summary-block zebra-grid">
           <table>
               <tbody>
               <tr>
                   <td>{{ 'account.total' | trans }}:</td>
-                  <td>{{ total_trade_items_counter }}</td>
+                  <td>{{ totalTradeItemsCounter }}</td>
               </tr>
               <tr>
                   <td>{{ 'account.good.total' | trans }}:</td>
-                  <td>{{ satisfactory_accounts }}</td>
+                  <td>{{ satisfactoryAccounts }}</td>
               </tr>
               <tr>
                   <td>{{ 'account.negative.total' | trans }}:</td>
-                  <td>{{ now_delinquentderog_counter }}</td>
+                  <td>{{ nowDelinquentderogCounter }}</td>
               </tr>
-              {# Not supported by TransUnion #}
-              {#<tr>#}
-                  {#<td>{{ 'account.negative.historical' | trans }}:</td>#}
-                  {#<td>{{ aCreditSummary.was_delinquentderog_counter }}</td>#}
-              {#</tr>#}
               <tr>
                   <td>{{ 'account.oldest' | trans }}:</td>
-                  <td>{{ oldest_trade_date }}</td>
+                  <td>{{ oldestTradeDate }}</td>
               </tr>
               </tbody>
           </table>
@@ -37,21 +32,11 @@
               <tbody>
               <tr>
                   <td>{{ 'payment.monthly.total' | trans }}:</td>
-                  <td>${{ monthly_payment | number_format() }}</td>
+                  <td>${{ monthlyPayment | number_format() }}</td>
               </tr>
-              {# Not supported by TransUnion #}
-              {#<tr>#}
-                  {#<td>{{ 'payment.monthly.estate' | trans }}:</td>#}
-                  {#<td>${{ aCreditSummary.real_estate_payment | number_format() }}</td>#}
-              {#</tr>#}
-              {# Not supported by TransUnion #}
-              {#<tr>#}
-                  {#<td>{{ 'payment.auto.total' | trans }}:</td>#}
-                  {#<td>${{ nAutomotive | number_format() }}</td>#}
-              {#</tr>#}
               <tr>
                   <td>{{ 'inquiries.total' | trans }}:</td>
-                  <td>{{ total_inquiries_counter }}</td>
+                  <td>{{ totalInquiriesCounter }}</td>
               </tr>
               </tbody>
           </table>
@@ -61,16 +46,11 @@
               <tbody>
               <tr class="important">
                   <td>{{ 'derogatory.current' | trans }}:</td>
-                  <td>{{ now_delinquentderog_counter }}</td>
+                  <td>{{ nowDelinquentderogCounter }}</td>
               </tr>
-              {# Not supported by TransUnion #}
-              {#<tr class="important">#}
-                  {#<td>{{ 'derogatory.past' | trans }}:</td>#}
-                  {#<td>{{ aCreditSummary.was_delinquentderog_counter }}</td>#}
-              {#</tr>#}
               <tr class="important">
                   <td>{{ 'past_due.total.amount' | trans }}:</td>
-                  <td>${{ total_past_due | number_format() }}</td>
+                  <td>${{ totalPastDue | number_format() }}</td>
               </tr>
               <tr>
                   <td>{{ 'collections.total' | trans }}:</td>
@@ -78,7 +58,7 @@
               </tr>
               <tr>
                   <td>{{ 'records.public.total' | trans }}:</td>
-                  <td>{{ public_records_count }}</td>
+                  <td>{{ publicRecordsCount }}</td>
               </tr>
               </tbody>
           </table>

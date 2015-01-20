@@ -7,7 +7,7 @@
         <div id="credit-card-utilization"></div>
     </div>
     <div class='pod-column-big floatright'>
-        <div class="pod-header">{{ 'credit.used' | trans }}: {{ nAvailableDebt }}%</div>
+        <div class="pod-header">{{ 'credit.used' | trans }}: {{ availableDebt }}%</div>
         <p>
             {{ 'credit.used.comment' | trans }}
             {#<a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133570-credit-card-utilization-">{{ 'common.learn.more' | trans }}</a>#}
@@ -21,7 +21,7 @@
       google.setOnLoadCallback(function () {
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
-          ['Utilization', {{ nAvailableDebt }}]
+          ['Utilization', {{ availableDebt }}]
         ]);
         var options = {
           max: 100,

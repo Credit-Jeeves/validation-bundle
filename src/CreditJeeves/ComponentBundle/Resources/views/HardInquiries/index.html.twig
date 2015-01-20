@@ -7,7 +7,7 @@
         <div id="inquiries-chart-div"></div>
     </div>
     <div class='pod-column-big floatright'>
-        <div class="pod-header">{{ headerString }}: {{ nInquiries }}</div>
+        <div class="pod-header">{{ headerString }}: {{ inquiries }}</div>
         <p>
             {{ commentString }}
             {#<a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133572-hard-inquiries-">{{ 'common.learn.more' | trans }}</a>#}
@@ -21,12 +21,12 @@
     google.setOnLoadCallback(function () {
       var data = google.visualization.arrayToDataTable([
         ['Label', 'Value'],
-        ['Inquiries', {{ nInquiries }}]
+        ['Inquiries', {{ inquiries }}]
       ]);
       var options = {
-        max: {{ nMaxDial }},
+        max: {{ maxDial }},
         width: 400, height: 120,
-        redFrom: 5, redTo: {{ nMaxDial }},
+        redFrom: 5, redTo: {{ maxDial }},
         yellowFrom: 3, yellowTo: 5,
         minorTicks: 3
       };

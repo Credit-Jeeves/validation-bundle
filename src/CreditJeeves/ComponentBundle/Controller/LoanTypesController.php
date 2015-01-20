@@ -15,18 +15,18 @@ class LoanTypesController extends Controller
 
     public function indexAction(Report $Report)
     {
-        $nTradelines = $Report->getTotalAccounts();
-        $nRevolvingDept = $Report->getBalanceRevolvingAccounts();
-        $nMortgageDebt = $Report->getBalanceMortgageAccounts();
-        $nInstallmentDebt = $Report->getBalanceInstallmentAccounts();
+        $tradelines = $Report->getTotalAccounts();
+        $revolvingDept = $Report->getBalanceRevolvingAccounts();
+        $mortgageDebt = $Report->getBalanceMortgageAccounts();
+        $installmentDebt = $Report->getBalanceInstallmentAccounts();
 
         return $this->render(
             'ComponentBundle:LoanTypes:index.html.twig',
             array(
-                'RevolvingDept' => $nRevolvingDept,
-                'MortgageDebt' => $nMortgageDebt,
-                'InstallmentDebt' => $nInstallmentDebt,
-                'nTradelines' => $nTradelines,
+                'revolvingDept' => $revolvingDept,
+                'mortgageDebt' => $mortgageDebt,
+                'installmentDebt' => $installmentDebt,
+                'tradelines' => $tradelines,
             )
         );
     }
