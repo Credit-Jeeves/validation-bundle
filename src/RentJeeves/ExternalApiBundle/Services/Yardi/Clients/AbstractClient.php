@@ -271,9 +271,21 @@ abstract class AbstractClient implements ClientInterface
                 );
             }
 
+            $this->debugMessage(
+                sprintf(
+                    "Call function(%s) with parameters: %s",
+                    $function,
+                    print_r($params, true)
+                )
+            );
             $response = $this->soapClient->__soapCall($function, $params);
+            $this->debugMessage(
+                sprintf(
+                    "Response: %s",
+                    print_r($response, true)
+                )
+            );
             $resultXmlResponse = $this->processXmlResponse($response, $function);
-
             if ($resultXmlResponse) {
                 $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return $resultXmlResponse;
@@ -393,12 +405,13 @@ abstract class AbstractClient implements ClientInterface
     {
         $methodHeader = $method.'Headers';
         $request = array(
+            'method' => $method,
             'header' => $this->soapClient->$methodHeader(),
             'body'   => $this->soapClient->$method()
         );
 
         if ($show) {
-            print_r($request);
+            print_r($request, true);
         }
 
         return $request;
