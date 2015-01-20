@@ -12,6 +12,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\Serializer\SerializationContext;
 use \DateTime;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Services\Yardi\YardiBatchReceiptMailer;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
@@ -99,6 +100,11 @@ class ReceiptBatchSender
     protected $isCleanDBAlreadySentOut = true;
 
     /**
+     * @var bool
+     */
+    protected $debug = false;
+
+    /**
      * @InjectParams({
      *     "em"                 = @Inject("doctrine.orm.default_entity_manager"),
      *     "clientFactory"      = @Inject("soap.client.factory"),
@@ -119,6 +125,12 @@ class ReceiptBatchSender
         $this->clientFactory = $clientFactory;
         $this->exceptionCatcher = $exceptionCatcher;
         $this->mailer = $mailer;
+    }
+
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+        return $this;
     }
 
     /**
@@ -312,6 +324,7 @@ class ReceiptBatchSender
                 count($orders)
             )
         );
+
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('soapYardiRequest');
@@ -325,9 +338,17 @@ class ReceiptBatchSender
             $context
         );
         $xml = YardiXmlCleaner::prepareXml($xml);
-        $this->paymentClient->addReceiptsToBatch(
+        $result = $this->paymentClient->addReceiptsToBatch(
             $batchId,
             $xml
+        );
+
+        $this->logMessage(
+            sprintf(
+                "Add receipts to batchId(%s), result: %s",
+                $batchId,
+                print_r($result, true)
+            )
         );
 
         if ($this->paymentClient->isError()) {
@@ -339,7 +360,11 @@ class ReceiptBatchSender
             );
         }
 
-        return true;
+        if ($result instanceof Messages && $result->getMessage()->getMessageType() === 'FYI') {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -416,6 +441,7 @@ class ReceiptBatchSender
             $yardiSettings,
             YardiClientEnum::PAYMENT
         );
+        $this->paymentClient->setDebug($this->debug);
     }
 
     /**
