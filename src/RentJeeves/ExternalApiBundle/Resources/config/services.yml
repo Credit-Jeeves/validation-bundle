@@ -22,6 +22,7 @@ services:
     soap.client.yardi.payment:
         class: "%soap.client.yardi.payment.class%"
         arguments:
+            - "@logger"
             - "@soap.wsdl.twig.renderer"
             - "@besimple.soap.client.yardi_payment"
             - "@fp_badaboom.exception_catcher"
@@ -33,6 +34,7 @@ services:
     soap.client.yardi.resident_transactions:
         class: "%soap.client.yardi.resident_transactions.class%"
         arguments:
+            - "@logger"
             - "@soap.wsdl.twig.renderer"
             - "@besimple.soap.client.yardi_resident_transactions"
             - "@fp_badaboom.exception_catcher"
@@ -44,6 +46,7 @@ services:
     soap.client.yardi.resident_data:
         class: "%soap.client.yardi.resident_data.class%"
         arguments:
+            - "@logger"
             - "@soap.wsdl.twig.renderer"
             - "@besimple.soap.client.yardi_resident_data"
             - "@fp_badaboom.exception_catcher"

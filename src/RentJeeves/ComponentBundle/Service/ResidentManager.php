@@ -89,12 +89,23 @@ class ResidentManager
         if (empty($errors) && empty($existingMappingTenant)) {
             $this->clearWaitingRoom($landlord, $residentMapping);
             $this->em->persist($residentMapping);
+
+            return [];
         }
+
         //Update action
-        if (empty($error) && !empty($existingMappingTenant)) {
+        if (empty($errors) && !empty($existingMappingTenant) ||
+            (
+                !empty($errors) &&
+                !empty($existingMappingResident) && !empty($existingMappingTenant) &&
+                ($existingMappingResident->getTenant()->getEmail() === $existingMappingTenant->getTenant()->getEmail())
+            )
+        ) {
             $existingMappingTenant->setResidentId($residentMapping->getResidentId());
             $this->em->persist($existingMappingTenant);
             unset($residentMapping);
+
+            return [];
         }
 
         return $errors;

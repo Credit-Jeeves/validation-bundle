@@ -21,6 +21,12 @@ class YardiBatchReceiptCommand extends ContainerAwareCommand
                 'Date in format YYYY-MM-DD'
             )
             ->addOption(
+                'debug',
+                false,
+                InputOption::VALUE_OPTIONAL,
+                'Enable debug information.'
+            )
+            ->addOption(
                 'force',
                 true,
                 InputOption::VALUE_OPTIONAL,
@@ -42,10 +48,12 @@ class YardiBatchReceiptCommand extends ContainerAwareCommand
         }
 
         $clearDb = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
+        $debug = filter_var($input->getOption('debug'), FILTER_VALIDATE_BOOLEAN);
 
         $this->getContainer()
             ->get('yardi.push_batch_receipts')
             ->usingOutput($output)
+            ->setDebug($debug)
             ->isCleanDBAlreadySentOut($clearDb)
             ->run($date);
     }

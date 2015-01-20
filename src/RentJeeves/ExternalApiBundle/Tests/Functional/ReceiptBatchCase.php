@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\ExternalApiBundle\Services\Yardi\ReceiptBatchSender;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class ReceiptBatchCase extends BaseTestCase
@@ -34,6 +35,7 @@ class ReceiptBatchCase extends BaseTestCase
         $em->flush($residentMapping);
         static::$kernel = null;
 
+        /** @var $receiptBatch ReceiptBatchSender */
         $receiptBatch = $this->getContainer()->get('yardi.push_batch_receipts');
         $date = new \DateTime();
         $date->modify('-359 days'); //DepositDate from rjCheckout_7_1_1

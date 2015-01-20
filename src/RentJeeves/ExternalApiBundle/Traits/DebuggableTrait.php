@@ -31,7 +31,7 @@ trait DebuggableTrait
             return;
         }
         echo "\n";
-        var_dump($var);
+        print_r($var);
         echo "\n";
     }
 }

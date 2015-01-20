@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use DateTime;
@@ -129,6 +130,10 @@ class StorageYardi extends StorageCsv
         $today = new DateTime();
         $leaseEnd = DateTime::createFromFormat('Y-m-d', $residentData->getLeaseEnd());
         $monthToMonth = ($today > $leaseEnd)? 'Y' : 'N';
+        $ledgerDetails = $residentData->getLedgerDetails();
+        if (empty($ledgerDetails)) {
+            throw new ImportStorageException("Don't have permission for getting balance.");
+        }
 
         $data = array(
             $residentId,
@@ -140,7 +145,7 @@ class StorageYardi extends StorageCsv
             $residentData->getTenantDetails()->getPersonDetails()->getName()->getLastName(),
             $residentData->getTenantDetails()->getPersonDetails()->getEmail(),
             $moveOutDate,
-            $residentData->getLedgerDetails()->getIdentification()->getBalance(),
+            $ledgerDetails->getIdentification()->getBalance(),
             $monthToMonth,
             $paymentAccepted
         );

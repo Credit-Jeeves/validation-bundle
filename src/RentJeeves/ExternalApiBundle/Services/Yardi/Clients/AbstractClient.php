@@ -14,6 +14,8 @@ use RentJeeves\ExternalApiBundle\Soap\SoapWsdlTwigRenderer;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
 use \AppRjKernel as Kernel;
+use SoapFault;
+use Symfony\Bridge\Monolog\Logger;
 
 abstract class AbstractClient implements ClientInterface
 {
@@ -24,6 +26,14 @@ abstract class AbstractClient implements ClientInterface
 
     const MAPPING_FIELD_STD_CLASS = 'field';
 
+    const MAX_NUMBER_OF_RETRIES = 2;
+
+    //seconds
+    const SLEEP_BETWEEN_RETRIES = 2;
+
+    const DEFAULT_NUMBER_OF_RETRIES = 0;
+
+    protected $numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
     /**
      * @var string
      */
@@ -70,6 +80,11 @@ abstract class AbstractClient implements ClientInterface
     protected $kernel;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @var array
      */
     protected $mapping = array();
@@ -94,6 +109,7 @@ abstract class AbstractClient implements ClientInterface
      * @param SoapClient $soapClient
      */
     public function __construct(
+        Logger $logger,
         SoapWsdlTwigRenderer $wsdlRenderer,
         SoapClientBuilder $soapClientBuilder,
         ExceptionCatcher $exceptionCatcher,
@@ -103,6 +119,7 @@ abstract class AbstractClient implements ClientInterface
         $license,
         $pathToSoapClasses
     ) {
+        $this->logger = $logger;
         $this->soapClientBuilder = $soapClientBuilder;
         $this->entity = $entity;
         $this->wsdlRenderer = $wsdlRenderer;
@@ -254,23 +271,39 @@ abstract class AbstractClient implements ClientInterface
                 );
             }
 
+            $this->debugMessage(
+                sprintf(
+                    "Call function(%s) with parameters: %s",
+                    $function,
+                    print_r($params, true)
+                )
+            );
             $response = $this->soapClient->__soapCall($function, $params);
+            $this->debugMessage(
+                sprintf(
+                    "Response: %s",
+                    print_r($response, true)
+                )
+            );
             $resultXmlResponse = $this->processXmlResponse($response, $function);
-
             if ($resultXmlResponse) {
+                $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return $resultXmlResponse;
             }
 
             if ($this->isError()) {
+                $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return null;
             }
 
             $resultNumericResponse = $this->processNumericResponse($response, $function);
             if ($resultNumericResponse) {
+                $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return $resultNumericResponse;
             }
 
             if ($this->isError()) {
+                $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
                 return null;
             }
 
@@ -280,13 +313,26 @@ abstract class AbstractClient implements ClientInterface
                     $this->soapClient->__getLastResponse()
                 )
             );
+        } catch (SoapFault $e) {
+            if ($this->numberOfRetriesTheSameSoapCall > self::MAX_NUMBER_OF_RETRIES) {
+                throw $e;
+            }
+            $this->numberOfRetriesTheSameSoapCall++;
+            $this->logger->addWarning(
+                sprintf(
+                    "Yardi send request was failed with message: %s. We try again send request. Number of retries: %s",
+                    $e->getMessage(),
+                    $this->numberOfRetriesTheSameSoapCall
+                )
+            );
+            sleep(self::SLEEP_BETWEEN_RETRIES);
+
+            return $this->sendRequest($function, $params);
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->setErrorMessage($e->getMessage());
             $this->debugMessage($e->getMessage());
         }
-
-        return null;
     }
 
     /**
@@ -359,12 +405,13 @@ abstract class AbstractClient implements ClientInterface
     {
         $methodHeader = $method.'Headers';
         $request = array(
+            'method' => $method,
             'header' => $this->soapClient->$methodHeader(),
             'body'   => $this->soapClient->$method()
         );
 
         if ($show) {
-            print_r($request);
+            print_r($request, true);
         }
 
         return $request;

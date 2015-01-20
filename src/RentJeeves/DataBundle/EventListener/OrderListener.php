@@ -91,8 +91,12 @@ class OrderListener
             }
 
             if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
+                $oldPaidFor = clone $payment->getPaidFor();
                 $date = new DateTime($payment->getPaidFor()->format('c'));
-                $payment->setPaidFor($date->modify($movePaidFor . ' month'));
+                $newPaidFor = $date->modify($movePaidFor . ' month');
+                $payment->setPaidFor($newPaidFor);
+                $uow = $eventArgs->getEntityManager()->getUnitOfWork();
+                $uow->scheduleExtraUpdate($payment, ['paidFor' => [$oldPaidFor, $newPaidFor]]);
             }
         }
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
@@ -169,9 +173,6 @@ class OrderListener
             // status has been changed. But those changes aren't flushed. So the flush is here.
             $eventArgs->getEntityManager()->flush($operation->getContract());
             $eventArgs->getEntityManager()->flush($order->getCompleteTransaction());
-            if ($payment = $operation->getContract()->getActivePayment()) {
-                $eventArgs->getEntityManager()->flush($payment);
-            }
         }
     }
 
