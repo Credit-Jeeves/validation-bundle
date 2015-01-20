@@ -6,16 +6,15 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\CoreBundle\Traits\ValidateEntities;
 use RentJeeves\DataBundle\Entity\Invite;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\Grouptype;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Validator;
 
 /**
@@ -25,6 +24,8 @@ use Symfony\Component\Validator\Validator;
  */
 class InviteLandlord
 {
+    use ValidateEntities;
+
     protected $em;
 
     /**
@@ -33,13 +34,6 @@ class InviteLandlord
     protected $mailer;
 
     protected $locale;
-
-    /**
-     * @var Validator
-     */
-    protected $validator;
-
-    protected $errors = [];
 
     /**
      * @InjectParams({
@@ -108,7 +102,9 @@ class InviteLandlord
         $contract->setHolding($holding);
         $contract->setGroup($group);
 
-        if (!$this->validate([$contract])) {
+        $this->validate($contract);
+
+        if ($this->hasErrors()) {
             return false;
         }
 
@@ -122,26 +118,4 @@ class InviteLandlord
         return $landlord;
     }
 
-    /**
-     * @return FormError[]
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    protected function validate($entities)
-    {
-        foreach ($entities as $entity) {
-            $errors = $this->validator->validate($entity);
-
-            if ($errors->count()) {
-                foreach ($errors as $error) {
-                    $this->errors[] = new FormError($error->getMessage());
-                }
-            }
-        }
-
-        return !count($this->errors);
-    }
 }

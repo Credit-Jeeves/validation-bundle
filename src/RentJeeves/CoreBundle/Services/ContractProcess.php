@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\CoreBundle\Traits\ValidateEntities;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -21,6 +22,8 @@ use RentJeeves\DataBundle\Entity\Contract;
 class ContractProcess
 {
 
+    use ValidateEntities;
+
     protected $em;
 
     protected $contract;
@@ -28,11 +31,13 @@ class ContractProcess
     /**
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.default_entity_manager"),
+     *     "validator" = @Inject("validator")
      * })
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $validator)
     {
         $this->em = $em;
+        $this->validator = $validator;
     }
 
     public function setContract(Contract $contract)
@@ -80,6 +85,12 @@ class ContractProcess
                 $contract->setHolding($unit->getHolding());
                 $contract->setGroup($unit->getGroup());
                 $contract->setUnit($unit);
+            }
+
+            $this->validate($contract);
+
+            if ($this->hasErrors()) {
+                return false;
             }
 
             $this->em->persist($contract);
@@ -134,6 +145,12 @@ class ContractProcess
             $this->em->persist($residentMapping);
         }
 
+        $this->validate($contract);
+
+        if ($this->hasErrors()) {
+            return false;
+        }
+
         $this->em->remove($contractWaiting);
         $this->em->flush();
 
@@ -163,8 +180,13 @@ class ContractProcess
             $contract->setProperty($property);
             $contract->setStatus(ContractStatus::PENDING);
             $contract->setSearch($unitName);
-            $this->em->persist($contract);
-            $result[] = $contract;
+
+            $this->validate($contract);
+
+            if (!$this->hasErrors()) {
+                $this->em->persist($contract);
+                $result[] = $contract;
+            }
         }
 
         $this->em->flush();

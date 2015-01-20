@@ -15,6 +15,8 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * @Route("/property")
@@ -109,6 +111,14 @@ class PropertyController extends Controller
         $contractProcess = $this->get('contract.process');
         $contractProcess->createContractFromTenantSide($tenant, $property, $unitSearch);
 
+        if ($contractProcess->hasErrors()) {
+            /** @var Session $session */
+            $session = $this->get('session');
+            foreach ($contractProcess->getErrors() as $error) {
+                $session->getFlashBag()->add('error', $error);
+            }
+        }
+
         return $this->redirect($this->generateUrl('tenant_homepage'), 301);
     }
 
@@ -138,12 +148,12 @@ class PropertyController extends Controller
             $inviteProcessor = $this->get('invite.landlord');
             $inviteProcessor->invite($invite, $this->getUser());
 
-            if (!count($inviteProcessor->getErrors())) {
+            if (!$inviteProcessor->hasErrors()) {
                 return $this->redirect($this->generateUrl('tenant_homepage'), 301);
             }
 
             foreach ($inviteProcessor->getErrors() as $error) {
-                $form->addError($error);
+                $form->addError(new FormError($error));
             }
         }
 
