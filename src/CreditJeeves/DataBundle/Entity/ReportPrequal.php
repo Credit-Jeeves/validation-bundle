@@ -35,9 +35,9 @@ class ReportPrequal extends Report
             $availableDebt = 0;
         } else {
             $availableDebt = 100 - $arfReport->getValue(
-                    ArfParser::SEGMENT_PROFILE_SUMMARY,
-                    ArfParser::REPORT_TOTAL_REVOLVING_AVAILABLE_PERCENT
-                );
+                ArfParser::SEGMENT_PROFILE_SUMMARY,
+                ArfParser::REPORT_TOTAL_REVOLVING_AVAILABLE_PERCENT
+            );
         }
 
         return $availableDebt;
@@ -177,7 +177,7 @@ class ReportPrequal extends Report
      */
     public function getInquiriesPeriod()
     {
-       return HardInquiriesPeriod::SIX_MONTHS;
+        return HardInquiriesPeriod::SIX_MONTHS;
     }
 
     /**
@@ -185,7 +185,7 @@ class ReportPrequal extends Report
      */
     protected function getSummary()
     {
-        if(!$this->creditSummary) {
+        if (!$this->creditSummary) {
             $this->creditSummary = $this->getCreditSummary();
         }
 

@@ -20,7 +20,7 @@ class CreditAverageAgeController extends Controller
         $this->age = 0;
 
         $total = 0;
-        $tradelines = $this->getTradeLines();
+        $tradelines = $Report->getTradeLines();
         $currentDate = new \DateTime('now');
         if (!empty($tradelines)) {
             foreach ($tradelines as $tradeline) {

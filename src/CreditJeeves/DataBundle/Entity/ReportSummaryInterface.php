@@ -14,7 +14,8 @@ namespace CreditJeeves\DataBundle\Entity;
  *
  * @package CreditJeeves\DataBundle\Entity
  */
-interface ReportSummaryInterface {
+interface ReportSummaryInterface
+{
     /**
      * @return Float The balance of all revolving accounts. (i.e. 12345.67)
      */
