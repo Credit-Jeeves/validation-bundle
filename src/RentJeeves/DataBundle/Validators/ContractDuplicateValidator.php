@@ -20,14 +20,18 @@ class ContractDuplicateValidator extends ConstraintValidator
 {
     protected $em;
 
+    protected $disallowContractDuplicate;
+
     /**
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.entity_manager")
+     *     "disallowContractDuplicate" = @@Inject("disallow_contract_duplicate")
      * })
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $disallowContractDuplicate)
     {
         $this->em = $em;
+        $this->disallowContractDuplicate = $disallowContractDuplicate;
     }
 
     /**
@@ -37,6 +41,10 @@ class ContractDuplicateValidator extends ConstraintValidator
     {
         if (!$object instanceof Contract) {
             throw new ValidatorException('This validator can work only with Contract Entity');
+        }
+
+        if (!$this->disallowContractDuplicate) {
+            return;
         }
 
         if ($object->getStatus() == ContractStatus::DELETED || $object->getStatus() == ContractStatus::FINISHED) {

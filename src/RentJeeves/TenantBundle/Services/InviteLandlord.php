@@ -117,5 +117,4 @@ class InviteLandlord
 
         return $landlord;
     }
-
 }
