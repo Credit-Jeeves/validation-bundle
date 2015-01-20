@@ -68,6 +68,7 @@ class BuyReportCase extends BaseTestCase
      */
     public function authorizeNetAim()
     {
+        $this->markTestSkipped('This is an outdated test. Probably can be removed.');
         $this->setDefaultSession('selenium2');
         $this->load(false);
 
