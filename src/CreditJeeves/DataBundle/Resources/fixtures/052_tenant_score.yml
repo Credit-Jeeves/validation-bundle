@@ -1,0 +1,6 @@
+model: CreditJeeves\DataBundle\Entity\Score
+fixtures:
+  tenantScore_1:
+    user: Tenant_22
+    score: '300'
+    created_date: '-5 days'
