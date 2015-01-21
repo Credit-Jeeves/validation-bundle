@@ -1,9 +1,4 @@
 <?php
-/**
- * User: caryp
- * Date: 1/13/15
- * Time: 12:15 PM
- */
 
 namespace CreditJeeves\DataBundle\Entity;
 
