@@ -458,12 +458,12 @@ class AccountingController extends Controller
             $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
-                $responseData = array('result' => false);
+                $result = false;
             } else {
-                $responseData = array('result' => true);
+                $result = true;
             }
         } catch (Exception $e) {
-            $responseData = array('result' => false);
+            $result = false;
         }
 
         if ($isLast) {
@@ -478,7 +478,8 @@ class AccountingController extends Controller
             $handler->updateMatchedContracts();
         }
 
-        $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
+        $response = new Response($result);
+        $response->setStatusCode(($result) ? 200 : 400);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
