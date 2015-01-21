@@ -1,12 +1,12 @@
 <?php
 namespace RentJeeves\ExternalApiBundle\Services\Transunion;
 
-use RentJeeves\DataBundle\Entity\Tenant;
+use CreditJeeves\DataBundle\Entity\User;
 use RentTrack\TransUnionBundle\CCS\Model\TransUnionUser;
 
 trait TransUnionUserCreatorTrait
 {
-    public function getTransUnionUser(Tenant $user)
+    public function getTransUnionUser(User $user)
     {
         $address = $user->getDefaultAddress();
 
