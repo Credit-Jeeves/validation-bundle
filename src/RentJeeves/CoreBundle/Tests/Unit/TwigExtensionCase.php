@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Tests\Unit;
+namespace RentJeeves\CoreBundle\Tests\Twig;
 
 use RentJeeves\CoreBundle\Twig\Extension;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -45,7 +45,5 @@ class TwigExtensionCase extends BaseTestCase
         $ordinalNumber = $this->twigExtension->ordinalNumber($number);
 
         $this->assertEquals($result, $ordinalNumber);
-
-        return;
     }
 }

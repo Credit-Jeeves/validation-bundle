@@ -41,9 +41,12 @@ class Extension extends \Twig_Extension
         if (($number / 10) % 10 != 1) {
             // Handle 1st, 2nd, 3rd
             switch ($number % 10) {
-                case 1: return $number . 'st';
-                case 2: return $number . 'nd';
-                case 3: return $number . 'rd';
+                case 1:
+                    return $number . 'st';
+                case 2:
+                    return $number . 'nd';
+                case 3:
+                    return $number . 'rd';
             }
         }
         // Everything else is "nth"
