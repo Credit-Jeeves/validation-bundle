@@ -662,6 +662,43 @@ class AjaxController extends Controller
 
     /**
      * @Route(
+     *     "/contract/{contractId}",
+     *     name="landlord_contract_details",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function getContractDetails($contractId)
+    {
+        /** @var $contract Contract */
+        $contract = $this->getContract($contractId);
+        /** @var $resident ResidentManager */
+        $resident = $this->get('resident_manager');
+        /* @var $translator Translator */
+        $translator = $this->get('translator');
+
+        $item = $contract->getItem();
+        if ($contract->getStatus() === ContractStatus::INVITE) {
+            $hasMultipleContracts = $resident->hasMultipleContracts(
+                $contract->getTenant(),
+                $this->getUser()->getHolding()
+            );
+            $count = ($hasMultipleContracts)? 1 : 0;
+            $item['revoke_message'] = $translator->transChoice(
+                'notice.revoke.residentId.multiple_contracts',
+                $count
+            );
+        } else {
+            $item['revoke_message'] = $this->get('translator')->trans('revoke.inv.ask');
+        }
+
+        return new JsonResponse($item);
+    }
+
+    /**
+     * @Route(
      *     "/action/list",
      *     name="landlord_actions_list",
      *     defaults={"_format"="json"},
