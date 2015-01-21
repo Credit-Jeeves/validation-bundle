@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
 use RentJeeves\DataBundle\Model\Contract as Base;
 use Doctrine\ORM\Mapping as ORM;
@@ -695,9 +694,9 @@ class Contract extends Base
             }
         }
 
-        $result['payment_next'] = 'N/A';
-        if ($paidTo = $this->getPaidTo()) {
-            $result['payment_next'] = $paidTo->format('m/d/Y');
+        $result['due_on'] = 'N/A';
+        if ($this->getDueDate()) {
+            $result['due_on'] = $this->getDueDate();
         }
         $result['start_at'] = $this->getStartAt();
         $result['finish_at'] = $this->getFinishAt();

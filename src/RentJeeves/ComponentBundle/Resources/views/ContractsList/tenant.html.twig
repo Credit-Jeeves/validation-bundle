@@ -40,9 +40,9 @@
                     <tr class="contracts">
                         <th class="font-helvetica" style="width: 50px">{{ 'contract.rent_amount' | trans() }}</th>
                         {% if hasIntegratedBalance %}
-                            <th class="font-helvetica">{{ 'common.balance' | trans }}</th>
+                            <th class="font-helvetica" style="width: 60px">{{ 'common.balance' | trans }}</th>
                         {% endif %}
-                        <th class="font-helvetica">{{ 'contract.payment.next' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 50px">{{ 'contract.payment.next' | trans() }}</th>
                         <th class="font-helvetica">{{ 'contract.property' | trans() }}</th>
                         <th class="font-helvetica" style="width: 100px">{{ 'contract.status' | trans() }}</th>
                         <th style="width: 150px;"></th>
@@ -56,7 +56,7 @@
                             {% if hasIntegratedBalance %}
                                 <td class="font-helvetica">{{ contract.balance }}</td>
                             {% endif %}
-                            <td class="font-helvetica">{{ contract.payment_next }}</td>
+                            <td class="font-helvetica">{{ contract.due_on | ordinal_number }}</td>
                             <td class="font-helvetica">{{ contract.full_address }}</td>
                             <td class="font-helvetica">
                                 {% if contract.is_integrated and contract.isYardiPaymentDenied %}
