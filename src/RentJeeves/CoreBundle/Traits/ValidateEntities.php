@@ -22,11 +22,6 @@ trait ValidateEntities
         return !!count($this->errors);
     }
 
-    public function resetErrors()
-    {
-        $this->errors = [];
-    }
-
     /**
      * @return array<string>
      */
@@ -35,23 +30,57 @@ trait ValidateEntities
         return $this->errors;
     }
 
-    protected function validate($entities)
+    /**
+     * This method can validate different data with different scenario.
+     * @param $dataForValidation
+     * Can be single object like entity. Can be simple array with object for validation. Can be complex array like
+     * [
+     *   [$entity, 'Default'],
+     *   ['entity' => $entity],
+     *   ['entity' => $entity, ['Default', 'Default2']],
+     *   ['entity' => $entity, 'groups' => ['Default', 'Default2']],
+     *   ['object' => $entity, 'group' => 'Default'],
+     *   [$entity, 'groups' => ['Default', 'Default2']],
+     * ]
+     * and etc.
+     * @param $baseValidationGroups
+     * Base Validation Groups will be apply for each object that will be validated. Can be single string like "Default"
+     * or array with validations groups.
+     */
+    protected function validate($dataForValidation, $baseValidationGroups = null)
     {
-        is_array($entities) || $entities = [$entities];
+        if (!is_array($dataForValidation)) {
+            $dataForValidation = [$dataForValidation];
+        }
 
-        foreach ($entities as $entity) {
-            if (empty($entity)) {
+        if ($baseValidationGroups && !is_array($baseValidationGroups)) {
+            $baseValidationGroups = [$baseValidationGroups];
+        }
+
+        foreach ($dataForValidation as $data) {
+            if (empty($data)) {
                 continue;
             }
 
-            $groups = null;
+            $validationGroups = null;
+            $object = $data;
 
-            if (is_array($entity)) {
-                count($entity) == 1 || $groups = array_values($entity)[1];
-                $entity = reset($entity);
+            if (is_array($data)) {
+                $object = reset($data);
+                $validationGroups = next($data);
+
+                if ($validationGroups !== false && !is_array($validationGroups)) {
+                    $validationGroups = [$validationGroups];
+                }
             }
 
-            $errors = $this->validator->validate($entity, $groups);
+            if($baseValidationGroups) {
+                $validationGroups = $validationGroups ?
+                    array_merge($baseValidationGroups, $validationGroups) :
+                    $baseValidationGroups;
+            }
+
+            $errors = $this->validator->validate($object, $validationGroups);
 
             if ($errors->count()) {
                 foreach ($errors as $error) {

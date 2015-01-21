@@ -876,14 +876,6 @@ class Contract extends Base
         }
     }
 
-    public function checkDuplicate(ExecutionContextInterface $validatorContext)
-    {
-        if ($this->getStatus() == ContractStatus::DELETED || $this->getStatus() == ContractStatus::FINISHED) {
-            return;
-        }
-
-    }
-
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("depositAccount")

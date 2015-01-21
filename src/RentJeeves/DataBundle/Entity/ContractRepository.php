@@ -812,8 +812,6 @@ class ContractRepository extends EntityRepository
     {
         return !!$this->createQueryBuilder('c')
             ->select('count(c.id)')
-            ->innerJoin('c.tenant', 't')
-            ->innerJoin('c.unit', 'u')
             ->where('c.status NOT IN (:statuses)')
             ->andWhere('c.tenant = :tenant')
             ->andWhere('c.unit = :unit')
@@ -832,8 +830,6 @@ class ContractRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('c')
             ->select('count(c.id)')
-            ->innerJoin('c.tenant', 't')
-            ->innerJoin('c.property', 'p')
             ->where('c.status NOT IN (:statuses)')
             ->andWhere('c.tenant = :tenant')
             ->andWhere('c.property = :property')

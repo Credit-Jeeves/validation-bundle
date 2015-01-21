@@ -109,6 +109,7 @@ class PropertyController extends Controller
          * @var $contractProcess ContractProcess
          */
         $contractProcess = $this->get('contract.process');
+        $contractProcess->setIsValidateContract(true);
         $contractProcess->createContractFromTenantSide($tenant, $property, $unitSearch);
 
         if ($contractProcess->hasErrors()) {

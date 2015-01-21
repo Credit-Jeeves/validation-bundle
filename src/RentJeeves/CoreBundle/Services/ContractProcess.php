@@ -28,6 +28,8 @@ class ContractProcess
 
     protected $contract;
 
+    protected $isValidateContract = false;
+
     /**
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.default_entity_manager"),
@@ -45,6 +47,11 @@ class ContractProcess
         $this->contract = $contract;
 
         return $this;
+    }
+
+    public function setIsValidateContract($isValidateContract)
+    {
+        $this->isValidateContract = !!$isValidateContract;
     }
 
     /**
@@ -87,7 +94,7 @@ class ContractProcess
                 $contract->setUnit($unit);
             }
 
-            $this->validate($contract);
+            !$this->isValidateContract || $this->validate($contract);
 
             if ($this->hasErrors()) {
                 return false;
@@ -145,7 +152,7 @@ class ContractProcess
             $this->em->persist($residentMapping);
         }
 
-        $this->validate($contract);
+        !$this->isValidateContract || $this->validate($contract);
 
         if ($this->hasErrors()) {
             return false;
@@ -172,21 +179,25 @@ class ContractProcess
         $result = [];
         // If there is no such unit we'll send contract for all potential landlords
         $groups = $property->getPropertyGroups();
+        $contract = $this->contract ? clone $this->contract : new Contract();
+        $contract->setTenant($tenant);
+        $contract->setProperty($property);
+        $contract->setStatus(ContractStatus::PENDING);
+        $contract->setSearch($unitName);
+
+        // can be created duplicate contract for each group only first time
+        !$this->isValidateContract || $this->validate($contract);
+
+        if ($this->hasErrors()) {
+            return false;
+        }
+
         foreach ($groups as $group) {
-            $contract = $this->contract ? clone $this->contract : new Contract();
-            $contract->setTenant($tenant);
             $contract->setHolding($group->getHolding());
             $contract->setGroup($group);
-            $contract->setProperty($property);
-            $contract->setStatus(ContractStatus::PENDING);
-            $contract->setSearch($unitName);
-
-            $this->validate($contract);
-
-            if (!$this->hasErrors()) {
-                $this->em->persist($contract);
-                $result[] = $contract;
-            }
+            $this->em->persist($contract);
+            $result[] = $contract;
+            $contract = clone $contract;
         }
 
         $this->em->flush();
