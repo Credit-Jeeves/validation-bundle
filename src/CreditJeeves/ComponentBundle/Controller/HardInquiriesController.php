@@ -4,6 +4,7 @@ namespace CreditJeeves\ComponentBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\DataBundle\Entity\Report;
+use CreditJeeves\DataBundle\Enum\HardInquiriesPeriod;
 
 class HardInquiriesController extends Controller
 {
@@ -14,22 +15,28 @@ class HardInquiriesController extends Controller
 
     public function indexAction(Report $Report)
     {
-        $ArfReport = $Report->getArfReport();
-        $nInquiries = $ArfReport->getValue(
-            ArfParser::SEGMENT_PROFILE_SUMMARY,
-            ArfParser::REPORT_INQUIRIES_DURING_LAST_6_MONTHS_COUNTER
-        );
-        $nInquiries = $nInquiries ? $nInquiries : 0;
-        $nMaxDial = self::MAX_DIAL;
-        if ($nInquiries > $nMaxDial) {
-            $nMaxDial = $nInquiries;
+        $inquiries = $Report->getNumberOfInquieres();
+        $maxDial = self::MAX_DIAL;
+        if ($inquiries > $maxDial) {
+            $maxDial = $inquiries;
         }
+
+        /** @var HardInquiriesPeriod timePeriod
+         *
+         *  Make sure that there is a translation in messages bundle for all possible values for timePeriod
+         */
+        $timePeriod = $Report->getInquiriesPeriod();
+        $translator = $this->get('translator.default');
+        $headerString = $translator->trans("inquiries.hard.header." . $timePeriod);
+        $commentString = $translator->trans("inquiries.hard.comment." . $timePeriod);
 
         return $this->render(
             'ComponentBundle:HardInquiries:index.html.twig',
             array(
-                'nInquiries' => $nInquiries,
-                'nMaxDial' => $nMaxDial,
+                'inquiries' => $inquiries,
+                'headerString' => $headerString,
+                'commentString' => $commentString,
+                'maxDial' => $maxDial,
             )
         );
     }

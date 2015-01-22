@@ -14,6 +14,9 @@ use CreditJeeves\SimulationBundle\AtbSimulation;
 class AdCreditCardsController extends Controller
 {
     /**
+     *
+     * This component currently only supports Experian prequal reports
+     *
      * @Template
      *
      * @return array
@@ -36,7 +39,7 @@ class AdCreditCardsController extends Controller
             ArfParser::REPORT_BALANCE_REAL_ESTATE
         );
         $isMortgage = empty($nMortgageDebt) ? "false" : "true";
-        $nTotal = $Report->getCountApplicantTotalTradelines();
+        $nTotal = $Report->getTotalAccounts();
         $sTotal = $this->formatTradelinesCount($nTotal);
          $nTier = array('value' => 9, 'interval' => '< 300');
         $nScore = $this->get('core.session.applicant')->getUser()->getLastScore();
@@ -60,7 +63,7 @@ class AdCreditCardsController extends Controller
                 $Lead->getTargetScore(),
                 array(AtbType::SCORE, AtbType::SEARCH)
             );
-    
+
             if (!empty($atb)) {
                 $simTypeGroup = $atb->getSimType() ? substr((string)$atb->getSimType(), 0, 2) : null;
             }
@@ -78,7 +81,7 @@ class AdCreditCardsController extends Controller
     }
 
     /**
-     * 
+     *
      * @param integer $nInquiries
      * @return string
      */
@@ -95,7 +98,7 @@ class AdCreditCardsController extends Controller
     }
 
     /**
-     * 
+     *
      * @param integer $nTotal
      * @return string
      */
@@ -127,7 +130,7 @@ class AdCreditCardsController extends Controller
     }
 
     /**
-     * 
+     *
      * @param integer $nAvailableDebt
      * @return string
      */
@@ -150,7 +153,7 @@ class AdCreditCardsController extends Controller
     }
 
     /**
-     * 
+     *
      * @param array $aPublicRecords
      * @return string
      */

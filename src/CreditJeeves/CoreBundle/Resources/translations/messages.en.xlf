@@ -410,13 +410,21 @@
                 <source>inquiries.regular.comment</source>
                 <target>Companies listed here obtained information from your credit file for the purposes of a business transaction. They will remain on your file for 2 years</target>
             </trans-unit>
-            <trans-unit id="inquiries.hard.header">
-                <source>inquiries.hard.header</source>
+            <trans-unit id="inquiries.hard.header.6months">
+                <source>inquiries.hard.header.6months</source>
                 <target>Inquiries During Last 6 Months</target>
             </trans-unit>
-            <trans-unit id="inquiries.hard.comment">
-                <source>inquiries.hard.comment</source>
+            <trans-unit id="inquiries.hard.comment.6months">
+                <source>inquiries.hard.comment.6months</source>
                 <target>If lenders see more than a few inquiries in the last 6 months, they think you're planning to open many lines of credit and will be wary of extending you a new one.</target>
+            </trans-unit>
+            <trans-unit id="inquiries.hard.header.2years">
+                <source>inquiries.hard.header.2years</source>
+                <target>Inquiries During Last 2 Years</target>
+            </trans-unit>
+            <trans-unit id="inquiries.hard.comment.2years">
+                <source>inquiries.hard.comment.2years</source>
+                <target>If lenders see more than a few inquiries in the last 2 years, they think you're planning to open many lines of credit and will be wary of extending you a new one.</target>
             </trans-unit>
 
             <trans-unit id="credit.age.average.title">

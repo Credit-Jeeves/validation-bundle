@@ -8,6 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class AccountStatusController extends Controller
 {
     /**
+     * This component currently only supports Experian prequal reports
+     *
      * @Template()
      * @param \CreditJeeves\DataBundle\Entity\Report $Report
      * @return array

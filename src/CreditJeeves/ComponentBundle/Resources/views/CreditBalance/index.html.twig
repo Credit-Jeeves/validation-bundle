@@ -1,25 +1,25 @@
-{% if nTradelines > 0 %}
+{% if tradelines > 0 %}
 <div class="pod-large pod-border shadow">
   <div class="credit-balances-block credit-balances-left">
     <h3>{{ 'component.credit_balance.header' | trans }}</h3>
     <p class='credit-balance-title'>
-      <span class="floatright">{{ 'common.date' | trans }} {{ sDate }}</span>
-      <strong class='bigbold'>{{ 'common.total' | trans }}: ${{ nTotal | number_format() }}</strong>
+      <span class="floatright">{{ 'common.date' | trans }} {{ date }}</span>
+      <strong class='bigbold'>{{ 'common.total' | trans }}: ${{ total | number_format() }}</strong>
     </p>
     <div class="zebra-grid">
       <div class='header-smooth'>{{ 'loan.type.balance' | trans }}:</div>
       <ul>
         <li>
           {{ 'loan.type.revolving' | trans }}
-          <span class='amount'>${{ nRevolvingDept | number_format() }}</span>
+          <span class='amount'>${{ revolvingDept | number_format() }}</span>
         </li>
         <li>
           {{ 'loan.type.mortgage' | trans }}
-          <span class='amount'>${{ nMortgageDebt | number_format() }}</span>
+          <span class='amount'>${{ mortgageDebt | number_format() }}</span>
         </li>
         <li>
           {{ 'loan.type.installment' | trans }}
-          <span class='amount'>{{ nInstallmentDebt | number_format() }}</span>
+          <span class='amount'>{{ installmentDebt | number_format() }}</span>
         </li>
       </ul>
     </div>
@@ -27,10 +27,10 @@
   <div class="credit-balances-block credit-balances-right">
     <h3>How You Rank</h3>
       <div class='rainbow-chart'>
-        <span class='score-line score' style="right: {{ nRight }}px">{{ nCurrentScore }}</span>
+        <span class='score-line score' style="right: {{ right }}px">{{ currentScore }}</span>
       </div>
-      {% if nCurrentScore > 0 %}
-      <div class='key score-text'>{{ 'component.credit_balance.comment' | trans | replace({'%nPercent%': nPercent}) }}</div>
+      {% if currentScore > 0 %}
+      <div class='key score-text'>{{ 'component.credit_balance.comment' | trans | replace({'%nPercent%': percent}) }}</div>
       {% endif %}
   </div>
   <div class="clearboth"></div>
