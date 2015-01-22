@@ -74,7 +74,7 @@ trait ValidateEntities
                 }
             }
 
-            if($baseValidationGroups) {
+            if ($baseValidationGroups) {
                 $validationGroups = $validationGroups ?
                     array_merge($baseValidationGroups, $validationGroups) :
                     $baseValidationGroups;
