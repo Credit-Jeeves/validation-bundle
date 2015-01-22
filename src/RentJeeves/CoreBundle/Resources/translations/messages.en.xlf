@@ -859,6 +859,10 @@
                 <source>error.balance.empty</source>
                 <target>Please specify the balance.</target>
             </trans-unit>
+           <trans-unit id="error.contract.duplicate">
+                <source>error.contract.duplicate</source>
+                <target>Sorry, you cannot add a duplicate contract for the same property.</target>
+            </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
                 <target>close</target>

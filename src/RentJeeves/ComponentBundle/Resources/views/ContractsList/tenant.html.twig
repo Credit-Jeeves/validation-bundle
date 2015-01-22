@@ -24,6 +24,17 @@
 </div>#}
 <!-- endloader -->
 <div class="pod-large pod-border pod-padding shadow" id="current-payments">
+    {% set flashMessages = app.session.flashbag.get('error') %}
+    {% if flashMessages is not empty %}
+    <div class="attention-box pie-el">
+        <ul>
+        {% for flashMessage in flashMessages %}
+            <li>{{ flashMessage | trans }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="row-10"></div>
+    {% endif %}
     <h1>{{ 'current_contracts.title' | trans() }}</h1>
     <div class="addPropertyContainer">
         <center>

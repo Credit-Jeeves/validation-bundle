@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\CoreBundle\Traits\ValidateEntities;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -21,18 +22,24 @@ use RentJeeves\DataBundle\Entity\Contract;
 class ContractProcess
 {
 
+    use ValidateEntities;
+
     protected $em;
 
     protected $contract;
 
+    protected $isValidateContract = false;
+
     /**
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.default_entity_manager"),
+     *     "validator" = @Inject("validator")
      * })
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $validator)
     {
         $this->em = $em;
+        $this->validator = $validator;
     }
 
     public function setContract(Contract $contract)
@@ -40,6 +47,11 @@ class ContractProcess
         $this->contract = $contract;
 
         return $this;
+    }
+
+    public function setIsValidateContract($isValidateContract)
+    {
+        $this->isValidateContract = !!$isValidateContract;
     }
 
     /**
@@ -80,6 +92,12 @@ class ContractProcess
                 $contract->setHolding($unit->getHolding());
                 $contract->setGroup($unit->getGroup());
                 $contract->setUnit($unit);
+            }
+
+            !$this->isValidateContract || $this->validate($contract);
+
+            if ($this->hasErrors()) {
+                return false;
             }
 
             $this->em->persist($contract);
@@ -134,6 +152,12 @@ class ContractProcess
             $this->em->persist($residentMapping);
         }
 
+        !$this->isValidateContract || $this->validate($contract);
+
+        if ($this->hasErrors()) {
+            return false;
+        }
+
         $this->em->remove($contractWaiting);
         $this->em->flush();
 
@@ -155,16 +179,25 @@ class ContractProcess
         $result = [];
         // If there is no such unit we'll send contract for all potential landlords
         $groups = $property->getPropertyGroups();
+        $contract = $this->contract ? clone $this->contract : new Contract();
+        $contract->setTenant($tenant);
+        $contract->setProperty($property);
+        $contract->setStatus(ContractStatus::PENDING);
+        $contract->setSearch($unitName);
+
+        // can be created duplicate contract for each group only first time
+        !$this->isValidateContract || $this->validate($contract);
+
+        if ($this->hasErrors()) {
+            return false;
+        }
+
         foreach ($groups as $group) {
-            $contract = $this->contract ? clone $this->contract : new Contract();
-            $contract->setTenant($tenant);
             $contract->setHolding($group->getHolding());
             $contract->setGroup($group);
-            $contract->setProperty($property);
-            $contract->setStatus(ContractStatus::PENDING);
-            $contract->setSearch($unitName);
             $this->em->persist($contract);
             $result[] = $contract;
+            $contract = clone $contract;
         }
 
         $this->em->flush();

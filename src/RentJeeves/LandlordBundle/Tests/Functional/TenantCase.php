@@ -605,6 +605,55 @@ class TenantCase extends BaseTestCase
         $this->assertTrue($contract->getReportToTransUnion());
     }
 
+    /**
+     * @test
+     * @depends addTenantNoneExist
+     */
+    public function checkDuplicateContract()
+    {
+        # use already created tenant on depends test
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        // set group - "Sea side Rent Group" to be able to change isIntegrated setting
+        $this->assertNotNull($select = $this->page->find('css', '.group-select>a'));
+        $select->click();
+        $this->assertNotNull($selectOption = $this->page->find('css', '#holding-group_li_1>span'));
+        $selectOption->click();
+        $this->session->wait(5000, "false"); // wait refresh page
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (5)', $allh2->getText(), 'Wrong count');
+
+        $this->page->pressButton('add.tenant');
+        $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
+
+        $formFields = [
+            'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name' => 'Sharamko',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email' => 'test@email.ru',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent' => '200',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_1' => true,
+            'rentjeeves_landlordbundle_invitetenantcontracttype_contract_dueDate' => 23,
+        ];
+
+        $this->fillForm($form, $formFields);
+        $this->session->wait(1000, "false"); // wait filling form from DB
+
+        $this->page->pressButton('invite.tenant');
+        $this->session->wait(1000, "false"); // wait refresh page
+        $this->assertNotNull(
+            $errorList = $this->page->findAll('css', '#tenant-add-property-popup .attention-box.pie-el ul.default>li')
+        );
+        $this->assertCount(1, $errorList, 'Wrong number of errors');
+        $this->assertEquals('error.contract.duplicate', $errorList[0]->getHtml());
+        $this->logout();
+    }
 
     /**
      * @test
@@ -762,8 +811,11 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
         $this->session->wait(1000, "false"); // wait refresh page
-        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(1, $errorList, 'Wrong number of errors');
+        $this->assertNotNull(
+            $errorList = $this->page->findAll('css', '#tenant-add-property-popup .attention-box.pie-el ul.default>li')
+        );
+        $errorCount = $isIntegrated ? 5 : 4;
+        $this->assertCount($errorCount, $errorList, 'Wrong number of errors');
 
         $formField = [
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',

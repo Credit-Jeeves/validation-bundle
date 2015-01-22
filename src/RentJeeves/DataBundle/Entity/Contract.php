@@ -19,6 +19,7 @@ use RentJeeves\CoreBundle\DateTime;
 use RuntimeException;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use RentJeeves\DataBundle\Validators\ContractDuplicate;
 
 /**
  * Contract
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="rj_contract")
  *
  * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"User", "Default"})
+ * @ContractDuplicate()
  *
  * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
  */
