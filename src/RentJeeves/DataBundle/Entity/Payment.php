@@ -2,6 +2,8 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -279,5 +281,31 @@ class Payment extends Base
         }
 
         $this->isEndLaterThanStart($context);
+    }
+
+    public function setActive()
+    {
+        $this->setStatus(PaymentStatus::ACTIVE);
+
+        return $this;
+    }
+
+    public function setClosed($caller, $reason)
+    {
+        if (!is_object($caller)) {
+            throw new Exception('Can not set the close reason. Caller name is not an object');
+        }
+        if (empty($reason)) {
+            throw new Exception('Payment close reason is missing');
+        }
+
+        $this->setStatus(PaymentStatus::CLOSE);
+        $details = [
+            "Class: " . get_class($caller),
+            "Reason: " . $reason
+        ];
+        $this->setCloseDetails($details);
+
+        return $this;
     }
 }
