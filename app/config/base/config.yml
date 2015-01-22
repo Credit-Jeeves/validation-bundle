@@ -10,7 +10,7 @@ parameters:
     login.delay: 30
 
     credit_services:
-        credit_summary_vendor: transunion # supported values are 'transunion' or 'experian'
+        credit_summary_vendor: experian # supported values are 'transunion' or 'experian'
 
 simulation:
     entity_name: '\CreditJeeves\DataBundle\Entity\Atb'
