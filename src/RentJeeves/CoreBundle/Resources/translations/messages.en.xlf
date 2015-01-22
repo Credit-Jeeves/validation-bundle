@@ -861,7 +861,7 @@
             </trans-unit>
            <trans-unit id="error.contract.duplicate">
                 <source>error.contract.duplicate</source>
-                <target>Can't create duplicate contract. Probably you already have contract for this property.</target>
+                <target>Sorry, you cannot add a duplicate contract for the same property.</target>
             </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
