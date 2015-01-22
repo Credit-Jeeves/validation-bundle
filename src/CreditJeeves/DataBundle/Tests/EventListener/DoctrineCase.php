@@ -1,8 +1,8 @@
 <?php
 namespace CreditJeeves\DataBundle\Tests\EventListener;
 
+use CreditJeeves\CoreBundle\Enum\ScoreModelType;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
-use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\TestBundle\BaseTestCase;
 
@@ -25,11 +25,9 @@ class DoctrineCase extends BaseTestCase
         $report = new ReportPrequal();
         $report->setUser($applicant);
         $report->setRawData(file_get_contents(__DIR__ . '/../Fixtures/marion.arf'));
-        $em->persist($report);
-        $em->flush($report);
 
-        /** @var Score $score */
-        $score = $applicant->getScores()->last();
-        $this->assertEquals(535, $score->getScore());
+        $score = $report->getArfReport()->getScore();
+
+        $this->assertEquals(535, $score);
     }
 }

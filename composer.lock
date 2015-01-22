@@ -4133,12 +4133,12 @@
         },
         {
             "name": "renttrack/transunion-bundle",
-            "version": "dev-vantage-score",
+            "version": "dev-master",
             "target-dir": "RentTrack/TransUnionBundle",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git",
-                "reference": "8c621c04b7268f0bcce72e0255b316a3a93de3b1"
+                "reference": "6b6096da75c3426bcfd209ef689c71453ca0fae4"
             },
             "require": {
                 "besimple/soap-client": "dev-master",
