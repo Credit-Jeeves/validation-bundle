@@ -60,6 +60,9 @@ class ReportController extends Controller
                 }
                 return !$this->getUser()->getReportsPrequal()->last();
             case CreditSummaryVendor::TRANSUNION:
+                if ($isD2c) {
+                    throw new Exception('D2C report can not be loaded with TransUnion credit summary vendor');
+                }
                 return !$this->getUser()->getReportsTUSnapshot()->last();
             default:
                 throw new Exception(sprintf('Unknown credit summary vendor \'%s\'', $vendor));
