@@ -102,7 +102,7 @@ class PaymentJobExecutor
 
         }
         $this->message = sprintf("Job ID:'%s' must have related payment", $job->getId());
-        $this->logger->addDebug(sprintf('Related entity for job ID %s not found', $job->getId()));
+        $this->logger->debug('Related entity for job ID ' . $job->getId() .' not found');
 
         return false;
     }
@@ -130,7 +130,7 @@ class PaymentJobExecutor
      */
     protected function executePayment(Payment $payment)
     {
-        $this->logger->addDebug(sprintf('Starting execute rent payment ID %s', $payment->getId()));
+        $this->logger->debug('Starting execute rent payment ID ' . $payment->getId());
 
         $date = new DateTime();
         $contract = $payment->getContract();
@@ -147,17 +147,13 @@ class PaymentJobExecutor
         if ($contract->getOperations()->filter($filterClosure)->count()) {
             $this->message = 'Payment already executed.';
             $this->exitCode = 1;
-            $this->logger->addDebug(sprintf('%s. Payment ID %s', $this->message, $payment->getId()));
+            $this->logger->debug('Payment already executed. Payment ID ' . $payment->getId());
             return false;
         }
 
         $this->payRent->newOrder();
         $order = $this->payRent->getOrder();
-        $this->logger->addDebug(sprintf(
-            'Add created order to job related entities. Job ID %s',
-            $this->job->getId(),
-            $order->getId()
-        ));
+        $this->logger->debug('Add created order to job related entities. Job ID ' . $this->job->getId());
         $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);
 

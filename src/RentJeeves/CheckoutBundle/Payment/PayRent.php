@@ -59,7 +59,7 @@ class PayRent extends Pay
 
     public function executePayment(Payment $payment)
     {
-        $this->logger->addDebug(sprintf('Get new order for payment ID %s', $payment->getId()));
+        $this->logger->debug('Get new order for payment ID %s' . $payment->getId());
         $order = $this->getOrder();
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
@@ -116,15 +116,13 @@ class PayRent extends Pay
         } else {
             $order->setStatus(OrderStatus::ERROR);
             if (OrderType::HEARTLAND_CARD == $order->getType() && $payment->isRecurring()) {
-//            TODO: uncomment when logger is added
-//            $this->logger->addDebug(
-//                sprintf('Close CC recurring payment ID %s for order ID %s', $payment->getId(), $order->getId())
-//            );
-
+                $this->logger->debug(
+                    'Close CC recurring payment ID ' . $payment->getId() . ' for order ID ' . $order->getId()
+                );
                 $payment->setClosed($this, PaymentCloseReason::RECURRING_ERROR);
             }
         }
-        $this->logger->addDebug(sprintf('New order ID: %s, status: %s', $order->getId(), $order->getStatus()));
+        $this->logger->debug('New order ID ' . $order->getId() . ', status: ' . $order->getStatus());
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
         $this->em->persist($paymentDetails);
         $this->em->persist($contract);
