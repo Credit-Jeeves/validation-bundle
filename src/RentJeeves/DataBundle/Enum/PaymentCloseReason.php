@@ -26,4 +26,18 @@ class PaymentCloseReason extends Enum
      * @var string
      */
     const CONTRACT_DELETED = 'contract_deleted';
+
+    /**
+     * Used when recurring payment with CreditCard payment source failed.
+     *
+     * @var string
+     */
+    const RECURRING_ERROR = 'recurring_error';
+
+    /**
+     * Used when recurring payment with ACH payment source returned.
+     *
+     * @var string
+     */
+    const RECURRING_RETURNED = 'recurring_returned';
 }

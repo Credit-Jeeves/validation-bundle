@@ -10,6 +10,8 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -154,6 +156,8 @@ class OrderListener
                     case OrderStatus::CANCELLED:
                     case OrderStatus::RETURNED:
                         $save = true;
+                        // if returned order is from recurring payment, close that payment!
+                        $this->closeRecurringPayment($order, $eventArgs->getEntityManager());
                         $this->container->get('project.mailer')->sendOrderCancelToTenant($order);
                         $this->container->get('project.mailer')->sendOrderCancelToLandlord($order);
                         break;
@@ -329,6 +333,33 @@ class OrderListener
             $transaction->setBatchDate($batchDate);
             $businessDaysCalc = $this->container->get('business_days_calculator');
             $transaction->setDepositDate($businessDaysCalc->getNextBusinessDate(clone $batchDate));
+        }
+    }
+
+    protected function closeRecurringPayment(Order $order, EntityManager $em)
+    {
+        if (OrderType::HEARTLAND_BANK != $order->getType() && OrderStatus::RETURNED != $order->getStatus()) {
+            return;
+        }
+        /** @var Contract $contract */
+        $contract = $order->getContract();
+        if (!$contract) {
+            return;
+        }
+        /** @var Payment $payment */
+        $payment = $contract->getActivePayment();
+        if (!$payment) {
+            return;
+        }
+
+        if ($payment->isRecurring()) {
+//            TODO: uncomment when logger is added
+//            $this->logger->addDebug(
+//                sprintf('Close ACH recurring payment ID %s for order ID %s', $payment->getId(), $order->getId())
+//            );
+            $payment->setClosed($this, PaymentCloseReason::RECURRING_RETURNED);
+            $em->persist($payment);
+            $em->flush($payment);
         }
     }
 }

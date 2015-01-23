@@ -197,7 +197,9 @@ class Mailer extends BaseMailer
             'transactionId' => $order->getHeartlandTransactionId(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
+            'orderType' => $order->getType(),
         );
+
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 

@@ -308,4 +308,9 @@ class Payment extends Base
 
         return $this;
     }
+
+    public function isRecurring()
+    {
+        return PaymentType::RECURRING == $this->getType();
+    }
 }
