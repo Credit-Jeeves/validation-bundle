@@ -13,7 +13,6 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use JMS\DiExtraBundle\Annotation as DI;
 use RuntimeException;
@@ -83,7 +82,6 @@ class PayRent extends Pay
             date('n') == $payment->getEndMonth() && date('Y') == $payment->getEndYear()
         ) {
             $payment->setClosed($this, PaymentCloseReason::EXECUTED);
-            $this->em->persist($payment);
         }
         $this->em->persist($order);
         $this->em->flush();
@@ -100,6 +98,14 @@ class PayRent extends Pay
             }
         } else {
             $order->setStatus(OrderStatus::ERROR);
+            if (OrderType::HEARTLAND_CARD == $order->getType() && $payment->isRecurring()) {
+//            TODO: uncomment when logger is added
+//            $this->logger->addDebug(
+//                sprintf('Close CC recurring payment ID %s for order ID %s', $payment->getId(), $order->getId())
+//            );
+
+                $payment->setClosed($this, PaymentCloseReason::RECURRING_ERROR);
+            }
         }
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
         $this->em->persist($paymentDetails);
