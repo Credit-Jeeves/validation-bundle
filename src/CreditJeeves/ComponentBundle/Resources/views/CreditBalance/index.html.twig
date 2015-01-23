@@ -19,7 +19,7 @@
         </li>
         <li>
           {{ 'loan.type.installment' | trans }}
-          <span class='amount'>{{ installmentDebt | number_format() }}</span>
+          <span class='amount'>${{ installmentDebt | number_format() }}</span>
         </li>
       </ul>
     </div>

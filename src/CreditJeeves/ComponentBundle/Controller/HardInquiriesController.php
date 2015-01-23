@@ -15,7 +15,7 @@ class HardInquiriesController extends Controller
 
     public function indexAction(Report $Report)
     {
-        $inquiries = $Report->getNumberOfInquieres();
+        $inquiries = $Report->getNumberOfInquiries();
         $maxDial = self::MAX_DIAL;
         if ($inquiries > $maxDial) {
             $maxDial = $inquiries;

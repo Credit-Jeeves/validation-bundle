@@ -3,4 +3,16 @@ fixtures:
   tenantScore_1:
     user: Tenant_22
     score: '300'
+    created_date: '-0 days'
+  tenantScore_2:
+      user: Tenant_9
+      score: '600'
+      created_date: '-5 days'
+  tenantScore_3:
+      user: Tenant_22
+      score: '900'
+      created_date: '-30 days'
+  tenantScore_4:
+    user: Tenant_22
+    score: '600'
     created_date: '-5 days'

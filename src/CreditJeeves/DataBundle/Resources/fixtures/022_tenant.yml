@@ -457,7 +457,7 @@ fixtures:
         culture: %locale%
         has_data: true
         has_report: null
-        is_verified: none
+        is_verified: passed
         lastLogin: '-1 hour'
         created_at: '-50 days'
         updated_at: '-3 days'

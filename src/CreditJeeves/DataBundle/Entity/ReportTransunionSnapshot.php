@@ -3,8 +3,13 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use CreditJeeves\DataBundle\Enum\HardInquiriesPeriod;
 
 /**
+ *
+ * This Report class implements ReportSummaryInterface.
+ * Please see interface file for method documentation.
+ *
  * @ORM\Entity
  */
 class ReportTransunionSnapshot extends Report
@@ -20,82 +25,90 @@ class ReportTransunionSnapshot extends Report
         return (string)$this->snapshotData->$snapshotPiece;
     }
 
-    /**
-     * @return Float The balance of all revolving accounts. (i.e. 12345.67)
-     */
     public function getBalanceRevolvingAccounts()
     {
         return $this->getSnapshotData('BalanceOpenRevolvingAccounts');
     }
 
-    /**
-     * @return Float The balance of all mortgage accounts. (i.e. 12345.67)
-     */
     public function getBalanceMortgageAccounts()
     {
         return $this->getSnapshotData('BalanceOpenMortgageAccounts');
     }
 
-    /**
-     * @return Float The balance of all installment accounts. (i.e. 12345.67)
-     */
     public function getBalanceInstallmentAccounts()
     {
         return $this->getSnapshotData('BalanceOpenInstallmentAccounts');
     }
 
-    /**
-     * @return Integer Total number of accounts/tradelines
-     */
     public function getTotalAccounts()
     {
         return $this->getSnapshotData('TotalAccounts');
     }
 
-    /**
-     * @return Integer Total number of open accounts/tradelines
-     */
     public function getTotalOpenAccounts()
     {
         return $this->getSnapshotData('OpenAccounts');
     }
-    /**
-     * @return Integer Total number of closed accounts/tradelines
-     */
+
     public function getTotalClosedAccounts()
     {
         return $this->getSnapshotData('totalClosedAccounts');
     }
 
-    /**
-     * @return Integer Percentage of credit used
-     */
     public function getUtilization()
     {
         return $this->getSnapshotData('Utilization');
     }
 
-    /**
-     * @return Integer
-     */
+    public function getBalanceOpenCollectionAccounts()
+    {
+        return $this->getSnapshotData('BalanceOpenCollectionAccounts');
+    }
+
+    public function getTotalMonthlyPayments()
+    {
+        return $this->getSnapshotData('TotalMonthlyPayments');
+    }
+
+    public function getTotalDerogatoryAccounts()
+    {
+        return $this->getSnapshotData('DerogatoryAccounts');
+    }
+
+    public function getTotalOpenCollectionAccounts()
+    {
+        return $this->getSnapshotData('TotalOpenCollectionAccounts');
+    }
+
+    public function getTotalPublicRecords()
+    {
+        return $this->getSnapshotData('totalPublicRecords');
+    }
+
     public function getNumberOfInquiries()
     {
         return $this->getSnapshotData('NumberOfInquiries');
     }
 
-    /**
-     * @return String
-     */
-    public function getDateOfOldestTrade()
+    public function getOldestTradelineInYears()
     {
-        return $this->getSnapshotData('DateOfOldestTrade');
+        $oldest = 0;
+        $currentDate = new \DateTime('now');
+
+        $openedDate = \DateTime::createFromFormat('Y-m-d', $this->getSnapshotData('DateOfOldestTrade'));
+        if (!empty($openedDate)) {
+            $interval = $openedDate->diff($currentDate);
+            $months = $interval->format('%y') * 12 + $interval->format('%m');
+            if ($months > $oldest) {
+                $oldest = $months;
+            }
+        }
+
+        return floor($oldest / 12);
     }
 
-    /**
-     * @return Float
-     */
-    public function getAgeOfCredit()
+    public function getInquiriesPeriod()
     {
-        return $this->getSnapshotData('AgeOfCredit');
+        return HardInquiriesPeriod::TWO_YEARS;
     }
 }
