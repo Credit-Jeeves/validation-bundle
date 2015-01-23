@@ -18,8 +18,8 @@ class HoldingCase extends BaseTestCase
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
         $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
-        $this->assertCount(0, $resManSettings);
-        $this->assertCount(0, $accountingSettings);
+        $this->assertCount(1, $resManSettings);
+        $this->assertCount(1, $accountingSettings);
 
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
@@ -103,7 +103,7 @@ class HoldingCase extends BaseTestCase
 
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
         $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
-        $this->assertCount(1, $resManSettings);
-        $this->assertCount(1, $accountingSettings);
+        $this->assertCount(2, $resManSettings);
+        $this->assertCount(2, $accountingSettings);
     }
 }
