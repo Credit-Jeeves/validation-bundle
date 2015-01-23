@@ -25,6 +25,11 @@ class ReportTransunionSnapshot extends Report
         return (string)$this->snapshotData->$snapshotPiece;
     }
 
+    public function getBureauName()
+    {
+        return "TransUnion";
+    }
+
     public function getBalanceRevolvingAccounts()
     {
         return $this->getSnapshotData('BalanceOpenRevolvingAccounts');

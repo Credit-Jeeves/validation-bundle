@@ -37,7 +37,7 @@
         {{ render(controller('TenantBundle:Index:paymentReporting')) }}
         <div class="row-20"></div>
         <div class="column-middle floatleft">
-            {{ render(controller('ComponentBundle:Score:index', {'user': User})) }}
+            {{ render(controller('ComponentBundle:Score:index', {'user': User, 'Report': Report})) }}
         </div>
         <div class="column-small floatright">
             {#% if creditTrackEnabled //TODO return it back when CreditTrack will be on place %#}

@@ -22,6 +22,11 @@ class ReportPrequal extends Report
 {
     private $creditSummary = null;
 
+    public function getBureauName()
+    {
+        return "Experian";
+    }
+
     public function getUtilization()
     {
         $arfReport = $this->getArfReport();

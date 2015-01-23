@@ -150,6 +150,14 @@ class Report extends BaseReport implements ReportSummaryInterface
     /**
      * @throws Exception
      */
+    public function getBureauName()
+    {
+        $this->throwOverrideException();
+    }
+
+    /**
+     * @throws Exception
+     */
     private function throwOverrideException()
     {
         throw new Exception("Your child Report class must implement this to support credit summary.");
