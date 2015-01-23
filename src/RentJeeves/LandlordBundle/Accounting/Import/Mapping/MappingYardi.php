@@ -9,6 +9,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
+use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 
 class MappingYardi extends MappingCsv
 {
@@ -49,7 +50,7 @@ class MappingYardi extends MappingCsv
         );
 
         if (empty($propertyMapping)) {
-            throw new Exception(
+            throw new ImportMappingException(
                 sprintf(
                     "Don't have external property id for property: %s and holding: %s",
                     $property->getId(),

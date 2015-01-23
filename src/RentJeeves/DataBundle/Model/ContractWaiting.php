@@ -235,7 +235,7 @@ abstract class ContractWaiting
      * @ORM\Column(
      *     type="PaymentAccepted",
      *     nullable=false,
-     *     name="yardi_payment_accepted",
+     *     name="payment_accepted",
      *     options={
      *         "default"="0"
      *     }

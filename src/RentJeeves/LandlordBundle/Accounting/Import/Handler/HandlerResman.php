@@ -7,9 +7,8 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
-use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
-use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
-use RentJeeves\LandlordBundle\Model\Import;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 
 /**
  * @Service("accounting.import.handler.resman")
@@ -20,15 +19,15 @@ class HandlerResman extends HandlerAbstract
      * @InjectParams({
      *     "translator"       = @Inject("translator"),
      *     "sessionUser"      = @Inject("core.session.landlord"),
-     *     "storage"          = @Inject("accounting.import.storage.yardi"),
-     *     "mapping"          = @Inject("accounting.import.mapping.yardi")
+     *     "storage"          = @Inject("accounting.import.storage.resman"),
+     *     "mapping"          = @Inject("accounting.import.mapping.resman")
      * })
      */
     public function __construct(
         Translator $translator,
         SessionUser $sessionUser,
-        StorageYardi $storage,
-        MappingYardi $mapping
+        StorageResman $storage,
+        MappingResman $mapping
     ) {
         $this->user = $sessionUser->getUser();
         $this->group = $sessionUser->getGroup();

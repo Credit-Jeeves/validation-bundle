@@ -145,12 +145,12 @@ class ContractListener
 
     protected function isPaymentAcceptedFieldChanged(PreUpdateEventArgs $eventArgs)
     {
-        if (!$eventArgs->hasChangedField('yardiPaymentAccepted')) {
+        if (!$eventArgs->hasChangedField('paymentAccepted')) {
             return false;
         }
 
-        $newValue = (int) $eventArgs->getNewValue('yardiPaymentAccepted');
-        $oldValue = (int) $eventArgs->getOldValue('yardiPaymentAccepted');
+        $newValue = (int) $eventArgs->getNewValue('paymentAccepted');
+        $oldValue = (int) $eventArgs->getOldValue('paymentAccepted');
 
         if ($oldValue === $newValue) {
             return false;
@@ -188,7 +188,7 @@ class ContractListener
             return;
         }
 
-        $newValue = (int) $eventArgs->getNewValue('yardiPaymentAccepted');
+        $newValue = (int) $eventArgs->getNewValue('paymentAccepted');
         $result = true;
 
         switch ($newValue) {

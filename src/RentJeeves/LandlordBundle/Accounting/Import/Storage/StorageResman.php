@@ -2,42 +2,28 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Customers;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
-use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtServiceTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Transactions;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Bridge\Monolog\Logger;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 /**
  * @Service("accounting.import.storage.resman")
  */
-class StorageResman extends StorageYardi
+class StorageResman extends ExternalApiStorage
 {
-    /**
-     * @InjectParams({
-     *     "session" = @Inject("session"),
-     *     "logger" = @Inject("logger")
-     * })
-     */
-    public function __construct(Session $session, Logger $logger)
-    {
-        parent::__construct($session, $logger);
-    }
-
     /**
      * @param array $cutomers
      * @return bool
      */
-    public function saveToFileResmen(array $cutomers)
+    public function saveToFile(array $cutomers)
     {
-        $result = false;
+        if (empty($cutomers)) {
+            return false;
+        }
+
         /** @var $customer RtCustomer  */
         foreach ($cutomers as $customer) {
             $filePath = $this->getFilePath(true);
@@ -73,10 +59,9 @@ class StorageResman extends StorageYardi
             );
 
             $this->writeCsvToFile($data);
-            $result = true;
         }
 
-        return $result;
+        return true;
     }
 
     /**

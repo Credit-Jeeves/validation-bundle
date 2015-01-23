@@ -48,13 +48,13 @@ class Version20150122100833 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_contract_waiting
                 CHANGE payment_accepted yardi_payment_accepted ENUM('0','1','2')
-                    COMMENT '(DC2Type:YardiPaymentAccepted)' DEFAULT '0' NOT NULL"
+                    COMMENT '(DC2Type:PaymentAccepted)' DEFAULT '0' NOT NULL"
         );
 
         $this->addSql(
             "ALTER TABLE rj_contract
                 CHANGE payment_accepted yardi_payment_accepted ENUM('0','1','2')
-                    COMMENT '(DC2Type:YardiPaymentAccepted)' DEFAULT '0' NOT NULL"
+                    COMMENT '(DC2Type:PaymentAccepted)' DEFAULT '0' NOT NULL"
         );
     }
 }

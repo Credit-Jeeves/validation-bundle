@@ -67,14 +67,13 @@ class ResidentDataManager
 
             if (($customers instanceof Customers) === false) {
                 $customer = print_r($customer, true);
-                $this->logger->addError("Data from resman api is wrong: ".$customer);
+                $this->logger->addError(sprintf("Data from resman api is wrong: %s", $customer));
                 return false;
             }
 
             $type = $customer->getCustomers()->getCustomer()->getType();
-            $result = (strpos($type, 'current') === false)? false : true;
 
-            return $result;
+            return $type === 'current resident';
         });
     }
 }

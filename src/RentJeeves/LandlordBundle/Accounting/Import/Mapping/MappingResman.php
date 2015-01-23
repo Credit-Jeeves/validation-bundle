@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResidentDataManager;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
+use Symfony\Component\Security\Core\SecurityContext;
 
 class MappingResman extends MappingCsv
 {
@@ -24,7 +25,7 @@ class MappingResman extends MappingCsv
         StorageResman $storage,
         CsvFileReaderImport $reader,
         ResidentDataManager $residentDataManager,
-        $securityContext
+        SecurityContext $securityContext
     ) {
         $this->storage = $storage;
         $this->reader = $reader;

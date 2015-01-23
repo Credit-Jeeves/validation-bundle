@@ -405,7 +405,7 @@ class AccountingController extends Controller
         $holding = $this->getUser()->getHolding();
 
         if ($storage->getImportLoaded() === false) {
-            $residents = $mapping->getResidents($holding, $propertyMapping->getExternalPropertyId());
+            $residents = $mapping->getResidents($holding, $propertyMapping->getProperty());
             $residents = array_values($residents);
         } else {
             $residents = array();
@@ -439,11 +439,9 @@ class AccountingController extends Controller
         );
 
         $residents = $mapping->getResidents($propertyMapping->getExternalPropertyId());
-        $result = $storage->saveToFileResmen($residents);
+        $result = $storage->saveToFile($residents);
 
-        $response = new JsonResponse(
-            array('success' => $result)
-        );
+        $response = new JsonResponse();
         $response->setStatusCode(($result) ? 200 : 400);
 
         return $response;
@@ -482,7 +480,7 @@ class AccountingController extends Controller
         );
         try {
             $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $residentId);
-            $storage->saveToFileYardi($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
+            $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
                 $responseData = array('result' => false);
