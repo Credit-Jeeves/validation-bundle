@@ -17,7 +17,7 @@ class CreditBalanceController extends Controller
      *
      * @var integer
      */
-    const COMPONENT_POINTS = 500;
+    const COMPONENT_POINTS = 600;
 
     public function indexAction(Report $Report, Score $Score)
     {
