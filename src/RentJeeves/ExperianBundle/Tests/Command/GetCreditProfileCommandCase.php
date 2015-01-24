@@ -37,7 +37,7 @@ class GetCreditProfileCommandCase extends BaseTestCase
 
 
         $scores = $em->getRepository('DataBundle:Score')->findByUser($user);
-        $this->assertCount(0, $scores);
+        $this->assertCount(1, $scores);
 
         $application = new Application($this->getKernel());
         $application->add(new GetCreditProfileCommand());
@@ -62,6 +62,6 @@ class GetCreditProfileCommandCase extends BaseTestCase
         $report = $em->getRepository('DataBundle:ReportD2c')->findOneById($report->getId());
         $this->assertNotEmpty($report->getRawData());
         $scores = $em->getRepository('DataBundle:Score')->findByUser($user);
-        $this->assertCount(1, $scores);
+        $this->assertCount(2, $scores);
     }
 }

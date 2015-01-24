@@ -6,7 +6,7 @@ fixtures:
     created_date: '-0 days'
   tenantScore_2:
       user: Tenant_9
-      score: '600'
+      score: '535'
       created_date: '-5 days'
   tenantScore_3:
       user: Tenant_22
