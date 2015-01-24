@@ -154,23 +154,23 @@ class TenantRepository extends EntityRepository
         return $query;
     }
 
-    /**
-     * Returns one tenant of given holding.
-     * Used when doctrine transforms form data to entity (tenant id added to where clause).
-     */
-    public function findOneTenantByHolding($holdingId = null)
+    public function getTenantByIdOrByHolding($tenantId = null, $holdingId = null)
     {
         $query = $this->createQueryBuilder('tenant');
 
-        $query->innerJoin(
-            'tenant.contracts',
-            'contract'
-        );
-
         $query->orderBy('tenant.email', 'ASC');
-        $query->where('contract.holding = :holdingId');
-        $query->setParameter('holdingId', $holdingId);
-        $query->setMaxResults(1);
+        if ($tenantId) {
+            $query->where('tenant.id = :tenantId');
+            $query->setParameter('tenantId', $tenantId);
+        } else {
+            $query->innerJoin(
+                'tenant.contracts',
+                'contract'
+            );
+            $query->where('contract.holding = :holdingId');
+            $query->setParameter('holdingId', $holdingId);
+            $query->setMaxResults(1);
+        }
 
         return $query;
     }
