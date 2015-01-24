@@ -55,302 +55,43 @@
             <ul class="default">
             </ul>
         </div>
-        <div class="information-box pie-el" data-bind="
-        visible: infoMessage() != null && ('details' == step() || 'pay' == step()), text: infoMessage()">
+
+        <div class="information-box pie-el" data-bind="visible: infoMessage() != null && ('details' == step() || 'pay' == step()), text: infoMessage()">
         </div>
+
         <div class="col" data-bind="visible: 'details' == step()">
-            <div class="form-row clearfix">
-                <label>{{ 'checkout.property' | trans }}<b>*</b></label>
-                <div class="fields-box" id="rentjeeves_checkoutbundle_paymenttype_property_address">
-                    <span class="value big left" data-bind="text: propertyAddress"></span>
-                    <small><b>*</b>{{ 'required' | trans }}</small>
-                </div>
-            </div>
-            <div class="form-row clearfix" data-bind="visible: contract.groupSetting.is_integrated">
-                <label>{{ 'common.balance' | trans }}</label>
-                <div class="fields-box">
-                    <span class="value big left" data-bind="text: '$'+contract.integrated_balance"></span>
-                </div>
-                <div class="tooltip-box type3 pie-el" data-bind="visible: contract.groupSetting.pay_balance_only">
-                    <h4>{{ 'common.balance.due'|trans }}</h4>
-                    <p>{{ 'common.balance.as.full'|trans }}</p>
-                </div>
-            </div>
-            <div class="form-row clearfix" data-bind="visible: contract.groupSetting.pay_balance_only">
-                <label>{{ 'checkout.total' | trans }}</label>
-                <div class="fields-box">
-                    <span class="value big left" data-bind="text: '$'+contract.integrated_balance"></span>
-                </div>
-            </div>
-            <form data-bind="if: !contract.groupSetting.pay_balance_only" {{ form_enctype(paymentType) }} novalidate method="post">
-                {{ form_widget(paymentType) }}
-                {{ JSFV(paymentType) }}
-            </form>
-            <form data-bind="if: contract.groupSetting.pay_balance_only" {{ form_enctype(paymentBalanceOnlyType) }} novalidate method="post">
-                {{ form_widget(paymentBalanceOnlyType) }}
-                {{ JSFV(paymentBalanceOnlyType) }}
-            </form>
-            <script type="text/html" id="paidFor-html">
-                <div class="tooltip-box type3 pie-el">
-                    <h4 data-bind="text: 'checkout.rent_start.title', i18n: {'MONTH': getPaidFor}">
-                    </h4>
-                    <p data-bind="text: 'checkout.rent_starting.text', i18n: {}">
-                    </p>
-                </div>
-            </script>
+            {% include 'RjCheckoutBundle:Component:_step-1-details.html.twig' %}
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
-            <div data-bind="visible: $root.notEmptyPaymentAccount" class="form-row clearfix" >
-                <label>{{ 'payment.account' | trans }}*</label>
-                <div class="fields-box payment-accounts">
-                    <small ><b>*</b>{{ 'required' | trans }}</small>
-                    <!-- ko foreach: paymentAccounts -->
-                        <label class="checkbox radio" style="clear: left;">
-                            <input type="radio"
-                                required="required"
-                                data-bind="
-                                    value: $data.id,
-                                    checked: $parent.payment.paymentAccountId
-                                " />
-                            <i></i>
-                            <span data-bind="text: $data.name"></span>
-                        </label>
-                    <!-- /ko -->
-                    <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
-                        <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus">
-                            <span></span>{{ 'payment.account.new' | trans }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div data-bind="visible: isNewPaymentAccount || $root.notEmptyPaymentAccount">
-                {{ render(controller('RjCheckoutBundle:Component:source')) }}
-                <p class="note" data-bind="visible: getFee">
-                    <strong data-bind="text: getFeeNote, i18n: {'FEE': getFeeText}"></strong>
-                    <i data-bind="attr: {'title': getFeeNoteHelp}" class="help after-checkbox pie-el tooltip-link">
-                        ?
-                    </i>
-                </p>
-            </div>
+            {% include 'RjCheckoutBundle:Component:_step-2-source.html.twig' %}
         </div>
 
         <div class="col" data-bind="visible: 'user' == step()">
-            <div class="form-row clearfix">
-                <div class="fields-box">
-                    <small><b>*</b>{{ 'required' | trans }}</small>
-                </div>
-            </div>
-            <form {{ form_enctype(userDetailsType) }} method="post" novalidate>
-                {{ form_widget(userDetailsType) }}
-                {{ JSFV(userDetailsType) }}
-            </form>
+            {% include 'RjCheckoutBundle:Component:_step-3-user.html.twig' %}
         </div>
 
         <div class="col long-label" data-bind="visible: 'questions' == step()">
-
-            <div class="scroll-box" style="padding-top: 0;">
-                <div id="vi-questions" class="scroll" style="padding-top: 0;">
-                    <div class="vi-questions-content"
-                         data-bind="html: questions"
-                         style="width:300px; height:235px; overflow-y:scroll; padding-top: 10px;"
-                    >
-                    </div>
-                </div>
-                <div class="tooltip-box type3 pie-el">
-                    <p class="verify">
-                        {{ 'checkout.questions.tooltip.line1' | trans }}
-                    </p>
-                    <p class="verify">
-                        {{ 'checkout.questions.tooltip.line2' | trans }}
-                    </p>
-                    <p class="verify">
-                        <a target="_blank" class="underline" href="{{ 'http://'~external_urls['user_voice']~'/knowledgebase/articles/269425-why-do-i-have-to-verify-my-identity-' }}">
-                            {{ 'checkout.questions.tooltip.question'|trans }}
-                        </a>
-                    </p>
-                </div>
-            </div>
-            {{ JSFV(questionsType) }}
+            {% include 'RjCheckoutBundle:Component:_step-4-questions.html.twig' %}
         </div>
 
-        <div data-bind="visible: 'pay' == step()" class="pay-step">
-            <h3 class="italic">
-                <span data-bind="visible: 'recurring' == payment.type()">{{ 'checkout.recurring_for' | trans }}</span>
-                <span class="value" data-bind="text: fullPayTo"></span>
-                (<span data-bind="text: propertyAddress"></span>)
-            </h3>
-
-            <div class="information-box pie-el"
-                 data-bind="visible: ('one_time' == payment.type() && !contract.groupSetting.pay_balance_only), i18n: {'DATE': payment.startDate}"
-            >
-                checkout.one_time_payment.note
-            </div>
-
-            <div class="clearfix halfs-box">
-                <div class="half-box left">
-                    <h4>{{ 'checkout.your_payment' | trans }}</h4>
-                    <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
-                        <label>{{ 'checkout.starts_on' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: payment.startDate"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix" data-bind="visible: 'one_time' == payment.type()">
-                        <label>{{ 'checkout.sent_on' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: payment.startDate"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
-                        <label>{{ 'checkout.recurs_on' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value"
-                                  data-bind="text: 'checkout.day.' + payment.frequency() +'.each_month-%DAY%', i18n: {'DAY': payment.dueDate}">
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix" data-bind="visible: getAmount()">
-                        <label>{{ 'checkout.rent_amount' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: getAmount"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix" data-bind="visible: getOtherAmount()">
-                        <label>{{ 'checkout.other_amount' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: getOtherAmount"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix" data-bind="visible: 'on' == payment.ends()">
-                        <label>{{ 'checkout.last_payment_on' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: getLastPaymentDay"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix" data-bind="visible: getFee()">
-                        <label>{{ 'checkout.fee' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: getFeeAmountText()"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix total-amount">
-                        <label>{{ 'checkout.total' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: getTotalWithFee()"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="half-box right">
-                    <h4>{{ 'checkout.how_paying' | trans }}</h4>
-                    <div class="form-row clearfix">
-                        <label>{{ 'checkout.method' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value"
-                                  data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"
-                                  id="checkout-payment-source"
-                            >
-
-                            </span>
-                        </div>
-                    </div>
-                    <div data-bind="visible: !newPaymentAccount()">
-                        <div class="form-row clearfix">
-                            <label>{{ 'checkout.account_nickname' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.name"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-bind="visible: 'bank' == paymentSource.type() && newPaymentAccount()">
-                        <div class="form-row clearfix">
-                            <label>{{ 'checkout.payor_name' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.PayorName"></span>
-                            </div>
-                        </div>
-                        <div class="form-row clearfix">
-                            <label>{{ 'checkout.routing_number' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.RoutingNumber"></span>
-                            </div>
-                        </div>
-                        <div class="form-row clearfix">
-                            <label>{{ 'checkout.account_number' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.AccountNumber"></span>
-                            </div>
-                        </div>
-                        <div class="form-row clearfix">
-                            <label>{{ 'checkout.account_type' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="visible: 'Checking' == paymentSource.ACHDepositType()">
-                                    {{ 'checkout.account_type.checking' | trans }}
-                                </span>
-                                <span class="value" data-bind="visible: 'Savings' == paymentSource.ACHDepositType()">
-                                    {{ 'checkout.account_type.savings' | trans }}
-                                </span>
-                                <span class="value" data-bind="visible: 'Unassigned' == paymentSource.ACHDepositType()">
-                                    {{ 'checkout.account_type.business_checking' | trans }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-bind="visible: 'card' == paymentSource.type()">
-                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
-                            <label>{{ 'checkout.card.account_name' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.CardAccountName"></span>
-                            </div>
-                        </div>
-                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
-                            <label>{{ 'checkout.card_number' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.getCardNumber"></span>
-                            </div>
-                        </div>
-                        <div class="form-row clearfix">
-                            <label>{{ 'checkout.expiration' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.ExpirationMonth() + '/' + paymentSource.ExpirationYear()"></span>
-                            </div>
-                        </div>
-                        <div class="form-row clearfix">
-                            <label>{{ 'checkout.billing_address' | trans }}</label>
-                            <div class="fields-box">
-                                <span class="value" data-bind="text: currentAddress()"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            {#<div class="form-row checkboxes alone clearfix">
-                <label class="checkbox">
-                    <input type="checkbox" checked="checked">
-                    <i> </i>
-                    <span class="big">
-                        {{ 'checkout.track_score-%AMOUNT%' | trans({'%AMOUNT%': tenant_payment_per_month }) }}
-                    </span>
-                </label>
-                <i class="help after-checkbox pie-el tooltip-link"
-                   title="{{ 'checkout.track_score-%AMOUNT%.help' | trans({'%AMOUNT%': tenant_payment_per_month}) }}"
-                >
-                    ?
-                </i>
-            </div>#}
+        <div data-bind="visible: 'pay' == step() || 'finish' == step()" class="pay-step">
+            {% include 'RjCheckoutBundle:Component:_step-5-pay.html.twig' %}
         </div>
     </div>
+
     <div class="footer-button-box">
-        <button class="button grey fixed" data-bind="visible: 'details' != step(), click: previous">
+        <button class="button grey fixed" data-bind="visible: 'details' != step() && 'finish' != step(), click: previous">
             <span>{{ 'pay_popup.step.previous' | trans }}</span>
         </button>
-        <button class="button fixed" data-bind="visible: 'pay' != step(), click: next, css: {'grey': !$root.isValidUser() }">
+        <button class="button fixed" data-bind="visible: 'pay' != step() && 'finish' != step(), click: next, css: {'grey': !$root.isValidUser() }">
             <span>{{ 'pay_popup.step.next' | trans }}</span>
         </button>
         <button class="button" data-bind="visible: 'pay' == step(), click: next">
             <span>{{ 'checkout.make_payment' | trans }}</span>
+        </button>
+        <button class="button" data-bind="visible: 'finish' == step(), click: next">
+            <span>{{ 'pay_popup.close' | trans }}</span>
         </button>
         <a href="#" class="link removePropertyConfirm" data-bind="visible: 'details' == step() && payment.id(), click: cancelDialog">
             {{ 'checkout.payment.cancel' | trans | raw }}

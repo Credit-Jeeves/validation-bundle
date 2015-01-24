@@ -38,6 +38,10 @@
                 <source>pay_popup.step.next</source>
                 <target>Next</target>
             </trans-unit>
+            <trans-unit id="pay_popup.close">
+                <source>pay_popup.close</source>
+                <target>Close</target>
+            </trans-unit>
             <trans-unit id="checkout.property">
                 <source>checkout.property</source>
                 <target>Property</target>
@@ -550,6 +554,14 @@
             <trans-unit id="checkout.payment.choose_date.text">
                 <source>checkout.payment.choose_date.text</source>
                 <target>Please select a date for your payment.</target>
+            </trans-unit>
+            <trans-unit id="checkout.thankyou_message">
+                <source>checkout.thankyou_message</source>
+                <target>Thank you. Your rent payment is now set up.</target>
+            </trans-unit>
+            <trans-unit id="checkout.one_time.info_message">
+                <source>checkout.one_time.info_message</source>
+                <target>Please allow a few hours for the payment to process. We'll send you an email once it is complete.</target>
             </trans-unit>
         </body>
     </file>

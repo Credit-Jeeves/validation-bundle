@@ -88,7 +88,6 @@ function Payment(parent) {
     });
 
 
-
     this.type.subscribe(function(newValue) {
         if ('one_time' == newValue) {
             self.ends('cancelled');
