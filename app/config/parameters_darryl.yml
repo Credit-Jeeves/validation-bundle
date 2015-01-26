@@ -7,5 +7,9 @@ parameters:
     database_password: 'passw0rd'
 
     server: prod
-    server_name_cj: dar.creditjeeves.com
-    server_name_rj: dar.renttrack.com
+    server_name_cj: dev.creditjeeves.com
+    server_name_rj: dev.renttrack.com
+
+    transunion.ssl_key: /home/centos/stg.renttrack.com.key
+    transunion.ca_certificate: /home/centos/prodsupCA.pem
+    transunion.ssl_certificate: /home/centos/CC2RentTrack-Test.crt

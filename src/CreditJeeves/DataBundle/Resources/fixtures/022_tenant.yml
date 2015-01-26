@@ -442,8 +442,8 @@ fixtures:
         created_at: '-5 days'
         updated_at: '-5 days'
     Tenant_22:
-        first_name: Test
-        last_name: Anne
+        first_name: Anne
+        last_name: Test
         email: transU@example.com
         phone_type: 2
         phone: 7858655392
@@ -457,7 +457,27 @@ fixtures:
         culture: %locale%
         has_data: true
         has_report: null
-        is_verified: none
+        is_verified: passed
+        lastLogin: '-1 hour'
+        created_at: '-50 days'
+        updated_at: '-3 days'
+    Tenant_23:
+        first_name: DANIEL
+        last_name: Nader
+        email: transU+datapull@example.com
+        phone_type: 2
+        phone: 8058675309
+        date_of_birth: '1972-11-10'
+        ssn: 130314052
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        score_changed_notification: true
+        offer_notification: true
+        culture: %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
         lastLogin: '-1 hour'
         created_at: '-50 days'
         updated_at: '-3 days'

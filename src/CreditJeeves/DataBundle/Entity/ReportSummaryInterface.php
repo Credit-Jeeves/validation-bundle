@@ -87,4 +87,11 @@ interface ReportSummaryInterface
      * @return Float
      */
     public function getOldestTradelineInYears();
+
+    /**
+     * The name of the credit bureau that generated this report
+     *
+     * @return String
+     */
+    public function getBureauName();
 }
