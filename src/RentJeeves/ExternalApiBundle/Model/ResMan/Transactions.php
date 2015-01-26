@@ -21,11 +21,11 @@ class Transactions
     protected $payment;
 
     /**
-     * @Serializer\SerializedName("Credit")
-     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\Credit")
+     * @Serializer\SerializedName("Concession")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\Concession")
      * @Serializer\Groups({"ResMan"})
      */
-    protected $credit;
+    protected $concession;
 
     /**
      * @return Charge
@@ -44,19 +44,19 @@ class Transactions
     }
 
     /**
-     * @return Credit
+     * @return Concession
      */
-    public function getCredit()
+    public function getConcession()
     {
-        return $this->credit;
+        return $this->concession;
     }
 
     /**
-     * @param Credit $credit
+     * @param Concession $credit
      */
-    public function setCredit(Credit $credit)
+    public function setConcession(Concession $credit)
     {
-        $this->credit = $credit;
+        $this->concession = $credit;
     }
 
     /**

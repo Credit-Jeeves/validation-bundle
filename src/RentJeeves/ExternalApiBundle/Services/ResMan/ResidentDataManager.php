@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -71,9 +72,7 @@ class ResidentDataManager
                 return false;
             }
 
-            $type = $customer->getCustomers()->getCustomer()->getType();
-
-            return $type === 'current resident';
+            return true;
         });
     }
 }

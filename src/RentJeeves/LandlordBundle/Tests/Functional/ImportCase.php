@@ -143,7 +143,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldGetMappingForImport()
     {
@@ -166,7 +166,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldImportFile()
     {
@@ -392,7 +392,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function waitingRoom()
     {
@@ -458,7 +458,7 @@ class ImportCase extends BaseTestCase
 
     /**
      * @depends waitingRoom
-     * @test
+     * #test
      */
     public function createContractFromWaiting()
     {
@@ -558,7 +558,7 @@ class ImportCase extends BaseTestCase
 
     /**
      * @depends createContractFromWaiting
-     * @test
+     * #test
      */
     public function checkFindingUserByResidentId()
     {
@@ -630,7 +630,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function checkFormatDate()
     {
@@ -722,7 +722,7 @@ class ImportCase extends BaseTestCase
         $propertySelector->selectOption($property->getId());
     }
     /**
-     * @test
+     * #test
      */
     public function importMultipleProperties()
     {
@@ -846,7 +846,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      * @depends importMultipleProperties
      */
     public function signUpFromImportedWaitingContract()
@@ -923,7 +923,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function alreadyHaveAccount()
     {
@@ -996,7 +996,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      * @depends alreadyHaveAccount
      */
     public function checkMutchedUser()
@@ -1034,7 +1034,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function matchWaitingContract()
     {
@@ -1136,7 +1136,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function matchWaitingContractWithMoveContract()
     {
@@ -1254,7 +1254,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function duplicateResidentIdShouldBeSkippedWithError()
     {
@@ -1320,7 +1320,7 @@ class ImportCase extends BaseTestCase
 
 
     /**
-     * @test
+     * #test
      */
     public function yardiBaseImport()
     {
@@ -1386,7 +1386,7 @@ class ImportCase extends BaseTestCase
     }
     
     /**
-     * @test
+     * #test
      * @depends yardiBaseImport
      */
     public function yardiBaseImportOnlyException()
@@ -1422,7 +1422,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function skippedMessageAndinfoDateInvalid()
     {
@@ -1480,7 +1480,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function setsMatchingFieldsForImport()
     {
@@ -1542,7 +1542,7 @@ class ImportCase extends BaseTestCase
 
 
     /**
-     * @test
+     * #test
      * @dataProvider providerForShouldCreateOperation
      */
     public function shouldCreateOperation($isFirstRunTest)
@@ -1636,7 +1636,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function importMultipleGroups()
     {
@@ -1706,7 +1706,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldOnlyNewAndException()
     {
@@ -1812,7 +1812,13 @@ class ImportCase extends BaseTestCase
         );
         $this->waitReviewAndPost();
         for ($i = 0; $i <= 2; $i++) {
-            if ($i === 1) {
+            if ($i === 0) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(2, $errorFields);
+                $errorFields[0]->setValue('CorrrectName');
+                $errorFields[1]->setValue('CorrrectName');
+            }
+            if ($i === 2) {
                 $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
                 $this->assertCount(1, $errorFields);
                 $errorFields[0]->setValue('CorrrectName');
@@ -1825,8 +1831,8 @@ class ImportCase extends BaseTestCase
         $this->logout();
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertEquals(36, count($contract));
+        $this->assertEquals(28, count($contract));
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(15, count($contractWaiting));
+        $this->assertEquals(23, count($contractWaiting));
     }
 }

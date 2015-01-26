@@ -4,8 +4,18 @@ namespace RentJeeves\ExternalApiBundle\Model\ResMan;
 
 use JMS\Serializer\Annotation as Serializer;
 
+/**
+ * @Serializer\XmlRoot("Customer")
+ */
 class Customer
 {
+    /**
+     * @Serializer\SerializedName("CustomerID")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"ResMan"})
+     */
+    protected $customerId;
+
     /**
      * @Serializer\SerializedName("Type")
      * @Serializer\XmlAttribute
@@ -37,6 +47,22 @@ class Customer
      * @Serializer\XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
     protected $lease;
+
+    /**
+     * @return string
+     */
+    public function getCustomerId()
+    {
+        return $this->customerId;
+    }
+
+    /**
+     * @param string $customerId
+     */
+    public function setCustomerId($customerId)
+    {
+        $this->customerId = $customerId;
+    }
 
     /**
      * @return UserName
