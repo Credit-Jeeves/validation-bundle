@@ -38,10 +38,11 @@ security:
                 failure_forward: false
             logout:       true
             anonymous:    true
-            remember_me:
-                key: HKSHDY2PWUSGBNP88YTAT262Y2
-                secure: true
-                httponly: true
+#            Commented due to this ticket https://credit.atlassian.net/browse/RT-1013
+#            remember_me:
+#                key: HKSHDY2PWUSGBNP88YTAT262Y2
+#                secure: true
+#                httponly: true
 
     access_control:
         - { path: ^/oauth/v2/auth_login,            role: IS_AUTHENTICATED_ANONYMOUSLY }
