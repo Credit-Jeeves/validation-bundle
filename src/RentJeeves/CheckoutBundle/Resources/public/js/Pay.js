@@ -30,7 +30,7 @@ function Pay(parent, contractId) {
         'pay': 'rentjeeves_checkoutbundle_paymenttype'
     };
 
-    var steps = ['details', 'source', 'user', 'questions', 'pay'];
+    var steps = ['details', 'source', 'user', 'questions', 'pay', 'finish'];
 
     this.passedSteps = ko.observableArray([]);
 
@@ -399,6 +399,8 @@ function Pay(parent, contractId) {
                 current -= 2;
                 break;
             case 'pay':
+                break;
+            case 'finish':
                 jQuery('#pay-popup').dialog('close');
                 jQuery('body').showOverlay();
                 window.location.reload();
@@ -523,6 +525,9 @@ function Pay(parent, contractId) {
                 } else {
                     sendData(Routing.generate('checkout_pay_exec'), forms[currentStep]);
                 }
+                break;
+            case 'finish':
+                onSuccessStep([]);
                 break;
         }
 

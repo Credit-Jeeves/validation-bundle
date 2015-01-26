@@ -438,6 +438,12 @@ class PayCase extends BaseTestCase
         $payPopup->pressButton('checkout.make_payment');
 
         $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(pay_popup.close)').is(':visible')"
+        );
+        $payPopup->pressButton('pay_popup.close');
+
+        $this->session->wait(
             $this->timeout + 10000,
             "!jQuery('#pay-popup:visible').length"
         );
@@ -506,6 +512,12 @@ class PayCase extends BaseTestCase
 
         $this->session->wait($this->timeout, "jQuery('.pay-step:visible').length");
         $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(pay_popup.close)').is(':visible')"
+        );
+        $this->page->pressButton('pay_popup.close');
 
         $this->session->wait($this->timeout, "!jQuery('#pay-popup:visible').length");
 
