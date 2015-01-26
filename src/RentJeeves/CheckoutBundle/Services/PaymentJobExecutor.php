@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\Services;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
 use Payum\Request\BinaryMaskStatusRequest;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
 use RentJeeves\CheckoutBundle\Payment\PayRent;
@@ -31,6 +32,11 @@ class PaymentJobExecutor
     protected $payRent;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @var PayCreditTrack
      */
     protected $payCreditTrack;
@@ -54,14 +60,16 @@ class PaymentJobExecutor
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "payRent" = @DI\Inject("payment.pay_rent"),
-     *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track")
+     *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track"),
+     *     "logger" = @DI\Inject("logger")
      * })
      */
-    public function __construct($em, $payRent, $payCreditTrack)
+    public function __construct($em, $payRent, $payCreditTrack, $logger)
     {
         $this->em = $em;
         $this->payRent = $payRent;
         $this->payCreditTrack = $payCreditTrack;
+        $this->logger = $logger;
     }
 
     public function getMessage()
@@ -94,6 +102,8 @@ class PaymentJobExecutor
 
         }
         $this->message = sprintf("Job ID:'%s' must have related payment", $job->getId());
+        $this->logger->debug('Related entity for job ID ' . $job->getId() .' not found');
+
         return false;
     }
 
@@ -109,6 +119,7 @@ class PaymentJobExecutor
             $this->exitCode = 1;
             return false;
         }
+
         return true;
     }
 
@@ -119,6 +130,8 @@ class PaymentJobExecutor
      */
     protected function executePayment(Payment $payment)
     {
+        $this->logger->debug('Starting execute rent payment ID ' . $payment->getId());
+
         $date = new DateTime();
         $contract = $payment->getContract();
 
@@ -134,12 +147,16 @@ class PaymentJobExecutor
         if ($contract->getOperations()->filter($filterClosure)->count()) {
             $this->message = 'Payment already executed.';
             $this->exitCode = 1;
+            $this->logger->debug('Payment already executed. Payment ID ' . $payment->getId());
             return false;
         }
 
         $this->payRent->newOrder();
-        $this->job->addRelatedEntity($this->payRent->getOrder());
+        $order = $this->payRent->getOrder();
+        $this->logger->debug('Add created order to job related entities. Job ID ' . $this->job->getId());
+        $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);
+
         return $this->processStatus($this->payRent->executePayment($payment));
     }
 

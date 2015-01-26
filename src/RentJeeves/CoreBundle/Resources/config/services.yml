@@ -11,4 +11,6 @@ services:
             - { name: doctrine.event_listener, event: prePersist, method: prePersist }
             - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
             - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
-        arguments: ["@service_container"]
+        arguments:
+            - "@service_container"
+            - "@logger"

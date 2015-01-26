@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use Monolog\Logger;
 use Payum\Heartland\Soap\Base\BillTransaction;
 use Payum\Heartland\Soap\Base\MakePaymentRequest;
 use RentJeeves\CheckoutBundle\Services\PaidFor;
@@ -29,6 +30,11 @@ class PayRent extends Pay
     protected $paidFor;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @DI\InjectParams({"paidFor" = @DI\Inject("checkout.paid_for")})
      *
      * @param PaidFor $paidFor
@@ -41,8 +47,19 @@ class PayRent extends Pay
         return $this;
     }
 
+    /**
+     * @DI\InjectParams({"logger" = @DI\Inject("logger")})
+     *
+     * @param Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function executePayment(Payment $payment)
     {
+        $this->logger->debug('Get new order for payment ID %s' . $payment->getId());
         $order = $this->getOrder();
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
@@ -99,17 +116,15 @@ class PayRent extends Pay
         } else {
             $order->setStatus(OrderStatus::ERROR);
             if (OrderType::HEARTLAND_CARD == $order->getType() && $payment->isRecurring()) {
-//            TODO: uncomment when logger is added
-//            $this->logger->addDebug(
-//                sprintf('Close CC recurring payment ID %s for order ID %s', $payment->getId(), $order->getId())
-//            );
-
+                $this->logger->debug(
+                    'Close CC recurring payment ID ' . $payment->getId() . ' for order ID ' . $order->getId()
+                );
                 $payment->setClosed($this, PaymentCloseReason::RECURRING_ERROR);
             }
         }
+        $this->logger->debug('New order ID ' . $order->getId() . ', status: ' . $order->getStatus());
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
         $this->em->persist($paymentDetails);
-        $this->em->persist($order);
         $this->em->persist($contract);
         $this->em->flush();
         $this->em->clear();

@@ -12,6 +12,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
+use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -24,11 +25,17 @@ class OrderListener
     private $container;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, Logger $logger)
     {
         $this->container = $container;
+        $this->logger = $logger;
     }
 
     /**
@@ -65,7 +72,7 @@ class OrderListener
         if (!$eventArgs->hasChangedField('status')) {
             return;
         }
-
+        $this->logger->debug('Order ID ' . $entity->getId() .' changes status to ' . $entity->getStatus());
         $this->syncTransactions($entity);
 
         $operations = $entity->getRentOperations();
@@ -93,6 +100,7 @@ class OrderListener
             }
 
             if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
+                $this->logger->debug("Move paidFor for $movePaidFor months, contract ID " . $contract->getId());
                 $oldPaidFor = clone $payment->getPaidFor();
                 $date = new DateTime($payment->getPaidFor()->format('c'));
                 $newPaidFor = $date->modify($movePaidFor . ' month');
@@ -114,8 +122,8 @@ class OrderListener
         if (!$startAt = $this->getStartAtOfContract($order, $em)) {
             return;
         }
-
         $contract = $order->getContract();
+        $this->logger->debug('Update startAt of contract ID ' . $contract->getId());
         $oldValue = $contract->getStartAt();
         $contract->setStartAt($startAt);
         $em->persist($contract);
@@ -173,6 +181,10 @@ class OrderListener
         }
 
         if ($save) {
+            $this->logger->debug(
+                'Flush contract ID' .  $operation->getContract()->getId() .
+                ' and complete transaction of order ID ' . $order->getId()
+            );
             // changes to contract are made in preUpdate since only there we can check whether the order
             // status has been changed. But those changes aren't flushed. So the flush is here.
             $eventArgs->getEntityManager()->flush($operation->getContract());
@@ -261,7 +273,9 @@ class OrderListener
         if (!$contract) {
             return;
         }
-
+        $this->logger->debug(
+            'Update contract balance. Contract ID ' . $contract->getId() . ', order ID ' . $order->getId()
+        );
         // Contract can be finished but last payment does not pass
 //        if ($contract->getStatus() !== ContractStatus::CURRENT) {
 //            return;
@@ -353,10 +367,9 @@ class OrderListener
         }
 
         if ($payment->isRecurring()) {
-//            TODO: uncomment when logger is added
-//            $this->logger->addDebug(
-//                sprintf('Close ACH recurring payment ID %s for order ID %s', $payment->getId(), $order->getId())
-//            );
+            $this->logger->debug(
+                'Close ACH recurring payment ID ' . $payment->getId() . ' for order ID ' . $order->getId()
+            );
             $payment->setClosed($this, PaymentCloseReason::RECURRING_RETURNED);
             $em->persist($payment);
             $em->flush($payment);
