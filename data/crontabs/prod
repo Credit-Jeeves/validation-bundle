@@ -7,7 +7,7 @@
 0 8 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --auto >> /var/log/renttrack.log 2>&1
 30 0 * * * /var/www/my.renttrack.com/bin/console --app=rj contract:update:balance >> /var/log/renttrack.log 2>&1
 #0 1 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --type=late --days=1 >> /var/log/renttrack.log 2>&1
-30 23 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord >> /var/log/renttrack.log 2>&1
+#30 23 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord >> /var/log/renttrack.log 2>&1
 0 7 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=pending >> /var/log/renttrack.log 2>&1
 0 7 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=nsf >> /var/log/renttrack.log 2>&1
 0 7 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:batchDeposit:report >> /var/log/renttrack.log 2>&1
