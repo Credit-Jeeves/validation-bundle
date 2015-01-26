@@ -1,0 +1,5 @@
+model: RentJeeves\DataBundle\Entity\ResManSettings
+fixtures:
+    YardiSetting_1:
+        holding: rjHolding_1
+        accountId: 400

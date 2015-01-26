@@ -22,10 +22,10 @@ use RentJeeves\LandlordBundle\Model\Import;
  */
 trait Contract
 {
-    protected function setYardiPaymentAccepted(EntityContract $contract, $row)
+    protected function setPaymentAccepted(EntityContract $contract, $row)
     {
         if (isset($row[Mapping::KEY_PAYMENT_ACCEPTED])) {
-            $contract->setYardiPaymentAccepted($row[Mapping::KEY_PAYMENT_ACCEPTED]);
+            $contract->setPaymentAccepted($row[Mapping::KEY_PAYMENT_ACCEPTED]);
         }
     }
 
@@ -190,7 +190,7 @@ trait Contract
             }
         }
         $import->setContract($contract);
-        $this->setYardiPaymentAccepted($contract, $row);
+        $this->setPaymentAccepted($contract, $row);
         //set data from csv file
         $contract->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
         $contract->setRent($row[Mapping::KEY_RENT]);
@@ -238,7 +238,7 @@ trait Contract
             $residentMapping
         );
 
-        $contractWaiting->setYardiPaymentAccepted($contract->getYardiPaymentAccepted());
+        $contractWaiting->setPaymentAccepted($contract->getPaymentAccepted());
 
         if (!$contractWaiting->getProperty()) {
             return $contractWaiting;
@@ -256,7 +256,7 @@ trait Contract
             $contractWaitingInDb->setIntegratedBalance($contractWaiting->getIntegratedBalance());
             $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
             $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
-            $contractWaitingInDb->setYardiPaymentAccepted($contractWaiting->getYardiPaymentAccepted());
+            $contractWaitingInDb->setPaymentAccepted($contractWaiting->getPaymentAccepted());
             return $contractWaitingInDb;
         }
 

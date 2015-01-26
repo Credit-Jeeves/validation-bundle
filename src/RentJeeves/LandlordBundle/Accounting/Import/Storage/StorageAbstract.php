@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 
 abstract class StorageAbstract implements StorageInterface
@@ -14,11 +15,16 @@ abstract class StorageAbstract implements StorageInterface
 
     const IMPORT_ONLY_EXCEPTION = 'importOnlyException';
 
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
     protected $session;
 
     protected $mapping;
 
-    protected $availableTypes = array('csv', 'yardi');
+    protected $availableTypes = array('csv', 'yardi', 'resman');
 
     public function setMapping(array $mappedData)
     {

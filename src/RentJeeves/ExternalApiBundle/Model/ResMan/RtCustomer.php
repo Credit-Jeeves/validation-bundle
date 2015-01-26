@@ -35,6 +35,29 @@ class RtCustomer
     protected $rtServiceTransactions;
 
     /**
+     * @Serializer\SerializedName("PaymentAccepted")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"ResMan"})
+     */
+    protected $paymentAccepted;
+
+    /**
+     * @return string
+     */
+    public function getPaymentAccepted()
+    {
+        return $this->paymentAccepted;
+    }
+
+    /**
+     * @param string $paymentAccepted
+     */
+    public function setPaymentAccepted($paymentAccepted)
+    {
+        $this->paymentAccepted = $paymentAccepted;
+    }
+
+    /**
      * @return RtServiceTransactions
      */
     public function getRtServiceTransactions()

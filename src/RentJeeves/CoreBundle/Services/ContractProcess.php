@@ -129,7 +129,7 @@ class ContractProcess
         $contract->setFinishAt($contractWaiting->getFinishAt());
         $contract->setIntegratedBalance($contractWaiting->getIntegratedBalance());
         $contract->setRent($contractWaiting->getRent());
-        $contract->setYardiPaymentAccepted($contractWaiting->getYardiPaymentAccepted());
+        $contract->setPaymentAccepted($contractWaiting->getPaymentAccepted());
         $this->em->persist($contract);
 
         $group = $contractWaiting->getGroup();

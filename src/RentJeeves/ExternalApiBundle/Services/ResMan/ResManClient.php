@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
+use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Response;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
@@ -26,7 +27,7 @@ class ResManClient implements ClientInterface
     );
 
     /**
-     * @var ResManClient
+     * @var HttpClient
      */
     protected $httpClient;
 
@@ -88,7 +89,6 @@ class ResManClient implements ClientInterface
             $uri = $this->apiUrl . $method;
 
             $postBody = array_merge($baseParams, $params, $this->settings->getParameters());
-
             $request = $this->httpClient->post($uri, $headers = null, $postBody);
             $response = $this->httpClient->send($request);
             $httpCode = $response->getStatusCode();
@@ -143,6 +143,11 @@ class ResManClient implements ClientInterface
         }
     }
 
+    /**
+     * @param $externalPropertyId
+     *
+     * @return ResidentTransactions
+     */
     public function getResidentTransactions($externalPropertyId)
     {
         $method = 'GetResidentTransactions2_0';
