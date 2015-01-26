@@ -34,7 +34,17 @@ class StorageResman extends ExternalApiStorage
             $startAt = $this->getDateString($customer->getCustomers()->getCustomer()->getLease()->getLeaseFromDate());
             $finishAt = $this->getDateString($customer->getCustomers()->getCustomer()->getLease()->getLeaseToDate());
             $moveOut = $this->getDateString($customer->getCustomers()->getCustomer()->getLease()->getActualMoveOut());
-
+            $paymentAccepted = strtolower($customer->getPaymentAccepted());
+            /**
+             * Possible Values are:
+             * Yes - All forms of payment accepted
+             * No - Online payments are not accepted
+             * Certified Funds Only - Only payments guaranteed to be successful are allowed
+             * (Credit Card, Debit Card, Money Order, etc)
+             *
+             * Currently we don't work with 3 point - it's will be seperated task
+             */
+            $paymentAccepted = ('yes' === $paymentAccepted) ? PaymentAccepted::ANY : PaymentAccepted::DO_NOT_ACCEPT;
             $today = new \DateTime();
 
             if ($today > $finishAt) {
@@ -55,7 +65,7 @@ class StorageResman extends ExternalApiStorage
                 $moveOut,
                 $this->getBalance($customer->getRtServiceTransactions()),
                 $monthToMonth,
-                $paymentAccepted = PaymentAccepted::ANY //when resman will show PaymentAccepted, must be use from resman
+                $paymentAccepted
             );
 
             $this->writeCsvToFile($data);
