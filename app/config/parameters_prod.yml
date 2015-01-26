@@ -57,3 +57,10 @@ parameters:
         db_id_col:       session_id
         db_data_col:     session_value
         db_time_col:     session_time
+
+    transunion.account_name: 'CC2RentTrack'
+    transunion.password: 'donotcheckin'
+    transunion.ssl_key: /root/transunion.com/my.renttrack.com.key
+    transunion.ca_certificate: /root/transunion.com/TUIExternalCA.pem
+    transunion.ssl_certificate: /root/transunion.com/my.renttrack_20150114.crt
+    transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'

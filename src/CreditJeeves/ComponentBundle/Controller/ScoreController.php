@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Lead;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use CreditJeeves\DataBundle\Entity\Report;
 
 class ScoreController extends Controller
 {
@@ -15,33 +16,31 @@ class ScoreController extends Controller
      *
      * @return array
      */
-    public function indexAction($user)
+    public function indexAction($user, Report $Report)
     {
-        $aScores = $user->getScores();
+        $scores = $user->getScores();
 
         $chartData = array();
-        foreach ($aScores as $score) {
-            $nScore = $score->getScore();
-            $nScore = ($nScore > 900) ? 900 : $nScore;
+        foreach ($scores as $score) {
+            $scoreDatum = $score->getScore();
+            $scoreDatum = ($scoreDatum > 900) ? 900 : $scoreDatum;
             $chartData[] = sprintf(
                 "[\"%s\", %d]",
                 $score->getCreatedDate()->format('M d, Y'),
-                $nScore
+                $scoreDatum
             );
         }
         $chartData = implode(',', $chartData);
-        $nScore = $user->getScores()->last()->getScore();
-        $nScore = ($nScore > 900) ? 900 : $nScore;
-        $nFicoScore = $user->getScores()->last()->getFicoScore();
-        $sDate = $user->getScores()->last()->getCreatedDate()->format('M d, Y');
-
+        $score = $user->getScores()->last()->getScore();
+        $score = ($score > 900) ? 900 : $score;
+        $date = $user->getScores()->last()->getCreatedDate()->format('M d, Y');
 
         return array(
             'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
             'chartData' => $chartData,
-            'nScore' => $nScore,
-            'nFicoScore' => $nFicoScore,
-            'sDate' => $sDate,
+            'score' => $score,
+            'date' => $date,
+            'bureau' => $Report->getBureauName()
         );
     }
 }

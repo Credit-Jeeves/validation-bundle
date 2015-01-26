@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "df27ddc04ae11b7f0b92d58b8f68604c",
+    "hash": "9ceafa49ecf5d2bc7c5c0933b297bef9",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -248,42 +248,35 @@
             "time": "2014-03-04 20:43:51"
         },
         {
-            "name": "besimple/soap",
+            "name": "besimple/soap-bundle",
             "version": "dev-master",
+            "target-dir": "BeSimple/SoapBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/BeSimple/BeSimpleSoap.git",
-                "reference": "f2a8a7ebb378997d8eb258f30342e0b9c70e1dff"
+                "url": "https://github.com/BeSimple/BeSimpleSoapBundle.git",
+                "reference": "a5a8643628426c41ba3303241df6f9e69e8a006b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BeSimple/BeSimpleSoap/zipball/f2a8a7ebb378997d8eb258f30342e0b9c70e1dff",
-                "reference": "f2a8a7ebb378997d8eb258f30342e0b9c70e1dff",
+                "url": "https://api.github.com/repos/BeSimple/BeSimpleSoapBundle/zipball/a5a8643628426c41ba3303241df6f9e69e8a006b",
+                "reference": "a5a8643628426c41ba3303241df6f9e69e8a006b",
                 "shasum": ""
             },
             "require": {
                 "ass/xmlsecurity": "~1.0",
-                "ext-curl": "*",
+                "besimple/soap-common": "0.3.*",
+                "besimple/soap-wsdl": "0.3.*",
                 "ext-soap": "*",
                 "php": ">=5.3.0",
                 "symfony/framework-bundle": "~2.3",
                 "symfony/twig-bundle": "~2.3",
                 "zendframework/zend-mime": "2.1.*"
             },
-            "replace": {
-                "besimple/soap-bundle": "self.version",
-                "besimple/soap-client": "self.version",
-                "besimple/soap-common": "self.version",
-                "besimple/soap-server": "self.version",
-                "besimple/soap-wsdl": "self.version"
+            "suggest": {
+                "besimple/soap-client": "0.3.*",
+                "besimple/soap-server": "0.3.*"
             },
-            "require-dev": {
-                "ext-mcrypt": "*",
-                "mikey179/vfsstream": "~1.0",
-                "symfony/filesystem": "~2.3",
-                "symfony/process": "~2.3"
-            },
-            "type": "library",
+            "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
                     "dev-master": "0.3-dev"
@@ -291,7 +284,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "BeSimple\\": "src/"
+                    "BeSimple\\SoapBundle": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -312,12 +305,233 @@
                     "email": "francis.besset@gmail.com"
                 }
             ],
-            "description": "Build and consume SOAP and WSDL based web services",
-            "homepage": "http://besim.pl",
+            "description": "Build and consume SOAP and WSDL based web services with Symfony2",
+            "homepage": "https://github.com/BeSimple/BeSimpleSoapBundle",
             "keywords": [
-                "soap"
+                "soap",
+                "soap-bundle"
             ],
             "time": "2014-08-18 12:20:19"
+        },
+        {
+            "name": "besimple/soap-client",
+            "version": "dev-master",
+            "target-dir": "BeSimple/SoapClient",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git",
+                "reference": "d88fdf45f6a28e5cede9944c2563a3b346bd859d"
+            },
+            "require": {
+                "ass/xmlsecurity": "~1.0",
+                "besimple/soap-common": "0.3.*",
+                "ext-curl": "*",
+                "ext-soap": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "~1.0",
+                "symfony/filesystem": "~2.3",
+                "symfony/process": "~2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "BeSimple\\SoapClient": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Francis Besset",
+                    "email": "francis.besset@gmail.com"
+                },
+                {
+                    "name": "Christian Kerl",
+                    "email": "christian-kerl@web.de"
+                },
+                {
+                    "name": "Andreas Schamberger",
+                    "email": "mail@andreass.net"
+                }
+            ],
+            "description": "Build and consume SOAP Client based web services",
+            "homepage": "https://github.com/BeSimple/BeSimpleSoapClient",
+            "keywords": [
+                "soap",
+                "soap-client"
+            ],
+            "time": "2014-12-17 11:57:23"
+        },
+        {
+            "name": "besimple/soap-common",
+            "version": "dev-master",
+            "target-dir": "BeSimple/SoapCommon",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git",
+                "reference": "cc88dca0e9b77907fda928b222b9a71ab7a790ce"
+            },
+            "require": {
+                "ass/xmlsecurity": "~1.0",
+                "ext-soap": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "ext-mcrypt": "*",
+                "mikey179/vfsstream": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "BeSimple\\SoapCommon": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Francis Besset",
+                    "email": "francis.besset@gmail.com"
+                },
+                {
+                    "name": "Christian Kerl",
+                    "email": "christian-kerl@web.de"
+                },
+                {
+                    "name": "Andreas Schamberger",
+                    "email": "mail@andreass.net"
+                }
+            ],
+            "description": "Build and consume SOAP Common based web services",
+            "homepage": "https://github.com/BeSimple/BeSimpleSoapCommon",
+            "keywords": [
+                "soap",
+                "soap-common"
+            ],
+            "time": "2014-08-16 13:48:45"
+        },
+        {
+            "name": "besimple/soap-server",
+            "version": "dev-master",
+            "target-dir": "BeSimple/SoapServer",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BeSimple/BeSimpleSoapServer.git",
+                "reference": "99119d748ef938380a394779fb4c441abb2f58a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BeSimple/BeSimpleSoapServer/zipball/99119d748ef938380a394779fb4c441abb2f58a0",
+                "reference": "99119d748ef938380a394779fb4c441abb2f58a0",
+                "shasum": ""
+            },
+            "require": {
+                "ass/xmlsecurity": "~1.0",
+                "besimple/soap-common": "0.3.*",
+                "ext-soap": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "BeSimple\\SoapServer": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andreas Schamberger",
+                    "email": "mail@andreass.net"
+                },
+                {
+                    "name": "Christian Kerl",
+                    "email": "christian-kerl@web.de"
+                },
+                {
+                    "name": "Francis Besset",
+                    "email": "francis.besset@gmail.com"
+                }
+            ],
+            "description": "Build and consume SOAP Server based web services",
+            "homepage": "https://github.com/BeSimple/BeSimpleSoapServer",
+            "keywords": [
+                "soap",
+                "soap-server"
+            ],
+            "time": "2014-08-16 13:48:45"
+        },
+        {
+            "name": "besimple/soap-wsdl",
+            "version": "dev-master",
+            "target-dir": "BeSimple/SoapWsdl",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BeSimple/BeSimpleSoapWsdl.git",
+                "reference": "2e4544a017f84b05a54f285d9de62910ef060c4c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BeSimple/BeSimpleSoapWsdl/zipball/2e4544a017f84b05a54f285d9de62910ef060c4c",
+                "reference": "2e4544a017f84b05a54f285d9de62910ef060c4c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "BeSimple\\SoapWsdl": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Kerl",
+                    "email": "christian-kerl@web.de"
+                },
+                {
+                    "name": "Francis Besset",
+                    "email": "francis.besset@gmail.com"
+                }
+            ],
+            "description": "Build and consume SOAP Common based web services",
+            "homepage": "https://github.com/BeSimple/BeSimpleSoapWsdl",
+            "keywords": [
+                "soap",
+                "soap-wsdl"
+            ],
+            "time": "2014-08-14 12:21:49"
         },
         {
             "name": "besimple/wsdl2php",
@@ -449,7 +663,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2014-10-03 15:51:02"
+            "time": "2014-11-06 10:36:20"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -625,7 +839,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -1250,9 +1464,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1723,13 +1937,13 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/formapro/UniversalErrorCatcher",
-                "reference": "1.0.2"
+                "url": "https://github.com/formapro/UniversalErrorCatcher.git",
+                "reference": "2c120e0e001eac38a2d33901de4b092a6cbfb1bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/formapro/UniversalErrorCatcher/zipball/1.0.2",
-                "reference": "1.0.2",
+                "url": "https://api.github.com/repos/formapro/UniversalErrorCatcher/zipball/2c120e0e001eac38a2d33901de4b092a6cbfb1bf",
+                "reference": "2c120e0e001eac38a2d33901de4b092a6cbfb1bf",
                 "shasum": ""
             },
             "require": {
@@ -1766,7 +1980,7 @@
                 "error",
                 "exception"
             ],
-            "time": "2012-09-24 03:16:08"
+            "time": "2012-09-24 10:16:08"
         },
         {
             "name": "friendsofsymfony/jsrouting-bundle",
@@ -3076,7 +3290,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "KnpLabs",
+                    "name": "Knplabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -3526,12 +3740,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Payum/AuthorizeNetAim.git",
-                "reference": "0.5.0"
+                "reference": "d001607b7fcadd0c2b50a561c89e34fc3eb50f44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Payum/AuthorizeNetAim/zipball/0.5.0",
-                "reference": "0.5.0",
+                "url": "https://api.github.com/repos/Payum/AuthorizeNetAim/zipball/d001607b7fcadd0c2b50a561c89e34fc3eb50f44",
+                "reference": "d001607b7fcadd0c2b50a561c89e34fc3eb50f44",
                 "shasum": ""
             },
             "require": {
@@ -3559,7 +3773,7 @@
             ],
             "authors": [
                 {
-                    "name": "Kotlyar Maksim",
+                    "name": "Maksim Kotlyar",
                     "email": "kotlyar.maksim@gmail.com"
                 }
             ],
@@ -3916,6 +4130,47 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
+        },
+        {
+            "name": "renttrack/transunion-bundle",
+            "version": "dev-master",
+            "target-dir": "RentTrack/TransUnionBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git",
+                "reference": "168a310fc84c725a17e5af30f96ee8143c460f65"
+            },
+            "require": {
+                "besimple/soap-client": "dev-master",
+                "besimple/soap-common": "dev-master",
+                "php": ">=5.4.2",
+                "symfony/framework-bundle": "~2.4"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "RentTrack\\TransUnionBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tatyana Stronina",
+                    "email": "tatyana@renttrack.com"
+                },
+                {
+                    "name": "Cary Penniman",
+                    "email": "cary@renttrack.com"
+                }
+            ],
+            "description": "The bundle allows to interact with TransUnion API",
+            "homepage": "https://github.com/Credit-Jeeves/TransUnionBundle",
+            "keywords": [
+                "trans union api"
+            ],
+            "time": "2014-12-19 11:27:18"
         },
         {
             "name": "rj/email-bundle",
@@ -6794,8 +7049,13 @@
         "jms/job-queue-bundle": 20,
         "pagerfanta/pagerfanta": 20,
         "fp/jsformvalidator-bundle": 20,
-        "besimple/soap": 20,
+        "besimple/soap-bundle": 20,
+        "besimple/soap-common": 20,
+        "besimple/soap-wsdl": 20,
+        "besimple/soap-client": 20,
+        "besimple/soap-server": 20,
         "besimple/wsdl2php": 20,
+        "renttrack/transunion-bundle": 20,
         "proberts/skip32": 20,
         "behat/mink": 20,
         "behat/mink-zombie-driver": 20,
@@ -6805,6 +7065,7 @@
         "khepin/yaml-fixtures-bundle": 20,
         "comfortablynumb/backup-restore-bundle": 20
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.4.12,<5.5.0",
         "ext-curl": "*",

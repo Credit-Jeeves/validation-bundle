@@ -1,9 +1,6 @@
 <?php
 namespace CreditJeeves\DataBundle\EventListener;
 
-use CreditJeeves\ArfBundle\Parser\ArfParser;
-use CreditJeeves\DataBundle\Entity\Report;
-use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\Tradeline;
 use CreditJeeves\DataBundle\Entity\ApplicantIncentive;
 use CreditJeeves\ArfBundle\Map\ArfTradelines;
@@ -15,15 +12,6 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
  */
 class DoctrineListener
 {
-    public function prePersist(LifecycleEventArgs $eventArgs)
-    {
-        $em = $eventArgs->getEntityManager();
-        $entity = $eventArgs->getEntity();
-        if ($entity instanceof Report) {
-            $this->setScore($entity, $em);
-        }
-    }
-
     public function postUpdate(LifecycleEventArgs $eventArgs)
     {
         $em = $eventArgs->getEntityManager();
@@ -31,40 +19,6 @@ class DoctrineListener
         if ($entity instanceof Tradeline) {
             $this->checkCompleted($entity, $em);
         }
-        if ($entity instanceof Report) {
-            $this->setScore($entity, $em);
-        }
-    }
-
-    /**
-     * @param Report $report
-     *
-     * @return int
-     */
-    protected function getReportScore($report)
-    {
-        return $report->getArfReport()->getScore();
-    }
-
-    /**
-     * @param Report $report
-     *
-     * @return int
-     */
-    protected function setScore(Report $report, $em)
-    {
-        $newScore = $this->getReportScore($report);
-        if ($newScore > 1000) {
-            $newScore = 0;
-        }
-        if (0 == $newScore) {
-            return;
-        }
-        $score = new Score();
-        $score->setUser($report->getUser());
-        $score->setScore($newScore);
-        $em->persist($score);
-        $em->flush($score);
     }
 
     /**

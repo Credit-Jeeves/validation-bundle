@@ -8,16 +8,16 @@ class TotalTradelinesController extends Controller
 {
     public function indexAction(Report $Report)
     {
-        $nOpened = $Report->getCountApplicantOpenedTradelines();
-        $nClosed = $Report->getCountApplicantClosedTradelines();
-        $nTotal = $nOpened + $nClosed;
+        $opened = $Report->getTotalOpenAccounts();
+        $closed = $Report->getTotalClosedAccounts();
+        $total = $opened + $closed;
 
         return $this->render(
             'ComponentBundle:TotalTradelines:index.html.twig',
             array(
-                'nTotal' => $nTotal,
-                'nOpened' => $nOpened,
-                'nClosed' => $nClosed,
+                'total' => $total,
+                'opened' => $opened,
+                'closed' => $closed,
                 )
         );
     }

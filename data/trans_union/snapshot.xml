@@ -1,0 +1,27 @@
+<Snapshot>
+    <OpenAccounts>1</OpenAccounts>
+    <totalClosedAccounts>2</totalClosedAccounts>
+    <TotalAccounts>3</TotalAccounts>
+    <DerogatoryAccounts>1</DerogatoryAccounts>
+    <DelinquentAccounts>1</DelinquentAccounts>
+    <TotalBalances>1092.00</TotalBalances>
+    <TotalMonthlyPayments>120</TotalMonthlyPayments>
+    <NumberOfInquiries>1</NumberOfInquiries>
+    <totalPublicRecords>21</totalPublicRecords>
+    <AvailableCredit>867.00</AvailableCredit>
+    <Utilization>45</Utilization>
+    <DateOfOldestTrade>1997-08-01</DateOfOldestTrade>
+    <AgeOfCredit>17.3</AgeOfCredit>
+    <TotalOpenInstallmentAccounts>1</TotalOpenInstallmentAccounts>
+    <TotalOpenCollectionAccounts>1</TotalOpenCollectionAccounts>
+    <TotalOpenMortgageAccounts>1</TotalOpenMortgageAccounts>
+    <TotalOpenRevolvingAccounts>4</TotalOpenRevolvingAccounts>
+    <TotalOpenOtherAccounts>0</TotalOpenOtherAccounts>
+    <BalanceOpenInstallmentAccounts>2760</BalanceOpenInstallmentAccounts>
+    <BalanceOpenCollectionAccounts>100</BalanceOpenCollectionAccounts>
+    <BalanceOpenMortgageAccounts>56000</BalanceOpenMortgageAccounts>
+    <BalanceOpenRevolvingAccounts>256</BalanceOpenRevolvingAccounts>
+    <BalanceOpenOtherAccounts>50</BalanceOpenOtherAccounts>
+    <OnTimePaymentPercentage>100%</OnTimePaymentPercentage>
+    <LatePaymentPercentage>100%</LatePaymentPercentage>
+</Snapshot>

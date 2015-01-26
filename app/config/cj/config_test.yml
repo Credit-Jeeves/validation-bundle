@@ -5,6 +5,9 @@ parameters:
     router.request_context.base_url: '/_test.php'
     doctrine.dbal.connection.wrapper_class: 'CreditJeeves\TestBundle\Doctrine\DBAL\PersistedConnection'
 
+    credit_services:
+        credit_summary_vendor: experian # supported values are 'transunion' or 'experian'
+
 framework:
     router:   { resource: "%kernel.root_dir%/config/cj/routing_test.yml" }
     translator: { fallback: 'test' }

@@ -1,4 +1,4 @@
-{% if nTradelines > 0 %}
+{% if tradelines > 0 %}
 <div class="pod-middle pod-border shadow">
     <div class="pod-title">
         <h3>{{ 'component.loan.types' | trans }}</h3>
@@ -10,7 +10,7 @@
     <div class='pod-column-middle floatright'>
         <p>
             {{ 'loan.types.comment' | trans }}
-            <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133571-mix-of-loan-types-">{{ 'common.learn.more' | trans }}</a>
+            {#<a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133571-mix-of-loan-types-">{{ 'common.learn.more' | trans }}</a>#}
         </p>
   </div>
   <div class="clearboth"></div>
@@ -23,9 +23,9 @@
       data.addColumn('string', 'Loan Type Ratio');
       data.addColumn('number', 'Type');
       data.addRows([
-        ['Credit Cards',      {{ RevolvingDept }}],
-        ['Mortages',          {{ MortgageDebt }}],
-        ['Installment Loans', {{ InstallmentDebt }}]
+        ['Credit Cards',      {{ revolvingDept }}],
+        ['Mortages',          {{ mortgageDebt }}],
+        ['Installment Loans', {{ installmentDebt }}]
       ]);
       var options = {
         'width':220,'height':110, fontSize: 10,

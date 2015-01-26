@@ -13,6 +13,5 @@ services:
     data.event_listener.doctrine:
         class: "%data.event_listener.doctrine.class%"
         tags:
-            - { name: doctrine.event_listener, event: prePersist, method: prePersist }
             - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
 
