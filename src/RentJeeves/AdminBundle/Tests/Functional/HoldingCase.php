@@ -63,16 +63,11 @@ class HoldingCase extends BaseTestCase
 
         $test->click();
         $this->session->wait(
-            10000,
-            "$('.overlay-trigger').length > 0"
+            50000,
+            "$('.alert-success').length > 0"
         );
 
-        $this->session->wait(
-            25000,
-            "$('.overlay-trigger').length <= 0"
-        );
-
-        $this->assertNotNull($this->page->find('css', '.alert-success'));
+        $this->assertNotNull($this->page->find('css', ''));
         $this->assertNotNull(
             $links = $this->page->findAll(
                 'css',
@@ -90,15 +85,11 @@ class HoldingCase extends BaseTestCase
         );
         $test->click();
         $this->session->wait(
-            10000,
-            "$('.overlay-trigger').length > 0"
+            54000,
+            "$('.alert-error').length > 0"
         );
 
-        $this->session->wait(
-            35000,
-            "$('.overlay-trigger').length <= 0"
-        );
-        $this->assertNotNull($this->page->find('css', '.alert-error'));
+        $this->assertNotNull($this->page->find('css', ''));
         $this->logout();
 
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
