@@ -12,7 +12,7 @@ class RjDataBundle extends Bundle
      * @var bool
      */
     protected static $isLoaded = false;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -32,6 +32,7 @@ class RjDataBundle extends Bundle
             Type::addType('PaymentTypeACH', 'RentJeeves\DataBundle\Enum\PaymentTypeACH');
             Type::addType('PaymentTypeCC', 'RentJeeves\DataBundle\Enum\PaymentTypeCC');
             Type::addType('ExternalApi', 'RentJeeves\DataBundle\Enum\ExternalApi');
+            Type::addType('YardiPaymentAccepted', 'RentJeeves\DataBundle\Enum\PaymentAccepted'); #TODO: CKP: needed for column rename migration, remove me after release 4.3
             Type::addType('PaymentAccepted', 'RentJeeves\DataBundle\Enum\PaymentAccepted');
             Type::addType('ApiIntegrationType', 'RentJeeves\DataBundle\Enum\ApiIntegrationType');
 
