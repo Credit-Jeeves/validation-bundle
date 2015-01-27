@@ -143,7 +143,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldGetMappingForImport()
     {
@@ -166,7 +166,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldImportFile()
     {
@@ -392,7 +392,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function waitingRoom()
     {
@@ -458,7 +458,7 @@ class ImportCase extends BaseTestCase
 
     /**
      * @depends waitingRoom
-     * #test
+     * @test
      */
     public function createContractFromWaiting()
     {
@@ -558,7 +558,7 @@ class ImportCase extends BaseTestCase
 
     /**
      * @depends createContractFromWaiting
-     * #test
+     * @test
      */
     public function checkFindingUserByResidentId()
     {
@@ -630,7 +630,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function checkFormatDate()
     {
@@ -722,7 +722,7 @@ class ImportCase extends BaseTestCase
         $propertySelector->selectOption($property->getId());
     }
     /**
-     * #test
+     * @test
      */
     public function importMultipleProperties()
     {
@@ -846,7 +846,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      * @depends importMultipleProperties
      */
     public function signUpFromImportedWaitingContract()
@@ -923,7 +923,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function alreadyHaveAccount()
     {
@@ -996,7 +996,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      * @depends alreadyHaveAccount
      */
     public function checkMutchedUser()
@@ -1034,7 +1034,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function matchWaitingContract()
     {
@@ -1136,7 +1136,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function matchWaitingContractWithMoveContract()
     {
@@ -1254,7 +1254,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function duplicateResidentIdShouldBeSkippedWithError()
     {
@@ -1320,7 +1320,7 @@ class ImportCase extends BaseTestCase
 
 
     /**
-     * #test
+     * @test
      */
     public function yardiBaseImport()
     {
@@ -1386,7 +1386,7 @@ class ImportCase extends BaseTestCase
     }
     
     /**
-     * #test
+     * @test
      * @depends yardiBaseImport
      */
     public function yardiBaseImportOnlyException()
@@ -1422,7 +1422,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function skippedMessageAndinfoDateInvalid()
     {
@@ -1480,7 +1480,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function setsMatchingFieldsForImport()
     {
@@ -1542,7 +1542,7 @@ class ImportCase extends BaseTestCase
 
 
     /**
-     * #test
+     * @test
      * @dataProvider providerForShouldCreateOperation
      */
     public function shouldCreateOperation($isFirstRunTest)
@@ -1636,7 +1636,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function importMultipleGroups()
     {
@@ -1706,7 +1706,7 @@ class ImportCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldOnlyNewAndException()
     {
