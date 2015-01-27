@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Model\ResMan;
 
 use JMS\Serializer\Annotation as Serializer;
 
-class Credit
+class Concession
 {
     /**
      * @Serializer\SerializedName("Detail")

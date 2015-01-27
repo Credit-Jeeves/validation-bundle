@@ -122,9 +122,17 @@ class ResManClient implements ClientInterface
                 );
             }
             $response = $resMan->getResponse();
+            /**
+             * @TODO
+             * Serializer not support namespaces for @XmlList
+             * Currently it's in developing process
+             * https://github.com/schmittjoh/serializer/pull/301
+             * After it's will be finished, we must refactoring code and remove
+             * replace for Customer
+             */
             $response = str_replace(
-                ['&lt;', '&gt;', 'http://my-company.com/namespace'],
-                ['<', '>', 'http://www.w3.org/2005/Atom'],
+                ['&lt;', '&gt;', 'http://my-company.com/namespace', 'MITS:Customer'],
+                ['<', '>', 'http://www.w3.org/2005/Atom', 'Customer'],
                 $response
             );
 

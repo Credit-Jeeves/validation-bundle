@@ -1812,7 +1812,13 @@ class ImportCase extends BaseTestCase
         );
         $this->waitReviewAndPost();
         for ($i = 0; $i <= 2; $i++) {
-            if ($i === 1) {
+            if ($i === 0) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(2, $errorFields);
+                $errorFields[0]->setValue('CorrrectName');
+                $errorFields[1]->setValue('CorrrectName');
+            }
+            if ($i === 2) {
                 $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
                 $this->assertCount(1, $errorFields);
                 $errorFields[0]->setValue('CorrrectName');
@@ -1825,8 +1831,8 @@ class ImportCase extends BaseTestCase
         $this->logout();
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertEquals(36, count($contract));
+        $this->assertEquals(28, count($contract));
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(15, count($contractWaiting));
+        $this->assertEquals(23, count($contractWaiting));
     }
 }
