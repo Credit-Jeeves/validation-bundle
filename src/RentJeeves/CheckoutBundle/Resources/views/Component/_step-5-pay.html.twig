@@ -154,6 +154,6 @@
     </div>
 </div>
 
-<div class="info-message" data-bind="visible: ('finish' == step() && 'one_time' == payment.type())">
+<div class="info-message" data-bind="visible: showInfoMessage()">
     {{ 'checkout.one_time.info_message' | trans }}
 </div>
