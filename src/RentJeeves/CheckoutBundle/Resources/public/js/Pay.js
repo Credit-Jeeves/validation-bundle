@@ -333,7 +333,7 @@ function Pay(parent, contractId) {
         return Format.money(parseFloat(this.total()) + fee);
     };
 
-    this.isNeedShowInfoMessage = function() {
+    this.showInfoMessage = function() {
         if ('finish' == self.step() && 'one_time' == self.payment.type() && self.payment.startDate()) {
             var now = new Date();
             var startOn = Date.parseExact(self.payment.startDate(),  "M/d/yyyy");
