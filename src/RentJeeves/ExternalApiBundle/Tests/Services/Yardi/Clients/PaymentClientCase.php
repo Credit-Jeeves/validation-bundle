@@ -26,7 +26,7 @@ class PaymentClientCase extends Base
             $this->getYardiSettings(),
             YardiClientEnum::PAYMENT
         );
-
+        
         self::$batchId = self::$client->openReceiptBatchDepositDate(
             new DateTime(),
             $yardiPropertyId = 'rnttrk01',
