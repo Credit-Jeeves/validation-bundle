@@ -69,20 +69,8 @@ class ImportFactory
         }
 
         if ($importType === self::INTEGRATED_API) {
-            /** @var $user Landlord */
-            $user = $this->container->get('security.context')->getToken()->getUser();
-            /** @var $holding Holding */
-            $holding = $user->getHolding();
-            $accountingSettings = $holding->getAccountingSettings();
-            if (empty($accountingSettings)) {
-                throw new Exception(
-                    sprintf(
-                        "For this landlord(%s) we don't have accounting setting, please setup api integration type",
-                        $user->getEmail()
-                    )
-                );
-            }
-            $importType = ApiIntegrationType::$importMapping[$accountingSettings->getApiIntegration()];
+            return $this->getAccountingSettingType();
+
         }
 
         return $importType;
@@ -115,6 +103,10 @@ class ImportFactory
     public function clearSessionAllImports()
     {
         foreach ($this->availableImportType as $type) {
+            if ($this->getAccountingSettingType() === ApiIntegrationType::NONE && $type === self::INTEGRATED_API) {
+                continue;
+            }
+
             $storage = $this->getStorage($type);
             $storage->clearSession();
         }
@@ -147,5 +139,19 @@ class ImportFactory
     protected function getServiceName($baseName, $typeSerivce)
     {
         return sprintf('%s.%s', $baseName, $typeSerivce);
+    }
+
+    protected function getAccountingSettingType()
+    {
+        /** @var $user Landlord */
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        /** @var $holding Holding */
+        $holding = $user->getHolding();
+        $accountingSettings = $holding->getAccountingSettings();
+        if (empty($accountingSettings)) {
+            return ApiIntegrationType::NONE;
+        }
+
+        return ApiIntegrationType::$importMapping[$accountingSettings->getApiIntegration()];
     }
 }
