@@ -136,6 +136,7 @@ class AccountingController extends Controller
         );
 
         $form->handleRequest($this->get('request'));
+        /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
         $importFactory->clearSessionAllImports();
 

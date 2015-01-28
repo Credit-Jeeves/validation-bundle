@@ -33,7 +33,7 @@ class RjDataBundle extends Bundle
             Type::addType('PaymentTypeCC', 'RentJeeves\DataBundle\Enum\PaymentTypeCC');
             Type::addType('ExternalApi', 'RentJeeves\DataBundle\Enum\ExternalApi');
             # TODO: YardiPaymentAccepted line below needed for column rename migration, remove after release 4.3
-            Type::addType('YardiPaymentAccepted', 'RentJeeves\DataBundle\Enum\PaymentAccepted'); 
+            Type::addType('YardiPaymentAccepted', 'RentJeeves\DataBundle\Enum\PaymentAccepted');
             Type::addType('PaymentAccepted', 'RentJeeves\DataBundle\Enum\PaymentAccepted');
             Type::addType('ApiIntegrationType', 'RentJeeves\DataBundle\Enum\ApiIntegrationType');
 

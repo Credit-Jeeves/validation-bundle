@@ -6,6 +6,8 @@ use CreditJeeves\CoreBundle\Enum;
 
 class ApiIntegrationType extends Enum
 {
+    const NONE = 'none';
+
     const YARDI_VOYAGER = 'yardi voyager';
 
     const RESMAN = 'resman';
