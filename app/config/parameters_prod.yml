@@ -59,8 +59,8 @@ parameters:
         db_time_col:     session_time
 
     transunion.account_name: 'CC2RentTrack'
-    transunion.password: 'donotcheckin'
-    transunion.ssl_key: /root/transunion.com/my.renttrack.com.key
-    transunion.ca_certificate: /root/transunion.com/TUIExternalCA.pem
-    transunion.ssl_certificate: /root/transunion.com/my.renttrack_20150114.crt
+    # transunion.password: 'donotcheckin' # this is set locally on server
+    transunion.ssl_key: /var/www/my.renttrack.com/app/config/secrets/transunion/my.renttrack.com.key
+    transunion.ca_certificate:  /var/www/my.renttrack.com/app/config/secrets/transunion/TUIExternalCA.pem
+    transunion.ssl_certificate:  /var/www/my.renttrack.com/app/config/secrets/transunion/my.renttrack_20150114.crt
     transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
