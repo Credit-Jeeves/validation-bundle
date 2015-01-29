@@ -1,10 +1,10 @@
-{% if nScore > 0 %}
+{% if score > 0 %}
 <div class="pod-middle pod-border pod-padding shadow credit-score-graph">
   <div class="score-column">
     <h3>Your Credit Score</h3>
-    <div class="score-current">{{nScore}}</div>
-    <div class="score-date">as of&nbsp;{{sDate}}</div>
-    <div class="score-fico">Experian Vantage3 Score</div>
+    <div class="score-current">{{ score }}</div>
+    <div class="score-date">as of&nbsp;{{ date }}</div>
+    <div class="score-fico">{{ bureau }} Vantage3 Score</div>
   </div>
   <div class="score-column score-tenant">
     <div class="vertical-rainbow-chart">

@@ -15,6 +15,7 @@ use RentJeeves\LandlordBundle\Form\InviteTenantContractType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use \DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\ConstraintViolation;
 
 class TenantsController extends Controller
 {
@@ -72,6 +73,7 @@ class TenantsController extends Controller
         );
          
         $request = $this->get('request');
+        $translator = $this->get('translator');
         if ($request->getMethod() == 'POST' && $canInvite) {
             $form->handleRequest($request);
             if ($form->isValid()) {
@@ -124,9 +126,14 @@ class TenantsController extends Controller
                         $resident->validate($this->getUser(), $residentMapping)
                     );
                 }
+
+                $validatorErrors = $this->get('validator')->validate($contract);
+                /** @var ConstraintViolation $error */
+                foreach ($validatorErrors as $error) {
+                    $errors[] = $translator->trans($error->getMessage());
+                }
             }
 
-            $translator = $this->get('translator');
             foreach ($form->getErrors() as $error) {
                 $errors[] = $translator->trans($error->getMessage());
             }

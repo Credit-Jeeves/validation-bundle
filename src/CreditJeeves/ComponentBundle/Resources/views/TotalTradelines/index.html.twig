@@ -7,10 +7,10 @@
         <div id="total-tradelines-chart-div"></div>
     </div>
     <div class='pod-column-big floatright'>
-        <div class="pod-header">{{ 'component.tradelines.total' | trans }}: {{ nTotal }}</div>
+        <div class="pod-header">{{ 'component.tradelines.total' | trans }}: {{ total }}</div>
         <p>
-            {{ 'tradelines.total.comment' | trans | replace({'%nOpened%': nOpened, '%nClosed%': nClosed}) }}
-            <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/152399-total-accounts">{{ 'common.learn.more' | trans }}</a>
+            {{ 'tradelines.total.comment' | trans | replace({'%nOpened%': opened, '%nClosed%': closed}) }}
+            {#<a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/152399-total-accounts">{{ 'common.learn.more' | trans }}</a>#}
         </p>
   </div>
   <div class="clearboth"></div>
@@ -21,11 +21,11 @@
     google.setOnLoadCallback(function () {
       var data = google.visualization.arrayToDataTable([
         ['Label', 'Value'],
-        ['Total', {{ nTotal }}]
+        ['Total', {{ total }}]
       ]);
       var options = {
         max:        22,
-        width:      400, 
+        width:      400,
         height:     120,
         redFrom:    0,
         redTo:      11,

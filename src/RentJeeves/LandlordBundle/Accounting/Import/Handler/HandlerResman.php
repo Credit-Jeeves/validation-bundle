@@ -1,0 +1,50 @@
+<?php
+
+namespace RentJeeves\LandlordBundle\Accounting\Import\Handler;
+
+use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
+use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
+use CreditJeeves\CoreBundle\Translation\Translator;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
+
+/**
+ * @Service("accounting.import.handler.resman")
+ */
+class HandlerResman extends HandlerAbstract
+{
+    /**
+     * @InjectParams({
+     *     "translator"       = @Inject("translator"),
+     *     "sessionUser"      = @Inject("core.session.landlord"),
+     *     "storage"          = @Inject("accounting.import.storage.resman"),
+     *     "mapping"          = @Inject("accounting.import.mapping.resman")
+     * })
+     */
+    public function __construct(
+        Translator $translator,
+        SessionUser $sessionUser,
+        StorageResman $storage,
+        MappingResman $mapping
+    ) {
+        $this->user = $sessionUser->getUser();
+        $this->group = $sessionUser->getGroup();
+        $this->storage = $storage;
+        $this->mapping = $mapping;
+        $this->translator = $translator;
+    }
+
+    public function updateMatchedContracts()
+    {
+        $self = $this;
+        $this->updateMatchedContractsWithCallback(
+            function () use ($self) {
+                $self->removeLastLineInFile();
+            },
+            function () {
+            }
+        );
+    }
+}

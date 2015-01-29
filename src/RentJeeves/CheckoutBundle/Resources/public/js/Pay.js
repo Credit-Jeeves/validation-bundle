@@ -30,7 +30,7 @@ function Pay(parent, contractId) {
         'pay': 'rentjeeves_checkoutbundle_paymenttype'
     };
 
-    var steps = ['details', 'source', 'user', 'questions', 'pay'];
+    var steps = ['details', 'source', 'user', 'questions', 'pay', 'finish'];
 
     this.passedSteps = ko.observableArray([]);
 
@@ -333,6 +333,22 @@ function Pay(parent, contractId) {
         return Format.money(parseFloat(this.total()) + fee);
     };
 
+    this.showInfoMessage = function() {
+        if ('finish' == self.step() && 'one_time' == self.payment.type() && self.payment.startDate()) {
+            var now = new Date();
+            var startOn = Date.parseExact(self.payment.startDate(),  "M/d/yyyy");
+            if (startOn &&
+                now.getDate() == startOn.getDate() &&
+                now.getMonth() == startOn.getMonth() &&
+                now.getFullYear()== startOn.getFullYear()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
     this.isForceSave = ko.computed(function() {
         var result = 'immediate' != this.payment.type();
         this.paymentSource.save(result);
@@ -399,6 +415,8 @@ function Pay(parent, contractId) {
                 current -= 2;
                 break;
             case 'pay':
+                break;
+            case 'finish':
                 jQuery('#pay-popup').dialog('close');
                 jQuery('body').showOverlay();
                 window.location.reload();
@@ -523,6 +541,9 @@ function Pay(parent, contractId) {
                 } else {
                     sendData(Routing.generate('checkout_pay_exec'), forms[currentStep]);
                 }
+                break;
+            case 'finish':
+                onSuccessStep([]);
                 break;
         }
 

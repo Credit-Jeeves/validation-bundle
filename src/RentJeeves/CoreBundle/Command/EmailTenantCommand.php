@@ -126,7 +126,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                     foreach ($payments as $payment) {
                         $contract = $payment->getContract();
                         $tenant = $contract->getTenant();
-                        $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract, true);
+                        $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract, $payment->getType());
                         $doctrine->getManager()->detach($payment);
                         $output->write('.');
                     }
@@ -136,9 +136,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                     $contractRepository = $doctrine->getRepository('RjDataBundle:Contract');
                     $contracts = $contractRepository->getPotentialLateContract($shiftedDate);
                     $output->write('Start processing non auto contracts');
-                    /**
-                     * @var $contract Contract
-                     */
+                    /** @var $contract Contract */
                     foreach ($contracts as $contract) {
                         $tenant = $contract->getTenant();
                         $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract);

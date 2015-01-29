@@ -315,6 +315,7 @@ abstract class AbstractClient implements ClientInterface
             );
         } catch (SoapFault $e) {
             if ($this->numberOfRetriesTheSameSoapCall > self::MAX_NUMBER_OF_RETRIES) {
+                $this->exceptionLog($e);
                 throw $e;
             }
             $this->numberOfRetriesTheSameSoapCall++;
@@ -329,10 +330,25 @@ abstract class AbstractClient implements ClientInterface
 
             return $this->sendRequest($function, $params);
         } catch (Exception $e) {
-            $this->exceptionCatcher->handleException($e);
-            $this->setErrorMessage($e->getMessage());
-            $this->debugMessage($e->getMessage());
+            $this->exceptionLog($e);
         }
+    }
+
+    protected function exceptionLog(Exception $e)
+    {
+        $this->logger->addCritical(
+            sprintf(
+                'Exception on Yardi message(%s), file(%s), line(%s), request(%s) header(%s)',
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
+                $this->soapClient->__getLastRequest(),
+                $this->soapClient->__getLastRequestHeaders()
+            )
+        );
+        $this->exceptionCatcher->handleException($e);
+        $this->setErrorMessage($e->getMessage());
+        $this->debugMessage($e->getMessage());
     }
 
     /**

@@ -4,6 +4,13 @@ namespace CreditJeeves\ComponentBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\DataBundle\Entity\Report;
 
+/**
+ *
+ * This component currently only supports Experian prequal reports
+ *
+ * Class MissedPaymentsController
+ * @package CreditJeeves\ComponentBundle\Controller
+ */
 class MissedPaymentsController extends Controller
 {
     public function indexAction(Report $Report)

@@ -13,3 +13,6 @@ parameters:
     server_name_rj: cj-rent.loc
 
     payment_report_path: /home/tatyana/tmp
+    transunion.ssl_key: /home/tatyana/transunion.com/stg.renttrack.com.key
+    transunion.ca_certificate: /home/tatyana/transunion.com/prodsupCA.pem
+    transunion.ssl_certificate: /home/tatyana/transunion.com/CC2RentTrack-Test.crt

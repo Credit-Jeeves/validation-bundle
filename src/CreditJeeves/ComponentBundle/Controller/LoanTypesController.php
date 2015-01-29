@@ -15,30 +15,18 @@ class LoanTypesController extends Controller
 
     public function indexAction(Report $Report)
     {
-        $nTradelines = $Report->getCountApplicantTotalTradelines();
-        $ArfReport = $Report->getArfReport();
-        $RevolvingDept = $ArfReport->getValue(
-            ArfParser::SEGMENT_PROFILE_SUMMARY,
-            ArfParser::REPORT_BALANCE_TOTAL_REVOLVING
-        );
-        $RevolvingDept = $RevolvingDept ? $RevolvingDept : 0;
-        $MortgageDebt = $ArfReport->getValue(
-            ArfParser::SEGMENT_PROFILE_SUMMARY,
-            ArfParser::REPORT_BALANCE_REAL_ESTATE
-        );
-        $MortgageDebt = $MortgageDebt ? $MortgageDebt : 0;
-        $InstallmentDebt = $ArfReport->getValue(
-            ArfParser::SEGMENT_PROFILE_SUMMARY,
-            ArfParser::REPORT_BALANCE_INSTALLMENT
-        );
-        $InstallmentDebt = $InstallmentDebt ? $InstallmentDebt : 0;
+        $tradelines = $Report->getTotalAccounts();
+        $revolvingDept = $Report->getBalanceRevolvingAccounts();
+        $mortgageDebt = $Report->getBalanceMortgageAccounts();
+        $installmentDebt = $Report->getBalanceInstallmentAccounts();
+
         return $this->render(
             'ComponentBundle:LoanTypes:index.html.twig',
             array(
-                'RevolvingDept' => $RevolvingDept,
-                'MortgageDebt' => $MortgageDebt,
-                'InstallmentDebt' => $InstallmentDebt,
-                'nTradelines' => $nTradelines,
+                'revolvingDept' => $revolvingDept,
+                'mortgageDebt' => $mortgageDebt,
+                'installmentDebt' => $installmentDebt,
+                'tradelines' => $tradelines,
             )
         );
     }

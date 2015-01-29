@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\CoreBundle\Type\Encrypt;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Entity\User as BaseUser;
@@ -1558,6 +1559,24 @@ abstract class User extends BaseUser
             }
         );
     }
+
+    /**
+     * Get reportsD2c
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReportsTUSnapshot()
+    {
+        return $this->reports->filter(
+            function (Report $report) {
+                if ($report instanceof ReportTransunionSnapshot) {
+                    return true;
+                }
+                return false;
+            }
+        );
+    }
+
 
     /**
      * Add scores

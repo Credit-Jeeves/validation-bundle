@@ -1,0 +1,159 @@
+{# for step pay #}
+<h3 class="italic" data-bind="visible: 'pay' == step()">
+    <span data-bind="visible: 'recurring' == payment.type()">{{ 'checkout.recurring_for' | trans }}</span>
+    <span class="value" data-bind="text: fullPayTo"></span>
+    (<span data-bind="text: propertyAddress"></span>)
+</h3>
+{# for step finish  #}
+<h3 class="italic" data-bind="visible: 'finish' == step()">
+    <span>{{ 'checkout.thankyou_message' | trans }}</span>
+</h3>
+
+<div class="information-box pie-el"
+     data-bind="visible: ('one_time' == payment.type() && !contract.groupSetting.pay_balance_only && 'pay' == step())
+        , i18n: {'DATE': payment.startDate}">
+    checkout.one_time_payment.note
+</div>
+
+<div class="clearfix halfs-box">
+    <div class="half-box left">
+        <h4>{{ 'checkout.your_payment' | trans }}</h4>
+        <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
+            <label>{{ 'checkout.starts_on' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: payment.startDate"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix" data-bind="visible: 'one_time' == payment.type()">
+            <label>{{ 'checkout.sent_on' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: payment.startDate"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
+            <label>{{ 'checkout.recurs_on' | trans }}</label>
+            <div class="fields-box">
+                <span class="value"
+                      data-bind="text: 'checkout.day.' + payment.frequency() +'.each_month-%DAY%', i18n: {'DAY': payment.dueDate}">
+                </span>
+            </div>
+        </div>
+        <div class="form-row clearfix" data-bind="visible: getAmount()">
+            <label>{{ 'checkout.rent_amount' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: getAmount"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix" data-bind="visible: getOtherAmount()">
+            <label>{{ 'checkout.other_amount' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: getOtherAmount"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix" data-bind="visible: 'on' == payment.ends()">
+            <label>{{ 'checkout.last_payment_on' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: getLastPaymentDay"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix" data-bind="visible: getFee()">
+            <label>{{ 'checkout.fee' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: getFeeAmountText()"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix total-amount">
+            <label>{{ 'checkout.total' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: getTotalWithFee()"></span>
+            </div>
+        </div>
+    </div>
+    <div class="half-box right">
+        <h4>{{ 'checkout.how_paying' | trans }}</h4>
+        <div class="form-row clearfix">
+            <label>{{ 'checkout.method' | trans }}</label>
+            <div class="fields-box">
+                        <span class="value"
+                              data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"
+                              id="checkout-payment-source"
+                                >
+
+                        </span>
+            </div>
+        </div>
+        <div data-bind="visible: !newPaymentAccount()">
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.account_nickname' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: paymentSource.name"></span>
+                </div>
+            </div>
+        </div>
+        <div data-bind="visible: 'bank' == paymentSource.type() && newPaymentAccount()">
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.payor_name' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: paymentSource.PayorName"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.routing_number' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: paymentSource.RoutingNumber"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.account_number' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: paymentSource.AccountNumber"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.account_type' | trans }}</label>
+                <div class="fields-box">
+                            <span class="value" data-bind="visible: 'Checking' == paymentSource.ACHDepositType()">
+                                {{ 'checkout.account_type.checking' | trans }}
+                            </span>
+                            <span class="value" data-bind="visible: 'Savings' == paymentSource.ACHDepositType()">
+                                {{ 'checkout.account_type.savings' | trans }}
+                            </span>
+                            <span class="value" data-bind="visible: 'Unassigned' == paymentSource.ACHDepositType()">
+                                {{ 'checkout.account_type.business_checking' | trans }}
+                            </span>
+                </div>
+            </div>
+        </div>
+        <div data-bind="visible: 'card' == paymentSource.type()">
+            <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
+                <label>{{ 'checkout.card.account_name' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: paymentSource.CardAccountName"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
+                <label>{{ 'checkout.card_number' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: paymentSource.getCardNumber"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.expiration' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: paymentSource.ExpirationMonth() + '/' + paymentSource.ExpirationYear()"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.billing_address' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: currentAddress()"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="info-message" data-bind="visible: showInfoMessage()">
+    {{ 'checkout.one_time.info_message' | trans }}
+</div>

@@ -157,7 +157,7 @@ class ResidentBalanceSynchronizer
              * @var $contract Contract
              */
             $contract = reset($contracts);
-            $contract->setYardiPaymentAccepted($paymentAccepted);
+            $contract->setPaymentAccepted($paymentAccepted);
             $this->em->flush($contract);
             $this->logMessage(
                 sprintf(

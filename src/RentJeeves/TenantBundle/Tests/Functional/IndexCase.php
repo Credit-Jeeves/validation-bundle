@@ -3,7 +3,7 @@
 namespace RentJeeves\TenantBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class IndexCase extends BaseTestCase
@@ -72,7 +72,7 @@ class IndexCase extends BaseTestCase
          * @var $contract Contract
          */
         foreach ($contracts as $contract) {
-            $contract->setYardiPaymentAccepted(YardiPaymentAccepted::DO_NOT_ACCEPT);
+            $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
             $groupSetting = $contract->getGroup()->getGroupSettings();
             $groupSetting->setIsIntegrated(true);
             $em->persist($groupSetting);
@@ -110,7 +110,7 @@ class IndexCase extends BaseTestCase
          * @var $contract Contract
          */
         foreach ($contracts as $contract) {
-            $contract->setYardiPaymentAccepted(YardiPaymentAccepted::ANY);
+            $contract->setPaymentAccepted(PaymentAccepted::ANY);
             $groupSetting = $contract->getGroup()->getGroupSettings();
             $groupSetting->setIsIntegrated(true);
             $em->persist($groupSetting);

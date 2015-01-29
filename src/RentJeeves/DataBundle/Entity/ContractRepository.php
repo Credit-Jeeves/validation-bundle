@@ -802,4 +802,49 @@ class ContractRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @param Tenant $tenant
+     * @param Unit $unit
+     * @return bool
+     */
+    public function isExistDuplicateByTenantUnit(Tenant $tenant, Unit $unit, $id = null)
+    {
+        return !!$this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->where('c.status NOT IN (:statuses)')
+            ->andWhere('c.tenant = :tenant')
+            ->andWhere('c.unit = :unit')
+            ->andWhere('c.id <> :id')
+            ->setParameters([
+                'statuses' => [ContractStatus::FINISHED, ContractStatus::DELETED],
+                'tenant' => $tenant,
+                'unit' => $unit,
+                'id' => (int) $id
+            ])
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function isExistDuplicateByTenantPropertyUnitname(Tenant $tenant, Property $property, $unitName, $id = null)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->where('c.status NOT IN (:statuses)')
+            ->andWhere('c.tenant = :tenant')
+            ->andWhere('c.property = :property')
+            ->andWhere('c.id <> :id')
+            ->setParameters([
+                'statuses' => [ContractStatus::FINISHED, ContractStatus::DELETED],
+                'tenant' => $tenant,
+                'property' => $property,
+                'id' => (int) $id
+            ]);
+
+        if ($unitName) {
+            $query->andWhere('c.search = :search')->setParameter('search', $unitName);
+        }
+
+        return !!$query->getQuery()->getSingleScalarResult();
+    }
 }

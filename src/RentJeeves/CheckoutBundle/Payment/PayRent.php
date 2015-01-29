@@ -6,13 +6,14 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use Monolog\Logger;
 use Payum\Heartland\Soap\Base\BillTransaction;
 use Payum\Heartland\Soap\Base\MakePaymentRequest;
 use RentJeeves\CheckoutBundle\Services\PaidFor;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use JMS\DiExtraBundle\Annotation as DI;
 use RuntimeException;
@@ -29,6 +30,11 @@ class PayRent extends Pay
     protected $paidFor;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @DI\InjectParams({"paidFor" = @DI\Inject("checkout.paid_for")})
      *
      * @param PaidFor $paidFor
@@ -41,8 +47,19 @@ class PayRent extends Pay
         return $this;
     }
 
+    /**
+     * @DI\InjectParams({"logger" = @DI\Inject("logger")})
+     *
+     * @param Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function executePayment(Payment $payment)
     {
+        $this->logger->debug('Get new order for payment ID %s' . $payment->getId());
         $order = $this->getOrder();
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
@@ -81,8 +98,7 @@ class PayRent extends Pay
         if (PaymentTypeEnum::ONE_TIME == $payment->getType() ||
             date('n') == $payment->getEndMonth() && date('Y') == $payment->getEndYear()
         ) {
-            $payment->setStatus(PaymentStatus::CLOSE);
-            $this->em->persist($payment);
+            $payment->setClosed($this, PaymentCloseReason::EXECUTED);
         }
         $this->em->persist($order);
         $this->em->flush();
@@ -99,10 +115,16 @@ class PayRent extends Pay
             }
         } else {
             $order->setStatus(OrderStatus::ERROR);
+            if (OrderType::HEARTLAND_CARD == $order->getType() && $payment->isRecurring()) {
+                $this->logger->debug(
+                    'Close CC recurring payment ID ' . $payment->getId() . ' for order ID ' . $order->getId()
+                );
+                $payment->setClosed($this, PaymentCloseReason::RECURRING_ERROR);
+            }
         }
+        $this->logger->debug('New order ID ' . $order->getId() . ', status: ' . $order->getStatus());
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
         $this->em->persist($paymentDetails);
-        $this->em->persist($order);
         $this->em->persist($contract);
         $this->em->flush();
         $this->em->clear();

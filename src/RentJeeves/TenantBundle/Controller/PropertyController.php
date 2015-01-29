@@ -4,6 +4,7 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\TenantBundle\Services\InviteLandlord;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteType;
@@ -14,6 +15,8 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * @Route("/property")
@@ -106,7 +109,16 @@ class PropertyController extends Controller
          * @var $contractProcess ContractProcess
          */
         $contractProcess = $this->get('contract.process');
+        $contractProcess->setIsValidateContract(true);
         $contractProcess->createContractFromTenantSide($tenant, $property, $unitSearch);
+
+        if ($contractProcess->hasErrors()) {
+            /** @var Session $session */
+            $session = $this->get('session');
+            foreach ($contractProcess->getErrors() as $error) {
+                $session->getFlashBag()->add('error', $error);
+            }
+        }
 
         return $this->redirect($this->generateUrl('tenant_homepage'), 301);
     }
@@ -133,10 +145,17 @@ class PropertyController extends Controller
             $invite = $form->getData();
             $invite->setProperty($property);
             $invite->setTenant($this->getUser());
+            /** @var InviteLandlord $inviteProcessor */
+            $inviteProcessor = $this->get('invite.landlord');
+            $inviteProcessor->invite($invite, $this->getUser());
 
-            $this->get('invite.landlord')->invite($invite, $this->getUser());
+            if (!$inviteProcessor->hasErrors()) {
+                return $this->redirect($this->generateUrl('tenant_homepage'), 301);
+            }
 
-            return $this->redirect($this->generateUrl('tenant_homepage'), 301);
+            foreach ($inviteProcessor->getErrors() as $error) {
+                $form->addError(new FormError($error));
+            }
         }
 
         return array(

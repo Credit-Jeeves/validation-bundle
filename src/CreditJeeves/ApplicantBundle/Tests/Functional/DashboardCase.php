@@ -161,6 +161,7 @@ class DashboardCase extends BaseTestCase
      */
     public function getReportPrequalAndAutoSimulation()
     {
+        $this->markTestSkipped('This is an outdated test. CreditJevees no longer maintained. Can be removed.');
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('marion@example.com', 'pass');

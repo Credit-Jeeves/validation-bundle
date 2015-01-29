@@ -10,7 +10,7 @@
         <div class="pod-header">Percent of Total Payments Missed: {{ nPercent }}%</div>
         <p>
             {{ 'payment.missed.comment' | trans | replace({'%nTotal%' : nTotal, '%nLate%': nLate})}}
-            <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/121856-i-have-a-late-payment-what-should-i-do-">{{ 'common.learn.more' | trans }}</a>
+            {#<a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/121856-i-have-a-late-payment-what-should-i-do-">{{ 'common.learn.more' | trans }}</a>#}
         </p>
   </div>
   <div class="clearboth"></div>
@@ -25,7 +25,7 @@
       ]);
       var options = {
         max:        4,
-        width:      400, 
+        width:      400,
         height:     120,
         greenFrom:  0,
         greenTo:    1,

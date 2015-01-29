@@ -47,6 +47,9 @@ parameters:
 
     validator.translation_domain: messages
 
+    # parameter was added for task RT-362, we can fast allow and disallow feature that disallow duplicate contract
+    allow_duplicate_contracts: false
+
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
     resman.api_url: https://api.myresman.com/MITS/
@@ -56,3 +59,11 @@ parameters:
         db_id_col:       session_id
         db_data_col:     session_value
         db_time_col:     session_time
+
+    transunion.account_name: 'CC2RentTrack'
+    transunion.password: 'Pfr5Nm$c'
+    transunion.ssl_key: /root/transunion.com/stg.renttrack.com.key
+    transunion.ca_certificate: /root/transunion.com/prodsupCA.pem
+    transunion.ssl_certificate: /root/transunion.com/CC2RentTrack-Test.crt
+    transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
+    transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'

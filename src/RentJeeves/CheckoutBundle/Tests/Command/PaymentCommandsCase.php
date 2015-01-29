@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use Ton\EmailBundle\EventListener\EmailListener;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -237,7 +238,47 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertNotNull($order->getHeartlandBatchId());
     }
 
-    protected function createPayment(Contract $contract, $amount)
+    /**
+     * @test
+     */
+    public function closeRecurringPaymentIfPaidWithCreditCardOrderIsFailed()
+    {
+        $this->load(true);
+        /** @var EntityManager $em */
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /** @var Contract $contract */
+        $contract = $this->getContract($em);
+        // Create a payment with negative amount to provoke error
+        /** @var Payment $payment */
+        $payment = $this->createPayment($contract, '-888', PaymentType::RECURRING);
+        $payment->setPaidFor(new DateTime());
+        $paymentAccount = $contract->getTenant()->getPaymentAccounts()->filter(
+            function ($paymentAccount) {
+                if (PaymentAccountType::CARD == $paymentAccount->getType()) {
+                    return true;
+                }
+                return false;
+            }
+        )->first();
+        $payment->setPaymentAccount($paymentAccount);
+
+        $em->persist($payment);
+        $em->flush();
+
+        $this->executeCommand();
+
+        /** @var Order $order */
+        $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => '-888'));
+        $this->assertNotNull($order);
+        $this->assertEquals(OrderStatus::ERROR, $order->getStatus());
+        // Reload payment from the DB
+        $resultPayment = $em->find('RjDataBundle:Payment', $payment->getId());
+        $this->assertEquals(PaymentStatus::CLOSE, $resultPayment->getStatus());
+        $this->assertCount(2, $resultPayment->getCloseDetails(), 'Payment close details should be an array of 2 items');
+        $this->assertContains(PaymentCloseReason::RECURRING_ERROR, $resultPayment->getCloseDetails()['1']);
+    }
+
+    protected function createPayment(Contract $contract, $amount, $type = PaymentType::ONE_TIME)
     {
         $tenant = $contract->getTenant();
         $paymentAccount = $tenant->getPaymentAccounts()->filter(
@@ -252,7 +293,7 @@ class PaymentCommandsCase extends BaseTestCase
         $payment = new Payment();
         $payment->setAmount($amount);
         $payment->setTotal($amount);
-        $payment->setType(PaymentType::ONE_TIME);
+        $payment->setType($type);
         $payment->setStatus(PaymentStatus::ACTIVE);
         $payment->setContract($contract);
         $payment->setPaymentAccount($paymentAccount);

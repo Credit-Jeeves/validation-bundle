@@ -223,6 +223,11 @@ class Payment
     protected $jobs;
 
     /**
+     * @ORM\Column(name="close_details", type="array", nullable=true)
+     */
+    protected $closeDetails;
+
+    /**
      * Get id
      *
      * @return integer
@@ -256,7 +261,7 @@ class Payment
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param PaymentStatus $status
      * @return $this
@@ -548,5 +553,21 @@ class Payment
     public function getPaymentAccount()
     {
         return $this->paymentAccount;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCloseDetails()
+    {
+        return $this->closeDetails;
+    }
+
+    /**
+     * @param mixed $closeDetails
+     */
+    public function setCloseDetails(array $closeDetails)
+    {
+        $this->closeDetails = $closeDetails;
     }
 }

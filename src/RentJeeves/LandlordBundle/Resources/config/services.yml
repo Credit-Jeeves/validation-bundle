@@ -1,6 +1,7 @@
 parameters:
     import.mapping.csv.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingCsv
     import.mapping.yardi.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi
+    import.mapping.resman.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman
     accounting.export.yardi_genesis_v2.class: RentJeeves\LandlordBundle\Accounting\Export\Report\YardiGenesisV2Report
     accounting.export.yardi_genesis_v2_archive.class: RentJeeves\LandlordBundle\Accounting\Export\Report\YardiGenesisV2Archive
     export.serializer.yardi_genesis_v2.class: RentJeeves\LandlordBundle\Accounting\Export\Serializer\YardiGenesisV2CsvSerializer
@@ -13,6 +14,15 @@ services:
         arguments:
             - "@accounting.import.storage.csv"
             - "@import.reader.csv"
+    accounting.import.mapping.resman:
+        class: "%import.mapping.resman.class%"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+        arguments:
+            - "@accounting.import.storage.resman"
+            - "@import.reader.csv"
+            - "@resman.resident_data"
+            - "@security.context"
     accounting.import.mapping.yardi:
         class: "%import.mapping.yardi.class%"
         calls:

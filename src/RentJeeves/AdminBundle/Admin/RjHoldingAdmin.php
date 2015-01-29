@@ -37,6 +37,19 @@ class RjHoldingAdmin extends Admin
         parent::configureFormFields($formMapper);
         $contrainer = $this->getConfigurationPool()->getContainer();
         $formMapper
+            ->with('Accounting Settings')
+            ->add(
+                'accountingSettings',
+                $contrainer->get('form.accounting_settings'),
+                array(
+                    'required'   => true
+                ),
+                array(
+                    'edit'      => 'inline',
+                    'inline'    => 'table',
+                    'sortable'  => 'position',
+                )
+            )
             ->with('Yardi Settings')
             ->add(
                 'yardiSettings',

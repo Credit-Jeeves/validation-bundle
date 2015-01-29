@@ -15,6 +15,7 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
@@ -554,6 +555,35 @@ class OrderListenerCase extends Base
         $this->assertNotNull($paymentResult = $em->find('RjDataBundle:Payment', $payment->getId()));
         $actualPaidFor = $paymentResult->getPaidFor();
         $this->assertEquals($expectedPaidFor->format('mdY'), $actualPaidFor->format('mdY'));
+    }
+
+    /**
+     * @test
+     * @depends shouldMovePaymentPaidForWhenOrderIsComplete
+     */
+    public function shouldCloseRecurringPaymentWhenACHPaymentReturned()
+    {
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        /** @var $order Order */
+        $this->assertNotNull(
+            $order = $em->getRepository('DataBundle:Order')->findOneBySum('999'),
+            'Expected order is not found'
+        );
+        $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
+        $this->assertNotNull(
+            $payment = $order->getContract()->getActivePayment(),
+            'Active payment for contract not found'
+        );
+        $order->setStatus(OrderStatus::RETURNED);
+        $em->flush($order);
+        // Reload payment from the DB
+        $resultPayment = $em->find('RjDataBundle:Payment', $payment->getId());
+
+        $this->assertEquals(PaymentStatus::CLOSE, $resultPayment->getStatus());
+        $this->assertCount(2, $resultPayment->getCloseDetails(), 'Payment close details should be an array of 2 items');
+        $this->assertContains(PaymentCloseReason::RECURRING_RETURNED, $resultPayment->getCloseDetails()['1']);
     }
 
     protected function createPayment(Contract $contract)

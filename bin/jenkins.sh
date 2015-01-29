@@ -21,13 +21,13 @@ fi
 
 php bin/environment.php --$BUILD || exit 1
 
-# Code coverage disabled since it triples build time 
+# Code coverage disabled since it triples build time
 #if [ "master" = $BUILD ]; then
 #    PHPUNIT_PARAMS="$PHPUNIT_PARAMS --coverage-clover=$BUILD_DIR/coverage/clover.xml --coverage-html=$BUILD_DIR/coverage/html"
 #fi
 
 echo "##### RUN PHPUNIT ALL TESTS #####"
-nice -n 5 php -C -q -d memory_limit=2048M $PHPUNIT_PATH \
+nice -n 5 php -C -q -d memory_limit=4096M $PHPUNIT_PATH \
   $PHPUNIT_PARAMS \
   --log-junit=$BUILD_DIR/allTests.xml
 

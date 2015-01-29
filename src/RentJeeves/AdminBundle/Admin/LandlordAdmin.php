@@ -9,7 +9,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Doctrine\ORM\QueryBuilder;
-use RentJeeves\AdminBundle\Form\UserSettings;
+use RentJeeves\AdminBundle\Form\UserSettingsType;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
@@ -141,7 +141,7 @@ class LandlordAdmin extends Admin
             ->with('Settings')
                 ->add(
                     'settings',
-                    new UserSettings(),
+                    new UserSettingsType(),
                     array(
                     ),
                     array(

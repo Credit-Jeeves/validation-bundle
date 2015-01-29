@@ -5,7 +5,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use LogicException;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -127,16 +127,16 @@ abstract class Contract
 
     /**
      * @ORM\Column(
-     *     type="YardiPaymentAccepted",
+     *     type="PaymentAccepted",
      *     nullable=false,
-     *     name="yardi_payment_accepted",
+     *     name="payment_accepted",
      *     options={
      *         "default"="0"
      *     }
      * )
      * @Gedmo\Versioned
      */
-    protected $yardiPaymentAccepted = YardiPaymentAccepted::ANY;
+    protected $paymentAccepted = PaymentAccepted::ANY;
 
     /**
      * @ORM\Column(
@@ -396,17 +396,17 @@ abstract class Contract
     /**
      * @return integer
      */
-    public function getYardiPaymentAccepted()
+    public function getPaymentAccepted()
     {
-        return $this->yardiPaymentAccepted;
+        return $this->paymentAccepted;
     }
 
     /**
-     * @param integer $yardiPaymentAccepted
+     * @param integer $paymentAccepted
      */
-    public function setYardiPaymentAccepted($yardiPaymentAccepted)
+    public function setPaymentAccepted($paymentAccepted)
     {
-        $this->yardiPaymentAccepted = $yardiPaymentAccepted;
+        $this->paymentAccepted = $paymentAccepted;
     }
 
     /**

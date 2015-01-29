@@ -24,6 +24,17 @@
 </div>#}
 <!-- endloader -->
 <div class="pod-large pod-border pod-padding shadow" id="current-payments">
+    {% set flashMessages = app.session.flashbag.get('error') %}
+    {% if flashMessages is not empty %}
+    <div class="attention-box pie-el">
+        <ul>
+        {% for flashMessage in flashMessages %}
+            <li>{{ flashMessage | trans }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="row-10"></div>
+    {% endif %}
     <h1>{{ 'current_contracts.title' | trans() }}</h1>
     <div class="addPropertyContainer">
         <center>
@@ -40,9 +51,9 @@
                     <tr class="contracts">
                         <th class="font-helvetica" style="width: 50px">{{ 'contract.rent_amount' | trans() }}</th>
                         {% if hasIntegratedBalance %}
-                            <th class="font-helvetica">{{ 'common.balance' | trans }}</th>
+                            <th class="font-helvetica" style="width: 60px">{{ 'common.balance' | trans }}</th>
                         {% endif %}
-                        <th class="font-helvetica">{{ 'contract.payment.next' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 50px">{{ 'contract.payment.next' | trans() }}</th>
                         <th class="font-helvetica">{{ 'contract.property' | trans() }}</th>
                         <th class="font-helvetica" style="width: 100px">{{ 'contract.status' | trans() }}</th>
                         <th style="width: 150px;"></th>
@@ -56,10 +67,10 @@
                             {% if hasIntegratedBalance %}
                                 <td class="font-helvetica">{{ contract.balance }}</td>
                             {% endif %}
-                            <td class="font-helvetica">{{ contract.payment_next }}</td>
+                            <td class="font-helvetica">{{ contract.due_on | ordinal_number }}</td>
                             <td class="font-helvetica">{{ contract.full_address }}</td>
                             <td class="font-helvetica">
-                                {% if contract.is_integrated and contract.isYardiPaymentDenied %}
+                                {% if contract.is_integrated and contract.isDeniedOnExternalApi %}
                                     {{ 'yardi.tenant.property.manager_disabled_payment_description'|trans }}
                                 {% else %}
                                     {% if contract.status == 'pending' %}
@@ -87,7 +98,7 @@
                             </td>
 
                             <td class="font-helvetica">
-                                {% if contract.is_integrated and contract.isYardiPaymentDenied %}
+                                {% if contract.is_integrated and contract.isDeniedOnExternalApi %}
                                     <button class="button small button-contract-pay floatleft denied"
                                             disabled
                                             title="{{ 'yardi.tenant.property.manager_disabled_payment'|trans }}"

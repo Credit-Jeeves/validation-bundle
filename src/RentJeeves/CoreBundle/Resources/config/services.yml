@@ -2,7 +2,6 @@
 
 parameters:
     data.event_listener.order.class: RentJeeves\DataBundle\EventListener\OrderListener
-    data.event_listener.doctrine.class: RentJeeves\DataBundle\EventListener\DoctrineListener
 
 services:
     data.event_listener.order:
@@ -11,4 +10,6 @@ services:
             - { name: doctrine.event_listener, event: prePersist, method: prePersist }
             - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
             - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
-        arguments: ["@service_container"]
+        arguments:
+            - "@service_container"
+            - "@logger"
