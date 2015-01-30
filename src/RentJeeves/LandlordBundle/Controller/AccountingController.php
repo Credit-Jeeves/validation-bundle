@@ -256,12 +256,8 @@ class AccountingController extends Controller
         $handler = $importFactory->getHandler();
         $import = new Import();
         $import->setContract(new Contract());
-        $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm(
-            $import
-        );
-        $formContract = $handler->getContractForm(
-            $import
-        );
+        $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm();
+        $formContract = $handler->getContractForm();
         $formContractFinish = $handler->getContractFinishForm();
 
         return array(
@@ -310,13 +306,13 @@ class AccountingController extends Controller
             $storage->setOffsetStart($storage->getOffsetStart() + ImportHandler::ROW_ON_PAGE);
         }
 
-        $rows = array();
+        $collection = [];
 
         $handler = $importFactory->getHandler();
         $total = $mapping->getTotal();
 
         if ($total > 0) {
-            $rows = $handler->getImportModelCollection();
+            $collection = $handler->getCurrentCollectionImportModel();
         } else {
             $storage->clearSession();
         }
@@ -325,7 +321,7 @@ class AccountingController extends Controller
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
 
-        $result['rows'] = $rows;
+        $result['rows'] = $collection;
         $result['total'] = $total;
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
@@ -358,13 +354,12 @@ class AccountingController extends Controller
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
-        /**
-         * @var $importFactory ImportFactory
-         */
+        /** @var $importFactory ImportFactory  */
         $importFactory = $this->get('accounting.import.factory');
         $handler = $importFactory->getHandler();
         $data = $request->request->all();
         $result['formErrors'] = $handler->saveForms($data);
+        $result['rows'] = $collection = $handler->getCurrentCollectionImportModel();
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');

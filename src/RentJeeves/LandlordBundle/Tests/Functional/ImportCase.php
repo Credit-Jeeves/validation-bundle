@@ -82,12 +82,12 @@ class ImportCase extends BaseTestCase
     protected function waitReviewAndPost($waitSubmit = true)
     {
         $this->session->wait(
-            10000,
+            1000,
             "$('.overlay-trigger').length > 0"
         );
 
         $this->session->wait(
-            15000,
+            20000,
             "$('.overlay-trigger').length <= 0"
         );
 
@@ -116,28 +116,19 @@ class ImportCase extends BaseTestCase
 
     protected function fillSecondPageWrongValue($trs)
     {
-        $this->assertNotNull(
-            $finishAt = $trs['import.status.new'][1]->find('css', '.import_new_user_with_contract_contract_finishAt')
-        );
-        $finishAt->setValue('03/31/2014');
 
         $this->assertNotNull(
-            $firstName = $trs['import.status.new'][2]->find('css', '.import_new_user_with_contract_tenant_first_name')
+            $firstName = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_tenant_first_name')
         );
         $firstName->setValue('Jung');
 
         $this->assertNotNull(
-            $lastName = $trs['import.status.new'][1]->find('css', '.import_new_user_with_contract_tenant_last_name')
+            $lastName = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_tenant_last_name')
         );
         $lastName->setValue('Sophia');
 
         $this->assertNotNull(
-            $finishAt = $trs['import.status.new'][3]->find('css', '.import_new_user_with_contract_contract_finishAt')
-        );
-        $finishAt->setValue('03/31/2014');
-
-        $this->assertNotNull(
-            $lastName = $trs['import.status.new'][4]->find('css', '.import_new_user_with_contract_tenant_last_name')
+            $lastName = $trs['import.status.new'][1]->find('css', '.import_new_user_with_contract_tenant_last_name')
         );
         $lastName->setValue('Jr');
     }
@@ -240,25 +231,33 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
         $this->assertEquals(1, count($errorFields));
 
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+
         $this->assertNotNull(
             $email = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_tenant_email')
         );
         $email->setValue('2test@mail.com');
-        $submitImportFile->click();
 
+        $submitImportFile->click();
         $this->waitReviewAndPost();
 
-        $submitImportFile->click();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(2, count($trs), "Count statuses is wrong");
+        $this->assertEquals(6, count($trs['import.status.new']), "New contract on first page is wrong number");
+        $this->assertEquals(3, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertEquals(2, count($errorFields));
 
+        $submitImportFile->click();
         $this->waitReviewAndPost();
 
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
         $this->assertEquals(2, count($errorFields));
         $trs = $this->getParsedTrsByStatus();
 
-        $this->assertEquals(2, count($trs), "Count statuses is wrong");
-        $this->assertEquals(6, count($trs['import.status.new']), "New contract on first page is wrong number");
-        $this->assertEquals(3, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(2, count($trs['import.status.new']), "New contract on first page is wrong number");
 
         $this->fillSecondPageWrongValue($trs);
 
@@ -277,8 +276,8 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
-        //Check notify tenant invite for new user
-        $this->assertCount(10, $this->getEmails(), 'Wrong number of emails');
+        //Check notify tenant invite for new user or update his contract rent
+        $this->assertCount(9, $this->getEmails(), 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -444,7 +443,7 @@ class ImportCase extends BaseTestCase
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
             $this->session->wait(
-                5000,
+                8000,
                 "$('.finishedTitle').length > 0"
             );
 
@@ -620,7 +619,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            8000,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1325,7 +1324,7 @@ class ImportCase extends BaseTestCase
     public function yardiBaseImport()
     {
         $this->setDefaultSession('selenium2');
-
+        $this->load(true);
         /**
          * @var $em EntityManager
          */
@@ -1357,11 +1356,15 @@ class ImportCase extends BaseTestCase
         $submitImport->click();
 
         $this->session->wait(
-            80000,
+            800000,
             "$('table').is(':visible')"
         );
         $this->waitReviewAndPost();
         for ($i = 0; $i <= 3; $i++) {
+            if ($errorFields = $this->page->findAll('css', '.errorField')) {
+                $this->assertEquals(1, count($errorFields));
+                $errorFields[0]->setValue('14test1111@mail.com');
+            }
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
             $this->waitReviewAndPost();
@@ -1408,12 +1411,21 @@ class ImportCase extends BaseTestCase
         $submitImport->click();
 
         $this->session->wait(
-            80000,
+            800000,
             "$('table').is(':visible')"
         );
+
         $this->waitReviewAndPost();
+
+        $errorFields = $this->page->findAll('css', '.errorField');
+        $this->assertEquals(1, count($errorFields));
+        $errorFields[0]->setValue('14test1111@mail.com');
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
         $this->session->wait(
-            5000,
+            10000,
             "$('.finishedTitle').length > 0"
         );
 

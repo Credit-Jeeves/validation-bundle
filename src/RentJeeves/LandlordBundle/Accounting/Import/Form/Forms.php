@@ -13,6 +13,9 @@ use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 
+/**
+ * @property ModelImport currentImportModel
+ */
 trait Forms
 {
 
@@ -31,24 +34,16 @@ trait Forms
     }
 
     /**
-     * @param Tenant $tenant
-     * @param ResidentMapping $residentMapping
-     * @param UnitMapping $unitMapping
-     * @param Unit $unit
      * @param bool $isUseToken
-     * @param bool $isUseOperation
      *
      * @return Form
      */
-    public function getContractForm(
-        Import $import,
-        $isUseToken = true
-    ) {
+    public function getContractForm($isUseToken = true) {
         return $this->createForm(
             new ImportContractType(
                 $this->em,
                 $this->translator,
-                $import,
+                $this->currentImportModel,
                 $isUseToken,
                 $isMultipleProperty = $this->storage->isMultipleProperty()
             )
@@ -56,20 +51,14 @@ trait Forms
     }
 
     /**
-     * @param ResidentMapping $residentMapping
-     * @param UnitMapping $unitMapping
-     * @param Unit $unit
-     *
      * @return Form
      */
-    public function getCreateUserAndCreateContractForm(
-        Import $import
-    ) {
+    public function getCreateUserAndCreateContractForm() {
         return $this->createForm(
             new ImportNewUserWithContractType(
                 $this->em,
                 $this->translator,
-                $import,
+                $this->currentImportModel,
                 $isMultipleProperty = $this->storage->isMultipleProperty()
             )
         );
@@ -84,16 +73,12 @@ trait Forms
     }
 
     /**
-     * Creating form for particular import
-     *
-     * @param Import $import
-     *
      * @return null|Form
      */
-    protected function getForm(ModelImport $import)
+    protected function getForm()
     {
-        $tenant   = $import->getTenant();
-        $contract = $import->getContract();
+        $tenant   = $this->currentImportModel->getTenant();
+        $contract = $this->currentImportModel->getContract();
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
 
@@ -109,16 +94,13 @@ trait Forms
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
-            || $hasContractWaiting = $import->getHasContractWaiting()
+            || $hasContractWaiting = $this->currentImportModel->getHasContractWaiting()
         ) {
-            $form = $this->getContractForm(
-                $import,
-                $isUseToken = true
-            );
+            $form = $this->getContractForm($isUseToken = true);
             $form->setData($contract);
-            $form->get('residentMapping')->setData($import->getResidentMapping());
+            $form->get('residentMapping')->setData($this->currentImportModel->getResidentMapping());
             if ($this->storage->isMultipleProperty()) {
-                $form->get('unitMapping')->setData($import->getUnitMapping());
+                $form->get('unitMapping')->setData($this->currentImportModel->getUnitMapping());
             }
             return $form;
         }
@@ -128,20 +110,18 @@ trait Forms
             $contract->getStatus() === ContractStatus::INVITE &&
             empty($contractId)
         ) {
-            $form = $this->getCreateUserAndCreateContractForm(
-                $import
-            );
+            $form = $this->getCreateUserAndCreateContractForm();
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
-            $form->get('contract')->get('residentMapping')->setData($import->getResidentMapping());
+            $form->get('contract')->get('residentMapping')->setData($this->currentImportModel->getResidentMapping());
             if ($this->storage->isMultipleProperty()) {
-                $form->get('contract')->get('unitMapping')->setData($import->getUnitMapping());
+                $form->get('contract')->get('unitMapping')->setData($this->currentImportModel->getUnitMapping());
             }
             return $form;
         }
 
         //Finish exist contract form
-        if ($contract->getStatus() === ContractStatus::FINISHED && !$import->getIsSkipped()) {
+        if ($contract->getStatus() === ContractStatus::FINISHED && !$this->currentImportModel->getIsSkipped()) {
             $form = $this->getContractFinishForm();
             $form->setData($contract);
 

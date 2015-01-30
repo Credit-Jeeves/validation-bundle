@@ -34,10 +34,9 @@ function accountingImportYardi() {
                 },
                 dataType: 'json',
                 error: function () {
-                    self.setProcessing(false);
-                    self.showSpinner(false);
-                    self.loadDataMessage(Translator.trans('yardi.import.error.getResidents'));
-                    self.classLoadDataMessage('errorMessage');
+                    //@TODO show some info for user with failed resident
+                    i++;
+                    self.saveContractData(residentsId, i, length);
                 },
                 success: function (response) {
                     i++;

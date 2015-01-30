@@ -61,6 +61,7 @@ function accountingImport(superclass) {
                     });
                     //Finish
                     self.formErrors(errors);
+                    console.info(response.rows);
                     self.rows(response.rows);
                     self.rowsTotal(response.total);
 
@@ -183,7 +184,6 @@ function accountingImport(superclass) {
             number++;
         });
         self.formErrors([]);
-        var data = self.rows();
         jQuery.ajax({
             url: Routing.generate('accounting_import_save_rows'),
             type: 'POST',
@@ -196,9 +196,12 @@ function accountingImport(superclass) {
             },
             success: function(response) {
                 var errorsLen = jQuery.map(response.formErrors, function(n, i) { return i; }).length;
-                if (errorsLen > 0) {
-                    self.rows(data);
+                var rows = $.map(response.rows, function(value, index) {
+                    return [value];
+                });
+                if (errorsLen > 0 && rows.length > 0) {
                     self.formErrors(response.formErrors);
+                    self.rows(rows);
                     self.setProcessing(false);
                 } else {
                     self.loadData(true);

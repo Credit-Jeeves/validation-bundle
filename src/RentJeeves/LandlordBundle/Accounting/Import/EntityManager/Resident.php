@@ -6,7 +6,11 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Model\Import;
 
+/**
+ * @property Import currentImportModel
+ */
 trait Resident
 {
     /**
@@ -32,56 +36,49 @@ trait Resident
     }
 
     /**
-     * @param ResidentMapping $residentMapping
      * @return bool
      */
-    public function isUsedResidentId(ResidentMapping $residentMapping)
+    public function isUsedResidentId()
     {
+        $residentMapping = $this->currentImportModel->getResidentMapping();
         $id = $residentMapping->getResidentId();
+
         return (isset($this->usedResidentsIds[$id]) && $this->usedResidentsIds[$id] > 1)? true : false;
     }
 
     /**
-     * @param EntityTenant $tenant
      * @param array $row
      *
-     * @return ResidentMapping
      */
-    protected function createResident(EntityTenant $tenant, array $row)
+    public function setResident(array $row)
     {
-        $residentMapping = new ResidentMapping();
-        $residentMapping->setTenant($tenant);
-        $residentMapping->setHolding($this->user->getHolding());
-        $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
-        $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
+        if (is_null($this->currentImportModel->getTenant()->getId())) {
+            $residentMapping = new ResidentMapping();
+            $residentMapping->setTenant($this->currentImportModel->getTenant());
+            $residentMapping->setHolding($this->user->getHolding());
+            $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
+            $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
+            $this->currentImportModel->setResidentMapping($residentMapping);
 
-        return $residentMapping;
-    }
-
-    /**
-     * @param EntityTenant $tenant
-     * @param array $row
-     *
-     * @return ResidentMapping
-     */
-    public function getResident(EntityTenant $tenant, array $row)
-    {
-        if (is_null($tenant->getId())) {
-            return $this->createResident($tenant, $row);
+            return;
         }
 
         $residentMapping = $this->em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
             array(
-                'tenant'        => $tenant->getId(),
+                'tenant'        => $this->currentImportModel->getTenant()->getId(),
                 'holding'       => $this->user->getHolding()->getId(),
                 'residentId'    => $row[Mapping::KEY_RESIDENT_ID],
             )
         );
 
         if (empty($residentMapping)) {
-            return $this->createResident($tenant, $row);
+            $residentMapping = new ResidentMapping();
+            $residentMapping->setTenant($this->currentImportModel->getTenant());
+            $residentMapping->setHolding($this->user->getHolding());
+            $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
+            $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
         }
 
-        return $residentMapping;
+        $this->currentImportModel->setResidentMapping($residentMapping);
     }
 }

@@ -196,25 +196,21 @@ class ImportContractType extends AbstractType
 
     public function createOperation(FormEvent $event)
     {
-        /**
-         * @var $contract Contract
-         */
-        $contract = $event->getData();
         $handler = $this->import->getHandler();
-        $isIsNeedCreateCashOperation = $handler->isNeedCreateCashOperation($contract);
-        $dueDate = $handler->getDueDateOfContract($contract);
+        $isIsNeedCreateCashOperation = $handler->isNeedCreateCashOperation();
+        $dueDate = $handler->getDueDateOfContract();
         if (!$isIsNeedCreateCashOperation) {
             return;
         }
 
-        $operation = $handler->getOperationByImport($this->import, $dueDate);
+        $operation = $handler->getOperationByDueDate($dueDate);
         $csrfToken = $this->import->getCsrfToken();
 
         if ($operation &&
             is_null($operation->getContract()) &&
             empty($csrfToken)
         ) {
-            $handler->processingOperationAndOrder($contract->getTenant(), $operation, $contract);
+            $handler->processingOperationAndOrder($operation);
         }
     }
 
@@ -225,8 +221,8 @@ class ImportContractType extends AbstractType
          */
         $contract = $event->getData();
         $handler = $this->import->getHandler();
-        $dueDate = $handler->getDueDateOfContract($contract);
-        $handler->movePaidToOfContract($contract, $dueDate);
+        $dueDate = $handler->getDueDateOfContract();
+        $handler->movePaidToOfContract($dueDate);
     }
 
     public function setUncollectedBalance(FormEvent $event)
@@ -236,7 +232,7 @@ class ImportContractType extends AbstractType
          */
         $contract = $event->getData();
         $handler = $this->import->getHandler();
-        if ($contract->getIntegratedBalance() > 0 && $handler->isFinishedContract($contract)) {
+        if ($contract->getIntegratedBalance() > 0 && $handler->isFinishedContract()) {
             $contract->setUncollectedBalance($contract->getIntegratedBalance());
         }
     }

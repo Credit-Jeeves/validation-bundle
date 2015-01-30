@@ -5,6 +5,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Exception;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
@@ -47,6 +48,10 @@ class ImportFactory
         $this->importType = $this->session->get(StorageAbstract::IMPORT_STORAGE_TYPE);
     }
 
+    /**
+     * @throws Exception
+     * @return HandlerAbstract
+     */
     public function getHandler()
     {
         return $this->getServiceImport(
