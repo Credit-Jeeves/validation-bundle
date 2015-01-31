@@ -15,6 +15,8 @@ use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorWeb;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorMobile;
 
 /**
  * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
@@ -26,13 +28,20 @@ class ComponentController extends Controller
      */
     public function payAction($mobile = false)
     {
+        if($mobile){
+            $attributes =  new AttributeGeneratorMobile();
+        }else{
+            $attributes =  new AttributeGeneratorWeb();
+        }
+
         $paymentType = $this->createForm(
             new PaymentType(
                 $this->container->getParameter('payment_one_time_until_value'),
                 array(),
                 array(),
                 0,
-                0
+                0,
+                $attributes
             )
         );
         $paymentBalanceOnlyType =  $this->createForm(
@@ -43,7 +52,9 @@ class ComponentController extends Controller
                 $this->getDoctrine()->getManager(),
                 0,
                 0,
+                $attributes,
                 $this->get('translator')
+
             )
         );
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());

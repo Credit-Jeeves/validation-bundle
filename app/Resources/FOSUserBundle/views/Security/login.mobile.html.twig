@@ -10,6 +10,10 @@
 {% endblock %}
 
 {% block fos_user_content %}
+    <div data-role="page" style="background-image: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png); text-align: center;">
+
+            <img src="/bundles/rjcore/Images/mobile/home-logo.png" style="margin-top: 30px;margin-bottom: 30px;">
+
             {#mobile login view --#}
             <font color="red">
             {% for flashMessage in app.session.flashbag.get('notice') %}
@@ -36,8 +40,9 @@
                 {% if error %}
                             <div class="login-error">{{ error|trans({}, 'FOSUserBundle') }}</div>
                 {% endif %}
-
-                        <input class="login-input"
+                    
+                        <input
+                                class="login-input"
                                type="text"
                                id="username"
                                name="_username"
@@ -46,16 +51,21 @@
                                required="required"
                                autocomplete="off"
                                 />
+
                     <input autocomplete="off" class="login-input" type="password" id="password" name="_password" required="required" value="P@ssW0rd"/>
-                        <input class="button large green"
+                    <br>
+                        <input   style="background: #eb6024;"
+                              {#  class="button large green"#}
                         		data-ajax="false"
                                type="submit"
                                id="_submit"
                                name="_submit"
-                               value="{{ 'login.submit' | trans }}"
+                               value="
+                               {{ 'login.submit' | trans }}
+                               "
                                value="pass"
                                 />
-                
+
         </form>
     {#
     {% if 'rj' == application %}
@@ -74,10 +84,10 @@
     <div class="clearboth"></div>
     <p class="login-pod-footer">
         
-        <a href="{{ path('fos_user_resetting_request') }}">{{ 'resetting.title' | trans }}</a>
+        <a href="{{ path('fos_user_resetting_request') }}" style="color: white; text-decoration: none;">{{ 'resetting.title' | trans }}</a>
     </p>
     
-  
+        </div>
     {% endblock %}
 
     {% block footer %}

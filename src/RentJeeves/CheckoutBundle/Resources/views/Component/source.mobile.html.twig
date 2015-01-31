@@ -1,5 +1,6 @@
+{#
 {% form_theme paymentAccountType 'RjCoreBundle::form.html.twig' %}
-
+#}
 {#
 <div class="form-row clearfix" data-bind="visible: !$root.notEmptyPaymentAccount">
     <div class="fields-box">
@@ -13,17 +14,22 @@
 #}
 
 <script type="text/javascript">
-    window.addressesViewModels = [];
 
+    window.addressesViewModels = [];
+/*
     jQuery.each({{ addressesJson | raw }}, function(key, val) {
         var address = new Address(null);
         ko.mapping.fromJS(val, {}, address);
         window.addressesViewModels.push(address);
     });
 
+    alert('test')
+*/
     window.paymentAccounts = [];
     var payAccounts = JSON.parse('{{ payAccountsJson|escape('js') }}');
-    jQuery.each(payAccounts, function(key, val) {
+
+    jQuery.each(payAccounts, function(key, val){
+        $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").append("<option value='"+val.id+"'>"+val.name+"</option>");
         window.paymentAccounts.push(val);
     });
 

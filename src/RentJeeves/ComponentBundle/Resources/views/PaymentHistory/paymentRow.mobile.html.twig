@@ -1,6 +1,6 @@
 <div data-role="page" id="paymentHistory{{ aContract.id }}">
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-        <a href="#contract{{ aContract.id }}" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
+        <a href="#contract{{ aContract.id }}" data-transition="slide" data-direction="reverse" data-role="button" role="button" style="background: transparent;border: none; color: white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Payment History</h1>
     </div>
 
@@ -51,7 +51,7 @@
             {% for nYear, aData in aContract.history %}
         <div>{{ nYear }}</div>
 
-        <table data-role="table" class="ui-responsive">
+        <table data-role="table">
             <thead>
             <tr>
                 <td>Month</td>

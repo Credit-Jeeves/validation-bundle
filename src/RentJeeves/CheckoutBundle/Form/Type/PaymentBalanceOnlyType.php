@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorInterface;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 
 class PaymentBalanceOnlyType extends PaymentType
@@ -21,14 +22,17 @@ class PaymentBalanceOnlyType extends PaymentType
         $dueDays,
         $em,
         $openDay,
-        $closeDay
+        $closeDay,
+        AttributeGeneratorInterface $attributes
+
     ) {
         parent::__construct(
             $oneTimeUntilValue,
             $paidFor,
             $dueDays,
             $openDay,
-            $closeDay
+            $closeDay,
+            $attributes
         );
         $this->em = $em;
     }

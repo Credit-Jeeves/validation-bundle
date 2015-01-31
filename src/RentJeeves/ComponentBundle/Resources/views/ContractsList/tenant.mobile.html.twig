@@ -38,18 +38,18 @@
 
         for (i = 0; i < contractsJson.length;i++) {
             if(contractsJson[i].id==id){
-                jQuery('#payContractId').val(id);
+                jQuery('#rentjeeves_checkoutbundle_paymenttype_contractId').val(id);
                 contract=contractsJson[i]
                 console.log(contract)
-                $("#payRentAmount").val(contract.rent)
-                $('#payTotalToPay').html(contract.rent)
+                $("#rentjeeves_checkoutbundle_paymenttype_amount").val(contract.rent)
+                $('#rentjeeves_checkoutbundle_paymenttype_total').html(contract.rent)
                 $("#payTo").html(contract.payToName);
                 $("#contractAddress").html(contract.property.number+" "+contract.property.street+", "+contract.property.district+" "+contract.unit.name)
                 if(contract.payment.status=="active"){
                     if(contract.payment.type=="recurring"){
-                        $("#payHowManyR").prop("checked","true")
+                        $("#rentjeeves_checkoutbundle_paymenttype_type").val("recurring")
                     }else{
-                        $("#payHowMany").prop("checked","true")
+                        $("#rentjeeves_checkoutbundle_paymenttype_type").val("one_time")
                     }
                 }
                 $("#revEnds").html(contract.finishAt)
@@ -64,7 +64,7 @@
                 }
 
 
-                $("#payDue").val(yyyy+"-"+mm+"-"+(contract.payment.dueDate))
+                $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(yyyy+"-"+mm+"-"+(contract.payment.dueDate))
                 break;
             }
         }
@@ -78,18 +78,19 @@
 
         <div data-role="page" id="main">
 
-            <div data-role="panel" id="panel" style="background: rgb(80,80,80);">
-                <ul data-role="listview" data-theme="a">
+            <div data-role="panel" id="panel" style="background: #333;">
+                <ul data-role="listview">
                     <li><a href="acura.html">Current Payments</a></li>
                     <li><a href="audi.html">Payment History</a></li>
                     <li><a href="bmw.html">Payment Sources</a></li>
-                    <li><a href="">Logout</a></li>
+                    <li><a href="logout">Logout</a></li>
                 </ul>
 
             </div>
 
             <div data-role="header" role="banner" class="ui-header ui-bar-inherit">
-                <a href="#panel" class="ui-btn-left ui-btn ui-icon-bars ui-btn-icon-left" data-role="button" role="button" style="background: transparent; border: 0;"></a>
+                <a href="#panel" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
+
                 <h1 class="ui-title" role="heading" aria-level="1" style="background: transparent;"><img style="width: 100%;" src="/bundles/rjcore/Images/mobile/home-logo.png"></h1>
             </div>
 
@@ -112,9 +113,9 @@
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
                     <a href="#contract{{ loop.index }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
-            <div style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
-                <a href="#contract{{ loop.index }}" class="ui-btn ui-icon-home ui-btn-icon-left" style="position: absolute; top: 2px; left: 0px;background: none;border: none;"></a>
-                <a href="#contract{{ loop.index }}" class="ui-btn ui-icon-carat-r ui-btn-icon-left" style="position: absolute; top: 32%; right: -4px;background: none;border: none;"></a>
+            <div onclick="$('a{{ loop.index }}').click()" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
+                <a id="a{{ loop.index }}" href="#contract{{ loop.index }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
+                <a href="#contract{{ loop.index }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a></a>
                             <b style="font-size: 16;">{{ contract.full_address [:25] }}</b>
                         <br>
                             <span style="font-size: 14;">{{ contract.rent }}</span>
@@ -156,9 +157,11 @@
             <div data-role="page" id="contract{{ contract.id }}">
 
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-                    <a href="#main" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
+                    <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
                     <h1 class="ui-title" role="heading" aria-level="1">Current Payment</h1>
-                    <a href="#pay" onclick="setupPayForm({{ contract.id }})">Pay/Edit</a>
+                    {% if contract.status != 'pending' %}
+                        <a href="#pay" onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">Edit</a>
+                    {% endif %}
                 </div>
 
                 <div class="ui-content" role="main">
@@ -196,7 +199,7 @@
                 {% endif %}
                     <br>
 
-                    <a href="#paymentHistory{{ contract.id }}"><button{% if contract.status == 'pending' %}disabled{% endif %}>Payment History</button></a>
+                    <a href="#paymentHistory{{ contract.id }}"><button{% if contract.status == 'pending' %} disabled{% endif %}>Payment History</button></a>
                     </div>
             </div>
         {% endfor %}

@@ -8,9 +8,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
 
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
         <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
 
+        <style>
+            .headerButton{
+                text-shadow: none;
+                padding: 10px;
+                border-right: 1px solid white;
+                text-decoration: none;
+                color: white;
+            }
+
+        </style>
 
         {% javascripts
         '@CoreBundle/Resources/public/js/jquery-1.9.1.min.js'
@@ -36,7 +48,9 @@
         '@CoreBundle/Resources/public/js/Format.js'
         'bundles/bazingajstranslation/js/translator.min.js'
         %}
+        {#
         <script type="text/javascript" src="{{ asset_url }}"></script>
+        #}
         {% endjavascripts %}
         {% block google_analytics %}
             {% if application == 'rj' %}

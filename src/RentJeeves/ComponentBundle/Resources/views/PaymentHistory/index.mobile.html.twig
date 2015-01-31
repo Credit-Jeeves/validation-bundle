@@ -1,7 +1,14 @@
+{#
+
 {% include 'RjComponentBundle:PaymentHistory:legend.html.twig' %}
+
+
+
 {% javascripts '@RjComponentBundle/Resources/public/js/legend.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
+
+#}
 
 {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
 {% if aActiveContracts | length > 0 or aFinishedContracts | length > 0 %}

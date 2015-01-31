@@ -7,107 +7,40 @@
 
 
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-        <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
+        <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" data-role="none" role="button" class="headerButton" style="color: white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Edit Rent Payment</h1>
-        <a href="#review" onclick="createReview()">Next</a>
+        <a href="#review" onclick="createReview()" data-role="none" style="color: white; border-left: 1px solid white; border-right: 0px;">Next</a>
     </div>
 
         <div class="ui-content" role="main">
 
-            {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
 
-                <form name="rentForm">
+            <form {{ form_enctype(paymentType) }} method="post" name="rentForm" action="checkout/exec" novalidate>
+                {{ form_widget(paymentType) }}
+                {{ JSFV(paymentType) }}
 
-                <b>Rent*</b><br>
-
-                <input value="2500.00" name="payRentAmount" id="payRentAmount" onchange="$('#payTotalToPay').html(this.value)"> for
-
-                    <select>
-                        <option value="0">Jan</option>
-                        <option value="1">Feb</option>
-                        <option value="2">Mar</option>
-                        <option value="3">Apr</option>
-                        <option value="4">May</option>
-                        <option value="5">Jun</option>
-                        <option value="6">Jul</option>
-                        <option value="7">Aug</option>
-                        <option value="8">Sep</option>
-                        <option value="9">Oct</option>
-                        <option value="10">Nov</option>
-                        <option value="11">Dev</option>
-                    </select>
-                <br>
-                    <b>Other</b><br>
-                    <input value="e.g. Utilities, Deposit, etc. ">
-                    <br>
-                    <b>Total to pay:</b>
-                    <br>
-                    <span id="payTotalToPay"></span>
-                <br><br>
-
-
-                <h4>How often should we send it?</h4><br>
-                    <br>
-
-                    <div style="float: left">
-                <input type="radio" value="1" name="howMany" id="payHowManyR"> Recurring
-                    </div>
-                    <div style="float: right">
-                <input type="radio" value="0" name="howMany" id="payHowManyO" checked> One Time
-                    </div>
-                    <br>
-                    <br>
-
-                <h4>How would you like to pay your rent?</h4>
-
-                <br>
-
-                <select id="paymentDropdown">
-
-                </select>
-
-
-                <script>
-                    jQuery.each(paymentAccounts,function(i, account){
-                        $("#paymentDropdown").append("<option value='"+account.name+"'>"+account.name+"</option>");
-                    })
-
-                </script>
-                <br>
-
-
-                <br>
-
-                Due*<br>
-
-                <input type="date" id="payDue">
-
-                <br>
-
-                <a href="#review" onclick="createReview()"><input type="button" value="Next"></a>
-
-                <input type="hidden" id="payContractId" name="payContractId">
-
+                <input type="hidden" id="contract_id" name="contract_id">
             </form>
 
 
+            {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
+
+
+                <a href="#review" onclick="createReview()"><button style="background: #eb6024; color: white;">Next</button></a>
         </div>
 
 </div>
 
 <script>
+    $("#rentjeeves_checkoutbundle_paymenttype_paidFor").html("<option value='2015-02-21'>MAR</option>")
+
     function createReview(){
-        $("contractId").html($("#payContractId").val());
-        $("#revRentAmount").html($("#payRentAmount").val())
-        $("#revMethod").html($("#paymentDropdown").val());
-        $("#revSendOn").html($("#payDue").val())
-
-        if($("#payHowManyR").prop("checked")){
-            $("#revRecurring").html("Recurring")
-        }else{
-            $("#revRecurring").html("Single")
-        }
-
+        $("#rentjeeves_checkoutbundle_paymenttype_paymentAccountId").val($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").val());
+        $("#contract_id").val($("#rentjeeves_checkoutbundle_paymenttype_contractId").val());
+        $("#revRentAmount").html($("#rentjeeves_checkoutbundle_paymenttype_amount").val());
+        $("#revMethod").html($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount option:selected").html());
+        $("#revSendOn").html($("#rentjeeves_checkoutbundle_paymenttype_start_date").val());
+        $("#revRecurring").html($('#rentjeeves_checkoutbundle_paymenttype_type').val)
     }
 </script>
 
@@ -115,9 +48,9 @@
 
 
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-        <a href="#pay" data-transition="slide" data-direction="reverse" class="ui-btn-left ui-btn ui-icon-back ui-btn-icon-left" data-role="button" role="button" style="background: transparent;border: none;"></a>
+        <a href="#pay" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" role="button" style="background: transparent;border: none; color: white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Review</h1>
-        <a href="#review" href="#popupBasic">Pay Rent</a>
+        <a href="#review" href="#popupBasic" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px;" data-role="none">Pay Rent</a>
     </div>
 
     <div class="ui-content" role="main">
@@ -154,8 +87,8 @@
 
         <br><br>
 
-        <a href="#popupBasic" data-rel="popup" data-transition="pop" data-position-to="window">
-        <input type="button" value="Pay Rent">
+        <a href="#popupBasic" onclick="document.forms['rentForm'].submit()" data-rel="popup" data-transition="pop" data-position-to="window">
+        <input type="button" value="Pay Rent" data-role="none" style="background: #eb6024; color: white;">
         </a>
 
 

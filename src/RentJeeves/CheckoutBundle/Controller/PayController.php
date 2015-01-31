@@ -11,6 +11,8 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentEnumType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorWeb;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorMobile;
 use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -36,7 +38,7 @@ class PayController extends Controller
     use Traits\PaymentProcess;
     use Traits\AccountAssociate;
 
-    protected function createPaymentForm(Request $request)
+    protected function createPaymentForm(Request $request, $mobile = false)
     {
         $contractId = $request->get('contract_id');
         $contract = $this->getDoctrine()
@@ -65,6 +67,12 @@ class PayController extends Controller
             $contract = $paymentEntity->getContract();
         }
 
+        if($mobile){
+            $attributes =  new AttributeGeneratorMobile();
+        }else{
+            $attributes =  new AttributeGeneratorWeb();
+        }
+
         if ($payBalanceOnly) {
             $formType = new PaymentBalanceOnlyType(
                 $this->container->getParameter('payment_one_time_until_value'),
@@ -82,7 +90,8 @@ class PayController extends Controller
                 $this->container->get('checkout.paid_for')->getArray($contract),
                 array_combine($dueDays, $dueDays),
                 $contract->getGroup()->getGroupSettings()->getOpenDate(),
-                $contract->getGroup()->getGroupSettings()->getCloseDate()
+                $contract->getGroup()->getGroupSettings()->getCloseDate(),
+                $attributes
             );
         }
         if (!empty($paymentEntity) &&
@@ -98,21 +107,21 @@ class PayController extends Controller
      * @Route("/payment", name="checkout_pay_payment", options={"expose"=true})
      * @Method({"POST"})
      */
-    public function paymentAction(Request $request)
+    public function paymentAction(Request $request, $mobile = false)
     {
-        $paymentType = $this->createPaymentForm($request);
+        $paymentType = $this->createPaymentForm($request, $mobile);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
-        
+
         return new JsonResponse(
             array(
                 'success' => true
             )
         );
     }
-    
+
     /**
      * @Route("/source_existing", name="checkout_pay_existing_source", options={"expose"=true})
      * @Method({"POST"})
@@ -254,7 +263,7 @@ class PayController extends Controller
         if (!$payBalanceOnly && 'on' != $paymentType->get('ends')->getData()) {
             $recurring = true;
         }
-        
+
         $this->savePayment(
             $request,
             $paymentType,
