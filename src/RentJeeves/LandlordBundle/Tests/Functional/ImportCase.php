@@ -839,7 +839,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(975, $waitingContract->getRent());
         $this->assertEquals(193, $waitingContract->getIntegratedBalance());
         $this->assertEquals('2014-01-01', $waitingContract->getStartAt()->format('Y-m-d'));
-        $this->assertEquals('2015-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
+        $this->assertEquals('2025-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->isSingle());
 
         $this->assertEquals(21, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
