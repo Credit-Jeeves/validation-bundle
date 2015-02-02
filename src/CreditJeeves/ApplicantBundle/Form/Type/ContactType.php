@@ -13,7 +13,6 @@ class ContactType extends AbstractType
             'label' => 'name',
         ]);
         $builder->add('last_name');
-        $builder->add('email');
         $builder->add('phone');
     }
 
