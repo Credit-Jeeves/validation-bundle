@@ -248,7 +248,7 @@ abstract class HandlerAbstract implements HandlerInterface
                 $isSingle = true;
             }
 
-            if (!$property->isAllowedToBeSingle($isSingle, $this->group->getId())) {
+            if (!$property->isAllowedToSetSingle($isSingle, $this->group->getId())) {
                 return false;
             }
         }
@@ -257,6 +257,9 @@ abstract class HandlerAbstract implements HandlerInterface
     }
 
     /**
+     *
+     * Create model objects for imported row
+     *
      * @param array $row
      * @param integer $lineNumber
      *
@@ -471,7 +474,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
     /**
      *
-     * Return array of errors for this data if don't have errors -> saved
+     * Return array of errors for this data if don't have errors, then save.
      *
      * @param array $data
      *
@@ -494,6 +497,8 @@ abstract class HandlerAbstract implements HandlerInterface
                     $lineNumber = $postData['line'];
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
+
+                    // Hydrate contact module
                     $resultBind = $this->bindForm($postData, $errors);
 
                     if (!isset($errors[$lineNumber]) &&

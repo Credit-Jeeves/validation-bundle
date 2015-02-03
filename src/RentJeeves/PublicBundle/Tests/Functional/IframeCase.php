@@ -441,7 +441,7 @@ class IframeCase extends BaseTestCase
         $contract->setPaidTo(new DateTime());
         $property = $em->getRepository('RjDataBundle:Property')
             ->findOneByJbKbWithUnitAndAlphaNumericSort(40.7426129, -73.9828048);
-        $unit = $property->getSingleUnit();
+        $unit = $property->getExistingSingleUnit();
         $contract->setProperty($property);
         $contract->setUnit($unit);
         $contract->setStatus(ContractStatus::PENDING);

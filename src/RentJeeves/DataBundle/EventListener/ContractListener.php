@@ -56,7 +56,7 @@ class ContractListener
 
         // if property is standalone we just add system unit to the contract
         $property = $contract->getProperty();
-        if ($property->isSingle() && $unit = $property->getSingleUnit()) {
+        if ($property->isSingle() && $unit = $property->getExistingSingleUnit()) {
             $contract->setUnit($unit);
             return;
         }

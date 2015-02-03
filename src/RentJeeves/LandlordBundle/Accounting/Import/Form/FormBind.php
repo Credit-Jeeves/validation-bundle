@@ -217,19 +217,20 @@ trait FormBind
     {
         try {
             $contract = $this->currentImportModel->getContract();
-            //This is deprecated (when Cary merges his PR)
-            //https://github.com/Credit-Jeeves/Credit-Jeeves-SF2/pull/1093
             if ($contract->getGroup()) {
                 $property = $contract->getProperty();
-                $property->setIsSingle($isSingle);
                 $property->addPropertyGroup($contract->getGroup());
                 $contract->getGroup()->addGroupProperty($property);
                 $this->em->flush($contract->getGroup());
-                $this->em->flush($property);
 
-                if ($property->isSingle() && !$contract->getUnit()) {
-                    $contract->setUnit($property->getSingleUnit());
+                if ($isSingle && !$contract->getUnit()) {
+                    $unit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+                    $contract->setUnit($unit);
+                    $this->em->flush($unit);
                 }
+                $this->em->flush($property);
+            } else {
+                throw new RuntimeException("no group for contract");
             }
         } catch (Exception $e) {
             $this->manageException($e);

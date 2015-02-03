@@ -301,10 +301,6 @@ class AjaxController extends Controller
             $itsNewProperty = true;
         }
 
-        if ($request->request->has('isSingle') && is_null($property->getIsSingle())) {
-            $property->setIsSingle($request->request->get('isSingle') === 'true');
-        }
-
         if (!$propertyProcess->isValidProperty($property)) {
             return new JsonResponse(
                 array(
@@ -321,6 +317,13 @@ class AjaxController extends Controller
                 && !$group->getGroupProperties()->contains($property)
         ) {
             $property->addPropertyGroup($group);
+
+            /* only care about setting single unit if being added by landlord */
+            if ($request->request->has('isSingle')) {
+                $unit = $propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+                $em->persist($unit);
+            }
+
             $group->addGroupProperty($property);
             $em->persist($group);
         }

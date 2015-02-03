@@ -137,13 +137,13 @@ class ImportFactory
 
     /**
      * @param $baseName
-     * @param $typeSerivce
+     * @param $typeService
      *
      * @return string
      */
-    protected function getServiceName($baseName, $typeSerivce)
+    protected function getServiceName($baseName, $typeService)
     {
-        return sprintf('%s.%s', $baseName, $typeSerivce);
+        return sprintf('%s.%s', $baseName, $typeService);
     }
 
     protected function getAccountingSettingType()

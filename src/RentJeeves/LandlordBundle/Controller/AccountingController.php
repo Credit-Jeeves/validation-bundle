@@ -305,6 +305,7 @@ class AccountingController extends Controller
         $storage = $importFactory->getStorage();
         $mapping = $importFactory->getMapping();
 
+        // convert from string to boolean
         $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($newRows) {
@@ -363,6 +364,8 @@ class AccountingController extends Controller
         $importFactory = $this->get('accounting.import.factory');
         $handler = $importFactory->getHandler();
         $data = $request->request->all();
+
+        // Hydrate contract and sub-object model from form data.
         $result['formErrors'] = $handler->saveForms($data);
         $result['rows'] = $collection = $handler->getCurrentCollectionImportModel();
 
