@@ -1,8 +1,8 @@
 parameters:
-    payment_account.class: RentJeeves\CheckoutBundle\Payment\PaymentAccount
+    payment_account.heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccount
 
 services:
-    payment.account:
-        class: "%payment_account.class%"
+    payment.account.heartland:
+        class: "%payment_account.heartland.class%"
         calls:
             - [setPayum, ["@payum"]]

@@ -1,15 +1,18 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Payment;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Payum\Heartland\Soap\Base\ACHAccountType;
 use Payum\Heartland\Soap\Base\ACHDepositType;
 use Payum\Heartland\Soap\Base\GetTokenRequest;
+use Payum\Heartland\Soap\Base\GetTokenResponse;
+use Payum\Payment;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use CreditJeeves\DataBundle\Entity\Address;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
-use Symfony\Component\Form\Form;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
@@ -17,7 +20,7 @@ use Payum\Heartland\Soap\Base\TokenPaymentMethod;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
-use \RuntimeException;
+use RuntimeException;
 
 class PaymentAccount
 {
@@ -33,7 +36,7 @@ class PaymentAccount
         return $this->payum;
     }
 
-    public function getTokenRequest(PaymentAccountData $paymentAccountData, User $user)
+    protected function getTokenRequest(PaymentAccountData $paymentAccountData, User $user)
     {
         $request = new GetTokenRequest();
 
@@ -98,7 +101,7 @@ class PaymentAccount
         return $request;
     }
 
-    public function getTokenResponse($tokenRequest, $merchantName)
+    protected function getTokenResponse($tokenRequest, $merchantName)
     {
         $paymentDetails = new PaymentDetails();
         $paymentDetails->setMerchantName($merchantName);
@@ -120,5 +123,19 @@ class PaymentAccount
         }
 
         return $response->getToken();
+    }
+
+    public function getToken(PaymentAccountData $paymentAccountData, User $user, Group $group)
+    {
+        $merchantName = $group->getMerchantName();
+        if (empty($merchantName)) {
+            throw new PaymentProcessorConfigurationException(
+                'Heartland payment processor error: merchant name not found'
+            );
+        }
+        $tokenRequest = $this->getTokenRequest($paymentAccountData, $user);
+        $token = $this->getTokenResponse($tokenRequest, $merchantName);
+
+        return $token;
     }
 }

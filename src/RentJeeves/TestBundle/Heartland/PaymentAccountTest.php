@@ -2,7 +2,7 @@
 
 namespace RentJeeves\TestBundle\Heartland;
 
-use RentJeeves\CheckoutBundle\Payment\PaymentAccount as Base;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccount as Base;
 
 class PaymentAccountTest extends Base
 {
