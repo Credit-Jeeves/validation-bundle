@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\Controller;
 
+use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -119,11 +120,19 @@ class AlertController extends Controller
             $payments = $contract->getPayments();
             if (count($payments) > 0) {
                 $hasPayment = true;
+                break;
             }
         }
         if (!$hasPayment) {
             $alerts[] = $this->get('translator.default')->trans('alert.tenant.first_payment');
         }
+
+        /** @var ContractRepository $contractRepo */
+        $contractRepo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
+        if (!$contractRepo->isTurnedOnBureauReporting($user)) {
+            $alerts[] = $this->get('translator.default')->trans('alert.tenant.bureau_reporting');
+        }
+
         return array(
             'alerts' => $alerts
         );

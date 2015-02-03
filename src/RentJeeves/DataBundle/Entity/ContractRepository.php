@@ -847,4 +847,23 @@ class ContractRepository extends EntityRepository
 
         return !!$query->getQuery()->getSingleScalarResult();
     }
+
+    /**
+     * @param Tenant $tenant
+     * @return bool
+     */
+    public function isTurnedOnBureauReporting(Tenant $tenant)
+    {
+        return !!$this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->where('c.status IN (:statuses)')
+            ->andWhere('c.tenant = :tenant')
+            ->andWhere('c.reportToExperian = 1 OR c.reportToTransUnion = 1')
+            ->setParameters([
+                'statuses' => [ContractStatus::APPROVED, ContractStatus::CURRENT],
+                'tenant' => $tenant
+            ])
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
