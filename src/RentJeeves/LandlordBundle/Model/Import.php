@@ -23,6 +23,12 @@ class Import
      * @Serializer\Type("string")
      * @Serializer\Groups({"RentJeevesImport"})
      */
+    protected $uniqueKeyException;
+
+    /**
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
     protected $skippedMessage;
 
     /**
@@ -113,11 +119,6 @@ class Import
     protected $contractWaiting;
 
     /**
-     * @var boolean
-     */
-    protected $isHasPaymentMapping = false;
-
-    /**
      * @var HandlerAbstract
      */
     protected $handler;
@@ -139,19 +140,19 @@ class Import
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function isIsHasPaymentMapping()
+    public function getUniqueKeyException()
     {
-        return $this->isHasPaymentMapping;
+        return $this->uniqueKeyException;
     }
 
     /**
-     * @param boolean $hasPaymentMapping
+     * @param string $uniqueKeyException
      */
-    public function setIsHasPaymentMapping($hasPaymentMapping)
+    public function setUniqueKeyException($uniqueKeyException)
     {
-        $this->isHasPaymentMapping = $hasPaymentMapping;
+        $this->uniqueKeyException = $uniqueKeyException;
     }
 
     /**

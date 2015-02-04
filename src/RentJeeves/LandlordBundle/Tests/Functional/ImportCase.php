@@ -1419,7 +1419,7 @@ class ImportCase extends BaseTestCase
 
         $errorFields = $this->page->findAll('css', '.errorField');
         $this->assertEquals(1, count($errorFields));
-        $errorFields[0]->setValue('14test1111@mail.com');
+        $errorFields[0]->setValue('tester@mail.com');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();

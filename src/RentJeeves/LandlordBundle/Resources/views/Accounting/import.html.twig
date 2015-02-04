@@ -21,6 +21,12 @@
                     <div class="information-box pie-el"  data-bind="visible: ($root.isValidDateFormat() == false)">
                         {{ "import.error.mapping_date"|trans }}
                     </div>
+                    <div class="information-box pie-el"  data-bind="visible: ($root.hasException() == true)">
+                        {{ "import.description_exception"|trans }} <br>
+                        <a class="skipException" data-bind="click: $root.skipException">
+                            {{ 'import.skip_exception'|trans }}
+                        </a>
+                    </div>
                     {% image '@LandlordBundle/Resources/public/images/ajax.gif' %}
                         <img src="{{ asset_url }}" class="left" data-bind="visible: $root.showSpinner()" />
                     {% endimage %}

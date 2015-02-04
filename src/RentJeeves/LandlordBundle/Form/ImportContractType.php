@@ -197,9 +197,9 @@ class ImportContractType extends AbstractType
     public function createOperation(FormEvent $event)
     {
         $handler = $this->import->getHandler();
-        $isIsNeedCreateCashOperation = $handler->isNeedCreateCashOperation();
+        $isNeedCreateCashOperation = $handler->isNeedCreateCashOperation();
         $dueDate = $handler->getDueDateOfContract();
-        if (!$isIsNeedCreateCashOperation) {
+        if (!$isNeedCreateCashOperation) {
             return;
         }
 
@@ -232,7 +232,7 @@ class ImportContractType extends AbstractType
          */
         $contract = $event->getData();
         $handler = $this->import->getHandler();
-        if ($contract->getIntegratedBalance() > 0 && $handler->isFinishedContract()) {
+        if ($contract->getIntegratedBalance() > 0 && $handler->isContractInPast()) {
             $contract->setUncollectedBalance($contract->getIntegratedBalance());
         }
     }

@@ -13,10 +13,13 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use Symfony\Component\Form\Form;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
+use Exception;
 
 /**
  * @property ModelImport currentImportModel
  * @property ModelImport isNeedSendInvite
+ * @method HandlerAbstract manageException
  */
 trait FormBind
 {
@@ -212,18 +215,22 @@ trait FormBind
      */
     protected function afterBindForm($isSingle)
     {
-        $contract = $this->currentImportModel->getContract();
-        if ($contract->getGroup()) {
-            $property = $contract->getProperty();
-            $property->setIsSingle($isSingle);
-            $property->addPropertyGroup($contract->getGroup());
-            $contract->getGroup()->addGroupProperty($property);
-            $this->em->flush($contract->getGroup());
-            $this->em->flush($property);
+        try {
+            $contract = $this->currentImportModel->getContract();
+            if ($contract->getGroup()) {
+                $property = $contract->getProperty();
+                $property->setIsSingle($isSingle);
+                $property->addPropertyGroup($contract->getGroup());
+                $contract->getGroup()->addGroupProperty($property);
+                $this->em->flush($contract->getGroup());
+                $this->em->flush($property);
 
-            if ($property->isSingle() && !$contract->getUnit()) {
-                $contract->setUnit($property->getSingleUnit());
+                if ($property->isSingle() && !$contract->getUnit()) {
+                    $contract->setUnit($property->getSingleUnit());
+                }
             }
+        } catch (Exception $e) {
+            $this->manageException($e);
         }
     }
 

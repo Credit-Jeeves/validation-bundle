@@ -129,9 +129,7 @@ trait Contract
     public function getOperationByDueDate($dueDate)
     {
         $contract = $this->currentImportModel->getContract();
-        if ($contract->getStatus() === ContractStatus::CURRENT &&
-            !$this->currentImportModel->isIsHasPaymentMapping()
-        ) {
+        if ($contract->getStatus() === ContractStatus::CURRENT) {
             $paidFor = new DateTime();
             $paidFor->setDate(
                 $paidFor->format('Y'),
@@ -171,14 +169,13 @@ trait Contract
         if (!$tenant->getId() || !$property) {
            $this->setNewContract($row);
         } else {
-            $this->currentImportModel->setContract(
-                $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
-                    $tenant->getId(),
-                    ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
-                    isset($row[Mapping::KEY_UNIT_ID])? $row[Mapping::KEY_UNIT_ID] : null,
-                    $property->getId()
-                )
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
+                $tenant->getId(),
+                ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
+                isset($row[Mapping::KEY_UNIT_ID])? $row[Mapping::KEY_UNIT_ID] : null,
+                $property->getId()
             );
+            $this->currentImportModel->setContract($contract);
         }
 
         if (!$this->currentImportModel->getContract()) {
@@ -205,7 +202,7 @@ trait Contract
             $this->currentImportModel->getContract()->setFinishAt($this->currentImportModel->getMoveOut());
             // only finish the contract if MoveOut is today or earlier
             if ($this->currentImportModel->getMoveOut() <= $today) {
-                $this->isFinishedContract();
+                $this->setFinishedContract();
             }
         } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[Mapping::KEY_MONTH_TO_MONTH] == 'Y')
@@ -216,7 +213,7 @@ trait Contract
             $leaseEnd <= $today
         ) {
             $this->currentImportModel->getContract()->setFinishAt($leaseEnd);
-            $this->isFinishedContract();
+            $this->setFinishedContract();
         } else {
             $this->currentImportModel->getContract()->setFinishAt($leaseEnd);
         }
@@ -257,9 +254,9 @@ trait Contract
         return $contractWaiting;
     }
 
-    public function isFinishedContract()
+    public function setFinishedContract()
     {
-        if ($this->contractInPast()) {
+        if ($this->isContractInPast()) {
             $this->currentImportModel->getContract()->setStatus(ContractStatus::FINISHED);
         }
     }
@@ -267,7 +264,7 @@ trait Contract
     /**
      * @return bool
      */
-    public function contractInPast()
+    public function isContractInPast()
     {
         $today = new DateTime();
         return ($this->currentImportModel->getContract()->getFinishAt() &&

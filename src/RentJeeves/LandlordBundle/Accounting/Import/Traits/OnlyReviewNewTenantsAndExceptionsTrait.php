@@ -7,8 +7,11 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
 use RentJeeves\LandlordBundle\Model\Import;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
+use Exception;
 
 /**
+ * @method HandlerAbstract manageException
  * @property Import currentImportModel
  */
 trait OnlyReviewNewTenantsAndExceptionsTrait
@@ -96,38 +99,42 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             return;
         }
 
-        $errors = $this->currentImportModel->getErrors();
-        $errors = $errors[$this->currentImportModel->getNumber()];
-        $contract = $this->currentImportModel->getContract();
+        try {
+            $errors = $this->currentImportModel->getErrors();
+            $errors = $errors[$this->currentImportModel->getNumber()];
+            $contract = $this->currentImportModel->getContract();
 
-        if ($this->currentImportModel->getIsSkipped()) {
-            $callbackSuccess();
-            return;
+            if ($this->currentImportModel->getIsSkipped()) {
+                $callbackSuccess();
+                return;
+            }
+
+            if (empty($errors) &&
+                !$this->currentImportModel->getHasContractWaiting() &&
+                !is_null($contract->getId()) &&
+                $this->isChangeImportantField($contract, $repository = 'Contract') &&
+                !$this->isContractEndedAndActiveInOurDB($contract)
+            ) {
+                $this->em->flush($contract);
+                $callbackSuccess();
+                return;
+            }
+
+            $contractWaiting = $this->currentImportModel->getContractWaiting();
+
+            if (empty($errors) &&
+                $this->currentImportModel->getHasContractWaiting() &&
+                !is_null($contractWaiting->getId()) &&
+                $this->isChangeImportantField($contractWaiting, $repository = 'ContractWaiting')
+            ) {
+                $this->em->flush($contractWaiting);
+                $callbackSuccess();
+                return;
+            }
+
+            $callbackFailed();
+        } catch (\Exception $e) {
+            $this->manageException($e);
         }
-
-        if (empty($errors) &&
-            !$this->currentImportModel->getHasContractWaiting() &&
-            !is_null($contract->getId()) &&
-            $this->isChangeImportantField($contract, $repository = 'Contract')&&
-            !$this->isContractEndedAndActiveInOurDB($contract)
-        ) {
-            $this->em->flush($contract);
-            $callbackSuccess();
-            return;
-        }
-
-        $contractWaiting = $this->currentImportModel->getContractWaiting();
-
-        if (empty($errors) &&
-            $this->currentImportModel->getHasContractWaiting() &&
-            !is_null($contractWaiting->getId()) &&
-            $this->isChangeImportantField($contractWaiting, $repository = 'ContractWaiting')
-        ) {
-            $this->em->flush($contractWaiting);
-            $callbackSuccess();
-            return;
-        }
-
-        $callbackFailed();
     }
 }

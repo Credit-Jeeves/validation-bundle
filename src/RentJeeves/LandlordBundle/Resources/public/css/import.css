@@ -126,3 +126,6 @@ table tbody tr td {
 .import_operation_paidFor {
     width: 38px !important;
 }
+.skipException:hover {
+    cursor: pointer !important;
+}

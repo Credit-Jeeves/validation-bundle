@@ -301,18 +301,4 @@ abstract class MappingAbstract implements MappingInterface
 
         return $mappedData;
     }
-
-    /**
-     * @param array $row
-     *
-     * @return bool
-     */
-    public function hasPaymentMapping(array $row)
-    {
-        if (!isset($row[self::KEY_PAYMENT_AMOUNT]) || !isset($row[self::KEY_PAYMENT_DATE])) {
-            return false;
-        }
-
-        return true;
-    }
 }

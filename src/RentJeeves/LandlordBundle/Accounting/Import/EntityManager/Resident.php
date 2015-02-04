@@ -53,13 +53,8 @@ trait Resident
     public function setResident(array $row)
     {
         if (is_null($this->currentImportModel->getTenant()->getId())) {
-            $residentMapping = new ResidentMapping();
-            $residentMapping->setTenant($this->currentImportModel->getTenant());
-            $residentMapping->setHolding($this->user->getHolding());
-            $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
-            $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
+            $residentMapping = $this->createNewResidentMapping($row);
             $this->currentImportModel->setResidentMapping($residentMapping);
-
             return;
         }
 
@@ -72,13 +67,20 @@ trait Resident
         );
 
         if (empty($residentMapping)) {
-            $residentMapping = new ResidentMapping();
-            $residentMapping->setTenant($this->currentImportModel->getTenant());
-            $residentMapping->setHolding($this->user->getHolding());
-            $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
-            $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
+            $residentMapping = $this->createNewResidentMapping($row);
         }
 
         $this->currentImportModel->setResidentMapping($residentMapping);
+    }
+
+    public function createNewResidentMapping(array $row)
+    {
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setTenant($this->currentImportModel->getTenant());
+        $residentMapping->setHolding($this->user->getHolding());
+        $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
+        $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
+
+        return $residentMapping;
     }
 }

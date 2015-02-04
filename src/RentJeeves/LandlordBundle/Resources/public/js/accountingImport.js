@@ -25,7 +25,7 @@ function accountingImport(superclass) {
     this.isFinishReview =  ko.observable(false);
     this.rows = ko.observableArray([]);
     this.formErrors = ko.observableArray([]);
-
+    this.hasException = ko.observable(false);
 
     this.loadData = function(next) {
         self.setProcessing(true);
@@ -43,14 +43,20 @@ function accountingImport(superclass) {
                 self.loadDataMessage(Translator.trans('import.error.flush'));
             },
             success: function(response) {
+                self.hasException(false);
                 self.setProcessing(false);
                 self.loadDataMessage(response.message);
+
                 if (response.error === false) {
                     var errors = new Array();
                     //Fill error by line
                     ko.utils.arrayForEach(response.rows, function (value) {
                         if (value.is_valid_date_format == false && self.isValidDateFormat() == true) {
                             self.isValidDateFormat(false);
+                        }
+
+                        if (value.unique_key_exception != null && self.hasException() == false) {
+                           self.hasException(true);
                         }
 
                         if (value.errors.length === 0) {
@@ -61,7 +67,6 @@ function accountingImport(superclass) {
                     });
                     //Finish
                     self.formErrors(errors);
-                    console.info(response.rows);
                     self.rows(response.rows);
                     self.rowsTotal(response.total);
 
@@ -72,6 +77,11 @@ function accountingImport(superclass) {
             }
         });
     };
+
+    this.skipException = function()
+    {
+        self.loadData(true);
+    }
 
     this.uniqueId = function() {
         // always start with a letter (for DOM friendliness)
@@ -148,6 +158,8 @@ function accountingImport(superclass) {
 
     this.submitForms = function() {
         self.setProcessing(true);
+        self.hasException(false);
+
         var number = 0;
         var success = Array();
         var errors = Array();
@@ -197,6 +209,9 @@ function accountingImport(superclass) {
             success: function(response) {
                 var errorsLen = jQuery.map(response.formErrors, function(n, i) { return i; }).length;
                 var rows = $.map(response.rows, function(value, index) {
+                    if (value.unique_key_exception != null && self.hasException() == false) {
+                        self.hasException(true);
+                    }
                     return [value];
                 });
                 if (errorsLen > 0 && rows.length > 0) {

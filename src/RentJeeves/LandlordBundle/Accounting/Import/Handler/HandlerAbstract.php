@@ -31,6 +31,8 @@ use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Unit;
 use JMS\DiExtraBundle\Annotation\Inject;
 use RentJeeves\LandlordBundle\Accounting\Import\Traits\OnlyReviewNewTenantsAndExceptionsTrait;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Group;
+use Monolog\Logger;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -97,6 +99,18 @@ abstract class HandlerAbstract implements HandlerInterface
      * @var ContractProcess
      */
     public $contractProcess;
+
+    /**
+     * @Inject("logger")
+     * @var Logger
+     */
+    public $logger;
+
+    /**
+     * @Inject("fp_badaboom.exception_catcher")
+     * @var ExceptionCatcher
+     */
+    public $exceptionCatcher;
 
     /**
      * @var SessionUser
@@ -306,7 +320,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
         if (!$this->currentImportModel->getIsSkipped() &&
             is_null($this->currentImportModel->getContract()->getId()) &&
-            $this->contractInPast()
+            $this->isContractInPast()
         ) {
             $this->currentImportModel->setIsSkipped(true);
             $this->currentImportModel->setSkippedMessage(
@@ -480,6 +494,12 @@ abstract class HandlerAbstract implements HandlerInterface
                         continue;
                     }
 
+                    $isException = $this->currentImportModel->getUniqueKeyException();
+
+                    if (!empty($isException)) {
+                        continue;
+                    }
+
                     if (!empty($errors[$lineNumber])) {
                         continue;
                     }
@@ -488,7 +508,7 @@ abstract class HandlerAbstract implements HandlerInterface
                         continue;
                     }
 
-                    if ($this->triedSaveRow($lineNumber)) {
+                    if ($this->tryToSaveRow($lineNumber)) {
                         $this->getCurrentCollectionImportModel()->remove($key);
                     }
                 }
@@ -507,6 +527,10 @@ abstract class HandlerAbstract implements HandlerInterface
                 continue;
             }
 
+            if ($import->getUniqueKeyException()) {
+                continue;
+            }
+
             $this->getCurrentCollectionImportModel()->remove($key);
         }
 
@@ -515,12 +539,12 @@ abstract class HandlerAbstract implements HandlerInterface
         return $errors + $errorsNotEditableFields;
     }
 
-    protected function triedSaveRow($lineNumber)
+    protected function tryToSaveRow($lineNumber)
     {
         try {
             $this->em->flush();
         } catch (Exception $e) {
-            //@TODO catch error
+            $this->manageException($e);
             return false;
         }
 
@@ -530,6 +554,28 @@ abstract class HandlerAbstract implements HandlerInterface
         return true;
     }
 
+    /**
+     * @param Exception $e
+     */
+    public function manageException(Exception $e)
+    {
+        $uniqueKeyException = uniqid('import_');
+        $exception = new ImportHandlerException($e);
+        $exception->setUniqueKey($uniqueKeyException);
+        $this->currentImportModel->setUniqueKeyException($uniqueKeyException);
+        $this->exceptionCatcher->handleException($exception);
+        $messageForLogging = sprintf(
+            'Exception message: %s, in File: %s, In Line: %s',
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine()
+        );
+        $this->logger->addCritical($messageForLogging);
+    }
+
+    /**
+     * @param $csrfToken
+     */
     protected function removeToken($csrfToken)
     {
         $tokenManager = $this->formCsrfProvider->getTokenManager();

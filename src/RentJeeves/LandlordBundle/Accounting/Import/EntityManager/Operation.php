@@ -25,7 +25,7 @@ trait Operation
     protected function isDuplicate($paidFor, $amount)
     {
         $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
-            $this->currentImportModel->getTenant()->getTenant(),
+            $this->currentImportModel->getTenant(),
             $this->currentImportModel->getContract(),
             $paidFor,
             $amount
