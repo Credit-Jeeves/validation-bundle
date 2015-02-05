@@ -116,7 +116,12 @@ function accountingImport(superclass) {
         return options;
     }
 
-    this.getStatusText = function(data) {
+    this.getStatusText = function(data)
+    {
+        if (data.unique_key_exception != null) {
+            return Translator.trans('import.status.exception', {"id":data.unique_key_exception});
+        }
+
         if (data.is_skipped && !self.isValidFieldsWhichNotContainsInForm(data)) {
             return Translator.trans('import.status.error');
         }

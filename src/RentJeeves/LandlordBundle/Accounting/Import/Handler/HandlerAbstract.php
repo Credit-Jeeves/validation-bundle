@@ -436,9 +436,13 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->collectionImportModel = new ArrayCollection(array());
 
         foreach ($data as $key => $values) {
-            $this->createCurrentImportModel($values, $key);
-            $this->currentImportModel->setNumber($key);
-            $this->collectionImportModel->add(clone $this->currentImportModel);
+            try {
+                $this->createCurrentImportModel($values, $key);
+                $this->currentImportModel->setNumber($key);
+            } catch(Exception $e) {
+                $this->manageException($e);
+                $this->collectionImportModel->add(clone $this->currentImportModel);
+            }
         }
         $this->clearResidentIds();
     }
@@ -559,7 +563,7 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public function manageException(Exception $e)
     {
-        $uniqueKeyException = uniqid('import_');
+        $uniqueKeyException = uniqid();
         $exception = new ImportHandlerException($e);
         $exception->setUniqueKey($uniqueKeyException);
         $this->currentImportModel->setUniqueKeyException($uniqueKeyException);

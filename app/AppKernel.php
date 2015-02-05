@@ -146,7 +146,7 @@ abstract class AppKernel extends Kernel
         $this->chainNodeManager->addProvider('default', new EnvironmentProvider());
 
         // prod env
-        if ('dev' != $this->getEnvironment()) {
+//        if ('dev' != $this->getEnvironment()) {
             $recipients = array(
                 'systems@creditjeeves.com' .
                 ', cary@renttrack.com'
@@ -197,11 +197,11 @@ abstract class AppKernel extends Kernel
                     ))
                 )
             );
-        } else {
+/*        } else {
             $this->chainNodeManager->addSender(
                 'default',
                 new SymfonyExceptionHandlerChainNode(true)
             );
         }
-    }
+ */   }
 }

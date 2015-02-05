@@ -22,7 +22,11 @@
                         {{ "import.error.mapping_date"|trans }}
                     </div>
                     <div class="information-box pie-el"  data-bind="visible: ($root.hasException() == true)">
-                        {{ "import.description_exception"|trans }} <br>
+                        <span>{{ "import.description_exception"|trans({'%support_email%':supportEmail}) }}</span>
+                        <span data-bind="foreach: $root.rows">
+                            <span data-bind="text: unique_key_exception, visible: unique_key_exception != null"></span>
+                        </span>
+                        <br>
                         <a class="skipException" data-bind="click: $root.skipException">
                             {{ 'import.skip_exception'|trans }}
                         </a>

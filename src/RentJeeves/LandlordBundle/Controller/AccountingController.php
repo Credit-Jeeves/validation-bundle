@@ -269,6 +269,7 @@ class AccountingController extends Controller
             //Make it string because it's var for js and I want boolean
             'isMultipleProperty'      => ($storage->isMultipleProperty())? "true" : "false",
             'importOnlyException'     => ($storage->isOnlyException())? "true" : "false",
+            'supportEmail'            => $this->container->getParameter('support_email'),
         );
     }
 
