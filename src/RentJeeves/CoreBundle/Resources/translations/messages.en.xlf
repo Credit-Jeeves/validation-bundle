@@ -476,7 +476,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*$9.95 per month (5 Free eChecks Included). $2.45 each eCheck payment thereafter. No charge to you for CC payments.
+                <target>*$9.95 per month (5 Free eChecks Included). $2.49 each eCheck payment thereafter. No charge to you for CC payments.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">

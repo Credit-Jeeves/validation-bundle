@@ -53,7 +53,7 @@ parameters:
     landlord_monthly_minimum: $9.95
     landlord_per_screen: $14.95
     landlord_payment_per_month_dollars: 2
-    landlord_payment_per_month_cents: 45
+    landlord_payment_per_month_cents: 49
 framework:
     session:
         name: rj
