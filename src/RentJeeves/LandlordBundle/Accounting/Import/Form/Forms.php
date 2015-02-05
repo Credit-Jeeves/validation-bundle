@@ -38,7 +38,8 @@ trait Forms
      *
      * @return Form
      */
-    public function getContractForm($isUseToken = true) {
+    public function getContractForm($isUseToken = true)
+    {
         return $this->createForm(
             new ImportContractType(
                 $this->em,
@@ -53,7 +54,8 @@ trait Forms
     /**
      * @return Form
      */
-    public function getCreateUserAndCreateContractForm() {
+    public function getCreateUserAndCreateContractForm()
+    {
         return $this->createForm(
             new ImportNewUserWithContractType(
                 $this->em,

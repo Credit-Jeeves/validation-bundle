@@ -14,5 +14,4 @@ class ImportHandlerException extends Exception
             $this->getMessage()
         );
     }
-
 }

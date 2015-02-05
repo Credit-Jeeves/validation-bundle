@@ -219,7 +219,7 @@ function accountingImport(superclass) {
                     }
                     return [value];
                 });
-                if (errorsLen > 0 && rows.length > 0) {
+                if (rows.length > 0) {
                     self.formErrors(response.formErrors);
                     self.rows(rows);
                     self.setProcessing(false);
@@ -305,6 +305,13 @@ function accountingImport(superclass) {
 
         return self.formErrors()[number];
     };
+
+    this.getResidentId = function(data)
+    {
+        if (data.resident_mapping != null) {
+            return data.resident_mapping.resident_id;
+        }
+    }
 
     this.getClassLine = function(data) {
         return 'line_number_'+data.number+' ';

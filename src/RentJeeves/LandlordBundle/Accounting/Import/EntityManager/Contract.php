@@ -167,7 +167,7 @@ trait Contract
         $property = $this->getProperty($row);
 
         if (!$tenant->getId() || !$property) {
-           $this->setNewContract($row);
+            $this->setNewContract($row);
         } else {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),

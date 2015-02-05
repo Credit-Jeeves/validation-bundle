@@ -217,6 +217,8 @@ trait FormBind
     {
         try {
             $contract = $this->currentImportModel->getContract();
+            //This is deprecated (when Cary merges his PR)
+            //https://github.com/Credit-Jeeves/Credit-Jeeves-SF2/pull/1093
             if ($contract->getGroup()) {
                 $property = $contract->getProperty();
                 $property->setIsSingle($isSingle);

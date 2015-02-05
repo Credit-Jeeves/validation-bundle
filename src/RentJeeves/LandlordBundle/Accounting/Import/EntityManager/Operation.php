@@ -41,10 +41,7 @@ trait Operation
 
     protected function getOperationByPaidFor($paidFor)
     {
-        if ($this->isDuplicate(
-            $paidFor,
-            $this->currentImportModel->getContract()->getRent())
-        ) {
+        if ($this->isDuplicate($paidFor, $this->currentImportModel->getContract()->getRent())) {
             return null;
         }
 

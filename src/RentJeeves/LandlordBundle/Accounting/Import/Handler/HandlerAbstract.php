@@ -439,10 +439,10 @@ abstract class HandlerAbstract implements HandlerInterface
             try {
                 $this->createCurrentImportModel($values, $key);
                 $this->currentImportModel->setNumber($key);
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $this->manageException($e);
-                $this->collectionImportModel->add(clone $this->currentImportModel);
             }
+            $this->collectionImportModel->add(clone $this->currentImportModel);
         }
         $this->clearResidentIds();
     }

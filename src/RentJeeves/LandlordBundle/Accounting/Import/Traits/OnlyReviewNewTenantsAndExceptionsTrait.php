@@ -100,8 +100,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         }
 
         try {
-            $errors = $this->currentImportModel->getErrors();
-            $errors = $errors[$this->currentImportModel->getNumber()];
+            $errors = $this->currentImportModel->getErrors()[$this->currentImportModel->getNumber()];
             $contract = $this->currentImportModel->getContract();
 
             if ($this->currentImportModel->getIsSkipped()) {
