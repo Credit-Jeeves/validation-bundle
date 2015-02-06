@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\Tests\Unit;
 
 use \RuntimeException;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccount;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
 use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\Form\Form;
 
@@ -31,7 +31,7 @@ class PaymentAccountCase extends BaseTestCase
     public function createToken()
     {
         $payum = $this->getContainer()->get('payum');
-        $paymentAccount = new PaymentAccount();
+        $paymentAccount = new PaymentAccountManager();
         $paymentAccount->setPayum($payum);
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');

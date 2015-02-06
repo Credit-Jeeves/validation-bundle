@@ -1,5 +1,5 @@
 parameters:
-    payment_account.heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccount
+    payment_account.heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager
 
 services:
     payment.account.heartland:

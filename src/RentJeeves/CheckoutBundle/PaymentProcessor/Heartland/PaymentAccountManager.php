@@ -12,6 +12,7 @@ use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use CreditJeeves\DataBundle\Entity\Address;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountManagerInterface;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
@@ -22,7 +23,7 @@ use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount a
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use RuntimeException;
 
-class PaymentAccount
+class PaymentAccountManager implements PaymentAccountManagerInterface
 {
     protected $payum;
 
@@ -36,6 +37,12 @@ class PaymentAccount
         return $this->payum;
     }
 
+    /**
+     * @param PaymentAccountData $paymentAccountData
+     * @param User $user
+     * @return GetTokenRequest
+     * @throws \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException
+     */
     protected function getTokenRequest(PaymentAccountData $paymentAccountData, User $user)
     {
         $request = new GetTokenRequest();
@@ -101,6 +108,11 @@ class PaymentAccount
         return $request;
     }
 
+    /**
+     * @param $tokenRequest
+     * @param $merchantName
+     * @return string
+     */
     protected function getTokenResponse($tokenRequest, $merchantName)
     {
         $paymentDetails = new PaymentDetails();
@@ -125,6 +137,15 @@ class PaymentAccount
         return $response->getToken();
     }
 
+    /**
+     * Requests a token for given payment account, user and group merchant name.
+     *
+     * @param PaymentAccountData $paymentAccountData
+     * @param User $user
+     * @param Group $group
+     * @return string
+     * @throws PaymentProcessorConfigurationException
+     */
     public function getToken(PaymentAccountData $paymentAccountData, User $user, Group $group)
     {
         $merchantName = $group->getMerchantName();

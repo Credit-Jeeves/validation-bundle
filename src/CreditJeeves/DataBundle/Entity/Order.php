@@ -668,7 +668,7 @@ class Order extends BaseOrder
     public function getHeartlandMessage($onlyReversal = true)
     {
         if (OrderStatus::ERROR == $this->getStatus()) {
-            return $this->getHeartlandErrorMessage();
+            return $this->getErrorMessage();
         }
 
         if ($onlyReversal) {
@@ -687,7 +687,7 @@ class Order extends BaseOrder
      *
      * @return string
      */
-    public function getHeartlandErrorMessage()
+    public function getErrorMessage()
     {
         /** @var Heartland $transaction */
         $transaction = $this->getHeartlands()

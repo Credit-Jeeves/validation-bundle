@@ -9,6 +9,7 @@ use Payum\Payment;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -53,7 +54,37 @@ trait PaymentProcess
      */
     protected function savePaymentAccount(Form $paymentAccountType, User $user, Group $group)
     {
-        return $this->savePaymentAccountHeartland($paymentAccountType, $user, $group);
+        $em = $this->getDoctrine()->getManager();
+        $paymentAccountEntity = $paymentAccountType->getData();
+
+        if ($paymentAccountEntity instanceof GroupAwareInterface) {
+            // if the account can have the group set directly, then set it
+            $paymentAccountEntity->setGroup($group);
+        } else {
+            // otherwise add the the associated depositAccount
+            $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneByGroup($group);
+
+            // make sure this deposit account is added only once!
+            if (!$paymentAccountEntity->getDepositAccounts()->contains($depositAccount)) {
+                $paymentAccountEntity->addDepositAccount($depositAccount);
+            }
+        }
+
+        $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
+        /** @var PaymentProcessorInterface $paymentProcessor */
+        $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
+        $token = $paymentProcessor->createPaymentAccount($paymentAccountMapped, $user, $group);
+
+        $paymentAccountEntity->setToken($token);
+
+        if ($paymentAccountEntity instanceof UserAwareInterface) {
+            $paymentAccountEntity->setUser($user);
+        }
+
+        $em->persist($paymentAccountEntity);
+        $em->flush();
+
+        return $paymentAccountEntity;
     }
 
     protected function savePayment(
@@ -133,38 +164,5 @@ trait PaymentProcess
         }
 
         return false;
-    }
-
-    private function savePaymentAccountHeartland(Form $paymentAccountType, User $user, Group $group)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $paymentAccountEntity = $paymentAccountType->getData();
-
-        if ($paymentAccountEntity instanceof GroupAwareInterface) {
-            // if the account can have the group set directly, then set it
-            $paymentAccountEntity->setGroup($group);
-        } else {
-            // otherwise add the the associated depositAccount
-            $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneByGroup($group);
-
-            // make sure this deposit account is added only once!
-            if (!$paymentAccountEntity->getDepositAccounts()->contains($depositAccount)) {
-                $paymentAccountEntity->addDepositAccount($depositAccount);
-            }
-        }
-
-        $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
-        $token = $this->get('payment_processor.heartland')->createPaymentAccount($paymentAccountMapped, $user, $group);
-
-        $paymentAccountEntity->setToken($token);
-
-        if ($paymentAccountEntity instanceof UserAwareInterface) {
-            $paymentAccountEntity->setUser($user);
-        }
-
-        $em->persist($paymentAccountEntity);
-        $em->flush();
-
-        return $paymentAccountEntity;
     }
 }
