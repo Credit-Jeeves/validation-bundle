@@ -3050,6 +3050,21 @@
                 <source>error.accountNumber.already_exists</source>
                 <target>Account number already exists</target>
             </trans-unit>
+            <trans-unit id="import.description_exception">
+                <source>import.description_exception</source>
+                <target>
+                    We encountered exceptions when attempting to import the rows below.
+                    Please contact %support_email% and reference the following import exception IDs:
+                </target>
+            </trans-unit>
+            <trans-unit id="import.skip_exception">
+                <source>import.skip_exception</source>
+                <target>Skip These Rows and Continue Import</target>
+            </trans-unit>
+            <trans-unit id="import.status.exception">
+                <source>import.status.exception</source>
+                <target>Exception (%id%)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
