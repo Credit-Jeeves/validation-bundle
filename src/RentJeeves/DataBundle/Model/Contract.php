@@ -386,11 +386,36 @@ abstract class Contract
      */
     protected $disputeCode = DisputeCode::DISPUTE_CODE_BLANK;
 
+    /**
+     * @ORM\Column(
+     *     name="external_lease_id",
+     *     type="string",
+     *     nullable=true
+     * )
+     */
+    protected $externalLeaseId;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->histories = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalLeaseId()
+    {
+        return $this->externalLeaseId;
+    }
+
+    /**
+     * @param string $externalLeaseId
+     */
+    public function setExternalLeaseId($externalLeaseId)
+    {
+        $this->externalLeaseId = $externalLeaseId;
     }
 
     /**

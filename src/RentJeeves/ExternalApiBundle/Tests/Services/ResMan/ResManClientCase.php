@@ -18,25 +18,20 @@ class ResManClientCase extends Base
     public function shouldReturnResidentTransactions()
     {
         $container = $this->getKernel()->getContainer();
-        /**
-         * @var $resManClient ResManClient
-         */
+        /** @var $resManClient ResManClient */
         $resManClient = $container->get('resman.client');
 
         $settings = new ResManSettings();
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
 
-        /**
-         * @var $residentTransactions ResidentTransactions
-         */
+        /** @var $residentTransactions ResidentTransactions */
         $residentTransactions = $resManClient->getResidentTransactions(self::EXTERNAL_PROPERTY_ID);
+
         $rtCustomers = $residentTransactions->getProperty()->getRtCustomers();
         $this->assertInternalType('array', $rtCustomers);
         $this->assertGreaterThan(1, count($rtCustomers));
-        /**
-         * @var $rtCustomer RtCustomer
-         */
+        /** @var $rtCustomer RtCustomer */
         $rtCustomer = reset($rtCustomers);
         $this->assertInstanceOf(
             'RentJeeves\ExternalApiBundle\Model\ResMan\Customers',

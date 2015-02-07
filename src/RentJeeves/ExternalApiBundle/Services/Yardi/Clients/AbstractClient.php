@@ -285,6 +285,7 @@ abstract class AbstractClient implements ClientInterface
                     print_r($response, true)
                 )
             );
+
             $resultXmlResponse = $this->processXmlResponse($response, $function);
             if ($resultXmlResponse) {
                 $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
@@ -385,6 +386,7 @@ abstract class AbstractClient implements ClientInterface
 
         $xml = $response->$responseField->any;
         $xml = $this->getXmlHeader().$xml;
+        $xml = str_replace('MITS:', '', $xml);
 
         if ($this->isXmlError($xml)) {
             return null;
