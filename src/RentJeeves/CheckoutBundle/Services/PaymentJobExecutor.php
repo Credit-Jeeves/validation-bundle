@@ -138,7 +138,7 @@ class PaymentJobExecutor
         $filterClosure = function (Operation $operation) use ($date) {
             if (($order = $operation->getOrder()) &&
                 $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
-                OrderStatus::ERROR != $order->getStatus()
+                (OrderStatus::ERROR != $order->getStatus() || OrderStatus::CANCELLED != $order->getStatus())
             ) {
                 return true;
             }
