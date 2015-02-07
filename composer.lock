@@ -4138,7 +4138,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git",
-                "reference": "168a310fc84c725a17e5af30f96ee8143c460f65"
+                "reference": "4977184c3222b9af2b653905d2b2b504ca6361c6"
             },
             "require": {
                 "besimple/soap-client": "dev-master",
