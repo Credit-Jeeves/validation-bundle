@@ -15,7 +15,9 @@ parameters:
     mink.base_url: 'http://%server_name%/_test.php'
     mink.coverage_script_url: 'http://%server_name%/bundles/mink/phpunit_coverage.php'
     server: dev
-    google_maps_key: 'AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24'
+
+    google_maps_key: 'AIzaSyBsW5-jPDZ2C-l9d62DVgdvQMerbt0XvNo' # API account with staging@renttrack.com
+
     payment_report_path: /tmp
     authorize_net:
         login_id: '7hNc5K44'

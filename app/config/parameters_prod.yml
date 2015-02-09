@@ -17,7 +17,9 @@ parameters:
     server: live
     server_name_cj: my.creditjeeves.com
     server_name_rj: my.renttrack.com
-    google_maps_key: AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24
+
+    google_maps_key: 'AIzaSyBWwRKgFPdWQYzzwGKaDL83ojLxGGFvGV4' # API account with systems@renttrack.com
+
     session.lifetime: 900 #in seconds
     payment_report_path: /home/heartland
     authorize_net:
