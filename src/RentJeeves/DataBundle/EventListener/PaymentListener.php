@@ -129,6 +129,7 @@ class PaymentListener
 
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
             if ($entity instanceof Payment) {
+                $paramUpdate = [];
                 if (PaymentStatus::CLOSE != $entity->getStatus()) {
                     $oldStatus = $entity->getStatus();
                     $entity->setClosed($this, PaymentCloseReason::DELETED);
@@ -137,9 +138,10 @@ class PaymentListener
                         'closeDetails' => [null, $entity->getCloseDetails()],
                         'updatedAt' => [$entity->getUpdatedAt(), new DateTime()]
                     ];
-                    $em->persist($entity);
-                    $uow->scheduleExtraUpdate($entity, $paramUpdate);
                 }
+                // To avoid Payment entity deletion, we persist the entity (Entity becomes managed again)
+                $em->persist($entity);
+                $uow->scheduleExtraUpdate($entity, $paramUpdate);
             }
         }
     }
