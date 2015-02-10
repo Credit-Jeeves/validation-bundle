@@ -29,8 +29,7 @@ function accountingImportYardi() {
                 ),
                 type: 'POST',
                 data: {
-                    'paymentAccepted': residentsId[i].paymentAccepted,
-                    'moveOutDate': residentsId[i].MoveOutDate
+                    'resident':residentsId[i]
                 },
                 dataType: 'json',
                 error: function () {

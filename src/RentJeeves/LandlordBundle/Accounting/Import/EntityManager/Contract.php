@@ -23,6 +23,14 @@ use RentJeeves\LandlordBundle\Model\Import;
  */
 trait Contract
 {
+
+    protected function setLeasId(array $row)
+    {
+        if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
+            $this->currentImportModel->getContract()->setExternalLeaseId($row[Mapping::KEY_EXTERNAL_LEASE_ID]);
+        }
+    }
+
     protected function setPaymentAccepted(array $row)
     {
         if (isset($row[Mapping::KEY_PAYMENT_ACCEPTED])) {
@@ -182,6 +190,7 @@ trait Contract
             $this->setNewContract($row);
         }
 
+        $this->setLeasId($row);
         $this->setPaymentAccepted($row);
         //set data from csv file
         $this->currentImportModel->getContract()->setIntegratedBalance($row[Mapping::KEY_BALANCE]);

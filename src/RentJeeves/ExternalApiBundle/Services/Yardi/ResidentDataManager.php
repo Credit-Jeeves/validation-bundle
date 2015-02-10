@@ -85,6 +85,16 @@ class ResidentDataManager
         $residentClient = $this->getApiClient($holding);
         $resident = $residentClient->getResidentData($propertyMapping->getExternalPropertyId(), $residentId);
 
+        if (empty($resident) || !$resident->getLeaseFiles()) {
+            throw new \Exception(
+                sprintf(
+                    "Can't get resident data by resident ID '%s' and property ID '%s'",
+                    $residentId,
+                    $property->getId()
+                )
+            );
+        }
+
         return $resident->getLeaseFiles()->getLeaseFile();
     }
 

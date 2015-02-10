@@ -5,9 +5,12 @@ namespace RentJeeves\LandlordBundle\Controller;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,6 +32,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * @Route("/accounting")
@@ -390,20 +394,20 @@ class AccountingController extends Controller
     {
         $importFactory = $this->get('accounting.import.factory');
         $mapping = $importFactory->getMapping();
+        /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
-        /**
-         * @var $propertyMappingManager PropertyMappingManager
-         */
+        /** @var $propertyMappingManager PropertyMappingManager */
         $propertyMappingManager = $this->get('property_mapping.manager');
         $propertyMapping = $propertyMappingManager->createPropertyMapping(
             $storage->getImportPropertyId(),
             $storage->getImportExternalPropertyId()
         );
+
         $holding = $this->getUser()->getHolding();
 
         if ($storage->getImportLoaded() === false) {
             $residents = $mapping->getResidents($holding, $propertyMapping->getProperty());
-            $residents = array_values($residents);
+            $residents = array_values($residents); //For start array from 0, but why don't remember
         } else {
             $residents = array();
         }
@@ -455,20 +459,29 @@ class AccountingController extends Controller
     {
         $holding = $this->getUser()->getHolding();
         $request = $this->get('request');
-        $moveOutDate = $request->request->get('moveOutDate');
-        $paymentAccepted = $request->request->get('paymentAccepted');
+        $residentPostData = $request->request->get('resident');
+        /** @var Serializer $serializer */
+        $serializer = $this->get('jms_serializer');
+        $classResident = 'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident';
+        /** @var ResidentsResident $resident */
+        $resident = $serializer->deserialize(
+            $residentPostData,
+            $classResident,
+            'array'
+        );
 
+        if (!$resident instanceof ResidentsResident) {
+            throw new Exception("Invalid post data, can't be converted to {$classResident}");
+        }
 
-        /**
-         * @var $importFactory ImportFactory
-         */
+        /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
+        /** @var MappingYardi $mapping */
         $mapping = $importFactory->getMapping();
+        /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
         $em = $this->getDoctrine()->getManager();
-        /**
-         * @var $propertyMapping PropertyMapping
-         */
+        /** @var $propertyMapping PropertyMapping */
         $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
             array(
                 'property'              => $storage->getImportPropertyId(),
@@ -476,20 +489,18 @@ class AccountingController extends Controller
             )
         );
         try {
-            $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $residentId);
-            $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
+            $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $resident);
+            $storage->saveToFile($residentLeaseFile, $resident);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
-                $result = false;
+                $responseData = array('result' => false);
             } else {
-                $result = true;
+                $responseData = array('result' => true);
             }
         } catch (Exception $e) {
-            $result = false;
+			$this->get('fp_badaboom.exception_catcher')->handleException($e);
+            $responseData = array('result' => false);
         }
-        // Because: UnexpectedValueException: The Response content must be a string or object
-        //implementing __toString(), "boolean" given.
-        $result = (string) $result;
 
         if ($isLast) {
             $storage->setImportLoaded(true);
@@ -503,10 +514,9 @@ class AccountingController extends Controller
             $handler->updateMatchedContracts();
         }
 
-        $response = new Response($result);
-        $response->setStatusCode(($result) ? 200 : 400);
+        $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
         $response->headers->set('Content-Type', 'application/json');
-
+		$response->setStatusCode(($result['result']) ? 200 : 400);
         return $response;
     }
 
