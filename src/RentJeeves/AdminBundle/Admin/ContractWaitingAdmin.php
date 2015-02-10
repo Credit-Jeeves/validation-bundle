@@ -77,6 +77,19 @@ class ContractWaitingAdmin extends Admin
 
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $container = $this->getConfigurationPool()->getContainer();
+        $request = $container->get('request');
+        $uniqueId = $request->query->get('uniqid');
+        $params = $request->request->all();
+
+        $group = null;
+        $property = null;
+
+        if (isset($params[$uniqueId])) {
+            $group = $params[$uniqueId]['group'];
+            $property = $params[$uniqueId]['property'];
+        }
+
         $formMapper
             ->add(
                 'group',
@@ -84,15 +97,42 @@ class ContractWaitingAdmin extends Admin
                 array(
                     'class' => 'DataBundle:Group',
                     'query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('gr')
-                                ->where('gr.type = :typeGroup')
-                                ->orderBy('gr.name', 'ASC')
-                                ->setParameter('typeGroup', GroupType::RENT);
+                        return $er->createQueryBuilder('gr')
+                            ->where('gr.type = :typeGroup')
+                            ->orderBy('gr.name', 'ASC')
+                            ->setParameter('typeGroup', GroupType::RENT);
                     }
                 )
             )
-            ->add('property')
-            ->add('unit')
+            ->add(
+                'property',
+                'entity',
+                array(
+                    'class' => 'RjDataBundle:Property',
+                    'required' => true,
+                    'query_builder' => function (EntityRepository $er) use ($group) {
+                        return $er->createQueryBuilder('pr')
+                            ->innerJoin('pr.property_groups', 'gr')
+                            ->where('gr.id = :group')
+                            ->setParameter('group', $group);
+                    }
+                )
+            )
+            ->add(
+                'unit',
+                'entity',
+                array(
+                    'class' => 'RjDataBundle:Unit',
+                    'required' => true,
+                    'query_builder' => function (EntityRepository $er) use ($group, $property) {
+                        return $er->createQueryBuilder('u')
+                            ->where('u.property = :property')
+                            ->andWhere('u.group = :group')
+                            ->setParameter('group', $group)
+                            ->setParameter('property', $property);
+                    }
+                )
+            )
             ->add('rent')
             ->add('residentId')
             ->add(
