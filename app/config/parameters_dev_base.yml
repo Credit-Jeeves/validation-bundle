@@ -64,8 +64,9 @@ parameters:
 
     transunion.account_name: 'CC2RentTrack'
     transunion.password: 'Pfr5Nm$c'
-    transunion.ssl_key: /root/transunion.com/stg.renttrack.com.key
-    transunion.ca_certificate: /root/transunion.com/prodsupCA.pem
-    transunion.ssl_certificate: /root/transunion.com/CC2RentTrack-Test.crt
+    transunion.environment: stage
+    transunion.ssl_key: /var/www/%server_name_rj%/app/config/secrets/transunion/stg.renttrack.com.key
+    transunion.ca_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/prodsupCA.pem
+    transunion.ssl_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/CC2RentTrack-Test.crt
     transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
     transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'
