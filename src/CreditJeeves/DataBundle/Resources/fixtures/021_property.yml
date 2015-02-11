@@ -12,8 +12,8 @@ fixtures:
         street:         Broadway
         number:         770
         zip:            10003
-        jb:             40.7308443
-        kb:             -73.9913642
+        jb:             40.7307693
+        kb:             -73.9913223
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
     Property_2:

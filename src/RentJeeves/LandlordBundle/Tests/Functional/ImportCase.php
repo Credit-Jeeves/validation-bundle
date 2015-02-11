@@ -1384,7 +1384,7 @@ class ImportCase extends BaseTestCase
         );
         $this->assertEquals(1, count($contractWaiting));
     }
-    
+
     /**
      * @test
      * @depends yardiBaseImport
@@ -1814,7 +1814,7 @@ class ImportCase extends BaseTestCase
         for ($i = 0; $i <= 2; $i++) {
             if ($i === 0) {
                 $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-                $this->assertCount(2, $errorFields);
+                $this->assertCount(1, $errorFields);
                 $errorFields[0]->setValue('CorrrectName');
                 $errorFields[1]->setValue('CorrrectName');
             }
