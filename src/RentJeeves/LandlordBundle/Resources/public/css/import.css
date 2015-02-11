@@ -88,7 +88,7 @@ table tbody tr td {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fce40a', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
 }
 
-.Error {
+.Exception, .Error  {
     border-left: 3px solid red;
     background: #fc1919; /* Old browsers */
     background: -moz-linear-gradient(left,  #fc1919 0%, #ffffff 43%); /* FF3.6+ */
@@ -98,6 +98,10 @@ table tbody tr td {
     background: -ms-linear-gradient(left,  #fc1919 0%,#ffffff 43%); /* IE10+ */
     background: linear-gradient(to right,  #fc1919 0%,#ffffff 43%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fc1919', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
+}
+
+.Exception {
+    font-size: 10px;
 }
 .finishedTitle {
     text-align: center;
@@ -125,4 +129,7 @@ table tbody tr td {
 }
 .import_operation_paidFor {
     width: 38px !important;
+}
+.skipException:hover {
+    cursor: pointer !important;
 }

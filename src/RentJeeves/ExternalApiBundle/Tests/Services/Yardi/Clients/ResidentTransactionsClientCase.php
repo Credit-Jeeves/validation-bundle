@@ -41,9 +41,7 @@ class ResidentTransactionsClientCase extends Base
     public function getResidentTransactions()
     {
         $client = $this->getClient();
-        /**
-         * @var $response GetResidentTransactionsLoginResponse
-         */
+        /** @var $response GetResidentTransactionsLoginResponse */
         $response = $client->getResidentTransactions('rnttrk01');
         $this->assertTrue($response instanceof GetResidentTransactionsLoginResponse);
     }

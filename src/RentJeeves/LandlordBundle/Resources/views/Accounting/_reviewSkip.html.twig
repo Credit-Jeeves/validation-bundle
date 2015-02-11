@@ -45,7 +45,7 @@
              )
         }
     ">
-        <span data-bind="text:resident_mapping.resident_id"> </span>
+        <span data-bind="text:$root.getResidentId($data)"> </span>
         {% if isMultipleProperty == 'true' %}
             <hr />
             <span data-bind="html: unit_mapping.external_unit_id"></span>

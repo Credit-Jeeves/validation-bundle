@@ -6,7 +6,11 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Model\Import;
 
+/**
+ * @property Import currentImportModel
+ */
 trait Tenant
 {
 
@@ -14,10 +18,8 @@ trait Tenant
 
     /**
      * @param array $row
-     *
-     * @return EntityTenant
      */
-    protected function getTenant(array $row)
+    protected function setTenant(array $row)
     {
         /**
          * @var $tenant EntityTenant
@@ -29,23 +31,27 @@ trait Tenant
         );
 
         if (!empty($tenant)) {
-            /**
-             * @var $residentMapping ResidentMapping
-             */
+            /** @var $residentMapping ResidentMapping */
             $residentMapping = $tenant->getResidentsMapping()->first();
             if ($residentMapping && $residentMapping->getResidentId() !== $row[Mapping::KEY_RESIDENT_ID]) {
                 $tenant = $this->createTenant($row);
-                $this->fillUsersEmail($tenant); //Make it error, because resident ID different
-                return $tenant;
+                $this->currentImportModel->setTenant($tenant);
+                $this->fillUsersEmail($tenant);
+                return;
             }
-
+            $this->currentImportModel->setTenant($tenant);
             $this->fillUsersEmail($tenant);
-            return $tenant;
+            return;
         }
 
-        return $this->createTenant($row);
+        $this->currentImportModel->setTenant($this->createTenant($row));
+        $this->fillUsersEmail($this->currentImportModel->getTenant());
     }
 
+    /**
+     * @param $row
+     * @return EntityTenant
+     */
     protected function createTenant($row)
     {
         $tenant = new EntityTenant();
@@ -57,17 +63,17 @@ trait Tenant
             $tenant->setFirstName($row[Mapping::FIRST_NAME_TENANT]);
             $tenant->setLastName($row[Mapping::LAST_NAME_TENANT]);
         }
-
         $tenant->setEmail($row[Mapping::KEY_EMAIL]);
         $tenant->setEmailCanonical($row[Mapping::KEY_EMAIL]);
         $tenant->setPassword(md5(md5(1)));
         $tenant->setCulture($this->locale);
-        $this->fillUsersEmail($tenant);
 
         return $tenant;
     }
 
-
+    /**
+     * @param EntityTenant $tenant
+     */
     protected function fillUsersEmail(EntityTenant $tenant)
     {
         $email = $tenant->getEmail();

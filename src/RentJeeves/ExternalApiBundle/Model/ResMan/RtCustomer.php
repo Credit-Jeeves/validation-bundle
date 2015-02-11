@@ -7,6 +7,8 @@ use JMS\Serializer\Annotation as Serializer;
 class RtCustomer
 {
     /**
+     * it's lease id of contract
+     *
      * @Serializer\SerializedName("CustomerID")
      * @Serializer\Type("string")
      * @Serializer\Groups({"ResMan"})

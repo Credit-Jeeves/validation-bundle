@@ -1,21 +1,16 @@
 <?php
 namespace CreditJeeves\UserBundle\Tests\Functional;
 
-use Behat\Mink\Element\DocumentElement;
-use CreditJeeves\TestBundle\Functional\BaseTestCase;
-use CreditJeeves\UserBundle\Tests\Traits\SettingsCaseTrait;
+use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-/**
- * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
- */
-class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
+class SettingsCase extends BaseTestCase
 {
 //    TODO Torn on it if function would be approved for CJ
 //    use SettingsCaseTrait;
 //
     protected $password = '123123';
-    protected $userEmail = 'emilio@example.com';
-//    protected $accountLink = 'tabs.settings';
+    protected $userEmail = 'tenant11@example.com';
+    protected $accountLink = 'common.account';
 
     /**
      * @test
@@ -23,10 +18,10 @@ class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
     public function userChangePassword()
     {
         $this->load(true);
-        $this->setDefaultSession('symfony');
-        //$this->setDefaultSession('selenium2');
-        $this->login('emilio@example.com', 'pass');
-        $this->page->clickLink('tabs.settings');
+        $this->setDefaultSession('goutte');
+//        $this->setDefaultSession('selenium2');
+        $this->login($this->userEmail, 'pass');
+        $this->page->clickLink($this->accountLink);
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.update'));
         $this->fillForm(
@@ -49,22 +44,22 @@ class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function userContactInformation()
     {
-        //$this->setDefaultSession('selenium2');
-        $this->login('emilio@example.com', $this->password);
-        $this->page->clickLink('tabs.settings');
+        $this->login($this->userEmail, $this->password);
+        $this->page->clickLink($this->accountLink);
         $this->page->clickLink('settings.contact_information');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.update'));
         $this->fillForm(
             $form,
             array(
-                'contact_phone_type' => 0,
+                'contact_first_name' => 'Tim',
+                'contact_last_name' => 'Cook',
                 'contact_phone' => 1234567890,
             )
         );
         $submit->click();
         $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
-        $this->assertEquals('Information has been updated', $notice->getText(), 'Wrong notice');
+        $this->assertEquals('contact.information.update', $notice->getText(), 'Wrong notice');
         $this->logout();
     }
 
@@ -74,8 +69,8 @@ class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function userEmailSettings()
     {
-        $this->login('emilio@example.com', $this->password);
-        $this->page->clickLink('tabs.settings');
+        $this->login($this->userEmail, $this->password);
+        $this->page->clickLink($this->accountLink);
         $this->page->clickLink('settings.email');
 
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
@@ -92,7 +87,7 @@ class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
         $this->assertEquals('Information has been updated', $notice->getText(), 'Wrong notice');
 
-        $this->page->clickLink('tabs.settings');
+        $this->page->clickLink($this->accountLink);
         $this->page->clickLink('settings.email');
 
         $this->assertNotNull($notifications = $form->find('css', '#notification_score_changed_notification'));

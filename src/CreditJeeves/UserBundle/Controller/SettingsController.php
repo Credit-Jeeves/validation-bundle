@@ -70,26 +70,20 @@ class SettingsController extends Controller
     {
         $request = $this->get('request');
         /**
-         * @var $cjUser User
+         * @var $user User
          */
-        $cjUser = $this->getUser();
-        $sEmail = $cjUser->getEmail();
-        $form = $this->createForm(new ContactType(), $cjUser);
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($cjUser);
-                $em->flush();
-                $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
-            }
+        $user = $this->getUser();
+        $form = $this->createForm(new ContactType(), $user);
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'contact.information.update');
         }
-
-        return array(
-            'sEmail' => $sEmail,
+        return [
             'form' => $form->createView()
-        );
-
+        ];
     }
 
     /**

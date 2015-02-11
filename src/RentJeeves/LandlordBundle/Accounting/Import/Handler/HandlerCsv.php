@@ -39,6 +39,7 @@ class HandlerCsv extends HandlerAbstract
         $this->translator       = $translator;
         $this->storage          = $storage;
         $this->mapping          = $mapping;
+        parent::__construct();
     }
 
     public function updateMatchedContracts()

@@ -66,7 +66,10 @@
                 <source>login.create_user</source>
                 <target>Create Account</target>
             </trans-unit>
-
+            <trans-unit id="contact.information.update">
+                <source>contact.information.update</source>
+                <target>Information has been updated</target>
+            </trans-unit>
             <trans-unit id="resetting.title">
                 <source>resetting.title</source>
                 <target>Forgot your password?</target>

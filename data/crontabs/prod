@@ -1,7 +1,14 @@
-10 2 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize deposit --archive=true >> /var/log/renttrack.log 2>&1
+10 3 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize deposit --archive=true >> /var/log/renttrack.log 2>&1
 15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize reversal --archive=true >> /var/log/renttrack.log 2>&1
+# Run the payments early in the morning to hit all the recurring payments:
 30 4 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
-55 15 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+# Run payments every two hours during working day:
+0 9 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+0 11 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+0 13 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+0 15 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+0 17 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+# Run payments right after we cut people off in the UI at 21:50:
 55 21 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
 0 8 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant >> /var/log/renttrack.log 2>&1
 0 8 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --auto >> /var/log/renttrack.log 2>&1
@@ -14,3 +21,8 @@
 #0 1 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=report >> /var/log/renttrack.log 2>&1
 #30 23 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=late >> /var/log/renttrack.log 2>&1
 */5 * * * * /var/www/my.renttrack.com/bin/console jms-job-queue:run --max-runtime=300
+
+# Yardi Cron Jobs
+# Push Payments, should run after reversal synchronization and deposit jobs
+25 4 * * * /var/www/my.renttrack.com/bin/console --app=rj api:yardi:push-batch-receipts --debug=true >> /var/log/renttrack_yardi_push.log 2>&1
+20 4 * * * /var/www/my.renttrack.com/bin/console --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
