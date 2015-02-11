@@ -36,17 +36,22 @@ trait Property
             return $this->propertyList[$key];
         }
 
-        $isValid = $this->propertyProcess->isValidProperty(
+        if (!$this->propertyProcess->isValidProperty(
             $property
-        );
-
-        if (!$isValid) {
+        )) {
             return null;
         }
+
         $property = $this->propertyProcess->checkPropertyDuplicate(
             $property,
             $saveToGoogle = true
         );
+
+        /**
+         * Save valid property to DB
+         */
+        $this->em->persist($property);
+        $this->em->flush($property);
 
         $this->propertyList[$key] = $property;
 

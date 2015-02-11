@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -1447,6 +1448,14 @@ class ImportCase extends BaseTestCase
     public function skippedMessageAndinfoDateInvalid()
     {
         $this->load(true);
+        // get count of property
+        /** @var PropertyRepository $repo */
+        $repo = $this
+            ->getContainer()
+            ->get('doctrine.orm.entity_manager')
+            ->getRepository('RjDataBundle:Property');
+        $count = $repo->createQueryBuilder('p')->select('count(p.id)')->getQuery()->getSingleScalarResult();
+
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -1491,12 +1500,15 @@ class ImportCase extends BaseTestCase
         $trs = $this->getParsedTrsByStatus();
         $this->assertEquals(2, count($trs), "Count statuses is wrong");
         $this->assertEquals(1, count($trs['import.status.waiting']), "Waiting contract is wrong number");
-        $this->assertEquals(1, count($trs['import.status.skip']), "Waiting contract is wrong number");
+        $this->assertEquals(1, count($trs['import.status.skip']), "Skip contract is wrong number");
 
         $this->assertNotNull($info = $this->page->find('css', '.information-box'));
         $this->assertEquals('import.error.mapping_date', trim($info->getHtml()));
         $this->assertNotNull($td = $this->page->find('css', '.line_number_1 td'));
         $this->assertEquals('import.info.skipped2', trim($td->getAttribute('title')));
+        // check that added 2 new properties from import file
+        $countNew = $repo->createQueryBuilder('p')->select('count(p.id)')->getQuery()->getSingleScalarResult();
+        $this->assertEquals($countNew, $count + 2);
     }
 
     /**
