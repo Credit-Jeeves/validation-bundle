@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
+use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Response;
@@ -13,7 +14,11 @@ use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\DeserializationContext;
+use DateTime;
 
+/**
+ * @method ResManSettings getSettings
+ */
 class ResManClient implements ClientInterface
 {
     use Debug;
@@ -24,6 +29,7 @@ class ResManClient implements ClientInterface
     protected $mappingResponse = array(
         self::BASE_RESPONSE          => 'RentJeeves\ExternalApiBundle\Model\ResMan\ResMan',
         'GetResidentTransactions2_0' => 'RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions',
+        'OpenBatch'                  => 'RentJeeves\ExternalApiBundle\Model\ResMan\Batch',
     );
 
     /**
@@ -151,6 +157,14 @@ class ResManClient implements ClientInterface
         }
     }
 
+    protected function deserializeResponse($data, $class)
+    {
+        $context = new DeserializationContext();
+        $context->setGroups(array('ResMan'));
+
+        return $this->serializer->deserialize($data, $class, 'xml', $context);
+    }
+
     /**
      * @param $externalPropertyId
      *
@@ -166,11 +180,21 @@ class ResManClient implements ClientInterface
         return $this->sendRequest($method, $params);
     }
 
-    protected function deserializeResponse($data, $class)
+    /**
+     * @param $externalPropertyId
+     * @param DateTime $batchDate
+     * @param mixed $accountId Can be get from settings
+     * @return mixed
+     */
+    public function sendOpenBatch($externalPropertyId, DateTime $batchDate, $accountId = null)
     {
-        $context = new DeserializationContext();
-        $context->setGroups(array('ResMan'));
+        $method = 'OpenBatch';
+        $params = array(
+            'AccountID' => $accountId ?: $this->getSettings()->getAccountId(),
+            'PropertyID' => $externalPropertyId,
+            'Date' => $batchDate->format('Y-m-d')
+        );
 
-        return $this->serializer->deserialize($data, $class, 'xml', $context);
+        return $this->sendRequest($method, $params);
     }
 }

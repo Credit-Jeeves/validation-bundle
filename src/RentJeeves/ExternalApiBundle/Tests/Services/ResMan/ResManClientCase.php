@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 
 use RentJeeves\DataBundle\Entity\ResManSettings;
+use RentJeeves\ExternalApiBundle\Model\ResMan\Batch;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
@@ -45,5 +46,29 @@ class ResManClientCase extends Base
             'RentJeeves\ExternalApiBundle\Model\ResMan\RtServiceTransactions',
             $rtCustomer->getRtServiceTransactions()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldOpenNewBatch()
+    {
+        $container = $this->getKernel()->getContainer();
+        /** @var $resManClient ResManClient */
+        $resManClient = $container->get('resman.client');
+
+        $settings = new ResManSettings();
+        $settings->setAccountId('400');
+        $resManClient->setSettings($settings);
+
+        /** @var Batch $openBatch */
+        $openBatch = $resManClient->sendOpenBatch(self::EXTERNAL_PROPERTY_ID, new \DateTime());
+
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\ResMan\Batch',
+            $openBatch
+        );
+
+        $this->assertNotEmpty($openBatch->getBatchId());
     }
 }
