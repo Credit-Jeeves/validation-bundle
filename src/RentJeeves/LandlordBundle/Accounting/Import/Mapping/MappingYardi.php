@@ -87,7 +87,7 @@ class MappingYardi extends MappingCsv
                     continue;
                 }
 
-                $otherOccupantArray = $otherOccupants->getOtherOccupant();
+                $otherOccupantArray = $otherOccupants->getOtherOccupants();
                 /** @var OtherOccupant $otherOccupant */
                 foreach ($otherOccupantArray as $otherOccupant) {
                     $resident = new ResidentsResident();

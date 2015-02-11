@@ -1395,17 +1395,18 @@ class ImportCase extends BaseTestCase
         );
         $this->assertNotEmpty($contractWaiting);
 
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
             array(
-                'externalLeaseId' => 't0011990',
+                'externalLeaseId' => 't0012020',
             )
         );
-        $this->assertNotEmpty($contract);
-        $residentsMapping = $contract->getTenant()->getResidentsMapping();
-        $this->assertCount(0, $residentsMapping);
-        /** @var ResidentMapping $residentMapping */
-        $residentMapping = $residentsMapping[0];
-        $this->assertEquals('r0002683', $residentMapping->getResidentId());
+        $this->assertCount(2, $contracts);
+        $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
+            array(
+                'residentId' => 'r0004169',
+            )
+        );
+        $this->assertNotEmpty($residentMapping);
     }
     
     /**

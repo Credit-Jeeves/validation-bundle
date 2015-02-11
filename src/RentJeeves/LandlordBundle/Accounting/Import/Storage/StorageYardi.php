@@ -48,7 +48,7 @@ class StorageYardi extends ExternalApiStorage
         $format = $this->getDateFormat();
 
         $ledgerDetails = $this->getLedgerDetails($residentData);
-        if ($resident->getMoveInDate()){
+        if ($resident->getMoveInDate()) {
             $startAt = $resident->getMoveInDate(true)->format($format);
         } else {
             $startAt = $residentData->getLeaseBegin();

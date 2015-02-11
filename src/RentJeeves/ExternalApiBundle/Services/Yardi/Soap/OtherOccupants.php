@@ -16,7 +16,7 @@ class OtherOccupants
     /**
      * @return array
      */
-    public function getOtherOccupant()
+    public function getOtherOccupants()
     {
         return $this->otherOccupant;
     }
