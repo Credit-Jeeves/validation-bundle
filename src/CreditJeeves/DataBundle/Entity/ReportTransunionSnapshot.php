@@ -62,7 +62,7 @@ class ReportTransunionSnapshot extends Report
 
     public function getUtilization()
     {
-        return $this->getSnapshotData('Utilization');
+        return $this->getSnapshotData('Utilization') * 100;
     }
 
     public function getBalanceOpenCollectionAccounts()
