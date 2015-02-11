@@ -491,6 +491,9 @@ class AccountingController extends Controller
         } catch (Exception $e) {
             $result = false;
         }
+        // Because: UnexpectedValueException: The Response content must be a string or object
+        //implementing __toString(), "boolean" given.
+        $result = (string) $result;
 
         if ($isLast) {
             $storage->setImportLoaded(true);

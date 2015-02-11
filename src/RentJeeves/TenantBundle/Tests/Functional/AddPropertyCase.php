@@ -49,6 +49,9 @@ class AddPropertyCase extends BaseTestCase
         $this->assertEquals('select.rental', $errorMessage->getText());
         $this->session->visit($this->session->getCurrentUrl());
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $this->session->evaluateScript("$('.select-unit').linkselect('destroy');");
+        $this->assertNotNull($unit = $this->page->find('css', '.select-unit'));
+        $unit->setValue('2-U');
         $thisIsMyRental->click();
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
@@ -70,7 +73,6 @@ class AddPropertyCase extends BaseTestCase
         $this->assertCount(6, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
-
         $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
         $this->fillGoogleAddress('770 Broadway, Manhattan, New York, NY 10003');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
@@ -83,6 +85,9 @@ class AddPropertyCase extends BaseTestCase
         $this->assertEquals('select.rental', $errorMessage->getText());
         $this->session->visit($this->session->getCurrentUrl());
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $this->session->evaluateScript("$('.select-unit').linkselect('destroy');");
+        $this->assertNotNull($unit = $this->page->find('css', '.select-unit'));
+        $unit->setValue('2-U');
         $thisIsMyRental->click();
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
