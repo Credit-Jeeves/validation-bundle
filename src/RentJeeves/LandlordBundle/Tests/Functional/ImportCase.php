@@ -444,7 +444,7 @@ class ImportCase extends BaseTestCase
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
             $this->session->wait(
-                5000,
+                9000,
                 "$('.finishedTitle').length > 0"
             );
 
@@ -472,8 +472,8 @@ class ImportCase extends BaseTestCase
          */
         $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
             array(
-                'jb' => '40.7308443',
-                'kb' => '-73.9913642',
+                'jb' => '40.7307693',
+                'kb' => '-73.9913223',
             )
         );
 
@@ -1384,7 +1384,7 @@ class ImportCase extends BaseTestCase
         );
         $this->assertEquals(1, count($contractWaiting));
     }
-    
+
     /**
      * @test
      * @depends yardiBaseImport
@@ -1814,9 +1814,8 @@ class ImportCase extends BaseTestCase
         for ($i = 0; $i <= 2; $i++) {
             if ($i === 0) {
                 $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-                $this->assertCount(2, $errorFields);
+                $this->assertCount(1, $errorFields);
                 $errorFields[0]->setValue('CorrrectName');
-                $errorFields[1]->setValue('CorrrectName');
             }
             if ($i === 2) {
                 $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
@@ -1831,8 +1830,8 @@ class ImportCase extends BaseTestCase
         $this->logout();
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertEquals(28, count($contract));
+        $this->assertEquals(29, count($contract));
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(23, count($contractWaiting));
+        $this->assertEquals(22, count($contractWaiting));
     }
 }

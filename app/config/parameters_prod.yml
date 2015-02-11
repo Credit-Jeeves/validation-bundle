@@ -62,7 +62,9 @@ parameters:
 
     transunion.account_name: 'CC2RentTrack'
     # transunion.password: 'donotcheckin' # this is set locally on server
+    transunion.environment: prod
     transunion.ssl_key: /var/www/my.renttrack.com/app/config/secrets/transunion/my.renttrack.com.key
     transunion.ca_certificate:  /var/www/my.renttrack.com/app/config/secrets/transunion/TUIExternalCA.pem
     transunion.ssl_certificate:  /var/www/my.renttrack.com/app/config/secrets/transunion/my.renttrack_20150114.crt
     transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
+    transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'
