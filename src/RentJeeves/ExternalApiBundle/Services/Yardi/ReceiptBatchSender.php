@@ -278,10 +278,13 @@ class ReceiptBatchSender
         )
         ) {
             try {
+                $this->removeOrderWhichDoNotHaveLeaseId($ordersReceiptBatch);
+                if (empty($ordersReceiptBatch)) {
+                    throw new Exception("Nothing to send.");
+                }
+
                 if (!isset($remotePropertyId)) {
-                    /**
-                     * @var $order Order
-                     */
+                    /** @var $order Order */
                     $order = $ordersReceiptBatch[0];
                     $propertyMapping = $order->getContract()->getProperty()->getPropertyMapping();
                     $remotePropertyId = $propertyMapping->first()->getExternalPropertyId();
@@ -309,6 +312,30 @@ class ReceiptBatchSender
             }
 
             $startPagination += self::LIMIT_ORDERS;
+        }
+    }
+
+    /**
+     * @param $ordersReceiptBatch
+     */
+    protected function removeOrderWhichDoNotHaveLeaseId(&$ordersReceiptBatch)
+    {
+        /** @var Order $order */
+        foreach ($ordersReceiptBatch as $key => $order) {
+            $leaseId = $order->getContract()->getExternalLeaseId();
+            if (!empty($leaseId)) {
+                continue;
+            }
+
+            unset($ordersReceiptBatch[$key]);
+            $message = sprintf(
+                "Order(ID:%s) will not send to Yardi, because his contract(ID:%s) does not have externalLeaseId.\n
+                 You can re-run initial import for setup externalLeaseId for active contract.
+                ",
+                $order->getId(),
+                $order->getContract()->getId()
+            );
+            $this->logMessage($message);
         }
     }
 

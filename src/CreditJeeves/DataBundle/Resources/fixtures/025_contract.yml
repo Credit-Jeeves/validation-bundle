@@ -34,6 +34,7 @@ fixtures:
         property: Property_1
         unit:     Unit_1_4
         rent:     1500
+        externalLeaseId: t0012020
         status:   finished
         paidTo:  '-60 days'
         startAt:   '-365 days'

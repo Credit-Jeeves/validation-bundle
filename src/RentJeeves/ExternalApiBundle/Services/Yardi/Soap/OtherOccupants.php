@@ -24,7 +24,7 @@ class OtherOccupants
     /**
      * @param array $otherOccupant
      */
-    public function setOtherOccupant($otherOccupant)
+    public function setOtherOccupants($otherOccupant)
     {
         $this->otherOccupant = $otherOccupant;
     }
