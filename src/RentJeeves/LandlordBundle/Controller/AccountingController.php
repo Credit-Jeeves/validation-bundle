@@ -498,7 +498,7 @@ class AccountingController extends Controller
                 $responseData = array('result' => true);
             }
         } catch (Exception $e) {
-			$this->get('fp_badaboom.exception_catcher')->handleException($e);
+            $this->get('fp_badaboom.exception_catcher')->handleException($e);
             $responseData = array('result' => false);
         }
 
@@ -516,7 +516,9 @@ class AccountingController extends Controller
 
         $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
         $response->headers->set('Content-Type', 'application/json');
-		$response->setStatusCode(($result['result']) ? 200 : 400);
+        $statusCode = ($responseData['result'])? 200 : 400;
+        $response->setStatusCode($statusCode);
+
         return $response;
     }
 
