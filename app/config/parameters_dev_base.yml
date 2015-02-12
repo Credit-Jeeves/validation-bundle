@@ -15,7 +15,9 @@ parameters:
     mink.base_url: 'http://%server_name%/_test.php'
     mink.coverage_script_url: 'http://%server_name%/bundles/mink/phpunit_coverage.php'
     server: dev
-    google_maps_key: 'AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24'
+
+    google_maps_key: 'AIzaSyBsW5-jPDZ2C-l9d62DVgdvQMerbt0XvNo' # API account with staging@renttrack.com
+
     payment_report_path: /tmp
     authorize_net:
         login_id: '7hNc5K44'
@@ -62,8 +64,9 @@ parameters:
 
     transunion.account_name: 'CC2RentTrack'
     transunion.password: 'Pfr5Nm$c'
-    transunion.ssl_key: /root/transunion.com/stg.renttrack.com.key
-    transunion.ca_certificate: /root/transunion.com/prodsupCA.pem
-    transunion.ssl_certificate: /root/transunion.com/CC2RentTrack-Test.crt
+    transunion.environment: stage
+    transunion.ssl_key: /var/www/%server_name_rj%/app/config/secrets/transunion/stg.renttrack.com.key
+    transunion.ca_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/prodsupCA.pem
+    transunion.ssl_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/CC2RentTrack-Test.crt
     transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
     transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'

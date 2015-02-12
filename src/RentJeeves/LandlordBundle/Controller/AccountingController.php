@@ -480,13 +480,16 @@ class AccountingController extends Controller
             $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
-                $responseData = array('result' => false);
+                $result = false;
             } else {
-                $responseData = array('result' => true);
+                $result = true;
             }
         } catch (Exception $e) {
-            $responseData = array('result' => false);
+            $result = false;
         }
+        // Because: UnexpectedValueException: The Response content must be a string or object
+        //implementing __toString(), "boolean" given.
+        $result = (string) $result;
 
         if ($isLast) {
             $storage->setImportLoaded(true);
@@ -500,7 +503,8 @@ class AccountingController extends Controller
             $handler->updateMatchedContracts();
         }
 
-        $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
+        $response = new Response($result);
+        $response->setStatusCode(($result) ? 200 : 400);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
