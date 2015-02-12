@@ -12,23 +12,41 @@ trait Resident
     /**
      * @var array
      */
-    protected $usedResidentsIds = array();
+    protected $usedResidentsIds = [];
+
+    /**
+     * @var array
+     */
+    protected $usedEmails = [];
 
     /**
      * @param string $residentId
      */
-    protected function addResidentId($residentId)
+    protected function addResidentId($residentId, $email)
     {
         if (!isset($this->usedResidentsIds[$residentId])) {
             $this->usedResidentsIds[$residentId] = 1;
-        } else {
-            $this->usedResidentsIds[$residentId]++;
         }
+
+        if (!empty($email) && !isset($this->usedEmails[$email])) {
+            $this->usedEmails[$email] = $residentId;
+        }
+
+        if (!empty($email) && $residentId !== $this->usedEmails[$email]) {
+            $this->usedResidentsIds[$residentId]++;
+            $this->usedEmails[$email] = $residentId;
+        }
+    }
+
+    protected function getEmailByResident($residentId)
+    {
+        return array_search($residentId, $this->usedEmails);
     }
 
     protected function clearResidentIds()
     {
-        $this->usedResidentsIds = array();
+        $this->usedResidentsIds = [];
+        $this->usedEmails = [];
     }
 
     /**
@@ -53,7 +71,7 @@ trait Resident
         $residentMapping->setTenant($tenant);
         $residentMapping->setHolding($this->user->getHolding());
         $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
-        $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
+        $this->addResidentId($row[Mapping::KEY_RESIDENT_ID], $tenant->getEmail());
 
         return $residentMapping;
     }
@@ -69,7 +87,7 @@ trait Resident
         if (is_null($tenant->getId())) {
             return $this->createResident($tenant, $row);
         }
-
+        /** @var ResidentMapping $residentMapping */
         $residentMapping = $this->em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
             array(
                 'tenant'        => $tenant->getId(),
@@ -82,6 +100,7 @@ trait Resident
             return $this->createResident($tenant, $row);
         }
 
+        $this->addResidentId($residentMapping->getResidentId(), $tenant->getEmail());
         return $residentMapping;
     }
 }

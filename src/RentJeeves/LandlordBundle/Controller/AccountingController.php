@@ -508,7 +508,7 @@ class AccountingController extends Controller
         }
 
         $response = new Response($result);
-        $response->setStatusCode(($result) ? 200 : 400);
+        $response->setStatusCode(($result == 1) ? 200 : 400);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;

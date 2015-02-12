@@ -194,9 +194,7 @@ trait Contract
         //set data from csv file
         $contract->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
         $contract->setRent($row[Mapping::KEY_RENT]);
-        $dueDate = $this->getDueDateOfContract($contract);
 
-        $isNeedCreateCashOperation = $this->isNeedCreateCashOperation($contract);
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
             $import->setMoveOut($this->getDateByField($import, $row[Mapping::KEY_MOVE_OUT]));

@@ -727,9 +727,7 @@ class ImportCase extends BaseTestCase
     public function importMultipleProperties()
     {
         $this->load(true);
-        /**
-         * @var $em EntityManager
-         */
+        /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine')->getManager();
         $this->assertEquals(1, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
         $this->setDefaultSession('selenium2');
@@ -813,7 +811,10 @@ class ImportCase extends BaseTestCase
         $submitImportFile->click();
 
         $this->waitReviewAndPost(false);
-
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').is(':visible')"
+        );
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
@@ -1290,16 +1291,12 @@ class ImportCase extends BaseTestCase
             "$('.errorField').length > 0"
         );
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertEquals(2, count($errorFields));
-        $this->assertEquals($errorFields[1]->getHtml(), '14test@mail.com');
-        $this->assertEquals(
-            trim($errorFields[0]->getHtml()),
-            '<span data-bind="text:resident_mapping.resident_id">t0016437</span>'
-        );
+        $this->assertEquals(1, count($errorFields));
+        $this->assertEquals($errorFields[0]->getHtml(), '15test@mail.com');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            8000,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1325,6 +1322,7 @@ class ImportCase extends BaseTestCase
     public function yardiBaseImport()
     {
         $this->setDefaultSession('selenium2');
+        $this->load(true);
 
         /**
          * @var $em EntityManager
@@ -1357,7 +1355,7 @@ class ImportCase extends BaseTestCase
         $submitImport->click();
 
         $this->session->wait(
-            80000,
+            320000,
             "$('table').is(':visible')"
         );
         $this->waitReviewAndPost();

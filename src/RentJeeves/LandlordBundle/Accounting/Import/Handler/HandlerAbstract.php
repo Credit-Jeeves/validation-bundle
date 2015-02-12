@@ -88,6 +88,12 @@ abstract class HandlerAbstract implements HandlerInterface
     public $locale;
 
     /**
+     * @Inject("%support_email%")
+     * @var string
+     */
+    public $supportEmail;
+
+    /**
      * @Inject("property.process")
      */
     public $propertyProcess;
@@ -318,7 +324,7 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected function setErrors(Import $import)
     {
-        $errors[$import->getNumber()] = array();
+        $errors[$import->getNumber()] = [];
         $form = $import->getForm();
         $lineNumber = $import->getNumber();
         if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
@@ -326,7 +332,11 @@ abstract class HandlerAbstract implements HandlerInterface
             if ($this->isUsedResidentId($import->getResidentMapping())) {
                 $errors[$lineNumber][uniqid()][ImportMapping::KEY_RESIDENT_ID] = $this->translator
                     ->trans(
-                        'error.residentId.already_use'
+                        'error.residentId.already_use',
+                        array(
+                            '%email%'   => $this->getEmailByResident($import->getResidentMapping()->getResidentId()),
+                            '%support_email%' => $this->supportEmail
+                        )
                     );
             }
             $import->setErrors($errors);
