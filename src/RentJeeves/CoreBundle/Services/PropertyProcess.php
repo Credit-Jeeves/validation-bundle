@@ -54,6 +54,8 @@ class PropertyProcess
      */
     protected $logger;
 
+    const NEW_PROPERTY = "new_property";
+
     /**
      * @InjectParams({
      *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
@@ -100,8 +102,6 @@ class PropertyProcess
         $logPrefix = "Property(" . $this->getPropertyIdentifier($property) . ") ";
         $this->logger->debug($logPrefix . "Attempting to set as single property...");
 
-        $property->setIsSingle(true);
-
         $unitCount = $property->getUnits()->count();
         if ($unitCount === 0) {
             $this->logger->debug($logPrefix . "Has no units, so creating one...");
@@ -128,6 +128,8 @@ class PropertyProcess
             $unit->setHolding($group->getHolding());
             $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
             $property->addUnit($unit);
+
+            $property->setIsSingle(true);
 
             $this->em->persist($property);
             $this->em->persist($unit);
@@ -376,7 +378,7 @@ class PropertyProcess
 
     private function getPropertyIdentifier(Property $property)
     {
-        $identifier = "new"; // means we don't know id or address yet.
+        $identifier = self::NEW_PROPERTY;
 
         if ($id = $property->getId()) {
             $identifier = $id;

@@ -521,6 +521,8 @@ abstract class Property
      * You should set this using "property.process"->setupSingleProperty() instead.
      *
      * @param boolean $isSingle
+     *
+     * @deprecated
      */
     public function setIsSingle($isSingle)
     {

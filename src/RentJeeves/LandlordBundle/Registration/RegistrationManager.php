@@ -38,7 +38,7 @@ class RegistrationManager
      *     "propertyProcess" = @DI\Inject("property.process")
      * })
      */
-    public function __construct($em, $passwordEncoder, $locale, $propertyProcess)
+    public function __construct($em, $passwordEncoder, $locale, PropertyProcess $propertyProcess)
     {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
