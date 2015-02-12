@@ -1904,7 +1904,7 @@ class ImportCase extends BaseTestCase
         $property->setIsSingle(true);
         $em->persist($property);
         $em->flush();
-        $singlUnit = $property->getSingleUnit();
+        $singlUnit = $property->getExistingSingleUnit();
         $em->remove($singlUnit);
         $em->flush();
 
