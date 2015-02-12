@@ -9,8 +9,15 @@ use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mappi
 
 trait Tenant
 {
+    /**
+     * @var array
+     */
+    protected $userResidents = [];
 
-    protected $userEmails = array();
+    /**
+     * @var array
+     */
+    protected $userEmails = [];
 
     /**
      * @param array $row
@@ -29,17 +36,15 @@ trait Tenant
         );
 
         if (!empty($tenant)) {
-            /**
-             * @var $residentMapping ResidentMapping
-             */
+            /** @var $residentMapping ResidentMapping */
             $residentMapping = $tenant->getResidentsMapping()->first();
             if ($residentMapping && $residentMapping->getResidentId() !== $row[Mapping::KEY_RESIDENT_ID]) {
                 $tenant = $this->createTenant($row);
-                $this->fillUsersEmail($tenant); //Make it error, because resident ID different
+                $this->userEmails[$tenant->getEmail()] = 2; //Make it error, because resident ID different
                 return $tenant;
             }
 
-            $this->fillUsersEmail($tenant);
+            $this->fillUsersEmailAndResident($tenant, $row);
             return $tenant;
         }
 
@@ -62,24 +67,37 @@ trait Tenant
         $tenant->setEmailCanonical($row[Mapping::KEY_EMAIL]);
         $tenant->setPassword(md5(md5(1)));
         $tenant->setCulture($this->locale);
-        $this->fillUsersEmail($tenant);
+        $this->fillUsersEmailAndResident($tenant, $row);
 
         return $tenant;
     }
 
 
-    protected function fillUsersEmail(EntityTenant $tenant)
+    protected function fillUsersEmailAndResident(EntityTenant $tenant, $row)
     {
+        if ($this->mapping->isSkipped($row)) {
+            return;
+        }
+
         $email = $tenant->getEmail();
+        $residentId = $row[Mapping::KEY_RESIDENT_ID];
+
         if (empty($email)) {
             return;
         }
 
-        if (isset($this->userEmails[$email])) {
-            $this->userEmails[$email]++;
-            return;
+        if (!isset($this->userEmails[$email])) {
+            $this->userEmails[$email] = 1;
         }
 
-        $this->userEmails[$email] = 1;
+        if (!isset($this->userResidents[$email])) {
+            $this->userResidents[$email] = $residentId;
+        }
+
+        $countResidents = array_count_values($this->userResidents);
+
+        if ($this->userResidents[$email] !== $residentId || $countResidents[$residentId] > 1) {
+            $this->userEmails[$email]++;
+        }
     }
 }
