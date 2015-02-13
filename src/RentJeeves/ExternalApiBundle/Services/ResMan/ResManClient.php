@@ -192,6 +192,7 @@ class ResManClient implements ClientInterface
         $params = array(
             'AccountID' => $accountId ?: $this->getSettings()->getAccountId(),
             'PropertyID' => $externalPropertyId,
+            'Description' => 'Test',
             'Date' => $batchDate->format('Y-m-d')
         );
 
