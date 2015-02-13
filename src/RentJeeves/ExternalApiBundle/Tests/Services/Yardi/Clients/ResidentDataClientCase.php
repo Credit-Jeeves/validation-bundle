@@ -43,8 +43,10 @@ class ResidentDataClientCase extends Base
             $this->getYardiSettings(),
             YardiClientEnum::RESIDENT_DATA
         );
-
-        $result = $residentClient->getResidentData('rnttrk01', 't0012027');
+        $roommate = 'r0002692';
+        $resident = 't0012027';
+        $residentClient->setDebug(true);
+        $result = $residentClient->getResidentData('rnttrk01', $resident);
 
         $this->assertTrue($result instanceof GetResidentDataResponse);
         $this->assertTrue($result->getLeaseFiles()->getLeaseFile() instanceof ResidentLeaseFile);

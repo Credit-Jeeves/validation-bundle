@@ -83,12 +83,12 @@ class ImportCase extends BaseTestCase
     protected function waitReviewAndPost($waitSubmit = true)
     {
         $this->session->wait(
-            1000,
+            4000,
             "$('.overlay-trigger').length > 0"
         );
 
         $this->session->wait(
-            20000,
+            21000,
             "$('.overlay-trigger').length <= 0"
         );
 
@@ -1365,18 +1365,18 @@ class ImportCase extends BaseTestCase
         $submitImport->click();
 
         $this->session->wait(
-            80000,
+            250000,
             "$('table').is(':visible')"
         );
-        $this->waitReviewAndPost();
-        for ($i = 0; $i <= 3; $i++) {
+        $this->waitReviewAndPost(true);
+        for ($i = 0; $i <= 4; $i++) {
             if ($errorFields = $this->page->findAll('css', '.errorField')) {
                 $this->assertEquals(1, count($errorFields));
                 $errorFields[0]->setValue('14test1111@mail.com');
             }
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
-            $this->waitReviewAndPost();
+            $this->waitReviewAndPost(true);
         }
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
@@ -1388,15 +1388,28 @@ class ImportCase extends BaseTestCase
                 'paymentAccepted' => PaymentAccepted::CASH_EQUIVALENT,
             )
         );
-        $this->assertEquals(1, count($contract));
+        $this->assertNotEmpty($contract);
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
             array(
                 'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
             )
         );
-        $this->assertEquals(1, count($contractWaiting));
-    }
+        $this->assertNotEmpty($contractWaiting);
 
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
+            array(
+                'externalLeaseId' => 't0012020',
+            )
+        );
+        $this->assertCount(2, $contracts);
+        $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
+            array(
+                'residentId' => 'r0004169',
+            )
+        );
+        $this->assertNotEmpty($residentMapping);
+    }
+    
     /**
      * @test
      * @depends yardiBaseImport
@@ -1420,7 +1433,7 @@ class ImportCase extends BaseTestCase
         $submitImport->click();
 
         $this->session->wait(
-            80000,
+            250000,
             "$('table').is(':visible')"
         );
 
@@ -1861,10 +1874,16 @@ class ImportCase extends BaseTestCase
 
         $this->logout();
         // We must make sure the data saved into DB, so we count before import and after
-        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertEquals(29, count($contract));
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(22, count($contractWaiting));
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
+        $this->assertEquals(29, count($contracts));
+        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertEquals(22, count($contractsWaiting));
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+            array(
+                'externalLeaseId' => 'a0668dcf-045d-4183-926c-b7d50a571506',
+            )
+        );
+        $this->assertNotEmpty($contract);
     }
 
 

@@ -834,7 +834,7 @@ class Order extends BaseOrder
      */
     public function getCustomerID()
     {
-        return $this->getTenantExternalId();
+        return $this->getContract()->getExternalLeaseId();
     }
 
     /**

@@ -102,6 +102,11 @@ class ResidentTransactionPropertyCustomer
         return $this->customerId;
     }
 
+    public function getLeaseId()
+    {
+        return $this->getCustomerId();
+    }
+
     /**
      * @param mixed $unit
      */

@@ -29,4 +29,9 @@ class Customer
     {
         $this->customerId = $customerId;
     }
+
+    public function getResidentId()
+    {
+        $this->getCustomerId();
+    }
 }

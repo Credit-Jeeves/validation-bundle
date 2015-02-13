@@ -134,6 +134,7 @@ class ExternalApiStorage extends StorageCsv
             10 => Mapping::KEY_BALANCE,
             11 => Mapping::KEY_MONTH_TO_MONTH,
             12 => Mapping::KEY_PAYMENT_ACCEPTED,
+            13 => Mapping::KEY_EXTERNAL_LEASE_ID
         );
 
         $this->writeCsvToFile($mapping);
