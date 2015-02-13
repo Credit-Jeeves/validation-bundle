@@ -3038,7 +3038,7 @@
             <trans-unit id="error.residentId.already_use">
                 <source>error.residentId.already_use</source>
                 <target>
-                    Accounting ID is already in use in the system by %email%.
+                    Resident ID is already in use in the system by %email%.
                     You can revoke their invitation first, or contact %support_email% for further assistance.
                 </target>
             </trans-unit>

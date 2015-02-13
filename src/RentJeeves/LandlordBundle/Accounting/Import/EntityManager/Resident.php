@@ -16,23 +16,42 @@ trait Resident
     /**
      * @var array
      */
-    protected $usedResidentsIds = array();
+    protected $usedResidentsIds = [];
+
+    /**
+     * @var array
+     */
+    protected $usedEmails = [];
 
     /**
      * @param string $residentId
      */
     protected function addResidentId($residentId)
     {
+        $email = $this->currentImportModel->getTenant()->getEmail();
         if (!isset($this->usedResidentsIds[$residentId])) {
             $this->usedResidentsIds[$residentId] = 1;
-        } else {
+        }
+
+        if (!empty($email) && !isset($this->usedEmails[$email])) {
+            $this->usedEmails[$email] = $residentId;
+        }
+
+        if (!empty($email) && $residentId !== $this->usedEmails[$email]) {
             $this->usedResidentsIds[$residentId]++;
+            $this->usedEmails[$email] = $residentId;
         }
     }
 
-    protected function clearResidentIds()
+    protected function getEmailByResident($residentId)
     {
-        $this->usedResidentsIds = array();
+        return array_search($residentId, $this->usedEmails);
+    }
+
+    protected function clearResidentData()
+    {
+        $this->usedResidentsIds = [];
+        $this->usedEmails = [];
     }
 
     /**
@@ -43,7 +62,7 @@ trait Resident
         $residentMapping = $this->currentImportModel->getResidentMapping();
         $id = $residentMapping->getResidentId();
 
-        return (isset($this->usedResidentsIds[$id]) && $this->usedResidentsIds[$id] > 1)? true : false;
+        return (isset($this->usedResidentsIds[$id]) && $this->usedResidentsIds[$id] > 1) ? true : false;
     }
 
     /**
@@ -54,20 +73,22 @@ trait Resident
     {
         if (is_null($this->currentImportModel->getTenant()->getId())) {
             $residentMapping = $this->createNewResidentMapping($row);
-            $this->currentImportModel->setResidentMapping($residentMapping);
+
             return;
         }
-
+        /** @var ResidentMapping $residentMapping */
         $residentMapping = $this->em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
             array(
-                'tenant'        => $this->currentImportModel->getTenant()->getId(),
-                'holding'       => $this->user->getHolding()->getId(),
-                'residentId'    => $row[Mapping::KEY_RESIDENT_ID],
+                'tenant' => $this->currentImportModel->getTenant()->getId(),
+                'holding' => $this->user->getHolding()->getId(),
+                'residentId' => $row[Mapping::KEY_RESIDENT_ID],
             )
         );
 
         if (empty($residentMapping)) {
             $residentMapping = $this->createNewResidentMapping($row);
+        } else {
+            $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
         }
 
         $this->currentImportModel->setResidentMapping($residentMapping);
@@ -79,6 +100,8 @@ trait Resident
         $residentMapping->setTenant($this->currentImportModel->getTenant());
         $residentMapping->setHolding($this->user->getHolding());
         $residentMapping->setResidentId($row[Mapping::KEY_RESIDENT_ID]);
+
+        $this->currentImportModel->setResidentMapping($residentMapping);
         $this->addResidentId($row[Mapping::KEY_RESIDENT_ID]);
 
         return $residentMapping;

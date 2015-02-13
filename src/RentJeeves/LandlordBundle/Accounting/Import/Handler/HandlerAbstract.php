@@ -90,6 +90,12 @@ abstract class HandlerAbstract implements HandlerInterface
     public $locale;
 
     /**
+     * @Inject("%support_email%")
+     * @var string
+     */
+    public $supportEmail;
+
+    /**
      * @Inject("property.process")
      */
     public $propertyProcess;
@@ -345,7 +351,11 @@ abstract class HandlerAbstract implements HandlerInterface
             if ($this->isUsedResidentId($this->currentImportModel->getResidentMapping())) {
                 $errors[$lineNumber][uniqid()][ImportMapping::KEY_RESIDENT_ID] = $this->translator
                     ->trans(
-                        'error.residentId.already_use'
+                        'error.residentId.already_use',
+                        array(
+                            '%email%'   => $this->getEmailByResident($import->getResidentMapping()->getResidentId()),
+                            '%support_email%' => $this->supportEmail
+                        )
                     );
             }
             $this->currentImportModel->setErrors($errors);
@@ -444,7 +454,7 @@ abstract class HandlerAbstract implements HandlerInterface
             }
             $this->collectionImportModel->add(clone $this->currentImportModel);
         }
-        $this->clearResidentIds();
+        $this->clearResidentData();
     }
 
     /**
