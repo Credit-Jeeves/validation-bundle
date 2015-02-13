@@ -41,6 +41,7 @@ trait Contract
     /**
      * @param $row
      * @param $tenant
+
      */
     protected function setNewContract(array $row)
     {
