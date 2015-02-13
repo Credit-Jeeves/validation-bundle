@@ -44,13 +44,13 @@ trait Tenant
                 $tenant = $this->createTenant($row);
                 $this->currentImportModel->setTenant($tenant);
                 $this->userEmails[$tenant->getEmail()] = 2; //Make it error, because resident ID different
-                
+
                 return;
             }
             $this->currentImportModel->setTenant($tenant);
             $this->fillUsersEmailAndResident($tenant, $row);
-            
-			return;
+
+            return;
         }
 
         $this->currentImportModel->setTenant($tenant = $this->createTenant($row));
@@ -76,7 +76,7 @@ trait Tenant
         $tenant->setEmail($row[Mapping::KEY_EMAIL]);
         $tenant->setEmailCanonical($row[Mapping::KEY_EMAIL]);
         $tenant->setPassword(md5(md5(1)));
-        $tenant->setCulture($this->locale);        
+        $tenant->setCulture($this->locale);
 
         return $tenant;
     }

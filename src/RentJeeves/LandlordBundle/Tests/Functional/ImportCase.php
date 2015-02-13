@@ -1401,7 +1401,7 @@ class ImportCase extends BaseTestCase
                 'externalLeaseId' => 't0012020',
             )
         );
-        $this->assertCount(2, $contracts);
+        $this->assertCount(3, $contracts);
         $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
             array(
                 'residentId' => 'r0004169',
@@ -1438,14 +1438,6 @@ class ImportCase extends BaseTestCase
         );
 
         $this->waitReviewAndPost();
-
-        $errorFields = $this->page->findAll('css', '.errorField');
-        $this->assertEquals(1, count($errorFields));
-        $errorFields[0]->setValue('tester@mail.com');
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
-        $submitImportFile->click();
-        $this->waitReviewAndPost();
-
         $this->session->wait(
             10000,
             "$('.finishedTitle').length > 0"

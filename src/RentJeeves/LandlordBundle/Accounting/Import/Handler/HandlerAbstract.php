@@ -454,7 +454,7 @@ abstract class HandlerAbstract implements HandlerInterface
             }
             $this->collectionImportModel->add(clone $this->currentImportModel);
         }
-        $this->clearResidentIds();
+        $this->clearResidentData();
     }
 
     /**
