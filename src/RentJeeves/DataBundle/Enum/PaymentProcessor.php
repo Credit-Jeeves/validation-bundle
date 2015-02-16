@@ -14,10 +14,10 @@ class PaymentProcessor extends Enum
     public static function mapByOrderType($orderType)
     {
         switch ($orderType) {
-            case OrderType::HEARTLAND_BANK :
-            case OrderType::HEARTLAND_CARD :
+            case OrderType::HEARTLAND_BANK:
+            case OrderType::HEARTLAND_CARD:
                 return self::HEARTLAND;
-            default :
+            default:
                 return null;
         }
     }

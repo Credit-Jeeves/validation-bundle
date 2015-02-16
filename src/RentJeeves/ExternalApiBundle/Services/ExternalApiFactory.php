@@ -33,7 +33,7 @@ class ExternalApiClientFactory
     /**
      * @param ContainerInterface $container
      * @DI\InjectParams({
-     *     "container" = @Inject("service_container")
+     *     "container" = @DI\Inject("service_container")
      * })
      */
     public function __construct(ContainerInterface $container)
@@ -50,7 +50,7 @@ class ExternalApiClientFactory
         if (empty($this->accountingServiceClientMap[$accountingType]) ||
             !$this->container->has($this->accountingServiceClientMap[$accountingType])
         ) {
-          return null;
+            return null;
         }
 
         /** @var ClientInterface $client */

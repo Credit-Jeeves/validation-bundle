@@ -10,28 +10,28 @@ class ResMan
     /**
      * @Serializer\SerializedName("MethodName")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Groups({"ResMan", "ResManOpenBatch"})
      */
     protected $methodName;
 
     /**
      * @Serializer\SerializedName("Status")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Groups({"ResMan", "ResManOpenBatch"})
      */
     protected $status;
 
     /**
      * @Serializer\SerializedName("AccountID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Groups({"ResMan", "ResManOpenBatch"})
      */
     protected $accountId;
 
     /**
      * @Serializer\SerializedName("PropertyID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Groups({"ResMan", "ResManOpenBatch"})
      */
     protected $propertyId;
 
@@ -39,6 +39,13 @@ class ResMan
      * @Serializer\SerializedName("Response")
      * @Serializer\Type("string")
      * @Serializer\Groups({"ResMan"})
+     */
+    protected $responseString;
+
+    /**
+     * @Serializer\SerializedName("Response")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\Response")
+     * @Serializer\Groups({"ResManOpenBatch"})
      */
     protected $response;
 
@@ -93,15 +100,31 @@ class ResMan
     /**
      * @return string
      */
+    public function getResponseString()
+    {
+        return $this->responseString;
+    }
+
+    /**
+     * @param string $response
+     */
+    public function setResponseString($response)
+    {
+        $this->responseString = $response;
+    }
+
+    /**
+     * @return Response
+     */
     public function getResponse()
     {
         return $this->response;
     }
 
     /**
-     * @param string $response
+     * @param Response $response
      */
-    public function setResponse($response)
+    public function setResponse(Response $response)
     {
         $this->response = $response;
     }

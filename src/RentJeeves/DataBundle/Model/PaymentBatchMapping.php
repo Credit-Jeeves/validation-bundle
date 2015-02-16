@@ -8,7 +8,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use \DateTime;
 
-
 /**
  * @ORM\MappedSuperclass
  */

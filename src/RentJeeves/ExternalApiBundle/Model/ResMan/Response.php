@@ -4,18 +4,12 @@ namespace RentJeeves\ExternalApiBundle\Model\ResMan;
 
 use JMS\Serializer\Annotation as Serializer;
 
-/**
- * @Serializer\XmlRoot("BatchID")
-
- */
-class Batch 
+class Response
 {
     /**
      * @Serializer\SerializedName("BatchID")
+     * @Serializer\Groups({"ResManOpenBatch"})
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan"})
-     * @Serializer\Type("string")
-     * @Serializer\XmlValue
      */
     protected $batchId;
 

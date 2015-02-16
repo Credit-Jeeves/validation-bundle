@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
+use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
@@ -64,6 +65,11 @@ class ResManClient implements ClientInterface
      */
     protected $exceptionCatcher;
 
+    /**
+     * @var array
+     */
+    protected $groupDeserialize = [];
+
     public function __construct(
         ExceptionCatcher $exceptionCatcher,
         Serializer $serializer,
@@ -79,6 +85,11 @@ class ResManClient implements ClientInterface
         $this->httpClient = new HttpClient();
     }
 
+    protected function setDefaultGroupDeserialize()
+    {
+        $this->groupDeserialize = ['ResMan'];
+    }
+
     /**
      * @TODO When will be solved problem with soap builder by besimple bundle it's must be removed
      */
@@ -86,7 +97,7 @@ class ResManClient implements ClientInterface
     {
     }
 
-    public function sendRequest($method, array $params)
+    public function sendRequest($method, array $params, $itShouldBeSerializeTwice = true)
     {
         try {
             $baseParams = array(
@@ -101,6 +112,7 @@ class ResManClient implements ClientInterface
             $response = $this->httpClient->send($request);
             $httpCode = $response->getStatusCode();
             $body = $response->getBody();
+
             $this->debugMessage(
                 sprintf(
                     'Http code: %s',
@@ -113,6 +125,7 @@ class ResManClient implements ClientInterface
                     $body
                 )
             );
+
             /**
              * ResMan return bad xml, that's why we need two times deserialize
              * 1) We deserialize base response
@@ -129,7 +142,13 @@ class ResManClient implements ClientInterface
                     )
                 );
             }
-            $response = $resMan->getResponse();
+
+            if ($itShouldBeSerializeTwice === false) {
+                return $resMan;
+            }
+
+            $response = $resMan->getResponseString();
+
             /**
              * @TODO
              * Serializer not support namespaces for @XmlList
@@ -162,7 +181,12 @@ class ResManClient implements ClientInterface
     protected function deserializeResponse($data, $class)
     {
         $context = new DeserializationContext();
-        $context->setGroups(array('ResMan'));
+        if (!empty($this->groupDeserialize)) {
+            $context->setGroups($this->groupDeserialize);
+        } else {
+            $this->setDefaultGroupDeserialize();
+            $context->setGroups($this->groupDeserialize);
+        }
 
         return $this->serializer->deserialize($data, $class, 'xml', $context);
     }
@@ -189,10 +213,11 @@ class ResManClient implements ClientInterface
      * @param mixed $accountId Can be get from settings
      * @return mixed
      */
-    public function sendOpenBatch($externalPropertyId, DateTime $batchDate, $description = null, $accountId = null)
+    public function openBatch($externalPropertyId, DateTime $batchDate, $description = null, $accountId = null)
     {
         $method = 'OpenBatch';
 
+        $this->groupDeserialize = ['OpenBatch'];
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = array(
             'AccountID' => $accountId,
@@ -201,6 +226,36 @@ class ResManClient implements ClientInterface
             'Date' => $batchDate->format('Y-m-d')
         );
 
-        return $this->sendRequest($method, $params);
+        $this->groupDeserialize = ['ResManOpenBatch'];
+        /** @var ResMan $response */
+        $response = $this->sendRequest($method, $params, false);
+        $this->setDefaultGroupDeserialize();
+
+        return $response->getResponse()->getBatchId();
+    }
+
+    /**
+     * @param ResidentTransactions $residentTransactions
+     * @param string $externalPropertyId
+     * @param null $accountId
+     */
+    public function addPaymentToBatch(
+        $residentTransactionsXml,
+        $externalPropertyId,
+        $accountId = null
+    ) {
+        $context = new SerializationContext();
+        $context->setGroups(array('ResMan'));
+        $method = 'AddPaymentToBatch';
+
+        $params = array(
+            'AccountID'  => $accountId ?: $this->getSettings()->getAccountId(),
+            'PropertyID' => $externalPropertyId,
+            'xml'        => $residentTransactionsXml,
+        );
+
+        $this->sendRequest($method, $params, false);
+
+        return true;
     }
 }

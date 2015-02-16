@@ -198,15 +198,14 @@ abstract class Holding
     {
         if ($this->getAccountingSettings()) {
             switch ($this->getAccountingSettings()->getApiIntegration()) {
-                case ApiIntegrationType::RESMAN :
+                case ApiIntegrationType::RESMAN:
                     return $this->getResManSettings();
-                case ApiIntegrationType::YARDI_VOYAGER :
+                case ApiIntegrationType::YARDI_VOYAGER:
                     return $this->getYardiSettings();
             }
         }
 
         return null;
-
     }
 
     /**
