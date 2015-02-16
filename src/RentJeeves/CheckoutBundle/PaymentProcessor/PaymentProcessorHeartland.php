@@ -4,13 +4,13 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentManagerInterface as PaymentManager;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountManagerInterface as PaymentAccountManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 /**
@@ -24,7 +24,7 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     protected $paymentAccountManager;
 
     /**
-     * @var PaymentManager
+     * @var PayHeartland
      */
     protected $paymentManager;
 
@@ -34,7 +34,7 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
      *     "paymentManager" = @DI\Inject("payment.pay_heartland")
      * })
      */
-    public function __construct(PaymentAccountManager $paymentAccountManager, PaymentManager $paymentManager)
+    public function __construct(PaymentAccountManager $paymentAccountManager, PayHeartland $paymentManager)
     {
         $this->paymentAccountManager = $paymentAccountManager;
         $this->paymentManager = $paymentManager;

@@ -12,7 +12,6 @@ use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use CreditJeeves\DataBundle\Entity\Address;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountManagerInterface;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
@@ -23,7 +22,7 @@ use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount a
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use RuntimeException;
 
-class PaymentAccountManager implements PaymentAccountManagerInterface
+class PaymentAccountManager
 {
     protected $payum;
 

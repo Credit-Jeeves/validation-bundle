@@ -12,7 +12,6 @@ use Payum\Heartland\Soap\Base\TokenToCharge;
 use Payum\Payment as Payum;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentManagerInterface;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
@@ -20,7 +19,7 @@ use RentJeeves\DataBundle\Enum\PaymentGroundType;
 /**
  * @DI\Service("payment.pay_heartland")
  */
-class PayHeartland implements PaymentManagerInterface
+class PayHeartland
 {
     /**
      * @var Payum
