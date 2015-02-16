@@ -71,15 +71,14 @@ class PayCreditTrack
         $this->em->persist($order);
         $this->em->flush();
 
-        $paymentIsSuccessful = $this->getPaymentProcessor($paymentAccount)->executePayment(
+        $orderStatus = $this->getPaymentProcessor($paymentAccount)->executeOrder(
             $order,
             $paymentAccount,
             PaymentGroundType::REPORT
         );
+        $order->setStatus($orderStatus);
 
-        if ($paymentIsSuccessful) {
-            $order->setStatus(OrderStatus::COMPLETE);
-
+        if (OrderStatus::ERROR != $orderStatus) {
             $report = $this->createReport($paymentAccount->getUser());
             $operation = $this->createOperation($order);
             $operation->setReportD2c($report);
@@ -88,8 +87,6 @@ class PayCreditTrack
             $this->em->persist($operation);
             $this->em->persist($report);
             $this->em->persist($job);
-        } else {
-            $order->setStatus(OrderStatus::ERROR);
         }
 
         $this->em->persist($order);

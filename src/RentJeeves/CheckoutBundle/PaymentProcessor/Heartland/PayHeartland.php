@@ -2,6 +2,8 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry;
@@ -90,7 +92,7 @@ class PayHeartland
         $paymentDetails->setIsSuccessful($isSuccessful);
         $this->em->persist($paymentDetails);
 
-        return $isSuccessful;
+        return $this->getOrderStatus($order, $isSuccessful);
     }
 
     /**
@@ -162,5 +164,25 @@ class PayHeartland
         $this->payum->execute($statusRequest);
 
         return $statusRequest;
+    }
+
+    /**
+     * Defines orders status.
+     * For credit card payments order already becomes COMPLETE, for ACH payments - PENDING.
+     *
+     * @param Order $order
+     * @param bool $isSuccessful
+     * @return string
+     */
+    protected function getOrderStatus(Order $order, $isSuccessful)
+    {
+        if (!$isSuccessful) {
+            return OrderStatus::ERROR;
+        }
+        if (OrderType::HEARTLAND_CARD == $order->getType()) {
+            return OrderStatus::COMPLETE;
+        }
+
+        return OrderStatus::PENDING;
     }
 }

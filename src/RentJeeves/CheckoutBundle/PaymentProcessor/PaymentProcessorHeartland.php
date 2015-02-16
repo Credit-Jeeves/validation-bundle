@@ -45,7 +45,7 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
         return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group);
     }
 
-    public function executePayment(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
+    public function executeOrder(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
     {
         return $this->paymentManager->executePayment($order, $paymentAccount, $paymentType);
     }

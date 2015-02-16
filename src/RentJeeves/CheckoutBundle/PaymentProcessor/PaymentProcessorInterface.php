@@ -14,7 +14,7 @@ interface PaymentProcessorInterface
 {
     public function createPaymentAccount(PaymentAccountData $data, User $user, Group $group);
 
-    public function executePayment(
+    public function executeOrder(
         Order $order,
         PaymentAccount $paymentAccount,
         $paymentType = PaymentGroundType::RENT

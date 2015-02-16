@@ -81,18 +81,16 @@ class PayRent
         $this->em->persist($order);
         $this->em->flush();
 
-        $paymentIsSuccessful = $this->getPaymentProcessor($payment)->executePayment(
+        $orderStatus = $this->getPaymentProcessor($payment)->executeOrder(
             $order,
             $payment->getPaymentAccount(),
             PaymentGroundType::RENT
         );
-
-        if ($paymentIsSuccessful) {
-            $order->setStatus($this->getSuccessfulOrderStatus($order));
-            $this->setContractAsCurrent($payment->getContract());
-        } else {
-            $order->setStatus(OrderStatus::ERROR);
+        $order->setStatus($orderStatus);
+        if (OrderStatus::ERROR == $orderStatus) {
             $this->closePaymentIfRecurring($payment, $order);
+        } else {
+            $this->setContractAsCurrent($payment->getContract());
         }
         $this->logger->debug('New order ID ' . $order->getId() . ', status: ' . $order->getStatus());
 
@@ -156,21 +154,5 @@ class PayRent
             $contract->setStatus(ContractStatus::CURRENT);
             $this->em->persist($contract);
         }
-    }
-
-    /**
-     * Defines orders status when payment was successful.
-     * For credit card payments order already becomes COMPLETE, for ACH payments - PENDING.
-     *
-     * @param Order $order
-     * @return string
-     */
-    protected function getSuccessfulOrderStatus(Order $order)
-    {
-        if (OrderType::HEARTLAND_CARD == $order->getType()) {
-            return OrderStatus::COMPLETE;
-        }
-
-        return OrderStatus::PENDING;
     }
 }
