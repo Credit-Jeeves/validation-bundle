@@ -92,4 +92,145 @@ abstract class PaymentBatchMapping
      * @var DateTime
      */
     protected $closedAt;
+
+    /**
+     * @var int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param $paymentBatchId
+     * @return $this
+     */
+    public function setPaymentBatchId($paymentBatchId)
+    {
+        $this->paymentBatchId = $paymentBatchId;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentBatchId()
+    {
+        return $this->paymentBatchId;
+    }
+
+    /**
+     * @param $accountingBatchId
+     * @return $this
+     */
+    public function setAccountingBatchId($accountingBatchId)
+    {
+        $this->accountingBatchId = $accountingBatchId;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccountingBatchId()
+    {
+        return $this->accountingBatchId;
+    }
+
+    /**
+     * @param $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param $paymentProcessor
+     * @return $this
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
+    }
+
+    /**
+     * @param $accountingPackageType
+     * @return $this
+     */
+    public function setAccountingPackageType($accountingPackageType)
+    {
+        $this->accountingPackageType = $accountingPackageType;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccountingPackageType()
+    {
+        return $this->accountingPackageType;
+    }
+
+    /**
+     * @param DateTime $openedAt
+     * @return $this
+     */
+    public function setOpenedAt(DateTime $openedAt)
+    {
+        $this->openedAt = $openedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getOpenedAt()
+    {
+        return $this->openedAt;
+    }
+
+    /**
+     * @param DateTime $closedAt
+     * @return $this
+     */
+    public function setClosedAt(DateTime $closedAt)
+    {
+        $this->closedAt = $closedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getClosedAt()
+    {
+        return $this->closedAt;
+    }
 }

@@ -26,6 +26,8 @@ class ResManClient implements ClientInterface
 
     const BASE_RESPONSE = 'baseResponse';
 
+    const DEFAULT_DESCRIPTION = 'Send Request "%s" for account "%s"';
+
     protected $mappingResponse = array(
         self::BASE_RESPONSE          => 'RentJeeves\ExternalApiBundle\Model\ResMan\ResMan',
         'GetResidentTransactions2_0' => 'RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions',
@@ -183,16 +185,19 @@ class ResManClient implements ClientInterface
     /**
      * @param $externalPropertyId
      * @param DateTime $batchDate
+     * @param string $description
      * @param mixed $accountId Can be get from settings
      * @return mixed
      */
-    public function sendOpenBatch($externalPropertyId, DateTime $batchDate, $accountId = null)
+    public function sendOpenBatch($externalPropertyId, DateTime $batchDate, $description = null, $accountId = null)
     {
         $method = 'OpenBatch';
+
+        $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = array(
-            'AccountID' => $accountId ?: $this->getSettings()->getAccountId(),
+            'AccountID' => $accountId,
             'PropertyID' => $externalPropertyId,
-            'Description' => 'Test',
+            'Description' => $description ?:  sprintf(self::DEFAULT_DESCRIPTION, $method, $accountId),
             'Date' => $batchDate->format('Y-m-d')
         );
 

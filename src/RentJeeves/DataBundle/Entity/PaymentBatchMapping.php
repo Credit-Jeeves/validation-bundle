@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  *          @ORM\UniqueConstraint(
  *              name="unique_index_constraint",
  *              columns={
- *                  "payment_batch_id", "accounting_batch_id", "payment_processor", "accounting_package_type"
+ *                  "payment_batch_id", "payment_processor", "accounting_package_type"
  *              }
  *          )
  *      }

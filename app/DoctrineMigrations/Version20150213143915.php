@@ -27,7 +27,6 @@ class Version20150213143915 extends AbstractMigration
                 created_at DATETIME NOT NULL,
                 closed_at DATETIME DEFAULT NULL,
                 UNIQUE INDEX unique_index_constraint (payment_batch_id,
-                accounting_batch_id,
                 payment_processor,
                 accounting_package_type),
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"

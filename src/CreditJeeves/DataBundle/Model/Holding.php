@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Entity\AccountingSettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Model\YardiSettings;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -191,6 +192,21 @@ abstract class Holding
         $accountingSetting->setHolding($this);
 
         return $this;
+    }
+
+    public function getExternalSettings()
+    {
+        if ($this->getAccountingSettings()) {
+            switch ($this->getAccountingSettings()->getApiIntegration()) {
+                case ApiIntegrationType::RESMAN :
+                    return $this->getResManSettings();
+                case ApiIntegrationType::YARDI_VOYAGER :
+                    return $this->getYardiSettings();
+            }
+        }
+
+        return null;
+
     }
 
     /**

@@ -13,6 +13,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use Monolog\Logger;
+use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -74,6 +75,7 @@ class OrderListener
         }
         $this->logger->debug('Order ID ' . $entity->getId() .' changes status to ' . $entity->getStatus());
         $this->syncTransactions($entity);
+        $this->openBatch($entity);
 
         $operations = $entity->getRentOperations();
         if ($operations->count() == 0) {
@@ -373,6 +375,18 @@ class OrderListener
             $payment->setClosed($this, PaymentCloseReason::RECURRING_RETURNED);
             $em->persist($payment);
             $em->flush($payment);
+        }
+    }
+
+    /**
+     * @param Order $order
+     */
+    protected function openBatch(Order $order)
+    {
+        if (OrderStatus::NEWONE != $order->getStatus()) {
+            /** @var AccountingPaymentSynchronizer $paymentSync */
+            $paymentSync = $this->container->get('accounting.payment_sync');
+            $paymentSync->openBatch($order);
         }
     }
 }
