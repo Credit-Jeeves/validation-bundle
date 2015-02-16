@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Order\OrderManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;

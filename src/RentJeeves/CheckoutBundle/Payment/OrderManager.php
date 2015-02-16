@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Order;
+namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;

@@ -9,7 +9,6 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Order\OrderManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Job;
