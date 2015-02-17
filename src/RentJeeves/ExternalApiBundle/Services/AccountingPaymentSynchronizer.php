@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
@@ -46,20 +47,16 @@ class AccountingPaymentSynchronizer
     {
         if (!$order->getContract() ||
             !$order->getCompleteTransaction() ||
+            !($paymentBatchId = $order->getCompleteTransaction()->getBatchId()) ||
             !($settings = $order->getContract()->getHolding()->getAccountingSettings()) ||
-            !($paymentProcessor = PaymentProcessor::mapByOrderType($order->getType())) ||
-            !($apiClient = $this
-                ->apiClientFactory
-                ->setSettings($order->getContract()->getHolding()->getExternalSettings())
-                ->createClient($settings->getApiIntegration()))
+            !($paymentProcessor = $this->getPaymentProcessor($order)) ||
+            !($apiClient = $this->getApiClient($order, $settings->getApiIntegration()))
         ) {
             return false;
         }
 
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
-
-        $paymentBatchId = $order->getCompleteTransaction()->getBatchId();
 
         if ($repo->isOpenedBatch($paymentBatchId, $paymentProcessor, $settings->getApiIntegration())) {
             return true;
@@ -73,15 +70,11 @@ class AccountingPaymentSynchronizer
             ->getPropertyMappingByHolding($order->getContract()->getHolding())
             ->getExternalPropertyId();
 
-        $description = sprintf('Open batch for %s with payment batch id "%s"', $paymentProcessor, $paymentBatchId);
+        $accountingBatchId = $apiClient->openBatch($externalPropertyId, $paymentBatchDate);
 
-        $response = $apiClient->openBatch($externalPropertyId, $paymentBatchDate, $description);
-
-        if (!$response) {
+        if (!$accountingBatchId) {
             return false;
         }
-
-        $accountingBatchId = $response->getBatchId();
 
         $paymentBatchMapping = new PaymentBatchMapping();
         $paymentBatchMapping->setAccountingBatchId($accountingBatchId);
@@ -93,5 +86,22 @@ class AccountingPaymentSynchronizer
         $this->em->flush($paymentBatchMapping);
 
         return true;
+    }
+
+    protected function getPaymentProcessor(Order $order)
+    {
+        return PaymentProcessor::mapByOrderType($order->getType());
+    }
+
+    protected function getApiClient(Order $order, $accountingType)
+    {
+        if ($order->getContract() && $order->getContract()->getHolding()) {
+            return $this
+                ->apiClientFactory
+                ->setSettings($order->getContract()->getHolding()->getExternalSettings())
+                ->createClient($accountingType);
+        }
+
+        return null;
     }
 }

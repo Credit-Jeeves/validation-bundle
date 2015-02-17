@@ -54,7 +54,7 @@ class ExternalApiClientFactory
         }
 
         /** @var ClientInterface $client */
-        $client = $this->container->has($this->accountingServiceClientMap[$accountingType]);
+        $client = $this->container->get($this->accountingServiceClientMap[$accountingType]);
 
         !$this->settings || $client->setSettings($this->settings);
 

@@ -2,11 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
-use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Response;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
@@ -29,11 +27,10 @@ class ResManClient implements ClientInterface
 
     const DEFAULT_DESCRIPTION = 'Send Request "%s" for account "%s"';
 
-    protected $mappingResponse = array(
+    protected $mappingResponse = [
         self::BASE_RESPONSE          => 'RentJeeves\ExternalApiBundle\Model\ResMan\ResMan',
         'GetResidentTransactions2_0' => 'RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions',
-        'OpenBatch'                  => 'RentJeeves\ExternalApiBundle\Model\ResMan\Batch',
-    );
+    ];
 
     /**
      * @var HttpClient
@@ -100,10 +97,10 @@ class ResManClient implements ClientInterface
     public function sendRequest($method, array $params, $itShouldBeSerializeTwice = true)
     {
         try {
-            $baseParams = array(
+            $baseParams = [
                 'IntegrationPartnerID'  => $this->integrationPartnerId,
                 'ApiKey'                => $this->apiKey,
-            );
+            ];
 
             $uri = $this->apiUrl . $method;
 
@@ -199,9 +196,9 @@ class ResManClient implements ClientInterface
     public function getResidentTransactions($externalPropertyId)
     {
         $method = 'GetResidentTransactions2_0';
-        $params = array(
+        $params = [
             'PropertyID' => $externalPropertyId
-        );
+        ];
 
         return $this->sendRequest($method, $params);
     }
@@ -219,19 +216,21 @@ class ResManClient implements ClientInterface
 
         $this->groupDeserialize = ['OpenBatch'];
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
-        $params = array(
+        $params = [
             'AccountID' => $accountId,
             'PropertyID' => $externalPropertyId,
             'Description' => $description ?:  sprintf(self::DEFAULT_DESCRIPTION, $method, $accountId),
             'Date' => $batchDate->format('Y-m-d')
-        );
+        ];
 
-        $this->groupDeserialize = array('ResManOpenBatch');
+        $this->groupDeserialize = ['ResManOpenBatch'];
         /** @var ResMan $response */
         $response = $this->sendRequest($method, $params, false);
         $this->setDefaultGroupDeserialize();
 
-        return $response->getResponse()->getBatchId();
+        if ($response && $response->getResponse()) {
+            return $response->getResponse()->getBatchId();
+        }
     }
 
     /**
@@ -247,11 +246,11 @@ class ResManClient implements ClientInterface
     ) {
         $method = 'AddPaymentToBatch';
 
-        $params = array(
+        $params = [
             'AccountID'  => $accountId ?: $this->getSettings()->getAccountId(),
             'PropertyID' => $externalPropertyId,
             'xml'        => $residentTransactionsXml,
-        );
+        ];
 
         $this->sendRequest($method, $params, false);
 

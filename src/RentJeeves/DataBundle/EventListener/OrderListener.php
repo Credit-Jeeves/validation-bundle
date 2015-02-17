@@ -75,7 +75,6 @@ class OrderListener
         }
         $this->logger->debug('Order ID ' . $entity->getId() .' changes status to ' . $entity->getStatus());
         $this->syncTransactions($entity);
-        $this->openBatch($entity);
 
         $operations = $entity->getRentOperations();
         if ($operations->count() == 0) {
@@ -181,6 +180,8 @@ class OrderListener
                 }
                 break;
         }
+
+        $this->openBatch($order);
 
         if ($save) {
             $this->logger->debug(
@@ -383,7 +384,7 @@ class OrderListener
      */
     protected function openBatch(Order $order)
     {
-        if (OrderStatus::COMPLETE === $order->getStatus()) {
+        if ($order->getCompleteTransaction()) {
             /** @var AccountingPaymentSynchronizer $paymentSync */
             $paymentSync = $this->container->get('accounting.payment_sync');
             $paymentSync->openBatch($order);

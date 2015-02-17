@@ -11,15 +11,19 @@ use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -613,5 +617,77 @@ class OrderListenerCase extends Base
         $payment->setPaidFor($paidFor);
 
         return $payment;
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateMappingBatches()
+    {
+        $this->load(true);
+
+        $startAt = new DateTime();
+        $startAt->modify('-5 month');
+        $finishAt = new DateTime();
+        $finishAt->modify('+24 month');
+        /** @var $contract Contract */
+        $contract = $this->getContract($startAt, $finishAt);
+
+        $holding = $contract->getHolding();
+        $holding->getAccountingSettings()->setApiIntegration(ApiIntegrationType::RESMAN);
+        $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($holding);
+        $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
+
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        $em->persist($propertyMapping);
+        $em->persist($holding);
+        $em->flush();
+
+        $order = new Order();
+        $order->setUser($contract->getTenant());
+        $order->setSum(500);
+        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setStatus(OrderStatus::NEWONE);
+
+        $operation = new Operation();
+        $operation->setContract($contract);
+        $operation->setAmount(500);
+        $operation->setType(OperationType::OTHER);
+        $paidFor = new DateTime();
+        $operation->setPaidFor($paidFor);
+        $operation->setOrder($order);
+
+        $transaction = new Heartland();
+        $transaction->setAmount(500);
+        $transaction->setOrder($order);
+        $transaction->setBatchId(55558888);
+        $transaction->setStatus(TransactionStatus::COMPLETE);
+        $transaction->setIsSuccessful(true);
+        $order->addHeartland($transaction);
+
+        /** @var PaymentBatchMappingRepository $repo */
+        $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
+
+        $this->assertFalse($repo->isOpenedBatch(
+            $transaction->getBatchId(),
+            PaymentProcessor::HEARTLAND,
+            ApiIntegrationType::RESMAN
+        ));
+
+        $em->persist($operation);
+        $em->persist($transaction);
+        $em->persist($order);
+        $em->flush();
+
+        // change status to COMPLETE - here is the place where OrderListener:openBatch works
+        $order->setStatus(OrderStatus::COMPLETE);
+        $em->flush($order);
+
+        $this->assertTrue($repo->isOpenedBatch($transaction->getBatchId(),
+            PaymentProcessor::HEARTLAND,
+            ApiIntegrationType::RESMAN
+        ));
     }
 }
