@@ -55,21 +55,22 @@ abstract class PaymentBatchMapping
 
     /**
      * @ORM\Column(
-     *      name="payment_processor",
-     *      type="PaymentProcessor",
-     *      nullable=false
-     * )
-     */
-    protected $paymentProcessor;
-
-    /**
-     * @ORM\Column(
      *      name="accounting_package_type",
      *      type="ApiIntegrationType",
      *      nullable=false
      * )
      */
     protected $accountingPackageType;
+
+    /**
+     * @ORM\Column(
+     *      name="external_property_id",
+     *      type="string",
+     *      length=255,
+     *      nullable=false
+     * )
+     */
+    protected $externalPropertyId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -158,25 +159,6 @@ abstract class PaymentBatchMapping
     }
 
     /**
-     * @param $paymentProcessor
-     * @return $this
-     */
-    public function setPaymentProcessor($paymentProcessor)
-    {
-        $this->paymentProcessor = $paymentProcessor;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPaymentProcessor()
-    {
-        return $this->paymentProcessor;
-    }
-
-    /**
      * @param $accountingPackageType
      * @return $this
      */
@@ -193,6 +175,25 @@ abstract class PaymentBatchMapping
     public function getAccountingPackageType()
     {
         return $this->accountingPackageType;
+    }
+
+    /**
+     * @param $externalPropertyId
+     * @return $this
+     */
+    public function setExternalPropertyId($externalPropertyId)
+    {
+        $this->externalPropertyId = $externalPropertyId;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExternalPropertyId()
+    {
+        return $this->externalPropertyId;
     }
 
     /**

@@ -20,15 +20,11 @@ class Version20150213143915 extends AbstractMigration
                 accounting_batch_id VARCHAR(255) NOT NULL,
                 status ENUM('opened','closed')
                     COMMENT '(DC2Type:PaymentBatchStatus)' DEFAULT 'opened' NOT NULL,
-                payment_processor ENUM('heartland','aci')
-                    COMMENT '(DC2Type:PaymentProcessor)' NOT NULL,
                 accounting_package_type ENUM('none','yardi voyager','resman')
                     COMMENT '(DC2Type:ApiIntegrationType)' NOT NULL,
+                external_property_id VARCHAR(255) NOT NULL,
                 created_at DATETIME NOT NULL,
                 closed_at DATETIME DEFAULT NULL,
-                UNIQUE INDEX unique_index_constraint (payment_batch_id,
-                payment_processor,
-                accounting_package_type),
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
     }

@@ -89,7 +89,7 @@ class OrderListenerCase extends Base
     /**
      * We test updated startAt on the table rj_contract when user create first order
      *
-     * #test
+     * @test
      */
     public function updateStartAtOfContract()
     {
@@ -136,7 +136,7 @@ class OrderListenerCase extends Base
      * We test do not update startAt on the table rj_contract when user create second order
      *
      * @depends updateStartAtOfContract
-     * #test
+     * @test
      */
     public function doNotUpdateStartAtOfContract()
     {
@@ -213,7 +213,7 @@ class OrderListenerCase extends Base
 
     /**
      * @dataProvider getDataForUpdateBalanceContract
-     * #test
+     * @test
      */
     public function updateBalanceContract(
         $integratedBalanceMustBe,
@@ -304,7 +304,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldUnshiftContractDateWhenOrderIsCancelled()
     {
@@ -342,7 +342,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldSetCorrectPaidToForOrderWith2RentOperations()
     {
@@ -402,7 +402,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldSetEarliestPaidForAsContractStartDate()
     {
@@ -457,7 +457,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldSetBatchAndDepositDateForCompleteCCOrdersWhenOnlyOtherAmountExists()
     {
@@ -514,7 +514,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldMovePaymentPaidForWhenOrderIsComplete()
     {
@@ -562,7 +562,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * #test
+     * @test
      * @depends shouldMovePaymentPaidForWhenOrderIsComplete
      */
     public function shouldCloseRecurringPaymentWhenACHPaymentReturned()
@@ -675,8 +675,8 @@ class OrderListenerCase extends Base
 
         $this->assertFalse($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            PaymentProcessor::HEARTLAND,
-            ApiIntegrationType::RESMAN
+            ApiIntegrationType::RESMAN,
+            ResManClientCase::EXTERNAL_PROPERTY_ID
         ));
 
         $em->persist($operation);
@@ -688,12 +688,10 @@ class OrderListenerCase extends Base
         $order->setStatus(OrderStatus::COMPLETE);
         $em->flush($order);
 
-        $this->assertTrue(
-            $repo->isOpenedBatch(
-                $transaction->getBatchId(),
-                PaymentProcessor::HEARTLAND,
-                ApiIntegrationType::RESMAN
-            )
-        );
+        $this->assertTrue($repo->isOpenedBatch(
+            $transaction->getBatchId(),
+            ApiIntegrationType::RESMAN,
+            ResManClientCase::EXTERNAL_PROPERTY_ID
+        ));
     }
 }

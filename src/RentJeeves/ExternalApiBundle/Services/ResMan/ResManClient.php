@@ -233,6 +233,8 @@ class ResManClient implements ClientInterface
         if ($response && $response->getResponse()) {
             return $response->getResponse()->getBatchId();
         }
+
+        return null;
     }
 
     /**

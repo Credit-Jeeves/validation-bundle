@@ -9,7 +9,6 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
@@ -43,7 +42,12 @@ class AccountingPaymentSynchronizer
      * @var Logger
      */
     protected $logger;
-
+	
+	/**
+     * @var bool
+     */
+    protected $debug;
+	
     /**
      * @param EntityManager $em
      * @param ExternalApiClientFactory $apiClientFactory
@@ -119,6 +123,17 @@ class AccountingPaymentSynchronizer
     }
 
     /**
+     * @param bool $debug
+     * @return $this
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = !!$debug;
+
+        return $this;
+    }
+
+    /**
      * @param Order $order
      */
     protected function addPaymentToBatch(Order $order)
@@ -174,25 +189,31 @@ class AccountingPaymentSynchronizer
      */
     protected function openBatch(Order $order)
     {
-        $paymentProcessor = $this->getPaymentProcessor($order);
-        $paymentBatchId = $order->getCompleteTransaction()->getBatchId();
-        $settings = $order->getContract()->getHolding()->getAccountingSettings();
-        $apiClient = $this->getApiClient($order, $settings->getApiIntegration());
+        if (!($order->hasContract() and
+            $transaction = $order->getCompleteTransaction() and
+            $holding = $order->getContract()->getHolding() and
+            $holding->getExternalSettings() and
+            $paymentBatchId = $transaction->getBatchId() and
+            $accountingType = $holding->getAccountingSettings()->getApiIntegration() and
+            $externalPropertyId = $order
+                ->getUnit()
+                ->getProperty()
+                ->getPropertyMappingByHolding($holding)
+                ->getExternalPropertyId() and
+            $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings())
+        )) {
+            return false;
+        }
 
+        $apiClient->setDebug($this->debug);
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
 
-        if ($repo->isOpenedBatch($paymentBatchId, $paymentProcessor, $settings->getApiIntegration())) {
+        if ($repo->isOpenedBatch($paymentBatchId, $accountingType, $externalPropertyId)) {
             return true;
         }
 
         $paymentBatchDate = $order->getCompleteTransaction()->getBatchDate();
-
-        $externalPropertyId = $order
-            ->getUnit()
-            ->getProperty()
-            ->getPropertyMappingByHolding($order->getContract()->getHolding())
-            ->getExternalPropertyId();
 
         $accountingBatchId = $apiClient->openBatch($externalPropertyId, $paymentBatchDate);
 
@@ -203,29 +224,20 @@ class AccountingPaymentSynchronizer
         $paymentBatchMapping = new PaymentBatchMapping();
         $paymentBatchMapping->setAccountingBatchId($accountingBatchId);
         $paymentBatchMapping->setPaymentBatchId($paymentBatchId);
-        $paymentBatchMapping->setAccountingPackageType($settings->getApiIntegration());
-        $paymentBatchMapping->setPaymentProcessor($paymentProcessor);
+        $paymentBatchMapping->setAccountingPackageType($accountingType);
+        $paymentBatchMapping->setExternalPropertyId($externalPropertyId);
 
         $this->em->persist($paymentBatchMapping);
-        $this->em->flush();
+        $this->em->flush($paymentBatchMapping);
 
         return true;
     }
 
-    protected function getPaymentProcessor(Order $order)
+    protected function getApiClient($accountingType, $accountingSettings)
     {
-        return PaymentProcessor::mapByOrderType($order->getType());
-    }
-
-    protected function getApiClient(Order $order, $accountingType)
-    {
-        if ($order->getContract() && $order->getContract()->getHolding()) {
-            return $this
-                ->apiClientFactory
-                ->setSettings($order->getContract()->getHolding()->getExternalSettings())
-                ->createClient($accountingType);
-        }
-
-        return null;
+        return $this
+            ->apiClientFactory
+            ->setSettings($accountingSettings)
+            ->createClient($accountingType);
     }
 }

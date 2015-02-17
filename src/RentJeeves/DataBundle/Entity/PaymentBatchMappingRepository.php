@@ -9,39 +9,47 @@ class PaymentBatchMappingRepository extends EntityRepository
 {
     /**
      * @param $paymentBatchId
-     * @param $paymentProcessor
      * @param $accountingPackageType
+     * @param $externalPropertyId
      * @return bool
      */
-    public function isOpenedBatch($paymentBatchId, $paymentProcessor, $accountingPackageType)
+    public function isOpenedBatch($paymentBatchId, $accountingPackageType, $externalPropertyId)
     {
         return !!$this->createQueryBuilder('pbm')
             ->select('count(pbm.id)')
             ->where('pbm.paymentBatchId = :paymentBatchId')
-            ->andWhere('pbm.paymentProcessor = :paymentProcessor')
             ->andWhere('pbm.accountingPackageType = :accountingPackageType')
+            ->andWhere('pbm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pbm.status = :status')
             ->setParameters([
                 'paymentBatchId' => $paymentBatchId,
-                'paymentProcessor' => $paymentProcessor,
-                'accountingPackageType' => $accountingPackageType
+                'accountingPackageType' => $accountingPackageType,
+                'externalPropertyId' => $externalPropertyId,
+                'status' => PaymentBatchStatus::OPENED,
             ])
             ->getQuery()
             ->getSingleScalarResult();
     }
 
-    public function getAccountingBatchId($paymentBatchId, $paymentProcessor, $accountingPackageType)
+    /**
+     * @param $paymentBatchId
+     * @param $accountingPackageType
+     * @param $externalPropertyId
+     * @return mixed
+     */
+    public function getAccountingBatchId($paymentBatchId, $accountingPackageType, $externalPropertyId)
     {
         return $this->createQueryBuilder('pbm')
             ->select('pbm.accountingBatchId')
             ->where('pbm.paymentBatchId = :paymentBatchId')
-            ->andWhere('pbm.paymentProcessor = :paymentProcessor')
             ->andWhere('pbm.accountingPackageType = :accountingPackageType')
+            ->andWhere('pbm.externalPropertyId = :externalPropertyId')
             ->andWhere('pbm.status = :status')
             ->setParameters([
                 'paymentBatchId' => $paymentBatchId,
-                'paymentProcessor' => $paymentProcessor,
                 'accountingPackageType' => $accountingPackageType,
-                'status' => PaymentBatchStatus::OPENED
+                'externalPropertyId' => $externalPropertyId,
+                'status' => PaymentBatchStatus::OPENED,
             ])
             ->getQuery()
             ->getSingleScalarResult();
