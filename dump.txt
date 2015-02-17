@@ -1,0 +1,51 @@
+<ResidentTransactions>
+    <Property>
+        <RT_Customer>
+            <RTServiceTransactions>
+                <Transactions>
+                    <Payment Type="Credit Card">
+                        <Detail>
+                            <BatchID>774528af-b8f2-4a9f-a19f-515e27c9534e</BatchID>
+                            <Description>Test payment</Description>
+                            <DocumentNumber>324135</DocumentNumber>
+                            <TransactionDate>2015-09-01</TransactionDate>
+                            <CustomerID>61f6b361-6255-4b84-8010-38c09d2fdcf4</CustomerID>
+                            <PaidBy>Sharell Alvidrez</PaidBy>
+                            <UnitID>3J</UnitID>
+                            <Amount>10.00</Amount>
+                            <Comment/>
+                            <PropertyPrimaryID>b342e58c-f5ba-4c63-b050-cf44439bb37d</PropertyPrimaryID>
+                        </Detail>
+                    </Payment>
+                </Transactions>
+            </RTServiceTransactions>
+        </RT_Customer>
+    </Property>
+</ResidentTransactions>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ResidentTransactions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Property>
+    <RT_Customer>
+      <RTServiceTransactions>
+        <Transactions>
+          <Payment Type="Credit Card">
+            <Detail>
+              <DocumentNumber xsi:nil="true"/>
+              <TransactionDate>2015-02-17</TransactionDate>
+              <UnitID>1-a</UnitID>
+              <CustomerID xsi:nil="true"/>
+              <PaidBy>TIMOTHY APPLEGATE</PaidBy>
+              <Amount>500.00</Amount>
+              <Comment>770 Broadway, Manhattan, New York, NY 10003</Comment>
+              <Description>770 Broadway, Manhattan, New York, NY 10003</Description>
+              <PropertyPrimaryID>B342E58C-F5BA-4C63-B050-CF44439BB37D</PropertyPrimaryID>
+            </Detail>
+          </Payment>
+        </Transactions>
+      </RTServiceTransactions>
+    </RT_Customer>
+  </Property>
+</ResidentTransactions>
+

@@ -40,6 +40,11 @@ class ResManClientCase extends Base
     protected static $customerId;
 
     /**
+     * @var string
+     */
+    protected static $propertyId;
+
+    /**
      * @test
      */
     public function shouldReturnResidentTransactions()
@@ -79,9 +84,10 @@ class ResManClientCase extends Base
         /** @var Customer $customer */
         $customer = $rtCustomer->getCustomers()->getCustomer()[0];
 
-        self::$customerId = $customer->getCustomerId();
+        self::$customerId = $rtCustomer->getCustomerId();
         self::$userName = $customer->getUserName()->getFirstName().' '.$customer->getUserName()->getLastName();
         self::$unitId = $rtCustomer->getRtUnit()->getUnitId();
+        self::$propertyId = $rtCustomer->getRtUnit()->getUnit()->getPropertyPrimaryID();
     }
 
     /**
@@ -98,7 +104,7 @@ class ResManClientCase extends Base
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
 
-        $batchId= $resManClient->openBatch(self::EXTERNAL_PROPERTY_ID, new \DateTime());
+        $batchId = $resManClient->openBatch(self::$propertyId, new \DateTime());
         $this->assertNotEmpty(self::$batchId = $batchId);
     }
 
@@ -115,7 +121,7 @@ class ResManClientCase extends Base
         $xml = file_get_contents($path);
         $residentTransactionXml = str_replace(
             ['%batchId%', '%CustomerId%', '%userName%', '%unitName%', '%externalPropertyId%'],
-            [self::$batchId, self::$customerId, self::$userName, self::$unitId, self::EXTERNAL_PROPERTY_ID],
+            [self::$batchId, self::$customerId, self::$userName, self::$unitId, self::$propertyId],
             $xml
         );
 
@@ -125,7 +131,7 @@ class ResManClientCase extends Base
         $settings = new ResManSettings();
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
-        $result = $resManClient->addPaymentToBatch($residentTransactionXml, self::EXTERNAL_PROPERTY_ID);
+        $result = $resManClient->addPaymentToBatch($residentTransactionXml, self::$propertyId);
         $this->assertTrue($result);
     }
 
@@ -159,6 +165,7 @@ class ResManClientCase extends Base
         $context->setGroups(['ResMan']);
         $context->setSerializeNull(true);
         $result = $this->getContainer()->get('serializer')->serialize($paymentTransaction, 'xml', $context);
+
         $kernel = $this->getKernel();
         $path = $kernel->locateResource(
             '@ExternalApiBundle/Resources/fixtures/resmanAddPaymentToBatchSerializerCheck.xml'

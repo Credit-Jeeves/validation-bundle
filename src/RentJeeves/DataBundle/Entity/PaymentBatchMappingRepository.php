@@ -32,10 +32,11 @@ class PaymentBatchMappingRepository extends EntityRepository
     public function getAccountingBatchId($paymentBatchId, $paymentProcessor, $accountingPackageType)
     {
         return $this->createQueryBuilder('pbm')
-            ->select('count(pbm.accountingBatchId)')
+            ->select('pbm.accountingBatchId')
             ->where('pbm.paymentBatchId = :paymentBatchId')
             ->andWhere('pbm.paymentProcessor = :paymentProcessor')
             ->andWhere('pbm.accountingPackageType = :accountingPackageType')
+            ->andWhere('pbm.status = :status')
             ->setParameters([
                 'paymentBatchId' => $paymentBatchId,
                 'paymentProcessor' => $paymentProcessor,

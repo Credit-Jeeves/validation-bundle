@@ -171,8 +171,10 @@ class ResManClient implements ClientInterface
                 )
             );
 
-            $this->exceptionCatcher->handleException($e);
+            //$this->exceptionCatcher->handleException($e);
         }
+
+        return false;
     }
 
     protected function deserializeResponse($data, $class)
@@ -252,8 +254,8 @@ class ResManClient implements ClientInterface
             'xml'        => $residentTransactionsXml,
         ];
 
-        $this->sendRequest($method, $params, false);
+        $result = $this->sendRequest($method, $params, false);
 
-        return true;
+        return ($result instanceof ResMan)? true : false;
     }
 }

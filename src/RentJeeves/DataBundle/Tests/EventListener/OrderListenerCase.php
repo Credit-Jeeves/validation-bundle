@@ -89,7 +89,7 @@ class OrderListenerCase extends Base
     /**
      * We test updated startAt on the table rj_contract when user create first order
      *
-     * @test
+     * #test
      */
     public function updateStartAtOfContract()
     {
@@ -136,7 +136,7 @@ class OrderListenerCase extends Base
      * We test do not update startAt on the table rj_contract when user create second order
      *
      * @depends updateStartAtOfContract
-     * @test
+     * #test
      */
     public function doNotUpdateStartAtOfContract()
     {
@@ -213,7 +213,7 @@ class OrderListenerCase extends Base
 
     /**
      * @dataProvider getDataForUpdateBalanceContract
-     * @test
+     * #test
      */
     public function updateBalanceContract(
         $integratedBalanceMustBe,
@@ -304,7 +304,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldUnshiftContractDateWhenOrderIsCancelled()
     {
@@ -342,7 +342,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldSetCorrectPaidToForOrderWith2RentOperations()
     {
@@ -402,7 +402,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldSetEarliestPaidForAsContractStartDate()
     {
@@ -457,7 +457,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldSetBatchAndDepositDateForCompleteCCOrdersWhenOnlyOtherAmountExists()
     {
@@ -514,7 +514,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldMovePaymentPaidForWhenOrderIsComplete()
     {
@@ -562,7 +562,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * #test
      * @depends shouldMovePaymentPaidForWhenOrderIsComplete
      */
     public function shouldCloseRecurringPaymentWhenACHPaymentReturned()
@@ -632,6 +632,7 @@ class OrderListenerCase extends Base
         $finishAt->modify('+24 month');
         /** @var $contract Contract */
         $contract = $this->getContract($startAt, $finishAt);
+        $contract->setExternalLeaseId('61f6b361-6255-4b84-8010-38c09d2fdcf4');
 
         $holding = $contract->getHolding();
         $holding->getAccountingSettings()->setApiIntegration(ApiIntegrationType::RESMAN);
@@ -641,6 +642,7 @@ class OrderListenerCase extends Base
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
+        $em->persist($contract);
         $em->persist($propertyMapping);
         $em->persist($holding);
         $em->flush();
@@ -665,6 +667,7 @@ class OrderListenerCase extends Base
         $transaction->setBatchId(55558888);
         $transaction->setStatus(TransactionStatus::COMPLETE);
         $transaction->setIsSuccessful(true);
+        $transaction->setTransactionId(uniqid());
         $order->addHeartland($transaction);
 
         /** @var PaymentBatchMappingRepository $repo */
@@ -685,9 +688,12 @@ class OrderListenerCase extends Base
         $order->setStatus(OrderStatus::COMPLETE);
         $em->flush($order);
 
-        $this->assertTrue($repo->isOpenedBatch($transaction->getBatchId(),
-            PaymentProcessor::HEARTLAND,
-            ApiIntegrationType::RESMAN
-        ));
+        $this->assertTrue(
+            $repo->isOpenedBatch(
+                $transaction->getBatchId(),
+                PaymentProcessor::HEARTLAND,
+                ApiIntegrationType::RESMAN
+            )
+        );
     }
 }

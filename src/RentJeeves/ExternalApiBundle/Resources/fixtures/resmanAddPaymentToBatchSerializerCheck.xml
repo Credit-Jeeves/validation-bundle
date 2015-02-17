@@ -8,6 +8,7 @@
             <Detail>
               <DocumentNumber>123123</DocumentNumber>
               <TransactionDate>2014-12-29</TransactionDate>
+              <BatchID>testBatchId</BatchID>
               <UnitID>2-a</UnitID>
               <CustomerID xsi:nil="true"/>
               <PaidBy>TIMOTHY APPLEGATE</PaidBy>

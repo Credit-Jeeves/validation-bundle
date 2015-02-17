@@ -70,11 +70,21 @@ class OrderListener
             return;
         }
 
+
         if (!$eventArgs->hasChangedField('status')) {
             return;
         }
+
         $this->logger->debug('Order ID ' . $entity->getId() .' changes status to ' . $entity->getStatus());
         $this->syncTransactions($entity);
+
+        $newValue = $eventArgs->getNewValue('status');
+        $oldValue = $eventArgs->getOldValue('status');
+        if ($oldValue === OrderStatus::NEWONE &&
+            ($newValue === OrderStatus::COMPLETE || $newValue === OrderStatus::PENDING)
+        ) {
+            $this->managerOrderToApi($entity);
+        }
 
         $operations = $entity->getRentOperations();
         if ($operations->count() == 0) {
@@ -110,6 +120,7 @@ class OrderListener
                 $uow->scheduleExtraUpdate($payment, ['paidFor' => [$oldPaidFor, $newPaidFor]]);
             }
         }
+
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
     }
 
@@ -180,8 +191,6 @@ class OrderListener
                 }
                 break;
         }
-
-        $this->openBatch($order);
 
         if ($save) {
             $this->logger->debug(
@@ -379,15 +388,11 @@ class OrderListener
         }
     }
 
-    /**
-     * @param Order $order
-     */
-    protected function openBatch(Order $order)
+
+    protected function managerOrderToApi(Order $order)
     {
-        if ($order->getCompleteTransaction()) {
-            /** @var AccountingPaymentSynchronizer $paymentSync */
-            $paymentSync = $this->container->get('accounting.payment_sync');
-            $paymentSync->openBatch($order);
-        }
+        /** @var AccountingPaymentSynchronizer $paymentSync */
+        $paymentSync = $this->container->get('accounting.payment_sync');
+        $paymentSync->manageOrderToApi($order);
     }
 }

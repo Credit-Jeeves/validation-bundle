@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
@@ -27,8 +28,13 @@ class Order extends BaseOrder
      *
      * @var string
      */
-    protected $batchId;
+    protected $batchId = null;
 
+    /**
+     * Use for export on preSerialize event
+     *
+     * @var null
+     */
     protected $buildingId = null;
 
     public function setBuildingId($buildingId)
@@ -829,6 +835,7 @@ class Order extends BaseOrder
         return $this->getCreatedAt()->format('Y-m-d');
     }
 
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("BatchID")
@@ -836,13 +843,13 @@ class Order extends BaseOrder
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
-    public function getBatchId()
+    public function getResManBatchId()
     {
         return $this->batchId;
     }
 
     /**
-     * @param $batchId
+     * @param string $batchId
      */
     public function setBatchId($batchId)
     {
@@ -938,8 +945,11 @@ class Order extends BaseOrder
      */
     public function getPropertyPrimaryID()
     {
-        $mapping = $this->getContract()->getProperty()->getPropertyMapping();
+        /** @var PropertyMapping $propertyMapping */
+        $propertyMapping = $this->getContract()->getProperty()->getPropertyMappingByHolding(
+            $this->getContract()->getGroup()->getHolding()
+        );
 
-        return $mapping->first()->getExternalPropertyId();
+        return $propertyMapping->getExternalPropertyId();
     }
 }
