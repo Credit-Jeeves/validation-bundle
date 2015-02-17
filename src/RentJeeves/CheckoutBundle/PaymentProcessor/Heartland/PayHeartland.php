@@ -114,6 +114,7 @@ class PayHeartland
         $paymentDetails->setRequest($request);
         $paymentDetails->setOrder($order);
         $paymentDetails->setAmount($order->getSum() + $order->getFee());
+        $order->addHeartland($paymentDetails);
 
         if (PaymentGroundType::RENT == $paymentType) {
             $paymentDetails->setMerchantName($order->getContract()->getGroup()->getMerchantName());
