@@ -1887,6 +1887,8 @@ class ImportCase extends BaseTestCase
         $this->load(true);
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        /** @var Property $property */
         $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
             array(
                 'street' => 'Broadway',
@@ -1895,17 +1897,16 @@ class ImportCase extends BaseTestCase
             )
         );
 
+        /*
+         * Create a property with no units
+         */
         $units = $property->getUnits();
         foreach ($units as $unit) {
             $em->remove($unit);
         }
-
         $em->flush();
         $property->setIsSingle(true);
         $em->persist($property);
-        $em->flush();
-        $singlUnit = $property->getExistingSingleUnit();
-        $em->remove($singlUnit);
         $em->flush();
 
         $this->setDefaultSession('selenium2');
