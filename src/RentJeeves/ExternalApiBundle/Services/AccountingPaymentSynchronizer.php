@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\DataBundle\Entity\HeartlandRepository;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
@@ -13,6 +14,7 @@ use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use Exception;
+use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 
 /**
  * @DI\Service("accounting.payment_sync")
@@ -47,7 +49,7 @@ class AccountingPaymentSynchronizer
     /**
      * @var bool
      */
-    protected $debug;
+    protected $debug = false;
 
     /**
      * @param EntityManager $em
@@ -228,13 +230,53 @@ class AccountingPaymentSynchronizer
         return true;
     }
 
-    protected function getApiClient($accountingType, $accountingSettings)
+    public function closeBatches($accountingType)
     {
-        return $this
-            ->apiClientFactory
-            ->setSettings($accountingSettings)
-            ->createClient($accountingType);
+        $apiClient = $this->getApiClient($accountingType);
+
+        if (!$apiClient) {
+            return false;
+        }
+
+        $apiClient->setDebug($this->debug);
+
+        /** @var PaymentBatchMappingRepository $repo */
+        $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
+
+        $mappingBatches = $repo->findBy([
+            'status' => PaymentBatchStatus::OPENED,
+            'accountingPackageType' => $accountingType
+        ]);
+        /** @var HeartlandRepository $repo */
+        $repo = $this->em->getRepository('RjDataBundle:Heartland');
+
+        foreach ($mappingBatches as $mappingBatch) {
+            /** @var PaymentBatchMapping $mappingBatch */
+            $holding = $repo->getMerchantHoldingByBatchId($mappingBatch->getPaymentBatchId());
+            if (!$holding || $holding->getAccountingSettings()->getApiIntegration() != $accountingType) {
+                continue;
+            }
+
+            $apiClient->setSettings($holding->getExternalSettings());
+            if($apiClient->closeBatch($mappingBatch->getExternalPropertyId(), $mappingBatch->getAccountingBatchId())) {
+                $mappingBatch->setStatus(PaymentBatchStatus::CLOSED);
+                $this->em->persist($mappingBatch);
+            }
+        }
+
+        $this->em->flush();
     }
+
+    protected function getApiClient($accountingType, $accountingSettings = null)
+    {
+        $apiClient = $this->apiClientFactory->createClient($accountingType);
+        if ($apiClient && $accountingSettings) {
+            $apiClient->setSettings($accountingSettings);
+        }
+
+        return $apiClient;
+    }
+
 
     protected function getAccountingType(Order $order)
     {

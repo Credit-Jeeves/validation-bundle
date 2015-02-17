@@ -137,6 +137,25 @@ class ResManClientCase extends Base
 
     /**
      * @test
+     * @depends shouldOpenNewBatch
+     */
+    public function shouldCloseBatch()
+    {
+        $container = $this->getKernel()->getContainer();
+        /** @var $resManClient ResManClient */
+        $resManClient = $container->get('resman.client');
+
+        $settings = new ResManSettings();
+        $settings->setAccountId('400');
+        $resManClient->setSettings($settings);
+
+        $result = $resManClient->closeBatch(self::EXTERNAL_PROPERTY_ID, self::$batchId);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
      */
     public function shouldCheckSerializeOrderWorksCorrect()
     {

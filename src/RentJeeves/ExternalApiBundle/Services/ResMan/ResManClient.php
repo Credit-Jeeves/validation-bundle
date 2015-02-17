@@ -237,6 +237,27 @@ class ResManClient implements ClientInterface
     }
 
     /**
+     * @param $externalPropertyId
+     * @param $accountingBatchId
+     * @param mixed $accountId Can be get from settings
+     * @return bool
+     */
+    public function closeBatch($externalPropertyId, $accountingBatchId, $accountId = null)
+    {
+        $method = 'CloseBatch';
+
+        $accountId = $accountId ?: $this->getSettings()->getAccountId();
+        $params = [
+            'AccountID' => $accountId,
+            'PropertyID' => $externalPropertyId,
+            'BatchID' => $accountingBatchId
+        ];
+
+        /** @var ResMan $response */
+        return !!$this->sendRequest($method, $params, false);
+    }
+
+    /**
      * @param $residentTransactionsXml
      * @param string $externalPropertyId
      * @param null $accountId
