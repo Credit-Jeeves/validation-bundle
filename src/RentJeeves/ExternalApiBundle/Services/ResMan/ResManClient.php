@@ -244,8 +244,6 @@ class ResManClient implements ClientInterface
         $externalPropertyId,
         $accountId = null
     ) {
-        $context = new SerializationContext();
-        $context->setGroups(array('ResMan'));
         $method = 'AddPaymentToBatch';
 
         $params = array(

@@ -1,7 +1,8 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Model;
+namespace RentJeeves\ExternalApiBundle\Model\ResMan\Transaction;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
 use JMS\Serializer\Annotation as Serializer;
 use CreditJeeves\DataBundle\Entity\Order;
 
@@ -31,8 +32,28 @@ class Payment
 
     public static function getType(Order $order)
     {
-        //@TODO add mapping for type
-        return 'ACH';
+        $type = $order->getType();
+
+        switch ($type) {
+            case OrderType::HEARTLAND_CARD:
+                $typeReturn = 'Credit Card';
+                break;
+            case OrderType::HEARTLAND_BANK:
+                $typeReturn = 'ACH';
+                break;
+            default:
+                $message = 'Not supported type of order(%s) it must be %s or %s';
+                throw new \Exception(
+                    sprintf(
+                        $message,
+                        $order->getId(),
+                        OrderType::HEARTLAND_CARD,
+                        OrderType::HEARTLAND_BANK
+                    )
+                );
+        }
+
+        return $typeReturn;
     }
 
     public static function formatType($type)

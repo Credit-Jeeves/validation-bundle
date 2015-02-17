@@ -148,6 +148,7 @@ fixtures:
         paidTo:  '15 days'
         startAt:   '-90 days'
         finishAt: '60 days'
+        externalLeaseId: 'test'
         createdAt: '-50 days'
         updatedAt: '-50 days'
     Contract_10: #12

@@ -2,13 +2,18 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\ORM\EntityManager;
+use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\ResManSettings;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Batch;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
+use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions as PaymentTransaction;
 
 class ResManClientCase extends Base
 {
@@ -122,5 +127,45 @@ class ResManClientCase extends Base
         $resManClient->setSettings($settings);
         $result = $resManClient->addPaymentToBatch($residentTransactionXml, self::EXTERNAL_PROPERTY_ID);
         $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckSerializeOrderWorksCorrect()
+    {
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com',
+            )
+        );
+
+        $this->assertNotNull($tenant);
+
+        $order = $em->getRepository('DataBundle:Order')->findOneBy(
+            array(
+                'user'  => $tenant->getId(),
+                'type'  => OrderType::HEARTLAND_CARD
+            )
+        );
+
+        $this->assertNotNull($order);
+        $order->setBatchId('testBatchId');
+        $paymentTransaction = new PaymentTransaction([$order]);
+        $context = new SerializationContext();
+        $context->setGroups(['ResMan']);
+        $context->setSerializeNull(true);
+        $result = $this->getContainer()->get('serializer')->serialize($paymentTransaction, 'xml', $context);
+        $kernel = $this->getKernel();
+        $path = $kernel->locateResource(
+            '@ExternalApiBundle/Resources/fixtures/resmanAddPaymentToBatchSerializerCheck.xml'
+        );
+
+        $xml = file_get_contents($path);
+
+        $this->assertEquals(trim($result), trim($xml));
     }
 }
