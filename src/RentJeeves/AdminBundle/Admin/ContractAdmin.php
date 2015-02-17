@@ -157,21 +157,14 @@ class ContractAdmin extends Admin
         $params = $request->request->all();
         /** @var $contract Contract */
         $contract = $this->getSubject();
+        $holding = $contract->getHolding(); // disabled for edit
+        $tenant = $contract->getTenant(); // disabled for edit
+        $group = $contract->getGroup();
+        $property = $contract->getProperty();
 
-        if (isset($params[$uniqueId]['holding']) && $contract) {
-            $holding = $contract->getHolding(); // disabled for edit
-            $tenant = $contract->getTenant(); // disabled for edit
+        if (isset($params[$uniqueId])) {
             $group = $params[$uniqueId]['group'];
             $property = $params[$uniqueId]['property'];
-        } elseif ($contract) {
-            $holding = $contract->getHolding();
-            $group = $contract->getGroup();
-            $property = $contract->getProperty();
-            $tenant = $contract->getTenant();
-        }
-
-        if (empty($holding) || empty($group) || empty($property)) {
-            throw new \Exception("Can't find contract by ID.");
         }
 
         $formMapper
