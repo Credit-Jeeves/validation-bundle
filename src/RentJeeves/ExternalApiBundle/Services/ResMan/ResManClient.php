@@ -171,7 +171,7 @@ class ResManClient implements ClientInterface
                 )
             );
 
-            //$this->exceptionCatcher->handleException($e);
+            $this->exceptionCatcher->handleException($e);
         }
 
         return false;
@@ -199,7 +199,7 @@ class ResManClient implements ClientInterface
     {
         $method = 'GetResidentTransactions2_0';
         $params = [
-            'PropertyID' => $externalPropertyId
+            'PropertyID' => strtolower($externalPropertyId)
         ];
 
         return $this->sendRequest($method, $params);
@@ -216,7 +216,6 @@ class ResManClient implements ClientInterface
     {
         $method = 'OpenBatch';
 
-        $this->groupDeserialize = ['OpenBatch'];
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = [
             'AccountID' => $accountId,

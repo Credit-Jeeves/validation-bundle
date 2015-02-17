@@ -17,7 +17,7 @@ use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions a
 
 class ResManClientCase extends Base
 {
-    const EXTERNAL_PROPERTY_ID = 'B342E58C-F5BA-4C63-B050-CF44439BB37D';
+    const EXTERNAL_PROPERTY_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d';
 
     /**
      * @var string

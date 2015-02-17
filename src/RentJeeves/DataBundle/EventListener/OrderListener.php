@@ -78,14 +78,6 @@ class OrderListener
         $this->logger->debug('Order ID ' . $entity->getId() .' changes status to ' . $entity->getStatus());
         $this->syncTransactions($entity);
 
-        $newValue = $eventArgs->getNewValue('status');
-        $oldValue = $eventArgs->getOldValue('status');
-        if ($oldValue === OrderStatus::NEWONE &&
-            ($newValue === OrderStatus::COMPLETE || $newValue === OrderStatus::PENDING)
-        ) {
-            $this->managerOrderToApi($entity);
-        }
-
         $operations = $entity->getRentOperations();
         if ($operations->count() == 0) {
             return;
@@ -386,13 +378,5 @@ class OrderListener
             $em->persist($payment);
             $em->flush($payment);
         }
-    }
-
-
-    protected function managerOrderToApi(Order $order)
-    {
-        /** @var AccountingPaymentSynchronizer $paymentSync */
-        $paymentSync = $this->container->get('accounting.payment_sync');
-        $paymentSync->manageOrderToApi($order);
     }
 }

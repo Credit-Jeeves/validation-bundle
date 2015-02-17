@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+use Exception;
 
 /**
  * @DI\Service("accounting.payment_sync")
@@ -42,12 +43,12 @@ class AccountingPaymentSynchronizer
      * @var Logger
      */
     protected $logger;
-	
-	/**
+
+    /**
      * @var bool
      */
     protected $debug;
-	
+
     /**
      * @param EntityManager $em
      * @param ExternalApiClientFactory $apiClientFactory
@@ -76,47 +77,50 @@ class AccountingPaymentSynchronizer
     public function manageOrderToApi(Order $order)
     {
         try {
-            if (!$order->getCompleteTransaction()) {
+            if (!($order->hasContract() and
+                $transaction = $order->getCompleteTransaction() and
+                $holding = $order->getContract()->getHolding() and
+                $holding->getExternalSettings() and
+                $paymentBatchId = $transaction->getBatchId() and
+                $accountingType = $holding->getAccountingSettings()->getApiIntegration() and
+                $externalPropertyId = $order
+                    ->getUnit()
+                    ->getProperty()
+                    ->getPropertyMappingByHolding($holding)
+                    ->getExternalPropertyId() and
+                $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings())
+            )) {
+
                 $this->logger->addInfo(
                     sprintf(
-                        "Order(%s) does not have complite transaction and not be send to api",
+                        "Order(%s) not be send to api.",
                         $order->getId()
                     )
                 );
                 return false;
             }
 
-            if (!$order->getContract() ||
-                !$order->getCompleteTransaction() ||
-                !($paymentBatchId = $order->getCompleteTransaction()->getBatchId()) ||
-                !($settings = $order->getContract()->getHolding()->getAccountingSettings()) ||
-                !($paymentProcessor = $this->getPaymentProcessor($order)) ||
-                !($apiClient = $this->getApiClient($order, $settings->getApiIntegration()))
-            ) {
-                $this->logger->addInfo(
-                    sprintf(
-                        "Order(%s) does not have complite transaction and not be send to api",
-                        $order->getId()
-                    )
-                );
-                return false;
-            }
+            $apiClient->setDebug($this->debug);
+
             $this->logger->addInfo(
                 sprintf(
-                    "Have order(%s) which need send to API",
+                    "Order(%s) need send to API",
                     $order->getId()
                 )
             );
             $this->openBatch($order);
             $result = $this->addPaymentToBatch($order);
-            $this->logger->addInfo(
-                sprintf(
-                    "Order(%s) was sended to API with result: %s",
-                    $order->getId(),
-                    $result
-                )
+            $message =  sprintf(
+                "Order(%s) was sended to API with result: %s",
+                $order->getId(),
+                $result
             );
-        } catch (\Exception $e) {
+            $this->logger->addInfo($message);
+
+            if ($result === false) {
+                throw new Exception($message);
+            }
+        } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logger->addCritical($e->getMessage());
         }
@@ -139,16 +143,19 @@ class AccountingPaymentSynchronizer
     protected function addPaymentToBatch(Order $order)
     {
         $settings = $order->getContract()->getHolding()->getAccountingSettings();
-        $apiClient = $this->getApiClient($order, $settings->getApiIntegration());
-        $paymentProcessor = $this->getPaymentProcessor($order);
+        $apiClient = $this->getApiClient(
+            $this->getAccountingType($order),
+            $order->getContract()->getHolding()->getExternalSettings()
+        );
         $accountingPackageType = $settings->getApiIntegration();
+        $externalPropertyId = $order->getPropertyPrimaryID();
         $paymentBatchId = $order->getCompleteTransaction()->getBatchId();
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
         $batchId = $repo->getAccountingBatchId(
             $paymentBatchId,
-            $paymentProcessor,
-            $accountingPackageType
+            $accountingPackageType,
+            $externalPropertyId
         );
 
         $order->setBatchId($batchId);
@@ -170,11 +177,8 @@ class AccountingPaymentSynchronizer
             $residentTransactionsXml
         );
 
-        //print_r($residentTransactionsXml);exit;
         $holding =  $order->getContract()->getGroup()->getHolding();
         $accountId = $holding->getResManSettings()->getAccountId();
-        $externalPropertyId = $order->getContract()->getProperty()->getPropertyMappingByHolding($holding);
-        $apiClient->setDebug(true);
 
         return $apiClient->addPaymentToBatch(
             $residentTransactionsXml,
@@ -189,23 +193,11 @@ class AccountingPaymentSynchronizer
      */
     protected function openBatch(Order $order)
     {
-        if (!($order->hasContract() and
-            $transaction = $order->getCompleteTransaction() and
-            $holding = $order->getContract()->getHolding() and
-            $holding->getExternalSettings() and
-            $paymentBatchId = $transaction->getBatchId() and
-            $accountingType = $holding->getAccountingSettings()->getApiIntegration() and
-            $externalPropertyId = $order
-                ->getUnit()
-                ->getProperty()
-                ->getPropertyMappingByHolding($holding)
-                ->getExternalPropertyId() and
-            $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings())
-        )) {
-            return false;
-        }
+        $transaction = $order->getCompleteTransaction();
+        $paymentBatchId = $transaction->getBatchId();
+        $accountingType = $this->getAccountingType($order);
+        $externalPropertyId = $order->getPropertyPrimaryID();
 
-        $apiClient->setDebug($this->debug);
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
 
@@ -215,7 +207,10 @@ class AccountingPaymentSynchronizer
 
         $paymentBatchDate = $order->getCompleteTransaction()->getBatchDate();
 
-        $accountingBatchId = $apiClient->openBatch($externalPropertyId, $paymentBatchDate);
+        $accountingBatchId = $this->getApiClient(
+            $accountingType,
+            $order->getContract()->getHolding()->getExternalSettings()
+        )->openBatch($externalPropertyId, $paymentBatchDate);
 
         if (!$accountingBatchId) {
             return false;
@@ -239,5 +234,10 @@ class AccountingPaymentSynchronizer
             ->apiClientFactory
             ->setSettings($accountingSettings)
             ->createClient($accountingType);
+    }
+
+    protected function getAccountingType(Order $order)
+    {
+        return $order->getContract()->getHolding()->getAccountingSettings()->getApiIntegration();
     }
 }

@@ -622,7 +622,7 @@ class OrderListenerCase extends Base
     /**
      * @test
      */
-    public function shouldCreateMappingBatches()
+    public function shouldCreateMappingBatchesAndAddPaymentToBatch()
     {
         $this->load(true);
 
@@ -632,8 +632,9 @@ class OrderListenerCase extends Base
         $finishAt->modify('+24 month');
         /** @var $contract Contract */
         $contract = $this->getContract($startAt, $finishAt);
-        $contract->setExternalLeaseId('61f6b361-6255-4b84-8010-38c09d2fdcf4');
-
+        $contract->setExternalLeaseId('09948a58-7c50-4089-8942-77e1456f40ec');
+        $unit = $contract->getUnit();
+        $unit->setName('2');
         $holding = $contract->getHolding();
         $holding->getAccountingSettings()->setApiIntegration(ApiIntegrationType::RESMAN);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($holding);
@@ -642,6 +643,7 @@ class OrderListenerCase extends Base
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
+        $em->persist($unit);
         $em->persist($contract);
         $em->persist($propertyMapping);
         $em->persist($holding);
@@ -651,7 +653,7 @@ class OrderListenerCase extends Base
         $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setType(OrderType::HEARTLAND_CARD);
-        $order->setStatus(OrderStatus::NEWONE);
+        $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
         $operation->setContract($contract);
@@ -665,6 +667,7 @@ class OrderListenerCase extends Base
         $transaction->setAmount(500);
         $transaction->setOrder($order);
         $transaction->setBatchId(55558888);
+        $transaction->setBatchDate(new DateTime());
         $transaction->setStatus(TransactionStatus::COMPLETE);
         $transaction->setIsSuccessful(true);
         $transaction->setTransactionId(uniqid());
@@ -678,20 +681,18 @@ class OrderListenerCase extends Base
             ApiIntegrationType::RESMAN,
             ResManClientCase::EXTERNAL_PROPERTY_ID
         ));
-
-        $em->persist($operation);
         $em->persist($transaction);
+        $em->persist($operation);
         $em->persist($order);
+
         $em->flush();
 
-        // change status to COMPLETE - here is the place where OrderListener:openBatch works
-        $order->setStatus(OrderStatus::COMPLETE);
-        $em->flush($order);
-
-        $this->assertTrue($repo->isOpenedBatch(
-            $transaction->getBatchId(),
-            ApiIntegrationType::RESMAN,
-            ResManClientCase::EXTERNAL_PROPERTY_ID
-        ));
+        $this->assertTrue(
+            $repo->isOpenedBatch(
+                $transaction->getBatchId(),
+                ApiIntegrationType::RESMAN,
+                ResManClientCase::EXTERNAL_PROPERTY_ID
+            )
+        );
     }
 }
