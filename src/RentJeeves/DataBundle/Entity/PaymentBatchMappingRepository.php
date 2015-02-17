@@ -15,17 +15,32 @@ class PaymentBatchMappingRepository extends EntityRepository
      */
     public function isOpenedBatch($paymentBatchId, $paymentProcessor, $accountingPackageType)
     {
-        $query = $this->createQueryBuilder('pbm');
-        return !!$query
+        return !!$this->createQueryBuilder('pbm')
             ->select('count(pbm.id)')
-            ->where('pmb.paymentBatchId = :paymentBatchId')
-            ->andWhere('pmb.paymentProcessor = :paymentProcessor')
-            ->andWhere('pmb.accountingPackageType = :accountingPackageType')
-            ->andWhere($query->expr()->isNull('pbm.accountingBatchId'))
+            ->where('pbm.paymentBatchId = :paymentBatchId')
+            ->andWhere('pbm.paymentProcessor = :paymentProcessor')
+            ->andWhere('pbm.accountingPackageType = :accountingPackageType')
             ->setParameters([
                 'paymentBatchId' => $paymentBatchId,
                 'paymentProcessor' => $paymentProcessor,
                 'accountingPackageType' => $accountingPackageType
+            ])
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getAccountingBatchId($paymentBatchId, $paymentProcessor, $accountingPackageType)
+    {
+        return $this->createQueryBuilder('pbm')
+            ->select('count(pbm.accountingBatchId)')
+            ->where('pbm.paymentBatchId = :paymentBatchId')
+            ->andWhere('pbm.paymentProcessor = :paymentProcessor')
+            ->andWhere('pbm.accountingPackageType = :accountingPackageType')
+            ->setParameters([
+                'paymentBatchId' => $paymentBatchId,
+                'paymentProcessor' => $paymentProcessor,
+                'accountingPackageType' => $accountingPackageType,
+                'status' => PaymentBatchStatus::OPENED
             ])
             ->getQuery()
             ->getSingleScalarResult();

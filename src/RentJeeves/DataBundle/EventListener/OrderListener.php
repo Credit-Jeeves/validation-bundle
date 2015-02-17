@@ -383,7 +383,7 @@ class OrderListener
      */
     protected function openBatch(Order $order)
     {
-        if (OrderStatus::NEWONE != $order->getStatus()) {
+        if (OrderStatus::COMPLETE === $order->getStatus()) {
             /** @var AccountingPaymentSynchronizer $paymentSync */
             $paymentSync = $this->container->get('accounting.payment_sync');
             $paymentSync->openBatch($order);

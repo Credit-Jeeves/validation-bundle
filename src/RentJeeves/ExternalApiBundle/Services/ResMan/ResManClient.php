@@ -226,7 +226,7 @@ class ResManClient implements ClientInterface
             'Date' => $batchDate->format('Y-m-d')
         );
 
-        $this->groupDeserialize = ['ResManOpenBatch'];
+        $this->groupDeserialize = array('ResManOpenBatch');
         /** @var ResMan $response */
         $response = $this->sendRequest($method, $params, false);
         $this->setDefaultGroupDeserialize();
@@ -235,9 +235,10 @@ class ResManClient implements ClientInterface
     }
 
     /**
-     * @param ResidentTransactions $residentTransactions
+     * @param $residentTransactionsXml
      * @param string $externalPropertyId
      * @param null $accountId
+     * @return bool
      */
     public function addPaymentToBatch(
         $residentTransactionsXml,
