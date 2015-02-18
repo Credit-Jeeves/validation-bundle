@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
@@ -169,7 +170,7 @@ class ResManClientCase extends Base
         );
 
         $this->assertNotNull($tenant);
-
+        /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(
             array(
                 'user'  => $tenant->getId(),
@@ -189,9 +190,9 @@ class ResManClientCase extends Base
         $path = $kernel->locateResource(
             '@ExternalApiBundle/Resources/fixtures/resmanAddPaymentToBatchSerializerCheck.xml'
         );
-
         $xml = file_get_contents($path);
+        $xml = str_replace('%date%', $order->getTransactionDate(), $xml);
 
-        $this->assertEquals(trim($result), trim($xml));
+        $this->assertEquals(trim($xml), trim($result));
     }
 }

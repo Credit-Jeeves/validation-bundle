@@ -7,7 +7,7 @@
           <Payment Type="Credit Card">
             <Detail>
               <DocumentNumber>123123</DocumentNumber>
-              <TransactionDate>2014-12-29</TransactionDate>
+              <TransactionDate>%date%</TransactionDate>
               <BatchID>testBatchId</BatchID>
               <UnitID>2-a</UnitID>
               <CustomerID xsi:nil="true"/>
@@ -15,7 +15,7 @@
               <Amount>1500.00</Amount>
               <Comment>770 Broadway, Manhattan, New York, NY 10003</Comment>
               <Description>770 Broadway, Manhattan, New York, NY 10003</Description>
-              <PropertyPrimaryID>B342E58C-F5BA-4C63-B050-CF44439BB37D</PropertyPrimaryID>
+              <PropertyPrimaryID>rnttrk01</PropertyPrimaryID>
             </Detail>
           </Payment>
         </Transactions>
