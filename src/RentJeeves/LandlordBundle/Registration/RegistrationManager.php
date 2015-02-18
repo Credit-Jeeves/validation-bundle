@@ -11,6 +11,7 @@ use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use Symfony\Component\Form\Form;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -25,17 +26,24 @@ class RegistrationManager
     protected $defaultLocale;
 
     /**
+     * @var PropertyProcess
+     */
+    protected $propertyProcess;
+
+    /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
      *     "passwordEncoder" = @DI\Inject("user.security.encoder.digest"),
-     *     "locale" = @DI\Inject("%kernel.default_locale%")
+     *     "locale" = @DI\Inject("%kernel.default_locale%"),
+     *     "propertyProcess" = @DI\Inject("property.process")
      * })
      */
-    public function __construct($em, $passwordEncoder, $locale)
+    public function __construct($em, $passwordEncoder, $locale, PropertyProcess $propertyProcess)
     {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
         $this->defaultLocale = $locale;
+        $this->propertyProcess = $propertyProcess;
     }
 
     public function register(Form $form, array $formData)
@@ -70,9 +78,9 @@ class RegistrationManager
             $group->addGroupProperty($property);
 
             if ($form->get('property')->get('isSingleProperty')->getData() == true) {
-                $property->setIsSingle(true);
+                $unit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+                $this->em->persist($unit);
             } else {
-                $property->setIsSingle(false);
                 $units = (isset($formData['property']['units']))? $formData['property']['units'] : array();
 
                 if (!empty($units)) {

@@ -174,7 +174,7 @@ class TenantType extends AbstractType
                  */
                 $property = $self->em->getRepository('RjDataBundle:Property')->find($propertyId);
                 if ($property && $property->isSingle()) {
-                    $unit = $property->getSingleUnit();
+                    $unit = $property->getExistingSingleUnit();
                     $form->get('unit')->setData($unit);
                 }
             }
@@ -203,7 +203,7 @@ class TenantType extends AbstractType
                     return;
                 }
                 if ($property->isSingle()) {
-                    $unit = $property->getSingleUnit();
+                    $unit = $property->getExistingSingleUnit();
                     if (!$property->hasIntegratedGroup()) {
                         return;
                     }

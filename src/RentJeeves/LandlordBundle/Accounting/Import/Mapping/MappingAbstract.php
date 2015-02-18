@@ -9,6 +9,8 @@ use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
+use JMS\DiExtraBundle\Annotation\Inject;
 
 abstract class MappingAbstract implements MappingInterface
 {
@@ -105,6 +107,14 @@ abstract class MappingAbstract implements MappingInterface
         $this->em = $em;
     }
 
+    /** @var  PropertyProcess $propertyProcess */
+    protected $propertyProcess;
+
+    public function setPropertyProcess(PropertyProcess $propertyProcess)
+    {
+        $this->propertyProcess = $propertyProcess;
+    }
+
     /**
      * @param integer $offset
      * @param integer $rowCount
@@ -177,9 +187,7 @@ abstract class MappingAbstract implements MappingInterface
         $property->setStreet($row[self::KEY_STREET]);
         $property->setZip($row[self::KEY_ZIP]);
         $property->setArea($row[self::KEY_STATE]);
-        if (empty($row[self::KEY_UNIT])) {
-            $property->setIsSingle(true);
-        }
+
         return $property;
     }
 

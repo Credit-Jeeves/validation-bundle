@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Traits\AddressTrait;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
+use \RuntimeException;
 
 /**
  * Property
@@ -26,16 +27,6 @@ class Property extends Base
     public function getShrinkAddress()
     {
         return ShorteningAddressUtility::shrinkAddress($this->getFullAddress());
-    }
-
-    public static function getNewSingleUnit($property)
-    {
-        $unit = new Unit();
-        $unit->setProperty($property);
-        $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
-        $property->addUnit($unit);
-        
-        return $unit;
     }
 
     public function parseGoogleAddress($data)
@@ -216,7 +207,7 @@ class Property extends Base
         return $this->getIsSingle() == true;
     }
 
-    public function getSingleUnit()
+    public function getExistingSingleUnit()
     {
         if ($this->isSingle()) {
             $unit = $this->getUnits()->first();
@@ -246,7 +237,7 @@ class Property extends Base
         return false;
     }
 
-    public function isAllowedToBeSingle($isSingle, $groupId)
+    public function isAllowedToSetSingle($isSingle, $groupId)
     {
         if ($isSingle == $this->getIsSingle()) {
             return true;
@@ -300,7 +291,7 @@ class Property extends Base
 
     /**
      * @param Holding $holding
-     * 
+     *
      * @return PropertyMapping
      */
     public function getPropertyMappingByHolding(Holding $holding)
