@@ -172,7 +172,6 @@ abstract class AbstractClient implements ClientInterface
      */
     public function isNumericError($response)
     {
-        $this->debugMessage($response);
         settype($response, 'string');
 
         if (isset($this->errorMapping[$response])) {
@@ -198,7 +197,6 @@ abstract class AbstractClient implements ClientInterface
         if (empty($this->messages)) {
             return false;
         }
-        $this->debugMessage($this->messages);
         /**
          * @var $message Message
          */
@@ -379,7 +377,6 @@ abstract class AbstractClient implements ClientInterface
         $responseField = $this->mapping[$function][self::MAPPING_FIELD_STD_CLASS];
         $deserializeClass = $this->mapping[$function][self::MAPPING_DESERIALIZER_CLASS];
 
-        $this->debugMessage($response);
         if (!isset($response->$responseField->any) || empty($deserializeClass)) {
             return null;
         }
