@@ -6,7 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
 
 /**
  * @DI\Service("accounting.api_client.factory")
@@ -14,31 +14,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ExternalApiClientFactory
 {
     /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
      * @var SettingsInterface
      */
     protected $settings;
 
     /**
-     * @var array
-     */
-    protected $accountingServiceClientMap = [
-        ApiIntegrationType::RESMAN => 'resman.client'
-    ];
-
-    /**
-     * @param ContainerInterface $container
      * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
+     *     "resManClient" = @DI\Inject("resman.client")
      * })
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ResManClient $resManClient)
     {
-        $this->container = $container;
+        $this->accountingServiceClientMap[ApiIntegrationType::RESMAN] = $resManClient;
     }
 
     /**
@@ -47,14 +34,12 @@ class ExternalApiClientFactory
      */
     public function createClient($accountingType)
     {
-        if (empty($this->accountingServiceClientMap[$accountingType]) ||
-            !$this->container->has($this->accountingServiceClientMap[$accountingType])
-        ) {
-            return null;
+        if (empty($this->accountingServiceClientMap[$accountingType])) {
+            throw new \Exception("Can't map service '{$accountingType}' in factory");
         }
 
         /** @var ClientInterface $client */
-        $client = $this->container->get($this->accountingServiceClientMap[$accountingType]);
+        $client = $this->accountingServiceClientMap[$accountingType];
 
         !$this->settings || $client->setSettings($this->settings);
 

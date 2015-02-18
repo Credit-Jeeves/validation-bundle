@@ -74,7 +74,6 @@ class SerializationListener implements EventSubscriberInterface
         $context = $event->getContext();
         $groups = $context->attributes->values();
         $format = $context->getFormat();
-        $order = $event->getObject();
 
         if ($format != 'csv' || !in_array('realPageReport', $groups[0])) {
             return;

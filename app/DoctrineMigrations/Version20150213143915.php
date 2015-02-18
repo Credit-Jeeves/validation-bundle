@@ -23,7 +23,7 @@ class Version20150213143915 extends AbstractMigration
                 accounting_package_type ENUM('none','yardi voyager','resman')
                     COMMENT '(DC2Type:ApiIntegrationType)' NOT NULL,
                 external_property_id VARCHAR(255) NOT NULL,
-                created_at DATETIME NOT NULL,
+                opened_at DATETIME NOT NULL,
                 closed_at DATETIME DEFAULT NULL,
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );

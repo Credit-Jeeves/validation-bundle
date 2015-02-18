@@ -14,6 +14,7 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\DeserializationContext;
 use DateTime;
+use Monolog\Logger;
 
 /**
  * @method ResManSettings getSettings
@@ -67,9 +68,23 @@ class ResManClient implements ClientInterface
      */
     protected $groupDeserialize = [];
 
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @param ExceptionCatcher $exceptionCatcher
+     * @param Serializer $serializer
+     * @param Logger $logger
+     * @param string $integrationPartnerId
+     * @param string $apiKey
+     * @param string $apiUrl
+     */
     public function __construct(
         ExceptionCatcher $exceptionCatcher,
         Serializer $serializer,
+        Logger $logger,
         $integrationPartnerId,
         $apiKey,
         $apiUrl
@@ -80,6 +95,7 @@ class ResManClient implements ClientInterface
         $this->apiUrl = $apiUrl;
         $this->serializer = $serializer;
         $this->httpClient = new HttpClient();
+        $this->logger = $logger;
     }
 
     protected function setDefaultGroupDeserialize()
@@ -94,7 +110,13 @@ class ResManClient implements ClientInterface
     {
     }
 
-    public function sendRequest($method, array $params, $itShouldBeSerializeTwice = true)
+    /**
+     * @param $method
+     * @param array $params
+     * @param bool $shouldBeSerializedTwice
+     * @return bool|mixed
+     */
+    public function sendRequest($method, array $params, $shouldBeSerializedTwice = true)
     {
         try {
             $baseParams = [
@@ -105,62 +127,10 @@ class ResManClient implements ClientInterface
             $uri = $this->apiUrl . $method;
 
             $postBody = array_merge($baseParams, $params, $this->settings->getParameters());
+            $this->logger->debug(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
             $request = $this->httpClient->post($uri, $headers = null, $postBody);
-            $response = $this->httpClient->send($request);
-            $httpCode = $response->getStatusCode();
-            $body = $response->getBody();
 
-            $this->debugMessage(
-                sprintf(
-                    'Http code: %s',
-                    $httpCode
-                )
-            );
-            $this->debugMessage(
-                sprintf(
-                    'Body: %s',
-                    $body
-                )
-            );
-
-            /**
-             * ResMan return bad xml, that's why we need two times deserialize
-             * 1) We deserialize base response
-             * 2) We deserialize xml from one of the field response
-             * @var $resMan ResMan
-             */
-            $resMan = $this->deserializeResponse($body, $this->mappingResponse[self::BASE_RESPONSE]);
-            if (!($resMan instanceof ResMan) || $resMan->getStatus() !== 'Success') {
-                throw new Exception(
-                    sprintf(
-                        "Can't deserialize response. Http code: %s. Body: %s",
-                        $httpCode,
-                        $body
-                    )
-                );
-            }
-
-            if ($itShouldBeSerializeTwice === false) {
-                return $resMan;
-            }
-
-            $response = $resMan->getResponseString();
-
-            /**
-             * @TODO
-             * Serializer not support namespaces for @XmlList
-             * Currently it's in developing process
-             * https://github.com/schmittjoh/serializer/pull/301
-             * After it's will be finished, we must refactoring code and remove
-             * replace for Customer
-             */
-            $response = str_replace(
-                ['&lt;', '&gt;', 'http://my-company.com/namespace', 'MITS:Customer'],
-                ['<', '>', 'http://www.w3.org/2005/Atom', 'Customer'],
-                $response
-            );
-
-            return $this->deserializeResponse($response, $this->mappingResponse[$method]);
+            return $this->manageResponse($this->httpClient->send($request), $method, $shouldBeSerializedTwice);
         } catch (Exception $e) {
             $this->debugMessage(
                 sprintf(
@@ -177,6 +147,66 @@ class ResManClient implements ClientInterface
         return false;
     }
 
+    /**
+     * @param $response
+     * @param $method
+     * @param $shouldBeSerializedTwice
+     * @return mixed
+     * @throws Exception
+     */
+    protected function manageResponse($response, $method, $shouldBeSerializedTwice)
+    {
+        $httpCode = $response->getStatusCode();
+        $body = $response->getBody();
+        $this->debugMessage(sprintf('Http code: %s', $httpCode));
+        $this->debugMessage(sprintf('Body: %s', $body));
+        /**
+         * ResMan return bad xml, that's why we need two times deserialize
+         * 1) We deserialize base response
+         * 2) We deserialize xml from one of the field response
+         * @var $resMan ResMan
+         */
+        $resMan = $this->deserializeResponse($body, $this->mappingResponse[self::BASE_RESPONSE]);
+        if (!($resMan instanceof ResMan)) {
+            $message = sprintf("Can't deserialize response. Http code: %s. Body: %s", $httpCode, $body);
+            $this->debugMessage($message);
+            throw new Exception($message);
+        }
+
+        if ($resMan->getStatus() !== 'Success') {
+            $message = sprintf("Failed request. Http code: %s. Body: %s", $httpCode, $body);
+            $this->debugMessage($message);
+            throw new Exception($message);
+        }
+
+        if ($shouldBeSerializedTwice === false) {
+            return $resMan;
+        }
+
+        $response = $resMan->getResponseString();
+
+        /**
+         * @TODO
+         * Serializer not support namespaces for @XmlList
+         * Currently it's in developing process
+         * https://github.com/schmittjoh/serializer/pull/301
+         * After it's will be finished, we must refactoring code and remove
+         * replace for Customer
+         */
+        $response = str_replace(
+            ['&lt;', '&gt;', 'http://my-company.com/namespace', 'MITS:Customer'],
+            ['<', '>', 'http://www.w3.org/2005/Atom', 'Customer'],
+            $response
+        );
+
+        return $this->deserializeResponse($response, $this->mappingResponse[$method]);
+    }
+
+    /**
+     * @param $data
+     * @param $class
+     * @return object
+     */
     protected function deserializeResponse($data, $class)
     {
         $context = new DeserializationContext();
@@ -199,8 +229,10 @@ class ResManClient implements ClientInterface
     {
         $method = 'GetResidentTransactions2_0';
         $params = [
-            'PropertyID' => strtolower($externalPropertyId)
+            'PropertyID' => $externalPropertyId
         ];
+
+        $this->debugMessage("Call ResMan method: {$method}");
 
         return $this->sendRequest($method, $params);
     }
@@ -215,7 +247,7 @@ class ResManClient implements ClientInterface
     public function openBatch($externalPropertyId, DateTime $batchDate, $description = null, $accountId = null)
     {
         $method = 'OpenBatch';
-
+        $this->debugMessage("Call ResMan method: {$method}");
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = [
             'AccountID' => $accountId,
@@ -245,7 +277,7 @@ class ResManClient implements ClientInterface
     public function closeBatch($externalPropertyId, $accountingBatchId, $accountId = null)
     {
         $method = 'CloseBatch';
-
+        $this->debugMessage("Call ResMan method: {$method}");
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = [
             'AccountID' => $accountId,
@@ -269,7 +301,7 @@ class ResManClient implements ClientInterface
         $accountId = null
     ) {
         $method = 'AddPaymentToBatch';
-
+        $this->debugMessage("Call ResMan method: {$method}");
         $params = [
             'AccountID'  => $accountId ?: $this->getSettings()->getAccountId(),
             'PropertyID' => $externalPropertyId,

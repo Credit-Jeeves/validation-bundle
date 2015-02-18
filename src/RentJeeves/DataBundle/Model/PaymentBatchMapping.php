@@ -75,7 +75,7 @@ abstract class PaymentBatchMapping
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
-     *     name="created_at",
+     *     name="opened_at",
      *     type="datetime"
      * )
      * @var DateTime

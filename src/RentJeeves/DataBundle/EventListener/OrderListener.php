@@ -13,7 +13,6 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use Monolog\Logger;
-use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;

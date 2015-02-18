@@ -4,9 +4,15 @@ namespace RentJeeves\DataBundle\EventListener;
 use JMS\DiExtraBundle\Annotation as DI;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use RentJeeves\DataBundle\Entity\Heartland;
-use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
+ * I can't just inject service which I need because have error
+ *   [Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException]
+ *   Circular reference detected for service "doctrine.orm.default_entity_manager",
+ *   path: "doctrine.orm.default_entity_manager -> doctrine.dbal.default_connect
+ *   ion -> data.event_listener.transaction -> accounting.payment_sync".
+ *
  * @DI\Service("data.event_listener.transaction")
  * @DI\Tag(
  *     "doctrine.event_listener",
@@ -23,6 +29,9 @@ class TransactionListener
      */
     public $container;
 
+    /**
+     * @param LifecycleEventArgs $event
+     */
     public function postPersist(LifecycleEventArgs $event)
     {
         /** @var Heartland $transaction */
@@ -30,19 +39,35 @@ class TransactionListener
         if (!$transaction instanceof Heartland) {
             return;
         }
-        $this->manageApiSynchronization($event);
+        $this->manageAccountingSynchronization($transaction);
     }
 
-    public function manageApiSynchronization(LifecycleEventArgs $event)
+    /**
+     * @param Heartland $transaction
+     */
+    public function manageAccountingSynchronization(Heartland $transaction)
     {
-        /** @var Heartland $transaction */
-        $transaction = $event->getEntity();
-        if (!$transaction->getIsSuccessful() || !$transaction->getBatchId() || !$transaction->getTransactionId()) {
+        if (!$transaction->getIsSuccessful() ||
+            !$transaction->getBatchId() ||
+            !$transaction->getTransactionId() ||
+            $transaction->getStatus() !== TransactionStatus::COMPLETE
+        ) {
+            $message = "Don't send transaction(%s) to api, because some parameter is missing(return false):\n";
+            $message .= "IsSuccessful(%s), BatchId(%s),  TransactionId(%s), TransactionStatus(%s)";
+            $this->container->get('logger')->debug(
+                sprintf(
+                    $message,
+                    $transaction->getId(),
+                    $transaction->getIsSuccessful(),
+                    $transaction->getBatchId(),
+                    $transaction->getTransactionId(),
+                    $transaction->getStatus()
+                )
+            );
             return;
         }
 
-        /** @var AccountingPaymentSynchronizer $paymentSync */
-        $paymentSync = $this->container->get('accounting.payment_sync');
-        $paymentSync->manageOrderToApi($transaction->getOrder());
+        $accountingPaymentSync = $this->container->get('accounting.payment_sync');
+        $accountingPaymentSync->sendOrderToAccountingSystem($transaction->getOrder());
     }
 }

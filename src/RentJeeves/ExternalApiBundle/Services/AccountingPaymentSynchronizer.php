@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\HeartlandRepository;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -52,8 +53,6 @@ class AccountingPaymentSynchronizer
     protected $debug = false;
 
     /**
-     * @param EntityManager $em
-     * @param ExternalApiClientFactory $apiClientFactory
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "apiClientFactory" = @DI\Inject("accounting.api_client.factory"),
@@ -76,7 +75,7 @@ class AccountingPaymentSynchronizer
         $this->logger = $logger;
     }
 
-    public function manageOrderToApi(Order $order)
+    public function sendOrderToAccountingSystem(Order $order)
     {
         try {
             if (!($order->hasContract() and
@@ -93,10 +92,13 @@ class AccountingPaymentSynchronizer
                 $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings())
             )) {
 
+                $accountingSettings = $order->getContract()->getHolding()->getAccountingSettings();
+
                 $this->logger->addInfo(
                     sprintf(
-                        "Order(%s) not be send to api.",
-                        $order->getId()
+                        "Order(%s) can not be sent to accounting system(%s)",
+                        $order->getId(),
+                        ($accountingSettings)? $accountingSettings->getApiIntegration(): 'none'
                     )
                 );
                 return false;
@@ -106,15 +108,17 @@ class AccountingPaymentSynchronizer
 
             $this->logger->addInfo(
                 sprintf(
-                    "Order(%s) need send to API",
-                    $order->getId()
+                    "Order(%s) must send to Accounting system(%s)",
+                    $order->getId(),
+                    $accountingType
                 )
             );
             $this->openBatch($order);
             $result = $this->addPaymentToBatch($order);
             $message =  sprintf(
-                "Order(%s) was sended to API with result: %s",
+                "Order(%s) was sent to Accounting(%s) system with result: %s",
                 $order->getId(),
+                $accountingType,
                 $result
             );
             $this->logger->addInfo($message);
@@ -144,14 +148,13 @@ class AccountingPaymentSynchronizer
      */
     protected function addPaymentToBatch(Order $order)
     {
-        $settings = $order->getContract()->getHolding()->getAccountingSettings();
-        $apiClient = $this->getApiClient(
-            $this->getAccountingType($order),
-            $order->getContract()->getHolding()->getExternalSettings()
-        );
+        $holding = $order->getContract()->getHolding();
+        $settings = $holding->getAccountingSettings();
         $accountingPackageType = $settings->getApiIntegration();
         $externalPropertyId = $order->getPropertyPrimaryID();
         $paymentBatchId = $order->getCompleteTransaction()->getBatchId();
+        $accountId = $holding->getResManSettings()->getAccountId();
+
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
         $batchId = $repo->getAccountingBatchId(
@@ -161,29 +164,10 @@ class AccountingPaymentSynchronizer
         );
 
         $order->setBatchId($batchId);
-        $residentTransaction = new ResidentTransactions([$order]);
-
-        $context = new SerializationContext();
-        $context->setGroups(['ResMan']);
-        $context->setSerializeNull(true);
-
-        $residentTransactionsXml = $this->serializer->serialize(
-            $residentTransaction,
-            'xml',
-            $context
-        );
-
-        $residentTransactionsXml = str_replace(
-            ['<?xml version="1.0" encoding="UTF-8"?>'],
-            '',
-            $residentTransactionsXml
-        );
-
-        $holding =  $order->getContract()->getGroup()->getHolding();
-        $accountId = $holding->getResManSettings()->getAccountId();
+        $apiClient = $this->getApiClientByOrder($order);
 
         return $apiClient->addPaymentToBatch(
-            $residentTransactionsXml,
+            $this->getResidentTransactionXml($order),
             $externalPropertyId,
             $accountId
         );
@@ -207,12 +191,9 @@ class AccountingPaymentSynchronizer
             return true;
         }
 
-        $paymentBatchDate = $order->getCompleteTransaction()->getBatchDate();
+        $paymentBatchDate = new DateTime();
 
-        $accountingBatchId = $this->getApiClient(
-            $accountingType,
-            $order->getContract()->getHolding()->getExternalSettings()
-        )->openBatch($externalPropertyId, $paymentBatchDate);
+        $accountingBatchId = $this->getApiClientByOrder($order)->openBatch($externalPropertyId, $paymentBatchDate);
 
         if (!$accountingBatchId) {
             return false;
@@ -242,11 +223,9 @@ class AccountingPaymentSynchronizer
 
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
-
-        $mappingBatches = $repo->findBy([
-            'status' => PaymentBatchStatus::OPENED,
-            'accountingPackageType' => $accountingType
-        ]);
+        $date = new DateTime();
+        $date->modify("-1 day");
+        $mappingBatches = $repo->getYesterdayBatches($accountingType);
         /** @var HeartlandRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:Heartland');
 
@@ -258,15 +237,33 @@ class AccountingPaymentSynchronizer
             }
 
             $apiClient->setSettings($holding->getExternalSettings());
-            if($apiClient->closeBatch($mappingBatch->getExternalPropertyId(), $mappingBatch->getAccountingBatchId())) {
+            if ($apiClient->closeBatch($mappingBatch->getExternalPropertyId(), $mappingBatch->getAccountingBatchId())) {
                 $mappingBatch->setStatus(PaymentBatchStatus::CLOSED);
                 $this->em->persist($mappingBatch);
+                $this->em->flush();
             }
         }
-
-        $this->em->flush();
     }
 
+    /**
+     * @param Order $order
+     * @return Interfaces\ClientInterface
+     */
+    protected function getApiClientByOrder(Order $order)
+    {
+        $accountingType = $this->getAccountingType($order);
+
+        return $this->getApiClient(
+            $accountingType,
+            $order->getContract()->getHolding()->getExternalSettings()
+        );
+    }
+
+    /**
+     * @param $accountingType
+     * @param null $accountingSettings
+     * @return Interfaces\ClientInterface
+     */
     protected function getApiClient($accountingType, $accountingSettings = null)
     {
         $apiClient = $this->apiClientFactory->createClient($accountingType);
@@ -277,7 +274,37 @@ class AccountingPaymentSynchronizer
         return $apiClient;
     }
 
+    /**
+     * @param Order $order
+     * @return mixed
+     */
+    protected function getResidentTransactionXml(Order $order)
+    {
+        $residentTransaction = new ResidentTransactions([$order]);
 
+        $context = new SerializationContext();
+        $context->setGroups(['ResMan']);
+        $context->setSerializeNull(true);
+
+        $residentTransactionsXml = $this->serializer->serialize(
+            $residentTransaction,
+            'xml',
+            $context
+        );
+
+        $residentTransactionsXml = str_replace(
+            ['<?xml version="1.0" encoding="UTF-8"?>'],
+            '',
+            $residentTransactionsXml
+        );
+
+        return $residentTransactionsXml;
+    }
+
+    /**
+     * @param Order $order
+     * @return string
+     */
     protected function getAccountingType(Order $order)
     {
         return $order->getContract()->getHolding()->getAccountingSettings()->getApiIntegration();
