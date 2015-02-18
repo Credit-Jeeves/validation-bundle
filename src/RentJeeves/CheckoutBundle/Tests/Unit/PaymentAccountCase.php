@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\Tests\Unit;
 
 use \RuntimeException;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
-use RentJeeves\CheckoutBundle\Payment\PaymentAccount;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
 use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\Form\Form;
 
@@ -31,7 +31,7 @@ class PaymentAccountCase extends BaseTestCase
     public function createToken()
     {
         $payum = $this->getContainer()->get('payum');
-        $paymentAccount = new PaymentAccount();
+        $paymentAccount = new PaymentAccountManager();
         $paymentAccount->setPayum($payum);
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -79,14 +79,11 @@ class PaymentAccountCase extends BaseTestCase
         $paymentAccountType->submit($testData);
 
         $paymentAccountType = $this->getContainer()->get("payment_account.type.mapper")->map($paymentAccountType);
-        $tokenRequest = $paymentAccount->getTokenRequest(
-            $paymentAccountType,
-            $user
-        );
         try {
-            $token = $paymentAccount->getTokenResponse(
-                $tokenRequest,
-                $merchantName = $group->getMerchantName()
+            $token = $paymentAccount->getToken(
+                $paymentAccountType,
+                $user,
+                $group
             );
         } catch (RuntimeException $e) {
             //if we go into this place, test must be failed and we must show
