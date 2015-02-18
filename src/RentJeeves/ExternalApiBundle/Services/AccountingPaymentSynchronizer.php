@@ -223,9 +223,8 @@ class AccountingPaymentSynchronizer
 
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
-        $date = new DateTime();
-        $date->modify("-1 day");
-        $mappingBatches = $repo->getYesterdayBatches($accountingType);
+        $mappingBatches = $repo->getTodayBatches($accountingType);
+
         /** @var HeartlandRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:Heartland');
 

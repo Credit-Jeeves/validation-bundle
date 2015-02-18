@@ -56,24 +56,22 @@ class PaymentBatchMappingRepository extends EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getYesterdayBatches($accountingPackageType)
+    public function getTodayBatches($accountingPackageType)
     {
-        $yesterday = new DateTime();
-        $yesterday->modify("-1 day");
-
-        return $this->createQueryBuilder('pbm')
-            ->select('pbm.accountingBatchId')
-            ->where('pbm.paymentBatchId = :paymentBatchId')
+        $today = new DateTime();
+        $query = $this->createQueryBuilder('pbm')
+            ->where('pbm.status = :status')
             ->andWhere('pbm.accountingPackageType = :accountingPackageType')
             ->andWhere(
-                "STR_TO_DATE(pbm.openedAt,'%Y-%c-%e %T') = STR_TO_DATE(:openedAt,'%Y-%c-%e')"
+                "DATE_FORMAT(STR_TO_DATE(pbm.openedAt,'%Y-%c-%e %T'), '%Y-%c-%e') = STR_TO_DATE(:openedAt,'%Y-%c-%e')"
             )
-            ->andWhere('pbm.status = :status')
             ->setParameters([
                 'accountingPackageType' => $accountingPackageType,
-                'openedAt' => $yesterday->format('Y-m-d'),
+                'openedAt' => $today->format('Y-m-d'),
                 'status' => PaymentBatchStatus::OPENED,
             ])
-            ->getQuery()->getResult();
+            ->getQuery();
+
+        return $query->getResult();
     }
 }
