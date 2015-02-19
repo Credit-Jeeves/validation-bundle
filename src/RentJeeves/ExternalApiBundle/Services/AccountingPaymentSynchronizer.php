@@ -92,15 +92,25 @@ class AccountingPaymentSynchronizer
                 $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings())
             )) {
 
-                $accountingSettings = $order->getContract()->getHolding()->getAccountingSettings();
+                if ($order->hasContract()) {
+                    $accountingSettings = $order->getContract()->getHolding()->getAccountingSettings();
 
-                $this->logger->addInfo(
-                    sprintf(
-                        "Order(%s) can not be sent to accounting system(%s)",
-                        $order->getId(),
-                        ($accountingSettings)? $accountingSettings->getApiIntegration(): 'none'
-                    )
-                );
+                    $this->logger->addInfo(
+                        sprintf(
+                            "Order(%s) can not be sent to accounting system(%s)",
+                            $order->getId(),
+                            ($accountingSettings) ? $accountingSettings->getApiIntegration() : 'none'
+                        )
+                    );
+                }
+                else {
+                    $this->logger->addInfo(
+                        sprintf(
+                            "Order(%s) not associated with a lease contract don't sent to accounting system",
+                            $order->getId()
+                        )
+                    );
+                }
                 return false;
             }
 
