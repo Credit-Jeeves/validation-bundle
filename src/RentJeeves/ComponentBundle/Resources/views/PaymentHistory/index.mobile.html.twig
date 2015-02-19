@@ -1,19 +1,14 @@
-{#
-
-{% include 'RjComponentBundle:PaymentHistory:legend.html.twig' %}
-
-
-
-{% javascripts '@RjComponentBundle/Resources/public/js/legend.js' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
-
-#}
-
 {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
 {% if aActiveContracts | length > 0 or aFinishedContracts | length > 0 %}
 
         {% for contract in aActiveContracts %}
+            <div data-role="page" id="paymentHistory{{ contract.id }}">
+
+                <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+                    <a href="#contract{{ contract.id }}" data-transition="slide" data-direction="reverse" data-role="button" role="button" style="background: transparent;border: none; color: white;">Back</a>
+                    <h1 class="ui-title" role="heading" aria-level="1">Payment History</h1>
+                </div>
+                <div class="ui-content" role="main">
             {% include 'RjComponentBundle:PaymentHistory:paymentRow.mobile.html.twig'
                 with {
                     'aContract': contract,
@@ -21,8 +16,17 @@
                     'link': link
                     }
             %}
+                    </div>
+            </div>
         {% endfor %}
         {% for contract in aFinishedContracts %}
+                <div data-role="page" id="paymentHistory{{ contract.id }}">
+
+                    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+                        <a href="#contract{{ contract.id }}" data-transition="slide" data-direction="reverse" data-role="button" role="button" style="background: transparent;border: none; color: white;">Back</a>
+                        <h1 class="ui-title" role="heading" aria-level="1">Payment History</h1>
+                    </div>
+                    <div class="ui-content" role="main">
             {% include 'RjComponentBundle:PaymentHistory:paymentRow.mobile.html.twig'
                 with {
                     'aContract': contract,
@@ -30,7 +34,53 @@
                     'link': link
                 }
             %}
+                        </div>
+                    </div>
         {% endfor %}
+
+
+<div data-role="page" id="paymentHistory">
+
+    <div data-role="panel" id="panelH" style="background: black;">
+        <ul data-role="listview">
+            <li><a href="#main" class="menuOptions">Current Payments</a></li>
+            <li><a href="#paymentHistory" class="menuOptions"  style="color: #666 !important;">Payment History</a></li>
+            {#<li><a href="bmw.html" class="menuOptions">Payment Sources</a></li>#}
+            <li><a href="logout" class="menuOptions">Logout</a></li>
+        </ul>
+
+    </div>
+
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a href="#panelH" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
+        <h1 class="ui-title" role="heading" aria-level="1"><img style="width: 100%;" src="/bundles/rjcore/Images/mobile/home-logo.png"></h1>
+    </div>
+    <div class="ui-content" role="main" style="background-image: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png);">
+
+        <div style="font-size: 14pt; color: white; text-shadow: none;">Payment History</div>
+        <br>
+    {% for contract in aActiveContracts %}
+
+            {% include 'RjComponentBundle:PaymentHistory:paymentRow.mobile.html.twig'
+            with {
+            'aContract': contract,
+            'isActive': true,
+            'link': link
+            }
+            %}
+    {% endfor %}
+    {% for contract in aFinishedContracts %}
+            {% include 'RjComponentBundle:PaymentHistory:paymentRow.mobile.html.twig'
+            with {
+            'aContract': contract,
+            'isActive': false,
+            'link': link
+            }
+            %}
+    {% endfor %}
+
+    </div>
+    </div>
 
 
 {% javascripts '@RjComponentBundle/Resources/public/js/reporting.js' %}

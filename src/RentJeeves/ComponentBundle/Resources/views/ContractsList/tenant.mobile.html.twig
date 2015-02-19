@@ -42,7 +42,7 @@
                 contract=contractsJson[i]
                 console.log(contract)
                 $("#rentjeeves_checkoutbundle_paymenttype_amount").val(contract.rent)
-                $('#rentjeeves_checkoutbundle_paymenttype_total').html(contract.rent)
+                $('#rentjeeves_checkoutbundle_paymenttype_total').val(contract.rent)
                 $("#payTo").html(contract.payToName);
                 $("#contractAddress").html(contract.property.number+" "+contract.property.street+", "+contract.property.district+" "+contract.unit.name)
                 if(contract.payment.status=="active"){
@@ -52,6 +52,15 @@
                         $("#rentjeeves_checkoutbundle_paymenttype_type").val("one_time")
                     }
                 }
+
+                $("#rentjeeves_checkoutbundle_paymenttype_paidFor").append("<option>"+contractsJson[i].payment.paidFor+"</option>")
+                $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(contractsJson[i].payment.startMonth)
+                $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(contractsJson[i].payment.startYear)
+                $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val(contractsJson[i].payment.endMonth)
+                $("#rentjeeves_checkoutbundle_paymenttype_endYear").val(contractsJson[i].payment.endYear)
+
+                $("#rentjeeves_checkoutbundle_paymenttype_paidTo").val(contractsJson[i].paidTo)
+
                 $("#revEnds").html(contract.finishAt)
 
                 var today = new Date();
@@ -78,12 +87,12 @@
 
         <div data-role="page" id="main">
 
-            <div data-role="panel" id="panel" style="background: #333;">
+            <div data-role="panel" id="panel" style="background: black;">
                 <ul data-role="listview">
-                    <li><a href="acura.html">Current Payments</a></li>
-                    <li><a href="audi.html">Payment History</a></li>
-                    <li><a href="bmw.html">Payment Sources</a></li>
-                    <li><a href="logout">Logout</a></li>
+                    <li><a href="#main" class="menuOptions" style="color: #666 !important;">Current Payments</a></li>
+                    <li><a href="#paymentHistory" class="menuOptions">Payment History</a></li>
+                    {#<li><a href="bmw.html" class="menuOptions">Payment Sources</a></li>#}
+                    <li><a href="logout" class="menuOptions">Logout</a></li>
                 </ul>
 
             </div>
@@ -119,29 +128,6 @@
                             <b style="font-size: 16;">{{ contract.full_address [:25] }}</b>
                         <br>
                             <span style="font-size: 14;">{{ contract.rent }}</span>
-{#
-                        <br>
-                                {% if contract.status == 'pending' %}
-                                    {{ 'contract.status.pending.text' | trans }}
-                                {% elseif contract.payment_status == 'processing' %}
-                                    {{ 'contract.status.processing.text' | trans }}
-                                {% elseif contract.status == 'invite' %}
-                                    {{ 'contract.status.invite.text' | trans }}
-                                {% elseif contract.payment_type == 'recurring' %}
-                                    {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}
-                                {% elseif contract.payment_type == 'one_time' %}
-                                    {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}
-                                {% elseif contract.status == 'approved' %}
-                                    {{ 'contract.status.approved.text' | trans }}
-                                {% elseif contract.status == 'current' %}
-                                    {{ 'contract.status.current.text' | trans }}
-                                {% elseif contract.status == 'finished' %}
-                                    {{ 'contract.status.finished.text' | trans }}
-                                {% else %}
-                                    {{ contract.status | upper }}
-                                {% endif %}
-                        <br>
-                #}
                     <br>
                         <b style="font-size: 14;">Due Next: {{ contract.payment_next }}</b>
 
@@ -167,39 +153,49 @@
                 <div class="ui-content" role="main">
                 {% if contract.status != 'deleted' %}
 
-                    <b>{{ contract.full_address }}</b>
-                    <br>
-                    {{ contract.rent }}
-                    <br>
-                    {{ contract.payment_next }}
-                    <br>
-                    {% if hasIntegratedBalance %}
-                        {{ contract.balance }}
-                    {% endif %}
-                    <br>
-                    {% if contract.status == 'pending' %}
-                        {{ 'contract.status.pending.text' | trans }}
-                    {% elseif contract.payment_status == 'processing' %}
-                        {{ 'contract.status.processing.text' | trans }}
-                    {% elseif contract.status == 'invite' %}
-                        {{ 'contract.status.invite.text' | trans }}
-                    {% elseif contract.payment_type == 'recurring' %}
-                        {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}
-                    {% elseif contract.payment_type == 'one_time' %}
-                        {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}
-                    {% elseif contract.status == 'approved' %}
-                        {{ 'contract.status.approved.text' | trans }}
-                    {% elseif contract.status == 'current' %}
-                        {{ 'contract.status.current.text' | trans }}
-                    {% elseif contract.status == 'finished' %}
-                        {{ 'contract.status.finished.text' | trans }}
-                    {% else %}
-                        {{ contract.status | upper }}
-                    {% endif %}
+                    <div style="float:left;"><i class="fa fa-home fa-lg"></i></div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt; float: right;"><b>{{ contract.full_address }}</b></div>
+
+                    <br><br>
+
+                    <div style="margin-top: 65px; font-family: PT Sans Caption; font-size: 10pt;">Amount</div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt;">{{ contract.rent }}</div>
+
+                    <br><br>
+
+                    <div style="color: white; border-radius: 3px; background: #eb6024; padding: 10px; text-shadow: none; font-size: 10pt; font-family: PT Sans Caption;">
+                        {% if contract.status == 'pending' %}
+                            {{ 'contract.status.pending.text' | trans }}
+                        {% elseif contract.payment_status == 'processing' %}
+                            {{ 'contract.status.processing.text' | trans }}
+                        {% elseif contract.status == 'invite' %}
+                            {{ 'contract.status.invite.text' | trans }}
+                        {% elseif contract.payment_type == 'recurring' %}
+                            {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}. You can change this under "Edit".
+                        {% elseif contract.payment_type == 'one_time' %}
+                            {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}. You can change this under "Edit".
+                        {% elseif contract.status == 'approved' %}
+                            {{ 'contract.status.approved.text' | trans }}
+                        {% elseif contract.status == 'current' %}
+                            {{ 'contract.status.current.text' | trans }}
+                        {% elseif contract.status == 'finished' %}
+                            {{ 'contract.status.finished.text' | trans }}
+                        {% else %}
+                            {{ contract.status | upper }}
+                        {% endif %}
+                    </div>
+
+                    <br><br>
+
+                    <div style="font-family: PT Sans Caption; font-size: 14pt; font-weight: bold;">
+                    Due Next: {{ contract.payment_next }} {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
+
+
+
                 {% endif %}
                     <br>
 
-                    <a href="#paymentHistory{{ contract.id }}"><button{% if contract.status == 'pending' %} disabled{% endif %}>Payment History</button></a>
+                    <a href="#paymentHistory{{ contract.id }}" style="text-decoration: none;"><button{% if contract.status == 'pending' %} disabled{% endif %}>Payment History</button></a>
                     </div>
             </div>
         {% endfor %}

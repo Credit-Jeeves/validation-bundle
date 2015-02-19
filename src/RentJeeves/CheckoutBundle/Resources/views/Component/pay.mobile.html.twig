@@ -9,7 +9,7 @@
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
         <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" data-role="none" role="button" class="headerButton" style="color: white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Edit Rent Payment</h1>
-        <a href="#review" onclick="createReview()" data-role="none" style="color: white; border-left: 1px solid white; border-right: 0px;">Next</a>
+        <a href="#review" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px;">Next</a>
     </div>
 
         <div class="ui-content" role="main">
@@ -26,7 +26,7 @@
             {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
 
 
-                <a href="#review" onclick="createReview()"><button style="background: #eb6024; color: white;">Next</button></a>
+                <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white;">Next</button></a>
         </div>
 
 </div>

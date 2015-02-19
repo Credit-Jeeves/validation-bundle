@@ -1,64 +1,17 @@
-<div data-role="page" id="paymentHistory{{ aContract.id }}">
-    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-        <a href="#contract{{ aContract.id }}" data-transition="slide" data-direction="reverse" data-role="button" role="button" style="background: transparent;border: none; color: white;">Back</a>
-        <h1 class="ui-title" role="heading" aria-level="1">Payment History</h1>
-    </div>
 
-    <div class="ui-content" role="main">
+<table data-role="none" class="paymentHistoryTable">
+    <tr>
+        <td colspan="3" class="headingAddress">
+            <i class="fa fa-home"></i> <b>{{aContract.address }}</b>
+        </td>
+    </tr>
+    {% for nYear, aData in aContract.history %}
+    <tr>
+        <td colspan="3" class="headingYear">
+            <div><b>{{ nYear }}</b></div>
+        </td>
+    </tr>
 
-
-{#
-    <div id="address-{{ aContract.id }}" class="tradeline-name">{{ aContract.address }}</div>
-    <div class="clearboth"></div>
-    <div class="tradeline-info rent-info">
-        {% if isActive == true %}
-        <div class="tradeline-status tradeline-O rent-status">{{ aContract.status }}</div>
-        {% else %}
-        <div class="tradeline-status tradeline-C rent-status">{{ aContract.status }}</div>
-        {% endif %}
-        <div class="tradeline-balance"><b>{{ 'rent.monthly.rent' | trans }}: ${{ aContract.rent }}</b></div>
-        <div class="tradeline-last-payment">
-            <span class="tradeline-amount">{{ aContract.last_date }}</span>{{ 'tradeline.last.payment' | trans }}:</br>
-            <span class="tradeline-amount">${{ aContract.last_amount }}</span>{{ 'rent.last.amount' | trans }}:
-        </div>
-    </div>
-
-
-    <div class="tradeline-history">
-        <div class="tradeline-history-toolbar">{{ 'tradeline.history.payment' | trans }} </div>
-        <div class="tradeline-history-date">Updated&nbsp;{{ aContract.updated }}</div>
-        <div class="clearboth"></div>
-
-
-
-        <div class="tradeline-history-body">
-
-
-            <div class="tradeline-history-head">
-                <div class="tradeline-history-year"></div>
-                {% for sMonth in aMonthes %}
-                <div class="tradeline-history-month">{{ sMonth }}</div>
-                {% endfor %}
-                <div class="clearboth"></div>
-            </div>
-
-
-            <div class="clearboth"></div>
-            #}
-
-
-
-            {% for nYear, aData in aContract.history %}
-        <div>{{ nYear }}</div>
-
-        <table data-role="table">
-            <thead>
-            <tr>
-                <td>Month</td>
-                <td>Amount</td>
-                <td>Status</td>
-            </tr>
-            </thead>
             <tbody>
 
 
@@ -78,17 +31,19 @@
 
                     {% for nMonth, aStatus in aData %}
 
-                        <tr><td>{{ aMonthes[nMonth-1] }}</td><td>${{ aStatus.amount }}</td><td>Paid{#{{ aStatus.text }}#}</td></tr>
+                        <tr><td>{{ aMonthes[nMonth-1] }}</td><td>${{ aStatus.amount }}</td><td><b>Paid</b>{#{{ aStatus.text }}#}</td></tr>
 
 
                     {% endfor %}
 
             </tbody>
-        </table>
+
 
 
             {% endfor %}
 
+</table>
+<br><br>
 
     {#
             <div class="row-10"></div>
@@ -112,6 +67,3 @@
 
 {% include 'RjComponentBundle:PaymentHistory:reporting.html.twig' with {'contract': aContract, 'link': link} %}
 #}
-
-    </div>
-</div>
