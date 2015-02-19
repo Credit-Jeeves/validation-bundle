@@ -9,13 +9,13 @@ use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface as ImportStorage;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
-use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\CoreBundle\DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
@@ -33,6 +33,7 @@ use RentJeeves\LandlordBundle\Accounting\Import\Traits\OnlyReviewNewTenantsAndEx
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Group;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -534,7 +535,7 @@ abstract class HandlerAbstract implements HandlerInterface
             }
         }
 
-        /** @var $import Import */
+        /** @var $import ModelImport */
         foreach ($this->getCurrentCollectionImportModel() as $key => $import) {
             $token = $import->getCsrfToken();
             if (empty($token)) {
@@ -590,6 +591,19 @@ abstract class HandlerAbstract implements HandlerInterface
             $e->getLine()
         );
         $this->logger->addCritical($messageForLogging);
+
+        if (!$this->currentImportModel->getResidentMapping()) {
+            $this->currentImportModel->setResidentMapping(new ResidentMapping());
+        }
+        if (!$this->currentImportModel->getTenant()) {
+            $this->currentImportModel->setTenant(new EntityTenant());
+        }
+        if (!$this->currentImportModel->getContract()) {
+            $this->currentImportModel->setContract(new EntityContract());
+        }
+        if (!$this->currentImportModel->getUnitMapping()) {
+            $this->currentImportModel->setUnitMapping(new UnitMapping());
+        }
     }
 
     /**
