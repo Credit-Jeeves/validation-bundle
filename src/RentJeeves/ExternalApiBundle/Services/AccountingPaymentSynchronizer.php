@@ -102,8 +102,7 @@ class AccountingPaymentSynchronizer
                             ($accountingSettings) ? $accountingSettings->getApiIntegration() : 'none'
                         )
                     );
-                }
-                else {
+                } else {
                     $this->logger->addInfo(
                         sprintf(
                             "Order(%s) not associated with a lease contract don't sent to accounting system",
