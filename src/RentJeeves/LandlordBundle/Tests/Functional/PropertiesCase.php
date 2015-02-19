@@ -2,6 +2,8 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Unit;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -48,7 +50,7 @@ class PropertiesCase extends BaseTestCase
         $searchButton->click();
         $this->assertNotNull($search = $this->page->find('css', '#search'));
         $this->assertNotNull($searchFilterSelectLink = $this->page->find('css', '#searchFilterSelect_link'));
-        
+
         $searchFilterSelectLink->click();
         $this->assertNotNull($searchFilterSelectLinkValue = $this->page->find('css', '#searchFilterSelect_li_1'));
         $searchFilterSelectLinkValue->click();
@@ -103,7 +105,7 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($addUnit = $this->page->find('css', '#addUnitToNewProperty>span'));
         $addUnit->click();
         $this->assertNotNull($unitNames = $this->page->findAll('css', '#add-property-popup .unit-name'));
-        
+
         $unitNames[0]->setValue('1A');
         $unitNames[1]->setValue('1B');
         $unitNames[2]->setValue('1C');
@@ -167,6 +169,26 @@ class PropertiesCase extends BaseTestCase
         $saveProperty->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+
+        // check DB to verify that SINGLE_PROPERTY unit has been created correctly
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var Property $property */
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+            array(
+                'street' => 'Greenwich Street',
+                'number' => '13',
+                'zip'    => '10013'
+            )
+        );
+        $this->assertNotNull($property, "Could not find the property that was just created.");
+        $this->assertTrue($property->isSingle(), "Created property should be marked as single");
+        $this->assertNotNull(1, $property->getUnits());
+        $this->assertCount(1, $property->getUnits(), "Single unit property must have exactly one unit");
+        /** @var Unit $unit */
+        $unit = $property->getUnits()->first();
+        $this->assertEquals(Unit::SINGLE_PROPERTY_UNIT_NAME, $unit->getActualName(), "Wrong name for single unit");
+        $this->assertNotNull($unit->getGroup(), "Single units must have a group");
+        $this->assertNotNull($unit->getHolding(), "Single units must have a holding");
 
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(2, $tr);

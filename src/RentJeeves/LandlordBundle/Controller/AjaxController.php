@@ -531,10 +531,12 @@ class AjaxController extends Controller
             }
         }
 
-        //Remove unit each does not exist anymore
-        foreach ($records as $entity) {
-            $this->checkContractBeforeRemove($entity);
-            $em->remove($entity);
+        if (!$property->isSingle()) {
+            // we assume existing units not in request were deleted -- so delete them.
+            foreach ($existingUnits as $existingUnit) {
+                $this->checkContractBeforeRemove($existingUnit);
+                $em->remove($existingUnit);
+            }
         }
 
         //Create new Unit
