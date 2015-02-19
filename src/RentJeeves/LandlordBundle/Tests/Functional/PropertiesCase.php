@@ -125,6 +125,19 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(9, $tr, 'wrong number of collum');
         $this->logout();
+
+        // check DB to verify that property has been created correctly
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var Property $property */
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+            array(
+                'street' => 'Greenwich Street',
+                'number' => '13',
+                'zip'    => '10013'
+            )
+        );
+        $this->assertNotNull($property, "Could not find the property that was just created.");
+        $this->assertTrue(!$property->isSingle(), "Created property should not be marked as single");
     }
 
     /**

@@ -327,7 +327,7 @@ class AjaxController extends Controller
             $group->addGroupProperty($property);
 
             // is it a single-unit property, if so create unit
-            if ($request->request->has('isSingle')) {
+            if ($request->request->has('isSingle') && $request->request->get('isSingle') === 'true') {
                 $propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
             }
             $em->persist($group);
