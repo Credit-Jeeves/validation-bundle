@@ -8,13 +8,11 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
-use RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -25,6 +23,18 @@ class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
+    /**
+     * use for ResMan addPaymentToBatch
+     *
+     * @var string
+     */
+    protected $batchId = null;
+
+    /**
+     * Use for export on preSerialize event
+     *
+     * @var null
+     */
     protected $buildingId = null;
 
     public function setBuildingId($buildingId)
@@ -668,7 +678,7 @@ class Order extends BaseOrder
     public function getHeartlandMessage($onlyReversal = true)
     {
         if (OrderStatus::ERROR == $this->getStatus()) {
-            return $this->getHeartlandErrorMessage();
+            return $this->getErrorMessage();
         }
 
         if ($onlyReversal) {
@@ -687,7 +697,7 @@ class Order extends BaseOrder
      *
      * @return string
      */
-    public function getHeartlandErrorMessage()
+    public function getErrorMessage()
     {
         /** @var Heartland $transaction */
         $transaction = $this->getHeartlands()
@@ -790,7 +800,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("DocumentNumber")
-     * @Serializer\Groups({"soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
@@ -816,7 +826,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TransactionDate")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
@@ -825,10 +835,43 @@ class Order extends BaseOrder
         return $this->getCreatedAt()->format('Y-m-d');
     }
 
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("BatchID")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getResManBatchId()
+    {
+        return $this->batchId;
+    }
+
+    /**
+     * @param string $batchId
+     */
+    public function setBatchId($batchId)
+    {
+        $this->batchId = $batchId;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UnitID")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getResManUnitId()
+    {
+        return $this->getContract()->getUnit()->getName();
+    }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("CustomerID")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
@@ -839,8 +882,20 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaidBy")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getPaidBy()
+    {
+        return $this->getContract()->getTenant()->getFullName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Amount")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("double")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -854,7 +909,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Comment")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -867,8 +922,22 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Description")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getResManDescription()
+    {
+        return $this->getComment();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PropertyPrimaryID")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -876,8 +945,11 @@ class Order extends BaseOrder
      */
     public function getPropertyPrimaryID()
     {
-        $mapping = $this->getContract()->getProperty()->getPropertyMapping();
+        /** @var PropertyMapping $propertyMapping */
+        $propertyMapping = $this->getContract()->getProperty()->getPropertyMappingByHolding(
+            $this->getContract()->getGroup()->getHolding()
+        );
 
-        return $mapping->first()->getExternalPropertyId();
+        return $propertyMapping->getExternalPropertyId();
     }
 }

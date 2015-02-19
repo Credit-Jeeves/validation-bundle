@@ -83,7 +83,7 @@ class ContractProcess
                 $propertyGroup = $property->getPropertyGroups()->first();
                 $contract->setHolding($propertyGroup->getHolding());
                 $contract->setGroup($propertyGroup);
-                $contract->setUnit($property->getSingleUnit());
+                $contract->setUnit($property->getExistingSingleUnit());
             } else {
                 if (!$unit = $property->searchUnit($unitName)) {
                     return $this->createContractForEachGroup($tenant, $property, $unitName);

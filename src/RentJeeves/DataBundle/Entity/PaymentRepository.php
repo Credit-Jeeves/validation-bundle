@@ -105,7 +105,9 @@ class PaymentRepository extends EntityRepository
         foreach ($payments as $payment) {
             $em->persist($jobs[] = $payment->createJob());
         }
-        $em->flush();
+        if ($jobs) {
+            $em->flush();
+        }
         return $jobs;
     }
 

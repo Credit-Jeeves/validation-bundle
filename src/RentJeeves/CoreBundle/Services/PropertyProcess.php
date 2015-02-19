@@ -9,8 +9,12 @@ use JMS\DiExtraBundle\Annotation\Service;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Unit;
+use CreditJeeves\DataBundle\Entity\Group;
 use Geocoder\Geocoder;
 use Exception;
+use RuntimeException;
+use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 /**
@@ -46,23 +50,111 @@ class PropertyProcess
     protected $exceptionCatcher;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    const NEW_PROPERTY = "new_property";
+
+    /**
      * @InjectParams({
      *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
      *     "google"           = @Inject("google"),
      *     "geocoder"         = @Inject("bazinga_geocoder.geocoder"),
-     *     "exceptionCatcher" = @Inject( "fp_badaboom.exception_catcher")
+     *     "exceptionCatcher" = @Inject("fp_badaboom.exception_catcher"),
+     *     "logger"           = @Inject("logger")
      * })
      */
     public function __construct(
         EntityManager $em,
         Google $google,
         Geocoder $geocoder,
-        ExceptionCatcher $exceptionCatcher
+        ExceptionCatcher $exceptionCatcher,
+        Logger $logger
     ) {
         $this->geocoder = $geocoder;
         $this->em = $em;
         $this->google = $google;
         $this->exceptionCatcher = $exceptionCatcher;
+        $this->logger = $logger;
+    }
+
+    /**
+     *
+     * Sets the property as a single unit property and returns the single unit.
+     *
+     * Will create the corresponding unit if needed.
+     *
+     * Options:
+     *
+     *  'doFlush' : flush new property and unit to DB (if any created). Default: true
+     *              If false, you will need to flush yourself.  Setting this to false is useful if you have other
+     *              objects that also need flushing.
+     *
+     * @throws RuntimeException
+     * @param Property $property
+     * @param array $options optional options.
+     *
+     * @return Unit
+     */
+    public function setupSingleProperty(Property $property, array $options = ['doFlush' => true])
+    {
+        $logPrefix = "Property(" . $this->getPropertyIdentifier($property) . ") ";
+        $this->logger->debug($logPrefix . "Attempting to set as single property...");
+
+        $unitCount = $property->getUnits()->count();
+        if ($unitCount === 0) {
+            $this->logger->debug($logPrefix . "Has no units, so creating one...");
+            // create new unit
+            $groups = $property->getPropertyGroups();
+            $groupCount = $groups->count();
+            if ($groupCount < 1) {
+                throw new RuntimeException("ERROR: Cannot create a standalone unit for a property without a group");
+            } elseif ($groupCount > 1) {
+                $groupIds = "";
+                foreach ($groups as $group) {
+                    $groupIds = $groupIds . " " . $group->getId();
+                }
+                throw new RuntimeException(
+                    "ERROR: Cannot create a standalone unit for a property with multiple groups. Ids: " . $groupIds
+                );
+            }
+            /** @var Group $group */
+            $group = $groups->first();
+
+            $unit = new Unit();
+            $unit->setProperty($property);
+            $unit->setGroup($group);
+            $unit->setHolding($group->getHolding());
+            $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
+            $property->addUnit($unit);
+
+            $property->setIsSingle(true);
+
+            $this->em->persist($property);
+            $this->em->persist($unit);
+
+            if ($options['doFlush']) {
+                $this->em->flush($property);
+                $this->em->flush($unit);
+            }
+
+        } elseif ($unitCount === 1) {
+            $unit = $property->getUnits()->first();
+            if ($unit->getActualName() === Unit::SINGLE_PROPERTY_UNIT_NAME) {
+                $this->logger->debug($logPrefix . "Already has single unit -- awesome!");
+            } else {
+                $msg = $logPrefix . "Has a unit but wrong name";
+                $this->logger->error($msg);
+                throw RuntimeException($msg);
+            }
+        } else {
+            $msg = $logPrefix . "Already has multiple units -- cannot set as single property";
+            $this->logger->error($msg);
+            throw RuntimeException($msg);
+        }
+
+        return $unit;
     }
 
     /**
@@ -282,5 +374,18 @@ class PropertyProcess
         }
         /** Error Address not found */
         return null;
+    }
+
+    private function getPropertyIdentifier(Property $property)
+    {
+        $identifier = self::NEW_PROPERTY;
+
+        if ($id = $property->getId()) {
+            $identifier = $id;
+        } elseif ($addr = trim($property->getFullAddress())) {
+            $identifier = $addr;
+        }
+
+        return $identifier;
     }
 }

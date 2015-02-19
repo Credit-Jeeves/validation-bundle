@@ -59,6 +59,7 @@ trait Contract
             $contract->setProperty($property);
         }
         if ($this->group) {
+            $property->addPropertyGroup($this->group);
             $contract->setGroup($this->group);
             $contract->setHolding($this->group->getHolding());
         }
@@ -72,13 +73,6 @@ trait Contract
         }
         $moveIn = $this->getDateByField($row[Mapping::KEY_MOVE_IN]);
         $contract->setStartAt($moveIn);
-
-        /**
-         * If we don't have unit and property don't have flag is_single set it to single by default
-         */
-        if (empty($row[Mapping::KEY_UNIT]) && $property && is_null($property->getIsSingle())) {
-            $property->setIsSingle(true);
-        }
 
         $tenant->addContract($contract);
     }

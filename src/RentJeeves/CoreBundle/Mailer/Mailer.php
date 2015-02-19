@@ -193,7 +193,7 @@ class Mailer extends BaseMailer
             'total' => $total,
             'groupName' => $order->getGroupName(),
             'orderId' => $order->getId(),
-            'error' => $order->getHeartlandErrorMessage(),
+            'error' => $order->getErrorMessage(),
             'transactionId' => $order->getHeartlandTransactionId(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),

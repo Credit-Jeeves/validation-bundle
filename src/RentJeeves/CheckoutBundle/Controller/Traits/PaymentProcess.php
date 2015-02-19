@@ -9,6 +9,7 @@ use Payum\Payment;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -44,9 +45,12 @@ trait PaymentProcess
     }
 
     /**
-     * @param Form $paymentAccountType
+     * Creates a new payment account. Right now only Heartland is supported.
      *
-     * @return JsonResponse
+     * @param Form $paymentAccountType
+     * @param User $user
+     * @param Group $group
+     * @return mixed
      */
     protected function savePaymentAccount(Form $paymentAccountType, User $user, Group $group)
     {
@@ -66,15 +70,10 @@ trait PaymentProcess
             }
         }
 
-        $merchantName = $this->getMerchantName($group);
-
-        if (empty($merchantName)) {
-            throw new RuntimeException('Merchant name is not installed');
-        }
-
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
-        $tokenRequest = $this->get('payment.account')->getTokenRequest($paymentAccountMapped, $user);
-        $token = $this->get('payment.account')->getTokenResponse($tokenRequest, $merchantName);
+        /** @var PaymentProcessorInterface $paymentProcessor */
+        $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
+        $token = $paymentProcessor->createPaymentAccount($paymentAccountMapped, $user, $group);
 
         $paymentAccountEntity->setToken($token);
 

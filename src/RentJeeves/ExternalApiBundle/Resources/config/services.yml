@@ -12,6 +12,7 @@ services:
         arguments:
             - "@fp_badaboom.exception_catcher"
             - "@jms_serializer"
+            - "@logger"
             - "%resman.integration_partner_id%"
             - "%resman.api_key%"
             - "%resman.api_url%"
