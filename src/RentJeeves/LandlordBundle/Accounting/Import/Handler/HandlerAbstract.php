@@ -493,13 +493,13 @@ abstract class HandlerAbstract implements HandlerInterface
             $postData['line'] = (int)$postData['line'];
 
             /** @var $import Import */
-            foreach ($this->getCurrentCollectionImportModel() as $key => $import) {
+            foreach ($this->getCurrentCollectionImportModel() as $keyCollection => $import) {
                 if ($import->getNumber() === $postData['line']) {
                     $lineNumber = $postData['line'];
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
 
-                    // Hydrate contact module
+                    // Validate data which get from client by post request
                     $resultBind = $this->bindForm($postData, $errors);
 
                     if (!isset($errors[$lineNumber]) &&
@@ -529,14 +529,14 @@ abstract class HandlerAbstract implements HandlerInterface
                     }
 
                     if ($this->tryToSaveRow($lineNumber)) {
-                        $this->getCurrentCollectionImportModel()->remove($key);
+                        $this->getCurrentCollectionImportModel()->remove($keyCollection);
                     }
                 }
             }
         }
 
         /** @var $import ModelImport */
-        foreach ($this->getCurrentCollectionImportModel() as $key => $import) {
+        foreach ($this->getCurrentCollectionImportModel() as $keyCollection => $import) {
             $token = $import->getCsrfToken();
             if (empty($token)) {
                 $token = $this->formCsrfProvider->generateCsrfToken($import->getNumber());
@@ -551,7 +551,7 @@ abstract class HandlerAbstract implements HandlerInterface
                 continue;
             }
 
-            $this->getCurrentCollectionImportModel()->remove($key);
+            $this->getCurrentCollectionImportModel()->remove($keyCollection);
         }
 
         $this->isCreateCsrfToken = false;
