@@ -47,10 +47,7 @@ trait Property
             $saveToGoogle = true
         );
 
-        /**
-         * Save valid property to DB
-         */
-        $this->em->persist($property);
+        /** Save valid property to DB */
         $this->em->flush($property);
 
         $this->propertyList[$key] = $property;

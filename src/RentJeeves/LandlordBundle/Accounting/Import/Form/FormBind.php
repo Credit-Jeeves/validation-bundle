@@ -18,6 +18,7 @@ use Exception;
 
 /**
  * @property ModelImport currentImportModel
+ * @property HandlerAbstract collectionImportModel
  * @property ModelImport isNeedSendInvite
  * @method HandlerAbstract manageException
  */
@@ -38,18 +39,20 @@ trait FormBind
         $line = $postData['line'];
         unset($postData['line']);
 
-        if (!$form) {
+        self::prepareSubmit($postData);
+
+
+        if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData)) {
+            $this->collectionImportModel->removeElement($this->currentImportModel);
+            $this->detach();
             return false;
         }
-
-        self::prepareSubmit($postData, $form->getName());
 
         if (!$this->isValidNotEditedFields($postData)) {
             return false;
         }
 
-        if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData)) {
-            $this->detach();
+        if (!$form) {
             return false;
         }
 
@@ -279,6 +282,10 @@ trait FormBind
 
     protected function detach()
     {
+        if (!$this->currentImportModel->getForm()) {
+            return;
+        }
+
         $contract = $this->currentImportModel->getContract();
         if ($contract->getId()) {
             $this->em->detach($contract);
@@ -301,14 +308,15 @@ trait FormBind
      * We need remove form name from key of array and leave just name form field
      * it's need for form submit
      */
-    public static function prepareSubmit(&$formData, $formName)
+    public static function prepareSubmit(&$formData)
     {
-        $length = strlen($formName) + 1;
         foreach ($formData as $key => $value) {
-            if (!preg_match('/' . $formName . '\[/', $key)) {
+            preg_match('/^[A-Za_z\_]{1,}+[\[]{1,1}/i', $key, $matches);
+            if (!isset($matches[0])) {
                 continue;
             }
-            $newKey            = substr($key, $length, strlen($key) - 1);
+            $newKey = preg_replace('/^[A-Za_z\_]{1,}/i', '', $key);
+            $newKey = substr($newKey, 1);
             $formData[$newKey] = $value;
             unset($formData[$key]);
         }
