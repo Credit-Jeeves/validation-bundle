@@ -41,9 +41,14 @@ trait FormBind
 
         self::prepareSubmit($postData);
 
+
         if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData)) {
             $this->collectionImportModel->removeElement($this->currentImportModel);
             $this->detach();
+            return false;
+        }
+
+        if (!$this->isValidNotEditedFields($postData)) {
             return false;
         }
 
@@ -277,6 +282,10 @@ trait FormBind
 
     protected function detach()
     {
+        if (!$this->currentImportModel->getForm()) {
+            return;
+        }
+
         $contract = $this->currentImportModel->getContract();
         if ($contract->getId()) {
             $this->em->detach($contract);
