@@ -151,10 +151,10 @@ abstract class AppKernel extends Kernel
          */
         $recipients = [ 'cary@renttrack.com' ];
         if ('prod' == $this->getEnvironment()) {
-            array_merge($recipients, [ 'systems@creditjeeves.com' ]);
+            array_merge($recipients, [ 'systems@renttrack.com' ]);
         }
         else {
-            array_merge($recipients, [ 'staging@creditjeeves.com' ]);
+            array_merge($recipients, [ 'staging@renttrack.com' ]);
         }
 
         $filter = new ExceptionClassFilter();
