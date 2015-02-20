@@ -357,7 +357,9 @@ abstract class HandlerAbstract implements HandlerInterface
                     ->trans(
                         'error.residentId.already_use',
                         array(
-                            '%email%'   => $this->getEmailByResident($import->getResidentMapping()->getResidentId()),
+                            '%email%'   => $this->getEmailByResident(
+                                $this->currentImportModel->getResidentMapping()->getResidentId()
+                            ),
                             '%support_email%' => $this->supportEmail
                         )
                     );

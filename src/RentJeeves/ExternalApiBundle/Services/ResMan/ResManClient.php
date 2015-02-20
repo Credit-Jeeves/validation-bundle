@@ -160,6 +160,7 @@ class ResManClient implements ClientInterface
         $body = $response->getBody();
         $this->debugMessage(sprintf('Http code: %s', $httpCode));
         $this->debugMessage(sprintf('Body: %s', $body));
+
         /**
          * ResMan return bad xml, that's why we need two times deserialize
          * 1) We deserialize base response
@@ -250,8 +251,8 @@ class ResManClient implements ClientInterface
         $this->debugMessage("Call ResMan method: {$method}");
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = [
-            'AccountID' => $accountId,
-            'PropertyID' => $externalPropertyId,
+            'AccountID' => strtolower($accountId),
+            'PropertyID' => strtolower($externalPropertyId),
             'Description' => $description ?:  sprintf(self::DEFAULT_DESCRIPTION, $method, $accountId),
             'Date' => $batchDate->format('Y-m-d')
         ];
@@ -280,9 +281,9 @@ class ResManClient implements ClientInterface
         $this->debugMessage("Call ResMan method: {$method}");
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = [
-            'AccountID' => $accountId,
-            'PropertyID' => $externalPropertyId,
-            'BatchID' => $accountingBatchId
+            'AccountID' => strtolower($accountId),
+            'PropertyID' => strtolower($externalPropertyId),
+            'BatchID' => strtolower($accountingBatchId)
         ];
 
         /** @var ResMan $response */
@@ -302,9 +303,10 @@ class ResManClient implements ClientInterface
     ) {
         $method = 'AddPaymentToBatch';
         $this->debugMessage("Call ResMan method: {$method}");
+        $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = [
-            'AccountID'  => $accountId ?: $this->getSettings()->getAccountId(),
-            'PropertyID' => $externalPropertyId,
+            'AccountID'  => strtolower($accountId),
+            'PropertyID' => strtolower($externalPropertyId),
             'xml'        => $residentTransactionsXml,
         ];
 

@@ -17,6 +17,7 @@ trait DebuggableTrait
     public function setDebug($debug)
     {
         $this->debug = $debug;
+        return $this;
     }
 
     public function isDebugEnabled()

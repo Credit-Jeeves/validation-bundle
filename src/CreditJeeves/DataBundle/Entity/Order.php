@@ -877,7 +877,7 @@ class Order extends BaseOrder
      */
     public function getCustomerID()
     {
-        return $this->getContract()->getExternalLeaseId();
+        return strtolower($this->getContract()->getExternalLeaseId());
     }
 
     /**
@@ -950,6 +950,6 @@ class Order extends BaseOrder
             $this->getContract()->getGroup()->getHolding()
         );
 
-        return $propertyMapping->getExternalPropertyId();
+        return strtolower($propertyMapping->getExternalPropertyId());
     }
 }

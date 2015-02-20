@@ -61,8 +61,9 @@ class StorageResman extends ExternalApiStorage
                  */
                 $paymentAccepted = ('yes' === $paymentAccepted) ? PaymentAccepted::ANY : PaymentAccepted::DO_NOT_ACCEPT;
                 $today = new \DateTime();
+                $finishAtObject = \DateTime::createFromFormat('Y-m-d', $finishAt);
 
-                if ($today > $finishAt) {
+                if ($today > $finishAtObject) {
                     $monthToMonth = 'Y';
                 } else {
                     $monthToMonth = 'N';
