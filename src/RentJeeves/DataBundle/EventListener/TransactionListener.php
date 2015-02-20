@@ -5,6 +5,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 
 /**
  * I can't just inject service which I need because have error
@@ -66,8 +67,9 @@ class TransactionListener
             );
             return;
         }
-
+        /** @var AccountingPaymentSynchronizer $accountingPaymentSync */
         $accountingPaymentSync = $this->container->get('accounting.payment_sync');
+        $accountingPaymentSync->setDebug(true);
         $accountingPaymentSync->sendOrderToAccountingSystem($transaction->getOrder());
     }
 }
