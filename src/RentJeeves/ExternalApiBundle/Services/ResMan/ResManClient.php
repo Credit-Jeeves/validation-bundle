@@ -160,6 +160,7 @@ class ResManClient implements ClientInterface
         $body = $response->getBody();
         $this->debugMessage(sprintf('Http code: %s', $httpCode));
         $this->debugMessage(sprintf('Body: %s', $body));
+
         /**
          * ResMan return bad xml, that's why we need two times deserialize
          * 1) We deserialize base response
