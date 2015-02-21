@@ -523,6 +523,8 @@ class Order extends BaseOrder
         $result['tenant'] = $contract? $contract->getTenant()->getFullName() : '';
         $result['address'] = $contract? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
+        $depositDate = $this->getDepositDate();
+        $result['depositDate'] = $depositDate? $depositDate->format('m/d/Y') : 'N/A';
         $result['finish'] = '--';
         $result['style'] = $this->getOrderStatusStyle();
         $result['icon'] = $this->getOrderTypes();
@@ -951,5 +953,14 @@ class Order extends BaseOrder
         );
 
         return strtolower($propertyMapping->getExternalPropertyId());
+    }
+
+    public function getDepositDate()
+    {
+        if ($transaction = $this->getCompleteTransaction()) {
+            return $transaction->getDepositDate();
+        }
+
+        return null;
     }
 }
