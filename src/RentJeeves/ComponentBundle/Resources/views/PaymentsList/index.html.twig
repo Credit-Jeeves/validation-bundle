@@ -80,7 +80,7 @@
               <tbody id="payments-block-tbody" data-bind="foreach: payments" class="zebra-grid">
                 <tr>
                     <td data-bind="attr: {'class': 'actions-status '+style}">
-                        <span data-bind="text: status, i18n:{}, attr: {'title' : errorMessage}"></span>
+                        <span data-bind="text: status, i18n:{}, attr: {'title' : $root.orderStatusTitle($data)}"></span>
                         <span
                             class="status-text-helper"
                             data-bind="visible: !$root.isSuccessfulStatus(status)"
