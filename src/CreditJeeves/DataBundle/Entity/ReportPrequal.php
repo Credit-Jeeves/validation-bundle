@@ -128,7 +128,11 @@ class ReportPrequal extends Report
 
     public function getTotalDerogatoryAccounts()
     {
-        return $this->getSummary()['now_delinquentderog_counter'];
+        if (isset($this->getSummary()['now_delinquentderog_counter'])) {
+            return $this->getSummary()['now_delinquentderog_counter'];
+        }
+
+        return 0;
     }
 
     public function getTotalOpenCollectionAccounts()
