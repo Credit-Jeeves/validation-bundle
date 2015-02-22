@@ -1,14 +1,12 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Controller\Traits;
 
-use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Payum\Payment;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
-use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
@@ -19,7 +17,6 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
-use \RuntimeException;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
@@ -31,7 +28,6 @@ use \RuntimeException;
  */
 trait PaymentProcess
 {
-    protected $hasNewAddress = false;
     protected $merchantName = null;
 
     protected function setMerchantName($merchantName)
@@ -164,5 +160,11 @@ trait PaymentProcess
         }
 
         return false;
+    }
+
+    protected function hasNewAddress(Form $paymentAccountType)
+    {
+        return $paymentAccountType->has('is_new_address') ?
+            $paymentAccountType->get('is_new_address')->getData() === "true" : false;
     }
 }

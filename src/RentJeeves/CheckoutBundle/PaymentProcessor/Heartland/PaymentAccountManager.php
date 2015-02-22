@@ -62,8 +62,6 @@ class PaymentAccountManager
             if ($address = $paymentAccountData->get('address_choice')) {
                 // TODO: address is a Proxy, but should be Entity
                 $paymentAccountEntity->setAddress($address);
-            } else {
-                $this->hasNewAddress = true;
             }
             $paymentAccountEntity->getAddress()->setUser($user);
 
