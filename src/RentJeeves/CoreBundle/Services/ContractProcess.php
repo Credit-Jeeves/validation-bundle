@@ -78,7 +78,6 @@ class ContractProcess
          * @var $contractWaiting ContractWaiting
          */
         if (empty($contractWaiting)) {
-
             if ($property->isSingle()) {
                 $propertyGroup = $property->getPropertyGroups()->first();
                 $contract->setHolding($propertyGroup->getHolding());
@@ -100,11 +99,14 @@ class ContractProcess
                 return false;
             }
 
+
             $this->em->persist($contract);
             $this->em->flush();
 
             return $contract;
         }
+
+        $contract->setExternalLeaseId($contractWaiting->getExternalLeaseId());
 
         return $this->createContractFromWaiting($tenant, $contractWaiting);
     }
@@ -130,6 +132,7 @@ class ContractProcess
         $contract->setIntegratedBalance($contractWaiting->getIntegratedBalance());
         $contract->setRent($contractWaiting->getRent());
         $contract->setPaymentAccepted($contractWaiting->getPaymentAccepted());
+        $contract->setExternalLeaseId($contractWaiting->getExternalLeaseId());
         $this->em->persist($contract);
 
         $group = $contractWaiting->getGroup();
