@@ -59,6 +59,10 @@ class ResManClientCase extends Base
 
         /** @var $residentTransactions ResidentTransactions */
         $residentTransactions = $resManClient->getResidentTransactions(self::EXTERNAL_PROPERTY_ID);
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions',
+            $residentTransactions
+        );
 
         $rtCustomers = $residentTransactions->getProperty()->getRtCustomers();
         $this->assertInternalType('array', $rtCustomers);
