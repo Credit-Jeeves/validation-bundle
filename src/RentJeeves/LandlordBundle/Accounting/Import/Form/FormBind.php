@@ -20,6 +20,7 @@ use Exception;
  * @property ModelImport currentImportModel
  * @property HandlerAbstract collectionImportModel
  * @property ModelImport isNeedSendInvite
+ * @property HandlerAbstract contractProcess
  * @method HandlerAbstract manageException
  */
 trait FormBind
