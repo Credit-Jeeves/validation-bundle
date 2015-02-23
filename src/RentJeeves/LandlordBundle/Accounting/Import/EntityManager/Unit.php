@@ -44,7 +44,10 @@ trait Unit
         }
 
         // unit name is empty -- treat as a new single property
-        if (empty($row[Mapping::KEY_UNIT]) && !empty($row[Mapping::KEY_UNIT_ID])) {
+        $unitId = $row[Mapping::KEY_UNIT_ID];
+        $unitName = $row[Mapping::KEY_UNIT];
+        if ($this->isEmptyString($unitName) && !$this->isEmptyString($unitId)) {
+            $this->logger->debug("Unit name is empty, but has unit id (" . $unitId . ")");
             $property->addPropertyGroup($this->group);
             $this->propertyProcess->setupSingleProperty($property);
             return $property->getUnits()->first();
@@ -84,7 +87,7 @@ trait Unit
         }
 
         $unit = new EntityUnit();
-        $unit->setName($row[Mapping::KEY_UNIT]);
+        $unit->setName($unitName);
         if ($property) {
             $unit->setProperty($property);
         }
@@ -138,5 +141,10 @@ trait Unit
         $this->externalUnitIdList[$externalUnitId] = $unitMapping;
 
         return $unitMapping;
+    }
+
+    protected function isEmptyString($str)
+    {
+        return (empty($str) && $str !== '0');
     }
 }
