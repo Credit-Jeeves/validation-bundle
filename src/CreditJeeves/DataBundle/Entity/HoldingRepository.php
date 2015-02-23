@@ -3,6 +3,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 
 class HoldingRepository extends EntityRepository
 {
@@ -20,7 +21,10 @@ class HoldingRepository extends EntityRepository
     public function findHoldingsWithYardiSettings($start, $limit)
     {
         $query = $this->createQueryBuilder('holding');
+        $query->innerJoin('holding.accountingSettings', 'accountingSettings');
         $query->innerJoin('holding.yardiSettings', 'yardiSetting');
+        $query->where('accountingSettings.apiIntegration = :yardi');
+        $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
         $query->setFirstResult($start);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
