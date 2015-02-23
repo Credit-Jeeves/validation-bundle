@@ -3065,6 +3065,10 @@
                 <source>import.status.exception</source>
                 <target>Exception (%id%)</target>
             </trans-unit>
+            <trans-unit id="landlord_dashboard.payment.title">
+                <source>landlord_dashboard.payment.title</source>
+                <target>Created: %created%. Sent: %sent%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

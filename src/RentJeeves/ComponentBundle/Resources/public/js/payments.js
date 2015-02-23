@@ -210,6 +210,14 @@ function Payments() {
       return Translator.transChoice('payments.batched_amount', amount, {"count": amount});
   };
 
+  this.orderStatusTitle = function(order) {
+      if (this.isSuccessfulStatus(order.status)) {
+          return Translator.trans('landlord_dashboard.payment.title', {"created": order.start, "sent": order.depositDate});
+      }
+
+      return order.errorMessage;
+  };
+
   this.getOrderStatusText = function(isDeposit, order) {
       if (isDeposit) {
           return Translator.trans('order.status.text.complete');
