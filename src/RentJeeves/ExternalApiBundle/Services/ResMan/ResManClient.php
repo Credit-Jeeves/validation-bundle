@@ -73,6 +73,10 @@ class ResManClient implements ClientInterface
      */
     protected $logger;
 
+    protected $replaceResponseFrom = ['&lt;', '&gt;', 'http://my-company.com/namespace', 'MITS:Customer'];
+
+    protected $replaceResponseTo = ['<', '>', 'http://www.w3.org/2005/Atom', 'Customer'];
+
     /**
      * @param ExceptionCatcher $exceptionCatcher
      * @param Serializer $serializer
@@ -96,6 +100,7 @@ class ResManClient implements ClientInterface
         $this->serializer = $serializer;
         $this->httpClient = new HttpClient();
         $this->logger = $logger;
+        $this->setDefaultGroupDeserialize();
     }
 
     protected function setDefaultGroupDeserialize()
@@ -113,10 +118,9 @@ class ResManClient implements ClientInterface
     /**
      * @param $method
      * @param array $params
-     * @param bool $shouldBeSerializedTwice
-     * @return bool|mixed
+     * @return ResMan
      */
-    public function sendRequest($method, array $params, $shouldBeSerializedTwice = true)
+    public function sendRequest($method, array $params)
     {
         try {
             $baseParams = [
@@ -130,7 +134,7 @@ class ResManClient implements ClientInterface
             $this->logger->debug(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
             $request = $this->httpClient->post($uri, $headers = null, $postBody);
 
-            return $this->manageResponse($this->httpClient->send($request), $method, $shouldBeSerializedTwice);
+            return $this->manageResponse($this->httpClient->send($request));
         } catch (Exception $e) {
             $this->debugMessage(
                 sprintf(
@@ -150,23 +154,29 @@ class ResManClient implements ClientInterface
     /**
      * @param $response
      * @param $method
-     * @param $shouldBeSerializedTwice
-     * @return mixed
+     * @return ResMan
      * @throws Exception
      */
-    protected function manageResponse($response, $method, $shouldBeSerializedTwice)
+    protected function manageResponse($response)
     {
         $httpCode = $response->getStatusCode();
         $body = $response->getBody();
         $this->debugMessage(sprintf('Http code: %s', $httpCode));
         $this->debugMessage(sprintf('Body: %s', $body));
-
         /**
-         * ResMan return bad xml, that's why we need two times deserialize
-         * 1) We deserialize base response
-         * 2) We deserialize xml from one of the field response
-         * @var $resMan ResMan
+         * @TODO
+         * Serializer not support namespaces for @XmlList
+         * Currently it's in developing process
+         * https://github.com/schmittjoh/serializer/pull/301
+         * After it's will be finished, we must refactoring code and remove
+         * replace for Customer
          */
+        $body = str_replace(
+            $this->replaceResponseFrom,
+            $this->replaceResponseTo,
+            $body
+        );
+
         $resMan = $this->deserializeResponse($body, $this->mappingResponse[self::BASE_RESPONSE]);
         if (!($resMan instanceof ResMan)) {
             $message = sprintf("Can't deserialize response. Http code: %s. Body: %s", $httpCode, $body);
@@ -180,27 +190,7 @@ class ResManClient implements ClientInterface
             throw new Exception($message);
         }
 
-        if ($shouldBeSerializedTwice === false) {
-            return $resMan;
-        }
-
-        $response = $resMan->getResponseString();
-
-        /**
-         * @TODO
-         * Serializer not support namespaces for @XmlList
-         * Currently it's in developing process
-         * https://github.com/schmittjoh/serializer/pull/301
-         * After it's will be finished, we must refactoring code and remove
-         * replace for Customer
-         */
-        $response = str_replace(
-            ['&lt;', '&gt;', 'http://my-company.com/namespace', 'MITS:Customer'],
-            ['<', '>', 'http://www.w3.org/2005/Atom', 'Customer'],
-            $response
-        );
-
-        return $this->deserializeResponse($response, $this->mappingResponse[$method]);
+        return $resMan;
     }
 
     /**
@@ -234,8 +224,9 @@ class ResManClient implements ClientInterface
         ];
 
         $this->debugMessage("Call ResMan method: {$method}");
+        $resMan = $this->sendRequest($method, $params);
 
-        return $this->sendRequest($method, $params);
+        return $resMan->getResponse()->getResidentTransactions();
     }
 
     /**
@@ -257,10 +248,7 @@ class ResManClient implements ClientInterface
             'Date' => $batchDate->format('Y-m-d')
         ];
 
-        $this->groupDeserialize = ['ResManOpenBatch'];
-        /** @var ResMan $response */
-        $response = $this->sendRequest($method, $params, false);
-        $this->setDefaultGroupDeserialize();
+        $response = $this->sendRequest($method, $params);
 
         if ($response && $response->getResponse()) {
             return $response->getResponse()->getBatchId();
@@ -286,8 +274,9 @@ class ResManClient implements ClientInterface
             'BatchID' => strtolower($accountingBatchId)
         ];
 
-        /** @var ResMan $response */
-        return !!$this->sendRequest($method, $params, false);
+        $resMan = $this->sendRequest($method, $params);
+
+        return ($resMan instanceof ResMan)? true : false;
     }
 
     /**
@@ -310,7 +299,7 @@ class ResManClient implements ClientInterface
             'xml'        => $residentTransactionsXml,
         ];
 
-        $result = $this->sendRequest($method, $params, false);
+        $result = $this->sendRequest($method, $params);
 
         return ($result instanceof ResMan)? true : false;
     }

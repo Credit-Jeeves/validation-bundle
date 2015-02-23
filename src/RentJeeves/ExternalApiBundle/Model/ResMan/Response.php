@@ -8,10 +8,35 @@ class Response
 {
     /**
      * @Serializer\SerializedName("BatchID")
-     * @Serializer\Groups({"ResManOpenBatch"})
+     * @Serializer\Groups({"ResMan"})
      * @Serializer\Type("string")
      */
     protected $batchId;
+
+    /**
+     * @Serializer\SerializedName("ResidentTransactions")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions")
+     */
+    protected $residentTransactions;
+
+    /**
+     * @return ResidentTransactions
+     */
+    public function getResidentTransactions()
+    {
+        return $this->residentTransactions;
+    }
+
+    /**
+     * @param ResidentTransactions $residentTransactions
+     */
+    public function setResidentTransactions(ResidentTransactions $residentTransactions)
+    {
+        $this->residentTransactions = $residentTransactions;
+
+        return $this;
+    }
 
     public function getBatchId()
     {
@@ -21,5 +46,7 @@ class Response
     public function setBatchId($batchId)
     {
         $this->batchId = $batchId;
+
+        return $this;
     }
 }
