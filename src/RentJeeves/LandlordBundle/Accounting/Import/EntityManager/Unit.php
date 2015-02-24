@@ -17,9 +17,9 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface;
  */
 trait Unit
 {
-    protected $externalUnitIdList = array();
+    protected $externalUnitIdList = [];
 
-    protected $unitList = array();
+    protected $unitList = [];
 
     /**
      * @param $row
@@ -44,7 +44,7 @@ trait Unit
         }
 
         // unit name is empty -- treat as a new single property
-        $unitId = $row[Mapping::KEY_UNIT_ID];
+        $unitId = (isset($row[Mapping::KEY_UNIT_ID]))? $row[Mapping::KEY_UNIT_ID] : '';
         $unitName = $row[Mapping::KEY_UNIT];
         if ($this->isEmptyString($unitName) && !$this->isEmptyString($unitId)) {
             $this->logger->debug("Unit name is empty, but has unit id (" . $unitId . ")");
