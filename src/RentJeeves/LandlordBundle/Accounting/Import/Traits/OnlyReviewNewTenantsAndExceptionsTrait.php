@@ -2,17 +2,24 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Traits;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingInterface;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface;
 use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
 use RentJeeves\LandlordBundle\Model\Import;
-use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
 use Exception;
 
 /**
- * @method HandlerAbstract manageException
- * @property Import currentImportModel
+ * @property EntityManager $em
+ * @property MappingInterface $mapping
+ * @property Import $currentImportModel
+ * @property StorageInterface $storage
+ * @property array $lines
+ * @method createCurrentImportModel
+ * @method manageException
  */
 trait OnlyReviewNewTenantsAndExceptionsTrait
 {
@@ -21,23 +28,27 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
      * @param $repository
      * @return bool
      */
-    protected function isChangeImportantField($contract, $repository)
+    protected function isChangedImportantField($contract, $repository)
     {
         $contractInDb = $this->em->getRepository('RjDataBundle:'.$repository)->find($contract->getId());
 
+        if ($contractInDb instanceof ContractWaiting and $this->currentImportModel->getTenant()->getEmail()) {
+            return true;
+        }
+
         if ($contractInDb->getStartAt() !== $contract->getStartAt()) {
-            return false;
+            return true;
         }
 
         if ($contractInDb->getFinishAt() !== $contract->getFinishAt()) {
-            return false;
+            return true;
         }
 
         if ($contractInDb->getRent() !== $contract->getRent()) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -78,22 +89,33 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         return false;
     }
 
-    protected function removeLastLineInFile()
+    protected function removeLastLineInFile($filePath)
     {
         // load the data and delete the line from the array
-        $lines = file($this->storage->getFilePath());
-        $last = sizeof($lines) - 1 ;
-        unset($lines[$last]);
-
+        $lines = file($filePath);
+        array_pop($lines);
         // write the new data to the file
-        $fp = fopen($this->storage->getFilePath(), 'w');
-        fwrite($fp, implode('', $lines));
-        fclose($fp);
+        file_put_contents($filePath, implode('', $lines));
+    }
+
+    protected function moveLine($filePath)
+    {
+        $lines = file($this->storage->getFilePath());
+
+        if (count($lines) > 0) {
+            $this->lines[] = array_pop($lines);
+        }
+
+        file_put_contents($filePath, implode('', $lines));
     }
 
     protected function updateMatchedContractsWithCallback($callbackSuccess, $callbackFailed)
     {
         $this->createLastModelFromFile();
+
+        if (!is_callable($callbackFailed) || !is_callable($callbackSuccess)) {
+            return;
+        }
 
         if (empty($this->currentImportModel)) {
             return;
@@ -104,18 +126,18 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             $contract = $this->currentImportModel->getContract();
 
             if ($this->currentImportModel->getIsSkipped()) {
-                $callbackSuccess();
+                call_user_func($callbackSuccess);
                 return;
             }
 
             if (empty($errors) &&
                 !$this->currentImportModel->getHasContractWaiting() &&
                 !is_null($contract->getId()) &&
-                $this->isChangeImportantField($contract, $repository = 'Contract') &&
+                !$this->isChangedImportantField($contract, $repository = 'Contract') &&
                 !$this->isContractEndedAndActiveInOurDB($contract)
             ) {
                 $this->em->flush($contract);
-                $callbackSuccess();
+                call_user_func($callbackSuccess);
                 return;
             }
 
@@ -124,10 +146,10 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             if (empty($errors) &&
                 $this->currentImportModel->getHasContractWaiting() &&
                 !is_null($contractWaiting->getId()) &&
-                $this->isChangeImportantField($contractWaiting, $repository = 'ContractWaiting')
+                !$this->isChangedImportantField($contractWaiting, $repository = 'ContractWaiting')
             ) {
                 $this->em->flush($contractWaiting);
-                $callbackSuccess();
+                call_user_func($callbackSuccess);
                 return;
             }
 

@@ -161,6 +161,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
     public function __construct()
     {
+        ini_set('auto_detect_line_endings', true);
         $this->currentImportModel = new ModelImport();
     }
 

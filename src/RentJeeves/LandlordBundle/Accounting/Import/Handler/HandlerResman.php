@@ -40,9 +40,11 @@ class HandlerResman extends HandlerAbstract
     public function updateMatchedContracts()
     {
         $self = $this;
+        $filePath = $this->storage->getFilePath();
+
         $this->updateMatchedContractsWithCallback(
-            function () use ($self) {
-                $self->removeLastLineInFile();
+            function () use ($self, $filePath) {
+                $self->removeLastLineInFile($filePath);
             },
             function () {
             }
