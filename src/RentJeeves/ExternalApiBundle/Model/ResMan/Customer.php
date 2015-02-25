@@ -10,6 +10,8 @@ use JMS\Serializer\Annotation as Serializer;
 class Customer
 {
     /**
+     * It's residentId of User
+     *
      * @Serializer\SerializedName("CustomerID")
      * @Serializer\Type("string")
      * @Serializer\Groups({"ResMan"})

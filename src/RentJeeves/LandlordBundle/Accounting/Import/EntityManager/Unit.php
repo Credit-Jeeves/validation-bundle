@@ -17,9 +17,9 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface;
  */
 trait Unit
 {
-    protected $externalUnitIdList = array();
+    protected $externalUnitIdList = [];
 
-    protected $unitList = array();
+    protected $unitList = [];
 
     /**
      * @param $row
@@ -32,35 +32,33 @@ trait Unit
             return null;
         }
 
+        // existing single property, so simply return it's single unit
         if ($property->isSingle()) {
-            return $property->getSingleUnit();
+            return $property->getExistingSingleUnit();
         }
 
-        if (empty($row[Mapping::KEY_UNIT]) && !empty($row[Mapping::KEY_UNIT_ID])) {
-            /**
-             * @var $unitMapping UnitMapping
-             */
-            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
-                $this->group,
-                $row[Mapping::KEY_UNIT_ID]
-            );
-            if ($unitMapping) {
-                return $unitMapping->getUnit();
-            } elseif ($property->getIsSingle() === null && !empty($row[Mapping::KEY_UNIT_ID])) {
-                $unit = EntityProperty::getNewSingleUnit($property);
-                $property->setIsSingle(true);
-                return $unit;
-            }
-        }
-
-        $params = array(
-            'name' => $row[Mapping::KEY_UNIT],
-        );
-
+        // all units should have group and holding set
         if ($this->group) {
             $params['group'] = $this->group->getId();
             !$this->group->getHolding() || $params['holding'] = $this->group->getHolding()->getId();
         }
+
+        // unit name is empty -- treat as a new single property
+        $unitId = (isset($row[Mapping::KEY_UNIT_ID]))? $row[Mapping::KEY_UNIT_ID] : '';
+        $unitName = $row[Mapping::KEY_UNIT];
+        if ($this->isEmptyString($unitName) && !$this->isEmptyString($unitId)) {
+            $this->logger->debug("Unit name is empty, but has unit id (" . $unitId . ")");
+            $property->addPropertyGroup($this->group);
+            $this->propertyProcess->setupSingleProperty($property);
+            return $property->getUnits()->first();
+        }
+
+        /*
+         * find unit within multi-unit property...
+         */
+        $params = array(
+            'name' => $row[Mapping::KEY_UNIT],
+        );
 
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
@@ -75,6 +73,10 @@ trait Unit
         if (!empty($unit)) {
             return $unit;
         }
+
+        /*
+         * ...or create a new one.
+         */
         $key = '';
         foreach ($params as $param) {
             $key .= $param."_";
@@ -85,7 +87,7 @@ trait Unit
         }
 
         $unit = new EntityUnit();
-        $unit->setName($row[Mapping::KEY_UNIT]);
+        $unit->setName($unitName);
         if ($property) {
             $unit->setProperty($property);
         }
@@ -139,5 +141,10 @@ trait Unit
         $this->externalUnitIdList[$externalUnitId] = $unitMapping;
 
         return $unitMapping;
+    }
+
+    protected function isEmptyString($str)
+    {
+        return (empty($str) && $str !== '0');
     }
 }

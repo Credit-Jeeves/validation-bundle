@@ -5,9 +5,12 @@ namespace RentJeeves\LandlordBundle\Controller;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,6 +32,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * @Route("/accounting")
@@ -256,12 +260,8 @@ class AccountingController extends Controller
         $handler = $importFactory->getHandler();
         $import = new Import();
         $import->setContract(new Contract());
-        $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm(
-            $import
-        );
-        $formContract = $handler->getContractForm(
-            $import
-        );
+        $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm();
+        $formContract = $handler->getContractForm();
         $formContractFinish = $handler->getContractFinishForm();
 
         return array(
@@ -273,6 +273,7 @@ class AccountingController extends Controller
             //Make it string because it's var for js and I want boolean
             'isMultipleProperty'      => ($storage->isMultipleProperty())? "true" : "false",
             'importOnlyException'     => ($storage->isOnlyException())? "true" : "false",
+            'supportEmail'            => $this->container->getParameter('support_email'),
         );
     }
 
@@ -304,19 +305,20 @@ class AccountingController extends Controller
         $storage = $importFactory->getStorage();
         $mapping = $importFactory->getMapping();
 
+        // convert from string to boolean
         $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($newRows) {
             $storage->setOffsetStart($storage->getOffsetStart() + ImportHandler::ROW_ON_PAGE);
         }
 
-        $rows = array();
+        $collection = [];
 
         $handler = $importFactory->getHandler();
         $total = $mapping->getTotal();
 
         if ($total > 0) {
-            $rows = $handler->getImportModelCollection();
+            $collection = $handler->getCurrentCollectionImportModel();
         } else {
             $storage->clearSession();
         }
@@ -325,7 +327,7 @@ class AccountingController extends Controller
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
 
-        $result['rows'] = $rows;
+        $result['rows'] = $collection;
         $result['total'] = $total;
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
@@ -358,13 +360,14 @@ class AccountingController extends Controller
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
-        /**
-         * @var $importFactory ImportFactory
-         */
+        /** @var $importFactory ImportFactory  */
         $importFactory = $this->get('accounting.import.factory');
         $handler = $importFactory->getHandler();
         $data = $request->request->all();
+
+        // Hydrate contract and sub-object model from form data.
         $result['formErrors'] = $handler->saveForms($data);
+        $result['rows'] = $collection = $handler->getCurrentCollectionImportModel();
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');
@@ -394,20 +397,20 @@ class AccountingController extends Controller
     {
         $importFactory = $this->get('accounting.import.factory');
         $mapping = $importFactory->getMapping();
+        /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
-        /**
-         * @var $propertyMappingManager PropertyMappingManager
-         */
+        /** @var $propertyMappingManager PropertyMappingManager */
         $propertyMappingManager = $this->get('property_mapping.manager');
         $propertyMapping = $propertyMappingManager->createPropertyMapping(
             $storage->getImportPropertyId(),
             $storage->getImportExternalPropertyId()
         );
+
         $holding = $this->getUser()->getHolding();
 
         if ($storage->getImportLoaded() === false) {
             $residents = $mapping->getResidents($holding, $propertyMapping->getProperty());
-            $residents = array_values($residents);
+            $residents = array_values($residents); //For start array from 0, but why don't remember
         } else {
             $residents = array();
         }
@@ -459,20 +462,29 @@ class AccountingController extends Controller
     {
         $holding = $this->getUser()->getHolding();
         $request = $this->get('request');
-        $moveOutDate = $request->request->get('moveOutDate');
-        $paymentAccepted = $request->request->get('paymentAccepted');
+        $residentPostData = $request->request->get('resident');
+        /** @var Serializer $serializer */
+        $serializer = $this->get('jms_serializer');
+        $classResident = 'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident';
+        /** @var ResidentsResident $resident */
+        $resident = $serializer->deserialize(
+            $residentPostData,
+            $classResident,
+            'array'
+        );
 
+        if (!$resident instanceof ResidentsResident) {
+            throw new Exception("Invalid post data, can't be converted to {$classResident}");
+        }
 
-        /**
-         * @var $importFactory ImportFactory
-         */
+        /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
+        /** @var MappingYardi $mapping */
         $mapping = $importFactory->getMapping();
+        /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
         $em = $this->getDoctrine()->getManager();
-        /**
-         * @var $propertyMapping PropertyMapping
-         */
+        /** @var $propertyMapping PropertyMapping */
         $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
             array(
                 'property'              => $storage->getImportPropertyId(),
@@ -480,20 +492,18 @@ class AccountingController extends Controller
             )
         );
         try {
-            $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $residentId);
-            $storage->saveToFile($residentLeaseFile, $residentId, $moveOutDate, $paymentAccepted);
+            $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $resident);
+            $storage->saveToFile($residentLeaseFile, $resident);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
-                $result = false;
+                $responseData = array('result' => false);
             } else {
-                $result = true;
+                $responseData = array('result' => true);
             }
         } catch (Exception $e) {
-            $result = false;
+            $this->get('fp_badaboom.exception_catcher')->handleException($e);
+            $responseData = array('result' => false);
         }
-        // Because: UnexpectedValueException: The Response content must be a string or object
-        //implementing __toString(), "boolean" given.
-        $result = (string) $result;
 
         if ($isLast) {
             $storage->setImportLoaded(true);
@@ -507,9 +517,10 @@ class AccountingController extends Controller
             $handler->updateMatchedContracts();
         }
 
-        $response = new Response($result);
-        $response->setStatusCode(($result == 1) ? 200 : 400);
+        $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
         $response->headers->set('Content-Type', 'application/json');
+        $statusCode = ($responseData['result'])? 200 : 400;
+        $response->setStatusCode($statusCode);
 
         return $response;
     }

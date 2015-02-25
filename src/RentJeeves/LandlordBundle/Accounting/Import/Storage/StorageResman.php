@@ -16,19 +16,19 @@ use RentJeeves\DataBundle\Enum\PaymentAccepted;
 class StorageResman extends ExternalApiStorage
 {
     /**
-     * @param array $cutomers
+     * @param array $customers
      * @return bool
      */
-    public function saveToFile(array $cutomers)
+    public function saveToFile(array $customers)
     {
-        if (empty($cutomers)) {
+        if (empty($customers)) {
             return false;
         }
 
         ini_set('max_execution_time', '120');
 
         /** @var $customerBase RtCustomer  */
-        foreach ($cutomers as $customerBase) {
+        foreach ($customers as $customerBase) {
             $filePath = $this->getFilePath(true);
             if (is_null($filePath)) {
                 $this->initializeParameters();
@@ -38,6 +38,7 @@ class StorageResman extends ExternalApiStorage
                 continue;
             }
 
+            $externalLeaseId = $customerBase->getCustomerId();
             /** @var Customer $customerUser */
             foreach ($customerBase->getCustomers()->getCustomer() as $customerUser) {
                 $type = $customerUser->getType();
@@ -60,15 +61,17 @@ class StorageResman extends ExternalApiStorage
                  */
                 $paymentAccepted = ('yes' === $paymentAccepted) ? PaymentAccepted::ANY : PaymentAccepted::DO_NOT_ACCEPT;
                 $today = new \DateTime();
+                $finishAtObject = \DateTime::createFromFormat('Y-m-d', $finishAt);
 
-                if ($today > $finishAt) {
+                if ($today > $finishAtObject) {
                     $monthToMonth = 'Y';
                 } else {
                     $monthToMonth = 'N';
                 }
 
+                $residentId = $customerUser->getCustomerId();
                 $data = array(
-                    $customerUser->getCustomerId(),
+                    $residentId,
                     $customerBase->getRtUnit()->getUnitId(),
                     $startAt,
                     $finishAt,
@@ -79,7 +82,8 @@ class StorageResman extends ExternalApiStorage
                     $moveOut,
                     $this->getBalance($customerBase->getRtServiceTransactions()),
                     $monthToMonth,
-                    $paymentAccepted
+                    $paymentAccepted,
+                    $externalLeaseId
                 );
 
                 $this->writeCsvToFile($data);

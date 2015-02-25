@@ -64,7 +64,7 @@ abstract class Property
      */
     protected $district;
 
-    
+
     /**
      * @ORM\Column(
      *     name="street",
@@ -377,7 +377,7 @@ abstract class Property
     /**
      * Get street_address
      *
-     * @return string 
+     * @return string
      */
     public function getStreet()
     {
@@ -399,7 +399,7 @@ abstract class Property
     /**
      * Get street_number
      *
-     * @return string 
+     * @return string
      */
     public function getNumber()
     {
@@ -421,7 +421,7 @@ abstract class Property
     /**
      * Get zip
      *
-     * @return string 
+     * @return string
      */
     public function getZip()
     {
@@ -487,7 +487,7 @@ abstract class Property
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -509,7 +509,7 @@ abstract class Property
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -517,7 +517,12 @@ abstract class Property
     }
 
     /**
+     *
+     * You should set this using "property.process"->setupSingleProperty() instead.
+     *
      * @param boolean $isSingle
+     *
+     * @deprecated
      */
     public function setIsSingle($isSingle)
     {
@@ -548,14 +553,18 @@ abstract class Property
     }
 
     /**
-     * Add property_landlord
+     * Add property_group
+     *
+     * Does nothing if group is already associated with property
      *
      * @param \CreditJeeves\DataBundle\Entity\Group $group
      * @return Property
      */
     public function addPropertyGroup(\CreditJeeves\DataBundle\Entity\Group $group)
     {
-        $this->property_groups[] = $group;
+        if (!$this->property_groups->contains($group)) {
+            $this->property_groups[] = $group;
+        }
         return $this;
     }
 

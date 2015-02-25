@@ -6,7 +6,11 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Model\Import;
 
+/**
+ * @property Import currentImportModel
+ */
 trait Tenant
 {
     /**
@@ -21,10 +25,8 @@ trait Tenant
 
     /**
      * @param array $row
-     *
-     * @return EntityTenant
      */
-    protected function getTenant(array $row)
+    protected function setTenant(array $row)
     {
         /**
          * @var $tenant EntityTenant
@@ -40,17 +42,25 @@ trait Tenant
             $residentMapping = $tenant->getResidentsMapping()->first();
             if ($residentMapping && $residentMapping->getResidentId() !== $row[Mapping::KEY_RESIDENT_ID]) {
                 $tenant = $this->createTenant($row);
+                $this->currentImportModel->setTenant($tenant);
                 $this->userEmails[$tenant->getEmail()] = 2; //Make it error, because resident ID different
-                return $tenant;
-            }
 
+                return;
+            }
+            $this->currentImportModel->setTenant($tenant);
             $this->fillUsersEmailAndResident($tenant, $row);
-            return $tenant;
+
+            return;
         }
 
-        return $this->createTenant($row);
+        $this->currentImportModel->setTenant($tenant = $this->createTenant($row));
+        $this->fillUsersEmailAndResident($tenant, $row);
     }
 
+    /**
+     * @param $row
+     * @return EntityTenant
+     */
     protected function createTenant($row)
     {
         $tenant = new EntityTenant();
@@ -67,7 +77,6 @@ trait Tenant
         $tenant->setEmailCanonical($row[Mapping::KEY_EMAIL]);
         $tenant->setPassword(md5(md5(1)));
         $tenant->setCulture($this->locale);
-        $this->fillUsersEmailAndResident($tenant, $row);
 
         return $tenant;
     }

@@ -5,6 +5,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Exception;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
@@ -47,6 +48,10 @@ class ImportFactory
         $this->importType = $this->session->get(StorageAbstract::IMPORT_STORAGE_TYPE);
     }
 
+    /**
+     * @throws Exception
+     * @return HandlerAbstract
+     */
     public function getHandler()
     {
         return $this->getServiceImport(
@@ -132,13 +137,13 @@ class ImportFactory
 
     /**
      * @param $baseName
-     * @param $typeSerivce
+     * @param $typeService
      *
      * @return string
      */
-    protected function getServiceName($baseName, $typeSerivce)
+    protected function getServiceName($baseName, $typeService)
     {
-        return sprintf('%s.%s', $baseName, $typeSerivce);
+        return sprintf('%s.%s', $baseName, $typeService);
     }
 
     protected function getAccountingSettingType()
@@ -148,7 +153,7 @@ class ImportFactory
         /** @var $holding Holding */
         $holding = $user->getHolding();
         $accountingSettings = $holding->getAccountingSettings();
-        if (empty($accountingSettings)) {
+        if (empty($accountingSettings) || $accountingSettings->getApiIntegration() === ApiIntegrationType::NONE) {
             return ApiIntegrationType::NONE;
         }
 

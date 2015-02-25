@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
@@ -237,5 +238,27 @@ class HeartlandRepository extends EntityRepository
         }
 
         return $deposits;
+    }
+
+    /**
+     * This function supposes that for one batch_id exists only one merchant
+     * @param $batchId
+     * @return Holding|null
+     */
+    public function getMerchantHoldingByBatchId($batchId)
+    {
+        /** @var Heartland $transaction */
+        $transaction = $this
+            ->createQueryBuilder('h')
+            ->where('h.batchId = :batchId')
+            ->setParameter('batchId', $batchId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
+        if ($transaction && $transaction->getContract()) {
+            return $transaction->getContract()->getHolding();
+        }
+
+        return null;
     }
 }

@@ -7,7 +7,13 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
 use RentJeeves\LandlordBundle\Model\Import;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
+use Exception;
 
+/**
+ * @method HandlerAbstract manageException
+ * @property Import currentImportModel
+ */
 trait OnlyReviewNewTenantsAndExceptionsTrait
 {
     /**
@@ -38,7 +44,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
      * @return mixed
      * @throws ImportHandlerException
      */
-    protected function getLastModelFromFile()
+    protected function createLastModelFromFile()
     {
         $data = $this->mapping->getData($this->mapping->getTotal()-2, $rowCount = 1);
 
@@ -47,13 +53,12 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         }
 
         if (empty($data)) {
-            return null;
+            $this->currentImportModel = null;
+            return;
         }
 
-        $import = $this->getImport(end($data), 1);
-        $import->setNumber(1);
-
-        return $import;
+        $this->createCurrentImportModel(end($data), 1);
+        $this->currentImportModel->setNumber(1);
     }
 
     /**
@@ -88,46 +93,47 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
 
     protected function updateMatchedContractsWithCallback($callbackSuccess, $callbackFailed)
     {
-        /**
-         * @var $importModel Import
-         */
-        $importModel = $this->getLastModelFromFile();
-        if (empty($importModel)) {
+        $this->createLastModelFromFile();
+
+        if (empty($this->currentImportModel)) {
             return;
         }
 
-        $errors = $importModel->getErrors();
-        $errors = $errors[$importModel->getNumber()];
-        $contract = $importModel->getContract();
+        try {
+            $errors = $this->currentImportModel->getErrors()[$this->currentImportModel->getNumber()];
+            $contract = $this->currentImportModel->getContract();
 
-        if ($importModel->getIsSkipped()) {
-            $callbackSuccess();
-            return;
+            if ($this->currentImportModel->getIsSkipped()) {
+                $callbackSuccess();
+                return;
+            }
+
+            if (empty($errors) &&
+                !$this->currentImportModel->getHasContractWaiting() &&
+                !is_null($contract->getId()) &&
+                $this->isChangeImportantField($contract, $repository = 'Contract') &&
+                !$this->isContractEndedAndActiveInOurDB($contract)
+            ) {
+                $this->em->flush($contract);
+                $callbackSuccess();
+                return;
+            }
+
+            $contractWaiting = $this->currentImportModel->getContractWaiting();
+
+            if (empty($errors) &&
+                $this->currentImportModel->getHasContractWaiting() &&
+                !is_null($contractWaiting->getId()) &&
+                $this->isChangeImportantField($contractWaiting, $repository = 'ContractWaiting')
+            ) {
+                $this->em->flush($contractWaiting);
+                $callbackSuccess();
+                return;
+            }
+
+            $callbackFailed();
+        } catch (\Exception $e) {
+            $this->manageException($e);
         }
-
-        if (empty($errors) &&
-            !$importModel->getHasContractWaiting() &&
-            !is_null($contract->getId()) &&
-            $this->isChangeImportantField($contract, $repository = 'Contract')&&
-            !$this->isContractEndedAndActiveInOurDB($contract)
-        ) {
-            $this->em->flush($contract);
-            $callbackSuccess();
-            return;
-        }
-
-        $contractWaiting = $importModel->getContractWaiting();
-
-        if (empty($errors) &&
-            $importModel->getHasContractWaiting() &&
-            !is_null($contractWaiting->getId()) &&
-            $this->isChangeImportantField($contractWaiting, $repository = 'ContractWaiting')
-        ) {
-            $this->em->flush($contractWaiting);
-            $callbackSuccess();
-            return;
-        }
-
-        $callbackFailed();
     }
 }

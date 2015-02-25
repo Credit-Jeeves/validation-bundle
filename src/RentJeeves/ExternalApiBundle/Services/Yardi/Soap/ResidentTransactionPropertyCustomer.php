@@ -7,12 +7,20 @@ use JMS\Serializer\Annotation as Serializer;
 class ResidentTransactionPropertyCustomer
 {
     /**
+     * @Serializer\SerializedName("Customers")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customers")
+     */
+    protected $customers;
+
+    /**
      * @Serializer\SerializedName("RTServiceTransactions")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionServiceTransactions")
      */
     protected $serviceTransactions;
 
     /**
+     * It's leas id of Contract
+     *
      * @Serializer\SerializedName("CustomerID")
      * @Serializer\Type("string")
      */
@@ -29,6 +37,22 @@ class ResidentTransactionPropertyCustomer
      * @Serializer\Type("string")
      */
     protected $paymentAccepted;
+
+    /**
+     * @return array
+     */
+    public function getCustomers()
+    {
+        return $this->customers;
+    }
+
+    /**
+     * @param Customers $customers
+     */
+    public function setCustomers(Customers $customers)
+    {
+        $this->customers = $customers;
+    }
 
     /**
      * @return string
@@ -76,6 +100,11 @@ class ResidentTransactionPropertyCustomer
     public function getCustomerId()
     {
         return $this->customerId;
+    }
+
+    public function getLeaseId()
+    {
+        return $this->getCustomerId();
     }
 
     /**

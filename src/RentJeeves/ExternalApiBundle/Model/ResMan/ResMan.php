@@ -4,6 +4,9 @@ namespace RentJeeves\ExternalApiBundle\Model\ResMan;
 
 use JMS\Serializer\Annotation as Serializer;
 
+/**
+ * @Serializer\XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="MITS")
+ */
 class ResMan
 {
 
@@ -37,7 +40,7 @@ class ResMan
 
     /**
      * @Serializer\SerializedName("Response")
-     * @Serializer\Type("string")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\Response")
      * @Serializer\Groups({"ResMan"})
      */
     protected $response;
@@ -91,7 +94,7 @@ class ResMan
     }
 
     /**
-     * @return string
+     * @return Response
      */
     public function getResponse()
     {
@@ -99,9 +102,9 @@ class ResMan
     }
 
     /**
-     * @param string $response
+     * @param Response $response
      */
-    public function setResponse($response)
+    public function setResponse(Response $response)
     {
         $this->response = $response;
     }

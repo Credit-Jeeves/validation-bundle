@@ -25,6 +25,9 @@ trait Group
         return $this
             ->em
             ->getRepository('DataBundle:Group')
-            ->getGroupByAccountNumber($row[ImportMapping::KEY_GROUP_ACCOUNT_NUMBER], $this->user->getHolding());
+            ->getGroupByAccountNumber(
+                $row[ImportMapping::KEY_GROUP_ACCOUNT_NUMBER],
+                $this->user->getHolding()
+            );
     }
 }

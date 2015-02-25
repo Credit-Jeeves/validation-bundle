@@ -1,14 +1,13 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Controller\Traits;
 
-use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Payum\Payment;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
-use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -18,7 +17,6 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
-use \RuntimeException;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
@@ -30,7 +28,6 @@ use \RuntimeException;
  */
 trait PaymentProcess
 {
-    protected $hasNewAddress = false;
     protected $merchantName = null;
 
     protected function setMerchantName($merchantName)
@@ -44,9 +41,12 @@ trait PaymentProcess
     }
 
     /**
-     * @param Form $paymentAccountType
+     * Creates a new payment account. Right now only Heartland is supported.
      *
-     * @return JsonResponse
+     * @param Form $paymentAccountType
+     * @param User $user
+     * @param Group $group
+     * @return mixed
      */
     protected function savePaymentAccount(Form $paymentAccountType, User $user, Group $group)
     {
@@ -66,15 +66,10 @@ trait PaymentProcess
             }
         }
 
-        $merchantName = $this->getMerchantName($group);
-
-        if (empty($merchantName)) {
-            throw new RuntimeException('Merchant name is not installed');
-        }
-
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
-        $tokenRequest = $this->get('payment.account')->getTokenRequest($paymentAccountMapped, $user);
-        $token = $this->get('payment.account')->getTokenResponse($tokenRequest, $merchantName);
+        /** @var PaymentProcessorInterface $paymentProcessor */
+        $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
+        $token = $paymentProcessor->createPaymentAccount($paymentAccountMapped, $user, $group);
 
         $paymentAccountEntity->setToken($token);
 
@@ -165,5 +160,11 @@ trait PaymentProcess
         }
 
         return false;
+    }
+
+    protected function hasNewAddress(Form $paymentAccountType)
+    {
+        return $paymentAccountType->has('is_new_address') ?
+            $paymentAccountType->get('is_new_address')->getData() === "true" : false;
     }
 }

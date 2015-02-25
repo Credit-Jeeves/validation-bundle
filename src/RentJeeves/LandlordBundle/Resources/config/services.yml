@@ -11,6 +11,7 @@ services:
         class: "%import.mapping.csv.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setPropertyProcess, ["@property.process"]]
         arguments:
             - "@accounting.import.storage.csv"
             - "@import.reader.csv"
@@ -18,6 +19,7 @@ services:
         class: "%import.mapping.resman.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setPropertyProcess, ["@property.process"]]
         arguments:
             - "@accounting.import.storage.resman"
             - "@import.reader.csv"
@@ -27,6 +29,7 @@ services:
         class: "%import.mapping.yardi.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setPropertyProcess, ["@property.process"]]
         arguments:
             - "@accounting.import.storage.yardi"
             - "@import.reader.csv"

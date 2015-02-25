@@ -6,7 +6,6 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @Serializer\XmlRoot("ResidentTransactions")
- * @Serializer\XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="MITS")
  */
 class ResidentTransactions
 {

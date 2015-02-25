@@ -140,7 +140,7 @@ class AddPropertyCase extends BaseTestCase
         $this->fillGoogleAddress('960 Andante Rd, Santa Barbara, CA 93105, United States');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $propertySearch->click();
-        $this->session->wait($this->timeout+10000, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
+        $this->session->wait($this->timeout);
         $this->session->wait($this->timeout+15000, "typeof jQuery !== undefined");
         $this->session->wait($this->timeout, "$('#formSearch').length > 0");
 

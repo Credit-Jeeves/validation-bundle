@@ -9,6 +9,8 @@ use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
+use JMS\DiExtraBundle\Annotation\Inject;
 
 abstract class MappingAbstract implements MappingInterface
 {
@@ -81,6 +83,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
+    const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
+
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
@@ -101,6 +105,14 @@ abstract class MappingAbstract implements MappingInterface
     public function setEntityManager(EntityManager $em)
     {
         $this->em = $em;
+    }
+
+    /** @var  PropertyProcess $propertyProcess */
+    protected $propertyProcess;
+
+    public function setPropertyProcess(PropertyProcess $propertyProcess)
+    {
+        $this->propertyProcess = $propertyProcess;
     }
 
     /**
@@ -146,6 +158,7 @@ abstract class MappingAbstract implements MappingInterface
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
         $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
+        $waitingRoom->setExternalLeaseId($contract->getExternalLeaseId());
         /**
          * Property can be null because it can be not valid
          */
@@ -175,9 +188,7 @@ abstract class MappingAbstract implements MappingInterface
         $property->setStreet($row[self::KEY_STREET]);
         $property->setZip($row[self::KEY_ZIP]);
         $property->setArea($row[self::KEY_STATE]);
-        if (empty($row[self::KEY_UNIT])) {
-            $property->setIsSingle(true);
-        }
+
         return $property;
     }
 
@@ -300,19 +311,5 @@ abstract class MappingAbstract implements MappingInterface
         }
 
         return $mappedData;
-    }
-
-    /**
-     * @param array $row
-     *
-     * @return bool
-     */
-    public function hasPaymentMapping(array $row)
-    {
-        if (!isset($row[self::KEY_PAYMENT_AMOUNT]) || !isset($row[self::KEY_PAYMENT_DATE])) {
-            return false;
-        }
-
-        return true;
     }
 }

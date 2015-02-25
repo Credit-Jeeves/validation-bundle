@@ -69,9 +69,11 @@ class OrderListener
             return;
         }
 
+
         if (!$eventArgs->hasChangedField('status')) {
             return;
         }
+
         $this->logger->debug('Order ID ' . $entity->getId() .' changes status to ' . $entity->getStatus());
         $this->syncTransactions($entity);
 
@@ -109,6 +111,7 @@ class OrderListener
                 $uow->scheduleExtraUpdate($payment, ['paidFor' => [$oldPaidFor, $newPaidFor]]);
             }
         }
+
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
     }
 

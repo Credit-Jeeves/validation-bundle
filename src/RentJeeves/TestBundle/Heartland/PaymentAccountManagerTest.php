@@ -2,9 +2,9 @@
 
 namespace RentJeeves\TestBundle\Heartland;
 
-use RentJeeves\CheckoutBundle\Payment\PaymentAccount as Base;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager as Base;
 
-class PaymentAccountTest extends Base
+class PaymentAccountManagerTest extends Base
 {
     public function getTokenResponse($tokenRequest, $merchantName)
     {

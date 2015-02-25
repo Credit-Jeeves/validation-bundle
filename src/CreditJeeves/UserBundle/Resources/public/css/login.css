@@ -79,3 +79,7 @@
 .form-login.login-block input {
     width: 400px !important;
 }
+
+.form-content input.half-width {
+    width: 135px;
+}

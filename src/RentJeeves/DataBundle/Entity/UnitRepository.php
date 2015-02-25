@@ -65,7 +65,7 @@ class UnitRepository extends EntityRepository
         $query = $this->createQueryBuilder('u');
         $query->leftJoin('u.group', 'g');
         $query->innerJoin('u.property', 'p');
-        $query->where('g.id = :groupId OR (p.isSingle=1 AND g.id IS NULL)');
+        $query->where('g.id = :groupId');
 
         if (!empty($externalUnitId)) {
             $query->innerJoin('u.unitMapping', 'm');

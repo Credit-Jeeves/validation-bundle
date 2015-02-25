@@ -2,6 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
@@ -99,7 +100,6 @@ class PaymentJobExecutor
                     return $this->executeCreditTrack($relatedEntity->getCreditTrackPaymentAccount());
                     break;
             }
-
         }
         $this->message = sprintf("Job ID:'%s' must have related payment", $job->getId());
         $this->logger->debug('Related entity for job ID ' . $job->getId() .' not found');
@@ -108,14 +108,14 @@ class PaymentJobExecutor
     }
 
     /**
-     * @param BinaryMaskStatusRequest $statusRequest
+     * @param Order $order
      *
      * @return bool
      */
-    protected function processStatus($statusRequest)
+    protected function processStatus(Order $order)
     {
-        if (!$statusRequest->isSuccess()) {
-            $this->message = $statusRequest->getModel()->getMessages();
+        if (OrderStatus::ERROR == $order->getStatus()) {
+            $this->message = $order->getErrorMessage();
             $this->exitCode = 1;
             return false;
         }
@@ -138,7 +138,8 @@ class PaymentJobExecutor
         $filterClosure = function (Operation $operation) use ($date) {
             if (($order = $operation->getOrder()) &&
                 $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
-                OrderStatus::ERROR != $order->getStatus()
+                OrderStatus::ERROR != $order->getStatus() &&
+                OrderStatus::CANCELLED != $order->getStatus()
             ) {
                 return true;
             }
@@ -151,13 +152,15 @@ class PaymentJobExecutor
             return false;
         }
 
-        $this->payRent->newOrder();
-        $order = $this->payRent->getOrder();
+        $order = $this->payRent->executePayment($payment);
+
         $this->logger->debug('Add created order to job related entities. Job ID ' . $this->job->getId());
         $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);
+        $this->em->flush();
+        $this->em->clear();
 
-        return $this->processStatus($this->payRent->executePayment($payment));
+        return $this->processStatus($order);
     }
 
     /**
@@ -167,8 +170,10 @@ class PaymentJobExecutor
      */
     protected function executeCreditTrack(PaymentAccount $paymentAccount)
     {
-        $this->job->addRelatedEntity($this->payCreditTrack->getOrder());
+        $order = $this->payCreditTrack->executePaymentAccount($paymentAccount);
+        $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);
-        return $this->processStatus($this->payCreditTrack->executePaymentAccount($paymentAccount));
+
+        return $this->processStatus($order);
     }
 }

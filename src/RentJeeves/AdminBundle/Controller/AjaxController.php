@@ -99,7 +99,7 @@ class AjaxController extends Controller
             /**
              * @var $singleUnit Unit
              */
-            $singleUnit = $property->getSingleUnit();
+            $singleUnit = $property->getExistingSingleUnit();
             $units = array($singleUnit);
         } else {
             $units = $em->getRepository('RjDataBundle:Unit')->findBy(

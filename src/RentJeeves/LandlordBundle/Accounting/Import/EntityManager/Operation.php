@@ -9,7 +9,11 @@ use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
+use RentJeeves\LandlordBundle\Model\Import;
 
+/**
+ * @property Import currentImportModel
+ */
 trait Operation
 {
     /**
@@ -18,11 +22,11 @@ trait Operation
      * @param $amount
      * @return bool
      */
-    protected function isDuplicate(EntityContract $contract, $paidFor, $amount)
+    protected function isDuplicate($paidFor, $amount)
     {
         $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
-            $contract->getTenant(),
-            $contract,
+            $this->currentImportModel->getTenant(),
+            $this->currentImportModel->getContract(),
             $paidFor,
             $amount
         );
@@ -35,15 +39,15 @@ trait Operation
         return false;
     }
 
-    protected function getOperationByContract(EntityContract $contract, $paidFor)
+    protected function getOperationByPaidFor($paidFor)
     {
-        if ($this->isDuplicate($contract, $paidFor, $contract->getRent())) {
+        if ($this->isDuplicate($paidFor, $this->currentImportModel->getContract()->getRent())) {
             return null;
         }
 
         $operation = new EntityOperation();
         $operation->setPaidFor($paidFor);
-        $operation->setAmount($contract->getRent());
+        $operation->setAmount($this->currentImportModel->getContract()->getRent());
         $operation->setType(OperationType::RENT);
         $operation->setCreatedAt($paidFor);
 

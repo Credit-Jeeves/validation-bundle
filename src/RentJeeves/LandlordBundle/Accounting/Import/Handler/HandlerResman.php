@@ -34,6 +34,7 @@ class HandlerResman extends HandlerAbstract
         $this->storage = $storage;
         $this->mapping = $mapping;
         $this->translator = $translator;
+        parent::__construct();
     }
 
     public function updateMatchedContracts()

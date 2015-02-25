@@ -266,16 +266,12 @@ class AjaxController extends Controller
      */
     public function addProperty(Request $request)
     {
-        $property = array();
         $itsNewProperty = false;
         $data = $request->request->all('address');
-        $addGroup = (int)$request->request->all('addGroup');
         $data = json_decode($data['data'], true);
         $addGroup = (isset($data['addGroup']) && $data['addGroup'] === 1)?  true : false;
-        /**
-         * @var $propertyProcess PropertyProcess
-         */
-        $propertyProcess = $this->container->get('property.process');
+
+        // validate google found a street number
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
         $propertyDataLocation = $property->parseGoogleLocation($data);
@@ -288,23 +284,23 @@ class AjaxController extends Controller
             );
         }
 
+        // lookup property in DB by street number and location
+        /** @var $propertyProcess PropertyProcess */
+        $propertyProcess = $this->container->get('property.process');
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
         /** @var Property $property */
         $property = $propertyProcess->getPropertyFromDB($propertySearch);
         $em = $this->getDoctrine()->getManager();
-        $user = $this->getUser();
-        $group = $this->get("core.session.landlord")->getGroup();
+
         if (empty($property)) {
+            // not found so create a new one
             $property = new Property();
             $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
             $property->fillPropertyData($propertyData);
             $itsNewProperty = true;
         }
 
-        if ($request->request->has('isSingle') && is_null($property->getIsSingle())) {
-            $property->setIsSingle($request->request->get('isSingle') === 'true');
-        }
-
+        // validate property
         if (!$propertyProcess->isValidProperty($property)) {
             return new JsonResponse(
                 array(
@@ -314,16 +310,30 @@ class AjaxController extends Controller
             );
         }
 
-        if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
-                && $group
-                && $this->getUser()->getType() == UserType::LANDLORD
-                && $addGroup
-                && !$group->getGroupProperties()->contains($property)
-        ) {
+        // get security context
+        $securityContext = $this->container->get('security.context');
+        $isLogin = $securityContext->isGranted('IS_AUTHENTICATED_FULLY') ? true : false;
+        $isLandlord = false;
+        if ($isLogin) {
+            $isLandlord = ($this->getUser()->getType() == UserType::LANDLORD) ? true : false;
+        }
+
+        // for landlords, add the property to their account group
+        $group = $this->getCurrentGroup();
+        if ($isLandlord && $group && $addGroup && !$group->getGroupProperties()->contains($property)) {
+
+            // map the property to the account group
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
+
+            // is it a single-unit property, if so create unit
+            if ($request->request->has('isSingle') && $request->request->get('isSingle') === 'true') {
+                $propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+            }
             $em->persist($group);
         }
+
+        // save property to DB
         try {
             $em->persist($property);
             $em->flush();
@@ -346,18 +356,12 @@ class AjaxController extends Controller
             );
         }
 
+        // save google place for mapping later
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
             $propertyProcess->saveToGoogle($property);
         }
 
-        $securityContext = $this->container->get('security.context');
-        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
-        $isLogin = $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED') ? true : false;
-        $isLandlord = false;
-
-        if ($isLogin) {
-            $isLandlord = ($this->getUser()->getType() == UserType::LANDLORD) ? true : false;
-        }
+        // return json for property
         //@TODO refactor - change array to entity JSM serialisation
         $data = array(
             'status'                => 'OK',
@@ -367,15 +371,15 @@ class AjaxController extends Controller
             'propertyDataAddress'   => $propertyDataAddress,
             'propertyDataLocation'  => $propertyDataLocation,
             'property'      => array(
-                    'id'        => $property->getId(),
-                    'city'      => $property->getCity(),
-                    'number'    => ($property->getNumber()) ? $property->getNumber() : '',
-                    'street'    => $property->getStreet(),
-                    'area'      => $property->getArea(),
-                    'zip'       => ($property->getZip()) ? $property->getZip() : '',
-                    'jb'        => $property->getJb(),
-                    'kb'        => $property->getKb(),
-                    'address'   => $property->getAddress(),
+                'id'        => $property->getId(),
+                'city'      => $property->getCity(),
+                'number'    => ($property->getNumber()) ? $property->getNumber() : '',
+                'street'    => $property->getStreet(),
+                'area'      => $property->getArea(),
+                'zip'       => ($property->getZip()) ? $property->getZip() : '',
+                'jb'        => $property->getJb(),
+                'kb'        => $property->getKb(),
+                'address'   => $property->getAddress(),
             ),
         );
 
@@ -491,58 +495,62 @@ class AjaxController extends Controller
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
         $data = $request->request->all();
+
+        // get property from request
         $propertyId = $request->request->get('property_id');
         if ($propertyId === null) {
             throw new BadRequestHttpException('Property ID is not specified');
         }
-        /**
-         * @var $property Property
-         */
+        /** @var $property Property */
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($propertyId);
         if (empty($property)) {
             return new NotFoundHttpException('Property not found');
         }
+
+        // get units from request
         $units = (isset($data['units']))? $data['units'] : array();
-        $unitCome = array();
+        $newUnits = array();
         foreach ($units as $key => $unit) {
-            $id = (!empty($unit['id']))? $unit['id'] : uniqid();
-            $unitCome[$id] = array(
+            $id = (!empty($unit['id']))? $unit['id'] : uniqid();  // should probably fail instead of uniqid()
+            $newUnits[$id] = array(
                 'id'    => $unit['id'],
                 'name'  => $unit['name'],
                 'isNew' => (empty($unit['id']))? true : false,
             );
         }
-        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $group);
-        $em = $this->getDoctrine()->getManager();
 
-        //Update Current Unit
-        foreach ($records as $key => $entity) {
-            foreach ($unitCome as $unitId => $unitData) {
-                if ($entity->getId() == $unitId && !empty($unitData['name'])) {
+        // update existing units
+        $em = $this->getDoctrine()->getManager();
+        $existingUnits = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $group);
+        foreach ($existingUnits as $key => $existingUnit) {
+            foreach ($newUnits as $unitId => $unitData) {
+                if ($existingUnit->getId() == $unitId && !empty($unitData['name'])) {
                     $existingNames[] = $unitData['name'];
-                    $entity->setName($unitData['name']);
-                    $em->persist($entity);
-                    unset($unitCome[$unitId]);
-                    unset($records[$key]);
+                    $existingUnit->setName($unitData['name']);
+                    $em->persist($existingUnit);
+                    unset($newUnits[$unitId]);   // this is not new
+                    unset($existingUnits[$key]); // remove from list, so we don't delete it.
                 }
             }
         }
 
-        //Remove unit each does not exist anymore
-        foreach ($records as $entity) {
-            $this->checkContractBeforeRemove($entity);
-            $em->remove($entity);
+        if (!$property->isSingle()) {
+            // we assume existing units not in request were deleted -- so delete them.
+            foreach ($existingUnits as $existingUnit) {
+                $this->checkContractBeforeRemove($existingUnit);
+                $em->remove($existingUnit);
+            }
         }
 
-        //Create new Unit
-        foreach ($unitCome as $unit) {
+        // create any new units
+        foreach ($newUnits as $unit) {
             if ($unit['isNew'] & !empty($unit['name']) & !in_array($unit['name'], $existingNames)) {
-                $entity = new Unit();
-                $entity->setProperty($property);
-                $entity->setHolding($holding);
-                $entity->setGroup($group);
-                $entity->setName($unit['name']);
-                $em->persist($entity);
+                $newUnit = new Unit();
+                $newUnit->setProperty($property);
+                $newUnit->setHolding($holding);
+                $newUnit->setGroup($group);
+                $newUnit->setName($unit['name']);
+                $em->persist($newUnit);
                 $existingNames[] = $unit['name'];
             } else {
                 $errorNames[] = $unit['name'];
