@@ -4,48 +4,44 @@ namespace RentJeeves\ExternalApiBundle\Model\ResMan;
 
 use JMS\Serializer\Annotation as Serializer;
 
+/**
+ * @Serializer\XmlNamespace(uri="http://www.w3.org/2005/Atom", prefix="MITS")
+ */
 class ResMan
 {
 
     /**
      * @Serializer\SerializedName("MethodName")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan", "ResManOpenBatch"})
+     * @Serializer\Groups({"ResMan"})
      */
     protected $methodName;
 
     /**
      * @Serializer\SerializedName("Status")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan", "ResManOpenBatch"})
+     * @Serializer\Groups({"ResMan"})
      */
     protected $status;
 
     /**
      * @Serializer\SerializedName("AccountID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan", "ResManOpenBatch"})
+     * @Serializer\Groups({"ResMan"})
      */
     protected $accountId;
 
     /**
      * @Serializer\SerializedName("PropertyID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan", "ResManOpenBatch"})
+     * @Serializer\Groups({"ResMan"})
      */
     protected $propertyId;
 
     /**
      * @Serializer\SerializedName("Response")
-     * @Serializer\Type("string")
-     * @Serializer\Groups({"ResMan"})
-     */
-    protected $responseString;
-
-    /**
-     * @Serializer\SerializedName("Response")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\Response")
-     * @Serializer\Groups({"ResManOpenBatch"})
+     * @Serializer\Groups({"ResMan"})
      */
     protected $response;
 
@@ -95,22 +91,6 @@ class ResMan
     public function setPropertyId($propertyId)
     {
         $this->propertyId = $propertyId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResponseString()
-    {
-        return $this->responseString;
-    }
-
-    /**
-     * @param string $response
-     */
-    public function setResponseString($response)
-    {
-        $this->responseString = $response;
     }
 
     /**

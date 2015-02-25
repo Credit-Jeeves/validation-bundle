@@ -82,8 +82,10 @@ class ContractWaitingAdmin extends Admin
         $uniqueId = $request->query->get('uniqid');
         $params = $request->request->all();
 
-        $group = null;
-        $property = null;
+        /** @var ContractWaiting $contractWaiting */
+        $contractWaiting = $this->getSubject();
+        $group = $contractWaiting->getGroup();
+        $property = $contractWaiting->getProperty();
 
         if (isset($params[$uniqueId])) {
             $group = $params[$uniqueId]['group'];

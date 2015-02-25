@@ -91,8 +91,6 @@ $( document ).ready(function() {
         runProperty();
     });
 
-    runGroup();
-
     email.keyup(function( event ) {
         checkEmail();
     });
