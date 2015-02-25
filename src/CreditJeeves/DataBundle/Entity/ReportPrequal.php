@@ -118,17 +118,17 @@ class ReportPrequal extends Report
 
     public function getBalanceOpenCollectionAccounts()
     {
-        return $this->getSummary()['total_past_due'];
+        return $this->getSummaryValue('total_past_due');
     }
 
     public function getTotalMonthlyPayments()
     {
-        return $this->getSummary()['monthly_payment'];
+        return $this->getSummaryValue('monthly_payment');
     }
 
     public function getTotalDerogatoryAccounts()
     {
-        return $this->getSummary()['now_delinquentderog_counter'];
+        return $this->getSummaryValue('now_delinquentderog_counter');
     }
 
     public function getTotalOpenCollectionAccounts()
@@ -138,12 +138,12 @@ class ReportPrequal extends Report
 
     public function getTotalPublicRecords()
     {
-        return $this->getSummary()['public_records_count'];
+        return $this->getSummaryValue('public_records_count');
     }
 
     public function getNumberOfInquiries()
     {
-        return $this->getSummary()['total_inquiries_counter'];
+        return $this->getSummaryValue('total_inquiries_counter');
     }
 
     public function getInquiriesPeriod()
@@ -161,5 +161,13 @@ class ReportPrequal extends Report
         }
 
         return $this->creditSummary;
+    }
+    
+    protected function getSummaryValue($key)
+    {
+        if (isset($this->getSummary()[$key])) {
+            return $this->getSummary()[$key];
+        }
+        return 0;
     }
 }
