@@ -513,10 +513,10 @@ abstract class Contract
     /**
      * Set Property
      *
-     * @param Property $property
+     * @param Property|null $property
      * @return Contract
      */
-    public function setProperty(Property $property)
+    public function setProperty(Property $property = null)
     {
         $this->property = $property;
         return $this;
