@@ -113,7 +113,7 @@ class AccountingPaymentSynchronizer
             }
 
             $holding = $order->getContract()->getHolding();
-            if ($this->isAllowedToSend($holding)) {
+            if (!$this->isAllowedToSend($holding)) {
                 $this->logger->addInfo(
                     sprintf(
                         "Order(%s) is not allow to immediately send to accounting system.",
