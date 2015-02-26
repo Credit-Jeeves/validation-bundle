@@ -347,13 +347,22 @@ abstract class HandlerAbstract implements HandlerInterface
 
     protected function setErrors()
     {
-        $errors[$this->currentImportModel->getNumber()] = array();
-        $form = $this->currentImportModel->getForm();
         $lineNumber = $this->currentImportModel->getNumber();
+
+        $errors[$lineNumber] = [];
+        $form = $this->currentImportModel->getForm();
+
         if (!$this->isCreateCsrfToken && !$this->currentImportModel->getIsSkipped()) {
-            $errors = $this->runFormValidation($form, $lineNumber, $this->currentImportModel->getCsrfToken());
+
+            $errors = $this->runFormValidation(
+                $form,
+                $lineNumber,
+                $this->currentImportModel->getCsrfToken()
+            );
+
             if ($this->isUsedResidentId($this->currentImportModel->getResidentMapping())) {
-                $errors[$lineNumber][uniqid()][ImportMapping::KEY_RESIDENT_ID] = $this->translator
+                $keyFieldInUI = ImportMapping::KEY_RESIDENT_ID;
+                $errors[$lineNumber][uniqid()][$keyFieldInUI] = $this->translator
                     ->trans(
                         'error.residentId.already_use',
                         array(
@@ -364,13 +373,13 @@ abstract class HandlerAbstract implements HandlerInterface
                         )
                     );
             }
-            $this->currentImportModel->setErrors($errors);
         }
 
         if (isset($this->userEmails[$this->currentImportModel->getTenant()->getEmail()]) &&
             $this->userEmails[$this->currentImportModel->getTenant()->getEmail()] > 1
         ) {
-            $errors[$this->currentImportModel->getNumber()][uniqid()]['tenant_email'] =
+            $keyFieldInUI = 'tenant_email';
+            $errors[$lineNumber][uniqid()][$keyFieldInUI] =
                 $this->translator->trans(
                     'import.user.already_used'
                 );
@@ -385,14 +394,24 @@ abstract class HandlerAbstract implements HandlerInterface
             !is_null($unitMappingImported->getExternalUnitId()) &&
             $existUnitMapping->getExternalUnitId() !== $unitMappingImported->getExternalUnitId()
         ) {
-            $errors[$this->currentImportModel->getNumber()]
+            $keyFieldInUI = 'import_new_user_with_contract_contract_unitMapping_externalUnitId';
+            $errors[$lineNumber]
                 [uniqid()]
-                ['import_new_user_with_contract_contract_unitMapping_externalUnitId'] =
+                [$keyFieldInUI] =
                     $this->translator->trans(
                         'import.unit_mapping.already_used'
                     );
             $this->currentImportModel->setIsSkipped(true);
         }
+
+        $property = $this->currentImportModel->getContract()->getProperty();
+
+        if ((!$property || !$property->getNumber()) && !$this->storage->isMultipleProperty()) {
+            $keyFieldInUI = 'import_new_user_with_contract_contract_unit_name';
+            $this->currentImportModel->getContract()->setProperty(null);
+            $errors[$lineNumber][uniqid()][$keyFieldInUI] = $this->translator->trans('import.error.invalid_property');
+        }
+
 
         $this->currentImportModel->setErrors($errors);
     }
