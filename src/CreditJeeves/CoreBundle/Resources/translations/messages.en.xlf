@@ -1093,7 +1093,7 @@
             </trans-unit>
             <trans-unit id="error.user.phone.format">
                 <source>error.user.phone.format</source>
-                <target>Please use format for phone number like (NNN)NNN-NNNN or NNN-NNN-NNNN or NNN.NNN.NNNN or NNNNNNNNNN.</target>
+                <target>Phone number should contain 10 digits.</target>
             </trans-unit>
             <trans-unit id="error.user.email.error">
                 <source>error.user.email.error</source>

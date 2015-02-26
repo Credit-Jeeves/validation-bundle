@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\ApplicantBundle\Form\Type;
 
+use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -13,7 +14,9 @@ class ContactType extends AbstractType
             'label' => 'name',
         ]);
         $builder->add('last_name');
-        $builder->add('phone');
+        $builder->add(
+            $builder->create('phone', 'text')->addViewTransformer(new PhoneNumberTransformer())
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

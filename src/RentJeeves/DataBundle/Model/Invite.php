@@ -57,6 +57,13 @@ abstract class Invite
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=50, nullable=true)
+     * @Assert\Regex(
+     *     pattern = "/^\d{10}$/",
+     *     message="error.user.phone.format",
+     *     groups={
+     *         "invite", "inviteByApi"
+     *     }
+     * )
      */
     protected $phone;
 
