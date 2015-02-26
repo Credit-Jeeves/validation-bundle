@@ -21,12 +21,23 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
     {
         $this
             ->setName('Email:batchDeposit:report')
+            ->addOption(
+                'date',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Deposit date in format YYYY-MM-DD'
+            )
             ->setDescription('Send daily batch deposit report for landlords and holding admins');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $date = new DateTime();
+        $date = $input->getOption('date');
+        if ($date) {
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+        } else {
+            $date = new DateTime();
+        }
 
         $output->writeln('Start prepare daily batch deposit report by ' . $date->format('m/d/Y'));
 
