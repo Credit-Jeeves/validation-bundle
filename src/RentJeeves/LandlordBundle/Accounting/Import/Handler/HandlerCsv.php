@@ -56,7 +56,6 @@ class HandlerCsv extends HandlerAbstract
         $self = $this;
         $total = $this->mapping->getTotal();
 
-
         $callbackSuccess = function () use ($self, $filePath) {
             $self->removeLastLineInFile($filePath);
         };

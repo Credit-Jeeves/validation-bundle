@@ -92,7 +92,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
     protected function removeLastLineInFile($filePath)
     {
         // load the data and delete the line from the array
-        $lines = file($filePath);
+        $lines = file($filePath, FILE_SKIP_EMPTY_LINES);
         array_pop($lines);
         // write the new data to the file
         file_put_contents($filePath, implode('', $lines));
@@ -100,7 +100,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
 
     protected function moveLine($filePath)
     {
-        $lines = file($this->storage->getFilePath());
+        $lines = file($filePath, FILE_SKIP_EMPTY_LINES);
 
         if (count($lines) > 0) {
             $this->lines[] = array_pop($lines);
@@ -125,13 +125,17 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             $errors = $this->currentImportModel->getErrors()[$this->currentImportModel->getNumber()];
             $contract = $this->currentImportModel->getContract();
 
+            if (!empty($errors)) {
+                call_user_func($callbackFailed);
+                return;
+            }
+
             if ($this->currentImportModel->getIsSkipped()) {
                 call_user_func($callbackSuccess);
                 return;
             }
 
-            if (empty($errors) &&
-                !$this->currentImportModel->getHasContractWaiting() &&
+            if (!$this->currentImportModel->getHasContractWaiting() &&
                 !is_null($contract->getId()) &&
                 !$this->isChangedImportantField($contract, $repository = 'Contract') &&
                 !$this->isContractEndedAndActiveInOurDB($contract)
@@ -143,8 +147,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
 
             $contractWaiting = $this->currentImportModel->getContractWaiting();
 
-            if (empty($errors) &&
-                $this->currentImportModel->getHasContractWaiting() &&
+            if ($this->currentImportModel->getHasContractWaiting() &&
                 !is_null($contractWaiting->getId()) &&
                 !$this->isChangedImportantField($contractWaiting, $repository = 'ContractWaiting')
             ) {
@@ -153,7 +156,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
                 return;
             }
 
-            $callbackFailed();
+            call_user_func($callbackFailed);
         } catch (\Exception $e) {
             $this->manageException($e);
         }
