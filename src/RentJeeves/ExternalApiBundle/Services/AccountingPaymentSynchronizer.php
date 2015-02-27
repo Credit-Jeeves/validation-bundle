@@ -247,8 +247,15 @@ class AccountingPaymentSynchronizer
         }
 
         $paymentBatchDate = new DateTime();
-
-        $accountingBatchId = $this->getApiClientByOrder($order)->openBatch($externalPropertyId, $paymentBatchDate);
+        $description = sprintf(
+            'RentTrack Online Payments Batch #%s',
+            $paymentBatchId
+        );
+        $accountingBatchId = $this->getApiClientByOrder($order)->openBatch(
+            $externalPropertyId,
+            $paymentBatchDate,
+            $description
+        );
 
         if (!$accountingBatchId) {
             return false;
