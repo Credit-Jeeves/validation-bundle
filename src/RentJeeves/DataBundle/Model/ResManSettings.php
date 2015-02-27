@@ -37,7 +37,7 @@ abstract class ResManSettings
      * @ORM\OneToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
      *     inversedBy="resManSettings",
-     *     cascade={"persist", "remove", "merge"},
+     *     cascade={"persist", "merge"},
      *     orphanRemoval=true
      * )
      * @ORM\JoinColumn(name="holding_id", referencedColumnName="id", nullable=false, unique=true)
