@@ -2,9 +2,8 @@
 namespace RentJeeves\TenantBundle\Tests\Form\DataTransformer;
 
 use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-class PhoneNumberTransformerCase extends BaseTestCase
+class PhoneNumberTransformerCase extends \PHPUnit_Framework_TestCase
 {
     public function transformDataProvider()
     {
@@ -19,6 +18,9 @@ class PhoneNumberTransformerCase extends BaseTestCase
         return [
             ['(555) 666-3330', '5556663330'],
             ['(111) 587-9876', '1115879876'],
+            ['111.587.9876', '1115879876'],
+            ['111-587-9876', '1115879876'],
+            ['(111)5879876', '1115879876'],
         ];
     }
 

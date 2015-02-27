@@ -2,9 +2,8 @@
 namespace RentJeeves\CoreBundle\Tests\Services;
 
 use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-class PhoneNumberFormatterCase extends BaseTestCase
+class PhoneNumberFormatterCase extends \PHPUnit_Framework_TestCase
 {
     public function tenDigitsProvider()
     {
