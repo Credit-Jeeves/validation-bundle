@@ -20,7 +20,5 @@ interface PaymentProcessorInterface
         $paymentType = PaymentGroundType::RENT
     );
 
-    public function processDepositReport(DateTime $date);
-
-    public function processReversalReport(DateTime $date);
+    public function loadReport($reportType);
 }
