@@ -3782,6 +3782,14 @@ table.ui-datepicker-calendar tbody tr td a {
     width: 30px;
 }
 
+#rentjeeves_checkoutbundle_userdetailstype_first_name input {
+    width: 210px;
+}
+
+#rentjeeves_checkoutbundle_userdetailstype_last_name input {
+    width: 210px;
+}
+
 form label {
     /*    float: left;*/
     color: inherit;
