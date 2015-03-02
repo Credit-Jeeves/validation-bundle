@@ -24,7 +24,7 @@
             </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
-                <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" and "Pay Rent. Build Credit History." are trademarks.</target>
+                <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" is a registered trademark.</target>
             </trans-unit>
             <trans-unit id="rj.footer.comment">
                 <source>rj.footer.comment</source>
@@ -176,13 +176,13 @@
             <trans-unit id="iframe.title">
                 <source>iframe.title</source>
                 <target>
-                        Pay Rent. Build Credit History.
+                        Pay Rent Online.
                 </target>
             </trans-unit>
             <trans-unit id="iframe.description">
                 <source>iframe.description</source>
                 <target>
-                       No more paper checks. Pay online with e-Check or Credit Card.
+                       Pay with e-Check or Credit Card and Build Credit History too.
                 </target>
             </trans-unit>
             <trans-unit id="iframe.find">
@@ -1247,7 +1247,7 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.title_2">
                 <source>popup.invite.tenant.title_2</source>
-                <target>Build credit history while you pay rent. Introductory pricing.</target>
+                <target>Build credit history while you pay rent.</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.note.title">
                 <source>popup.invite.tenant.note.title</source>
@@ -1522,7 +1522,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_1">
                 <source>public.base.pay.title_1</source>
-                <target>Pay your rent on time. Build credit history.</target>
+                <target>Build Credit History when you Pay Rent Online.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_2">
                 <source>public.base.pay.title_2</source>
@@ -1920,7 +1920,7 @@
             </trans-unit>
             <trans-unit id="iframe.items.title">
                 <source>iframe.items.title</source>
-                <target>Pay Rent. Build Credit History.</target>
+                <target>Pay Rent Online.</target>
             </trans-unit>
             <trans-unit id="iframe.item.pay.title">
                 <source>iframe.item.pay.title</source>
@@ -3064,6 +3064,10 @@
             <trans-unit id="import.status.exception">
                 <source>import.status.exception</source>
                 <target>Exception (%id%)</target>
+            </trans-unit>
+            <trans-unit id="landlord_dashboard.payment.title">
+                <source>landlord_dashboard.payment.title</source>
+                <target>Created: %created%. Sent: %sent%</target>
             </trans-unit>
         </body>
     </file>

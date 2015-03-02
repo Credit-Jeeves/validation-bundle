@@ -244,6 +244,35 @@ abstract class ContractWaiting
     protected $paymentAccepted = PaymentAccepted::ANY;
 
     /**
+     * @ORM\Column(
+     *     type="string",
+     *     nullable=true,
+     *     name="external_lease_id"
+     * )
+     * @var srting
+     */
+    protected $externalLeaseId;
+
+    /**
+     * @return string
+     */
+    public function getExternalLeaseId()
+    {
+        return $this->externalLeaseId;
+    }
+
+    /**
+     * @param string $externalLeaseId
+     * @return $this
+     */
+    public function setExternalLeaseId($externalLeaseId)
+    {
+        $this->externalLeaseId = $externalLeaseId;
+
+        return $this;
+    }
+
+    /**
      * @return integer
      */
     public function getPaymentAccepted()

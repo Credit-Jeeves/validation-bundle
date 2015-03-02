@@ -228,7 +228,7 @@ class AccountingPaymentSynchronizer
             return false;
         }
 
-        $apiClient->setDebug($this->debug);
+
 
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
@@ -264,7 +264,7 @@ class AccountingPaymentSynchronizer
         return $this->getApiClient(
             $accountingType,
             $order->getContract()->getHolding()->getExternalSettings()
-        );
+        )->setDebug($this->debug);
     }
 
     /**
@@ -279,7 +279,7 @@ class AccountingPaymentSynchronizer
             $apiClient->setSettings($accountingSettings);
         }
 
-        return $apiClient;
+        return $apiClient->setDebug($this->debug);
     }
 
     /**

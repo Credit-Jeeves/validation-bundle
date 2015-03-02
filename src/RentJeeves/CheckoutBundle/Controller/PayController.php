@@ -1,21 +1,17 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Address;
 use Doctrine\Common\Collections\ArrayCollection;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
-use RentJeeves\DataBundle\Enum\PaymentType as PaymentEnumType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -183,7 +179,7 @@ class PayController extends Controller
                     'array',
                     SerializationContext::create()->setGroups(array('basic'))
                 ),
-                'newAddress' => $this->hasNewAddress ?
+                'newAddress' => $this->hasNewAddress($paymentAccountType) ?
                     $this->get('jms_serializer')->serialize(
                         $paymentAccountEntity->getAddress(),
                         'array'

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ResidentTransactions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ResidentTransactions>
   <Property>
     <RT_Customer>
       <RTServiceTransactions>
@@ -10,7 +10,7 @@
               <TransactionDate>%date%</TransactionDate>
               <BatchID>testBatchId</BatchID>
               <UnitID>2-a</UnitID>
-              <CustomerID xsi:nil="true"/>
+              <CustomerID></CustomerID>
               <PaidBy>TIMOTHY APPLEGATE</PaidBy>
               <Amount>1500.00</Amount>
               <Comment>770 Broadway, Manhattan, New York, NY 10003</Comment>

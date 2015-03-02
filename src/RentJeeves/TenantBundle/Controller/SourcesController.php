@@ -104,7 +104,7 @@ class SourcesController extends Controller
                     'array',
                     SerializationContext::create()->setGroups(array('basic'))
                 ),
-                'newAddress' => $this->hasNewAddress ?
+                'newAddress' => $this->hasNewAddress($paymentAccountType) ?
                     $this->get('jms_serializer')->serialize(
                         $paymentAccountEntity->getAddress(),
                         'array'

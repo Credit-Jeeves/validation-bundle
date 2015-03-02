@@ -158,6 +158,7 @@ abstract class MappingAbstract implements MappingInterface
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
         $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
+        $waitingRoom->setExternalLeaseId($contract->getExternalLeaseId());
         /**
          * Property can be null because it can be not valid
          */

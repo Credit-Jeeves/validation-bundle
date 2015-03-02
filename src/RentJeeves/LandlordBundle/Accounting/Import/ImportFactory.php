@@ -153,7 +153,7 @@ class ImportFactory
         /** @var $holding Holding */
         $holding = $user->getHolding();
         $accountingSettings = $holding->getAccountingSettings();
-        if (empty($accountingSettings)) {
+        if (empty($accountingSettings) || $accountingSettings->getApiIntegration() === ApiIntegrationType::NONE) {
             return ApiIntegrationType::NONE;
         }
 

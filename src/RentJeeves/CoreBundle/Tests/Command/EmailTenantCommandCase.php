@@ -20,7 +20,7 @@ class EmailTenantCommandCase extends BaseTestCase
 
         $plugin = $this->registerEmailListener();
         $plugin->clean();
-        
+
         $command = $application->find('Email:tenant');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -40,10 +40,10 @@ class EmailTenantCommandCase extends BaseTestCase
         $this->load(false);
         $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
-    
+
         $plugin = $this->registerEmailListener();
         $plugin->clean();
-    
+
         $command = $application->find('Email:tenant');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -77,7 +77,7 @@ class EmailTenantCommandCase extends BaseTestCase
             )
         );
         $this->assertRegExp(
-            '/Start processing auto payment contracts.*Finished command/',
+            '/.*Finished command.*/',
             $commandTester->getDisplay()
         );
         $this->assertCount(1, $plugin->getPreSendMessages());
@@ -93,10 +93,10 @@ class EmailTenantCommandCase extends BaseTestCase
         $this->load(false);
         $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
-        
+
         $plugin = $this->registerEmailListener();
         $plugin->clean();
-        
+
         $command = $application->find('Email:tenant');
         $commandTester = new CommandTester($command);
         $commandTester->execute(

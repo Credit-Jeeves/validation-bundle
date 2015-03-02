@@ -53,13 +53,16 @@ class ResManClientCase extends Base
         $container = $this->getKernel()->getContainer();
         /** @var $resManClient ResManClient */
         $resManClient = $container->get('resman.client');
-
         $settings = new ResManSettings();
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
 
         /** @var $residentTransactions ResidentTransactions */
         $residentTransactions = $resManClient->getResidentTransactions(self::EXTERNAL_PROPERTY_ID);
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions',
+            $residentTransactions
+        );
 
         $rtCustomers = $residentTransactions->getProperty()->getRtCustomers();
         $this->assertInternalType('array', $rtCustomers);
