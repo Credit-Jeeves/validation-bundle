@@ -18,15 +18,17 @@ class HoldingCase extends BaseTestCase
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
         $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
+        $mriSettings = $em->getRepository('RjDataBundle:MRISettings')->findAll();
         $this->assertCount(1, $resManSettings);
         $this->assertCount(1, $accountingSettings);
+        $this->assertCount(1, $mriSettings);
 
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
         $tableBlock->clickLink('link_add');
         $this->assertNotNull($textFields = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(9, $textFields);
+        $this->assertCount(14, $textFields);
         $textFields[0]->setValue('Test');
         $this->assertNotNull(
             $links = $this->page->findAll(
@@ -35,8 +37,9 @@ class HoldingCase extends BaseTestCase
             )
         );
         $links[2]->click();
-        $this->assertNotNull($textField = $this->page->find('css', 'input[type=url]'));
-        $textField->setValue('https://www.iyardiasp.com/8223thirdparty708dev/');
+        $this->assertNotNull($urlTextFields = $this->page->findAll('css', 'input[type=url]'));
+        $this->assertCount(2, $urlTextFields);
+        $urlTextFields[0]->setValue('https://www.iyardiasp.com/8223thirdparty708dev/');
         $textFields[1]->setValue('renttrackws');
         $textFields[2]->setValue('57742');
         $textFields[3]->setValue('sdb17\SQL2k8_R2');
@@ -44,6 +47,14 @@ class HoldingCase extends BaseTestCase
         $textFields[5]->setValue('SQL Server');
         $links[3]->click();
         $textFields[8]->setValue('728192738921738927398');
+        $links[4]->click();
+        $textFields[9]->setValue('RENTTRACKAPI');
+        $textFields[10]->setValue('k8raKFPJ');
+        $textFields[11]->setValue('RENTTRACK');
+        $textFields[12]->setValue('3D5C25981F2911DA566EA5AC363B1B9B5CA8A5AD75EEDECB1EC0EDA76902926A');
+        $textFields[13]->setValue('FE11CEE9FB6FDB03AA3950E3769C342FD58E3089EBF5BAD52FBB7D32B6152421');
+        $urlTextFields[1]->setValue('https://mri45pc.saas.mrisoftware.com/mriapiservices/api.asp');
+
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
         $this->assertNotNull(
@@ -75,7 +86,7 @@ class HoldingCase extends BaseTestCase
             )
         );
         $links[2]->click();
-        $this->assertCount(9, $textFields);
+        $this->assertCount(14, $textFields);
         $textFields[2]->setValue('57742111111111111');
         $this->assertNotNull(
             $test = $this->page->find(
@@ -94,7 +105,10 @@ class HoldingCase extends BaseTestCase
 
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
         $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
+        $mriSettings = $em->getRepository('RjDataBundle:MRISettings')->findAll();
+
         $this->assertCount(2, $resManSettings);
         $this->assertCount(2, $accountingSettings);
+        $this->assertCount(2, $mriSettings);
     }
 }

@@ -3,6 +3,7 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -76,6 +77,19 @@ class RjHoldingAdmin extends Admin
                     'sortable'  => 'position',
                 )
             )
+            ->with('MRI Settings')
+            ->add(
+                'mriSettings',
+                $contrainer->get('form.mri_settings'),
+                array(
+                    'required' => false,
+                ),
+                array(
+                    'edit'      => 'inline',
+                    'inline'    => 'table',
+                    'sortable'  => 'position',
+                )
+            )
             ->end();
     }
 
@@ -94,9 +108,6 @@ class RjHoldingAdmin extends Admin
      */
     protected function setHolding(Holding $holding)
     {
-        /**
-         * @var $yardi YardiSettings
-         */
         $yardi = $holding->getYardiSettings();
         if ($yardi && $yardi->getUrl()) {
             $yardi->setHolding($holding);
@@ -109,6 +120,13 @@ class RjHoldingAdmin extends Admin
             $resMan->setHolding($holding);
         } else {
             $holding->setResManSettings(null);
+        }
+
+        $mriSettings = $holding->getMriSettings();
+        if ($mriSettings && $mriSettings->getUser()) {
+            $mriSettings->setHolding($holding);
+        } else {
+            $holding->setMriSettings(null);
         }
     }
 

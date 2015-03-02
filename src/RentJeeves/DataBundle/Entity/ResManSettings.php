@@ -8,7 +8,6 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(name="resman_settings")
- * @ORM\HasLifecycleCallbacks
  */
 class ResManSettings extends Base implements SettingsInterface
 {
