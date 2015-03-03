@@ -1,6 +1,7 @@
 model: RentJeeves\DataBundle\Entity\MRISettings
 fixtures:
     MRISetting_1:
+        clientId: C225999
         holding: rjHolding_1
         url: https://mri45pc.saas.mrisoftware.com/mriapiservices/api.asp
         databaseName: RENTTRACK
