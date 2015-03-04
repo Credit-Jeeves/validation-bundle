@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class DashboardCase extends BaseTestCase
@@ -56,7 +58,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (38)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (39)', $allh2->getText(), 'Wrong count');
 
         $this->assertNotNull($searchPayments_link = $this->page->find('css', '#searchPayments_link'));
         $searchPayments_link->click();
@@ -79,7 +81,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (38)', $allh2->getHtml(), 'Wrong count');
+        $this->assertEquals('payments.total (39)', $allh2->getHtml(), 'Wrong count');
 
         $this->logout();
     }
@@ -163,6 +165,13 @@ class DashboardCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $order = $em->getRepository('DataBundle:Order')->findOneBy([
+            'sum'   => 3700
+        ]);
+        $order->setType(OrderType::CASH);
+        $em->flush($order);
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");

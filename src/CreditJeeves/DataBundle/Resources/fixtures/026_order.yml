@@ -80,7 +80,7 @@ fixtures:
   rjOrder_66:
     user: Tenant_6
     status: new
-    type: cash
+    type: heartland_card
     sum: 3700
     created_at: 'now'
     updated_at: 'now'
