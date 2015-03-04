@@ -45,14 +45,14 @@ class OrderRepository extends EntityRepository
      * @param Group $group
      * @param string $searchBy
      * @param string $search
-     * @param bool $isNeedShowCashPayment
+     * @param bool $showCashPayments
      * @return array
      */
     public function countOrders(
         \CreditJeeves\DataBundle\Entity\Group $group,
         $searchBy = '',
         $search = '',
-        $isNeedShowCashPayment = true
+        $showCashPayments = true
     ) {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -71,7 +71,7 @@ class OrderRepository extends EntityRepository
             }
         }
 
-        if (!$isNeedShowCashPayment) {
+        if (!$showCashPayments) {
             $query->andWhere('o.type != :cash');
             $query->setParameter('cash', OrderType::CASH);
         }
@@ -89,7 +89,7 @@ class OrderRepository extends EntityRepository
      * @param string $order
      * @param string $searchBy
      * @param string $search
-     * @param bool $isNeedShowCashPayment
+     * @param bool $showCashPayments
      * @return mixed
      */
     public function getOrdersPage(
@@ -100,7 +100,7 @@ class OrderRepository extends EntityRepository
         $order = 'ASC',
         $searchBy = 'p.street',
         $search = '',
-        $isNeedShowCashPayment = true
+        $showCashPayments = true
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
@@ -142,7 +142,7 @@ class OrderRepository extends EntityRepository
                 break;
         }
         $this->applySortField($sort);
-        if (!$isNeedShowCashPayment) {
+        if (!$showCashPayments) {
             $query->andWhere('o.type != :cash');
             $query->setParameter('cash', OrderType::CASH);
         }

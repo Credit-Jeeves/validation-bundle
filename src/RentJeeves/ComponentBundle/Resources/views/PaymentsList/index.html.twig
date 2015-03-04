@@ -6,9 +6,9 @@
             {% if group.groupSettings.isIntegrated %}
                 <div class="externalPaymentsBlock" data-bind="visible: searchCollum() != 'deposit'">
                     <input type="checkbox"
-                           data-bind="checked: isNeedShowCashPayment"
+                           data-bind="checked: showCashPayments"
                     />
-                    <span>{{ 'show_external_payments'|trans }}</span>
+                    <span>{{ 'landlord.payments_list.show_external_payments'|trans }}</span>
                 </div>
             {% endif %}
             <select id="searchPayments" data-bind="value: searchCollum" class="select custom-select blue-arrow selectBox">

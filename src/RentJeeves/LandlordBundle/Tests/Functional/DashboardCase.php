@@ -170,15 +170,13 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
 
         $this->assertEquals('payments.total (38)', $title->getHtml());
-        $this->assertNotNull($searchPayments_link = $this->page->find('css', '.externalPaymentsBlock>input'));
-        $searchPayments_link->click();
+        $this->assertNotNull($searchPaymentsLink = $this->page->find('css', '.externalPaymentsBlock>input'));
+        $searchPaymentsLink->click();
 
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
         $this->assertEquals('payments.total (39)', $title->getHtml());
-
-        $this->logout();
     }
 }

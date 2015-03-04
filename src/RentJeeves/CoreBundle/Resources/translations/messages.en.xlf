@@ -3069,8 +3069,8 @@
                 <source>landlord_dashboard.payment.title</source>
                 <target>Created: %created%. Sent: %sent%</target>
             </trans-unit>
-            <trans-unit id="show_external_payments">
-                <source>show_external_payments</source>
+            <trans-unit id="landlord.payments_list.show_external_payments">
+                <source>landlord.payments_list.show_external_payments</source>
                 <target>Show External Payments</target>
             </trans-unit>
         </body>

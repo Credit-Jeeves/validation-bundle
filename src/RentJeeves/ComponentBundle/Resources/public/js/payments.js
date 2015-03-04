@@ -14,7 +14,7 @@ function Payments() {
   this.searchText = ko.observable("");
   this.searchCollum = ko.observable("status");
   this.notHaveResult = ko.observable(false);
-  this.isNeedShowCashPayment = ko.observable(false);
+  this.showCashPayments = ko.observable(false);
 
   this.searchCollum.subscribe(function(newValue) {
       if (newValue == 'deposit') {
@@ -22,7 +22,7 @@ function Payments() {
       }
   });
 
-  this.isNeedShowCashPayment.subscribe(function(newValue) {
+  this.showCashPayments.subscribe(function(newValue) {
       self.filterPayments();
   });
 
@@ -49,7 +49,7 @@ function Payments() {
                   'isSortAsc': self.isSortAsc(),
                   'searchCollum': self.searchCollum(),
                   'searchText': self.searchText(),
-                  'isNeedShowCashPayment': self.isNeedShowCashPayment()
+                  'showCashPayments': self.showCashPayments()
               }
           },
           success: function(response) {
