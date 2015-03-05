@@ -20,6 +20,12 @@
     <section class="form-content">
         <p class="dateTitle">{{ 'deposit.date.range'|trans }}</p>
         <form action="{{ path('accounting_export')}}" method="post" {{ form_enctype(formBaseOrder) }} id="baseOrderReport" >
+            <span class="info-message" data-bind="visible: (exportBy() == 'deposits')">
+                {{ 'landlord_export.export_by_deposits.description'|trans }}
+            </span>
+            <span class="info-message" data-bind="visible: (exportBy() == 'payments')">
+                {{ 'landlord_export.export_by_payments.description'|trans }}
+            </span>
             {{ form_widget(formBaseOrder) }}
            <button type="submit" class="button small submitBaseReport">
                     <span>
@@ -58,6 +64,7 @@
                 var property = {'id': '{{ choice.value }}', 'name': '{{ choice.label }}'};
                 viewModel.properties.push(property);
             {% endfor %}
+            viewModel.exportBy("{{ formBaseOrder.export_by.vars['data'] }}");
         });
 </script>
 {% endblock %}

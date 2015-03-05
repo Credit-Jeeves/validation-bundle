@@ -3069,6 +3069,14 @@
                 <source>landlord_dashboard.payment.title</source>
                 <target>Created: %created%. Sent: %sent%</target>
             </trans-unit>
+            <trans-unit id="landlord_export.export_by_deposits.description">
+                <source>landlord_export.export_by_deposits.description</source>
+                <target>Export payments that have been deposited by deposit date.</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_payments.description">
+                <source>landlord_export.export_by_payments.description</source>
+                <target>Export all payments initiated by initiation date.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

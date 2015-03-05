@@ -1,4 +1,5 @@
 function ExportViewModel() {
+    var self = this;
     this.exportTypes = ko.observableArray([]);
     this.selectedType = ko.observable(null);
     this.properties = ko.observableArray([]);
@@ -11,4 +12,9 @@ function ExportViewModel() {
     this.end = ko.observable(null);
     this.makeZip = ko.observable(false);
     this.includeAllGroups = ko.observable(false);
+    this.exportBy = ko.observable();
+
+    this.exportBy.subscribe(function(newValue) {
+
+    });
 }
