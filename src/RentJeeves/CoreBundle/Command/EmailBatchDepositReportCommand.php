@@ -86,7 +86,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 ];
                 if (!$needSend && (count($batchData) > 0 || count($reversalData) > 0)) {
                     if ($groupid) {  // if groupid option specified, only send for that group
-                      ($group->getId() == $groupid) ? $needSend = true : $needSend = false;
+                      $needSend = ($group->getId() == $groupid) ? true : false;
                     } else {         // otherwise send to everyone
                         $needSend = true;
                     }
