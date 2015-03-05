@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
@@ -237,16 +238,18 @@ class OrderRepository extends EntityRepository
         $start,
         $end,
         $groupId,
+        $exportBy,
         $propertyId = null
     ) {
-        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end);
+        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end, $exportBy);
     }
 
     public function getOrdersForRealPageReport(
         $groupId,
         $propertyId,
         $start,
-        $end
+        $end,
+        $exportBy
     ) {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -256,8 +259,14 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.unit', 'unit');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('o.heartlands', 'heartland');
-        $query->where("heartland.depositDate BETWEEN :start AND :end");
-        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->where('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+            $query->andWhere("heartland.depositDate BETWEEN :start AND :end");
+        } else {
+            $query->where("o.created_at BETWEEN :start AND :end");
+        }
+
         $query->andWhere('g.id = :groupId');
 
         if (!is_null($propertyId)) {
@@ -275,7 +284,7 @@ class OrderRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getOrdersForPromasReport(Group $group, $start, $end)
+    public function getOrdersForPromasReport(Group $group, $start, $end, $exportBy)
     {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -287,9 +296,15 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('o.heartlands', 'heartland');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
-        $query->where("heartland.depositDate BETWEEN :start AND :end");
-        $query->andWhere('o.status = :status');
-        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+        $query->where('o.status = :status');
+
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+            $query->andWhere("heartland.depositDate BETWEEN :start AND :end");
+        } else {
+            $query->andWhere("o.created_at BETWEEN :start AND :end");
+        }
+
         $query->andWhere('o.type in (:orderType)');
         $query->andWhere('g.id = :groupId');
         $query->andWhere('gs.isIntegrated = 1');

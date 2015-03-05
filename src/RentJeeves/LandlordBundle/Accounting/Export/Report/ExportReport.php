@@ -6,6 +6,10 @@ use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 
 abstract class ExportReport
 {
+    const EXPORT_BY_PAYMENTS = 'payments';
+
+    const EXPORT_BY_DEPOSITS = 'deposits';
+
     protected $filename;
     protected $type;
     protected $fileType;

@@ -79,7 +79,7 @@ class PromasArchive extends ExportReport
 
     protected function validateSettings($settings)
     {
-        if (!isset($settings['begin']) || !isset($settings['end'])) {
+        if (!isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
             throw new ExportException('Not enough parameters for batch report');
         }
     }

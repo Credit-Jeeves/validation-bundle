@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -144,12 +145,15 @@ class ExportType extends AbstractType
                 'attr'        => [
                     'force_row' => true,
                     'class'     => 'original',
-                    'data-bind' => 'checked: exportBy'
+                    'data-bind' => 'checked: exportBy',
+                    'row_attr' => array(
+                        'data-bind' => "visible: selectedType() != 'yardi'",
+                    )
                 ],
                 'required'    => true,
                 'choices'     => [
-                    'payments'  => 'Payments',
-                    'deposits'   => 'Deposits'
+                    ExportReport::EXPORT_BY_PAYMENTS  => 'Payments',
+                    ExportReport::EXPORT_BY_DEPOSITS  => 'Deposits'
                 ],
                 'data'       => 'deposits',
                 'multiple'  => false,

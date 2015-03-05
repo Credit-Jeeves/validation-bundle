@@ -6,9 +6,6 @@ use \DateTime;
 use \SimpleXMLElement;
 use ZipArchive;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- */
 class ExportCase extends BaseTestCase
 {
     /**
