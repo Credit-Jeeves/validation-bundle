@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use RentJeeves\PublicBundle\Form\UnitType;
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 
 class TenantType extends AbstractType
 {
@@ -81,8 +82,7 @@ class TenantType extends AbstractType
         );
 
         $builder->add(
-            'phone',
-            null
+            $builder->create('phone', 'text', ['required' => false])->addViewTransformer(new PhoneNumberTransformer())
         );
         $builder->add(
             'password',
