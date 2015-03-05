@@ -55,8 +55,12 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         $resend = $input->getOption('resend');
 
         $output->writeln('Preparing daily batch deposit report for ' . $date->format('m/d/Y'));
-        if ($groupid) $output->writeln('Only sending emails for group id ' . $groupid);
-        if ($resend) $output->writeln('Adding RESEND note to top of email.');
+        if ($groupid) {
+            $output->writeln('Only sending emails for group id ' . $groupid);
+        }
+        if ($resend) {
+            $output->writeln('Adding RESEND note to top of email.');
+        }
 
         /** @var Mailer $mailer */
         $mailer = $this->getContainer()->get('project.mailer');
@@ -86,7 +90,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 ];
                 if (!$needSend && (count($batchData) > 0 || count($reversalData) > 0)) {
                     if ($groupid) {  // if groupid option specified, only send for that group
-                      $needSend = ($group->getId() == $groupid) ? true : false;
+                        $needSend = ($group->getId() == $groupid) ? true : false;
                     } else {         // otherwise send to everyone
                         $needSend = true;
                     }
