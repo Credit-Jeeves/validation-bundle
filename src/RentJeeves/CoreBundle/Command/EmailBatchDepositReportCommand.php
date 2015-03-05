@@ -27,6 +27,18 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 InputOption::VALUE_OPTIONAL,
                 'Deposit date in format YYYY-MM-DD'
             )
+            ->addOption(
+                'groupid',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Only send email for this Group ID'
+            )
+            ->addOption(
+                'resend',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Set to true to add a "RESENT DUE TO DATA DELAY" header to email.'
+            )
             ->setDescription('Send daily batch deposit report for landlords and holding admins');
     }
 
@@ -39,7 +51,12 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
             $date = new DateTime();
         }
 
-        $output->writeln('Start prepare daily batch deposit report by ' . $date->format('m/d/Y'));
+        $groupid = $input->getOption('groupid');
+        $resend = $input->getOption('resend');
+
+        $output->writeln('Preparing daily batch deposit report for ' . $date->format('m/d/Y'));
+        if ($groupid) $output->writeln('Only sending emails for group id ' . $groupid);
+        if ($resend) $output->writeln('Adding RESEND note to top of email.');
 
         /** @var Mailer $mailer */
         $mailer = $this->getContainer()->get('project.mailer');
@@ -49,6 +66,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         $repoLandlord = $doctrine->getRepository('RjDataBundle:Landlord');
         /** @var HeartlandRepository $repoHeartland */
         $repoHeartland = $doctrine->getRepository('RjDataBundle:Heartland');
+
+        $output->writeln('Sending emails to holding admins.');
 
         $holdingAdmins = $repoLandlord->findBy(['is_super_admin' => true], ['email' => 'DESC']);
         foreach ($holdingAdmins as $holdingAdmin) {
@@ -66,11 +85,21 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                     'returns' => $reversalData,
                 ];
                 if (!$needSend && (count($batchData) > 0 || count($reversalData) > 0)) {
-                    $needSend = true;
+                    if ($groupid) {  // if groupid option specified, only send for that group
+                      ($group->getId() == $groupid) ? $needSend = true : $needSend = false;
+                    } else {         // otherwise send to everyone
+                        $needSend = true;
+                    }
                 }
             }
-            !$needSend || $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date);
+            if ($needSend) {
+                $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date, $resend);
+                $output->write('.');
+            }
         }
+
+        $output->writeln('');
+        $output->writeln('Sending emails to non-admins.');
 
         $landlords = $repoLandlord->findBy(['is_super_admin' => false], ['email' => 'DESC']);
         foreach ($landlords as $landlord) {
@@ -79,17 +108,24 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 /** @var Group $group */
                 $batchData = $repoHeartland->getBatchDepositedInfo($group, $date);
                 $reversalData = $repoHeartland->getReversalDepositedInfo($group, $date);
-                if (count($batchData) > 0 || count($reversalData) > 0) {
-                    $mailer->sendBatchDepositReportLandlord(
-                        $landlord,
-                        $group,
-                        $date,
-                        $this->prepareBatchReportData($batchData),
-                        $reversalData
-                    );
+                // only send if no groupid option specified, or if groupid option matches current group
+                if ((!$groupid) || ($groupid && ($group->getId() == $groupid))) {
+                    if (count($batchData) > 0 || count($reversalData) > 0) {
+                        $mailer->sendBatchDepositReportLandlord(
+                            $landlord,
+                            $group,
+                            $date,
+                            $this->prepareBatchReportData($batchData),
+                            $reversalData,
+                            $resend
+                        );
+                    }
+                    $output->write('.');
                 }
             }
         }
+        $output->writeln('');
+        $output->writeln('Sending batch deposit report for ' . $date->format('m/d/Y') . ' complete.');
     }
 
     protected function prepareBatchReportData($data)
