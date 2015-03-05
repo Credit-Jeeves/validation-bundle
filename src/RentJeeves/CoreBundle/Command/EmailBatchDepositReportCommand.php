@@ -123,8 +123,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                             $reversalData,
                             $resend
                         );
+                        $output->write('.');
                     }
-                    $output->write('.');
                 }
             }
         }
