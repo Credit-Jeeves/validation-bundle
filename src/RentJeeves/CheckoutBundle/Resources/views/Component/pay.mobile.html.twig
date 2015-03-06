@@ -39,7 +39,32 @@
         $("#revRentAmount").html($("#rentjeeves_checkoutbundle_paymenttype_amount").val());
         $("#revMethod").html($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount option:selected").html());
         $("#revSendOn").html($("#rentjeeves_checkoutbundle_paymenttype_start_date").val());
-        $("#revRecurring").html($('#rentjeeves_checkoutbundle_paymenttype_type').val)
+        $("#revRecurring").html($('#rentjeeves_checkoutbundle_paymenttype_type').val);
+    }
+    recurringFormIds=[
+            "rentjeeves_checkoutbundle_paymenttype_frequency_row",
+            "rentjeeves_checkoutbundle_paymenttype_startMonth_row",
+            "rentjeeves_checkoutbundle_paymenttype_ends_row"
+    ]
+    onetimeFormIds=[
+            "rentjeeves_checkoutbundle_paymenttype_start_date_row"
+    ]
+
+    function formType(i){
+            $.each(recurringFormIds,function(index,value){
+                if(i) {
+                    $('#' + value).hide();
+                }else{
+                    $('#' + value).show();
+                }
+            })
+            $.each(onetimeFormIds,function(index,value){
+                if(!i) {
+                    $('#' + value).hide();
+                }else{
+                    $('#' + value).show();
+                }
+            })
     }
 </script>
 

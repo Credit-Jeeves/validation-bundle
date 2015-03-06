@@ -5,6 +5,10 @@ namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
 class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGeneratorInterface {
 
+    function isMobile(){
+        return true;
+    }
+
     function amountAttrs()
     {
         return array_merge(parent::amountAttrs(),
@@ -19,7 +23,8 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
     {
         return array_merge(parent::amountAttrs(),
             array(
-                'data-native-menu' => "false"
+                'data-native-menu' => "false",
+                'onchange' => "if(this.value=='recurring'){formType(false)}else{formType(true)}"
                 //'data-enhanchment'=>"false",
                 //'data-enhance'=>'false',
                 //'data-native-menu'=>'true'

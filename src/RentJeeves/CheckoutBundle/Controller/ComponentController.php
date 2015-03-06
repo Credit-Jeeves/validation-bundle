@@ -42,6 +42,7 @@ class ComponentController extends Controller
                 0,
                 0,
                 $attributes
+
             )
         );
         $paymentBalanceOnlyType =  $this->createForm(
@@ -79,6 +80,8 @@ class ComponentController extends Controller
         if($mobile){
             return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars); //mobile template override
         }else{
+            //return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars); //mobile template override
+            //return $this->render('RjCheckoutBundle:Component:pay.html.twig', $pageVars); //mobile template override
             return $pageVars;
         }
     }

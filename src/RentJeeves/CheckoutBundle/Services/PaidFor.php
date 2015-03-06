@@ -35,9 +35,11 @@ class PaidFor
     {
         $return = [];
         $this->setDueDate($contract);
+
         if ($contract->getStatus() == ContractStatus::INVITE || $contract->getStatus() == ContractStatus::APPROVED) {
             return $this->returnDefaultValue($return);
         }
+
         if ($paidTo = $contract->getPaidToWithDueDate()) {
             $return = $this->makeDatesFromDate($paidTo);
         }
@@ -149,6 +151,7 @@ class PaidFor
 
     protected function setDueDate(Contract $contract)
     {
+
         if ($contract->getDueDate()) {
             $this->dueDate = $contract->getDueDate();
             return;

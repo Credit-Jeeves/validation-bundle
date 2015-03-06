@@ -40,6 +40,7 @@ class PayController extends Controller
 
     protected function createPaymentForm(Request $request, $mobile = false)
     {
+
         $contractId = $request->get('contract_id');
         $contract = $this->getDoctrine()
             ->getManager()
@@ -81,6 +82,7 @@ class PayController extends Controller
                 $this->getDoctrine()->getManager(),
                 $contract->getGroup()->getGroupSettings()->getOpenDate(),
                 $contract->getGroup()->getGroupSettings()->getCloseDate(),
+                $attributes,
                 $this->get('translator')
             );
         } else {
@@ -94,6 +96,7 @@ class PayController extends Controller
                 $attributes
             );
         }
+
         if (!empty($paymentEntity) &&
             $paymentEntity->getPaymentAccount()->getUser()->getId() != $this->getUser()->getId()
         ) {

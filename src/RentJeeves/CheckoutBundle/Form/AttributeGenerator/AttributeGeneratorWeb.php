@@ -5,61 +5,64 @@ namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
 class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGeneratorInterface{
 
+    function isMobile(){
+        return false;
+    }
     function amountAttrs()
     {
-        $attributes = parent::amountAttrs();
-        $attributes[] = array(
+        return array_merge(parent::amountAttrs(),
+         array(
             'class' => 'half-of-right',
             'data-bind' => 'value: payment.amount',
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function paidForAttrs()
     {
-        $attributes = parent::paidForAttrs();
-        $attributes[] = array(
+        return array_merge(parent::paidForAttrs(),
+         array(
             'class' => 'original paid-for',
             'data-bind' => "options: payment.paidForOptions, optionsText: 'text', optionsValue: 'value', ".
                 "value: payment.paidFor",
             'force_row' => false,
             'template' => 'paidFor-html'
-        );
+        ));
 
-        return $attributes;
+        
 
     }
 
     function amountOtherAttrs()
     {
-        $attributes = parent::amountOtherAttrs();
-        $attributes[] = array(
+        return array_merge(parent::amountOtherAttrs(),
+         array(
             'class' => 'half-of-right',
             'data-bind' => 'value: payment.amountOther'
-        );
+        ));
 
-        return $attributes;
+        
 
     }
 
     function totalAttrs()
     {
-        $attributes = parent::totalAttrs();
-        $attributes[] = array(
+        return array_merge(parent::totalAttrs(),
+         array(
             'data-bind' => 'value: totalInput',
             'view' => array(
                 'data-bind' => 'text: getTotal',
             )
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function typeAttrs()
     {
-        $attributes = parent::typeAttrs();
-        $attributes[] = array(
+        return array_merge(parent::typeAttrs(),
+         array(
             'class' => 'original',
             'html' =>
             // green message box for recurring payment
@@ -97,43 +100,43 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             'row_attr' => array(
                 'data-bind' => ''
             )
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function frequencyAttrs()
     {
-        $attributes = parent::frequencyAttrs();
-        $attributes[] = array(
+        return array_merge(parent::frequencyAttrs(),
+         array(
             'class' => 'original',
             'data-bind' => 'value: payment.frequency',
             'row_attr' => array(
                 'data-bind' => 'visible: \'recurring\' == payment.type()'
             )
-        );
-        return $attributes;
+        ));
+        
     }
 
     function dueDateAttrs()
     {
-        $attributes = parent::dueDateAttrs();
-        $attributes[] = array(
+        return array_merge(parent::dueDateAttrs(),
+         array(
             'class' => 'original',
             'data-bind' => "options: payment.dueDates," .
                 "value: payment.dueDate, optionsCaption: ''",
             'box_attr' => array(
                 'data-bind' => 'visible: \'monthly\' == payment.frequency()'
             )
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function startMonthAttrs()
     {
-        $attributes = parent::startMonthAttrs();
-        $attributes[] = array(
+        return array_merge(parent::startMonthAttrs(),
+         array(
             'class' => 'original',
             'data-bind' => '
                         options: payment.startMonths,
@@ -145,15 +148,15 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             'row_attr' => array(
                 'data-bind' => 'visible: \'recurring\' == payment.type()'
             )
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function startYearAttrs()
     {
-        $attributes = parent::startYearAttrs();
-        $attributes[] = array(
+        return array_merge(parent::startYearAttrs(),
+         array(
             'class' => 'original',
             'data-bind' => '
                         options: payment.startYears,
@@ -165,15 +168,15 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             'row_attr' => array(
                 'data-bind' => 'visible: \'recurring\' == payment.type()'
             )
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function startDateAttrs()
     {
-        $attributes = parent::startDateAttrs();
-        $attributes[] = array(
+        return array_merge(parent::startDateAttrs(),
+         array(
             'class' => 'datepicker-field',
             'row_attr'  => array(
                 'data-bind' => 'visible: \'one_time\' == payment.type()
@@ -181,92 +184,92 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             ),
             'data-bind' => 'datepicker: payment.startDate, ' .
                 'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function endsAttrs()
     {
-        $attributes = parent::endsAttrs();
-        $attributes[] = array(
+        return array_merge(parent::endsAttrs(),
+         array(
             'data-bind' => 'checked: payment.ends',
             'row_attr' => array(
                 'data-bind' => 'visible: \'recurring\' == payment.type()'
             )
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function endMonthAttrs()
     {
-        $attributes = parent::endMonthAttrs();
-        $attributes[] = array(
+        return array_merge(parent::endMonthAttrs(),
+         array(
             'class' => 'original',
             'data-bind' => 'value: payment.endMonth, enable: \'on\' == payment.ends()',
             'box_attr' => array(
                 'data-bind' => 'visible: \'on\' == payment.ends()'
             )
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function endYearAttrs()
     {
-        $attributes = parent::endYearAttrs();
-        $attributes[] = array(
+        return array_merge(parent::endYearAttrs(),
+         array(
             'class' => 'original',
             'data-bind' => 'value: payment.endYear, enable: \'on\' == payment.ends()',
             'box_attr' => array(
                 'data-bind' => 'visible: \'on\' == payment.ends()'
             )
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function paymentAccountIdAttrs()
     {
-        $attributes = parent::paymentAccountIdAttrs();
-        $attributes[] = array(
+        return array_merge(parent::paymentAccountIdAttrs(),
+         array(
             'data-bind' => 'value: payment.paymentAccountId',
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function contractIdAttrs()
     {
-        $attributes = parent::contractIdAttrs();
-        $attributes[] = array(
+        return array_merge(parent::contractIdAttrs(),
+         array(
             'data-bind' => 'value: payment.contractId',
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function idAttrs()
     {
-        $attributes = parent::idAttrs();
-        $attributes[] = array(
+        return array_merge(parent::idAttrs(),
+         array(
             'data-bind' => 'value: payment.id',
-        );
+        ));
 
-        return $attributes;
+        
     }
 
     function submitAttrs(){
-        $attributes = parent::submitAttrs();
-        $attributes[] = array('force_row' => true, 'class' => 'hide_submit');
-        return $attributes;
+        return array_merge(parent::submitAttrs(),
+         array('force_row' => true, 'class' => 'hide_submit'));
+        
     }
 
     function paymentAccountAttrs(){
-        $attributes = parent::paymentAccountAttrs();
-        $attributes[] = array('style'=>'display:none');
-        return $attributes;
+        return array_merge(parent::paymentAccountAttrs(),
+         array('style'=>'display:none'));
+        
     }
 
 

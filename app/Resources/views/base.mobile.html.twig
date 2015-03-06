@@ -13,50 +13,7 @@
         <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
 
-        <style>
-            .headerButton{
-                text-shadow: none;
-                padding: 10px;
-                border-right: 1px solid white;
-                text-decoration: none;
-                color: white;
-            }
 
-            .menuOptions{
-                background: black !important;
-                text-shadow: none !important;
-                color: #fff !important;
-                #font-family: ABeeZee !important;
-                font-size: 12pt !important;
-                font-weight: normal;
-                background-image: none;
-            }
-
-            .paymentHistoryTable{
-                background: rgb(220,220,220);
-                border-radius: 5px;
-                text-shadow: none;
-                font-family: PT Sans Caption;
-            }
-
-            .paymentHistoryTable td{
-                padding: 9px;
-            }
-
-            .paymentHistoryTable tr:nth-child(odd){
-                background: rgb(200,200,200);
-            }
-            .paymentHistoryTable headingYear{
-                background: rgb(220,220,220);
-                padding: 12px;
-            }
-            .paymentHistoryTable headingAddress !important{
-                background: rgb(220,220,220);
-                border-bottom: 1px solid rgb(200,200,200);
-                padding: 12px;
-            }
-
-        </style>
 
         {% javascripts
         '@CoreBundle/Resources/public/js/jquery-1.9.1.min.js'
@@ -106,6 +63,7 @@
       //-->
 
           {%block content %}{% endblock %}
+
 
 <!--
     <div data-role="footer">
