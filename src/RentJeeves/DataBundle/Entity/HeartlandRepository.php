@@ -87,9 +87,7 @@ class HeartlandRepository extends EntityRepository
                 '(o.status = :completeOrder AND h.status = :completeTransaction) OR
                 (o.status != :completeOrder AND h.status = :reversedTransaction)'
             );
-            $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
-            $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
-            $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+
             $query->andWhere('h.isSuccessful = 1 AND h.transactionId IS NOT NULL AND h.depositDate IS NOT NULL');
             $query->andWhere("h.depositDate BETWEEN :start AND :end");
         } else {
@@ -97,12 +95,13 @@ class HeartlandRepository extends EntityRepository
                 '((o.status = :completeOrder OR o.status = :pendingOrder) AND h.status = :completeTransaction) OR
                 (o.status != :completeOrder AND h.status = :reversedTransaction)'
             );
-            $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
-            $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
-            $query->setParameter('completeOrder', OrderStatus::COMPLETE);
             $query->setParameter('pendingOrder', OrderStatus::PENDING);
             $query->andWhere("o.created_at BETWEEN :start AND :end");
         }
+
+        $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
+        $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
 
         $query->setParameter('start', $start);
         $query->setParameter('end', $end);

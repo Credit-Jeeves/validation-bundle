@@ -9,6 +9,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use \DateTime;
 use \SimpleXMLElement;
@@ -61,28 +62,25 @@ class ExportCase extends BaseTestCase
         $oneWeekAgo = new DateTime();
         $oneWeekAgo->modify("-7 days");
         $order->setCreatedAt($oneWeekAgo);
+        /** @var UnitMapping $unitMapping */
+        $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(['externalUnitId' => 'AAABBB-7']);
+        $this->assertNotNull($unitMapping);
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+            [
+                'tenant' => $tenant,
+                'group' => $group,
+                'unit'  => $unitMapping->getUnit()
+            ]
+        );
 
-        $contracts = $tenant->getContracts();
-        $usedContract = null;
-        /** @var Contract $contract */
-        foreach ($contracts as $contract) {
-            if ($contract->getGroup()->getId() === $group->getId() &&
-                $property->getId() === $contract->getProperty()->getId() &&
-                $contract->getUnit()->getUnitMapping()
-            ) {
-                $usedContract = $contract;
-                break;
-            }
-        }
-
-        $this->assertNotNull($usedContract);
+        $this->assertNotNull($contract);
 
         $operation = new Operation();
         $operation->setAmount(999);
         $operation->setType(OperationType::RENT);
         $operation->setOrder($order);
         $operation->setPaidFor(new DateTime('8/1/2014'));
-        $operation->setContract($usedContract);
+        $operation->setContract($contract);
 
         $transaction = new Heartland();
         $transaction->setIsSuccessful(false);

@@ -1,5 +1,4 @@
 function ExportViewModel() {
-    var self = this;
     this.exportTypes = ko.observableArray([]);
     this.selectedType = ko.observable(null);
     this.properties = ko.observableArray([]);
