@@ -2,18 +2,8 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
-class DepositReport
+class DepositReport extends PaymentProcessorReport
 {
-    protected $transactions = [];
-
-    /**
-     * @return mixed
-     */
-    public function getTransactions()
-    {
-        return $this->transactions;
-    }
-
     /**
      * @param DepositReportTransaction $transaction
      */

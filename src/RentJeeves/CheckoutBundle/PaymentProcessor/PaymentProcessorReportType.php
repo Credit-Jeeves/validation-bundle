@@ -8,5 +8,5 @@ class PaymentProcessorReportType extends Enum
 {
     const DEPOSIT = 'deposit';
 
-    const REVERSALS = 'reversals';
+    const REVERSAL = 'reversal';
 }

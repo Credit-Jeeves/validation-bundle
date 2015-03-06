@@ -10,6 +10,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use Monolog\Logger;
@@ -348,8 +349,7 @@ class OrderListener
         ) {
             $batchDate = clone $transaction->getCreatedAt();
             $transaction->setBatchDate($batchDate);
-            $businessDaysCalc = $this->container->get('business_days_calculator');
-            $transaction->setDepositDate($businessDaysCalc->getNextBusinessDate(clone $batchDate));
+            $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $batchDate));
         }
     }
 

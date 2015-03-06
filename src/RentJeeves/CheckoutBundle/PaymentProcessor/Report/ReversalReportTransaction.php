@@ -11,14 +11,12 @@ class ReversalReportTransaction
     const TYPE_REFUND = 'refund';
     const TYPE_COMPLETE = 'complete';
 
-    /** @var string */
-    protected $merchantName;
     /** @var DateTime */
     protected $transactionDate;
     /** @var string */
     protected $transactionType;
     /** @var float */
-    protected $amountAppliedToBill;
+    protected $amount;
     /** @var string */
     protected $transactionID;
     /** @var string */
@@ -31,17 +29,17 @@ class ReversalReportTransaction
     /**
      * @return float
      */
-    public function getAmountAppliedToBill()
+    public function getAmount()
     {
-        return $this->amountAppliedToBill;
+        return $this->amount;
     }
 
     /**
-     * @param float $amountAppliedToBill
+     * @param float $amount
      */
-    public function setAmountAppliedToBill($amountAppliedToBill)
+    public function setAmount($amount)
     {
-        $this->amountAppliedToBill = $amountAppliedToBill;
+        $this->amount = $amount;
 
         return $this;
     }

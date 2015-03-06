@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Serializer\Normalizer;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
@@ -32,7 +32,7 @@ class HPSReversalReportDenormalizer implements DenormalizerInterface
 
             $reversalTransaction
                 ->setBatchID($transaction['BatchID'])
-                ->setAmountAppliedToBill($transaction['AmountAppliedToBill'])
+                ->setAmount($transaction['AmountAppliedToBill'])
                 ->setTransactionID($transaction['TransactionID'])
                 ->setOriginalTransactionID($transaction['OriginalTransactionID'])
                 ->setTransactionDate(

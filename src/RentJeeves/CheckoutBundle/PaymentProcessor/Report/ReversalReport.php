@@ -2,7 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
-class ReversalReport
+class ReversalReport extends PaymentProcessorReport
 {
     protected $transactions = [];
 

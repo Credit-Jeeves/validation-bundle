@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Serializer\Encoder;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Encoder;
 
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;

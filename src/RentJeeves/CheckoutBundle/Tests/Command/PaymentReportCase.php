@@ -45,7 +45,7 @@ class PaymentReportCase extends BaseTestCase
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
-        $result = $this->executeCommand(PaymentProcessorReportType::REVERSALS);
+        $result = $this->executeCommand(PaymentProcessorReportType::REVERSAL);
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
         $this->assertCount(4, $count);
@@ -71,7 +71,7 @@ class PaymentReportCase extends BaseTestCase
     {
         $this->load(true);
 
-        $this->executeCommand(PaymentProcessorReportType::REVERSALS);
+        $this->executeCommand(PaymentProcessorReportType::REVERSAL);
 
         $originalTransId = 258258;
         $voidTransId = 258259;
@@ -103,7 +103,7 @@ class PaymentReportCase extends BaseTestCase
 
         $this->assertEquals($firstStatus, $order->getStatus());
 
-        $this->executeCommand(PaymentProcessorReportType::REVERSALS);
+        $this->executeCommand(PaymentProcessorReportType::REVERSAL);
 
         $this->assertNotNull($updatedOrder = $em->getRepository('DataBundle:Order')->find($order->getId()));
         $this->assertEquals($secondStatus, $updatedOrder->getStatus());
@@ -186,7 +186,7 @@ class PaymentReportCase extends BaseTestCase
         $transaction->setBatchId(null);
         $em->flush($transaction);
 
-        $this->executeCommand(PaymentProcessorReportType::REVERSALS);
+        $this->executeCommand(PaymentProcessorReportType::REVERSAL);
 
         /** @var Heartland $resultTransaction */
         $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));

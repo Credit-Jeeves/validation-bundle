@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Serializer\Normalizer;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;

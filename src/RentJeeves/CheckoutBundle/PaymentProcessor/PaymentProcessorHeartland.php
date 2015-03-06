@@ -44,23 +44,27 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
         $this->reportLoader = $reportLoader;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function createPaymentAccount(PaymentAccountData $paymentAccountData, User $user, Group $group)
     {
         return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function executeOrder(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
     {
         return $this->paymentManager->executePayment($order, $paymentAccount, $paymentType);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function loadReport($reportType)
     {
         return $this->reportLoader->loadReport($reportType);
-    }
-
-    public function isNotImplemented($functionName)
-    {
-        throw new \Exception("Function '$functionName' is not implemented yet");
     }
 }
