@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class UserDetailsType extends AbstractType
 {
@@ -147,7 +148,7 @@ class UserDetailsType extends AbstractType
                 'cascade_validation' => true,
                 'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
                 'validation_groups' => function (FormInterface $form) {
-                    $groups = array('birth_and_ssn');
+                    $groups = array('birth_and_ssn','authentication');
                     if ('false' == $form->get('is_new_address')->getData()) {
                         $groups[] = 'address_choice';
                     }

@@ -81,6 +81,13 @@ abstract class User extends BaseUser
      *         "import"
      *     }
      * )
+     * @Assert\Regex(
+     *     pattern = "/^([a-zA-Z]{1,32}){1}$/",
+     *     message="error.user.first_name.authentication",
+     *     groups = {
+     *         "authentication"
+     *     }
+     * )
      * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("string")
      *
@@ -147,6 +154,13 @@ abstract class User extends BaseUser
      *     message="regexp.error.name",
      *     groups = {
      *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^([a-zA-Z]{1,32}){1}$/",
+     *     message="error.user.last_name.authentication",
+     *     groups = {
+     *         "authentication"
      *     }
      * )
      * @Serializer\Groups({"RentJeevesImport"})
