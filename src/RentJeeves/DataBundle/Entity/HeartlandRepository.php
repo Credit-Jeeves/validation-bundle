@@ -83,20 +83,30 @@ class HeartlandRepository extends EntityRepository
         $query->leftJoin('g.groupSettings', 'gs');
 
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
-            $query->where("h.depositDate BETWEEN :start AND :end");
-            $query->andWhere(
+            $query->where(
                 '(o.status = :completeOrder AND h.status = :completeTransaction) OR
                 (o.status != :completeOrder AND h.status = :reversedTransaction)'
             );
             $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
             $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
+            $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+            $query->andWhere('h.isSuccessful = 1 AND h.transactionId IS NOT NULL AND h.depositDate IS NOT NULL');
+            $query->andWhere("h.depositDate BETWEEN :start AND :end");
         } else {
-            $query->where("o.created_at BETWEEN :start AND :end");
+            $query->where(
+                '((o.status = :completeOrder OR o.status = :pendingOrder) AND h.status = :completeTransaction) OR
+                (o.status != :completeOrder AND h.status = :reversedTransaction)'
+            );
+            $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
+            $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
+            $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+            $query->setParameter('pendingOrder', OrderStatus::PENDING);
+            $query->andWhere("o.created_at BETWEEN :start AND :end");
         }
 
         $query->setParameter('start', $start);
         $query->setParameter('end', $end);
-        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+
 
         // order may be deposited and returned the same day, so we should count complete and reversal types
         $query->andWhere('o.status in (:statuses)');
@@ -107,8 +117,6 @@ class HeartlandRepository extends EntityRepository
 
         $query->andWhere('g.id in (:groups)');
         $query->setParameter('groups', $this->getGroupIds($groups));
-
-        $query->andWhere('h.isSuccessful = 1 AND h.transactionId IS NOT NULL AND h.depositDate IS NOT NULL');
 
         $query->orderBy('h.createdAt', 'ASC');
 

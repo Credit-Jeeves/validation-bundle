@@ -1,6 +1,14 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use \DateTime;
 use \SimpleXMLElement;
@@ -8,6 +16,87 @@ use ZipArchive;
 
 class ExportCase extends BaseTestCase
 {
+
+    protected function selectExportBy($exportBy)
+    {
+        $this->assertNotNull(
+            $radioInputs = $this->page->findAll('css', '#base_order_report_type_export_by_box input[type=radio]')
+        );
+        $this->assertCount(2, $radioInputs);
+        for ($i = 0; $i <= 1; $i++) {
+            $radioInput = $radioInputs[$i];
+            if ($radioInput->getAttribute('value') === $exportBy) {
+                $radioInput->selectOption($exportBy);
+            }
+        }
+    }
+    protected function createPayment()
+    {
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy([
+            'email' => 'tenant11@example.com'
+        ]);
+
+        $group = $em->getRepository('DataBundle:Group')->findOneBy([
+            'name' => 'Test Rent Group'
+        ]);
+
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy([
+            'zip' => '10003',
+            'number' => '770',
+            'jb' => '40.7307693',
+            'kb' => '-73.9913223'
+        ]);
+
+        $this->assertNotNull($tenant);
+        $this->assertNotNull($property);
+        $this->assertNotNull($group);
+
+        $order = new Order();
+        $order->setStatus(OrderStatus::COMPLETE);
+        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setSum(999);
+        $order->setUser($tenant);
+        $oneWeekAgo = new DateTime();
+        $oneWeekAgo->modify("-7 days");
+        $order->setCreatedAt($oneWeekAgo);
+
+        $contracts = $tenant->getContracts();
+        $usedContract = null;
+        /** @var Contract $contract */
+        foreach ($contracts as $contract) {
+            if ($contract->getGroup()->getId() === $group->getId() &&
+                $property->getId() === $contract->getProperty()->getId() &&
+                $contract->getUnit()->getUnitMapping()
+            ) {
+                $usedContract = $contract;
+                break;
+            }
+        }
+
+        $this->assertNotNull($usedContract);
+
+        $operation = new Operation();
+        $operation->setAmount(999);
+        $operation->setType(OperationType::RENT);
+        $operation->setOrder($order);
+        $operation->setPaidFor(new DateTime('8/1/2014'));
+        $operation->setContract($usedContract);
+
+        $transaction = new Heartland();
+        $transaction->setIsSuccessful(false);
+        $transaction->setOrder($order);
+        $transaction->setTransactionId("1");
+        $transaction->setAmount(999);
+        $transaction->setMerchantName('MrchntNm');
+
+        $em->persist($order);
+        $em->persist($operation);
+        $em->persist($transaction);
+        $em->flush();
+    }
+
     /**
      * @test
      */
@@ -39,8 +128,8 @@ class ExportCase extends BaseTestCase
     }
 
     /**
-     * @depends goToYardiReport
      * @test
+     * @depends goToYardiReport
      */
     public function baseXmlFormat()
     {
@@ -113,16 +202,27 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
 
+    public function exportByRealPageCsv()
+    {
+        return [
+            ['deposits', 12],
+            ['payments', 13],
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider exportByRealPageCsv
      */
-    public function realPageCsvFormat()
+    public function realPageCsvFormat($exportBy, $countRows)
     {
         $this->load(true);
+        $this->createPayment();
         //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         $this->page->clickLink('export');
+        $this->selectExportBy($exportBy);
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -148,6 +248,8 @@ class ExportCase extends BaseTestCase
         $this->assertFalse(strpos($csv, '\''));
         $csvArr = explode("\n", $csv);
         $this->assertTrue(isset($csvArr[0]));
+
+        $this->assertCount($countRows, $csvArr);
 
         $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
         $this->assertEquals('75', $csvArr[0]);
@@ -209,12 +311,22 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('770 Broadway Manhattan New York NY 10003 #2-a BATCH# 325698', $columns[8]);
     }
 
+    public function exportByPromasCsv()
+    {
+        return [
+            ['deposits', 5],
+            ['payments', 6],
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider exportByPromasCsv
      */
-    public function promasCsvFormat()
+    public function promasCsvFormat($exportBy, $countRows)
     {
         $this->load(true);
+        $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         $this->page->clickLink('export');
@@ -224,6 +336,7 @@ class ExportCase extends BaseTestCase
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
         $type->selectOption('promas');
+        $this->selectExportBy($exportBy);
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(2, count($errors));
@@ -236,7 +349,9 @@ class ExportCase extends BaseTestCase
 
         $csv = $this->page->getContent();
         $csvArr = explode("\n", $csv);
-        $this->assertEquals(5, count($csvArr));
+
+        $this->assertCount($countRows, $csvArr);
+
         $this->assertNotNull($csvArr = str_getcsv($csvArr[2]));
         $this->assertEquals('AAABBB-7', $csvArr[1]);
         $this->assertEquals('1500.00', $csvArr[2]);
@@ -342,10 +457,19 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
     }
 
+    public function exportByRentTrackCsv()
+    {
+        return [
+            ['deposits', 15],
+            ['payments', 16],
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider exportByRentTrackCsv
      */
-    public function rentTrackCsvFormat()
+    public function rentTrackCsvFormat($exportBy, $countRows)
     {
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
@@ -371,13 +495,13 @@ class ExportCase extends BaseTestCase
 
         $beginD->modify('-1 year');
         $begin->setValue($beginD->format('m/d/Y'));
-
+        $this->selectExportBy($exportBy);
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
 
         $csvFullArr = explode("\n", $csv);
-        $this->assertEquals(15, count($csvFullArr));
+        $this->assertCount($countRows, $csvFullArr);
         /** check Last */
         $this->assertNotNull($csvArr = str_getcsv($csvFullArr[9]));
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $csvArr[1]);
@@ -433,13 +557,22 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('15235678', $columns[13]);
     }
 
+    public function exportByYardiGenesisCsv()
+    {
+        return [
+            ['deposits', 12],
+            ['payments', 13],
+        ];
+    }
 
     /**
      * @test
+     * @dataProvider exportByYardiGenesisCsv
      */
-    public function yardiGenesisCsvFormat()
+    public function yardiGenesisCsvFormat($exportBy, $countRows)
     {
         $this->load(true);
+        $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         $this->page->clickLink('export');
@@ -459,14 +592,14 @@ class ExportCase extends BaseTestCase
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
-
+        $this->selectExportBy($exportBy);
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
         $csvArr = explode("\n", trim($csv));
+        $this->assertCount($countRows, $csvArr);
 
         $this->assertTrue(isset($csvArr[0]));
-
         $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
         $this->assertEquals('R', $csvArr[0]);
         $this->assertEquals('123123', $csvArr[1]);
@@ -476,12 +609,22 @@ class ExportCase extends BaseTestCase
 
     }
 
+    public function exportByYardiGenesisV2Csv()
+    {
+        return [
+            ['deposits', 12],
+            ['payments', 13],
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider exportByYardiGenesisV2Csv
      */
-    public function yardiGenesisV2CsvFormat()
+    public function yardiGenesisV2CsvFormat($exportBy, $countRows)
     {
         $this->load(true);
+        $this->createPayment();
         //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -496,17 +639,19 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
         $this->assertEquals(2, count($errors));
 
+        $this->exportByYardiGenesisV2Csv($exportBy);
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
-
+        $this->selectExportBy($exportBy);
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
         $csvArr = explode("\r", trim($csv));
+        $this->assertCount($countRows, $csvArr);
         $this->assertTrue(isset($csvArr[0]));
 
         $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));

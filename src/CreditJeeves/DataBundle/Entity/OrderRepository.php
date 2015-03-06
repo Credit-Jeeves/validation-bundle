@@ -263,8 +263,13 @@ class OrderRepository extends EntityRepository
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
             $query->where('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
             $query->andWhere("heartland.depositDate BETWEEN :start AND :end");
+            $query->andWhere('o.status = :status');
+            $query->setParameter('status', OrderStatus::COMPLETE);
         } else {
             $query->where("o.created_at BETWEEN :start AND :end");
+            $query->andWhere('o.status = :status1 or o.status = :status2');
+            $query->setParameter('status1', OrderStatus::COMPLETE);
+            $query->setParameter('status2', OrderStatus::PENDING);
         }
 
         $query->andWhere('g.id = :groupId');
@@ -274,13 +279,12 @@ class OrderRepository extends EntityRepository
             $query->setParameter('propId', $propertyId);
         }
 
-        $query->andWhere('o.status = :status');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('status', OrderStatus::COMPLETE);
         $query->setParameter('groupId', $groupId);
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -296,13 +300,18 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('o.heartlands', 'heartland');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
-        $query->where('o.status = :status');
+
 
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->where('o.status = :status');
             $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
             $query->andWhere("heartland.depositDate BETWEEN :start AND :end");
+            $query->setParameter('status', OrderStatus::COMPLETE);
         } else {
+            $query->where('o.status = :status1 OR o.status = :status2');
             $query->andWhere("o.created_at BETWEEN :start AND :end");
+            $query->setParameter('status1', OrderStatus::COMPLETE);
+            $query->setParameter('status2', OrderStatus::PENDING);
         }
 
         $query->andWhere('o.type in (:orderType)');
@@ -311,7 +320,7 @@ class OrderRepository extends EntityRepository
         $query->andWhere('res.holding = :holding');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('status', OrderStatus::COMPLETE);
+
         $query->setParameter('orderType', array(OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK));
         $query->setParameter('groupId', $group->getId());
         $query->setParameter('holding', $group->getHolding());
