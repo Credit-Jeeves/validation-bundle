@@ -28,7 +28,7 @@ fixtures:
         last_name: BREEN
         email: landlord2@example.com
         phone_type: 2
-        phone: 913-764-4215
+        phone: 9137644215
         date_of_birth: '1957-02-19'
         ssn: 666042073
         is_active: false
@@ -51,7 +51,7 @@ fixtures:
         last_name: JORDAN
         email: landlord3@example.com
         phone_type: '2'
-        phone: '860.379.0319'
+        phone: '8603790319'
         date_of_birth: '1951-01-01'
         ssn: '666254052'
         is_active: true
@@ -73,7 +73,7 @@ fixtures:
         last_name: TAYLOR
         email: landlord4@example.com
         phone_type: '2'
-        phone: '309.745.8439'
+        phone: '3097458439'
         date_of_birth: '1955-09-14'
         ssn: '666302442'
         is_super_admin: true
@@ -122,7 +122,7 @@ fixtures:
         last_name: Test
         email: agent1@example.com
         phone_type: 2
-        phone: 
+        phone: ''
         date_of_birth: ''
         ssn: ''
         is_active: true
@@ -147,7 +147,7 @@ fixtures:
         last_name: BREEN
         email: landlord6@example.com
         phone_type: 2
-        phone: 913.764.4215
+        phone: 9137644215
         date_of_birth: '1957-02-19'
         ssn: 666042073
         is_active: true
@@ -172,7 +172,7 @@ fixtures:
         last_name: Test
         email: agent1@example.com
         phone_type: 2
-        phone:
+        phone: ''
         date_of_birth: ''
         ssn: ''
         is_active: true

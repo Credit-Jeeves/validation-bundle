@@ -3,6 +3,7 @@
 namespace RentJeeves\PublicBundle\Form;
 
 use RentJeeves\DataBundle\Validators\LandlordEmail;
+use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -38,8 +39,7 @@ class LandlordType extends AbstractType
             $emailOptions
         );
         $builder->add(
-            'phone',
-            null
+            $builder->create('phone', 'text', ['required' => false])->addViewTransformer(new PhoneNumberTransformer())
         );
         $builder->add(
             'password',

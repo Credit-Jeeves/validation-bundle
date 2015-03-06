@@ -2,6 +2,7 @@
 
 namespace RentJeeves\PublicBundle\Form;
 
+use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -33,8 +34,7 @@ class InviteType extends AbstractType
             )
         );
         $builder->add(
-            'phone',
-            null
+            $builder->create('phone', 'text', ['required' => false])->addViewTransformer(new PhoneNumberTransformer())
         );
         $builder->add(
             'unitName',

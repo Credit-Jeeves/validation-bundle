@@ -57,7 +57,7 @@ class ApiUpdateListenerCase extends BaseTestCase
 
         $applicant = $lead->getUser();
 
-        $applicant->setPhone('123333333');
+        $applicant->setPhone('1233333339');
         $em->getManager()->persist($applicant);
         $em->getManager()->flush();
 
@@ -75,7 +75,7 @@ class ApiUpdateListenerCase extends BaseTestCase
             )
         );
 
-        $applicant->setPhone('123333333');
+        $applicant->setPhone('1233333339');
         $em->getManager()->persist($applicant);
         $em->getManager()->flush();
 

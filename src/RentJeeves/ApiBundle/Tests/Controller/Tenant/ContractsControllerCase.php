@@ -344,7 +344,7 @@ class ContractsControllerCase extends BaseApiTestCase
                     [
                         'parameter' => 'new_unit_landlord_phone',
                         'message' => 'error.user.phone.format',
-                        'value' => '111-111-111'
+                        'value' => '111111111'
                     ],
                 ]
             ],

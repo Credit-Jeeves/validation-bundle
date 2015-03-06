@@ -1,6 +1,7 @@
 <?php 
 namespace RentJeeves\AdminBundle\Admin;
 
+use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -132,6 +133,15 @@ class TenantAdmin extends Admin
                 )
                 ->add(
                     'email'
+                )
+                ->add(
+                    $formMapper->create(
+                        'phone',
+                        'text',
+                        [
+                            'required' => false
+                        ]
+                    )->addViewTransformer(new PhoneNumberTransformer())
                 )
                 ->add(
                     'password',
