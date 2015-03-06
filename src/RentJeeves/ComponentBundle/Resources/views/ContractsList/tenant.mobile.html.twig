@@ -30,6 +30,7 @@
 
 
     var contractsJson={{ contractsJson | raw }};
+    var paidForArr={{ paidForArr | serialize('json') | raw }};
 
 
     function setupPayForm(id) {
@@ -41,6 +42,12 @@
                 jQuery('#rentjeeves_checkoutbundle_paymenttype_contractId').val(id);
                 contract=contractsJson[i]
                 console.log(contract)
+                paidFor=paidForArr[contract.id]
+                $("#rentjeeves_checkoutbundle_paymenttype_paidFor").html("");
+                $.each(paidFor,function(index,value){
+                    $("#rentjeeves_checkoutbundle_paymenttype_paidFor").append("<option value='"+index+"'>"+value+"</option>")
+                })
+
                 $("#rentjeeves_checkoutbundle_paymenttype_amount").val(contract.rent)
                 $('#rentjeeves_checkoutbundle_paymenttype_total').val(contract.rent)
                 $("#payTo").html(contract.payToName);
