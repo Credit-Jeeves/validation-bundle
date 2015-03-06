@@ -23,6 +23,15 @@
                 {{ form_widget(child) }}
                 <span>{{ child.vars.label|trans({}, translation_domain) }}</span>
             </label>
+            {% set attrs = child.parent.vars.attr %}
+            {% for key, attr in attrs %}
+                {% set keyArray = key|split('_') %}
+                {% if keyArray[0] is defined and keyArray[0] == 'helps' and keyArray[1] == child.vars['value'] %}
+                    {% image '@CoreBundle/Resources/public/images/help-icon.gif' %}
+                    <img src="{{ asset_url }}" title="{{ attr|trans({}, translation_domain) }}" class="help-radio"/>
+                    {% endimage %}
+                {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endspaceless %}
 {% endblock choice_widget_expanded %}

@@ -138,6 +138,9 @@ class ExportType extends AbstractType
             )
         );
 
+        $paymentKey = sprintf('helps_%s', ExportReport::EXPORT_BY_PAYMENTS);
+        $depositKey = sprintf('helps_%s', ExportReport::EXPORT_BY_DEPOSITS);
+
         $builder->add(
             'export_by',
             'choice',
@@ -145,10 +148,12 @@ class ExportType extends AbstractType
                 'attr'        => [
                     'force_row' => true,
                     'class'     => 'original',
+                    $paymentKey => 'landlord_export.export_by_payments.description_help',
+                    $depositKey => 'landlord_export.export_by_deposits.description_help',
                     'data-bind' => 'checked: exportBy',
-                    'row_attr' => array(
+                    'row_attr' => [
                         'data-bind' => "visible: selectedType() != 'yardi'",
-                    )
+                    ]
                 ],
                 'required'    => true,
                 'choices'     => [
