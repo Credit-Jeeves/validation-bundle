@@ -131,13 +131,15 @@ class PaymentType extends AbstractType
             )
         );
 
-        $builder->add(
-            'paymentAccount',
-            'choice', array(
-            'choices'   => array(),
-            'attr'        =>$this->attributes->paymentAccountAttrs(),
-            'required'  => false,
-        ));
+        if($this->attributes->isMobile()){
+            $builder->add(
+                'paymentAccount',
+                'choice', array(
+                'choices'   => array(),
+                'attr'        =>$this->attributes->paymentAccountAttrs(),
+                'required'  => false,
+            ));
+        }
 
         $builder->add(
             'total',
@@ -313,8 +315,6 @@ class PaymentType extends AbstractType
                 'invalid_message' => 'checkout.error.endYear.invalid',
             )
         );
-
-
         $builder->add('next', 'submit', array('attr' => $this->attributes-> submitAttrs()));
         $builder->add(
             'paymentAccountId',

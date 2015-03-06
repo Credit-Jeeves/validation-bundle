@@ -45,19 +45,38 @@
                 $('#rentjeeves_checkoutbundle_paymenttype_total').val(contract.rent)
                 $("#payTo").html(contract.payToName);
                 $("#contractAddress").html(contract.property.number+" "+contract.property.street+", "+contract.property.district+" "+contract.unit.name)
-                if(contract.payment.status=="active"){
-                    if(contract.payment.type=="recurring"){
-                        $("#rentjeeves_checkoutbundle_paymenttype_type").val("recurring")
-                    }else{
-                        $("#rentjeeves_checkoutbundle_paymenttype_type").val("one_time")
-                    }
-                }
 
-                $("#rentjeeves_checkoutbundle_paymenttype_paidFor").append("<option>"+contractsJson[i].payment.paidFor+"</option>")
-                $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(contractsJson[i].payment.startMonth)
-                $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(contractsJson[i].payment.startYear)
-                $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val(contractsJson[i].payment.endMonth)
-                $("#rentjeeves_checkoutbundle_paymenttype_endYear").val(contractsJson[i].payment.endYear)
+                if(contract.payment) {
+
+
+                    if (contract.payment.status == "active") {
+                        if (contract.payment.type == "recurring") {
+                            $("#rentjeeves_checkoutbundle_paymenttype_type").val("recurring")
+                            formType(false)
+                        } else {
+                            $("#rentjeeves_checkoutbundle_paymenttype_type").val("one_time")
+                            formType(true);
+                        }
+                    }
+
+                    for (i = 1; i < 32; i++) {
+                        a = "";
+                        if (i == contract.payment.dueDate) {
+                            a = " selected"
+                        }
+                        $("#rentjeeves_checkoutbundle_paymenttype_dueDate").append("<option" + a + ">" + i + "</option>")
+                    }
+
+                    $("#rentjeeves_checkoutbundle_paymenttype_paidFor").append("<option>" + contract.payment.paidFor + "</option>")
+                    $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(contract.payment.startMonth).selectmenu("refresh");
+                    $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(contract.payment.startYear).selectmenu("refresh");
+                    $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val(contract.payment.endMonth).selectmenu("refresh");
+                    $("#rentjeeves_checkoutbundle_paymenttype_endYear").val(contract.payment.endYear).selectmenu("refresh");
+
+                }else{
+                    formType(false)
+                    $("#rentjeeves_checkoutbundle_paymenttype_type").val("recurring")
+                }
 
                 $("#rentjeeves_checkoutbundle_paymenttype_paidTo").val(contractsJson[i].paidTo)
 
@@ -73,7 +92,7 @@
                 }
 
 
-                $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(yyyy+"-"+mm+"-"+(contract.payment.dueDate))
+                $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(mm+"/"+(contract.payment.dueDate)+"/"+yyyy)
                 break;
             }
         }
@@ -121,10 +140,10 @@
 #}
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
-                    <a href="#contract{{ loop.index }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
-            <div onclick="$('a{{ loop.index }}').click()" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
-                <a id="a{{ loop.index }}" href="#contract{{ loop.index }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
-                <a href="#contract{{ loop.index }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a></a>
+                    <a href="#contract{{ contract.id }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
+            <div onclick="$('a{{ contract.id }}').click()" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
+                <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
+                <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a></a>
                             <b style="font-size: 16;">{{ contract.full_address [:25] }}</b>
                         <br>
                             <span style="font-size: 14;">{{ contract.rent }}</span>
