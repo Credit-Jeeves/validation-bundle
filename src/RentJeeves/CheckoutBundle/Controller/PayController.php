@@ -244,6 +244,8 @@ class PayController extends Controller
             return $this->renderErrors($paymentType);
         }
 
+
+
         $em = $this->getDoctrine()->getManager();
 
         /**
