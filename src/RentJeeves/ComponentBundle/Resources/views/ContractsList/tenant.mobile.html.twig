@@ -100,6 +100,7 @@
 
 
                 $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(mm+"/"+(contract.payment.dueDate)+"/"+yyyy)
+                $("#rentjeeves_checkoutbundle_paymenttype_dueDate").append("<option value='"+contract.payment.dueDate+"' selected></option>")
                 break;
             }
         }

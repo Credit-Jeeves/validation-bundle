@@ -39,12 +39,20 @@
         $("#revRentAmount").html($("#rentjeeves_checkoutbundle_paymenttype_amount").val());
         $("#revMethod").html($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount option:selected").html());
         $("#revSendOn").html($("#rentjeeves_checkoutbundle_paymenttype_start_date").val());
-        $("#revRecurring").html($('#rentjeeves_checkoutbundle_paymenttype_type').val);
+        $("#revRecurring").html($('#rentjeeves_checkoutbundle_paymenttype_type').val());
+        $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").prop('disabled',true);
+
+        if($('#rentjeeves_checkoutbundle_paymenttype_type').val()=="one_time"){
+            $("#rentjeeves_checkoutbundle_paymenttype_ends").val('cancelled');
+        }
+
     }
     recurringFormIds=[
             "rentjeeves_checkoutbundle_paymenttype_frequency_row",
             "rentjeeves_checkoutbundle_paymenttype_startMonth_row",
-            "rentjeeves_checkoutbundle_paymenttype_ends_row"
+            "rentjeeves_checkoutbundle_paymenttype_ends_row",
+            "rentjeeves_checkoutbundle_paymenttype_endMonth",
+            "rentjeeves_checkoutbundle_paymenttype_endYear"
     ]
     onetimeFormIds=[
             "rentjeeves_checkoutbundle_paymenttype_start_date_row"
@@ -54,17 +62,28 @@
             $.each(recurringFormIds,function(index,value){
                 if(i) {
                     $('#' + value).hide();
+                    $('#' + value).prop( "disabled", true );
                 }else{
                     $('#' + value).show();
+                    $('#' + value).prop( "disabled", false );
                 }
             })
             $.each(onetimeFormIds,function(index,value){
                 if(!i) {
                     $('#' + value).hide();
+                    $('#' + value).prop( "disabled", true );
                 }else{
                     $('#' + value).show();
+                    $('#' + value).prop( "disabled", false );
                 }
             })
+        if(i){
+            //one-time
+            $("rentjeeves_checkoutbundle_paymenttype_ends").val("cancelled")
+        }else{
+            //recurring
+
+        }
     }
 </script>
 
