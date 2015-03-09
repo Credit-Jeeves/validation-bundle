@@ -41,6 +41,24 @@
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
+    <script type="text/javascript">
+        function param_get(name){
+            if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+                return decodeURIComponent(name[1]);
+        }
+        var affiliateCode = param_get("af");
+        if (!affiliateCode) {
+            affiliateCode = 'NONE';
+        }
+        var propertyAddButton = document.getElementById('property-add');
+        addListener(propertyAddButton, 'click', function() {
+            ga('send', 'event', 'Tenant', 'Property Search', affiliateCode);
+        });
+        function addListener(element, type, callback) {
+            if (element.addEventListener) element.addEventListener(type, callback);
+            else if (element.attachEvent) element.attachEvent('on' + type, callback);
+        }
+    </script>
 {% endblock %}
 
 {% block stylesheets %}
