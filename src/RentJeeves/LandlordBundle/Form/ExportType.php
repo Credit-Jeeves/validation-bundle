@@ -145,14 +145,10 @@ class ExportType extends AbstractType
                 'attr'        => [
                     'force_row' => true,
                     'class'     => 'original',
-                    sprintf(
-                        'helps_%s',
-                        ExportReport::EXPORT_BY_PAYMENTS
-                    ) => 'landlord_export.export_by_payments.description_help',
-                    sprintf(
-                        'helps_%s',
-                        ExportReport::EXPORT_BY_DEPOSITS
-                    ) => 'landlord_export.export_by_deposits.description_help',
+                    "helps_" . ExportReport::EXPORT_BY_PAYMENTS => 
+                        'landlord_export.export_by_payments.description_help',                    
+                    "helps_" . ExportReport::EXPORT_BY_DEPOSITS => 
+                        'landlord_export.export_by_deposits.description_help',
                     'data-bind' => 'checked: exportBy',
                     'row_attr' => [
                         'data-bind' => "visible: selectedType() != 'yardi'",
