@@ -185,13 +185,19 @@ class ReceiptBatchSender
         }
     }
 
-    protected function cancelBatch($batchId)
+    protected function cancelBatch($yardiBatchId)
     {
         try {
-            $this->paymentClient->cancelReceiptBatch($batchId);
-            $this->logMessage(sprintf("Cancel batch \n%s", $batchId));
+            $this->paymentClient->cancelReceiptBatch($yardiBatchId);
+            $this->logMessage(sprintf("Cancel batch \n%s", $yardiBatchId));
+
             if ($this->paymentClient->isError()) {
-                throw new Exception(sprintf("Can't cancel batch with id: %s", $batchId));
+                throw new Exception(sprintf("Can't cancel batch with id: %s", $yardiBatchId));
+            }
+
+            $key = array_search($yardiBatchId, $this->batchIds);
+            if (!empty($key)) {
+                unset($this->batchIds[$yardiBatchId]);
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
