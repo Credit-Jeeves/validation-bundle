@@ -11,4 +11,5 @@ function ExportViewModel() {
     this.end = ko.observable(null);
     this.makeZip = ko.observable(false);
     this.includeAllGroups = ko.observable(false);
+    this.exportBy = ko.observable();
 }

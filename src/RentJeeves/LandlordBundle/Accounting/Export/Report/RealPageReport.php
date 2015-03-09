@@ -67,9 +67,11 @@ class RealPageReport extends ExportReport
         $endDate = $settings['end'];
         $propertyId = $settings['property']->getId();
         $groupId = $settings['landlord']->getGroup()->getId();
+        $exportBy = $settings['export_by'];
+
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForRealPageReport($groupId, $propertyId, $beginDate, $endDate);
+        return $orderRepository->getOrdersForRealPageReport($groupId, $propertyId, $beginDate, $endDate, $exportBy);
     }
 
     public function getBuildingId()
@@ -86,7 +88,7 @@ class RealPageReport extends ExportReport
     {
         if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
             !isset($settings['begin']) || !isset($settings['end']) ||
-            !isset($settings['buildingId'])
+            !isset($settings['buildingId']) || !isset($settings['export_by'])
         ) {
             throw new ExportException('Not enough parameters for OnePage report');
         }
