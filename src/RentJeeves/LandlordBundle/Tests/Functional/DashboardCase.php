@@ -1,11 +1,10 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- */
 class DashboardCase extends BaseTestCase
 {
     /**
@@ -157,5 +156,36 @@ class DashboardCase extends BaseTestCase
 
 
         $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function showCashPayment()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $order = $em->getRepository('DataBundle:Order')->findOneBy([
+            'sum'   => 3700
+        ]);
+        $order->setType(OrderType::CASH);
+        $em->flush($order);
+        $this->login('landlord1@example.com', 'pass');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
+
+        $this->assertEquals('payments.total (38)', $title->getHtml());
+        $this->assertNotNull($searchPaymentsLink = $this->page->find('css', '.externalPaymentsBlock>input'));
+        $searchPaymentsLink->click();
+
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+
+        $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
+        $this->assertEquals('payments.total (39)', $title->getHtml());
     }
 }

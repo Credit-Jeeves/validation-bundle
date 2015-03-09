@@ -7,8 +7,6 @@ use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ExternalApi;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
@@ -44,14 +42,18 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @param Group $group
      * @param string $searchBy
      * @param string $search
+     * @param bool $showCashPayments
      * @return array
      */
-    public function countOrders(\CreditJeeves\DataBundle\Entity\Group $group, $searchBy = '', $search = '')
-    {
+    public function countOrders(
+        \CreditJeeves\DataBundle\Entity\Group $group,
+        $searchBy = '',
+        $search = '',
+        $showCashPayments = true
+    ) {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
@@ -68,19 +70,26 @@ class OrderRepository extends EntityRepository
                 $query->setParameter('search', '%'.$item.'%');
             }
         }
+
+        if (!$showCashPayments) {
+            $query->andWhere('o.type != :cash');
+            $query->setParameter('cash', OrderType::CASH);
+        }
+
         $query->groupBy('o.id');
         $query = $query->getQuery();
         return $query->getScalarResult();
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
-     * @param integer $page
-     * @param integer $limit
+     * @param Group $group
+     * @param int $page
+     * @param int $limit
      * @param string $sort
      * @param string $order
      * @param string $searchBy
      * @param string $search
+     * @param bool $showCashPayments
      * @return mixed
      */
     public function getOrdersPage(
@@ -90,7 +99,8 @@ class OrderRepository extends EntityRepository
         $sort = 'o.status',
         $order = 'ASC',
         $searchBy = 'p.street',
-        $search = ''
+        $search = '',
+        $showCashPayments = true
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
@@ -132,7 +142,10 @@ class OrderRepository extends EntityRepository
                 break;
         }
         $this->applySortField($sort);
-
+        if (!$showCashPayments) {
+            $query->andWhere('o.type != :cash');
+            $query->setParameter('cash', OrderType::CASH);
+        }
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
