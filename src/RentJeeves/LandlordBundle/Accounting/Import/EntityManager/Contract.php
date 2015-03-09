@@ -58,7 +58,7 @@ trait Contract
         if ($property) {
             $contract->setProperty($property);
         }
-        if ($this->group) {
+        if ($this->group && $property) {
             $property->addPropertyGroup($this->group);
             $contract->setGroup($this->group);
             $contract->setHolding($this->group->getHolding());

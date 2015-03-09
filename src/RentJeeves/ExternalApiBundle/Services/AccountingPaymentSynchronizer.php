@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -11,6 +12,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
@@ -52,6 +54,10 @@ class AccountingPaymentSynchronizer
      */
     protected $debug = false;
 
+    protected $allowedIntegrationApi = [
+        ApiIntegrationType::RESMAN
+    ];
+
     /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
@@ -75,20 +81,60 @@ class AccountingPaymentSynchronizer
         $this->logger = $logger;
     }
 
+    /**
+     * @param Holding $holding
+     * @return bool
+     */
+    public function isAllowedToSend(Holding $holding)
+    {
+        $accountingSettings = $holding->getAccountingSettings();
+
+        if (empty($accountingSettings)) {
+            return false;
+        }
+
+        $apiIntegration = $accountingSettings->getApiIntegration();
+
+        if (in_array($apiIntegration, $this->allowedIntegrationApi)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Order $order
+     */
     public function sendOrderToAccountingSystem(Order $order)
     {
         try {
-            if (!($order->hasContract() and
-                $transaction = $order->getCompleteTransaction() and
+            if (!$order->hasContract()) {
+                return;
+            }
+
+            $holding = $order->getContract()->getHolding();
+            if (!$this->isAllowedToSend($holding)) {
+                $this->logger->addInfo(
+                    sprintf(
+                        "Order(%s) is not allow to immediately send to accounting system.",
+                        $order->getId()
+                    )
+                );
+                return;
+            }
+
+            $externalPropertyMapping = $order
+                ->getUnit()
+                ->getProperty()
+                ->getPropertyMappingByHolding($holding);
+
+            if (!($transaction = $order->getCompleteTransaction() and
                 $holding = $order->getContract()->getHolding() and
                 $holding->getExternalSettings() and
                 $paymentBatchId = $transaction->getBatchId() and
                 $accountingType = $holding->getAccountingSettings()->getApiIntegration() and
-                $externalPropertyId = $order
-                    ->getUnit()
-                    ->getProperty()
-                    ->getPropertyMappingByHolding($holding)
-                    ->getExternalPropertyId() and
+                !empty($externalPropertyMapping) and
+                $externalPropertyId = $externalPropertyMapping->getExternalPropertyId() and
                 $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings())
             )) {
 
@@ -201,8 +247,15 @@ class AccountingPaymentSynchronizer
         }
 
         $paymentBatchDate = new DateTime();
-
-        $accountingBatchId = $this->getApiClientByOrder($order)->openBatch($externalPropertyId, $paymentBatchDate);
+        $description = sprintf(
+            'RentTrack Online Payments Batch #%s',
+            $paymentBatchId
+        );
+        $accountingBatchId = $this->getApiClientByOrder($order)->openBatch(
+            $externalPropertyId,
+            $paymentBatchDate,
+            $description
+        );
 
         if (!$accountingBatchId) {
             return false;

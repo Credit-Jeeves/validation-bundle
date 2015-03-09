@@ -1910,6 +1910,14 @@
                 <source>iframe.redirect.text</source>
                 <target>Find your rental to make a payment</target>
             </trans-unit>
+            <trans-unit id="iframe.redirect.login.title">
+                <source>iframe.redirect.login.title</source>
+                <target>Already registered?</target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.login.text">
+                <source>iframe.redirect.login.text</source>
+                <target>Click the button below to go to RentTrack</target>
+            </trans-unit>
             <trans-unit id="iframe.redirect.tenant">
                 <source>iframe.redirect.tenant</source>
                 <target>Tenant</target>
@@ -1932,7 +1940,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.build.title">
                 <source>iframe.item.build.title</source>
-                <target>Build your credit</target>
+                <target>Build credit history</target>
             </trans-unit>
             <trans-unit id="iframe.item.build.text">
                 <source>iframe.item.build.text</source>
@@ -1940,11 +1948,11 @@
             </trans-unit>
             <trans-unit id="iframe.item.monitor.title">
                 <source>iframe.item.monitor.title</source>
-                <target>Monitor your progress</target>
+                <target>View your Credit Score</target>
             </trans-unit>
             <trans-unit id="iframe.item.monitor.text">
                 <source>iframe.item.monitor.text</source>
-                <target>RentTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
+                <target>View your latest score and profile. Monitor your rent reporting. Keeping tabs on your credit is the best way to make sure it’s accurate and moving in the right direction.</target>
             </trans-unit>
             <trans-unit id="iframe.questions">
                 <source>iframe.questions</source>
@@ -2610,6 +2618,10 @@
             <trans-unit id="import.error.propertyId">
               <source>import.error.propertyId</source>
               <target><![CDATA[Property ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
+            <trans-unit id="import.error.invalid_property">
+              <source>import.error.invalid_property</source>
+              <target>Property address is invalid.</target>
             </trans-unit>
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>

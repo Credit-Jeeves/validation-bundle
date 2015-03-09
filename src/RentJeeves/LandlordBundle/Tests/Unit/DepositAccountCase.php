@@ -46,7 +46,7 @@ class DepositAccountCase extends BaseTestCase
         $invite->setUnitName('1A');
         $invite->setFirstName('Ivan');
         $invite->setLastName('Drachka');
-        $invite->setPhone('109813313');
+        $invite->setPhone('1098133133');
         $invite->setProperty($property);
         $invite->setTenant($tenant);
 

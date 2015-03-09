@@ -189,15 +189,12 @@ class Tenant extends User
         $result['status'] = 'current';//$this->getContracts()->count();
         $result['name'] = $this->getFullName();
         $result['email'] = $this->getEmail();
-        $result['phone'] = $this->formatPhoneOutput($this->getPhone());
+        $result['phone'] = $this->getFormattedPhone();
 
         return $result;
     }
 
-    public function getFomattedPhone()
-    {
-        return $this->formatPhoneOutput($this->getPhone());
-    }
+
 
     /**
      * Add account

@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Model\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\Partner;
 use RentJeeves\DataBundle\Entity\PartnerUserMapping;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -56,6 +57,7 @@ abstract class User extends BaseUser
         if (!$this->getInviteCode()) {
             $this->setInviteCode(strtoupper(base_convert(uniqid(), 16, 36)));
         }
+        $this->cleanPhoneNumber();
     }
 
     /**
@@ -71,6 +73,7 @@ abstract class User extends BaseUser
     public function preUpdate()
     {
         $this->updated_at = new DateTime();
+        $this->cleanPhoneNumber();
     }
 
     /**
@@ -119,22 +122,17 @@ abstract class User extends BaseUser
         return $this;
     }
 
-    protected function formatPhoneOutput($phone)
+    public function getFormattedPhone()
     {
-        $sPhoneNumber = $this->getPhone();
-        // remove all empty spaces and not number signs
-        $sPhoneNumber = preg_replace('/\s+/', '', $sPhoneNumber);
-        $sPhoneNumber = str_replace(array('(', ')', '-'), '', $sPhoneNumber);
-        //format phone number
-        $sPhoneNumber = strrev($sPhoneNumber);
-        $sCityCode = substr($sPhoneNumber, 7);
-        $sPhoneNumber = substr($sPhoneNumber, 0, 4) . '-' . substr($sPhoneNumber, 4, 3);
-        if (!empty($sCityCode)) {
-            $sPhoneNumber .= ' )' . $sCityCode . '(';
-        }
+        return PhoneNumberFormatter::formatWithBracketsAndDash($this->phone);
+    }
 
-        return strrev($sPhoneNumber);
-
+    /**
+     * Used in prePersist and preUpdate to prevent adding non numeric symbols to phone numbers.
+     */
+    public function cleanPhoneNumber()
+    {
+        $this->phone = PhoneNumberFormatter::formatToDigitsOnly($this->phone);
     }
 
     /**

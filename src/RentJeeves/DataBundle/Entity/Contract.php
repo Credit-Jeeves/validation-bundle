@@ -243,7 +243,7 @@ class Contract extends Base
         $result['first_name'] = $tenant->getFirstName();
         $result['last_name'] = $tenant->getLastName();
         $result['email'] = $tenant->getEmail();
-        $result['phone'] = $tenant->getFomattedPhone();
+        $result['phone'] = $tenant->getFormattedPhone();
         $result['amount'] = '';
         if ($rent = $this->getRent()) {
             $result['amount'] = $this->getRent();
