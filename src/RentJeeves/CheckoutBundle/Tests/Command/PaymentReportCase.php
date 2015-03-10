@@ -19,6 +19,11 @@ use RentJeeves\DataBundle\Entity\Heartland;
 
 class PaymentReportCase extends BaseTestCase
 {
+    public function setUp()
+    {
+        $this->load(true);
+    }
+
     protected function executeCommand($type)
     {
         $application = new Application($this->getKernel());
@@ -41,7 +46,6 @@ class PaymentReportCase extends BaseTestCase
      */
     public function executeCommandWithTypeReversal()
     {
-        $this->load(true);
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
@@ -57,8 +61,6 @@ class PaymentReportCase extends BaseTestCase
      */
     public function executeCommandWithTypeDeposit()
     {
-        $this->load(true);
-
         $result = $this->executeCommand(PaymentProcessorReportType::DEPOSIT);
 
         $this->assertContains('Amount of synchronized payments: 2', $result);
@@ -69,8 +71,6 @@ class PaymentReportCase extends BaseTestCase
      */
     public function voidCCPayment()
     {
-        $this->load(true);
-
         $this->executeCommand(PaymentProcessorReportType::REVERSAL);
 
         $originalTransId = 258258;
@@ -95,7 +95,6 @@ class PaymentReportCase extends BaseTestCase
      */
     public function shouldSynchronizeDBOrdersWithReversalReport($transactionId, $firstStatus, $secondStatus)
     {
-        $this->load(true);
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $transaction = $em->getRepository('RjDataBundle:Heartland')->findOneBy(['transactionId' => $transactionId]);
@@ -123,8 +122,6 @@ class PaymentReportCase extends BaseTestCase
      */
     public function shouldSynchronizeDBOrdersWithDepositReport()
     {
-        $this->load(true);
-
         $transactionId = 5355372;
         $this->createOrder($transactionId);
 
@@ -148,8 +145,6 @@ class PaymentReportCase extends BaseTestCase
      */
     public function shouldSynchronizeDBOrdersWithDepositReportAndNotSetDepositDate()
     {
-        $this->load(true);
-
         $transactionId = 5355373;
         $this->createOrder($transactionId);
 
@@ -170,7 +165,6 @@ class PaymentReportCase extends BaseTestCase
      */
     public function shouldFillEmptyBatchIdForCompleteTransactions()
     {
-        $this->load(true);
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $repo = $em->getRepository('RjDataBundle:Heartland');
 
