@@ -1368,7 +1368,6 @@ class ImportCase extends BaseTestCase
             250000,
             "$('table').is(':visible')"
         );
-        $this->waitReviewAndPost(true);
         for ($i = 0; $i <= 4; $i++) {
             if ($errorFields = $this->page->findAll('css', '.errorField')) {
                 $this->assertEquals(1, count($errorFields));
@@ -1376,7 +1375,7 @@ class ImportCase extends BaseTestCase
             }
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
-            $this->waitReviewAndPost(true);
+            $this->waitReviewAndPost($i<4);
         }
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
@@ -1434,12 +1433,6 @@ class ImportCase extends BaseTestCase
 
         $this->session->wait(
             250000,
-            "$('table').is(':visible')"
-        );
-
-        $this->waitReviewAndPost();
-        $this->session->wait(
-            10000,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1954,5 +1947,59 @@ class ImportCase extends BaseTestCase
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateContractFromWaitingOnOnlyNewAndException()
+    {
+        $this->load(true);
+        /** @var EntityManager $em */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $beforeWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $beforeContracts = $em->getRepository('RjDataBundle:Contract')->findAll();
+
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->setPropertyFirst();
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import_waiting_only_exception.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/Y');
+        $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
+        $exceptionOnly->check();
+        $submitImportFile->click();
+
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+        for ($i = 1; $i <= 14; $i++) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            if (isset($this->mapFile[$i])) {
+                $choice->selectOption($this->mapFile[$i]);
+            }
+        }
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(2, count($trs), "Count statuses is wrong");
+        $submitImportFile->click();
+        $this->waitReviewAndPost(false);
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+
+        $afterWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $afterContracts = $em->getRepository('RjDataBundle:Contract')->findAll();
+
+        $this->assertCount(count($beforeWaiting) -1, $afterWaiting);
+        $this->assertCount(count($beforeContracts)+1, $afterContracts);
     }
 }

@@ -56,7 +56,7 @@ class StorageYardi extends ExternalApiStorage
         $finishAt = $moveOutDate ? $moveOutDate->format($format) : $residentData->getLeaseEnd();
 
         $today = new DateTime();
-        $leaseEnd = $residentData->getLeaseEnd();
+        $leaseEnd = $residentData->getLeaseEnd(true);
         $monthToMonth = ($today > $leaseEnd)? 'Y' : 'N';
 
         $data = array(

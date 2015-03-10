@@ -7,7 +7,7 @@ fixtures:
     last_name:                  Gates
     email:                      alexey.karpik+app1334753295955955@gmail.com
     phone_type:                 '2'
-    phone:                      '(375)118-1804'
+    phone:                      '3751181804'
     date_of_birth:              '1980-10-22'
     ssn:                        '656803283'
     is_active:                  true
@@ -29,7 +29,7 @@ fixtures:
     last_name:                  BREEN
     email:                      john@example.com
     phone_type:                 '2'
-    phone:                      '913-764-4215'
+    phone:                      '9137644215'
     date_of_birth:              '1957-02-19'
     ssn:                        '666042073'
     is_active:                  true
@@ -50,7 +50,7 @@ fixtures:
     last_name:                  JORDAN
     email: alex@example.com
     phone_type: '2'
-    phone: '856-037-0319'
+    phone: '8560370319'
     date_of_birth: '1951-01-01'
     ssn: '666254052'
     is_active: true
@@ -72,7 +72,7 @@ fixtures:
     last_name: TAYLOR
     email: empty@example.com
     phone_type: '2'
-    phone: '309-745-8439'
+    phone: '3097458439'
     date_of_birth: '1955-09-14'
     ssn: '666302442'
     is_active: true
@@ -533,7 +533,7 @@ fixtures:
     last_name:       Gates
     email:   noname@gmail.com
     phone_type:      '2'
-    phone:           '(529)118-1804'
+    phone:           '5291181804'
     date_of_birth:   '1980-10-22'
     ssn:             '656803283'
     is_active:       true

@@ -5,9 +5,17 @@
     <div class="iframe-body">
         <div class="iframe-body-left">
             <h2>{{ 'iframe.login.title' | trans }}</h2>
-            <div id="iframe-login-form" class="iframe-login">
-                {{ form(form) }}
-            </div>
+            {% if app.request.query.get('nologin') == 'true' %}
+                <div class="iframe-redirect-title">{{ 'iframe.redirect.login.title' | trans }}</div>
+                <div class="iframe-redirect-text">{{ 'iframe.redirect.login.text' | trans }}</div>
+                <div id="iframe-login-form" class="iframe-login">
+                    <a style="text-decoration: none" target="_blank" class="iframe-button" href="https://my.renttrack.com/">Log In</a><br /><br />
+                </div>
+            {% else %}
+                <div id="iframe-login-form" class="iframe-login">
+                    {{ form(form) }}
+                </div>
+            {% endif %}
             <div class="iframe-redirect">
                 <div class="iframe-redirect-title">{{ 'iframe.redirect.title' | trans }}</div>
                 <div class="iframe-redirect-text">{{ 'iframe.redirect.text' | trans }}</div>
@@ -41,9 +49,11 @@
                 </div>
             </div>
             <div class="iframe-questions">
-                {{ 'iframe.questions' | trans }}&nbsp;<a href="http://www.renttrack.com/how-it-works">{{ 'iframe.learn.more' | trans }}</a>
+                {{ 'iframe.questions' | trans }}&nbsp;<a target="_blank" alt="How to Pay Rent and Build Credit History" href="http://www.renttrack.com/how-it-works">{{ 'iframe.learn.more' | trans }}</a>
             </div>
-            <div class="iframe-logo">{{ 'iframe.powered' | trans }}<br><span></span>
+            <div class="iframe-logo">
+                {{ 'iframe.powered' | trans }}<br>
+                <a target="_blank" href="http://www.renttrack.com/pay-rent-online/" alt="Pay Rent Online at RentTrack"><span></span></a>
             </div>
             <a class="iframe-ns">Norton Secured</a>
         </div>

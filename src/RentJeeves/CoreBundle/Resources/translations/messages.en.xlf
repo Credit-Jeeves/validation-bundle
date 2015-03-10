@@ -1910,6 +1910,14 @@
                 <source>iframe.redirect.text</source>
                 <target>Find your rental to make a payment</target>
             </trans-unit>
+            <trans-unit id="iframe.redirect.login.title">
+                <source>iframe.redirect.login.title</source>
+                <target>Already registered?</target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.login.text">
+                <source>iframe.redirect.login.text</source>
+                <target>Click the button below to go to RentTrack</target>
+            </trans-unit>
             <trans-unit id="iframe.redirect.tenant">
                 <source>iframe.redirect.tenant</source>
                 <target>Tenant</target>
@@ -1932,7 +1940,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.build.title">
                 <source>iframe.item.build.title</source>
-                <target>Build your credit</target>
+                <target>Build credit history</target>
             </trans-unit>
             <trans-unit id="iframe.item.build.text">
                 <source>iframe.item.build.text</source>
@@ -1940,11 +1948,11 @@
             </trans-unit>
             <trans-unit id="iframe.item.monitor.title">
                 <source>iframe.item.monitor.title</source>
-                <target>Monitor your progress</target>
+                <target>View your Credit Score</target>
             </trans-unit>
             <trans-unit id="iframe.item.monitor.text">
                 <source>iframe.item.monitor.text</source>
-                <target>RentTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
+                <target>View your latest score and profile. Monitor your rent reporting. Keeping tabs on your credit is the best way to make sure it’s accurate and moving in the right direction.</target>
             </trans-unit>
             <trans-unit id="iframe.questions">
                 <source>iframe.questions</source>
@@ -2611,6 +2619,10 @@
               <source>import.error.propertyId</source>
               <target><![CDATA[Property ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
+            <trans-unit id="import.error.invalid_property">
+              <source>import.error.invalid_property</source>
+              <target>Property address is invalid.</target>
+            </trans-unit>
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
@@ -3068,6 +3080,25 @@
             <trans-unit id="landlord_dashboard.payment.title">
                 <source>landlord_dashboard.payment.title</source>
                 <target>Created: %created%. Sent: %sent%</target>
+            </trans-unit>
+            <trans-unit id="landlord.payments_list.show_external_payments">
+                <source>landlord.payments_list.show_external_payments</source>
+                <target>Show External Payments</target>
+            <trans-unit id="landlord_export.export_by_deposits.description">
+                <source>landlord_export.export_by_deposits.description</source>
+                <target>Export payments that have been deposited by deposit date.</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_payments.description">
+                <source>landlord_export.export_by_payments.description</source>
+                <target>Export all payments initiated by initiation date.</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_payments.description_help">
+                <source>landlord_export.export_by_payments.description_help</source>
+                <target>This will export all the payments by their initial transaction date, whether or not they are deposited yet. Note that recent payments still may be returned.</target>
+            </trans-unit>
+          <trans-unit id="landlord_export.export_by_deposits.description_help">
+                <source>landlord_export.export_by_deposits.description_help</source>
+                <target>This will export all the payments by their estimated deposit date. Payments will have a "batch ID," or will be grouped by the batch that was deposited to your account, so that you can sum them up and reconcile against your bank </target>
             </trans-unit>
         </body>
     </file>

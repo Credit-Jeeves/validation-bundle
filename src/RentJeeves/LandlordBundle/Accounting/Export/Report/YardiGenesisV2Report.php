@@ -24,9 +24,10 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
         $groupId = $settings['landlord']->getGroup()->getId();
+        $exportBy = $settings['export_by'];
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groupId);
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groupId, $exportBy);
     }
 
     protected function generateFilename($params)
@@ -36,7 +37,7 @@ class YardiGenesisV2Report extends YardiGenesisReport
 
     protected function validateSettings($settings)
     {
-        if (!isset($settings['begin']) || !isset($settings['end'])) {
+        if (!isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
             throw new ExportException('Not enough parameters for Yardi Genesis V2 report');
         }
     }

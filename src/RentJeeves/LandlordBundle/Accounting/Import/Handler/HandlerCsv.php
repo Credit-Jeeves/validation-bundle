@@ -49,19 +49,19 @@ class HandlerCsv extends HandlerAbstract
         }
 
         $this->lines = [];
-        ini_set('auto_detect_line_endings', true);
 
+        $filePath = $this->storage->getFilePath();
         $newFilePath = $this->getNewFilePath();
         $this->copyHeader($newFilePath);
         $self = $this;
         $total = $this->mapping->getTotal();
 
-        $callbackSuccess = function () use ($self) {
-            $self->removeLastLineInFile();
+        $callbackSuccess = function () use ($self, $filePath) {
+            $self->removeLastLineInFile($filePath);
         };
 
-        $callbackFailed = function () use ($self, $newFilePath) {
-            $self->moveLine($newFilePath);
+        $callbackFailed = function () use ($self, $filePath) {
+            $self->moveLine($filePath);
         };
 
         for ($i = 1; $i <= $total; $i++) {
@@ -76,16 +76,6 @@ class HandlerCsv extends HandlerAbstract
         $this->storage->setFilePath(basename($newFilePath));
 
         return true;
-    }
-
-    public function moveLine($newFilePath)
-    {
-        $lines = file($this->storage->getFilePath());
-        $last = sizeof($lines) - 1 ;
-        $lastLine = $lines[$last];
-        $this->lines[] = $lastLine;
-
-        $this->removeLastLineInFile();
     }
 
     public function copyHeader($newFilePath)

@@ -57,14 +57,15 @@ class RentTrackReport extends ExportReport
         }
         /** @var HeartlandRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:Heartland');
+        $exportBy = $settings['export_by'];
 
-        return $repo->getTransactionsForRentTrackReport($groups, $beginDate, $endDate);
+        return $repo->getTransactionsForRentTrackReport($groups, $beginDate, $endDate, $exportBy);
     }
 
     protected function validateSettings($settings)
     {
         if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
-            !isset($settings['begin']) || !isset($settings['end'])) {
+            !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
             throw new ExportException('Not enough parameters for RentTrack report');
         }
     }

@@ -129,6 +129,7 @@ class SummaryCase extends BaseTestCase
      */
     public function shouldCatchWsdlErrorNumber()
     {
+        $this->markTestSkipped('Phone numbers do not have dashes any more');
         self::$kernel = null;
         $this->load(true);
         $this->setDefaultSession('selenium2');

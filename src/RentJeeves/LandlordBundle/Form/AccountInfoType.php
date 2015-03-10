@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use RentJeeves\PublicBundle\Form\AddressType;
+use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 
 class AccountInfoType extends AbstractType
 {
@@ -24,8 +25,7 @@ class AccountInfoType extends AbstractType
             null
         );
         $builder->add(
-            'phone',
-            null
+            $builder->create('phone', 'text', ['required' => false])->addViewTransformer(new PhoneNumberTransformer())
         );
 
         $builder->add(

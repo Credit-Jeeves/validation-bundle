@@ -7,11 +7,10 @@ use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ExternalApi;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
@@ -44,14 +43,18 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @param Group $group
      * @param string $searchBy
      * @param string $search
+     * @param bool $showCashPayments
      * @return array
      */
-    public function countOrders(\CreditJeeves\DataBundle\Entity\Group $group, $searchBy = '', $search = '')
-    {
+    public function countOrders(
+        \CreditJeeves\DataBundle\Entity\Group $group,
+        $searchBy = '',
+        $search = '',
+        $showCashPayments = true
+    ) {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
@@ -68,19 +71,26 @@ class OrderRepository extends EntityRepository
                 $query->setParameter('search', '%'.$item.'%');
             }
         }
+
+        if (!$showCashPayments) {
+            $query->andWhere('o.type != :cash');
+            $query->setParameter('cash', OrderType::CASH);
+        }
+
         $query->groupBy('o.id');
         $query = $query->getQuery();
         return $query->getScalarResult();
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
-     * @param integer $page
-     * @param integer $limit
+     * @param Group $group
+     * @param int $page
+     * @param int $limit
      * @param string $sort
      * @param string $order
      * @param string $searchBy
      * @param string $search
+     * @param bool $showCashPayments
      * @return mixed
      */
     public function getOrdersPage(
@@ -90,7 +100,8 @@ class OrderRepository extends EntityRepository
         $sort = 'o.status',
         $order = 'ASC',
         $searchBy = 'p.street',
-        $search = ''
+        $search = '',
+        $showCashPayments = true
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
@@ -132,7 +143,10 @@ class OrderRepository extends EntityRepository
                 break;
         }
         $this->applySortField($sort);
-
+        if (!$showCashPayments) {
+            $query->andWhere('o.type != :cash');
+            $query->setParameter('cash', OrderType::CASH);
+        }
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
@@ -237,16 +251,18 @@ class OrderRepository extends EntityRepository
         $start,
         $end,
         $groupId,
+        $exportBy,
         $propertyId = null
     ) {
-        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end);
+        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end, $exportBy);
     }
 
     public function getOrdersForRealPageReport(
         $groupId,
         $propertyId,
         $start,
-        $end
+        $end,
+        $exportBy
     ) {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -256,8 +272,19 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.unit', 'unit');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('o.heartlands', 'heartland');
-        $query->where("heartland.depositDate BETWEEN :start AND :end");
-        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->where('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+            $query->andWhere("heartland.depositDate BETWEEN :start AND :end");
+            $query->andWhere('o.status = :status');
+            $query->setParameter('status', OrderStatus::COMPLETE);
+        } else {
+            $query->where("o.created_at BETWEEN :start AND :end");
+            $query->andWhere('o.status = :status1 or o.status = :status2');
+            $query->setParameter('status1', OrderStatus::COMPLETE);
+            $query->setParameter('status2', OrderStatus::PENDING);
+        }
+
         $query->andWhere('g.id = :groupId');
 
         if (!is_null($propertyId)) {
@@ -265,17 +292,16 @@ class OrderRepository extends EntityRepository
             $query->setParameter('propId', $propertyId);
         }
 
-        $query->andWhere('o.status = :status');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('status', OrderStatus::COMPLETE);
         $query->setParameter('groupId', $groupId);
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
-    public function getOrdersForPromasReport(Group $group, $start, $end)
+    public function getOrdersForPromasReport(Group $group, $start, $end, $exportBy)
     {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -287,16 +313,27 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('o.heartlands', 'heartland');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
-        $query->where("heartland.depositDate BETWEEN :start AND :end");
-        $query->andWhere('o.status = :status');
-        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+
+
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->where('o.status = :status');
+            $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+            $query->andWhere("heartland.depositDate BETWEEN :start AND :end");
+            $query->setParameter('status', OrderStatus::COMPLETE);
+        } else {
+            $query->where('o.status = :status1 OR o.status = :status2');
+            $query->andWhere("o.created_at BETWEEN :start AND :end");
+            $query->setParameter('status1', OrderStatus::COMPLETE);
+            $query->setParameter('status2', OrderStatus::PENDING);
+        }
+
         $query->andWhere('o.type in (:orderType)');
         $query->andWhere('g.id = :groupId');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('res.holding = :holding');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('status', OrderStatus::COMPLETE);
+
         $query->setParameter('orderType', array(OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK));
         $query->setParameter('groupId', $group->getId());
         $query->setParameter('holding', $group->getHolding());

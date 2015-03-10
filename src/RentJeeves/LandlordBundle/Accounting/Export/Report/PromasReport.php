@@ -67,16 +67,17 @@ class PromasReport extends ExportReport
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
         $group = $settings['landlord']->getGroup();
+        $exportBy = $settings['export_by'];
 
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForPromasReport($group, $beginDate, $endDate);
+        return $orderRepository->getOrdersForPromasReport($group, $beginDate, $endDate, $exportBy);
     }
 
     protected function validateSettings($settings)
     {
         if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
-            !isset($settings['begin']) || !isset($settings['end'])) {
+            !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
             throw new ExportException('Not enough parameters for Promas report');
         }
     }

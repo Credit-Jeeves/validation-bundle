@@ -22,6 +22,10 @@ class CreditProfileCase extends Base
      */
     public function getResponseOnUserDataCorrect()
     {
+        $this->markTestSkipped(
+            'Experian Credit Reports no longer available. Need to replace with TU test.'
+        );
+
         $arf = $this->getResponseOnUserData($this->user);
         $this->assertTrue(is_string($arf));
         $parser = new ArfParser($arf);

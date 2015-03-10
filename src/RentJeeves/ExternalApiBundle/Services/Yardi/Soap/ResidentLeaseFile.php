@@ -110,7 +110,7 @@ class ResidentLeaseFile
     public function getLeaseEnd($returnObject = false)
     {
         if (!empty($this->leaseEnd) && is_string($this->leaseEnd) && $returnObject) {
-            return DateTime::createFromFormat('d/m/Y', $this->leaseEnd);
+            return DateTime::createFromFormat('Y-m-d', $this->leaseEnd);
         }
 
         return $this->leaseEnd;
