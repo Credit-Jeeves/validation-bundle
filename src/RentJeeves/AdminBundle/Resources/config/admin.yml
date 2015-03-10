@@ -191,6 +191,18 @@ services:
             - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_property_mapping.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+    sonata.admin.unit_mapping:
+        class: RentJeeves\AdminBundle\Admin\UnitMappingAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Unit Mapping" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\UnitMapping
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_unit_mapping.html.twig]]
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
     sonata.admin.partners:
         class: RentJeeves\AdminBundle\Admin\PartnerAdmin
         tags:
