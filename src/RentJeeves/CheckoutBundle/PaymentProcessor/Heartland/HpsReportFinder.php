@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Payment;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Exception\IOException;

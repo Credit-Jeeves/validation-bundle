@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CheckoutBundle\Command;
 
-use RentJeeves\DataBundle\Entity\Job;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -34,27 +33,11 @@ class PaymentReportCommand extends ContainerAwareCommand
     {
         $syncType = $input->getArgument('type');
         $makeArchive = $input->getOption('archive');
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        switch ($syncType) {
-            case 'deposit':
-                $result = $this
-                    ->getContainer()
-                    ->get('payment.deposit_report')
-                    ->synchronize($makeArchive);
-                $output->writeln(sprintf('Amount of synchronized deposits: %s', $result));
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $report = $paymentProcessor->loadReport($syncType, $makeArchive);
+        $result = $this->getContainer()->get('payment_processor.report_synchronizer')->synchronize($report);
 
-                break;
-            case 'reversal':
-                $result = $this
-                    ->getContainer()
-                    ->get('payment.reversal_report')
-                    ->synchronize($makeArchive);
-                $output->writeln(sprintf('Amount of synchronized reversal payments: %s', $result));
-
-                break;
-            default:
-                $output->writeln(sprintf('Unknown sync type "%s". Choose "deposit" or "reversal".', $syncType));
-        }
+        $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
     }
 }

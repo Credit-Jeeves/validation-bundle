@@ -2,15 +2,11 @@
 
 namespace RentJeeves\CheckoutBundle\Payment;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use DateTime;
 
-/**
- * @DI\Service("business_days_calculator")
- */
 class BusinessDaysCalculator
 {
-    public function getNextBusinessDate(DateTime $currentDate)
+    public static function getNextBusinessDate(DateTime $currentDate)
     {
         switch ($currentDate->format('N')) {
             case '6': $nextBusinessDate = $currentDate->modify('+2 days');
