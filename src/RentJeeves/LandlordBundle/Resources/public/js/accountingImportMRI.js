@@ -1,7 +1,7 @@
-function accountingImportResman() {
+function accountingImportMri() {
 
     var self = this;
-    this.source = ko.observable('resman');
+    this.source = ko.observable('mri');
     this.isFinishUploadDataToServer =  ko.observable(false);
     this.classLoadDataMessage = ko.observable('');
 
@@ -20,11 +20,11 @@ function accountingImportResman() {
             self.showSpinner(true);
             self.loadDataMessage(Translator.trans('import.message.download.contracts'));
             jQuery.ajax({
-                url: Routing.generate('accounting_import_residents_resman'),
+                url: Routing.generate('accounting_import_residents_mri'),
                 type: 'POST',
                 dataType: 'json',
                 error: function() {
-                    self.loadDataMessage(Translator.trans('resman.import.error.getResidents'));
+                    self.loadDataMessage(Translator.trans('mri.import.error.getResidents'));
                     self.classLoadDataMessage('errorMessage');
                     self.showSpinner(false);
                 },

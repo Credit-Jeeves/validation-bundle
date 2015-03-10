@@ -421,14 +421,7 @@ class AccountingController extends Controller
         return $response;
     }
 
-    /**
-     * @Route(
-     *     "/import/residents/resman",
-     *     name="accounting_import_residents_resman",
-     *     options={"expose"=true}
-     * )
-     */
-    public function getResidentsResMan()
+    protected function getBaseResidents()
     {
         $importFactory = $this->get('accounting.import.factory');
         /** @var $mapping MappingResman */
@@ -449,6 +442,30 @@ class AccountingController extends Controller
         $response->setStatusCode(($result) ? 200 : 400);
 
         return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/import/residents/resman",
+     *     name="accounting_import_residents_resman",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getResidentsResMan()
+    {
+        return $this->getBaseResidents();
+    }
+
+    /**
+     * @Route(
+     *     "/import/residents/mri",
+     *     name="accounting_import_residents_mri",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getResidentsMri()
+    {
+        return $this->getBaseResidents();
     }
 
     /**

@@ -19,6 +19,10 @@ class ResManClientCase extends Base
         $container = $this->getKernel()->getContainer();
         /** @var MRIClient $mriClient */
         $mriClient = $container->get('mri.client');
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Services\MRI\MRIClient',
+            $mriClient
+        );
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         /** @var Holding $holding */
@@ -33,12 +37,6 @@ class ResManClientCase extends Base
         $this->assertNotNull($mriSettings);
         $mriClient->setSettings($mriSettings);
         $mriClient->setDebug(false);
-
-        $this->assertInstanceOf(
-            'RentJeeves\ExternalApiBundle\Services\MRI\MRIClient',
-            $mriClient
-        );
-
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
         $this->assertGreaterThan(15, $mriResponse->getValues());
@@ -55,5 +53,7 @@ class ResManClientCase extends Base
         $this->assertInstanceOf('\DateTime', $value->getLeaseMoveOut());
         $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
         $this->assertInstanceOf('\DateTime', $value->getLeaseStart());
+
+        file_put_contents('/var/www/Credit-Jeeves-SF2/mri_dump.txt', print_r($mriResponse, true));
     }
 }
