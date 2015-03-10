@@ -23,6 +23,7 @@ class Version20150227102141 extends AbstractMigration
                 database_name LONGTEXT NOT NULL,
                 partner_key LONGTEXT NOT NULL,
                 hash LONGTEXT NOT NULL,
+                client_id LONGTEXT NOT NULL,
                 UNIQUE INDEX UNIQ_6B189E0A6CD5FBA3 (holding_id),
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );

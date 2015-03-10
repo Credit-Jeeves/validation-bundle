@@ -39,6 +39,18 @@ abstract class MRISettings
 
     /**
      * @ORM\Column(
+     *     name="client_id",
+     *     type="encrypt",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
+    protected $clientId;
+
+    /**
+     * @ORM\Column(
      *     name="user",
      *     type="encrypt",
      *     nullable=false
@@ -108,6 +120,23 @@ abstract class MRISettings
      * @var Holding
      */
     protected $holding;
+
+
+    /**
+     * @return string
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * @param string $clientId
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+    }
 
     /**
      * @param Holding $holding
