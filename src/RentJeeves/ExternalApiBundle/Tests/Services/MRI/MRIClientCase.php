@@ -3,12 +3,13 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Services\MRI;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 
 class ResManClientCase extends Base
 {
-    const PROPERTY_ID = 'MRI';
+    const PROPERTY_ID = '500';
 
     /**
      * @test
@@ -38,10 +39,21 @@ class ResManClientCase extends Base
             $mriClient
         );
 
-        $response = $mriClient->getResidentTransactions(self::PROPERTY_ID);
-        $response = json_decode($response, true);
-        $this->assertArrayHasKey('odata.metadata', $response);
-        $this->assertArrayHasKey('value', $response);
-        $this->assertEmpty($response['value']);
+        $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
+        $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
+        $this->assertGreaterThan(15, $mriResponse->getValues());
+        /** @var Value $value */
+        $value = $mriResponse->getValues()[14];
+        $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
+        $this->assertNotEmpty($value->getResidentId());
+        $this->assertNotEmpty($value->getUnitId());
+        $this->assertNotEmpty($value->getFirstName());
+        $this->assertNotEmpty($value->getLastName());
+        $this->assertNotEmpty($value->getLeaseBalance());
+        $this->assertNotEmpty($value->getLeaseMonthlyRentAmount());
+        $this->assertInstanceOf('\DateTime', $value->getLastUpdateDate());
+        $this->assertInstanceOf('\DateTime', $value->getLeaseMoveOut());
+        $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
+        $this->assertInstanceOf('\DateTime', $value->getLeaseStart());
     }
 }

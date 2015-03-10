@@ -2,7 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
+use JMS\Serializer\DeserializationContext;
 use RentJeeves\DataBundle\Entity\MRISettings;
+use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
@@ -63,6 +65,7 @@ class MRIClient implements ClientInterface
     /**
      * @param $method
      * @param array $params
+     * @return MRIResponse
      */
     public function sendRequest($method, array $params)
     {
@@ -108,6 +111,7 @@ class MRIClient implements ClientInterface
 
     /**
      * @param $response
+     * @return MRIResponse
      */
     protected function manageResponse($response)
     {
@@ -119,11 +123,23 @@ class MRIClient implements ClientInterface
         if ($httpCode !== 200) {
             throw new Exception(sprintf("Bad http code(%s) from MRI", $httpCode));
         }
-        return $body->__toString();
+
+        $context = new DeserializationContext();
+        $context->setGroups(['MRI']);
+
+        $mriResponse = $this->serializer->deserialize(
+            $body->__toString(),
+            'RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse',
+            'json',
+            $context
+        );
+
+        return $mriResponse;
     }
 
     /**
      * @param $externalPropertyId
+     * @return MRIResponse
      */
     public function getResidentTransactions($externalPropertyId)
     {
