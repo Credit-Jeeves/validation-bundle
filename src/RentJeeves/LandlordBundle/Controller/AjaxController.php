@@ -646,7 +646,9 @@ class AjaxController extends Controller
             /** @var Contract $contract */
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();
-                if ($contract->getStatus() === ContractStatus::INVITE) {
+                if ($contract->getStatus() === ContractStatus::INVITE &&
+                    $group->getGroupSettings()->getIsIntegrated()
+                ) {
                     $hasMultipleContracts = $resident->hasMultipleContracts(
                         $contract->getTenant(),
                         $this->getUser()->getHolding()
@@ -1199,8 +1201,9 @@ class AjaxController extends Controller
          */
         $resident = $this->get('resident_manager');
         if (!$resident->hasMultipleContracts($contract->getTenant(), $holding = $this->getUser()->getHolding())) {
-            $residentMapping = $tenant->getResidentForHolding($holding);
-            $em->remove($residentMapping);
+            if ($residentMapping = $tenant->getResidentForHolding($holding)) {
+                $em->remove($residentMapping);
+            }
         }
 
         $em->flush();
