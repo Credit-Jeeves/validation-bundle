@@ -9,18 +9,21 @@ use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Traits\UpdateMatchedContractsTrait;
 
 /**
  * @Service("accounting.import.handler.resman")
  */
 class HandlerResman extends HandlerAbstract
 {
+    use UpdateMatchedContractsTrait;
+
     /**
      * @InjectParams({
-     *     "translator"       = @Inject("translator"),
-     *     "sessionUser"      = @Inject("core.session.landlord"),
-     *     "storage"          = @Inject("accounting.import.storage.resman"),
-     *     "mapping"          = @Inject("accounting.import.mapping.resman")
+     *     "translator" = @Inject("translator"),
+     *     "sessionUser" = @Inject("core.session.landlord"),
+     *     "storage" = @Inject("accounting.import.storage.resman"),
+     *     "mapping" = @Inject("accounting.import.mapping.resman")
      * })
      */
     public function __construct(
@@ -35,19 +38,5 @@ class HandlerResman extends HandlerAbstract
         $this->mapping = $mapping;
         $this->translator = $translator;
         parent::__construct();
-    }
-
-    public function updateMatchedContracts()
-    {
-        $self = $this;
-        $filePath = $this->storage->getFilePath();
-
-        $this->updateMatchedContractsWithCallback(
-            function () use ($self, $filePath) {
-                $self->removeLastLineInFile($filePath);
-            },
-            function () {
-            }
-        );
     }
 }

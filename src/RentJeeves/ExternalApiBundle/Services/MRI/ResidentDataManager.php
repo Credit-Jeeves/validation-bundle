@@ -45,7 +45,7 @@ class ResidentDataManager
      */
     public function setSettings(SettingsInterface $settings)
     {
-        $this->logger->addInfo(sprintf("Setup settings ID:%s", $settings->getId()));
+        $this->logger->debug(sprintf("Setup MRI settings ID:%s", $settings->getId()));
         $this->settings = $settings;
         $this->client->setSettings($settings);
     }
@@ -56,7 +56,7 @@ class ResidentDataManager
      */
     public function getResidents($externalPropertyId)
     {
-        $this->logger->addInfo(sprintf("Get Residents by external property ID:%s", $externalPropertyId));
+        $this->logger->debug(sprintf("Get MRI Residents by external property ID:%s", $externalPropertyId));
         $mriResponse = $this->client->getResidentTransactions($externalPropertyId);
 
         return $mriResponse->getValues();

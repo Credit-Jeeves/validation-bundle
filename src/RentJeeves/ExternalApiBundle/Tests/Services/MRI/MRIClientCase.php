@@ -7,7 +7,7 @@ use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 
-class ResManClientCase extends Base
+class MRIClientCase extends Base
 {
     const PROPERTY_ID = '500';
 
@@ -53,7 +53,5 @@ class ResManClientCase extends Base
         $this->assertInstanceOf('\DateTime', $value->getLeaseMoveOut());
         $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
         $this->assertInstanceOf('\DateTime', $value->getLeaseStart());
-
-        file_put_contents('/var/www/Credit-Jeeves-SF2/mri_dump.txt', print_r($mriResponse, true));
     }
 }

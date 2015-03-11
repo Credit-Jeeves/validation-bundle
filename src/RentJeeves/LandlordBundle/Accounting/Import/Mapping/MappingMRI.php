@@ -30,7 +30,18 @@ class MappingMRI extends MappingCsv
         $this->storage = $storage;
         $this->reader = $reader;
         $this->residentDataManager = $residentDataManager;
-        $this->settings = $securityContext->getToken()->getUser()->getHolding()->getMriSettings();
+        $holding = $securityContext->getToken()->getUser()->getHolding();
+
+        if (empty($holding)) {
+            throw new ImportMappingException(
+                sprintf(
+                    "User(id:%s) don't have holding",
+                    $securityContext->getToken()->getUser()->getId()
+                )
+            );
+        }
+
+        $this->settings = $holding->getMriSettings();
 
         if (empty($this->settings)) {
             throw new ImportMappingException(

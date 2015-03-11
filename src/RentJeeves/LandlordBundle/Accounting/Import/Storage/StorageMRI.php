@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 
 /**
@@ -19,7 +20,7 @@ class StorageMRI extends ExternalApiStorage
         if (empty($customers)) {
             return false;
         }
-
+        //API execution can be long
         ini_set('max_execution_time', '120');
 
         /** @var $customer Value  */
@@ -33,7 +34,7 @@ class StorageMRI extends ExternalApiStorage
             $startAt = $this->getDateString($customer->getLeaseStart());
             $finishAt = $this->getDateString($customer->getLeaseEnd());
             $moveOut = $this->getDateString($customer->getLeaseMoveOut());
-            $paymentAccepted = strtolower($customer->getPayAllowed()); //@TODO need find out possible values
+            //$paymentAccepted = strtolower($customer->getPayAllowed()); //@TODO need find out possible values
 
             $data = array(
                 $customer->getResidentId(),
@@ -47,7 +48,7 @@ class StorageMRI extends ExternalApiStorage
                 $moveOut,
                 $customer->getLeaseBalance(),
                 $customer->getLeaseMonthToMonth(),
-                $paymentAccepted,
+                PaymentAccepted::ANY,
                 $customer->getLeaseId()
             );
 
