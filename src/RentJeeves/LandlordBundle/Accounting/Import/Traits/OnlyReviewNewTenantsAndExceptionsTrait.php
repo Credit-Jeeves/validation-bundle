@@ -103,7 +103,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         $lines = file($filePath, FILE_SKIP_EMPTY_LINES);
 
         if (count($lines) > 0) {
-            $this->lines[] = array_pop($lines);
+            $this->lineFromCsvFile[] = array_pop($lines);
         }
 
         file_put_contents($filePath, implode('', $lines));

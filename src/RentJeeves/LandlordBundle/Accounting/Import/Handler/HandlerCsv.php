@@ -9,7 +9,6 @@ use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingCsv;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
-use RentJeeves\LandlordBundle\Accounting\Import\Traits\UpdateMatchedContractsTrait;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -18,8 +17,6 @@ use RentJeeves\LandlordBundle\Accounting\Import\Traits\UpdateMatchedContractsTra
  */
 class HandlerCsv extends HandlerAbstract
 {
-    use UpdateMatchedContractsTrait;
-
     /**
      * @InjectParams({
      *     "translator"       = @Inject("translator"),

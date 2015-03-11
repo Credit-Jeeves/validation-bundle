@@ -9,14 +9,12 @@ use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
-use RentJeeves\LandlordBundle\Accounting\Import\Traits\UpdateMatchedContractsTrait;
 
 /**
  * @Service("accounting.import.handler.mri")
  */
 class HandlerMRI extends HandlerAbstract
 {
-    use UpdateMatchedContractsTrait;
     /**
      * @InjectParams({
      *     "translator" = @Inject("translator"),

@@ -9,15 +9,12 @@ use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
-use RentJeeves\LandlordBundle\Accounting\Import\Traits\UpdateMatchedContractsTrait;
 
 /**
  * @Service("accounting.import.handler.resman")
  */
 class HandlerResman extends HandlerAbstract
 {
-    use UpdateMatchedContractsTrait;
-
     /**
      * @InjectParams({
      *     "translator" = @Inject("translator"),

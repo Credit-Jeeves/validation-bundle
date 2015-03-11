@@ -46,7 +46,7 @@ class MappingMRI extends MappingCsv
         if (empty($this->settings)) {
             throw new ImportMappingException(
                 sprintf(
-                    "Holding(id:%s) don't have MRI Settings",
+                    "Holding(id:%s) doesn't have MRI Settings",
                     $securityContext->getToken()->getUser()->getHolding()->getId()
                 )
             );
