@@ -1,0 +1,11 @@
+{% extends 'SonataAdminBundle:CRUD:edit.html.twig' %}
+
+{% block form %}
+    {{ parent() }}
+    {% javascripts
+    '@CoreBundle/Resources/public/js/jquery.overlay.js'
+    '@CoreBundle/Resources/public/js/jquery.overlay-ext.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
