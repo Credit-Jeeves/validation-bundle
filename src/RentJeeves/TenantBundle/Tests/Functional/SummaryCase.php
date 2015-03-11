@@ -203,7 +203,7 @@ class SummaryCase extends BaseTestCase
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout, "typeof $ !== undefined");
         $this->assertNotNull(
-            $error = $this->page->find('css', '.rentjeeves_checkoutbundle_userdetailstype > ul > li:nth-child(1)')
+            $error = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype>ul>li')
         );
         $this->assertEquals(
             "Please provide a single first name for verification. For example, use Mary instead of Mary Beth.",
