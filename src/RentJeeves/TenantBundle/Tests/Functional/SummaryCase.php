@@ -206,7 +206,7 @@ class SummaryCase extends BaseTestCase
             $error = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype>ul>li')
         );
         $this->assertEquals(
-            "Please provide a single first name for verification. For example, use Mary instead of Mary Beth.",
+            "error.user.first_name.authentication",
             $error->getText()
         );
     }
