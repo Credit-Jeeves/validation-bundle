@@ -16,6 +16,7 @@ class ApiIntegrationType extends Enum
 
     public static $importMapping = [
         self::YARDI_VOYAGER => 'yardi',
-        self::RESMAN        => 'resman'
+        self::RESMAN        => 'resman',
+        self::MRI           => 'mri',
     ];
 }

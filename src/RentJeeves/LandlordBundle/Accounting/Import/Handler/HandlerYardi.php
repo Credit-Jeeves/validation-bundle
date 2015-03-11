@@ -20,10 +20,10 @@ class HandlerYardi extends HandlerAbstract
 {
     /**
      * @InjectParams({
-     *     "translator"       = @Inject("translator"),
-     *     "sessionUser"      = @Inject("core.session.landlord"),
-     *     "storage"          = @Inject("accounting.import.storage.yardi"),
-     *     "mapping"          = @Inject("accounting.import.mapping.yardi")
+     *     "translator" = @Inject("translator"),
+     *     "sessionUser" = @Inject("core.session.landlord"),
+     *     "storage" = @Inject("accounting.import.storage.yardi"),
+     *     "mapping" = @Inject("accounting.import.mapping.yardi")
      * })
      */
     public function __construct(

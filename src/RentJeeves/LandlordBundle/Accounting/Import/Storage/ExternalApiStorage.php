@@ -176,4 +176,17 @@ class ExternalApiStorage extends StorageCsv
         $this->getImportLoaded(false);
         parent::clearDataBeforeReview();
     }
+
+    /**
+     * @param string|\DateTime $date
+     * @return string
+     */
+    protected function getDateString($date)
+    {
+        if ($date instanceof \DateTime) {
+            $date = $date->format('Y-m-d');
+        }
+
+        return $date;
+    }
 }

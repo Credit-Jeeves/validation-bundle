@@ -2783,8 +2783,8 @@
                 <source>yardi.import.message.download.contracts</source>
                 <target>Fetching lease contracts for resident %RESIDENT_ID%.</target>
             </trans-unit>
-            <trans-unit id="resman.import.message.download.contracts">
-                <source>resman.import.message.download.contracts</source>
+            <trans-unit id="import.message.download.contracts">
+                <source>import.message.download.contracts</source>
                 <target>Fetching lease contracts.</target>
             </trans-unit>
             <trans-unit id="landlord.form.import.multiple.property">
@@ -3084,6 +3084,7 @@
             <trans-unit id="landlord.payments_list.show_external_payments">
                 <source>landlord.payments_list.show_external_payments</source>
                 <target>Show External Payments</target>
+            </trans-unit>
             <trans-unit id="landlord_export.export_by_deposits.description">
                 <source>landlord_export.export_by_deposits.description</source>
                 <target>Export payments that have been deposited by deposit date.</target>

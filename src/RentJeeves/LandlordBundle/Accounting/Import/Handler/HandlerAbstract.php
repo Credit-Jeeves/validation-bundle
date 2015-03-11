@@ -159,10 +159,73 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected $collectionImportModel;
 
+    protected $lineFromCsvFile = [];
+
     public function __construct()
     {
         ini_set('auto_detect_line_endings', true);
         $this->currentImportModel = new ModelImport();
+    }
+
+    public function updateMatchedContracts()
+    {
+        if (!$this->storage->isOnlyException()) {
+            return false;
+        }
+
+        $this->lineFromCsvFile = [];
+
+        $filePath = $this->storage->getFilePath();
+        $newFilePath = $this->getNewFilePath();
+        $this->copyHeader($newFilePath);
+        $self = $this;
+        $total = $this->mapping->getTotal();
+
+        $callbackSuccess = function () use ($self, $filePath) {
+            $self->removeLastLineInFile($filePath);
+        };
+
+        $callbackFailed = function () use ($self, $filePath) {
+            $self->moveLine($filePath);
+        };
+
+        for ($i = 1; $i <= $total; $i++) {
+            $this->updateMatchedContractsWithCallback(
+                $callbackSuccess,
+                $callbackFailed
+            );
+        }
+
+        krsort($this->lineFromCsvFile);
+        file_put_contents($newFilePath, implode('', $this->lineFromCsvFile), FILE_APPEND | LOCK_EX);
+        $this->storage->setFilePath(basename($newFilePath));
+
+        return true;
+    }
+
+    /**
+     * @param $newFilePath
+     * @return string
+     */
+    public function copyHeader($newFilePath)
+    {
+        $lines = file($this->storage->getFilePath());
+        $firstLine = reset($lines);
+        file_put_contents($newFilePath, $firstLine, FILE_APPEND | LOCK_EX);
+
+        return $newFilePath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNewFilePath()
+    {
+        return sprintf(
+            '%s%s.csv',
+            $this->storage->getFileDirectory(),
+            uniqid()
+        );
     }
 
     /**

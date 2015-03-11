@@ -7,27 +7,27 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
-use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
-use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingMRI;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
 
 /**
- * @Service("accounting.import.handler.resman")
+ * @Service("accounting.import.handler.mri")
  */
-class HandlerResman extends HandlerAbstract
+class HandlerMRI extends HandlerAbstract
 {
     /**
      * @InjectParams({
      *     "translator" = @Inject("translator"),
      *     "sessionUser" = @Inject("core.session.landlord"),
-     *     "storage" = @Inject("accounting.import.storage.resman"),
-     *     "mapping" = @Inject("accounting.import.mapping.resman")
+     *     "storage" = @Inject("accounting.import.storage.mri"),
+     *     "mapping" = @Inject("accounting.import.mapping.mri")
      * })
      */
     public function __construct(
         Translator $translator,
         SessionUser $sessionUser,
-        StorageResman $storage,
-        MappingResman $mapping
+        StorageMRI $storage,
+        MappingMRI $mapping
     ) {
         $this->user = $sessionUser->getUser();
         $this->group = $sessionUser->getGroup();

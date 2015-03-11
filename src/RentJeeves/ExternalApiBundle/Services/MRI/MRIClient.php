@@ -155,6 +155,10 @@ class MRIClient implements ClientInterface
         return $response;
     }
 
+    /**
+     * Cap, will be developed in the future
+     * Don't use it
+     */
     public function getPaymentDetails($externalPropertyId)
     {
         $method = 'MRI_S-PMRM_PaymentDetailsByPropertyID';

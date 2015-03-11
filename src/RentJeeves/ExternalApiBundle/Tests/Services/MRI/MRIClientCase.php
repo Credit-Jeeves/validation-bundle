@@ -7,7 +7,7 @@ use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 
-class ResManClientCase extends Base
+class MRIClientCase extends Base
 {
     const PROPERTY_ID = '500';
 
@@ -19,6 +19,10 @@ class ResManClientCase extends Base
         $container = $this->getKernel()->getContainer();
         /** @var MRIClient $mriClient */
         $mriClient = $container->get('mri.client');
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Services\MRI\MRIClient',
+            $mriClient
+        );
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         /** @var Holding $holding */
@@ -33,12 +37,6 @@ class ResManClientCase extends Base
         $this->assertNotNull($mriSettings);
         $mriClient->setSettings($mriSettings);
         $mriClient->setDebug(false);
-
-        $this->assertInstanceOf(
-            'RentJeeves\ExternalApiBundle\Services\MRI\MRIClient',
-            $mriClient
-        );
-
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
         $this->assertGreaterThan(15, $mriResponse->getValues());
