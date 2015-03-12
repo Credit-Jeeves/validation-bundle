@@ -122,7 +122,7 @@ class AccountingPaymentSynchronizer
                 $order->getId()
             )
         );
-        $job = new Job('external_api:transaction:push', array('--app=rj'));
+        $job = new Job('external_api:payment:push', array('--app=rj'));
         $job->setMaxRuntime(self::MAXIMUM_RUNTIME_SEC);
         $job->addRelatedEntity($order);
 
@@ -150,7 +150,7 @@ class AccountingPaymentSynchronizer
                         $order->getId()
                     )
                 );
-                return;
+                return false;
             }
 
             $externalPropertyMapping = $order
@@ -211,9 +211,13 @@ class AccountingPaymentSynchronizer
             if ($result === false) {
                 throw new Exception($message);
             }
+
+            return true;
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logger->addCritical($e->getMessage());
+
+            return false;
         }
     }
 

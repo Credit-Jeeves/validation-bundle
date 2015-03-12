@@ -11,11 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TransactionPushCommand extends ContainerAwareCommand
+class PaymentPushCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName('external_api:transaction:push')
+        $this->setName('external_api:payment:push')
             ->addOption('jms-job-id', null, InputOption::VALUE_REQUIRED, 'ID of job')
             ->setDescription('Push transaction to external API');
     }
@@ -38,11 +38,17 @@ class TransactionPushCommand extends ContainerAwareCommand
 
         /** @var AccountingPaymentSynchronizer $accountingPaymentSync */
         $accountingPaymentSync = $this->getContainer()->get('accounting.payment_sync');
-        $orders = $job->getRelatedEntities();
-
+        $arrayCollectionJobRelatedorder = $job->getRelatedEntities();
+        if ($arrayCollectionJobRelatedorder->count() !== 1) {
+            throw new \Exception("Must be just one entity");
+        }
         /** @var JobRelatedOrder $jobRelatedOrder */
-        foreach ($orders as $jobRelatedOrder) {
-            $accountingPaymentSync->sendOrderToAccountingSystem($jobRelatedOrder->getOrder());
+        $jobRelatedOrder = $arrayCollectionJobRelatedorder->first();
+        $result = $accountingPaymentSync->sendOrderToAccountingSystem($jobRelatedOrder->getOrder());
+        if ($result) {
+            $output->writeln('Success');
+        } else {
+            $output->writeln('Failed');
         }
     }
 }
