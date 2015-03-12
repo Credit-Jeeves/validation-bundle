@@ -220,6 +220,17 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
+     * @param null|string $attributes
+     * @param array $requestParams
+     * @param string $format
+     * @return null|Response
+     */
+    protected function deleteRequest($attributes = null, array $requestParams = [], $format = 'json')
+    {
+        return $this->request(null, 'DELETE', $format, $attributes, $requestParams);
+    }
+
+    /**
      * @param string|null $fullUrl
      * @param string $method
      * @param string $format
