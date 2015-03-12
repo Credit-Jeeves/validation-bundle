@@ -1714,47 +1714,6 @@
             "time": "2014-06-17 13:10:51"
         },
         {
-            "name": "formapro/xmlseclibs",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:formapro/xmlseclib.git",
-                "reference": "5045813f341d24fe57843d5a5fde8e2bc4eaba6d"
-            },
-            "suggest": {
-                "ext/mcrypt": "MCrypt extension",
-                "ext/openssl": "OpenSSL extension"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "XMLSecurityDSig.php",
-                    "XMLSecurityKey.php",
-                    "XMLSecEnc.php"
-                ]
-            },
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Rob Richards"
-                }
-            ],
-            "description": "A PHP library for XML Security",
-            "homepage": "http://code.google.com/p/xmlseclibs/",
-            "keywords": [
-                "certificate",
-                "security",
-                "signature",
-                "signing",
-                "x.509",
-                "xml",
-                "xmlsec"
-            ],
-            "time": "2013-11-28 10:05:46"
-        },
-        {
             "name": "fp/badaboom",
             "version": "dev-ton",
             "source": {
@@ -7016,7 +6975,6 @@
         "credit-jeeves/arf-bundle": 20,
         "credit-jeeves/simulation-bundle": 20,
         "credit-jeeves/api-bundle": 20,
-        "formapro/xmlseclibs": 20,
         "friendsofsymfony/rest-bundle": 20,
         "nelmio/api-doc-bundle": 20,
         "friendsofsymfony/oauth-server-bundle": 20,

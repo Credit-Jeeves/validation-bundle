@@ -65,19 +65,6 @@ class AlertController extends Controller
             if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_SUCCESS) {
                 $alerts[] = $translator->trans('landlord.hps.processing_message');
             }
-            if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_ERROR) {
-                $alerts[] = $translator->trans(
-                    'landlord.hps.complete_application',
-                    array('%complete_url%' => $this->generateUrl('landlord_complete_account'))
-                );
-            }
-            /** Overloading error above so Admin can set to show merchant account link after phone contact.
-            if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_ERROR) {
-                $alerts[] = $translator->trans(
-                    'landlord.hps.error_message',
-                    array('%heartland_msg%' => $deposit->getMessage())
-                );
-            } */
 
             if (empty($billing)) {
                 $alerts[] = $translator->trans(
