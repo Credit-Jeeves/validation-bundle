@@ -203,10 +203,10 @@ class SummaryCase extends BaseTestCase
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout, "typeof $ !== undefined");
         $this->assertNotNull(
-            $error = $this->page->find('css', '.attention-box')
+            $error = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype>ul>li')
         );
         $this->assertEquals(
-            "Element 'First': 'Mary Jane' is not a valid value of the local atomic type.",
+            "error.user.first_name.authentication",
             $error->getText()
         );
     }
