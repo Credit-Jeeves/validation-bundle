@@ -67,9 +67,33 @@ class TransactionListener
             );
             return;
         }
+
+        if (!$order = $transaction->getOrder()) {
+            $this->container->get('logger')->debug(
+                sprintf(
+                    "Transaction %s does not have order, we don't send it to external API",
+                    $transaction->getId()
+                )
+            );
+            return;
+        }
+
+        if (!$contract = $order->getContract()) {
+            $this->container->get('logger')->debug(
+                sprintf(
+                    "Transaction %s does not have contract, we don't send it to external API",
+                    $transaction->getId()
+                )
+            );
+            return;
+        }
+
         /** @var AccountingPaymentSynchronizer $accountingPaymentSync */
         $accountingPaymentSync = $this->container->get('accounting.payment_sync');
         $accountingPaymentSync->setDebug(true);
-        $accountingPaymentSync->sendOrderToAccountingSystem($transaction->getOrder());
+
+        if ($accountingPaymentSync->isAllowedToSend($contract->getHolding())) {
+            $accountingPaymentSync->createJob($transaction->getOrder());
+        }
     }
 }

@@ -18,11 +18,11 @@ use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\ExternalApiBundle\Command\TransactionPushCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -625,7 +625,13 @@ class OrderListenerCase extends Base
     public function shouldCreateMappingBatchesAndAddPaymentToBatch()
     {
         $this->load(true);
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:transaction:push']
+        );
 
+        $this->assertCount(0, $jobs);
         $startAt = new DateTime();
         $startAt->modify('-5 month');
         $finishAt = new DateTime();
@@ -640,8 +646,7 @@ class OrderListenerCase extends Base
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($holding);
         $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
 
-        /** @var $em EntityManager */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
 
         $em->persist($unit);
         $em->persist($contract);
@@ -686,6 +691,26 @@ class OrderListenerCase extends Base
         $em->persist($order);
 
         $em->flush();
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:transaction:push']
+        );
+
+        $this->assertCount(1, $jobs);
+
+        $job = reset($jobs);
+
+        $application = new Application($this->getKernel());
+        $application->add(new TransactionPushCommand());
+
+        $command = $application->find('external_api:transaction:push');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'       => $command->getName(),
+                '--jms-job-id'  => $job->getId(),
+            )
+        );
 
         $this->assertTrue(
             $repo->isOpenedBatch(
