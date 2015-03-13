@@ -40,7 +40,7 @@
 <div class="top-nav">
     {{ knp_menu_render('LandlordBundle:Builder:mainMenu', { 'template': '::menu.html.twig' }) }}
 </div>
-    
+
 {% endblock %}
 
 {% block footer %}
@@ -49,7 +49,6 @@
 
 {% block head_javascripts %}
     {% javascripts '@RjCoreBundle/Resources/public/js/formProcess.js'
-                   '@RjCoreBundle/Resources/public/js/user-voice.js'
                    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
@@ -61,6 +60,7 @@
     {% javascripts  '@CoreBundle/Resources/public/js/less.min.js'
                     '@CoreBundle/Resources/public/js/datepicker.js'
                     '@ComponentBundle/Resources/public/js/groups.js'
+                    '@RjCoreBundle/Resources/public/js/user-voice.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
