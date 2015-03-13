@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
@@ -565,10 +566,19 @@ class OrderListenerCase extends Base
         return $payment;
     }
 
+    public function testDataForCreatePaymentPushCommand()
+    {
+        return [
+            [$apiIntegrationType = ApiIntegrationType::RESMAN],
+            [$apiIntegrationType = ApiIntegrationType::MRI]
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider testDataForCreatePaymentPushCommand
      */
-    public function shouldCreatePaymentPushCommand()
+    public function shouldCreatePaymentPushCommand($apiIntegrationType)
     {
         $this->load(true);
         /** @var $em EntityManager */
@@ -577,7 +587,7 @@ class OrderListenerCase extends Base
             ['command' => 'external_api:transaction:push']
         );
 
-        $this->createTransaction();
+        $this->createTransaction($apiIntegrationType);
 
         $this->assertCount(0, $jobs);
 

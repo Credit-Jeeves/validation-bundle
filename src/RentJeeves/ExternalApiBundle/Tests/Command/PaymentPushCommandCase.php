@@ -17,16 +17,25 @@ class PaymentPushCommandCase extends BaseTestCase
     use TransactionAvailableTrait;
     use ContractAvailableTrait;
 
+    public function testDataForSendPaymentToExternalApi()
+    {
+        return [
+            [$apiIntegrationType = ApiIntegrationType::RESMAN],
+            [$apiIntegrationType = ApiIntegrationType::MRI]
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider testDataForSendPaymentToExternalApi
      */
-    public function shouldSendPaymentToResMan()
+    public function shouldSendPaymentToExternalApi($apiIntegrationType)
     {
         $this->load(true);
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        $transaction = $this->createTransaction();
+        $transaction = $this->createTransaction($apiIntegrationType);
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
             ['command' => 'external_api:payment:push']
@@ -48,15 +57,5 @@ class PaymentPushCommandCase extends BaseTestCase
             ]
         );
         $this->assertRegExp("/Start\nSuccess/", $commandTester->getDisplay());
-        /** @var PaymentBatchMappingRepository $repo */
-        $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
-
-        $this->assertTrue(
-            $repo->isOpenedBatch(
-                $transaction->getBatchId(),
-                ApiIntegrationType::RESMAN,
-                ResManClientCase::EXTERNAL_PROPERTY_ID
-            )
-        );
     }
 }

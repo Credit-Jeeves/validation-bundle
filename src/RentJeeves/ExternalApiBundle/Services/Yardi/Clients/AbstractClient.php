@@ -140,6 +140,14 @@ abstract class AbstractClient implements ClientInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isWorksWithBatchs()
+    {
+        return true;
+    }
+
+    /**
      * @return array
      */
     protected function getLoginCredentials()

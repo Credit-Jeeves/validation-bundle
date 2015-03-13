@@ -20,7 +20,7 @@ trait TransactionAvailableTrait
     /**
      * @return Heartland
      */
-    public function createTransaction()
+    public function createTransaction($apiIntegrationType)
     {
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $startAt = new DateTime();
@@ -33,7 +33,7 @@ trait TransactionAvailableTrait
         $unit = $contract->getUnit();
         $unit->setName('2');
         $holding = $contract->getHolding();
-        $holding->getAccountingSettings()->setApiIntegration(ApiIntegrationType::RESMAN);
+        $holding->getAccountingSettings()->setApiIntegration($apiIntegrationType);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($holding);
         $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
 

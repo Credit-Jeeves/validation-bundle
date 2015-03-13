@@ -12,9 +12,9 @@ class MRIClientCase extends Base
     const PROPERTY_ID = '500';
 
     /**
-     * @test
+     * @return MRIClient
      */
-    public function shouldReturnResidents()
+    protected function getMriClient()
     {
         $container = $this->getKernel()->getContainer();
         /** @var MRIClient $mriClient */
@@ -37,6 +37,16 @@ class MRIClientCase extends Base
         $this->assertNotNull($mriSettings);
         $mriClient->setSettings($mriSettings);
         $mriClient->setDebug(false);
+
+        return $mriClient;
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnResidents()
+    {
+        $mriClient = $this->getMriClient();
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
         $this->assertGreaterThan(15, $mriResponse->getValues());
@@ -53,5 +63,16 @@ class MRIClientCase extends Base
         $this->assertInstanceOf('\DateTime', $value->getLeaseMoveOut());
         $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
         $this->assertInstanceOf('\DateTime', $value->getLeaseStart());
+    }
+
+    /**
+     * @TODO currently API not return any data, when it will return some data need refactoring test
+     * @test
+     */
+    public function shouldReturnPaymentDetails()
+    {
+        $mriClient = $this->getMriClient();
+        $mriResponse = $mriClient->getPaymentDetails(self::PROPERTY_ID);
+        $this->assertNotEmpty($mriResponse->getMetadata());
     }
 }

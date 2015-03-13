@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\DeserializationContext;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
@@ -63,6 +64,14 @@ class MRIClient implements ClientInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isWorksWithBatchs()
+    {
+        return false;
+    }
+
+    /**
      * @param $method
      * @param array $params
      * @return MRIResponse
@@ -82,14 +91,14 @@ class MRIClient implements ClientInterface
                 'Authorization' => sprintf('Basic %s', $authorization),
                 'Accept'        => 'application/json',
             ];
-
+            $this->debugMessage(sprintf("Setup MRI headers %s", print_r($headers, true)));
             $uri = sprintf(
                 '%s?%s',
                 $mriSettings->getUrl(),
                 http_build_query($GETParameters)
             );
 
-            $this->debugMessage(sprintf("Request to uri %s", $uri));
+            $this->debugMessage(sprintf("Request to MRI by uri %s", $uri));
             $request = $this->httpClient->get($uri, $headers);
 
             return $this->manageResponse($this->httpClient->send($request));
@@ -156,8 +165,9 @@ class MRIClient implements ClientInterface
     }
 
     /**
-     * Cap, will be developed in the future
-     * Don't use it
+     * @TODO need create mapping for response, currently response empty and I can't create mapping
+     * @param string $externalPropertyId
+     * @return MRIResponse
      */
     public function getPaymentDetails($externalPropertyId)
     {
@@ -171,5 +181,17 @@ class MRIClient implements ClientInterface
         $response = $this->sendRequest($method, $params);
 
         return $response;
+    }
+
+    /**
+     * @TODO we don't know API call
+     *
+     * @param Order $order
+     * @param $externalPropertyId
+     * @return bool
+     */
+    public function postPayment(Order $order, $externalPropertyId)
+    {
+        return true;
     }
 }

@@ -11,4 +11,6 @@ interface ClientInterface
     public function getSettings();
 
     public function sendRequest($function, array $params);
+
+    public function isWorksWithBatchs();
 }

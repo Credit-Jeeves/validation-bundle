@@ -2,6 +2,8 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
+use CreditJeeves\DataBundle\Entity\Order;
+use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
@@ -113,6 +115,14 @@ class ResManClient implements ClientInterface
      */
     public function build()
     {
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWorksWithBatchs()
+    {
+        return true;
     }
 
     /**
@@ -286,12 +296,13 @@ class ResManClient implements ClientInterface
      * @return bool
      */
     public function addPaymentToBatch(
-        $residentTransactionsXml,
+        Order $order,
         $externalPropertyId,
         $accountId = null
     ) {
         $method = 'AddPaymentToBatch';
         $this->debugMessage("Call ResMan method: {$method}");
+        $residentTransactionsXml = $this->getResidentTransactionXml($order);
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = [
             'AccountID'  => strtolower($accountId),
@@ -302,5 +313,32 @@ class ResManClient implements ClientInterface
         $result = $this->sendRequest($method, $params);
 
         return ($result instanceof ResMan)? true : false;
+    }
+
+    /**
+     * @param Order $order
+     * @return string
+     */
+    protected function getResidentTransactionXml(Order $order)
+    {
+        $residentTransaction = new ResidentTransactions([$order]);
+
+        $context = new SerializationContext();
+        $context->setGroups(['ResMan']);
+        $context->setSerializeNull(true);
+
+        $residentTransactionsXml = $this->serializer->serialize(
+            $residentTransaction,
+            'xml',
+            $context
+        );
+
+        $residentTransactionsXml = str_replace(
+            ['<?xml version="1.0" encoding="UTF-8"?>'],
+            '',
+            $residentTransactionsXml
+        );
+
+        return $residentTransactionsXml;
     }
 }
