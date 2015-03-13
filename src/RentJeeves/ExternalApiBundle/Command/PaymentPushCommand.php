@@ -38,12 +38,12 @@ class PaymentPushCommand extends ContainerAwareCommand
 
         /** @var AccountingPaymentSynchronizer $accountingPaymentSync */
         $accountingPaymentSync = $this->getContainer()->get('accounting.payment_sync');
-        $arrayCollectionJobRelatedorder = $job->getRelatedEntities();
-        if ($arrayCollectionJobRelatedorder->count() !== 1) {
-            throw new \Exception("Must be just one entity");
+        $arrayCollectionJobRelatedOrder = $job->getRelatedEntities();
+        if ($arrayCollectionJobRelatedOrder->count() !== 1) {
+            throw new \Exception("Job should be related to exactly one order.");
         }
         /** @var JobRelatedOrder $jobRelatedOrder */
-        $jobRelatedOrder = $arrayCollectionJobRelatedorder->first();
+        $jobRelatedOrder = $arrayCollectionJobRelatedOrder->first();
         $result = $accountingPaymentSync->sendOrderToAccountingSystem($jobRelatedOrder->getOrder());
         if ($result) {
             $output->writeln('Success');

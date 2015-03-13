@@ -20,15 +20,17 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CheckoutBundle\Command\PayCommand;
-use RentJeeves\DataBundle\Tests\Traits\TransactionTrait;
+use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
 
 class OrderListenerCase extends Base
 {
-    use TransactionTrait;
+    use TransactionAvailableTrait;
+    use ContractAvailableTrait;
 
     /**
      * We test updated startAt on the table rj_contract when user create first order

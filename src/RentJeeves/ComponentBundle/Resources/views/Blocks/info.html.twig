@@ -3,7 +3,7 @@
         {% if isAdmin %}
             <a href="{{ path('public_back_to_admin') }}">{{ 'back.to.admin'|trans }}</a>&nbsp;|&nbsp;
         {% else %}
-            {{ email }}&nbsp;|&nbsp;
+            {{ fullName }} ({{ email }})&nbsp;|&nbsp;
         {% endif %}
         <a href="http://renttrack.uservoice.com/" data-uv-trigger>{{ 'common.help' | trans }}</a> &nbsp;|&nbsp;
         {% if accountType %}

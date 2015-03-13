@@ -4,16 +4,18 @@ namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\ExternalApiBundle\Command\PaymentPushCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use RentJeeves\DataBundle\Tests\Traits\TransactionTrait;
+use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
 
 class PaymentPushCommandCase extends BaseTestCase
 {
-    use TransactionTrait;
+    use TransactionAvailableTrait;
+    use ContractAvailableTrait;
 
     /**
      * @test
