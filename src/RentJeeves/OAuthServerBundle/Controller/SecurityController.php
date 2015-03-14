@@ -32,10 +32,19 @@ class SecurityController extends BaseController
      */
     protected function renderLogin(array $data)
     {
-        $template = sprintf(
-            'OAuthServerBundle:Security:login.html.%s',
-            $this->container->getParameter('fos_user.template.engine')
-        );
+
+        $user_agent = strtolower ( $_SERVER['HTTP_USER_AGENT'] );
+        if(!preg_match ( "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|windows ce|nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/", $user_agent )) {
+            $template = sprintf(
+                'OAuthServerBundle:Security:login.html.%s',
+                $this->container->getParameter('fos_user.template.engine')
+            );
+        }else{
+            $template = sprintf(
+                'OAuthServerBundle:Security:login.mobile.html.%s',
+                $this->container->getParameter('fos_user.template.engine')
+            );
+        }
         $request = $this->container->get('request');
         /* @var $request \Symfony\Component\HttpFoundation\Request */
         $session = $request->getSession();

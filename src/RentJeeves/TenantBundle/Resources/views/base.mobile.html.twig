@@ -21,7 +21,22 @@
     '@TenantBundle/Resources/public/css/rt01.css'
     '@TenantBundle/Resources/public/css/jquery.mobile.icons.min.css'
     %}
-        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans+Caption' rel='stylesheet' type='text/css'>
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {#
+    <link rel="stylesheet" href="http://demos.jquerymobile.com/1.4.1/css/themes/default/jquery.mobile-1.4.1.min.css">
+
+    <link rel="stylesheet" href="https://raw.githubusercontent.com/arschmitz/jquery-mobile-datepicker-wrapper/master/jquery.mobile.datepicker.css" />
+    <link rel="stylesheet" href="https://raw.githubusercontent.com/arschmitz/jquery-mobile-datepicker-wrapper/master/jquery.mobile.datepicker.theme.css" />
+    #}
+{#
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+#}
+    <link rel="stylesheet" type="text/css" href="http://cdn.jtsage.com/datebox/latest/jqm-datebox.min.css">
+    <script type="text/javascript" src="http://cdn.jtsage.com/datebox/1.4.5/jqm-datebox-1.4.5.comp.calbox.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jtsage.com/datebox/i18n/jquery.mobile.datebox.i18n.en_US.utf8.js"></script>
+
     {% endstylesheets %}
 
 {% endblock %}

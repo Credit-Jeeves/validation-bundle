@@ -79,11 +79,31 @@
             })
         if(i){
             //one-time
-            $("rentjeeves_checkoutbundle_paymenttype_ends").val("cancelled")
+            $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",true)
+            $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",false)
+
         }else{
             //recurring
+            $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",false)
+            $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",true)
 
         }
+        $("#rentjeeves_checkoutbundle_paymenttype_ends_0").checkboxradio("refresh");
+        $("#rentjeeves_checkoutbundle_paymenttype_ends_1").checkboxradio("refresh");
+    }
+
+    cancelled=[
+        "rentjeeves_checkoutbundle_paymenttype_endMonth",
+        "rentjeeves_checkoutbundle_paymenttype_endYear"
+    ]
+    function whenCancelled(i){
+        $.each(cancelled,function(index,value){
+            if(i) {
+                $('#' + value).selectmenu('enable');
+            }else{
+                $('#' + value).selectmenu('disable')
+            }
+        })
     }
 </script>
 

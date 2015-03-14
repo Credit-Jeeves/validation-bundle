@@ -35,7 +35,7 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
     function dueDateAttrs()
     {
         return array_merge(
-            parent::dueDateAttrs(), array('data-role'=>'date')
+            parent::dueDateAttrs(), array('data-role'=>'date','data-inline'=>"true")
         );
 
 
@@ -52,6 +52,19 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
 
     function idAttrs(){
         return array_merge(parent::idAttrs(), array('id'=>'id'));
+    }
+
+    function startDateAttrs(){
+        return array_merge(
+            parent::idAttrs(),
+            array('data-role'=>'datebox','data-options'=>"{'mode':'calbox'}")
+        );
+    }
+
+    function endsAttrs(){
+        return array_merge(parent::idAttrs(),array(
+           'onchange'=>'if(this.value!="on"){whenCancelled(false)}else{whenCancelled(true)};'
+        ));
     }
 
 }
