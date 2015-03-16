@@ -4,8 +4,11 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\SerializationContext;
+use RentJeeves\ComponentBundle\Helper\SerializerHelper;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
+use RentJeeves\ExternalApiBundle\Model\MRI\Payment;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
@@ -19,6 +22,11 @@ class MRIClient implements ClientInterface
 {
     use Debug;
     use Settings;
+
+    /**
+     * @var array
+     */
+    protected $serializerGroups = ['MRI'];
 
     /**
      * @var HttpClient
@@ -80,7 +88,7 @@ class MRIClient implements ClientInterface
     {
         try {
             $baseParams = [
-                '$api'    => $method,
+                '$api' => $method,
                 '$format' => 'json'
             ];
             /** @var MRISettings $mriSettings */
@@ -89,7 +97,7 @@ class MRIClient implements ClientInterface
             $GETParameters = array_merge($baseParams, $params);
             $headers = [
                 'Authorization' => sprintf('Basic %s', $authorization),
-                'Accept'        => 'application/json',
+                'Accept' => 'application/json',
             ];
             $this->debugMessage(sprintf("Setup MRI headers %s", print_r($headers, true)));
             $uri = sprintf(
@@ -134,7 +142,7 @@ class MRIClient implements ClientInterface
         }
 
         $context = new DeserializationContext();
-        $context->setGroups(['MRI']);
+        $context->setGroups($this->serializerGroups);
 
         $mriResponse = $this->serializer->deserialize(
             $body->__toString(),
@@ -192,6 +200,30 @@ class MRIClient implements ClientInterface
      */
     public function postPayment(Order $order, $externalPropertyId)
     {
+        $payment = new Payment();
+        $payment->setEntry($order);
+
+        $paymentXml = $this->getPaymentXml($payment);
+
         return true;
+    }
+
+    /**
+     * @param Payment $payment
+     * @return string
+     */
+    public function getPaymentXml(Payment $payment)
+    {
+        $context = SerializerHelper::getSerializerContext($this->serializerGroups, true);
+
+        $paymentXml = $this->serializer->serialize(
+            $payment,
+            'xml',
+            $context
+        );
+
+        $paymentXml = SerializerHelper::removeStandartHeaderXml($paymentXml);
+
+        return $paymentXml;
     }
 }

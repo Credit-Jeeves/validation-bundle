@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\SerializationContext;
+use RentJeeves\ComponentBundle\Helper\SerializerHelper;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
@@ -323,9 +324,7 @@ class ResManClient implements ClientInterface
     {
         $residentTransaction = new ResidentTransactions([$order]);
 
-        $context = new SerializationContext();
-        $context->setGroups(['ResMan']);
-        $context->setSerializeNull(true);
+        $context = SerializerHelper::getSerializerContext(['ResMan'], true);
 
         $residentTransactionsXml = $this->serializer->serialize(
             $residentTransaction,
@@ -333,11 +332,7 @@ class ResManClient implements ClientInterface
             $context
         );
 
-        $residentTransactionsXml = str_replace(
-            ['<?xml version="1.0" encoding="UTF-8"?>'],
-            '',
-            $residentTransactionsXml
-        );
+        $residentTransactionsXml = SerializerHelper::removeStandartHeaderXml($residentTransactionsXml);
 
         return $residentTransactionsXml;
     }

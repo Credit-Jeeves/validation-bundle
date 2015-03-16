@@ -1,0 +1,14 @@
+<mri_s-pmrm_paymentdetailsbypropertyid>
+    <entry>
+        <SiteID>@</SiteID>
+        <ChargeCode>RNT</ChargeCode>
+        <CashType>OP</CashType>
+        <SourceCode>CR</SourceCode>
+        <PaymentType>C</PaymentType>
+        <PaymentAmount>1500.00</PaymentAmount>
+        <CheckNumber>123123</CheckNumber>
+        <PaymentInitiationDatetime>%date%</PaymentInitiationDatetime>
+        <ResidentNameID>t0013534</ResidentNameID>
+        <PropertyID>rnttrk01</PropertyID>
+    </entry>
+</mri_s-pmrm_paymentdetailsbypropertyid>

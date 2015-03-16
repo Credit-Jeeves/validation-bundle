@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
+use RentJeeves\ComponentBundle\Helper\SerializerHelper;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
@@ -390,7 +391,7 @@ abstract class AbstractClient implements ClientInterface
         }
 
         $xml = $response->$responseField->any;
-        $xml = $this->getXmlHeader().$xml;
+        $xml = SerializerHelper::getStandartXmlHeader().$xml;
         $xml = str_replace('MITS:', '', $xml);
 
         if ($this->isXmlError($xml)) {
@@ -404,14 +405,6 @@ abstract class AbstractClient implements ClientInterface
             $deserializeClass,
             'xml'
         );
-    }
-
-    /**
-     * @return string
-     */
-    protected function getXmlHeader()
-    {
-        return '<?xml version="1.0" encoding="UTF-8"?>';
     }
 
     public function getFullResponse($show = true)
