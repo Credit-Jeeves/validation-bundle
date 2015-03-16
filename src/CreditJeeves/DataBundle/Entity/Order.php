@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\ExternalApiBundle\Model\MRI\Error;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")

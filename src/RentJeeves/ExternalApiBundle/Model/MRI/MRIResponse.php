@@ -10,14 +10,14 @@ class MRIResponse
     /**
      * @Serializer\SerializedName("odata.metadata")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $metadata;
 
     /**
      * @Serializer\SerializedName("value")
      * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\MRI\Value>")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $values;
 

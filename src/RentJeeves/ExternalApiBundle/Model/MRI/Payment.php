@@ -10,24 +10,47 @@ class Payment
 {
     /**
      * @Serializer\SerializedName("entry")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\MRI\Entry")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $entryResponse;
+
+    /**
+     * @Serializer\SerializedName("entry")
      * @Serializer\Type("CreditJeeves\DataBundle\Entity\Order")
      * @Serializer\Groups({"MRI"})
      */
-    protected $entry;
+    protected $entryRequest;
 
     /**
      * @return Order
      */
-    public function getEntry()
+    public function getEntryRequest()
     {
-        return $this->entry;
+        return $this->entryRequest;
     }
 
     /**
      * @param Order $entry
      */
-    public function setEntry(Order $entry)
+    public function setEntryRequest(Order $entry)
     {
-        $this->entry = $entry;
+        $this->entryRequest = $entry;
+    }
+
+    /**
+     * @return Entry
+     */
+    public function getEntryResponse()
+    {
+        return $this->entryResponse;
+    }
+
+    /**
+     * @param Entry $entryResponse
+     */
+    public function setEntryResponse(Entry $entryResponse)
+    {
+        $this->entryResponse = $entryResponse;
     }
 }

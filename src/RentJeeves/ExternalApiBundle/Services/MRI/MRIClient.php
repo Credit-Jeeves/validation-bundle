@@ -23,10 +23,29 @@ class MRIClient implements ClientInterface
     use Debug;
     use Settings;
 
+    const FORMAT_JSON = 'json';
+
+    const FORMAT_XML = 'xml';
+
+    protected $mappingSerialize = [
+        'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse',
+        'MRI_S-PMRM_PaymentDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\Payment'
+    ];
+
     /**
      * @var array
      */
     protected $serializerGroups = ['MRI'];
+
+    /**
+     * @var array
+     */
+    protected $deserializerGroups = ['MRI-Response'];
+
+    /**
+     * @var string
+     */
+    protected $format = self::FORMAT_JSON;
 
     /**
      * @var HttpClient
@@ -89,15 +108,20 @@ class MRIClient implements ClientInterface
         try {
             $baseParams = [
                 '$api' => $method,
-                '$format' => 'json'
+                '$format' => $this->format
             ];
+
+            $httpMethod = $this->getValueFromParameters($params, 'httpMethod', 'get');
+            $body = $this->getValueFromParameters($params, 'body', null);
+
             /** @var MRISettings $mriSettings */
             $mriSettings = $this->getSettings();
             $authorization = $mriSettings->getParameters()['authorization'];
             $GETParameters = array_merge($baseParams, $params);
             $headers = [
                 'Authorization' => sprintf('Basic %s', $authorization),
-                'Accept' => 'application/json',
+                'Accept' => 'application/'.$this->format,
+                'Content-Type' => 'application/'.$this->format,
             ];
             $this->debugMessage(sprintf("Setup MRI headers %s", print_r($headers, true)));
             $uri = sprintf(
@@ -107,9 +131,14 @@ class MRIClient implements ClientInterface
             );
 
             $this->debugMessage(sprintf("Request to MRI by uri %s", $uri));
-            $request = $this->httpClient->get($uri, $headers);
+            $request = $this->httpClient->$httpMethod($uri, $headers);
 
-            return $this->manageResponse($this->httpClient->send($request));
+            if (!empty($body)) {
+                $this->debugMessage(sprintf("Setup body to MRI: %s", $body));
+                $request->setBody($body);
+            }
+
+            return $this->manageResponse($this->httpClient->send($request), $method);
         } catch (Exception $e) {
             $this->debugMessage(
                 sprintf(
@@ -128,9 +157,11 @@ class MRIClient implements ClientInterface
 
     /**
      * @param $response
-     * @return MRIResponse
+     * @param $method
+     * @return mixed
+     * @throws Exception
      */
-    protected function manageResponse($response)
+    protected function manageResponse($response, $method)
     {
         $httpCode = $response->getStatusCode();
         $body = $response->getBody();
@@ -142,16 +173,27 @@ class MRIClient implements ClientInterface
         }
 
         $context = new DeserializationContext();
-        $context->setGroups($this->serializerGroups);
+        $context->setGroups($this->deserializerGroups);
 
-        $mriResponse = $this->serializer->deserialize(
+        $responseClass = $this->serializer->deserialize(
             $body->__toString(),
-            'RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse',
-            'json',
+            $this->mappingSerialize[$method],
+            $this->format,
             $context
         );
 
-        return $mriResponse;
+        if (!($responseClass instanceof $this->mappingSerialize[$method]) || !is_object($responseClass)) {
+            throw new Exception(
+                sprintf(
+                    "Can't deserialize to class %s this body:%s",
+                    $this->mappingSerialize[$method],
+                    $body->__toString()
+                )
+            );
+
+        }
+
+        return $responseClass;
     }
 
     /**
@@ -160,8 +202,9 @@ class MRIClient implements ClientInterface
      */
     public function getResidentTransactions($externalPropertyId)
     {
+        $this->format = self::FORMAT_JSON;
+
         $method = 'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID';
-
         $params = [
             'RMPROPID' => $externalPropertyId
         ];
@@ -173,37 +216,34 @@ class MRIClient implements ClientInterface
     }
 
     /**
-     * @TODO need create mapping for response, currently response empty and I can't create mapping
-     * @param string $externalPropertyId
-     * @return MRIResponse
-     */
-    public function getPaymentDetails($externalPropertyId)
-    {
-        $method = 'MRI_S-PMRM_PaymentDetailsByPropertyID';
-
-        $params = [
-            'RMPROPID' => $externalPropertyId
-        ];
-
-        $this->debugMessage("Call MRI method: {$method}");
-        $response = $this->sendRequest($method, $params);
-
-        return $response;
-    }
-
-    /**
-     * @TODO we don't know API call
-     *
      * @param Order $order
      * @param $externalPropertyId
      * @return bool
      */
     public function postPayment(Order $order, $externalPropertyId)
     {
-        $payment = new Payment();
-        $payment->setEntry($order);
+        $this->format = self::FORMAT_XML;
 
-        $paymentXml = $this->getPaymentXml($payment);
+        $payment = new Payment();
+        $payment->setEntryRequest($order);
+        $paymentString = $this->paymentToStringFormat($payment);
+
+        $method = 'MRI_S-PMRM_PaymentDetailsByPropertyID';
+
+        $params = [
+            'RMPROPID' => $externalPropertyId,
+            'body'  => $paymentString,
+            'httpMethod' => 'post'
+        ];
+
+        $this->debugMessage("Call MRI method: {$method}");
+        /** @var Payment $payment */
+        $payment = $this->sendRequest($method, $params);
+        $error = $payment->getEntryResponse()->getError();
+
+        if (!empty($error)) {
+            throw new Exception(sprintf("Api return error %s", $error->getMessage()));
+        }
 
         return true;
     }
@@ -212,18 +252,36 @@ class MRIClient implements ClientInterface
      * @param Payment $payment
      * @return string
      */
-    public function getPaymentXml(Payment $payment)
+    public function paymentToStringFormat(Payment $payment)
     {
         $context = SerializerHelper::getSerializerContext($this->serializerGroups, true);
 
         $paymentXml = $this->serializer->serialize(
             $payment,
-            'xml',
+            $this->format,
             $context
         );
 
         $paymentXml = SerializerHelper::removeStandartHeaderXml($paymentXml);
 
         return $paymentXml;
+    }
+
+    /**
+     * @param $params
+     * @param $key
+     * @param $defaulValue
+     * @return mixed
+     */
+    private function getValueFromParameters(&$params, $key, $defaulValue)
+    {
+        if (isset($params[$key])) {
+            $val = $params[$key];
+            unset($params[$key]);
+
+            return $val;
+        }
+
+        return $defaulValue;
     }
 }

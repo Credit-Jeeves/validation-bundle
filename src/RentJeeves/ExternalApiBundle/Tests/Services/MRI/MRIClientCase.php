@@ -7,6 +7,8 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\ExternalApiBundle\Model\MRI\Payment;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
@@ -16,6 +18,50 @@ use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 class MRIClientCase extends Base
 {
     const PROPERTY_ID = '500';
+
+    const RESIDENT_ID = '0000000001';
+
+    /**
+     * @return \CreditJeeves\DataBundle\Entity\Order
+     */
+    protected function getOrder()
+    {
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'tenant11@example.com',
+            )
+        );
+        $this->assertNotEmpty($tenant);
+        /** @var Property $property */
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+            array(
+                'street' => 'Broadway',
+                'number' => '770',
+                'zip'    => '10003'
+            )
+        );
+        $this->assertNotEmpty($property);
+        /** @var Contract $contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy([
+            'property'   => $property,
+            'tenant'     => $tenant,
+            'rent'       => '1750.00'
+        ]);
+
+        $this->assertNotEmpty($contract);
+        $operations = $contract->getOperations();
+        $this->assertNotEmpty($operations);
+        /** @var Operation $operation */
+        $operation = $operations->first();
+        $this->assertNotEmpty($operation);
+        $this->assertNotEmpty($order = $operation->getOrder());
+        $this->assertNotEmpty($transaction = $order->getCompleteTransaction());
+
+        return $order;
+    }
 
     /**
      * @return MRIClient
@@ -72,14 +118,30 @@ class MRIClientCase extends Base
     }
 
     /**
-     * @TODO currently API not return any data, when it will return some data need refactoring test
      * @test
+     * @expectedException Exception
      */
-    public function shouldReturnPaymentDetails()
+    public function shouldPostPayments()
     {
         $mriClient = $this->getMriClient();
-        $mriResponse = $mriClient->getPaymentDetails(self::PROPERTY_ID);
-        $this->assertNotEmpty($mriResponse->getMetadata());
+        $order = $this->getOrder();
+        $property = $order->getContract()->getProperty();
+        /** @var PropertyMapping $propertyMapping */
+        $propertyMapping = $property->getPropertyMappingByHolding($order->getContract()->getHolding());
+        $propertyMapping->setExternalPropertyId(self::PROPERTY_ID);
+        $tenant = $order->getContract()->getTenant();
+        /** @var ResidentMapping $tenantMapping */
+        $residentMapping = $tenant->getResidentForHolding($order->getContract()->getHolding());
+        $residentMapping->setResidentId(self::RESIDENT_ID);
+
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em->persist($residentMapping);
+        $em->persist($propertyMapping);
+        $em->flush();
+
+        $mriClient->setDebug(false);
+        $mriClient->postPayment($order, self::PROPERTY_ID);
     }
 
     /**
@@ -87,46 +149,14 @@ class MRIClientCase extends Base
      */
     public function shouldCheckPaymentXml()
     {
-        /** @var $em EntityManager */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /** @var Tenant $tenant */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'tenant11@example.com',
-            )
-        );
-        $this->assertNotEmpty($tenant);
-        /** @var Property $property */
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
-                'street' => 'Broadway',
-                'number' => '770',
-                'zip'    => '10003'
-            )
-        );
-        $this->assertNotEmpty($property);
-        /** @var Contract $contract */
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy([
-            'property'   => $property,
-            'tenant'     => $tenant,
-            'rent'       => '1750.00'
-        ]);
-
-        $this->assertNotEmpty($contract);
-        $operations = $contract->getOperations();
-        $this->assertNotEmpty($operations);
-        /** @var Operation $operation */
-        $operation = $operations->first();
-        $this->assertNotEmpty($operation);
-        $this->assertNotEmpty($order = $operation->getOrder());
-        $this->assertNotEmpty($transaction = $order->getCompleteTransaction());
+        $order = $this->getOrder();
 
         /** @var MRIClient $mriClient */
         $mriClient = $this->getMriClient();
         $payment = new Payment();
-        $payment->setEntry($order);
+        $payment->setEntryRequest($order);
 
-        $xml = $mriClient->getPaymentXml($payment);
+        $xml = $mriClient->paymentToStringFormat($payment, $format = 'xml');
 
         $kernel = $this->getKernel();
         $path = $kernel->locateResource(
