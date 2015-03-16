@@ -253,15 +253,21 @@ class TransUnionReportRecord
         //SS‐ Rent unpaid, renter skipped, and did not fulfill remaining lease term
 
         $unpaidInterval = $this->getUnpaidInterval();
-
-        if ($unpaidInterval > 3 and $unpaidInterval < 6) {
-            return 'MM';
-        }
-        if ($unpaidInterval >= 6 and $unpaidInterval < 15) {
-            return 'NN';
-        }
-        if ($unpaidInterval >= 15) {
-            return 'OO';
+        $leaseStatus = $this->getLateLeaseStatus($unpaidInterval);
+        // if lease status not current but contract not finished (then contract is late)
+        if ($leaseStatus != self::LEASE_STATUS_CURRENT && $this->contract->getStatus() != ContractStatus::FINISHED) {
+            if ($unpaidInterval > 3 and $unpaidInterval < 6) {
+                return 'MM';
+            }
+            if ($unpaidInterval >= 6 and $unpaidInterval < 15) {
+                return 'NN';
+            }
+            if ($unpaidInterval >= 15) {
+                return 'OO';
+            }
+        } else if ($this->contract->getStatus() == ContractStatus::FINISHED
+                   && $this->contract->getUncollectedBalance()) {
+            return 'SS';
         }
 
         return str_repeat(' ', 2);
