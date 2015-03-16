@@ -10,6 +10,7 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\HeartlandRepository;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -24,6 +25,13 @@ use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
  */
 class AccountingPaymentSynchronizer
 {
+    /**
+     * Time limit for executing a transaction into external API
+     *
+     * @var int
+     */
+    const MAXIMUM_RUNTIME_SEC = 600; // 10 minutes
+
     /**
      * @var EntityManager
      */
@@ -104,6 +112,28 @@ class AccountingPaymentSynchronizer
 
     /**
      * @param Order $order
+     * @return bool
+     */
+    public function createJob(Order $order)
+    {
+        $this->logger->debug(
+            sprintf(
+                "Order(%s) added to queue for sending to accounting system.",
+                $order->getId()
+            )
+        );
+        $job = new Job('external_api:payment:push', array('--app=rj'));
+        $job->setMaxRuntime(self::MAXIMUM_RUNTIME_SEC);
+        $job->addRelatedEntity($order);
+
+        $this->em->persist($job);
+        $this->em->flush($job);
+
+        return true;
+    }
+
+    /**
+     * @param Order $order
      */
     public function sendOrderToAccountingSystem(Order $order)
     {
@@ -114,13 +144,13 @@ class AccountingPaymentSynchronizer
 
             $holding = $order->getContract()->getHolding();
             if (!$this->isAllowedToSend($holding)) {
-                $this->logger->addInfo(
+                $this->logger->debug(
                     sprintf(
                         "Order(%s) is not allow to immediately send to accounting system.",
                         $order->getId()
                     )
                 );
-                return;
+                return false;
             }
 
             $externalPropertyMapping = $order
@@ -141,7 +171,7 @@ class AccountingPaymentSynchronizer
                 if ($order->hasContract()) {
                     $accountingSettings = $order->getContract()->getHolding()->getAccountingSettings();
 
-                    $this->logger->addInfo(
+                    $this->logger->debug(
                         sprintf(
                             "Order(%s) can not be sent to accounting system(%s)",
                             $order->getId(),
@@ -149,7 +179,7 @@ class AccountingPaymentSynchronizer
                         )
                     );
                 } else {
-                    $this->logger->addInfo(
+                    $this->logger->debug(
                         sprintf(
                             "Order(%s) not associated with a lease contract don't sent to accounting system",
                             $order->getId()
@@ -161,7 +191,7 @@ class AccountingPaymentSynchronizer
 
             $apiClient->setDebug($this->debug);
 
-            $this->logger->addInfo(
+            $this->logger->debug(
                 sprintf(
                     "Order(%s) must send to Accounting system(%s)",
                     $order->getId(),
@@ -176,14 +206,18 @@ class AccountingPaymentSynchronizer
                 $accountingType,
                 $result
             );
-            $this->logger->addInfo($message);
+            $this->logger->debug($message);
 
             if ($result === false) {
                 throw new Exception($message);
             }
+
+            return true;
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logger->addCritical($e->getMessage());
+
+            return false;
         }
     }
 
