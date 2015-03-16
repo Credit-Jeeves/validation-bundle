@@ -69,49 +69,6 @@ class LandlordController extends Controller
     }
 
     /**
-     * @Route("/landlord/app/success/", name="landlord_hps_success")
-     *
-     * @return RedirectResponse
-     */
-    public function successAction(Request $request)
-    {
-        $currentUser = $this->container->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
-            array(
-                'group' => $currentUser->getCurrentGroup()->getId()
-            )
-        );
-
-        $depositAccount->setStatus(DepositAccountStatus::HPS_SUCCESS);
-        $em->flush();
-
-        return $this->redirect($this->generateUrl('landlord_tenants'));
-    }
-
-    /**
-     * @Route("/landlord/app/error/", name="landlord_hps_error")
-     *
-     * @return RedirectResponse
-     */
-    public function errorAction(Request $request)
-    {
-        $currentUser = $this->container->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
-            array(
-                'group' => $currentUser->getActiveGroup()->getId()
-            )
-        );
-
-        $depositAccount->setStatus(DepositAccountStatus::HPS_ERROR);
-        $depositAccount->setMessage($request->query->get('msg', ''));
-        $em->flush();
-
-        return $this->redirect($this->generateUrl('landlord_tenants'));
-    }
-
-    /**
      * @Route("/landlord/invite/{code}", name="landlord_invite")
      * @Template()
      *
