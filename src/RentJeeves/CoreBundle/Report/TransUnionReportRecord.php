@@ -265,7 +265,7 @@ class TransUnionReportRecord
             if ($unpaidInterval >= 15) {
                 return 'OO';
             }
-        } else if ($this->contract->getStatus() == ContractStatus::FINISHED
+        } elseif ($this->contract->getStatus() == ContractStatus::FINISHED
                    && $this->contract->getUncollectedBalance()) {
             return 'SS';
         }
