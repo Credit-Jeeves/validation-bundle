@@ -20,6 +20,14 @@ class MRISettingsType extends Base
         $builder->add('databaseName');
         $builder->add('partnerKey');
         $builder->add('hash');
+
+        $builder->add('siteId');
+        $builder->add('paymentType');
+        $builder->add('sourceCode');
+        $builder->add('cashType');
+        $builder->add('chargeCode');
+
+
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
