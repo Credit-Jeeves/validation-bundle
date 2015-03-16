@@ -131,10 +131,12 @@
         );
         ko.applyBindings(currentPaymentsViewModel, $('#current-payments').get(0));
         {% if isNewUser %}
-            $('#contract-pay-1').click();
             if (typeof _gaq !== 'undefined') {
                 _gaq.push(['_trackEvent', 'Tenant', 'First Login']);
             }
+            {% if isInPaymentWindow %}
+                $('#contract-pay-1').click();
+            {% endif %}
         {% endif %}
     });
 </script>
