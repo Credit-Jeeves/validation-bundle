@@ -119,7 +119,6 @@ class MRIClientCase extends Base
 
     /**
      * @test
-     * @expectedException Exception
      */
     public function shouldPostPayments()
     {
@@ -141,7 +140,7 @@ class MRIClientCase extends Base
         $em->flush();
 
         $mriClient->setDebug(false);
-        $mriClient->postPayment($order, self::PROPERTY_ID);
+        $this->assertTrue($mriClient->postPayment($order, self::PROPERTY_ID));
     }
 
     /**

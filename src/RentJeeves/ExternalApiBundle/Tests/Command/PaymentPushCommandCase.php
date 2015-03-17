@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\ExternalApiBundle\Command\PaymentPushCommand;
+use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -20,22 +21,46 @@ class PaymentPushCommandCase extends BaseTestCase
     public function testDataForSendPaymentToExternalApi()
     {
         return [
-            [$apiIntegrationType = ApiIntegrationType::RESMAN],
-            [$apiIntegrationType = ApiIntegrationType::MRI]
+            [
+                ApiIntegrationType::RESMAN,
+                ResManClientCase::RESIDENT_ID,
+                ResManClientCase::EXTERNAL_PROPERTY_ID,
+                ResManClientCase::EXTERNAL_LEASE_ID
+            ],
+            [
+                ApiIntegrationType::MRI,
+                MRIClientCase::RESIDENT_ID,
+                MRIClientCase::PROPERTY_ID,
+                null
+            ]
         ];
     }
 
     /**
+     * @param $apiIntegrationType
+     * @param $residentId
+     * @param $externalPropertyId
+     * @param $externalLeaseId
+     *
      * @test
      * @dataProvider testDataForSendPaymentToExternalApi
      */
-    public function shouldSendPaymentToExternalApi($apiIntegrationType)
-    {
+    public function shouldSendPaymentToExternalApi(
+        $apiIntegrationType,
+        $residentId,
+        $externalPropertyId,
+        $externalLeaseId
+    ) {
         $this->load(true);
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        $transaction = $this->createTransaction($apiIntegrationType);
+        $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId
+        );
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
             ['command' => 'external_api:payment:push']

@@ -34,7 +34,6 @@ class StorageMRI extends ExternalApiStorage
             $startAt = $this->getDateString($customer->getLeaseStart());
             $finishAt = $this->getDateString($customer->getLeaseEnd());
             $moveOut = $this->getDateString($customer->getLeaseMoveOut());
-            //$paymentAccepted = strtolower($customer->getPayAllowed()); //@TODO need find out possible values
 
             $data = array(
                 $customer->getResidentId(),
@@ -48,7 +47,7 @@ class StorageMRI extends ExternalApiStorage
                 $moveOut,
                 $customer->getLeaseBalance(),
                 $customer->getLeaseMonthToMonth(),
-                PaymentAccepted::ANY,
+                $this->getPayAllowed($customer),
                 $customer->getLeaseId()
             );
 
@@ -56,5 +55,22 @@ class StorageMRI extends ExternalApiStorage
         }
 
         return true;
+    }
+
+    /**
+     * @param Value $customer
+     * @return int
+     */
+    protected function getPayAllowed(Value $customer)
+    {
+        $payAllowed = trim(strtolower($customer->getPayAllowed()));
+
+        if ($payAllowed === 'd') {
+            return PaymentAccepted::DO_NOT_ACCEPT;
+        }
+
+        if (empty($payAllowed) || $payAllowed === 'c') {
+            return PaymentAccepted::ANY;
+        }
     }
 }

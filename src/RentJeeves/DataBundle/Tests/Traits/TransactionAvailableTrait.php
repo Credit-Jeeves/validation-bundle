@@ -18,9 +18,13 @@ use RentJeeves\CoreBundle\DateTime;
 trait TransactionAvailableTrait
 {
     /**
+     * @param string $apiIntegrationType
+     * @param string $residentId
+     * @param string $externalProperyId
+     * @param null $externalLeaseId
      * @return Heartland
      */
-    public function createTransaction($apiIntegrationType)
+    public function createTransaction($apiIntegrationType, $residentId, $externalProperyId, $externalLeaseId = null)
     {
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $startAt = new DateTime();
@@ -29,18 +33,25 @@ trait TransactionAvailableTrait
         $finishAt->modify('+24 month');
         /** @var $contract Contract */
         $contract = $this->getContract($startAt, $finishAt);
-        $contract->setExternalLeaseId('09948a58-7c50-4089-8942-77e1456f40ec');
+        if (!empty($externalLeaseId)) {
+            $contract->setExternalLeaseId($externalLeaseId);
+        }
         $unit = $contract->getUnit();
         $unit->setName('2');
         $holding = $contract->getHolding();
         $holding->getAccountingSettings()->setApiIntegration($apiIntegrationType);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($holding);
-        $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
+        $propertyMapping->setExternalPropertyId($externalProperyId);
+
+        $tenant = $contract->getTenant();
+        $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
+        $residentMapping->setResidentId($residentId);
 
         $em->persist($unit);
         $em->persist($contract);
         $em->persist($propertyMapping);
         $em->persist($holding);
+        $em->persist($residentMapping);
         $em->flush();
 
         $order = new Order();

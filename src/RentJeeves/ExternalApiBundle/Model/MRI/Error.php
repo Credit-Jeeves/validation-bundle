@@ -28,6 +28,4 @@ class Error
     {
         $this->message = $message;
     }
-
-
-} 
+}

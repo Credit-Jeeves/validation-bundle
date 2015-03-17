@@ -22,6 +22,8 @@ use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
+use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
+use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -569,17 +571,36 @@ class OrderListenerCase extends Base
     public function testDataForCreatePaymentPushCommand()
     {
         return [
-            [$apiIntegrationType = ApiIntegrationType::RESMAN],
-            [$apiIntegrationType = ApiIntegrationType::MRI]
+            [
+                ApiIntegrationType::RESMAN,
+                ResManClientCase::RESIDENT_ID,
+                ResManClientCase::EXTERNAL_PROPERTY_ID,
+                ResManClientCase::EXTERNAL_LEASE_ID
+            ],
+            [
+                ApiIntegrationType::MRI,
+                MRIClientCase::RESIDENT_ID,
+                MRIClientCase::PROPERTY_ID,
+                null
+            ]
         ];
     }
 
     /**
+     * @param $apiIntegrationType
+     * @param $residentId
+     * @param $externalPropertyId
+     * @param $externalLeaseId
+     *
      * @test
      * @dataProvider testDataForCreatePaymentPushCommand
      */
-    public function shouldCreatePaymentPushCommand($apiIntegrationType)
-    {
+    public function shouldCreatePaymentPushCommand(
+        $apiIntegrationType,
+        $residentId,
+        $externalPropertyId,
+        $externalLeaseId
+    ) {
         $this->load(true);
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
@@ -587,7 +608,12 @@ class OrderListenerCase extends Base
             ['command' => 'external_api:transaction:push']
         );
 
-        $this->createTransaction($apiIntegrationType);
+        $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId
+        );
 
         $this->assertCount(0, $jobs);
 
