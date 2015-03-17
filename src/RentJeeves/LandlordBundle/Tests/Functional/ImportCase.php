@@ -717,9 +717,7 @@ class ImportCase extends BaseTestCase
 
     protected function setPropertySecond()
     {
-        /**
-         * @var $em EntityManager
-         */
+        /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
             array(
@@ -2021,11 +2019,11 @@ class ImportCase extends BaseTestCase
         $accountingSettings = $landlord->getHolding()->getAccountingSettings();
         $accountingSettings->setApiIntegration(ApiIntegrationType::MRI);
         $em->flush($accountingSettings);
-        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
         // We must make sure the data saved into DB, so we count before import and after
-        $this->assertEquals(23, count($contract));
+        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
+        $this->assertCount(23, $contract);
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(1, count($contractWaiting));
+        $this->assertCount(1, $contractWaiting);
 
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -2046,10 +2044,28 @@ class ImportCase extends BaseTestCase
         $this->waitReviewAndPost();
         for ($i = 0; $i <= 2; $i++) {
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+
+            if ($i === 0) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(2, $errorFields);
+                $errorFields[0]->setValue('06/01/2008');
+                $errorFields[1]->setValue('06/01/2008');
+            }
+
+            if ($i === 1 || $i === 2) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(3, $errorFields);
+                $errorFields[0]->setValue('06/01/2008');
+                $errorFields[1]->setValue('06/01/2008');
+                $errorFields[2]->setValue('06/01/2008');
+            }
             $submitImportFile->click();
             $this->waitReviewAndPost();
         }
 
-        //@TODO add checking contracts in DB if API data will be valid at least one rows
+        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
+        $this->assertCount(25, $contract);
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertCount(10, $contractWaiting);
     }
 }
