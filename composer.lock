@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9ceafa49ecf5d2bc7c5c0933b297bef9",
+    "hash": "e86594061d7ab5a6dd13a8bd52a65a9d",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -71,39 +71,6 @@
                 "translation"
             ],
             "time": "2014-04-27 11:37:25"
-        },
-        {
-            "name": "ajbdev/authorizenet-php-api",
-            "version": "v1.1.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ajbdev/authorizenet-php-api",
-                "reference": "v1.1.8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ajbdev/authorizenet-php-api/zipball/v1.1.8",
-                "reference": "v1.1.8",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "lib/",
-                    "AuthorizeNet.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Authorize.NET PHP library with composer support",
-            "keywords": [
-                "authorize.net",
-                "ecommerce",
-                "payment"
-            ],
-            "time": "2013-02-11 21:09:06"
         },
         {
             "name": "apy/jsfv-bundle",
@@ -368,7 +335,7 @@
                 "soap",
                 "soap-client"
             ],
-            "time": "2014-12-17 11:57:23"
+            "time": "2014-12-24 11:28:42"
         },
         {
             "name": "besimple/soap-common",
@@ -742,7 +709,7 @@
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2014-08-07 19:11:44"
+            "time": "2014-12-30 15:10:32"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -3694,68 +3661,17 @@
             "time": "2014-05-12 09:06:10"
         },
         {
-            "name": "payum/authorize-net-aim",
-            "version": "0.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Payum/AuthorizeNetAim.git",
-                "reference": "d001607b7fcadd0c2b50a561c89e34fc3eb50f44"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Payum/AuthorizeNetAim/zipball/d001607b7fcadd0c2b50a561c89e34fc3eb50f44",
-                "reference": "d001607b7fcadd0c2b50a561c89e34fc3eb50f44",
-                "shasum": ""
-            },
-            "require": {
-                "ajbdev/authorizenet-php-api": "1.1.*",
-                "payum/payum": "0.5.*",
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.5-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Payum\\AuthorizeNet\\Aim": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Maksim Kotlyar",
-                    "email": "kotlyar.maksim@gmail.com"
-                }
-            ],
-            "description": "Authorize.net advanced integration method (AIM).",
-            "keywords": [
-                "authorize.net",
-                "authorizenet",
-                "payment"
-            ],
-            "time": "2013-06-03 07:57:15"
-        },
-        {
-            "name": "payum/heartland",
+            "name": "payum2/heartland",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Heartland.git",
-                "reference": "f620ade587328972eb37f990d2b1a49b4a962e6d"
+                "reference": "0f262adff4ac4de6eba935563111d8810605d9a1"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
                 "besimple/soap-common": "dev-master",
-                "payum/payum": "0.5.x-dev",
+                "payum2/payum": "0.6.x-dev",
                 "php": ">=5.3.3"
             },
             "require-dev": {
@@ -3771,7 +3687,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Payum\\Heartland": "src/"
+                    "Payum2\\Heartland": "src/"
                 }
             },
             "license": [
@@ -3792,15 +3708,15 @@
                 "payment",
                 "src"
             ],
-            "time": "2014-08-19 14:02:29"
+            "time": "2015-03-17 13:59:41"
         },
         {
-            "name": "payum/payum",
+            "name": "payum2/payum",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Payum.git",
-                "reference": "ebf48abb53a63889a17db62ec6fe61034c2e2c7b"
+                "reference": "78c991ff40cc5dad4308d702ffa35204d1ffc52a"
             },
             "require": {
                 "kriswallsmith/buzz": "*",
@@ -3830,7 +3746,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Payum": "src/"
+                    "Payum2": "src/"
                 }
             },
             "license": [
@@ -3843,6 +3759,7 @@
                 }
             ],
             "description": "Payment lib",
+            "homepage": "https://github.com/Credit-Jeeves/Payum",
             "keywords": [
                 "authorize.net",
                 "be2bill",
@@ -3853,31 +3770,25 @@
                 "paypal ipn",
                 "paypal recurring payments"
             ],
-            "time": "2013-08-07 17:19:07"
+            "time": "2015-03-17 08:46:25"
         },
         {
-            "name": "payum/payum-bundle",
+            "name": "payum2/payum-bundle",
             "version": "dev-heartland",
-            "target-dir": "Payum/Bundle/PayumBundle",
+            "target-dir": "Payum2/Bundle/PayumBundle",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/PayumBundle.git",
-                "reference": "248837181a7f961334f173cd52e1086a9802f64a"
+                "reference": "b30f545a6ec6567850d5e11e6c23312ecb37f487"
             },
             "require": {
-                "payum/payum": "0.6.x-dev",
+                "payum2/payum": "0.6.x-dev",
                 "php": ">=5.3.2",
                 "symfony/framework-bundle": "2.*"
             },
             "require-dev": {
                 "doctrine/orm": "*",
                 "fp/testo": "@dev",
-                "payum/authorize-net-aim": "0.6.x-dev",
-                "payum/be2bill": "0.6.x-dev",
-                "payum/omnipay-bridge": "0.6.x-dev",
-                "payum/payex": "0.6.x-dev",
-                "payum/paypal-express-checkout-nvp": "0.6.x-dev",
-                "payum/paypal-pro-checkout-nvp": "0.6.x-dev",
                 "phpunit/phpunit": "*"
             },
             "suggest": {
@@ -3896,7 +3807,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Payum\\Bundle\\PayumBundle": ""
+                    "Payum2\\Bundle\\PayumBundle": ""
                 }
             },
             "license": [
@@ -3925,7 +3836,7 @@
                 "paypal pro checkout",
                 "paypal recurring payment"
             ],
-            "time": "2014-05-06 14:54:32"
+            "time": "2015-03-17 13:54:01"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -4129,7 +4040,7 @@
             "keywords": [
                 "trans union api"
             ],
-            "time": "2014-12-19 11:27:18"
+            "time": "2015-02-10 18:39:52"
         },
         {
             "name": "rj/email-bundle",
@@ -5670,6 +5581,39 @@
     ],
     "packages-dev": [
         {
+            "name": "ajbdev/authorizenet-php-api",
+            "version": "v1.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ajbdev/authorizenet-php-api",
+                "reference": "v1.1.8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ajbdev/authorizenet-php-api/zipball/v1.1.8",
+                "reference": "v1.1.8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/",
+                    "AuthorizeNet.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Authorize.NET PHP library with composer support",
+            "keywords": [
+                "authorize.net",
+                "ecommerce",
+                "payment"
+            ],
+            "time": "2013-02-11 21:09:06"
+        },
+        {
             "name": "behat/mink",
             "version": "dev-master",
             "source": {
@@ -6947,7 +6891,7 @@
             "alias": "0.5.x-dev",
             "alias_normalized": "0.5.9999999.9999999-dev",
             "version": "9999999-dev",
-            "package": "payum/payum"
+            "package": "payum2/payum"
         },
         {
             "alias": "dev-not-approved",
@@ -6984,9 +6928,9 @@
         "doctrine/doctrine-cache-bundle": 20,
         "twig/twig": 20,
         "jms/security-extra-bundle": 20,
-        "payum/payum": 20,
-        "payum/payum-bundle": 20,
-        "payum/heartland": 20,
+        "payum2/payum": 20,
+        "payum2/payum-bundle": 20,
+        "payum2/heartland": 20,
         "ass/xmlsecurity": 20,
         "hat/environment": 20,
         "knplabs/knp-menu-bundle": 20,
@@ -7024,6 +6968,7 @@
         "comfortablynumb/backup-restore-bundle": 20
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.4.12,<5.5.0",
         "ext-curl": "*",

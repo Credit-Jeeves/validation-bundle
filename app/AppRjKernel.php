@@ -37,7 +37,7 @@ class AppRjKernel extends AppKernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
             new Rj\EmailBundle\RjEmailBundle(),
-            new Payum\Bundle\PayumBundle\PayumBundle(),
+            new Payum2\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),

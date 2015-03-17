@@ -3,14 +3,14 @@ namespace RentJeeves\CheckoutBundle\Command;
 
 use RentJeeves\DataBundle\Entity\Job;
 use Doctrine\ORM\EntityManager;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
+use Payum2\Request\BinaryMaskStatusRequest;
+use Payum2\Request\CaptureRequest;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Payum\Payment as Payum;
+use Payum2\Payment as Payum;
 use RuntimeException;
 
 class PayCommand extends ContainerAwareCommand

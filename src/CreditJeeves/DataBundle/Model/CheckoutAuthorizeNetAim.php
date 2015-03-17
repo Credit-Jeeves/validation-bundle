@@ -2,12 +2,11 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use Payum\AuthorizeNet\Aim\Model\PaymentDetails;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class CheckoutAuthorizeNetAim extends PaymentDetails
+abstract class CheckoutAuthorizeNetAim
 {
     /**
      * @var integer

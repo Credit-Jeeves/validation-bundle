@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Payum\Heartland\Soap\Base\ACHDepositType;
+use Payum2\Heartland\Soap\Base\ACHDepositType;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class BillingAccountType extends AbstractType

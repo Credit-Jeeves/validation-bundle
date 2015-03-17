@@ -2,8 +2,8 @@
 namespace RentJeeves\CheckoutBundle\Controller;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
+use Payum2\Request\BinaryMaskStatusRequest;
+use Payum2\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;

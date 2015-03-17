@@ -3,20 +3,20 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Payum\Heartland\Soap\Base\ACHAccountType;
-use Payum\Heartland\Soap\Base\ACHDepositType;
-use Payum\Heartland\Soap\Base\GetTokenRequest;
-use Payum\Heartland\Soap\Base\GetTokenResponse;
-use Payum\Payment;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
+use Payum2\Heartland\Soap\Base\ACHAccountType;
+use Payum2\Heartland\Soap\Base\ACHDepositType;
+use Payum2\Heartland\Soap\Base\GetTokenRequest;
+use Payum2\Heartland\Soap\Base\GetTokenResponse;
+use Payum2\Payment;
+use Payum2\Request\BinaryMaskStatusRequest;
+use Payum2\Request\CaptureRequest;
 use CreditJeeves\DataBundle\Entity\Address;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
-use Payum\Heartland\Soap\Base\TokenPaymentMethod;
+use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;

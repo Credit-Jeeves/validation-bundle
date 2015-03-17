@@ -7,7 +7,7 @@ use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializationContext;
-use Payum\Request\CaptureRequest;
+use Payum2\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;

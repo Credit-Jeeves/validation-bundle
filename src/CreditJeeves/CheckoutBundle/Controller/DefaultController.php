@@ -9,9 +9,9 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
-use Payum\AuthorizeNet\Aim\Model\PaymentDetails;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
+use Payum2\AuthorizeNet\Aim\Model\PaymentDetails;
+use Payum2\Request\BinaryMaskStatusRequest;
+use Payum2\Request\CaptureRequest;
 //use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
 use Symfony\Component\Form\FormError;
@@ -42,7 +42,7 @@ class DefaultController extends Controller
     protected $form;
 
     /**
-     * @return \Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry
+     * @return \Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry
      */
     protected function getPayum()
     {

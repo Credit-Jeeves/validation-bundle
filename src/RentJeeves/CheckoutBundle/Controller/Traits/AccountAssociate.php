@@ -2,10 +2,10 @@
 namespace RentJeeves\CheckoutBundle\Controller\Traits;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Payum\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
-use Payum\Payment;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
+use Payum2\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
+use Payum2\Payment;
+use Payum2\Request\BinaryMaskStatusRequest;
+use Payum2\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
 use RuntimeException;

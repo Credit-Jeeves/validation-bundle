@@ -3,7 +3,7 @@
 namespace RentJeeves\ApiBundle\Forms\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
-use Payum\Heartland\Soap\Base\ACHDepositType as HeartlandACHDepositType;
+use Payum2\Heartland\Soap\Base\ACHDepositType as HeartlandACHDepositType;
 
 class ACHDepositType extends Enum
 {

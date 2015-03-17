@@ -5,7 +5,7 @@ namespace RentJeeves\CheckoutBundle\Tests\Payment;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use Payum\Request\BinaryMaskStatusRequest;
+use Payum2\Request\BinaryMaskStatusRequest;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class PayCreditTrackCase extends BaseTestCase

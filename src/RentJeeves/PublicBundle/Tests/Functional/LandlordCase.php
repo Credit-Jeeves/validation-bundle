@@ -1,8 +1,8 @@
 <?php
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
-use Payum\Heartland\Soap\Base\ACHAccountType;
-use Payum\Heartland\Soap\Base\ACHDepositType;
+use Payum2\Heartland\Soap\Base\ACHAccountType;
+use Payum2\Heartland\Soap\Base\ACHDepositType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 /**

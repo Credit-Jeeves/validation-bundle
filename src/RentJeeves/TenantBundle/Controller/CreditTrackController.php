@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\TenantBundle\Controller;
 
-use Payum\Request\BinaryMaskStatusRequest;
+use Payum2\Request\BinaryMaskStatusRequest;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
