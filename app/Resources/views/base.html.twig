@@ -51,10 +51,15 @@
         {% endif %}
     {% endblock %}
     {% block head_javascripts %}{% endblock %}
-    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
     {% if 'dev' == env %}
+        <script type="text/javascript">
+            console.debug("Loading js routes and translations dynamically");
+        </script>
+        <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
         <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
     {% else %}
+        <!-- FIXME: RT-1211 : save ~2.5sec load time if we load static file via assetic -->
+        <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
         <script src="/bundles/fosjsrouting/js/{{ application }}_{{ env }}.js"></script>
     {% endif %}
     {% if application == 'rj' %}

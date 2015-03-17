@@ -2,6 +2,8 @@ function Contracts() {
     var limit = 10;
     var current = 1;
     var self = this;
+    var idProperty = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property';
+    var idUnit = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit';
     this.aContracts = ko.observableArray([]);
     this.pages = ko.observableArray([]);
     this.total = ko.observable(0);
@@ -197,6 +199,7 @@ function Contracts() {
         DetailsViewModel.reviewContract(data);
     };
     this.addTenant = function () {
+        this.getUnits($(idProperty).linkselect('val'));
         $('#tenant-add-property-popup').dialog('open');
         if ($('.payment-end').val().length > 0) {
             var finish = $('.payment-end').val();
@@ -222,6 +225,38 @@ function Contracts() {
             minDate: 0
         });
     };
+
+    this.getUnits = function(propertyId) {
+        $(idUnit).linkselect('destroy');
+        $(idUnit).html(' ');
+        $(idUnit).linkselect();
+        $.ajax({
+            url: Routing.generate('landlord_units_list'),
+            type: 'POST',
+            dataType: 'json',
+            data: {'property_id': propertyId},
+            success: function (response) {
+
+                if (response.units.length == 0 || response.isSingle == true) {
+                    $('#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit_link').hide();
+                    return;
+                }
+
+                var html = '';
+                $.each(response.units, function (index, value) {
+                    var id = $(this).get(0).id;
+                    var name = $(this).get(0).name;
+                    var option = '<option value="' + id + '">' + name + '</option>';
+                    html += option;
+                });
+
+                $(idUnit).linkselect('destroy');
+                $(idUnit).html(html);
+                $(idUnit).linkselect();
+            }
+        });
+    };
+
     this.filterAddress = function (data) {
         //console.log(data.id);
     };

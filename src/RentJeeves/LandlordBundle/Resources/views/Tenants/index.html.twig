@@ -4,22 +4,25 @@
         {{ render(controller('RjComponentBundle:ContractsList:index', {'Group': Group, 'form': form})) }}
 {% endblock %}
 
+{% block google_api %}
+    <!-- don't need it, so don't load it -->
+{% endblock %}
+
 {% block javascripts %}
     {% javascripts
-        '@ComponentBundle/Resources/public/js/groups.js'
-        '@RjCoreBundle/Resources/public/js/jquery-ui.js'
         '@RjComponentBundle/Resources/public/js/contract.js'
         '@RjComponentBundle/Resources/public/js/contracts.js'
         '@RjComponentBundle/Resources/public/js/landlordContract.js'
-        'bundles/bazingajstranslation/js/translator.min.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
 
     <!-- Call JsFormValidationBundle -->
     {{ JSFV(form) }}
     <!-- END Call JsFormValidationBundle -->
+
+    {{ parent() }}
+
 {% endblock %}
 
 {% block stylesheets %}
