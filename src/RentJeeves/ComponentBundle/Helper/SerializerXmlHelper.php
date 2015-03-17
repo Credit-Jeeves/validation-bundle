@@ -4,7 +4,7 @@ namespace RentJeeves\ComponentBundle\Helper;
 
 use JMS\Serializer\SerializationContext;
 
-class SerializerHelper
+class SerializerXmlHelper
 {
     /**
      * @param string $xml
@@ -24,7 +24,7 @@ class SerializerHelper
      * @param bool $serializeNull
      * @return SerializationContext
      */
-    public static function getSerializerContext($groups = [], $serializeNull = true)
+    public static function getSerializerContext(array $groups, $serializeNull = true)
     {
         $context = new SerializationContext();
         $context->setGroups($groups);

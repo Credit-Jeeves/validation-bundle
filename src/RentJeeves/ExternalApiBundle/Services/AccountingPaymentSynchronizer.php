@@ -199,7 +199,7 @@ class AccountingPaymentSynchronizer
                     $accountingType
                 )
             );
-            if ($apiClient->isWorksWithBatchs()) {
+            if ($apiClient->canWorkWithBatches()) {
                 $this->openBatch($order);
             }
             $result = $this->addPaymentToBatch($order);
@@ -251,7 +251,7 @@ class AccountingPaymentSynchronizer
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
         $apiClient = $this->getApiClientByOrder($order);
 
-        if ($apiClient->isWorksWithBatchs()) {
+        if ($apiClient->canWorkWithBatches()) {
             $batchId = $repo->getAccountingBatchId(
                 $paymentBatchId,
                 $accountingPackageType,

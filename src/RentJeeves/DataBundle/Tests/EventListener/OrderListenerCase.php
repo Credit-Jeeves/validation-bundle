@@ -568,7 +568,7 @@ class OrderListenerCase extends Base
         return $payment;
     }
 
-    public function testDataForCreatePaymentPushCommand()
+    public function dataForCreatePaymentPushCommand()
     {
         return [
             [
@@ -593,7 +593,7 @@ class OrderListenerCase extends Base
      * @param $externalLeaseId
      *
      * @test
-     * @dataProvider testDataForCreatePaymentPushCommand
+     * @dataProvider dataForCreatePaymentPushCommand
      */
     public function shouldCreatePaymentPushCommand(
         $apiIntegrationType,

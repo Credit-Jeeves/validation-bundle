@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
-use RentJeeves\ComponentBundle\Helper\SerializerHelper;
+use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
 use RentJeeves\ExternalApiBundle\Model\MRI\Payment;
@@ -93,7 +93,7 @@ class MRIClient implements ClientInterface
     /**
      * @return bool
      */
-    public function isWorksWithBatchs()
+    public function canWorkWithBatches()
     {
         return false;
     }
@@ -226,7 +226,7 @@ class MRIClient implements ClientInterface
 
         $payment = new Payment();
         $payment->setEntryRequest($order);
-        $paymentString = $this->paymentToStringFormat($payment);
+        $paymentString = $this->paymentToStringFormat($payment, $this->format);
 
         $method = 'MRI_S-PMRM_PaymentDetailsByPropertyID';
 
@@ -252,17 +252,17 @@ class MRIClient implements ClientInterface
      * @param Payment $payment
      * @return string
      */
-    public function paymentToStringFormat(Payment $payment)
+    public function paymentToStringFormat(Payment $payment, $format)
     {
-        $context = SerializerHelper::getSerializerContext($this->serializerGroups, true);
+        $context = SerializerXmlHelper::getSerializerContext($this->serializerGroups, true);
 
         $paymentXml = $this->serializer->serialize(
             $payment,
-            $this->format,
+            $format,
             $context
         );
 
-        $paymentXml = SerializerHelper::removeStandartHeaderXml($paymentXml);
+        $paymentXml = SerializerXmlHelper::removeStandartHeaderXml($paymentXml);
 
         return $paymentXml;
     }

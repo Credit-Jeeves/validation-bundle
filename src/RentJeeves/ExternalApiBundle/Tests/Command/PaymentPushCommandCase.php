@@ -18,7 +18,7 @@ class PaymentPushCommandCase extends BaseTestCase
     use TransactionAvailableTrait;
     use ContractAvailableTrait;
 
-    public function testDataForSendPaymentToExternalApi()
+    public function dataForSendPaymentToExternalApi()
     {
         return [
             [
@@ -43,7 +43,7 @@ class PaymentPushCommandCase extends BaseTestCase
      * @param $externalLeaseId
      *
      * @test
-     * @dataProvider testDataForSendPaymentToExternalApi
+     * @dataProvider dataForSendPaymentToExternalApi
      */
     public function shouldSendPaymentToExternalApi(
         $apiIntegrationType,

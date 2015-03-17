@@ -12,5 +12,5 @@ interface ClientInterface
 
     public function sendRequest($function, array $params);
 
-    public function isWorksWithBatchs();
+    public function canWorkWithBatches();
 }
