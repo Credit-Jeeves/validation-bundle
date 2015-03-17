@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
@@ -21,6 +22,8 @@ use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
+use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
+use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -565,11 +568,39 @@ class OrderListenerCase extends Base
         return $payment;
     }
 
-    /**
-     * @test
-     */
-    public function shouldCreatePaymentPushCommand()
+    public function dataForCreatePaymentPushCommand()
     {
+        return [
+            [
+                ApiIntegrationType::RESMAN,
+                ResManClientCase::RESIDENT_ID,
+                ResManClientCase::EXTERNAL_PROPERTY_ID,
+                ResManClientCase::EXTERNAL_LEASE_ID
+            ],
+            [
+                ApiIntegrationType::MRI,
+                MRIClientCase::RESIDENT_ID,
+                MRIClientCase::PROPERTY_ID,
+                null
+            ]
+        ];
+    }
+
+    /**
+     * @param $apiIntegrationType
+     * @param $residentId
+     * @param $externalPropertyId
+     * @param $externalLeaseId
+     *
+     * @test
+     * @dataProvider dataForCreatePaymentPushCommand
+     */
+    public function shouldCreatePaymentPushCommand(
+        $apiIntegrationType,
+        $residentId,
+        $externalPropertyId,
+        $externalLeaseId
+    ) {
         $this->load(true);
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
@@ -577,7 +608,12 @@ class OrderListenerCase extends Base
             ['command' => 'external_api:transaction:push']
         );
 
-        $this->createTransaction();
+        $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId
+        );
 
         $this->assertCount(0, $jobs);
 

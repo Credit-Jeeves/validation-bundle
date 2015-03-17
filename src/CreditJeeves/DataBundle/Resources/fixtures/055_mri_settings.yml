@@ -9,4 +9,9 @@ fixtures:
         partnerKey: 3D5C25981F2911DA566EA5AC363B1B9B5CA8A5AD75EEDECB1EC0EDA76902926A
         user: RENTTRACKAPI
         password: k8raKFPJ
+        siteId: @
+        paymentType: C
+        sourceCode: CR
+        cashType: OP
+        chargeCode: RNT
 

@@ -110,6 +110,71 @@ abstract class MRISettings
     protected $hash;
 
     /**
+     * @ORM\Column(
+     *     name="site_id",
+     *     type="encrypt",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
+    protected $siteId;
+
+    /**
+     * @ORM\Column(
+     *     name="payment_type",
+     *     type="encrypt",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 1
+     * )
+     *
+     * @var string
+     */
+    protected $paymentType;
+
+
+    /**
+     * @ORM\Column(
+     *     name="source_code",
+     *     type="encrypt",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
+    protected $sourceCode;
+
+    /**
+     * @ORM\Column(
+     *     name="cash_type",
+     *     type="encrypt",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
+    protected $cashType;
+
+    /**
+     * @ORM\Column(
+     *     name="charge_code",
+     *     type="encrypt",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
+    protected $chargeCode;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
      *     inversedBy="mriSettings",
@@ -120,6 +185,86 @@ abstract class MRISettings
      * @var Holding
      */
     protected $holding;
+
+    /**
+     * @return string
+     */
+    public function getCashType()
+    {
+        return $this->cashType;
+    }
+
+    /**
+     * @param string $cashType
+     */
+    public function setCashType($cashType)
+    {
+        $this->cashType = $cashType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChargeCode()
+    {
+        return $this->chargeCode;
+    }
+
+    /**
+     * @param string $chargeCode
+     */
+    public function setChargeCode($chargeCode)
+    {
+        $this->chargeCode = $chargeCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentType()
+    {
+        return $this->paymentType;
+    }
+
+    /**
+     * @param string $paymentType
+     */
+    public function setPaymentType($paymentType)
+    {
+        $this->paymentType = $paymentType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSiteId()
+    {
+        return $this->siteId;
+    }
+
+    /**
+     * @param string $siteId
+     */
+    public function setSiteId($siteId)
+    {
+        $this->siteId = $siteId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceCode()
+    {
+        return $this->sourceCode;
+    }
+
+    /**
+     * @param string $sourceCode
+     */
+    public function setSourceCode($sourceCode)
+    {
+        $this->sourceCode = $sourceCode;
+    }
 
 
     /**

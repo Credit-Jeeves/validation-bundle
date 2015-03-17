@@ -12,154 +12,154 @@ class Value
     /**
      * @Serializer\SerializedName("ResidentNameID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $residentId;
 
     /**
      * @Serializer\SerializedName("PropertyID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $propertyId;
 
     /**
      * @Serializer\SerializedName("BuildingID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $buildingId;
 
     /**
      * @Serializer\SerializedName("UnitID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $unitId;
 
     /**
      * @Serializer\SerializedName("LeaseID")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $leaseId;
 
     /**
      * @Serializer\SerializedName("Address")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $address;
 
     /**
      * @Serializer\SerializedName("City")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $city;
 
     /**
      * @Serializer\SerializedName("State")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $state;
 
     /**
      * @Serializer\SerializedName("Zipcode")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $zipCode;
 
     /**
      * @Serializer\SerializedName("FirstName")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $firstName;
 
     /**
      * @Serializer\SerializedName("LastName")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $lastName;
 
     /**
      * @Serializer\SerializedName("Email")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $email;
 
     /**
      * @Serializer\SerializedName("Birthday")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $birthday;
 
     /**
      * @Serializer\SerializedName("LeaseStart")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $leaseStart;
 
     /**
      * @Serializer\SerializedName("LeaseEnd")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $leaseEnd;
 
     /**
      * @Serializer\SerializedName("LeaseMonthlyRentAmount")
      * @Serializer\Type("double")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $leaseMonthlyRentAmount;
 
     /**
      * @Serializer\SerializedName("LeaseMoveOut")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $leaseMoveOut;
 
     /**
      * @Serializer\SerializedName("LeaseMonthToMonth")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $leaseMonthToMonth;
 
     /**
      * @Serializer\SerializedName("PayAllowed")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $payAllowed;
 
     /**
      * @Serializer\SerializedName("LastUpdateDate")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $lastUpdateDate;
 
     /**
      * @Serializer\SerializedName("CurrCode")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $currCode;
 
     /**
      * @Serializer\SerializedName("LeaseBalance")
      * @Serializer\Type("double")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-Response"})
      */
     protected $leaseBalance;
 

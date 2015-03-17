@@ -28,7 +28,7 @@ class HoldingCase extends BaseTestCase
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
         $tableBlock->clickLink('link_add');
         $this->assertNotNull($textFields = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(14, $textFields);
+        $this->assertCount(19, $textFields);
         $textFields[0]->setValue('Test');
         $this->assertNotNull(
             $links = $this->page->findAll(
@@ -53,6 +53,13 @@ class HoldingCase extends BaseTestCase
         $textFields[11]->setValue('RENTTRACK');
         $textFields[12]->setValue('3D5C25981F2911DA566EA5AC363B1B9B5CA8A5AD75EEDECB1EC0EDA76902926A');
         $textFields[13]->setValue('FE11CEE9FB6FDB03AA3950E3769C342FD58E3089EBF5BAD52FBB7D32B6152421');
+
+        $textFields[14]->setValue('@');
+        $textFields[15]->setValue('C');
+        $textFields[16]->setValue('CR');
+        $textFields[17]->setValue('OP');
+        $textFields[18]->setValue('RNT');
+
         $urlTextFields[1]->setValue('https://mri45pc.saas.mrisoftware.com/mriapiservices/api.asp');
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
@@ -86,7 +93,7 @@ class HoldingCase extends BaseTestCase
             )
         );
         $links[2]->click();
-        $this->assertCount(14, $textFields);
+        $this->assertCount(19, $textFields);
         $textFields[2]->setValue('57742111111111111');
         $this->assertNotNull(
             $test = $this->page->find(

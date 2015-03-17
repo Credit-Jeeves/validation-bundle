@@ -2,6 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
+use CreditJeeves\DataBundle\Entity\Order;
+use JMS\Serializer\SerializationContext;
+use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
@@ -113,6 +116,14 @@ class ResManClient implements ClientInterface
      */
     public function build()
     {
+    }
+
+    /**
+     * @return bool
+     */
+    public function canWorkWithBatches()
+    {
+        return true;
     }
 
     /**
@@ -286,12 +297,13 @@ class ResManClient implements ClientInterface
      * @return bool
      */
     public function addPaymentToBatch(
-        $residentTransactionsXml,
+        Order $order,
         $externalPropertyId,
         $accountId = null
     ) {
         $method = 'AddPaymentToBatch';
         $this->debugMessage("Call ResMan method: {$method}");
+        $residentTransactionsXml = $this->getResidentTransactionXml($order);
         $accountId = $accountId ?: $this->getSettings()->getAccountId();
         $params = [
             'AccountID'  => strtolower($accountId),
@@ -302,5 +314,26 @@ class ResManClient implements ClientInterface
         $result = $this->sendRequest($method, $params);
 
         return ($result instanceof ResMan)? true : false;
+    }
+
+    /**
+     * @param Order $order
+     * @return string
+     */
+    protected function getResidentTransactionXml(Order $order)
+    {
+        $residentTransaction = new ResidentTransactions([$order]);
+
+        $context = SerializerXmlHelper::getSerializerContext(['ResMan'], true);
+
+        $residentTransactionsXml = $this->serializer->serialize(
+            $residentTransaction,
+            'xml',
+            $context
+        );
+
+        $residentTransactionsXml = SerializerXmlHelper::removeStandartHeaderXml($residentTransactionsXml);
+
+        return $residentTransactionsXml;
     }
 }

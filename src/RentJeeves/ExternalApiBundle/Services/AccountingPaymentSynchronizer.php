@@ -63,7 +63,8 @@ class AccountingPaymentSynchronizer
     protected $debug = false;
 
     protected $allowedIntegrationApi = [
-        ApiIntegrationType::RESMAN
+        ApiIntegrationType::RESMAN,
+        ApiIntegrationType::MRI
     ];
 
     /**
@@ -198,7 +199,9 @@ class AccountingPaymentSynchronizer
                     $accountingType
                 )
             );
-            $this->openBatch($order);
+            if ($apiClient->canWorkWithBatches()) {
+                $this->openBatch($order);
+            }
             $result = $this->addPaymentToBatch($order);
             $message =  sprintf(
                 "Order(%s) was sent to Accounting(%s) system with result: %s",
@@ -246,19 +249,27 @@ class AccountingPaymentSynchronizer
 
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
-        $batchId = $repo->getAccountingBatchId(
-            $paymentBatchId,
-            $accountingPackageType,
-            $externalPropertyId
-        );
-
-        $order->setBatchId($batchId);
         $apiClient = $this->getApiClientByOrder($order);
 
-        return $apiClient->addPaymentToBatch(
-            $this->getResidentTransactionXml($order),
-            $externalPropertyId,
-            $accountId
+        if ($apiClient->canWorkWithBatches()) {
+            $batchId = $repo->getAccountingBatchId(
+                $paymentBatchId,
+                $accountingPackageType,
+                $externalPropertyId
+            );
+
+            $order->setBatchId($batchId);
+
+            return $apiClient->addPaymentToBatch(
+                $order,
+                $externalPropertyId,
+                $accountId
+            );
+        }
+
+        return $apiClient->postPayment(
+            $order,
+            $externalPropertyId
         );
     }
 
@@ -315,8 +326,6 @@ class AccountingPaymentSynchronizer
             return false;
         }
 
-
-
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
         $mappingBatches = $repo->getTodayBatches($accountingType);
@@ -367,33 +376,6 @@ class AccountingPaymentSynchronizer
         }
 
         return $apiClient->setDebug($this->debug);
-    }
-
-    /**
-     * @param Order $order
-     * @return mixed
-     */
-    protected function getResidentTransactionXml(Order $order)
-    {
-        $residentTransaction = new ResidentTransactions([$order]);
-
-        $context = new SerializationContext();
-        $context->setGroups(['ResMan']);
-        $context->setSerializeNull(true);
-
-        $residentTransactionsXml = $this->serializer->serialize(
-            $residentTransaction,
-            'xml',
-            $context
-        );
-
-        $residentTransactionsXml = str_replace(
-            ['<?xml version="1.0" encoding="UTF-8"?>'],
-            '',
-            $residentTransactionsXml
-        );
-
-        return $residentTransactionsXml;
     }
 
     /**

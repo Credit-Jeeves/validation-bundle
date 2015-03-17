@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\ExternalApiBundle\Command\PaymentPushCommand;
+use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -17,16 +18,49 @@ class PaymentPushCommandCase extends BaseTestCase
     use TransactionAvailableTrait;
     use ContractAvailableTrait;
 
-    /**
-     * @test
-     */
-    public function shouldSendPaymentToResMan()
+    public function dataForSendPaymentToExternalApi()
     {
+        return [
+            [
+                ApiIntegrationType::RESMAN,
+                ResManClientCase::RESIDENT_ID,
+                ResManClientCase::EXTERNAL_PROPERTY_ID,
+                ResManClientCase::EXTERNAL_LEASE_ID
+            ],
+            [
+                ApiIntegrationType::MRI,
+                MRIClientCase::RESIDENT_ID,
+                MRIClientCase::PROPERTY_ID,
+                null
+            ]
+        ];
+    }
+
+    /**
+     * @param $apiIntegrationType
+     * @param $residentId
+     * @param $externalPropertyId
+     * @param $externalLeaseId
+     *
+     * @test
+     * @dataProvider dataForSendPaymentToExternalApi
+     */
+    public function shouldSendPaymentToExternalApi(
+        $apiIntegrationType,
+        $residentId,
+        $externalPropertyId,
+        $externalLeaseId
+    ) {
         $this->load(true);
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        $transaction = $this->createTransaction();
+        $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId
+        );
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
             ['command' => 'external_api:payment:push']
@@ -48,15 +82,5 @@ class PaymentPushCommandCase extends BaseTestCase
             ]
         );
         $this->assertRegExp("/Start\nSuccess/", $commandTester->getDisplay());
-        /** @var PaymentBatchMappingRepository $repo */
-        $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
-
-        $this->assertTrue(
-            $repo->isOpenedBatch(
-                $transaction->getBatchId(),
-                ApiIntegrationType::RESMAN,
-                ResManClientCase::EXTERNAL_PROPERTY_ID
-            )
-        );
     }
 }
