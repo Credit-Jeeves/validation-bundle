@@ -23,10 +23,6 @@ class MRIClient implements ClientInterface
     use Debug;
     use Settings;
 
-    const FORMAT_JSON = 'json';
-
-    const FORMAT_XML = 'xml';
-
     protected $mappingSerialize = [
         'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse',
         'MRI_S-PMRM_PaymentDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\Payment'
@@ -41,11 +37,6 @@ class MRIClient implements ClientInterface
      * @var array
      */
     protected $deserializerGroups = ['MRI-Response'];
-
-    /**
-     * @var string
-     */
-    protected $format = self::FORMAT_JSON;
 
     /**
      * @var HttpClient
@@ -108,7 +99,7 @@ class MRIClient implements ClientInterface
         try {
             $baseParams = [
                 '$api' => $method,
-                '$format' => $this->format
+                '$format' => 'xml'
             ];
 
             $httpMethod = $this->getValueFromParameters($params, 'httpMethod', 'get');
@@ -120,8 +111,8 @@ class MRIClient implements ClientInterface
             $GETParameters = array_merge($baseParams, $params);
             $headers = [
                 'Authorization' => sprintf('Basic %s', $authorization),
-                'Accept' => 'application/'.$this->format,
-                'Content-Type' => 'application/'.$this->format,
+                'Accept' => 'application/xml',
+                'Content-Type' => 'application/xml',
             ];
             $this->debugMessage(sprintf("Setup MRI headers %s", print_r($headers, true)));
             $uri = sprintf(
@@ -178,7 +169,7 @@ class MRIClient implements ClientInterface
         $responseClass = $this->serializer->deserialize(
             $body->__toString(),
             $this->mappingSerialize[$method],
-            $this->format,
+            'xml',
             $context
         );
 
@@ -202,8 +193,6 @@ class MRIClient implements ClientInterface
      */
     public function getResidentTransactions($externalPropertyId)
     {
-        $this->format = self::FORMAT_JSON;
-
         $method = 'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID';
         $params = [
             'RMPROPID' => $externalPropertyId
@@ -222,11 +211,9 @@ class MRIClient implements ClientInterface
      */
     public function postPayment(Order $order, $externalPropertyId)
     {
-        $this->format = self::FORMAT_XML;
-
         $payment = new Payment();
         $payment->setEntryRequest($order);
-        $paymentString = $this->paymentToStringFormat($payment, $this->format);
+        $paymentString = $this->paymentToStringFormat($payment, 'xml');
 
         $method = 'MRI_S-PMRM_PaymentDetailsByPropertyID';
 

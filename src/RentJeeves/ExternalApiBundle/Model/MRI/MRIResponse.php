@@ -4,20 +4,15 @@ namespace RentJeeves\ExternalApiBundle\Model\MRI;
 
 use JMS\Serializer\Annotation as Serializer;
 
+/** @Serializer\XmlRoot("mri_s-pmrm_residentleasedetailsbypropertyid") */
 class MRIResponse
 {
 
     /**
-     * @Serializer\SerializedName("odata.metadata")
-     * @Serializer\Type("string")
-     * @Serializer\Groups({"MRI-Response"})
-     */
-    protected $metadata;
-
-    /**
-     * @Serializer\SerializedName("value")
+     * @Serializer\SerializedName("entry")
      * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\MRI\Value>")
      * @Serializer\Groups({"MRI-Response"})
+     * @Serializer\XmlList(inline = true, entry = "entry")
      */
     protected $values;
 
