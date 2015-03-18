@@ -121,7 +121,7 @@ $(document).ready(function () {
                         $('#rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone').val(1234567890);
                     }
 
-                    if (response.isIntegrated) {
+                    if (response.isIntegrated && response.residentId) {
                         $('#rentjeeves_landlordbundle_invitetenantcontracttype_resident_residentId').val(response.residentId);
                     }
                 } else {
