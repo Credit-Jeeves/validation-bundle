@@ -1010,7 +1010,7 @@ class AjaxController extends Controller
         $isSortAsc = $data['isSortAsc'];
         $searchCollum = $data['searchCollum'];
         $searchText = $data['searchText'];
-        $group = $this->getUser()->getCurrentGroup();
+        $group = $this->getCurrentGroup();
         if ($group->getGroupSettings()->getIsIntegrated()) {
             $showCashPayments = filter_var($data['showCashPayments'], FILTER_VALIDATE_BOOLEAN);
         } else {
