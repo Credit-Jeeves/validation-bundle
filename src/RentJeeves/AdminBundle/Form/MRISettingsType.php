@@ -25,6 +25,7 @@ class MRISettingsType extends Base
         $builder->add('sourceCode');
         $builder->add('cashType');
         $builder->add('chargeCode');
+        $builder->add('clientId');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
