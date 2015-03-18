@@ -17,7 +17,6 @@ use Payum2\Heartland\Soap\Base\TokenToCharge;
 use Payum2\Heartland\Soap\Base\Transaction;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
-use RentJeeves\DataBundle\Entity\Landlord;
 use RuntimeException;
 use DateTime;
 

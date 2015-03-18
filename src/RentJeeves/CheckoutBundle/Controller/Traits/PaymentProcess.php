@@ -5,8 +5,6 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Payum2\Payment;
-use Payum2\Request\BinaryMaskStatusRequest;
-use Payum2\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
@@ -14,7 +12,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
 

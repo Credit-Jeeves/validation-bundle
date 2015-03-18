@@ -105,7 +105,6 @@ class Order extends ResponseResource
         switch ($this->entity->getType()) {
             case OrderType::HEARTLAND_BANK:
                 return 'bank';
-            case OrderType::AUTHORIZE_CARD:
             case OrderType::HEARTLAND_CARD:
                 return 'card';
             default:

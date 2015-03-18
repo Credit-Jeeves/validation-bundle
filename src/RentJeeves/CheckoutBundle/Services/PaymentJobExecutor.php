@@ -7,7 +7,6 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
-use Payum2\Request\BinaryMaskStatusRequest;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
 use RentJeeves\CheckoutBundle\Payment\PayRent;
 use RentJeeves\CoreBundle\DateTime;

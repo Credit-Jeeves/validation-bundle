@@ -62,7 +62,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -97,7 +97,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -226,7 +226,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum($orderAmount);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::PENDING);
 
         $operation = new Operation();
@@ -375,7 +375,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();

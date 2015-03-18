@@ -5,15 +5,12 @@ use CreditJeeves\CoreBundle\Enum\ScoreModelType;
 use CreditJeeves\DataBundle\Entity\Score;
 use RentJeeves\DataBundle\Entity\Job;
 use Doctrine\ORM\EntityManager;
-use Payum2\Request\BinaryMaskStatusRequest;
-use Payum2\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\JobRelatedReport;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Payum2\Payment as Payum;
 use RuntimeException;
 
 class GetCreditProfileCommand extends ContainerAwareCommand

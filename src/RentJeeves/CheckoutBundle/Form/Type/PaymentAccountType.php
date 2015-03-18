@@ -1,11 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
-use RentJeeves\CheckoutBundle\Form\Type\UserAddressType;
-use CreditJeeves\CoreBundle\Form\Widget\MonthYearType;
 use CreditJeeves\DataBundle\Model\User;
-use Doctrine\ORM\EntityRepository;
-use Payum2\Heartland\Soap\Base\ACHAccountType;
 use Payum2\Heartland\Soap\Base\ACHDepositType;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
@@ -15,7 +11,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\Valid;
 
 class PaymentAccountType extends AbstractType
 {
