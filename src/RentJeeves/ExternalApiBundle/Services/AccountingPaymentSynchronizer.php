@@ -245,7 +245,6 @@ class AccountingPaymentSynchronizer
         $accountingPackageType = $settings->getApiIntegration();
         $externalPropertyId = $order->getPropertyPrimaryID();
         $paymentBatchId = $order->getCompleteTransaction()->getBatchId();
-        $accountId = $holding->getResManSettings()->getAccountId();
 
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
@@ -262,8 +261,7 @@ class AccountingPaymentSynchronizer
 
             return $apiClient->addPaymentToBatch(
                 $order,
-                $externalPropertyId,
-                $accountId
+                $externalPropertyId
             );
         }
 
