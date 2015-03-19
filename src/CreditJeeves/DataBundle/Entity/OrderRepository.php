@@ -279,7 +279,7 @@ class OrderRepository extends EntityRepository
             $query->andWhere('o.status = :status');
             $query->setParameter('status', OrderStatus::COMPLETE);
         } else {
-            $query->where("o.created_at BETWEEN :start AND :end");
+            $query->where("STR_TO_DATE(o.created_at, '%Y-%c-%e') BETWEEN :start AND :end");
             $query->andWhere('o.status = :status1 or o.status = :status2');
             $query->setParameter('status1', OrderStatus::COMPLETE);
             $query->setParameter('status2', OrderStatus::PENDING);
@@ -322,7 +322,7 @@ class OrderRepository extends EntityRepository
             $query->setParameter('status', OrderStatus::COMPLETE);
         } else {
             $query->where('o.status = :status1 OR o.status = :status2');
-            $query->andWhere("o.created_at BETWEEN :start AND :end");
+            $query->andWhere("STR_TO_DATE(o.created_at, '%Y-%c-%e') BETWEEN :start AND :end");
             $query->setParameter('status1', OrderStatus::COMPLETE);
             $query->setParameter('status2', OrderStatus::PENDING);
         }

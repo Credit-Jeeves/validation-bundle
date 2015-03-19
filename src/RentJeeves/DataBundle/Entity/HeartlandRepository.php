@@ -81,22 +81,40 @@ class HeartlandRepository extends EntityRepository
         $query->leftJoin('unit.unitMapping', 'uMap');
         $query->innerJoin('t.group', 'g');
         $query->leftJoin('g.groupSettings', 'gs');
-
+        // order may be deposited and returned the same day, so we should count complete and reversal types
+        $query->where('o.status in (:statuses)');
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
-            $query->where(
+            $query->andWhere(
                 '(o.status = :completeOrder AND h.status = :completeTransaction) OR
                 (o.status != :completeOrder AND h.status = :reversedTransaction)'
             );
 
             $query->andWhere('h.isSuccessful = 1 AND h.transactionId IS NOT NULL AND h.depositDate IS NOT NULL');
             $query->andWhere("h.depositDate BETWEEN :start AND :end");
+            $query->setParameter(
+                'statuses',
+                [
+                    OrderStatus::COMPLETE,
+                    OrderStatus::REFUNDED,
+                    OrderStatus::RETURNED
+                ]
+            );
         } else {
-            $query->where(
+            $query->andWhere(
                 '((o.status = :completeOrder OR o.status = :pendingOrder) AND h.status = :completeTransaction) OR
                 (o.status != :completeOrder AND h.status = :reversedTransaction)'
             );
             $query->setParameter('pendingOrder', OrderStatus::PENDING);
             $query->andWhere("o.created_at BETWEEN :start AND :end");
+            $query->setParameter(
+                'statuses',
+                [
+                    OrderStatus::COMPLETE,
+                    OrderStatus::REFUNDED,
+                    OrderStatus::RETURNED,
+                    OrderStatus::PENDING
+                ]
+            );
         }
 
         $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
@@ -105,11 +123,6 @@ class HeartlandRepository extends EntityRepository
 
         $query->setParameter('start', $start);
         $query->setParameter('end', $end);
-
-
-        // order may be deposited and returned the same day, so we should count complete and reversal types
-        $query->andWhere('o.status in (:statuses)');
-        $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
 
         $query->andWhere('o.type in (:paymentTypes)');
         $query->setParameter('paymentTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);

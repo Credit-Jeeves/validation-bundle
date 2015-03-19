@@ -2967,6 +2967,10 @@
                 <source>deposit.date.range</source>
                 <target>Deposit Date Range:</target>
             </trans-unit>
+            <trans-unit id="payment.date.range">
+                <source>payment.date.range</source>
+                <target>Payment Date Range:</target>
+            </trans-unit>
             <trans-unit id="common.test.yardi_setting">
                 <source>common.test.yardi_setting</source>
                 <target>Test Yardi Setting</target>
