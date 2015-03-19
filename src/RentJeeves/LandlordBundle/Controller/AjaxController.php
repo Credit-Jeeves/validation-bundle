@@ -1037,6 +1037,7 @@ class AjaxController extends Controller
                 $searchText,
                 $showCashPayments
             );
+            /** @var Order $order */
             foreach ($orders as $order) {
                 $item = $order->getItem();
                 $items[] = $item;

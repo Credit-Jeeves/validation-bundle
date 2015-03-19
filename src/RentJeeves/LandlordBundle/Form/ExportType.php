@@ -156,8 +156,8 @@ class ExportType extends AbstractType
                 ],
                 'required'    => true,
                 'choices'     => [
-                    ExportReport::EXPORT_BY_PAYMENTS  => 'payments',
-                    ExportReport::EXPORT_BY_DEPOSITS  => 'deposits'
+                    ExportReport::EXPORT_BY_PAYMENTS  => 'Payments',
+                    ExportReport::EXPORT_BY_DEPOSITS  => 'Deposits'
                 ],
                 'data'       => 'deposits',
                 'multiple'  => false,

@@ -18,7 +18,8 @@
   {% endfor %}
   <div class="container-content-data pod-middle pod-border pod-padding shadow">
     <section class="form-content">
-        <p class="dateTitle">{{ 'deposit.date.range'|trans }}</p>
+        <p class="dateTitle" data-bind="visible: (exportBy() == 'deposits') || selectedType() == 'yardi'">{{ 'deposit.date.range'|trans }}</p>
+        <p class="dateTitle" data-bind="visible: (exportBy() == 'payments')">{{ 'payment.date.range'|trans }}</p>
         <form action="{{ path('accounting_export')}}" method="post" {{ form_enctype(formBaseOrder) }} id="baseOrderReport" >
             <span class="info-message" data-bind="visible: (exportBy() == 'deposits')">
                 {{ 'landlord_export.export_by_deposits.description'|trans }}
