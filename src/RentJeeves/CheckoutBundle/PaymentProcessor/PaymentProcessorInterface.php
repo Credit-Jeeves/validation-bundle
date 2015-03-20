@@ -42,7 +42,8 @@ interface PaymentProcessorInterface
      * Returns DepositReport or ReversalReport.
      *
      * @param string $reportType
+     * @param array $settings
      * @return PaymentProcessorReport
      */
-    public function loadReport($reportType);
+    public function loadReport($reportType, array $settings = []);
 }

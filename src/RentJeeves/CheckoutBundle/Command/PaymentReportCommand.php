@@ -35,9 +35,11 @@ class PaymentReportCommand extends ContainerAwareCommand
         $makeArchive = $input->getOption('archive');
 
         $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
-        $report = $paymentProcessor->loadReport($syncType, $makeArchive);
-        $result = $this->getContainer()->get('payment_processor.report_synchronizer')->synchronize($report);
-
-        $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
+        if ($report = $paymentProcessor->loadReport($syncType, ['make_archive' => $makeArchive])) {
+            $result = $this->getContainer()->get('payment_processor.report_synchronizer')->synchronize($report);
+            $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
+        } else {
+            $output->writeln('Report not found');
+        }
     }
 }

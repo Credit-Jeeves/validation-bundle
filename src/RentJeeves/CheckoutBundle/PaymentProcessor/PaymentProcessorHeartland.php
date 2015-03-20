@@ -63,8 +63,8 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function loadReport($reportType)
+    public function loadReport($reportType, array $settings = [])
     {
-        return $this->reportLoader->loadReport($reportType);
+        return $this->reportLoader->loadReport($reportType, $settings);
     }
 }

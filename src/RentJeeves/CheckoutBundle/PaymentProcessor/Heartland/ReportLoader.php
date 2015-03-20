@@ -51,8 +51,9 @@ class ReportLoader
      * @return DepositReport | ReversalReport
      * @throws \Exception
      */
-    public function loadReport($reportType, $makeArchive = false)
+    public function loadReport($reportType, array $settings)
     {
+        $makeArchive = isset($settings['make_archive'])? $settings['make_archive'] : false;
         $this->logger->debug('HPS: Trying to load report of type ' . $reportType);
         switch ($reportType) {
             case PaymentProcessorReportType::DEPOSIT:
