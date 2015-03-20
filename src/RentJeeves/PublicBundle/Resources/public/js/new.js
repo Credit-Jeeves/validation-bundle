@@ -245,6 +245,8 @@ $(document).ready(function () {
 
     initSelectedOption();
 
+    // If the form is not valid - move focus
+    // so that users could see errors
     if ($('form#formNewUser ul.error_list').length > 0) {
         if ($('div.type1>ul.error_list').length === 0) {
             $('.thisIsMyRental').click();
@@ -254,9 +256,9 @@ $(document).ready(function () {
     }
 
     function focusInputWithErrorOrFirstNameInput() {
-        var fieldsBoxes = $('form#formNewUser div.fields-box').has('ul.error_list');
-        if (fieldsBoxes.length > 0) {
-            fieldsBoxes.first().find('input').focus();
+        var fieldBoxes = $('form#formNewUser div.fields-box').has('ul.error_list');
+        if (fieldBoxes.length > 0) {
+            fieldBoxes.first().find('input').focus();
         } else {
             $('#rentjeeves_publicbundle_tenanttype_first_name').focus();
         }
