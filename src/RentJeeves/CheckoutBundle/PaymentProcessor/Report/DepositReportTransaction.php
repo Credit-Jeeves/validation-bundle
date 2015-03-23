@@ -4,16 +4,13 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
 use RentJeeves\CoreBundle\DateTime;
 
-class DepositReportTransaction
+class DepositReportTransaction extends PaymentProcessorReportTransaction
 {
     /** @var string */
-    protected $batchID;
+    protected $batchId;
 
     /** @var DateTime */
     protected $batchCloseDate;
-
-    /** @var string */
-    protected $transactionID;
 
     /** @var float */
     protected $depositAmount;
@@ -42,17 +39,17 @@ class DepositReportTransaction
     /**
      * @return string
      */
-    public function getBatchID()
+    public function getBatchId()
     {
-        return $this->batchID;
+        return $this->batchId;
     }
 
     /**
-     * @param string $batchID
+     * @param string $batchId
      */
-    public function setBatchID($batchID)
+    public function setBatchId($batchId)
     {
-        $this->batchID = $batchID;
+        $this->batchId = $batchId;
 
         return $this;
     }
@@ -89,24 +86,6 @@ class DepositReportTransaction
     public function setDepositDate($depositDate)
     {
         $this->depositDate = $depositDate;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransactionID()
-    {
-        return $this->transactionID;
-    }
-
-    /**
-     * @param string $transactionID
-     */
-    public function setTransactionID($transactionID)
-    {
-        $this->transactionID = $transactionID;
 
         return $this;
     }

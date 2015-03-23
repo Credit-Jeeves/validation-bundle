@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
@@ -16,7 +16,7 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
  */
 class ReportSynchronizer
 {
-    /** @var EntityManagerInterface */
+    /** @var EntityManager */
     protected $em;
 
     /** @var Logger */
@@ -28,7 +28,7 @@ class ReportSynchronizer
      *     "logger" = @DI\Inject("logger")
      * })
      */
-    public function __construct(EntityManagerInterface $em, Logger $logger)
+    public function __construct(EntityManager $em, Logger $logger)
     {
         $this->em = $em;
         $this->logger = $logger;
@@ -43,65 +43,58 @@ class ReportSynchronizer
      */
     public function synchronize(PaymentProcessorReport $report)
     {
-        switch ($report) {
-            case $report instanceof DepositReport:
-                $this->processDepositReport($report);
-                break;
-            case $report instanceof ReversalReport:
-                $this->processReversalReport($report);
-                break;
-            default:
-                throw new \Exception('Unknown report type to synchronize');
+        if (!$report->getTransactions()) {
+            $this->logger->debug('Report synchronizer: No transactions in payment processor report');
+            return 0;
+        }
+
+        /** @var PaymentProcessorReportTransaction $reportTransaction */
+        foreach ($report->getTransactions() as $reportTransaction) {
+            switch ($reportTransaction) {
+                case $reportTransaction instanceof DepositReportTransaction:
+                    $this->processDepositTransaction($reportTransaction);
+                    break;
+                case $reportTransaction instanceof ReversalReportTransaction:
+                    $this->processReversalTransaction($reportTransaction);
+                    break;
+                default:
+                    throw new \Exception('Report synchronizer: Unknown report transaction type to synchronize');
+            }
         }
 
         return count($report->getTransactions());
     }
 
     /**
-     * @param DepositReport $depositReport
+     * @param ReversalReportTransaction $transaction
      */
-    protected function processDepositReport(DepositReport $depositReport)
+    protected function processReversalTransaction(ReversalReportTransaction $transaction)
     {
-        $this->logger->debug('Processing deposit report from payment processor.');
-        foreach ($depositReport->getTransactions() as $transaction) {
-            $this->processDeposit($transaction);
-        }
-    }
-
-    /**
-     * @param ReversalReport $reversalReport
-     */
-    protected function processReversalReport(ReversalReport $reversalReport)
-    {
-        $this->logger->debug('Processing reversal report from payment processor.');
-        /** @var ReversalReportTransaction $transaction */
-        foreach ($reversalReport->getTransactions() as $transaction) {
-            switch ($transaction->getTransactionType()) {
-                case ReversalReportTransaction::TYPE_RETURN:
-                    $this->processReturned($transaction);
-                    break;
-                case ReversalReportTransaction::TYPE_REFUND:
-                    $this->processRefunded($transaction);
-                    break;
-                case ReversalReportTransaction::TYPE_CANCEL:
-                    $this->processCancelled($transaction);
-                    break;
-                case ReversalReportTransaction::TYPE_COMPLETE:
-                    // double check batch ids for successful transactions
-                    $this->fillEmptyBatchId($transaction);
-            }
+        switch ($transaction->getTransactionType()) {
+            case ReversalReportTransaction::TYPE_RETURN:
+                $this->processReturned($transaction);
+                break;
+            case ReversalReportTransaction::TYPE_REFUND:
+                $this->processRefunded($transaction);
+                break;
+            case ReversalReportTransaction::TYPE_CANCEL:
+                $this->processCancelled($transaction);
+                break;
+            case ReversalReportTransaction::TYPE_COMPLETE:
+                // double check batch ids for successful transactions
+                $this->fillEmptyBatchId($transaction);
         }
     }
 
     /**
      * @param DepositReportTransaction $reportTransaction
      */
-    protected function processDeposit(DepositReportTransaction $reportTransaction)
+    protected function processDepositTransaction(DepositReportTransaction $reportTransaction)
     {
-        $this->logger->debug('Processing DEPOSITED transaction with ID ' . $reportTransaction->getTransactionID());
+        $this->logger->debug('Processing DEPOSITED transaction with ID ' . $reportTransaction->getTransactionId());
         /** @var HeartlandTransaction $transaction */
-        if (!$transaction = $this->findTransaction($reportTransaction->getTransactionID())) {
-            $this->logger->debug('Transaction with ID ' . $reportTransaction->getTransactionID() . ' not found');
+        if (!$transaction = $this->findTransaction($reportTransaction->getTransactionId())) {
+            $this->logger->debug('Transaction with ID ' . $reportTransaction->getTransactionId() . ' not found');
             return;
         }
 
@@ -126,12 +119,12 @@ class ReportSynchronizer
     {
         $this->logger->debug(
             'Processing RETURNED transaction with original transaction ID ' .
-            $reportTransaction->getOriginalTransactionID()
+            $reportTransaction->getOriginalTransactionId()
         );
         /** @var HeartlandTransaction $originalTransaction */
-        if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionID())) {
+        if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionId())) {
             $this->logger->debug(
-                'Transaction with ID ' . $reportTransaction->getOriginalTransactionID() . ' not found'
+                'Transaction with ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
             );
             return;
         }
@@ -139,7 +132,7 @@ class ReportSynchronizer
         $order = $originalTransaction->getOrder();
         $order->setStatus(OrderStatus::RETURNED);
         $reversalTransaction = $this->createReversalTransaction($order, $reportTransaction);
-        $reversalTransaction->setBatchId($reportTransaction->getBatchID());
+        $reversalTransaction->setBatchId($reportTransaction->getBatchId());
         $originalDepositDate = $originalTransaction->getDepositDate();
         // if original deposit date exists, set reversal deposit date
         if ($originalDepositDate) {
@@ -163,12 +156,12 @@ class ReportSynchronizer
     {
         $this->logger->debug(
             'Processing REFUNDED transaction with original transaction ID ' .
-            $reportTransaction->getOriginalTransactionID()
+            $reportTransaction->getOriginalTransactionId()
         );
         /** @var HeartlandTransaction $originalTransaction */
-        if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionID())) {
+        if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionId())) {
             $this->logger->debug(
-                'Transaction with ID ' . $reportTransaction->getOriginalTransactionID() . ' not found'
+                'Transaction with ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
             );
             return;
         }
@@ -197,12 +190,12 @@ class ReportSynchronizer
     {
         $this->logger->debug(
             'Processing CANCELLED transaction with original transaction ID ' .
-            $reportTransaction->getOriginalTransactionID()
+            $reportTransaction->getOriginalTransactionId()
         );
         /** @var HeartlandTransaction $originalTransaction */
-        if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionID())) {
+        if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionId())) {
             $this->logger->debug(
-                'Transaction with ID ' . $reportTransaction->getOriginalTransactionID() . ' not found'
+                'Transaction with ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
             );
             return;
         }
@@ -234,17 +227,17 @@ class ReportSynchronizer
     {
         $this->logger->debug(
             'Creating REVERSED transaction for Order ID ' . $order->getId() .
-            ', transaction ID ' . $reportTransaction->getTransactionID()
+            ', transaction ID ' . $reportTransaction->getTransactionId()
         );
         $transaction = new HeartlandTransaction();
-        $transaction->setTransactionId($reportTransaction->getTransactionID());
+        $transaction->setTransactionId($reportTransaction->getTransactionId());
         $transaction->setOrder($order);
         $transaction->setAmount($reportTransaction->getAmount());
         $transaction->setIsSuccessful(true);
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setMessages($reportTransaction->getReversalDescription());
 
-        if ($batchId = $reportTransaction->getBatchID()) {
+        if ($batchId = $reportTransaction->getBatchId()) {
             $transaction->setBatchId($batchId);
         }
 
@@ -256,7 +249,7 @@ class ReportSynchronizer
      */
     protected function fillEmptyBatchId(ReversalReportTransaction $transaction)
     {
-        if (!$batchId = $transaction->getBatchID()) {
+        if (!$batchId = $transaction->getBatchId()) {
             return;
         }
 

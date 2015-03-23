@@ -7,11 +7,12 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorReportType;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CheckoutBundle\Command\PaymentReportCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
@@ -22,20 +23,36 @@ class PaymentReportCase extends BaseTestCase
     public function setUp()
     {
         $this->load(true);
+
+        $this->hpsReportPath = __DIR__ . '/../Fixtures/hps/';
+        $this->depositFile = $this->hpsReportPath . 'report_' . ReportLoader::DEPOSIT_REPORT_FILENAME_SUFFIX . '.csv';
+        $this->reversalFile = $this->hpsReportPath . 'report_' . ReportLoader::REVERSAL_REPORT_FILENAME_SUFFIX .'.csv';
+        $this->hpsACHDepositReport = file_get_contents($this->depositFile);
+        $this->hpsBillDataReport = file_get_contents($this->reversalFile);
     }
 
-    protected function executeCommand($type)
+    public function tearDown()
+    {
+        // remove archive dir
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->hpsReportPath . 'archive');
+
+        // create report fixtures
+        $filesystem->dumpFile($this->depositFile, $this->hpsACHDepositReport);
+        $filesystem->dumpFile($this->reversalFile, $this->hpsBillDataReport);
+    }
+
+    protected function executeCommand()
     {
         $application = new Application($this->getKernel());
         $application->add(new PaymentReportCommand());
 
-        $command = $application->find('Payment:synchronize');
+        $command = $application->find('payment:report:synchronize');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'type' => $type
-            )
+            [
+                'command' => $command->getName()
+            ]
         );
 
         return $commandTester->getDisplay();
@@ -44,34 +61,24 @@ class PaymentReportCase extends BaseTestCase
     /**
      * @test
      */
-    public function executeCommandWithTypeReversal()
+    public function shouldExecuteCommandAndSendEmails()
     {
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
-        $result = $this->executeCommand(PaymentProcessorReportType::REVERSAL);
+        $result = $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
         $this->assertCount(4, $count);
-        $this->assertContains('Amount of synchronized payments: 7', $result);
+        $this->assertContains('Amount of synchronized payments: 9', $result);
     }
 
     /**
      * @test
      */
-    public function executeCommandWithTypeDeposit()
+    public function shouldCreateReversalTransactionForVoidedCCPayment()
     {
-        $result = $this->executeCommand(PaymentProcessorReportType::DEPOSIT);
-
-        $this->assertContains('Amount of synchronized payments: 2', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function voidCCPayment()
-    {
-        $this->executeCommand(PaymentProcessorReportType::REVERSAL);
+        $this->executeCommand();
 
         $originalTransId = 258258;
         $voidTransId = 258259;
@@ -102,7 +109,7 @@ class PaymentReportCase extends BaseTestCase
 
         $this->assertEquals($firstStatus, $order->getStatus());
 
-        $this->executeCommand(PaymentProcessorReportType::REVERSAL);
+        $this->executeCommand();
 
         $this->assertNotNull($updatedOrder = $em->getRepository('DataBundle:Order')->find($order->getId()));
         $this->assertEquals($secondStatus, $updatedOrder->getStatus());
@@ -125,7 +132,7 @@ class PaymentReportCase extends BaseTestCase
         $transactionId = 5355372;
         $this->createOrder($transactionId);
 
-        $this->executeCommand(PaymentProcessorReportType::DEPOSIT);
+        $this->executeCommand();
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $repo = $em->getRepository('RjDataBundle:Heartland');
@@ -148,7 +155,7 @@ class PaymentReportCase extends BaseTestCase
         $transactionId = 5355373;
         $this->createOrder($transactionId);
 
-        $this->executeCommand(PaymentProcessorReportType::DEPOSIT);
+        $this->executeCommand();
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $repo = $em->getRepository('RjDataBundle:Heartland');
@@ -180,7 +187,7 @@ class PaymentReportCase extends BaseTestCase
         $transaction->setBatchId(null);
         $em->flush($transaction);
 
-        $this->executeCommand(PaymentProcessorReportType::REVERSAL);
+        $this->executeCommand();
 
         /** @var Heartland $resultTransaction */
         $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));

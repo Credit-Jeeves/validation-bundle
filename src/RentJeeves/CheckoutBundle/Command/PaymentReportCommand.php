@@ -10,36 +10,24 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PaymentReportCommand extends ContainerAwareCommand
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
-            ->setName('Payment:synchronize')
-            ->setDescription('Synchronizes hps payment report w/ orders.')
-            ->addArgument(
-                'type',
-                InputArgument::REQUIRED,
-                'What sync would you like to run? If ACH deposit, add "deposit", if payment reversal, add "reversal"'
-            )
-            ->addOption(
-                'archive',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'If set, the original report is archived.',
-                false
-            );
+            ->setName('payment:report:synchronize')
+            ->setDescription('Synchronizes payment process report w/ orders.');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $syncType = $input->getArgument('type');
-        $makeArchive = $input->getOption('archive');
-
         $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
-        if ($report = $paymentProcessor->loadReport($syncType, ['make_archive' => $makeArchive])) {
-            $result = $this->getContainer()->get('payment_processor.report_synchronizer')->synchronize($report);
-            $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
-        } else {
-            $output->writeln('Report not found');
-        }
+        $report = $paymentProcessor->loadReport();
+        $result = $this->getContainer()->get('payment_processor.report_synchronizer')->synchronize($report);
+        $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
     }
 }

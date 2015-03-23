@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer;
 
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -16,8 +15,7 @@ class HPSDepositReportDenormalizer implements DenormalizerInterface
      */
     public function denormalize($data, $class, $format = null, array $context = array())
     {
-        $report = new DepositReport();
-
+        $result = [];
         foreach ($data as $transaction) {
             $depositTransaction = new DepositReportTransaction();
             $depositTransaction
@@ -35,10 +33,10 @@ class HPSDepositReportDenormalizer implements DenormalizerInterface
                 $depositTransaction->setDepositDate(new DateTime($depositDate));
             }
 
-            $report->addTransaction($depositTransaction);
+            $result[] = $depositTransaction;
         }
 
-        return $report;
+        return $result;
     }
 
     /**

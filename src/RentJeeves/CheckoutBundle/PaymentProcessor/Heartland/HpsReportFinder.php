@@ -6,11 +6,9 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use RuntimeException;
-use DateTime;
 
 /**
- * @DI\Service("payment.report.finder")
+ * @DI\Service("payment_processor.hps_report.finder")
  */
 class HpsReportFinder
 {
@@ -27,47 +25,33 @@ class HpsReportFinder
     }
 
     /**
-     * @return null|string
+     * Finds all report files with a given suffix.
+     *
+     * @param string $suffix
+     * @return array
      */
     public function find($suffix = '')
     {
         $finder = new Finder();
         $finder->files()->in($this->reportPath)->name("*{$suffix}.csv")->depth('== 0');
         if ($finder->count() == 0) {
-            return null;
+            return [];
         }
 
+        $foundFiles = [];
         foreach ($finder as $file) {
-            return $file->getRealpath();
+            $foundFiles[] = $file->getRealpath();
         }
-    }
 
-    public function findBySuffix($suffix)
-    {
-        return $this->find($suffix);
+        return $foundFiles;
     }
 
     /**
-     * @param $filename
-     * @return bool
-     * @throws \RuntimeException
+     * @param $suffix
+     * @return array
      */
-    public function archive($filename, $suffix = '')
+    public function findBySuffix($suffix)
     {
-        $now = new DateTime();
-        $archiveDir = sprintf('%s/archive/%s/%s', $this->reportPath, $now->format('Y'), $now->format('m'));
-        $archiveFilename = sprintf('%s/%s%s.csv', $archiveDir, $now->format('d-H-i-s'), $suffix);
-
-        try {
-            $filesystem = new Filesystem();
-            $filesystem->mkdir($archiveDir);
-            $filesystem->rename($filename, $archiveFilename);
-        } catch (IOException $e) {
-            throw new RuntimeException(
-                sprintf('An error occurred while trying to archive HPS report: %s', $e->getMessage())
-            );
-        }
-
-        return true;
+        return $this->find($suffix);
     }
 }
