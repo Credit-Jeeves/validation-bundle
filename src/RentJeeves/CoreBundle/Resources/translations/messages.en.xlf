@@ -2240,6 +2240,10 @@
                 ]]>
                 </target>
             </trans-unit>
+            <trans-unit id="pidkiq.error.unanswered_questions">
+               <source>pidkiq.error.unanswered_questions</source>
+               <target>Almost there. Only %COUNT% question(s) left to answer!</target>
+            </trans-unit>
             <trans-unit id="payments.filter.group_by.deposit">
                 <source>payments.filter.group_by.deposit</source>
                 <target>Batch Deposit Report</target>

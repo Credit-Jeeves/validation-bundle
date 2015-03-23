@@ -521,6 +521,9 @@ function Pay(parent, contractId) {
                     onSuccessStep([]);
                     break;
                 }
+                if (self.checkFillAllQuestions() === false) {
+                    break;
+                }
                 //User is valid and we have question so we can try process it
                 if (self.isValidUser() && !self.isProcessQuestion) {
                     sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
@@ -590,4 +593,37 @@ function Pay(parent, contractId) {
     });
 
     window.formProcess.removeAllErrors('#pay-popup ');
+
+    /**
+     * Checks whether there are unanswered questions.
+     * If such questions exist - show message with their numbers and return FALSE
+     * else
+     * return TRUE
+     *
+     * @return boolean
+     */
+    this.checkFillAllQuestions = function () {
+        window.formProcess.removeAllErrors('#pay-popup ');
+
+        var questionsDiv = $('div#questions>div').has('input:radio');
+        var countQuestionsWithoutAnswer = 0;
+
+        questionsDiv.each(function () {
+            if ($(this).find('input:radio:checked').length === 0) {
+                countQuestionsWithoutAnswer++;
+            }
+        });
+
+        if (countQuestionsWithoutAnswer > 0) {
+            var message = Translator.trans('pidkiq.error.unanswered_questions', { COUNT: countQuestionsWithoutAnswer });
+            window.formProcess.addFormError(
+                '#' + forms[self.getCurrentStep()],
+                message
+            );
+
+            return false;
+        }
+
+        return true;
+    }
 }
