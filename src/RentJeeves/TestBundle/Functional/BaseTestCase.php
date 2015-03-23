@@ -12,4 +12,12 @@ abstract class BaseTestCase extends Base
     const APP = 'AppRj';
 
     protected $envPath = '/rj_test.php/';
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
+    }
 }
