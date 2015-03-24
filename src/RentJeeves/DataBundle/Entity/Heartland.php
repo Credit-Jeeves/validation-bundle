@@ -217,7 +217,11 @@ class Heartland extends Base
     public function getOrderStatus()
     {
         if ($order = $this->getOrder()) {
-            return $order->getStatus();
+            $status = $order->getStatus();
+            if ($status == OrderStatus::PENDING) {
+                $status = 'processing'; // We show 'processing' in the UI, let's be consistent
+            }
+            return $status;
         }
 
         return null;

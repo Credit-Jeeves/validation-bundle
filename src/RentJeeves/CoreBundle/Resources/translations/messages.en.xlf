@@ -2216,6 +2216,7 @@
                     rent payments to credit bureaus, we need
                     to locate your credit file and verify your identity.
                     This soft inquiry will not impact your credit score.
+                    Please answer all questions - do not leave any blank.
                 </target>
             </trans-unit>
             <trans-unit id="personal.information">
@@ -2966,6 +2967,10 @@
             <trans-unit id="deposit.date.range">
                 <source>deposit.date.range</source>
                 <target>Deposit Date Range:</target>
+            </trans-unit>
+            <trans-unit id="payment.date.range">
+                <source>payment.date.range</source>
+                <target>Payment Date Range:</target>
             </trans-unit>
             <trans-unit id="common.test.yardi_setting">
                 <source>common.test.yardi_setting</source>

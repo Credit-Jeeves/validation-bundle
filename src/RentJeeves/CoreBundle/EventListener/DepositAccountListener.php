@@ -76,14 +76,6 @@ class DepositAccountListener
             return;
         }
 
-        if ($eventArgs->hasChangedField('feeACH') && $entity->getFeeACH() == $this->feeACH) {
-            $eventArgs->setNewValue('feeACH', null);
-        }
-
-        if ($eventArgs->hasChangedField('feeCC') && $entity->getFeeCC() == $this->feeCC) {
-            $eventArgs->setNewValue('feeCC', null);
-        }
-
         if ($eventArgs->hasChangedField('status') && DepositAccountStatus::DA_COMPLETE == $entity->getStatus()) {
             $this->sendEmail($entity);
         }

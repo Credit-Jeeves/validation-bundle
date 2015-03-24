@@ -1023,6 +1023,10 @@
                 <source>error.user.first_name.long</source>
                 <target>First name is too long.</target>
             </trans-unit>
+            <trans-unit id="error.user.first_name.authentication">
+                <source>error.user.first_name.authentication</source>
+                <target>Please provide a single first name for verification. For example, use Mary instead of Mary Beth.</target>
+            </trans-unit>
             <trans-unit id="error.user.middleInitial.short">
                 <source>error.user.middleInitial.short</source>
                 <target>Middle initial is too short.</target>
@@ -1038,6 +1042,10 @@
             <trans-unit id="error.user.last_name.short">
                 <source>error.user.last_name.short</source>
                 <target>Last name is too short.</target>
+            </trans-unit>
+            <trans-unit id="error.user.last_name.authentication">
+                <source>error.user.last_name.authentication</source>
+                <target>Please provide a single last name for verification. For example, use Lopez instead of Lopez-Castro.</target>
             </trans-unit>
             <trans-unit id="error.user.last_name.long">
                 <source>error.user.last_name.long</source>

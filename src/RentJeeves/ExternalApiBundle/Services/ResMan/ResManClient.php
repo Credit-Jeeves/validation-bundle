@@ -293,25 +293,23 @@ class ResManClient implements ClientInterface
     /**
      * @param $residentTransactionsXml
      * @param string $externalPropertyId
-     * @param null $accountId
      * @return bool
      */
     public function addPaymentToBatch(
         Order $order,
-        $externalPropertyId,
-        $accountId = null
+        $externalPropertyId
     ) {
         $method = 'AddPaymentToBatch';
         $this->debugMessage("Call ResMan method: {$method}");
         $residentTransactionsXml = $this->getResidentTransactionXml($order);
-        $accountId = $accountId ?: $this->getSettings()->getAccountId();
-        $params = [
+        $accountId = $this->getSettings()->getAccountId();
+        $paramsToRequest = [
             'AccountID'  => strtolower($accountId),
             'PropertyID' => strtolower($externalPropertyId),
             'xml'        => $residentTransactionsXml,
         ];
 
-        $result = $this->sendRequest($method, $params);
+        $result = $this->sendRequest($method, $paramsToRequest);
 
         return ($result instanceof ResMan)? true : false;
     }
