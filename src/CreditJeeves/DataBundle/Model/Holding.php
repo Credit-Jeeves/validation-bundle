@@ -8,7 +8,8 @@ use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\DataBundle\Model\YardiSettings;
+use RentJeeves\DataBundle\Entity\MRISettings;
+use RentJeeves\DataBundle\Entity\YardiSettings;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
@@ -146,6 +147,17 @@ abstract class Holding
 
     /**
      * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\MRISettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"},
+     *     fetch="EAGER"
+     * )
+     * @var MRISettings
+     */
+    protected $mriSettings;
+
+    /**
+     * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\ResManSettings",
      *     mappedBy="holding",
      *     cascade={"persist", "remove", "merge"},
@@ -172,6 +184,22 @@ abstract class Holding
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
+    }
+
+    /**
+     * @return MRISettings
+     */
+    public function getMriSettings()
+    {
+        return $this->mriSettings;
+    }
+
+    /**
+     * @param MRISetting $MRISettings
+     */
+    public function setMriSettings(MRISettings $MRISettings = null)
+    {
+        $this->mriSettings = $MRISettings;
     }
 
     /**
@@ -202,6 +230,8 @@ abstract class Holding
                     return $this->getResManSettings();
                 case ApiIntegrationType::YARDI_VOYAGER:
                     return $this->getYardiSettings();
+                case ApiIntegrationType::MRI:
+                    return $this->getMriSettings();
             }
         }
 

@@ -2022,14 +2022,6 @@
                 <source>landlord.hps.processing_message</source>
                 <target>We are processing your application. You will be notified when your application is approved. Once approved, you will be able to add tenants.</target>
             </trans-unit>
-            <trans-unit id="landlord.hps.error_message">
-                <source>landlord.hps.error_message</source>
-                <target>There was an error submitting your application, please contact help@renttrack.com or call 866-841-9090. %heartland_msg%</target>
-            </trans-unit>
-            <trans-unit id="landlord.hps.complete_application">
-                <source>landlord.hps.complete_application</source>
-                <target><![CDATA[Please complete your merchant application by filling out <a href="%complete_url%" target="_blank">this form</a> through our payment processor.]]></target>
-            </trans-unit>
             <trans-unit id="landlord.hps.contact_us_message">
                 <source>landlord.hps.contact_us_message</source>
                 <target>Please contact us at help@renttrack.com or call 866-841-9090 x2 to set up your merchant account.</target>
@@ -2041,10 +2033,6 @@
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>
                 <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="landlord">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
-            </trans-unit>
-            <trans-unit id="redirect.wait.notification">
-                <source>redirect.wait.notification</source>
-                <target><![CDATA[Please wait while we establish a secure connection to our processor's Online Merchant Application.]]></target>
             </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
@@ -2784,8 +2772,8 @@
                 <source>yardi.import.message.download.contracts</source>
                 <target>Fetching lease contracts for resident %RESIDENT_ID%.</target>
             </trans-unit>
-            <trans-unit id="resman.import.message.download.contracts">
-                <source>resman.import.message.download.contracts</source>
+            <trans-unit id="import.message.download.contracts">
+                <source>import.message.download.contracts</source>
                 <target>Fetching lease contracts.</target>
             </trans-unit>
             <trans-unit id="landlord.form.import.multiple.property">
@@ -2980,6 +2968,10 @@
                 <source>deposit.date.range</source>
                 <target>Deposit Date Range:</target>
             </trans-unit>
+            <trans-unit id="payment.date.range">
+                <source>payment.date.range</source>
+                <target>Payment Date Range:</target>
+            </trans-unit>
             <trans-unit id="common.test.yardi_setting">
                 <source>common.test.yardi_setting</source>
                 <target>Test Yardi Setting</target>
@@ -3081,6 +3073,26 @@
             <trans-unit id="landlord_dashboard.payment.title">
                 <source>landlord_dashboard.payment.title</source>
                 <target>Created: %created%. Sent: %sent%</target>
+            </trans-unit>
+            <trans-unit id="landlord.payments_list.show_external_payments">
+                <source>landlord.payments_list.show_external_payments</source>
+                <target>Show External Payments</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_deposits.description">
+                <source>landlord_export.export_by_deposits.description</source>
+                <target>Export payments that have been deposited by deposit date.</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_payments.description">
+                <source>landlord_export.export_by_payments.description</source>
+                <target>Export all payments initiated by initiation date.</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_payments.description_help">
+                <source>landlord_export.export_by_payments.description_help</source>
+                <target>This will export all the payments by their initial transaction date, whether or not they are deposited yet. Note that recent payments still may be returned.</target>
+            </trans-unit>
+          <trans-unit id="landlord_export.export_by_deposits.description_help">
+                <source>landlord_export.export_by_deposits.description_help</source>
+                <target>This will export all the payments by their estimated deposit date. Payments will have a "batch ID," or will be grouped by the batch that was deposited to your account, so that you can sum them up and reconcile against your bank </target>
             </trans-unit>
         </body>
     </file>

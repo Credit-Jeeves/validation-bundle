@@ -64,7 +64,7 @@ label.checkbox input {
 }
 
 #base_order_report_type .type-date {
-    margin-top: 20px;
+    margin-top: 70px;
     position: absolute;
     margin-left: 465px;
 }
@@ -90,10 +90,38 @@ element.style {
     font-size: 14px;
     display: block;
     position: absolute;
-    margin-top: 9px;
+    margin-top: 55px;
 }
 
 .fields-box {
     width: 350px;
     height: 10px;
+}
+#base_order_report_type {
+    clear: left;
+}
+
+#base_order_report_type_export_by_row {
+    display: block;
+    height: 37px;
+    width: 370px;
+}
+#base_order_report_type_export_by_row .checkbox {
+    margin: 0px;
+    width: 60px;
+    display: block;
+    float: left;
+    clear: none;
+    padding-left: 30px;
+    margin-left: 10px;
+}
+.info-message {
+    float: right;
+    margin-top: 16px;
+    position: absolute;
+    margin-left: 497px;
+}
+.help-radio {
+    display: block;
+    float: left;
 }

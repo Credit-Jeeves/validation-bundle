@@ -2,6 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
+use CreditJeeves\DataBundle\Entity\Order;
+use JMS\Serializer\SerializationContext;
+use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
@@ -113,6 +116,14 @@ class ResManClient implements ClientInterface
      */
     public function build()
     {
+    }
+
+    /**
+     * @return bool
+     */
+    public function canWorkWithBatches()
+    {
+        return true;
     }
 
     /**
@@ -282,25 +293,45 @@ class ResManClient implements ClientInterface
     /**
      * @param $residentTransactionsXml
      * @param string $externalPropertyId
-     * @param null $accountId
      * @return bool
      */
     public function addPaymentToBatch(
-        $residentTransactionsXml,
-        $externalPropertyId,
-        $accountId = null
+        Order $order,
+        $externalPropertyId
     ) {
         $method = 'AddPaymentToBatch';
         $this->debugMessage("Call ResMan method: {$method}");
-        $accountId = $accountId ?: $this->getSettings()->getAccountId();
-        $params = [
+        $residentTransactionsXml = $this->getResidentTransactionXml($order);
+        $accountId = $this->getSettings()->getAccountId();
+        $paramsToRequest = [
             'AccountID'  => strtolower($accountId),
             'PropertyID' => strtolower($externalPropertyId),
             'xml'        => $residentTransactionsXml,
         ];
 
-        $result = $this->sendRequest($method, $params);
+        $result = $this->sendRequest($method, $paramsToRequest);
 
         return ($result instanceof ResMan)? true : false;
+    }
+
+    /**
+     * @param Order $order
+     * @return string
+     */
+    protected function getResidentTransactionXml(Order $order)
+    {
+        $residentTransaction = new ResidentTransactions([$order]);
+
+        $context = SerializerXmlHelper::getSerializerContext(['ResMan'], true);
+
+        $residentTransactionsXml = $this->serializer->serialize(
+            $residentTransaction,
+            'xml',
+            $context
+        );
+
+        $residentTransactionsXml = SerializerXmlHelper::removeStandartHeaderXml($residentTransactionsXml);
+
+        return $residentTransactionsXml;
     }
 }

@@ -421,21 +421,11 @@ class AccountingController extends Controller
         return $response;
     }
 
-    /**
-     * @Route(
-     *     "/import/residents/resman",
-     *     name="accounting_import_residents_resman",
-     *     options={"expose"=true}
-     * )
-     */
-    public function getResidentsResMan()
+    protected function getBaseResidents()
     {
         $importFactory = $this->get('accounting.import.factory');
-        /** @var $mapping MappingResman */
         $mapping = $importFactory->getMapping();
-        /** @var $storage StorageResman */
         $storage = $importFactory->getStorage();
-        /** @var $propertyMappingManager PropertyMappingManager  */
         $propertyMappingManager = $this->get('property_mapping.manager');
         $propertyMapping = $propertyMappingManager->createPropertyMapping(
             $storage->getImportPropertyId(),
@@ -445,10 +435,39 @@ class AccountingController extends Controller
         $residents = $mapping->getResidents($propertyMapping->getExternalPropertyId());
         $result = $storage->saveToFile($residents);
 
+        if ($storage->isOnlyException()) {
+            $handler = $importFactory->getHandler();
+            $handler->updateMatchedContracts();
+        }
+
         $response = new JsonResponse();
         $response->setStatusCode(($result) ? 200 : 400);
 
         return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/import/residents/resman",
+     *     name="accounting_import_residents_resman",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getResidentsResMan()
+    {
+        return $this->getBaseResidents();
+    }
+
+    /**
+     * @Route(
+     *     "/import/residents/mri",
+     *     name="accounting_import_residents_mri",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getResidentsMri()
+    {
+        return $this->getBaseResidents();
     }
 
     /**

@@ -6,7 +6,10 @@ use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Forms\PaymentType;
+use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
@@ -66,7 +69,7 @@ class PaymentsController extends Controller
      *     description="Show payment details.",
      *     statusCodes={
      *         200="Returned when successful",
-     *         404="Payment Account not found",
+     *         404="Payment not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
      *     }
@@ -252,6 +255,51 @@ class PaymentsController extends Controller
         }
 
         throw new NotFoundHttpException('Payment not found');
+    }
+
+    /**
+     * @param int $id
+     *
+     * @ApiDoc(
+     *     resource=true,
+     *     section="Payments",
+     *     description="Delete a payment.",
+     *     statusCodes={
+     *         200="Returned when successful",
+     *         404="Payment not found",
+     *         500="Internal Server Error"
+     *     }
+     * )
+     * @Rest\Delete("/payments/{id}")
+     * @Rest\View(serializerGroups={"Base", "PaymentDetails"})
+     * @AttributeParam(
+     *     name="id",
+     *     encoder = "api.default_id_encoder"
+     * )
+     *
+     * @throws NotFoundHttpException
+     * @return bool
+     */
+    public function deletePaymentAction($id)
+    {
+        /** @var Payment $payment */
+        $payment = $this
+            ->getDoctrine()
+            ->getRepository('RjDataBundle:Payment')
+            ->findOneByIdForUser($id, $this->getUser());
+
+        if (!$payment) {
+            throw new NotFoundHttpException('Payment not found');
+        }
+        // Closes only active payments
+        if (PaymentStatus::ACTIVE == $payment->getStatus()) {
+            $em = $this->getDoctrine()->getManager();
+            $payment->setClosed($this, PaymentCloseReason::USER_CANCELLED);
+            $em->flush($payment);
+            return ['result' => true];
+        } else {
+            return ['result' => false, 'message' => 'Payment is already closed.'];
+        }
     }
 
     protected function processForm(Request $request, PaymentEntity $entity, $method = 'POST')

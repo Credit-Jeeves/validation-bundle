@@ -105,7 +105,16 @@ class ResidentBalanceSynchronizer
                 $residentTransactions = $residentClient->getResidentTransactions(
                     $propertyMapping->getExternalPropertyId()
                 );
-                $this->processResidentTransactions($residentTransactions, $holding, $property);
+                if ($residentTransactions) {
+                    $this->processResidentTransactions($residentTransactions, $holding, $property);
+                } else {
+                    $this->logMessage(sprintf(
+                        'ERROR: Could not load resident transactions for property %s of holding %s: %s',
+                        $propertyMapping->getExternalPropertyId(),
+                        $holding->getName(),
+                        $residentClient->getErrorMessage()
+                    ));
+                }
             }
             $this->em->flush();
             $this->em->clear();

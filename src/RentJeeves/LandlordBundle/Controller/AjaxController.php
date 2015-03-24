@@ -1012,7 +1012,12 @@ class AjaxController extends Controller
         $isSortAsc = $data['isSortAsc'];
         $searchCollum = $data['searchCollum'];
         $searchText = $data['searchText'];
-
+        $group = $this->getCurrentGroup();
+        if ($group->getGroupSettings()->getIsIntegrated()) {
+            $showCashPayments = filter_var($data['showCashPayments'], FILTER_VALIDATE_BOOLEAN);
+        } else {
+            $showCashPayments = true;
+        }
         $sortType = ($isSortAsc == 'true')? "ASC" : "DESC";
 
         $result = array();
@@ -1020,7 +1025,7 @@ class AjaxController extends Controller
         /** @var OrderRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
 
-        $total = $repo->countOrders($group, $searchCollum, $searchText);
+        $total = $repo->countOrders($group, $searchCollum, $searchText, $showCashPayments);
         $total = count($total);
 
         if ($total) {
@@ -1031,8 +1036,10 @@ class AjaxController extends Controller
                 $sortColumn,
                 $sortType,
                 $searchCollum,
-                $searchText
+                $searchText,
+                $showCashPayments
             );
+            /** @var Order $order */
             foreach ($orders as $order) {
                 $item = $order->getItem();
                 $items[] = $item;

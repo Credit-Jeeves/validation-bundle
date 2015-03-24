@@ -6,7 +6,11 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.require_version ">= 1.5.0"
 
-node_name = ENV["node_name"] ? ENV["node_name"] : "dev"
+if ! ENV["node_name"]
+    puts "ERROR: you must set 'node_name' in your environment"
+    exit 1
+end
+node_name = ENV["node_name"]
 public_ip = ENV["public_ip"] ? ENV["public_ip"] : "192.168.56.56"
 
 DB_ROOT_PASSWD = ENV["DB_ROOT_PASSWD"] ? ENV["DB_ROOT_PASSWD"] : "passw0rd"

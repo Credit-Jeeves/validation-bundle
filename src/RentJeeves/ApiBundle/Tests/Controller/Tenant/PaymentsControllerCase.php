@@ -5,6 +5,7 @@ namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 class PaymentsControllerCase extends BaseApiTestCase
 {
@@ -334,5 +335,37 @@ class PaymentsControllerCase extends BaseApiTestCase
         }
 
         $this->assertCount(0, array_diff($errorContent, $errorMessage), 'wrong count error');
+    }
+
+    /**
+     * @test
+     */
+    public function deletePayment()
+    {
+        $id = 1;
+        $this->setTenantEmail('tenant11@example.com');
+        $this->prepareClient();
+
+        /** @var PaymentRepository $repo */
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        /** @var PaymentEntity $result */
+        $payment = $repo->findOneByIdForUser($id, $this->getTenant());
+        $this->assertEquals(PaymentStatus::ACTIVE, $payment->getStatus());
+
+        $response = $this->deleteRequest($this->getIdEncoder()->encode($id));
+        $answer = $this->parseContent($response->getContent());
+        $this->assertResponse($response);
+
+        $this->assertEquals(true, $answer['result']);
+
+        $this->getEm()->refresh($payment);
+        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
+
+        $response = $this->deleteRequest($this->getIdEncoder()->encode($id));
+        $answer = $this->parseContent($response->getContent());
+        $this->assertResponse($response);
+
+        $this->assertEquals(false, $answer['result']);
+        $this->assertEquals('Payment is already closed.', $answer['message']);
     }
 }

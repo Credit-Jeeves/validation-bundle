@@ -10,7 +10,6 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(name="yardi_settings")
- * @ORM\HasLifecycleCallbacks
  */
 class YardiSettings extends Base implements SettingsInterface
 {

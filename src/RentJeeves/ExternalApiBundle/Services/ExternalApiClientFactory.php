@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
+use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
 
 /**
@@ -20,12 +21,14 @@ class ExternalApiClientFactory
 
     /**
      * @DI\InjectParams({
-     *     "resManClient" = @DI\Inject("resman.client")
+     *     "resManClient" = @DI\Inject("resman.client"),
+     *     "mriClient"    = @DI\Inject("mri.client")
      * })
      */
-    public function __construct(ResManClient $resManClient)
+    public function __construct(ResManClient $resManClient, MRIClient $mriClient)
     {
         $this->accountingServiceClientMap[ApiIntegrationType::RESMAN] = $resManClient;
+        $this->accountingServiceClientMap[ApiIntegrationType::MRI] = $mriClient;
     }
 
     /**

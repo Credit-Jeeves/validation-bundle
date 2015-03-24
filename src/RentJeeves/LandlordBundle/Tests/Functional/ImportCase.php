@@ -717,9 +717,7 @@ class ImportCase extends BaseTestCase
 
     protected function setPropertySecond()
     {
-        /**
-         * @var $em EntityManager
-         */
+        /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
             array(
@@ -2001,5 +1999,73 @@ class ImportCase extends BaseTestCase
 
         $this->assertCount(count($beforeWaiting) -1, $afterWaiting);
         $this->assertCount(count($beforeContracts)+1, $afterContracts);
+    }
+
+    /**
+     * @test
+     */
+    public function mriBaseImport()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var $landlord Landlord */
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
+        /** @var AccountingSettings $accountingSettings */
+        $accountingSettings = $landlord->getHolding()->getAccountingSettings();
+        $accountingSettings->setApiIntegration(ApiIntegrationType::MRI);
+        $em->flush($accountingSettings);
+        // We must make sure the data saved into DB, so we count before import and after
+        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
+        $this->assertCount(23, $contract);
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertCount(1, $contractWaiting);
+
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
+        $this->setPropertySecond();
+        $this->assertNotNull($source = $this->page->findAll('css', '.radio'));
+        $source[1]->click();
+        $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
+        $propertyId->setValue('500');
+        $submitImport->click();
+
+        $this->session->wait(
+            80000,
+            "$('table').is(':visible')"
+        );
+        $this->waitReviewAndPost();
+        for ($i = 0; $i <= 2; $i++) {
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+
+            if ($i === 0) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(2, $errorFields);
+                $errorFields[0]->setValue('06/01/2008');
+                $errorFields[1]->setValue('06/01/2008');
+            }
+
+            if ($i === 1 || $i === 2) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(3, $errorFields);
+                $errorFields[0]->setValue('06/01/2008');
+                $errorFields[1]->setValue('06/01/2008');
+                $errorFields[2]->setValue('06/01/2008');
+            }
+            $submitImportFile->click();
+            $this->waitReviewAndPost();
+        }
+
+        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
+        $this->assertCount(25, $contract);
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertCount(10, $contractWaiting);
     }
 }

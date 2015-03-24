@@ -5,6 +5,7 @@ namespace CreditJeeves\DataBundle\Tests\Entity;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\DataBundle\Entity\Landlord;
 use \DateTime;
@@ -90,7 +91,12 @@ class OrderRepositoryCase extends BaseTestCase
 
         /** @var OrderRepository $orderRepo */
         $orderRepo = $this->em->getRepository('DataBundle:Order');
-        $orders = $orderRepo->getOrdersForYardiGenesis($startDate, $endDate, $groupId);
+        $orders = $orderRepo->getOrdersForYardiGenesis(
+            $startDate,
+            $endDate,
+            $groupId,
+            ExportReport::EXPORT_BY_DEPOSITS
+        );
 
         $this->assertGreaterThan(0, count($orders), "The report generated no orders and is should have.");
 

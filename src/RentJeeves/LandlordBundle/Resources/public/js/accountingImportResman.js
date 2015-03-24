@@ -18,7 +18,7 @@ function accountingImportResman() {
     this.loadData = function(next) {
         if (self.isFinishUploadDataToServer() === false) {
             self.showSpinner(true);
-            self.loadDataMessage(Translator.trans('resman.import.message.download.contracts'));
+            self.loadDataMessage(Translator.trans('import.message.download.contracts'));
             jQuery.ajax({
                 url: Routing.generate('accounting_import_residents_resman'),
                 type: 'POST',

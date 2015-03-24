@@ -9,6 +9,7 @@ use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
 class HeartlandRepository extends EntityRepository
 {
@@ -67,7 +68,7 @@ class HeartlandRepository extends EntityRepository
      * @param $end
      * @return mixed
      */
-    public function getTransactionsForRentTrackReport($groups, $start, $end)
+    public function getTransactionsForRentTrackReport($groups, $start, $end, $exportBy)
     {
         $query = $this->createQueryBuilder('h');
 
@@ -80,29 +81,54 @@ class HeartlandRepository extends EntityRepository
         $query->leftJoin('unit.unitMapping', 'uMap');
         $query->innerJoin('t.group', 'g');
         $query->leftJoin('g.groupSettings', 'gs');
+        // order may be deposited and returned the same day, so we should count complete and reversal types
+        $query->where('o.status in (:statuses)');
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->andWhere(
+                '(o.status = :completeOrder AND h.status = :completeTransaction) OR
+                (o.status != :completeOrder AND h.status = :reversedTransaction)'
+            );
 
-        $query->where("h.depositDate BETWEEN :start AND :end");
-        $query->andWhere(
-            '(o.status = :completeOrder AND h.status = :completeTransaction) OR
-            (o.status != :completeOrder AND h.status = :reversedTransaction)'
-        );
-        $query->setParameter('start', $start);
-        $query->setParameter('end', $end);
-        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+            $query->andWhere('h.isSuccessful = 1 AND h.transactionId IS NOT NULL AND h.depositDate IS NOT NULL');
+            $query->andWhere("h.depositDate BETWEEN :start AND :end");
+            $query->setParameter(
+                'statuses',
+                [
+                    OrderStatus::COMPLETE,
+                    OrderStatus::REFUNDED,
+                    OrderStatus::RETURNED
+                ]
+            );
+        } else {
+            $query->andWhere(
+                '((o.status = :completeOrder OR o.status = :pendingOrder) AND h.status = :completeTransaction) OR
+                (o.status != :completeOrder AND h.status = :reversedTransaction)'
+            );
+            $query->setParameter('pendingOrder', OrderStatus::PENDING);
+            $query->andWhere("o.created_at BETWEEN :start AND :end");
+            $query->setParameter(
+                'statuses',
+                [
+                    OrderStatus::COMPLETE,
+                    OrderStatus::REFUNDED,
+                    OrderStatus::RETURNED,
+                    OrderStatus::PENDING
+                ]
+            );
+        }
+
         $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
         $query->setParameter('reversedTransaction', TransactionStatus::REVERSED);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
 
-        // order may be deposited and returned the same day, so we should count complete and reversal types
-        $query->andWhere('o.status in (:statuses)');
-        $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
+        $query->setParameter('start', $start);
+        $query->setParameter('end', $end);
 
         $query->andWhere('o.type in (:paymentTypes)');
         $query->setParameter('paymentTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
 
         $query->andWhere('g.id in (:groups)');
         $query->setParameter('groups', $this->getGroupIds($groups));
-
-        $query->andWhere('h.isSuccessful = 1 AND h.transactionId IS NOT NULL AND h.depositDate IS NOT NULL');
 
         $query->orderBy('h.createdAt', 'ASC');
 

@@ -327,7 +327,7 @@ class ExperianReportRecord
             $paidFor = $this->operation->getPaidFor();
             $paidAt = $this->operation->getCreatedAt();
             $interval = $paidFor->diff($paidAt)->format('%r%a');
-            if ($interval >= 6) {
+            if ($interval >= 30) {
                 return 'YES';
             }
         }

@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\ExternalApiBundle\Model\MRI\Error;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -303,7 +304,8 @@ class Order extends BaseOrder
      */
     public function getTenantExternalId()
     {
-        if ($residentMapping = $this->getContract()->getTenant()->getResidentsMapping()->first()) {
+        $holding = $this->getContract()->getHolding();
+        if ($residentMapping = $this->getContract()->getTenant()->getResidentForHolding($holding)) {
             return $residentMapping->getResidentId();
         }
 
@@ -962,5 +964,145 @@ class Order extends BaseOrder
         }
 
         return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("SiteID")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriSiteId()
+    {
+        return $this->getContract()->getHolding()->getMriSettings()->getSiteId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ChargeCode")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriChargeCode()
+    {
+        return $this->getContract()->getHolding()->getMriSettings()->getChargeCode();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("CashType")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriCashType()
+    {
+        return $this->getContract()->getHolding()->getMriSettings()->getCashType();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("SourceCode")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriSourceCode()
+    {
+        return $this->getContract()->getHolding()->getMriSettings()->getSourceCode();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaymentType")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriPaymentType()
+    {
+        return $this->getContract()->getHolding()->getMriSettings()->getPaymentType();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaymentAmount")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriPaymentAmount()
+    {
+        return $this->getTotalAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("CheckNumber")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriCheckNumber()
+    {
+        return $this->getCompleteTransaction()->getTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaymentInitiationDatetime")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriPaymentInitiationDatetime()
+    {
+        return $this->getCreatedAt()->format('Y-m-d\TH:i:s');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ResidentNameID")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriResidentNameID()
+    {
+        return $this->getTenantExternalId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PropertyID")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriPropertyID()
+    {
+        return $this->getPropertyPrimaryID();
     }
 }

@@ -92,6 +92,7 @@ sonata_admin:
                 - sonata.admin.contract_waiting
                 - sonata.admin.resident_mapping
                 - sonata.admin.property_mapping
+                - sonata.admin.unit_mapping
                 - sonata.admin.partners
 
 twig:

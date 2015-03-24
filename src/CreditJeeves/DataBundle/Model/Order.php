@@ -9,6 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
@@ -149,6 +150,15 @@ abstract class Order
      * @Serializer\Exclude
      */
     protected $sentOrder;
+
+    /**
+     * @ORM\Column(
+     *     type="PaymentProcessor",
+     *     name="payment_processor",
+     *     nullable=false
+     * )
+     */
+    protected $paymentProcessor = PaymentProcessor::HEARTLAND;
 
     public function __construct()
     {
@@ -490,5 +500,21 @@ abstract class Order
     public function getJobs()
     {
         return $this->jobs;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
+    }
+
+    /**
+     * @param string $paymentProcessor
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
     }
 }
