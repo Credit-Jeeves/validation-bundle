@@ -97,13 +97,14 @@ class ContractType extends AbstractType
                 'query_builder'     => function (EntityRepository $er) use ($groups) {
 
                     if ($this->group) {
-                        $query = $er->createQueryBuilder('p');
-                        $query->innerJoin('p.property_groups', 'g');
-                        $query->where('g.id = :groupId');
-                        $query->setParameter('groupId', $this->group->getId());
-                        return $query;
+                        return $er->createQueryBuilder('p')
+                            ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+                            ->innerJoin('p.property_groups', 'g')
+                            ->where('g.id = :groupId')
+                            ->setParameter('groupId', $this->group->getId())
+                            ->orderBy('sortField');
                     }
-                
+
                     if (!$groups) {
                         $query = $er->createQueryBuilder('p');
                         $query->where('p.id = :sero');
