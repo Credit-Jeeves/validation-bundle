@@ -638,6 +638,11 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
 
+        $this->assertNotNull($linkProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_link'));
+        $linkProperty->click();
+        $this->assertNotNull($optionProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_li_1'));
+        $optionProperty->click();
+
         $formFields = [
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name' => 'Sharamko',
