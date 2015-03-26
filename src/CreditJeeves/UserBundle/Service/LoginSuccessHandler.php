@@ -45,7 +45,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         $user = $token->getUser();
         $sType = $user->getType();
 
-        $url = $request->headers->get('referer');
+        $url = $this->getRefererExceptLogin($request);
 
         switch ($sType) {
             case UserType::APPLICANT:
@@ -98,6 +98,23 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         $contracts = $user->getHolding()->getContracts();
         if (count($contracts) == 1 && ContractStatus::PENDING == $contracts->last()->getStatus()) {
             $url = $this->getRouter()->generate('landlord_tenants');
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string|null
+     */
+    protected function getRefererExceptLogin(Request $request)
+    {
+        $url = $request->headers->get('referer');
+        $loginUrl = $this->getRouter()->generate('fos_user_security_login');
+
+        if (false == strstr($loginUrl, $url)) {
+            $url = null;
         }
 
         return $url;
