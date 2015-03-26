@@ -2,10 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormEvent;
@@ -15,27 +15,23 @@ class ContractType extends AbstractType
 {
 
     const MONTH_TO_MONTH = 'monthToMonth';
-
     const FINISH_AT = 'finishAt';
 
-    protected $user;
-
+    /**
+     * @var Group $group
+     */
     protected $group;
 
-    public function __construct($user, $group = null)
+    public function __construct(Group $group)
     {
-        $this->user = $user;
         $this->group = $group;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($isAdmin = $this->user->getIsSuperAdmin()) {
-            $holding = $this->user->getHolding();
-            $groups = $holding->getGroups() ? $holding->getGroups() : null;
-        } else {
-            $groups = $this->user->getAgentGroups() ? $this->user->getAgentGroups() : null;
-        }
         $group = $this->group;
 
         $builder->add('rent', 'text', array('error_bubbling' => true));
@@ -92,36 +88,15 @@ class ContractType extends AbstractType
             'property',
             'entity',
             array(
-                'class'             => 'RjDataBundle:Property',
-                'error_bubbling'    => true,
-                'query_builder'     => function (EntityRepository $er) use ($groups) {
-
-                    if ($this->group) {
-                        $query = $er->createQueryBuilder('p');
-                        $query->innerJoin('p.property_groups', 'g');
-                        $query->where('g.id = :groupId');
-                        $query->setParameter('groupId', $this->group->getId());
-                        return $query;
-                    }
-                
-                    if (!$groups) {
-                        $query = $er->createQueryBuilder('p');
-                        $query->where('p.id = :sero');
-                        $query->setParameter('sero', 0);
-                        return $query;
-                    }
-
-                    $ids = array();
-                    foreach ($groups as $group) {
-                        $ids[$group->getId()] = $group->getId();
-                    }
-                    $groupsIds = implode("','", $ids);
-                    $query = $er->createQueryBuilder('p');
-                    $query->innerJoin('p.property_groups', 'g');
-                    $query->where('g.id IN (:groupsIds)');
-                    $query->setParameter('groupsIds', $groupsIds);
-
-                    return $query;
+                'class' => 'RjDataBundle:Property',
+                'error_bubbling' => true,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')
+                        ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+                        ->innerJoin('p.property_groups', 'g')
+                        ->where('g.id = :groupId')
+                        ->setParameter('groupId', $this->group->getId())
+                        ->orderBy('sortField');
                 }
             )
         );
@@ -170,6 +145,9 @@ class ContractType extends AbstractType
         $form->add('unit', 'entity', $formOptions);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
@@ -180,6 +158,9 @@ class ContractType extends AbstractType
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'rentjeeves_publicbundle_invitetype';
