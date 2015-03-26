@@ -310,8 +310,7 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_tenanttype_tos'                       => true,
             )
         );
-        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
-        $thisIsMyRental->click();
+        
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
     }
