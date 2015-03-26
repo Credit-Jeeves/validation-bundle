@@ -129,8 +129,8 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_type'      => PaymentTypeEnum::ONE_TIME,
-                'rentjeeves_checkoutbundle_paymenttype_start_date'=> $today->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => $today->format('n/j/Y'),
             )
         );
 
@@ -184,8 +184,8 @@ class PayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
-                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
             )
         );
         $this->page->pressButton('pay_popup.step.next');
@@ -274,23 +274,11 @@ class PayCase extends BaseTestCase
             $this->updateGroupSettings($payBalanceOnly);
         }
         $this->login('tenant11@example.com', 'pass');
-        $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
-        $this->assertCount(4, $payButtons, 'Wrong number of contracts');
-        $payButtons[2]->click();
-        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
-        $this->assertNotNull($payPopup = $payPopup->getParent());
-
-        $this->assertNotNull(
-            $propertyAddress = $this->page->find(
-                'css',
-                '#rentjeeves_checkoutbundle_paymenttype_property_address'
-            )
-        );
-        $this->assertEquals('770 Broadway, Manhattan, #2-a New York, NY 10003 *required', $propertyAddress->getText());
-        $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
-        $closeButton->click();
 
         $this->page->pressButton($this->payButtonName);
+
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
 
         if ($payBalanceOnly) {
             $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentbalanceonlytype');
@@ -314,10 +302,10 @@ class PayCase extends BaseTestCase
                 array(
                     'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                     'rentjeeves_checkoutbundle_paymenttype_amount' => '0',
-                    'rentjeeves_checkoutbundle_paymenttype_type'    => PaymentTypeEnum::RECURRING,
-                    'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
-                    'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
-                    'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1
+                    'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                    'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                    'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                    'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
                 )
             );
         }
@@ -326,8 +314,8 @@ class PayCase extends BaseTestCase
                 $form,
                 array(
                     'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
-                    'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
-                    'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                    'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                    'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
                 )
             );
             $this->assertNotNull($informationBox = $payPopup->find('css', '.information-box'));
@@ -418,7 +406,7 @@ class PayCase extends BaseTestCase
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
-            $this->timeout+ 85000, // local need more time for passed test
+            $this->timeout + 85000, // local need more time for passed test
             "!jQuery('#id-source-step').is(':visible')"
         );
 
@@ -452,7 +440,7 @@ class PayCase extends BaseTestCase
             $this->page->clickLink('tabs.summary');
 
             $this->session->wait(
-                $this->timeout+5000,
+                $this->timeout + 5000,
                 "jQuery('#component-card-utilization-box:visible').length"
             );
             $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));
@@ -466,7 +454,7 @@ class PayCase extends BaseTestCase
             $payment = $em->getRepository('RjDataBundle:Payment')->findBy(
                 array(
                     'type' => PaymentType::ONE_TIME,
-                    'total'=> 1000.00,
+                    'total' => 1000.00,
                 )
             );
             $this->assertEquals(1, count($payment));
@@ -524,7 +512,7 @@ class PayCase extends BaseTestCase
         $this->logout();
     }
 
-    protected function notSkipVerification($summary)
+    protected function notSkipVerification($summary, $withUnanswered = false)
     {
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
         $this->assertNotNull($payPopup = $payPopup->getParent());
@@ -588,8 +576,27 @@ class PayCase extends BaseTestCase
         );
 
         $form = $this->page->find('css', '#questions');
+        $this->assertNotNull($form);
 
         if ($summary) {
+            if ($withUnanswered) {
+                // not set all fields
+                $this->fillForm(
+                    $form,
+                    array(
+                        'questions_OutWalletAnswer1_0' => true,
+                        'questions_OutWalletAnswer2_1' => true,
+                        'questions_OutWalletAnswer3_2' => true,
+                    )
+                );
+
+                $this->page->pressButton('pay_popup.step.next');
+
+                $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+                $this->assertEquals('pidkiq.error.unanswered_questions', $errors[0]->getText());
+
+                return;
+            }
             //Fill correct answer
             $this->fillForm(
                 $form,
@@ -688,8 +695,8 @@ class PayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
                 'rentjeeves_checkoutbundle_paymenttype_amountOther' => -10,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => $dueDate,
-                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
                 'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
             )
         );
@@ -705,14 +712,102 @@ class PayCase extends BaseTestCase
             array(
                 'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '100',
-                'rentjeeves_checkoutbundle_paymenttype_amountOther' =>  10,
+                'rentjeeves_checkoutbundle_paymenttype_amountOther' => 10,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => $dueDate,
-                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
                 'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
             )
         );
         $this->page->pressButton('pay_popup.step.next');
         $this->assertNotNull($this->page->find('css', '.checkout-plus'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowErrorIfThereAreUnansweredQuestions()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton($this->payButtonName);
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $dueDate = cal_days_in_month(CAL_GREGORIAN, 2, date('Y'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            )
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $this->page->clickLink('payment.account.new');
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumberAgain' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
+            )
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 85000, // local need more time for passed test
+            "!jQuery('#id-source-step').is(':visible')"
+        );
+
+        $this->notSkipVerification(true, true);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowRightAddress()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
+        $this->assertCount(4, $payButtons, 'Wrong number of contracts');
+
+        $payButtons[2]->click();
+
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+        $this->assertNotNull(
+            $propertyAddress = $this->page->find(
+                'css',
+                '#rentjeeves_checkoutbundle_paymenttype_property_address'
+            )
+        );
+        $this->assertEquals('770 Broadway, Manhattan, #2-a New York, NY 10003 *required', $propertyAddress->getText());
+        $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
     }
 }
