@@ -36,6 +36,7 @@ security:
                 failure_handler: user.service.login_failure_handler
                 failure_path:  null
                 failure_forward: false
+                use_forward: true
             logout:       true
             anonymous:    true
 #            Commented due to this ticket https://credit.atlassian.net/browse/RT-1013
