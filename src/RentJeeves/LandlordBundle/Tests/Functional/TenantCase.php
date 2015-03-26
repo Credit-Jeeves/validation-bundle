@@ -148,7 +148,7 @@ class TenantCase extends BaseTestCase
 
         $this->page->pressButton('edit.Info');
         $this->session->wait(
-            $this->timeout+3000,
+            $this->timeout + 3000,
             "$('#unit-edit').val() > 0 && $('#unit-edit').is(':visible') && $('#amount-edit').is(':visible')"
         );
         $this->session->evaluateScript(
@@ -201,7 +201,7 @@ class TenantCase extends BaseTestCase
 
         $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
         $this->assertNotNull($future);
-        $future[count($future)-1]->click();
+        $future[count($future) - 1]->click();
         // end select finish date
 
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
@@ -282,7 +282,7 @@ class TenantCase extends BaseTestCase
 
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
             array(
-                'rent'      => 7677.00
+                'rent' => 7677.00
             )
         );
         $this->assertCount(1, $contracts, 'Wrong count contract');
@@ -339,7 +339,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout+2000, "$('#contracts-block .properties-table').length > 0");
+        $this->session->wait($this->timeout + 2000, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count of tenants');
 
@@ -370,7 +370,7 @@ class TenantCase extends BaseTestCase
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
             array(
                 'uncollectedBalance' => 223.21,
-                'status'             => 'finished',
+                'status' => 'finished',
             )
         );
         $this->assertCount(1, $contracts, 'Wrong count contract');
@@ -438,10 +438,7 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('invite.tenant');
         $this->session->wait(3500, "false"); // wait refresh page
 
-        $this->assertNotNull($linkProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_link'));
-        $linkProperty->click();
-        $this->assertNotNull($optionProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_li_1'));
-        $optionProperty->click();
+        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property','1');
 
         $formField = array(
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
@@ -488,7 +485,7 @@ class TenantCase extends BaseTestCase
 
         $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
         $this->assertNotNull($future);
-        $future[count($future)-1]->click();
+        $future[count($future) - 1]->click();
 
         $this->page->pressButton('invite.tenant');
 
@@ -522,9 +519,9 @@ class TenantCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_tenanttype_password_Password'          => 'pass',
-                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'   => 'pass',
-                'rentjeeves_publicbundle_tenanttype_tos'                        => true,
+                'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos' => true,
             )
         );
         $form->pressButton('continue');
@@ -572,7 +569,7 @@ class TenantCase extends BaseTestCase
         $close->click();
 
         $this->page->clickLink('tabs.summary');
-        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
+        $this->session->wait($this->timeout + 5000, "typeof $ !== undefined");
         $this->assertNotNull(
             $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
         );
@@ -584,10 +581,10 @@ class TenantCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_street'  => 'Street',
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_city'    => 'City',
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_area'    => 'CA',
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_zip'     => '90210',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_street' => 'Street',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_city' => 'City',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_area' => 'CA',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_zip' => '90210',
             )
         );
         $this->page->pressButton('pay_popup.step.next');
@@ -604,7 +601,7 @@ class TenantCase extends BaseTestCase
         );
         $this->page->pressButton('pay_popup.step.3');
         $this->assertNotNull($loading = $this->page->find('css', '.loading'));
-        $this->session->wait($this->timeout+5000, "window.location.pathname.match('\/summary') === null");
+        $this->session->wait($this->timeout + 5000, "window.location.pathname.match('\/summary') === null");
         $em->refresh($contract);
         $this->assertNotNull($contract->getTransUnionStartAt());
         $this->assertTrue($contract->getReportToTransUnion());
@@ -638,10 +635,7 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
 
-        $this->assertNotNull($linkProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_link'));
-        $linkProperty->click();
-        $this->assertNotNull($optionProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_li_1'));
-        $optionProperty->click();
+        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property', '1');
 
         $formFields = [
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
@@ -701,7 +695,6 @@ class TenantCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_amount'      => '0',
                 'rentjeeves_checkoutbundle_paymenttype_type'        => PaymentTypeEnum::RECURRING,
                 'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '28',
                 'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
@@ -738,7 +731,7 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
-            $this->timeout+ 85000, // local need more time for passed test
+            $this->timeout + 85000, // local need more time for passed test
             "!jQuery('#id-source-step').is(':visible')"
         );
 
@@ -833,10 +826,7 @@ class TenantCase extends BaseTestCase
         $errorCount = $isIntegrated ? 5 : 4;
         $this->assertCount($errorCount, $errorList, 'Wrong number of errors');
 
-        $this->assertNotNull($linkProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_link'));
-        $linkProperty->click();
-        $this->assertNotNull($optionProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_li_1'));
-        $optionProperty->click();
+        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property', '1');
 
         $formField = [
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
@@ -872,7 +862,7 @@ class TenantCase extends BaseTestCase
 
         $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
         $this->assertNotNull($future);
-        $future[count($future)-1]->click();
+        $future[count($future) - 1]->click();
 
         $this->fillForm(
             $form,
@@ -958,7 +948,7 @@ class TenantCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'landlord1@example.com'
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email' => 'landlord1@example.com'
             )
         );
         $this->session->wait($this->timeout, "$('#userExistMessageLanlord').is(':visible')");
@@ -1026,10 +1016,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
         $this->assertCount(1, $errorList, 'Wrong number of errors');
 
-        $this->assertNotNull($linkProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_link'));
-        $linkProperty->click();
-        $this->assertNotNull($optionProperty = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_li_14'));
-        $optionProperty->click();
+        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property', '1');
 
         $formField = array(
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
@@ -1062,7 +1049,7 @@ class TenantCase extends BaseTestCase
 
         $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
         $this->assertNotNull($future);
-        $future[count($future)-1]->click();
+        $future[count($future) - 1]->click();
 
         $this->page->pressButton('invite.tenant');
         $this->logout();
@@ -1111,7 +1098,7 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull($review = $this->page->find('css', 'a.edit'));
         $review->click();
-        
+
         $this->page->clickLink('revoke.inv');
         $this->page->pressButton('yes.revoke.inv');
 
