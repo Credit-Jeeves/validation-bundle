@@ -438,7 +438,7 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('invite.tenant');
         $this->session->wait(3500, "false"); // wait refresh page
 
-        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property','1');
+        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property', '1');
 
         $formField = array(
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
