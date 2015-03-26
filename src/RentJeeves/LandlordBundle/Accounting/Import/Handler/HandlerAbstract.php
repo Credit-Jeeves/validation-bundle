@@ -670,7 +670,8 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->currentImportModel->setUniqueKeyException($uniqueKeyException);
         $this->exceptionCatcher->handleException($exception);
         $messageForLogging = sprintf(
-            'Exception message: %s, in File: %s, In Line: %s',
+            'Exception %s: %s, in File: %s, In Line: %s',
+            $uniqueKeyException,
             $e->getMessage(),
             $e->getFile(),
             $e->getLine()
