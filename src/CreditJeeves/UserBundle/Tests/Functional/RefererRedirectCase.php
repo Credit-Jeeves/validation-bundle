@@ -50,5 +50,4 @@ class RefererRedirectCase extends BaseTestCase
 
         $this->assertEquals($this->getUrl() . 'landlord/', $this->session->getCurrentUrl());
     }
-
 }

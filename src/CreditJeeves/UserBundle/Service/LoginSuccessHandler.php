@@ -35,7 +35,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     }
 
     /**
-     * @param Request        $request
+     * @param Request $request
      * @param TokenInterface $token
      *
      * @return RedirectResponse
@@ -127,5 +127,4 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     {
         return $this->container->get('router');
     }
-
 }
