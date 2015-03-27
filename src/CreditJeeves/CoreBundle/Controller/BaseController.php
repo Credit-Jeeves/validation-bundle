@@ -23,4 +23,12 @@ class BaseController extends Controller
     {
         return $this->get('doctrine')->getManager();
     }
+
+    /**
+     * @return \Symfony\Component\Translation\IdentityTranslator
+     */
+    protected function getTranslator()
+    {
+        return $this->get('translator');
+    }
 }

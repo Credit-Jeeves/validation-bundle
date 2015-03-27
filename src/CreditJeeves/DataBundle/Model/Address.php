@@ -276,14 +276,12 @@ abstract class Address
      *     }
      * )
      *
-     * @var ArrayCollection
      */
     protected $paymentAccounts;
 
     public function __construct()
     {
         $this->paymentAccounts = new ArrayCollection();
-        $this->deletedAt = null;
     }
 
     /**

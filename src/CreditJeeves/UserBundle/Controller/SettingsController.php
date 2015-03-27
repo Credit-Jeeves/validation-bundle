@@ -10,14 +10,11 @@ use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\AddressRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\UserBundle\Form\Type\UserAddressType;
-use CreditJeeves\UserBundle\Security\Voter\AddressVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SettingsController extends BaseController
 {
@@ -84,6 +81,7 @@ class SettingsController extends BaseController
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'contact.information.update');
         }
+
         return [
             'form' => $form->createView()
         ];
@@ -111,9 +109,8 @@ class SettingsController extends BaseController
 
         return array(
             'sEmail' => $sEmail,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         );
-
     }
 
     /**
@@ -184,7 +181,7 @@ class SettingsController extends BaseController
             $address = $this->getDoctrine()->getRepository('DataBundle:Address')->findOneBy(
                 [
                     'id' => $id,
-                    'user' => $user->getId()
+                    'user' => $user->getId(),
                 ]
             );
 
@@ -193,7 +190,6 @@ class SettingsController extends BaseController
             }
 
             $headTitle = 'settings.address.head.edit';
-
         } else {
             $address = new Address();
             $address->setUser($user);
@@ -229,7 +225,6 @@ class SettingsController extends BaseController
 
     /**
      * @Route("/address-delete/{id}", name="user_address_delete", options={"expose"=true})
-     * @ParamConverter("address", class="CreditJeeves\DataBundle\Entity\Address")
      *
      * @param Address $address
      *
@@ -237,23 +232,25 @@ class SettingsController extends BaseController
      */
     public function addressDeleteAction(Address $address)
     {
-        if (false === $this->getSecurityContext()->isGranted(AddressVoter::DELETE, $address)) {
-            if ($address->getIsDefault() === true) {
-                $this->get('session')->getFlashBag()->add(
-                    'error',
-                    'You can not delete the default address. Set up another address as default.'
-                );
-            } elseif (false != $paymentAccount = $this->getPaymentAccountRepository()->findOneBy(['address' => $address])) {
-                    $this->get('session')->getFlashBag()->add(
-                    'error',
-                    sprintf(
-                        'Sorry, this address is used by the %s payment source. You must delete the payment source first.',
-                        $paymentAccount->getName()
-                    )
-                );
-            } else {
-                throw new AccessDeniedException();
-            }
+        if ($address->getUser() !== $this->getUser()) {
+            throw $this->createNotFoundException('This item does not exist.');
+        }
+
+        if ($address->getIsDefault() === true) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                $this->getTranslator()->trans('settings.address.delete.error.default')
+            );
+
+            return $this->redirect($this->generateUrl('user_addresses'));
+        } elseif (false != $paymentAccount = $this->getPaymentAccountRepository()->findOneBy(['address' => $address])) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                $this->getTranslator()->trans(
+                    'settings.address.delete.error.has_active_pa',
+                    ['%PAYMENT%' => $paymentAccount->getName()]
+                )
+            );
 
             return $this->redirect($this->generateUrl('user_addresses'));
         }
@@ -261,7 +258,10 @@ class SettingsController extends BaseController
         $this->getEntityManager()->remove($address);
         $this->getEntityManager()->flush($address);
 
-        $this->get('session')->getFlashBag()->add('notice', 'The address was deleted successfully.');
+        $this->get('session')->getFlashBag()->add(
+            'notice',
+            $this->getTranslator()->trans('settings.address.delete.success')
+        );
 
         return $this->redirect($this->generateUrl('user_addresses'));
     }

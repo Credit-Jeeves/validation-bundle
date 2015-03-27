@@ -784,6 +784,18 @@
                 <source>settings.address.head.edit</source>
                 <target>Edit address</target>
             </trans-unit>
+            <trans-unit id="settings.address.delete.error.default">
+                <source>settings.address.delete.error.default</source>
+                <target>You can not delete the default address. Set up another address as default.</target>
+            </trans-unit>
+            <trans-unit id="settings.address.delete.error.has_active_pa">
+                <source>settings.address.delete.error.has_active_pa</source>
+                <target>Sorry, this address is used by the %PAYMENT% payment source. You must delete the payment source first.</target>
+            </trans-unit>
+            <trans-unit id="settings.address.delete.success">
+                <source>settings.address.delete.success</source>
+                <target>The address was deleted successfully.</target>
+            </trans-unit>
 
             <trans-unit id="settings.address.form.street">
                 <source>settings.address.form.street</source>
