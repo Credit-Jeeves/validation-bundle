@@ -5,18 +5,21 @@ use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
 use CreditJeeves\ApplicantBundle\Form\Type\ContactType;
 use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
 use CreditJeeves\ApplicantBundle\Form\Type\RemoveType;
-use CreditJeeves\CoreBundle\Controller\ApplicantController;
+use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\AddressRepository;
 use CreditJeeves\DataBundle\Entity\User;
-use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\UserBundle\Form\Type\UserAddressType;
+use CreditJeeves\UserBundle\Security\Voter\AddressVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-class SettingsController extends Controller
+class SettingsController extends BaseController
 {
     /**
      * @Route("/password", name="user_password")
@@ -141,7 +144,7 @@ class SettingsController extends Controller
 
         return array(
             'sEmail' => $sEmail,
-            'form'   => $form->createView()
+            'form' => $form->createView()
         );
     }
 
@@ -225,44 +228,49 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route(
-     *     "/address-delete/{id}",
-     *     name="user_address_delete",
-     *     requirements={"id" = "\d+"},
-     *     options={"expose"=true}
-     * )
+     * @Route("/address-delete/{id}", name="user_address_delete", options={"expose"=true})
+     * @ParamConverter("address", class="CreditJeeves\DataBundle\Entity\Address")
+     *
+     * @param Address $address
+     *
+     * @return RedirectResponse
      */
-    public function addressDeleteAction($id)
+    public function addressDeleteAction(Address $address)
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        /** @var Address $address */
-        $address = $this->getDoctrine()->getRepository('DataBundle:Address')->findOneBy(
-            [
-                'id' => $id,
-                'user' => $user->getId()
-            ]
-        );
-
-        if (empty($address)) {
-            throw $this->createNotFoundException('This item does not exist.');
-        }
-
-        if ($address->getIsDefault()) {
-            $this->get('session')->getFlashBag()->add(
-                'notice',
-                'You can not delete the default address. Set up another address as default.'
-            );
+        if (false === $this->getSecurityContext()->isGranted(AddressVoter::DELETE, $address)) {
+            if ($address->getIsDefault() === true) {
+                $this->get('session')->getFlashBag()->add(
+                    'error',
+                    'You can not delete the default address. Set up another address as default.'
+                );
+            } elseif (false != $paymentAccount = $this->getPaymentAccountRepository()->findOneBy(['address' => $address])) {
+                    $this->get('session')->getFlashBag()->add(
+                    'error',
+                    sprintf(
+                        'Sorry, this address is used by the %s payment source. You must delete the payment source first.',
+                        $paymentAccount->getName()
+                    )
+                );
+            } else {
+                throw new AccessDeniedException();
+            }
 
             return $this->redirect($this->generateUrl('user_addresses'));
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($address);
-        $em->flush();
+        $this->getEntityManager()->remove($address);
+        $this->getEntityManager()->flush($address);
 
         $this->get('session')->getFlashBag()->add('notice', 'The address was deleted successfully.');
 
         return $this->redirect($this->generateUrl('user_addresses'));
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\PaymentAccountRepository
+     */
+    protected function getPaymentAccountRepository()
+    {
+        return $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount');
     }
 }

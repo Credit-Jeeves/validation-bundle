@@ -5,6 +5,7 @@ use CreditJeeves\CoreBundle\Type\Encrypt;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -259,6 +260,13 @@ abstract class Address
     protected $updatedAt;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
+     */
+    protected $deletedAt;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
      *     mappedBy="address",
@@ -275,6 +283,7 @@ abstract class Address
     public function __construct()
     {
         $this->paymentAccounts = new ArrayCollection();
+        $this->deletedAt = null;
     }
 
     /**
@@ -584,5 +593,29 @@ abstract class Address
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param \DateTime $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return ArrayCollection|PaymentAccount[]
+     */
+    public function getPaymentAccounts()
+    {
+        return $this->paymentAccounts;
     }
 }
