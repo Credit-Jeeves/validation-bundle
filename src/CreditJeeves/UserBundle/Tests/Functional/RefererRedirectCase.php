@@ -25,6 +25,8 @@ class RefererRedirectCase extends BaseTestCase
         $this->page->pressButton('_submit');
 
         $this->assertEquals($this->getUrl() . 'sources/', $this->session->getCurrentUrl());
+
+        $this->logout();
     }
 
     /**
@@ -39,7 +41,7 @@ class RefererRedirectCase extends BaseTestCase
         $this->load(true);
 
         $this->session->visit($this->getUrl() . 'sources/');
-        $this->assertNotNull($mainEl = $this->page->find('css', '#login_form'), 'Login form does not found');
+        $this->assertNotNull($mainEl = $this->page->find('css', '#login_form'), 'Login form is not found');
         $this->assertNotNull($usernameEl = $this->page->find('css', '#username'));
         $usernameEl->setValue($user);
         $this->assertNotNull($passwordEl = $this->page->find('css', '#password'));
