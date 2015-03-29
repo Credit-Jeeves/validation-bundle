@@ -27,13 +27,19 @@
 
 
 <script>
-
+    $(document).ready(function(){
+        h=$.mobile.getScreenHeight();
+        h-=60;
+    $(".ui-content").css('min-height',h+'px');
+    })
 
     var contractsJson={{ contractsJson | raw }};
     var paidForArr={{ paidForArr | serialize('json') | raw }};
 
 
     function setupPayForm(id) {
+
+        $(".fields-box").css('padding-bottom','10px')
 
         $("#backToContract").href="contract"+id
 
@@ -46,13 +52,14 @@
                 for(j=0;j<contract.groupSetting.dueDays.length;j++){
                     a.push([-1,-1,contract.groupSetting.dueDays[j]])
                 }
-                alert(a)
 
                 $('#rentjeeves_checkoutbundle_paymenttype_start_date').datebox({
                     mode: "calbox",
                     afterToday: true,
                     blackDatesRec:[a],
                     defaultValue: new Date(),
+                    useFocus :true,
+                    useButton:false
 
 
                 })
@@ -82,6 +89,20 @@
                 $("#payTo").html(contract.payToName);
                 $("#contractAddress").html(contract.property.number+" "+contract.property.street+", "+contract.property.district+" "+contract.unit.name)
 
+                $("#rentjeeves_checkoutbundle_paymenttype_dueDate").html("")
+                for (i = 1; i < 32; i++) {
+                    a = "";
+                    if(contract.payment){
+                        if (i == contract.payment.dueDate) {
+                            a = " selected"
+                        }
+                    }
+                    $("#rentjeeves_checkoutbundle_paymenttype_dueDate").append("<option" + a + ">" + i + "</option>")
+                }
+
+                //$("#rentjeeves_checkoutbundle_paymenttype_dueDate").selectmenu("refresh")
+
+
                 if(contract.payment) {
 
 
@@ -96,13 +117,6 @@
                     }
                     $("#rentjeeves_checkoutbundle_paymenttype_type").selectmenu("refresh")
 
-                    for (i = 1; i < 32; i++) {
-                        a = "";
-                        if (i == contract.payment.dueDate) {
-                            a = " selected"
-                        }
-                        $("#rentjeeves_checkoutbundle_paymenttype_dueDate").append("<option" + a + ">" + i + "</option>")
-                    }
 
                     $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(contract.payment.startMonth).selectmenu("refresh");
                     $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(contract.payment.startYear).selectmenu("refresh");
@@ -159,9 +173,9 @@
                 <h1 class="ui-title" role="heading" aria-level="1" style="background: transparent;"><img style="width: 100%;" src="/bundles/rjcore/Images/mobile/home-logo.png"></h1>
             </div>
 
-            <div class="ui-content" role="main" style='background-image: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png);'>
+            <div class="ui-content" role="main" style='background-image: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png); background-size: cover;'>
 
-            <div style="color: white; font-size: 18pt; font-weight: normal;">Current Payments</div>
+            <div style="color: white; font-size: 18pt; font-weight: normal; text-shadow: none;">Current Payments</div>
                 {#
                 <a href="#" class="ui-btn-right ui-btn ui-icon-plus ui-btn-icon-life" data-role="button" role="button"></a>
 
@@ -181,7 +195,7 @@
             <div onclick="$('a{{ contract.id }}').click()" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
                 <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
                 <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a></a>
-                            <b style="font-size: 16;">{{ contract.full_address [:25] }}</b>
+                            <b style="font-size: 16;">{{ contract.full_address|length > 25 ? contract.full_address|slice(0, 25) ~ '...' : contract.full_address  }}</b>
                         <br>
                             <span style="font-size: 14;">{{ contract.rent }}</span>
                     <br>
@@ -206,10 +220,10 @@
                     {% endif %}
                 </div>
 
-                <div class="ui-content" role="main">
+                <div class="ui-content" role="main" style="margin-left: 34px; padding-right: 33px;">
                 {% if contract.status != 'deleted' %}
 
-                    <div style="float:left;"><i class="fa fa-home fa-lg"></i></div>
+                    <div style="position: absolute;left: 20px;top: 61px;"><i class="fa fa-home fa-lg"></i></div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt; float: right;"><b>{{ contract.full_address }}</b></div>
 
                     <br><br>
@@ -241,9 +255,9 @@
                         {% endif %}
                     </div>
 
-                    <br><br>
+                    <br>
 
-                    <div style="font-family: PT Sans Caption; font-size: 14pt; font-weight: bold;">
+                    <div style="font-family: PT Sans Caption; font-size: 10pt; font-weight: bold;">
                     Due Next: {{ contract.payment_next }} {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
 
 

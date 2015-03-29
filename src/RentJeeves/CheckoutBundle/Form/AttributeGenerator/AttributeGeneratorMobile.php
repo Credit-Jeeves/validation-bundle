@@ -56,15 +56,20 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
 
     function startDateAttrs(){
         return array_merge(
-            parent::idAttrs(),
-            array('data-role'=>'datebox','data-options'=>"{'mode':'calbox'}")
+            parent::startDateAttrs(),
+            array('data-role'=>'datebox','data-options'=>"{'mode':'calbox','useFocus':'true','useButton':'false'}",'onchange'=>"$('#dateConfirmed').popup();$('#dateConfirmed').popup('open');$('#selectedDate').html(this.value)")
         );
     }
 
     function endsAttrs(){
-        return array_merge(parent::idAttrs(),array(
+        return array_merge(parent::endsAttrs(),array(
            'onchange'=>'if(this.value!="on"){whenCancelled(false)}else{whenCancelled(true)};'
         ));
     }
 
+    function frequencyAttrs(){
+        return array_merge(parent::frequencyAttrs(),array(
+            'onchange'=>'if(this.value!="monthly"){freqHide(false)}else{freqHide(true)};'
+        ));
+    }
 }

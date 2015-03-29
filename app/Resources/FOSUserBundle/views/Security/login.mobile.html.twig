@@ -10,35 +10,41 @@
 {% endblock %}
 
 {% block fos_user_content %}
-    <div data-role="page" style="background-image: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png); text-align: center;">
+    <div data-role="page" style="background-image: url(/bundles/rjcore/Images/mobile/home-bgnd.png); background-size: cover; text-align: center;">
 
             <img src="/bundles/rjcore/Images/mobile/home-logo.png" style="margin-top: 30px;margin-bottom: 30px;">
 
-            {#mobile login view --#}
             <font color="red">
             {% for flashMessage in app.session.flashbag.get('notice') %}
                 <div class="flash-notice">
                     {{ flashMessage }}
                 </div>
             {% endfor %}
+            </font>
+
+
             {% if app.request.attributes.get('defenseMessage') %}
-                <div class="row-20"></div>
-                <div class="login-error">
+                <div class="login-error"><i class="fa fa-warning" style="color: white;font-size: 21pt;"></i>
                     {{ app.request.attributes.get('defenseMessage') }}
                 </div>
             {% endif %}
             {% for flashMessage in app.session.flashbag.get('error') %}
-                <div class="row-20"></div>
-                <div class="login-error">
+                <div class="login-error"><i class="fa fa-warning" style="color: white;font-size: 21pt;"></i>
                     {{ flashMessage|trans }}
                 </div>
             {% endfor %}
-            </font>
 
+
+
+        <div style="width: 300px; position: relative; left: 50%; margin-left: -150px;">
             <form action="{{ path("fos_user_security_check") }}" method="post" id="login_form" data-ajax="false">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
                 {% if error %}
-                            <div class="login-error">{{ error|trans({}, 'FOSUserBundle') }}</div>
+
+                    <div class="login-error"><i class="fa fa-warning" style="color: white;font-size: 21pt;"></i>
+                        {{ error|trans({}, 'FOSUserBundle') }}
+                    </div>
+
                 {% endif %}
                     
                         <input
@@ -50,23 +56,25 @@
                                value="tenant11@example.com"
                                required="required"
                                autocomplete="off"
+                               style="height: 40px;font-family: PT Sans Caption;"
                                 />
 
-                    <input autocomplete="off" class="login-input" type="password" id="password" name="_password" required="required" value="P@ssW0rd"/>
-                    <br>
-                        <input   style="background: #eb6024;"
+                    <input autocomplete="off" class="login-input" type="password" id="password" name="_password" required="required" value="P@ssW0rd" style="height: 40px; font-family: PT Sans Caption;"/>
+                    <br><br>
+                        <input   style="height: 52px;background: #00aeef; color: white; font-family: PT Sans Caption; text-align: center; border-radius: 3px; width: 300px; border: 0; box-shadow: 0px; font-size: 14pt;font-weight: normal;"
                               {#  class="button large green"#}
                         		data-ajax="false"
                                type="submit"
+                               data-role="none"
                                id="_submit"
                                name="_submit"
-                               value="
+                               value="{#
                                {{ 'login.submit' | trans }}
-                               "
-                               value="pass"
+                               #}LOG IN"
                                 />
 
         </form>
+            </div>
     {#
     {% if 'rj' == application %}
     <div class="create-block-logins floatleft">
@@ -84,7 +92,7 @@
     <div class="clearboth"></div>
     <p class="login-pod-footer">
         
-        <a href="{{ path('fos_user_resetting_request') }}" style="color: white; text-decoration: none;">{{ 'resetting.title' | trans }}</a>
+        <a href="{{ path('fos_user_resetting_request') }}" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans; text-shadow: none;">{{ 'resetting.title' | trans }}</a>
     </p>
     
         </div>

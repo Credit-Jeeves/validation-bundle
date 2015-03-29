@@ -5,6 +5,11 @@
 
 <div data-role="page" id="pay">
 
+    <div data-role="popup" id="dateConfirmed" data-overlay-theme="b" class="ui-content" style="font-family: PT Sans Caption;">
+            <p>Your landlord will be notified that your payment was sent on <span id="selectedDate"></span>.</p>
+            <a href="#pay" onclick="$('#dateConfirmed').popup('close')" data-role="button" data-theme="b" class="ui-link ui-btn ui-btn-b ui-shadow ui-corner-all" style="background: #eb6024; font-family: PT Sans Caption; font-size: 20pt;" role="button">OK</a>
+    </div>
+
 
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
         <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" data-role="none" role="button" class="headerButton" style="color: white;">Back</a>
@@ -13,7 +18,6 @@
     </div>
 
         <div class="ui-content" role="main">
-
 
             <form {{ form_enctype(paymentType) }} method="post" name="rentForm" action="checkout/exec" novalidate>
                 {{ form_widget(paymentType) }}
@@ -27,6 +31,15 @@
 
 
                 <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white;">Next</button></a>
+
+
+            <div style="height: 140px;">
+                <p style="color: grey;">
+                    RentTrack is a registered payment processor. Your account is safe and secure.
+                </p>
+                <img src="/bundles/rjcore/Images/mobile/footer-norton.png" style="float: left;">
+                <img src="/bundles/rjcore/Images/mobile/footer-logo.png" style="float: right;">
+            </div>
         </div>
 
 </div>
@@ -39,7 +52,14 @@
         $("#revRentAmount").html($("#rentjeeves_checkoutbundle_paymenttype_amount").val());
         $("#revMethod").html($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount option:selected").html());
         $("#revSendOn").html($("#rentjeeves_checkoutbundle_paymenttype_start_date").val());
-        $("#revRecurring").html($('#rentjeeves_checkoutbundle_paymenttype_type').val());
+        if($('#rentjeeves_checkoutbundle_paymenttype_type').val()=="one_time") {
+            a="One time"
+            $('#revEndsLabel').hide()
+        }else{
+            a="Recurring"
+        }
+
+        $("#revRecurring").html(a);
         $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").prop('disabled',true);
 
         if($('#rentjeeves_checkoutbundle_paymenttype_type').val()=="one_time"){
@@ -81,12 +101,13 @@
             //one-time
             $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",true)
             $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",false)
+            whenCancelled(false)
 
         }else{
             //recurring
             $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",false)
             $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",true)
-
+            whenCancelled(true)
         }
         $("#rentjeeves_checkoutbundle_paymenttype_ends_0").checkboxradio("refresh");
         $("#rentjeeves_checkoutbundle_paymenttype_ends_1").checkboxradio("refresh");
@@ -105,13 +126,21 @@
             }
         })
     }
+
+    function freqHide(i){
+        if(i){//hide
+            $('#rentjeeves_checkoutbundle_paymenttype_dueDate').hide()
+        }else{
+            $('#rentjeeves_checkoutbundle_paymenttype_dueDate').show()
+        }
+    }
 </script>
 
 <div data-role="page" id="review">
 
 
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-        <a href="#pay" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" role="button" style="background: transparent;border: none; color: white;">Back</a>
+        <a href="#pay" data-transition="slide" data-direction="reverse" data-role="button" class="headerButton" role="button" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Review</h1>
         <a href="#review" href="#popupBasic" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px;" data-role="none">Pay Rent</a>
     </div>
@@ -138,7 +167,7 @@
 
         <span id="revSendOn"></span><br>
 
-        <b>Ends: </b>
+        <b id="revEndsLabel">Ends: </b>
 
         <span id="revEnds"></span><br>
 
