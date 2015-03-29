@@ -195,7 +195,7 @@
             <div onclick="$('a{{ contract.id }}').click()" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
                 <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
                 <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a></a>
-                            <b style="font-size: 16;">{{ contract.full_address|length > 25 ? contract.full_address|slice(0, 25) ~ '...' : contract.full_address  }}</b>
+                            <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
                         <br>
                             <span style="font-size: 14;">{{ contract.rent }}</span>
                     <br>
