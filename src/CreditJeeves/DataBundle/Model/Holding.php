@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AccountingSettings;
+use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
@@ -176,6 +177,17 @@ abstract class Holding
      */
     protected $accountingSettings;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AMSISettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"},
+     *     fetch="EAGER"
+     * )
+     * @var AMSISettings
+     */
+    protected $amsiSettings;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -185,6 +197,23 @@ abstract class Holding
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
     }
+
+    /**
+     * @return AMSISettings
+     */
+    public function getAmsiSettings()
+    {
+        return $this->amsiSettings;
+    }
+
+    /**
+     * @param AMSISettings $amsiSettings
+     */
+    public function setAmsiSettings(AMSISettings $amsiSettings)
+    {
+        $this->amsiSettings = $amsiSettings;
+    }
+
 
     /**
      * @return MRISettings
