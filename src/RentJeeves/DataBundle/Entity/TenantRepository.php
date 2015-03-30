@@ -2,10 +2,12 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
+
 
 class TenantRepository extends EntityRepository
 {
@@ -100,41 +102,46 @@ class TenantRepository extends EntityRepository
         return reset($result);
     }
 
+    /**
+     *
+     * Find Tenant by resident ID or email address
+     *
+     * @param $email
+     * @param $residentId
+     * @param $holdingId
+     * @throws NonUniqueResultException if more than one Tenant object found
+     *
+     * @return Tenant object or NULL
+     */
     public function getTenantForImportWithResident($email, $residentId, $holdingId)
     {
-        $query = $this->createQueryBuilder('tenant');
+        $result = null;
+
+        // Find by resident ID if we have one
         if (!empty($residentId)) {
-            $query->leftJoin(
+            $query = $this->createQueryBuilder('tenant');
+            $query->innerJoin(
                 'tenant.residentsMapping',
                 'resident'
             );
-        }
-
-        //Priority have inside table https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
-        if (!empty($email) && !empty($residentId)) {
-            $query->where('tenant.email = :email');
-            $query->orWhere('resident.residentId = :residentId AND resident.holding = :holdingId');
-            $query->setParameter('residentId', $residentId);
-            $query->setParameter('holdingId', $holdingId);
-            $query->setParameter('email', $email);
-        } elseif (!empty($residentId)) {
             $query->where('resident.residentId = :residentId');
             $query->andWhere('resident.holding = :holdingId');
             $query->setParameter('residentId', $residentId);
             $query->setParameter('holdingId', $holdingId);
-        } elseif (!empty($email)) {
-            $query->where('tenant.email = :email');
-            $query->setParameter('email', $email);
-        } else {
-            return;
+            $query = $query->getQuery();
+            $result = $query->getOneOrNullResult(); // throws exception if more than one
         }
 
-        $query->setMaxResults(1);
-        $query = $query->getQuery();
+        // If we didn't find by resident ID, try finding by email
+        if (!empty($email) && !$result) {
+            $query = $this->createQueryBuilder('tenant');
+            $query->where('tenant.email = :email');
+            $query->setParameter('email', $email);
+            $query = $query->getQuery();
+            $result = $query->getOneOrNullResult(); // throws exception if more than one
+        }
 
-        $result = $query->getResult();
-
-        return reset($result);
+        return $result;
     }
 
     public function findByHolding($holdingId = null)
