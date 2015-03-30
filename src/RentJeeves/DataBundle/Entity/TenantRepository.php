@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
 
-
 class TenantRepository extends EntityRepository
 {
     public function countTenants($group, $searchBy = 'address', $search = '')
