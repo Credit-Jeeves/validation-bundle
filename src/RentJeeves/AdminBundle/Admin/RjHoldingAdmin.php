@@ -90,6 +90,19 @@ class RjHoldingAdmin extends Admin
                     'sortable'  => 'position',
                 )
             )
+            ->with('AMSI Settings')
+            ->add(
+                'amsiSettings',
+                $contrainer->get('form.amsi_settings'),
+                array(
+                    'required' => false,
+                ),
+                array(
+                    'edit'      => 'inline',
+                    'inline'    => 'table',
+                    'sortable'  => 'position',
+                )
+            )
             ->end();
     }
 
@@ -125,6 +138,13 @@ class RjHoldingAdmin extends Admin
         $mriSettings = $holding->getMriSettings();
         if ($mriSettings && $mriSettings->getUser()) {
             $mriSettings->setHolding($holding);
+        } else {
+            $holding->setMriSettings(null);
+        }
+
+        $amsiSettings = $holding->getAmsiSettings();
+        if ($amsiSettings && $amsiSettings->getUser()) {
+            $amsiSettings->setHolding($holding);
         } else {
             $holding->setMriSettings(null);
         }
