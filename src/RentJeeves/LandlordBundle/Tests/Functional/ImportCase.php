@@ -964,6 +964,9 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
 
+        $this->waitReviewAndPost(false);
+        $this->assertNotNull($invite = $this->page->find('css', '.0_sendInvite'));
+        $invite->check();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
 
