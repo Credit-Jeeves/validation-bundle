@@ -101,9 +101,8 @@ trait FormBind
          * @var $contract Contract
          */
         $contract = $form->getData();
-
+        $sendInvite = $form->get('sendInvite')->getNormData();
         if ($this->currentImportModel->getHasContractWaiting()) {
-            $sendInvite = $form->get('sendInvite')->getNormData();
             $this->processingContractWaiting(
                 $this->currentImportModel->getTenant(),
                 $contract,
@@ -123,7 +122,7 @@ trait FormBind
             $this->em->persist($unitMapping);
         }
 
-        if (!$contract->getId()) {
+        if ($sendInvite && !$contract->getId()) {
             $this->isNeedSendInvite = true;
         }
 
