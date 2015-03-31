@@ -15,6 +15,7 @@ use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use Symfony\Component\Form\Form;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
 use Exception;
+use Doctrine\ORM\UnitOfWork;
 
 /**
  * @property ModelImport currentImportModel
@@ -100,9 +101,8 @@ trait FormBind
          * @var $contract Contract
          */
         $contract = $form->getData();
-
+        $sendInvite = $form->get('sendInvite')->getNormData();
         if ($this->currentImportModel->getHasContractWaiting()) {
-            $sendInvite = $form->get('sendInvite')->getNormData();
             $this->processingContractWaiting(
                 $this->currentImportModel->getTenant(),
                 $contract,
@@ -122,7 +122,7 @@ trait FormBind
             $this->em->persist($unitMapping);
         }
 
-        if (!$contract->getId()) {
+        if ($sendInvite && !$contract->getId()) {
             $this->isNeedSendInvite = true;
         }
 
@@ -288,21 +288,34 @@ trait FormBind
         }
 
         $contract = $this->currentImportModel->getContract();
-        if ($contract->getId()) {
+        if ($this->isPersisted($contract)) {
             $this->em->detach($contract);
         }
         $unit = $contract->getUnit();
-        if ($unit && $unit->getId()) {
+        if ($this->isPersisted($unit)) {
             $this->em->detach($unit);
         }
         $tenant = $this->currentImportModel->getTenant();
-        if ($tenant->getId() && $this->userEmails[$tenant->getEmail()] === 1) {
+        if ($this->isPersisted($tenant) && $this->userEmails[$tenant->getEmail()] === 1) {
             $this->em->detach($tenant);
         }
+
         $residentMapping = $this->currentImportModel->getResidentMapping();
-        if ($residentMapping->getId()) {
+        if ($this->isPersisted($residentMapping) && !$residentMapping->getId()) {
             $this->em->detach($residentMapping);
         }
+    }
+
+    /**
+     * @param object $entity
+     * @return bool
+     */
+    protected function isPersisted($entity)
+    {
+        return in_array(
+            $this->em->getUnitOfWork()->getEntityState($entity),
+            [UnitOfWork::STATE_MANAGED, UnitOfWork::STATE_NEW]
+        );
     }
 
     /**

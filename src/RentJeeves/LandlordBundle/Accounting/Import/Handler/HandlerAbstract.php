@@ -290,7 +290,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
         $residentMapping = $this->currentImportModel->getResidentMapping();
         $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0 || $this->isUsedResidentId($residentMapping)) {
+        if (count($errors) > 0 || $this->isUsedResidentId() || $this->isUsedEmail()) {
             return false;
         }
 
@@ -664,6 +664,9 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public function manageException(Exception $e)
     {
+        if ($e instanceof \Doctrine\ORM\ORMException) {
+            $this->reConnectDB();
+        }
         $uniqueKeyException = uniqid();
         $exception = new ImportHandlerException($e);
         $exception->setUniqueKey($uniqueKeyException);
@@ -689,6 +692,16 @@ abstract class HandlerAbstract implements HandlerInterface
         }
         if (!$this->currentImportModel->getUnitMapping()) {
             $this->currentImportModel->setUnitMapping(new UnitMapping());
+        }
+    }
+
+    protected function reConnectDB()
+    {
+        if (!$this->em->isOpen()) {
+            $this->em = $this->em->create(
+                $this->em->getConnection(),
+                $this->em->getConfiguration()
+            );
         }
     }
 
