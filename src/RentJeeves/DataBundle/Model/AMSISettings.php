@@ -81,6 +81,7 @@ abstract class AMSISettings
      *     orphanRemoval=true
      * )
      * @ORM\JoinColumn(name="holding_id", referencedColumnName="id", nullable=false, unique=true)
+     *
      * @var Holding
      */
     protected $holding;

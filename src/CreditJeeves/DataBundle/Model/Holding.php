@@ -141,7 +141,7 @@ abstract class Holding
      *     targetEntity="RentJeeves\DataBundle\Entity\YardiSettings",
      *     mappedBy="holding",
      *     cascade={"persist", "remove", "merge"},
-     *     fetch="EXTRA_LAZY"
+     *     fetch="LAZY"
      * )
      */
     protected $yardiSettings;
@@ -151,7 +151,7 @@ abstract class Holding
      *     targetEntity="RentJeeves\DataBundle\Entity\MRISettings",
      *     mappedBy="holding",
      *     cascade={"persist", "remove", "merge"},
-     *     fetch="EXTRA_LAZY"
+     *     fetch="LAZY"
      * )
      * @var MRISettings
      */
@@ -162,7 +162,7 @@ abstract class Holding
      *     targetEntity="RentJeeves\DataBundle\Entity\ResManSettings",
      *     mappedBy="holding",
      *     cascade={"persist", "remove", "merge"},
-     *     fetch="EXTRA_LAZY"
+     *     fetch="LAZY"
      * )
      */
     protected $resManSettings;
@@ -172,7 +172,7 @@ abstract class Holding
      *     targetEntity="RentJeeves\DataBundle\Entity\AccountingSettings",
      *     mappedBy="holding",
      *     cascade={"persist", "remove", "merge"},
-     *     fetch="EXTRA_LAZY"
+     *     fetch="LAZY"
      * )
      */
     protected $accountingSettings;
@@ -182,7 +182,7 @@ abstract class Holding
      *     targetEntity="RentJeeves\DataBundle\Entity\AMSISettings",
      *     mappedBy="holding",
      *     cascade={"persist", "remove", "merge"},
-     *     fetch="EXTRA_LAZY"
+     *     fetch="LAZY"
      * )
      * @var AMSISettings
      */

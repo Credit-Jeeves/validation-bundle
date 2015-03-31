@@ -36,12 +36,12 @@ class RjHoldingAdmin extends Admin
     public function configureFormFields(FormMapper $formMapper)
     {
         parent::configureFormFields($formMapper);
-        $contrainer = $this->getConfigurationPool()->getContainer();
+        $container = $this->getConfigurationPool()->getContainer();
         $formMapper
             ->with('Accounting Settings')
             ->add(
                 'accountingSettings',
-                $contrainer->get('form.accounting_settings'),
+                $container->get('form.accounting_settings'),
                 array(
                     'required'   => true
                 ),
@@ -54,7 +54,7 @@ class RjHoldingAdmin extends Admin
             ->with('Yardi Settings')
             ->add(
                 'yardiSettings',
-                $contrainer->get('form.yardi_settings'),
+                $container->get('form.yardi_settings'),
                 array(
                     'required' => false,
                 ),
@@ -67,7 +67,7 @@ class RjHoldingAdmin extends Admin
             ->with('ResMan Settings')
             ->add(
                 'resManSettings',
-                $contrainer->get('form.resman_settings'),
+                $container->get('form.resman_settings'),
                 array(
                     'required' => false,
                 ),
@@ -80,7 +80,7 @@ class RjHoldingAdmin extends Admin
             ->with('MRI Settings')
             ->add(
                 'mriSettings',
-                $contrainer->get('form.mri_settings'),
+                $container->get('form.mri_settings'),
                 array(
                     'required' => false,
                 ),
@@ -93,7 +93,7 @@ class RjHoldingAdmin extends Admin
             ->with('AMSI Settings')
             ->add(
                 'amsiSettings',
-                $contrainer->get('form.amsi_settings'),
+                'amsiSettings',
                 array(
                     'required' => false,
                 ),

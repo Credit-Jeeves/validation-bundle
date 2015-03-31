@@ -12,11 +12,10 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 class AMSISettings extends Base implements SettingsInterface
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getParameters()
     {
-        return [
-        ];
+        return [];
     }
 }
