@@ -24,6 +24,16 @@ trait Tenant
     protected $userEmails = [];
 
     /**
+     * @return bool
+     */
+    public function isUsedEmail()
+    {
+        $email = $this->currentImportModel->getTenant()->getEmail();
+
+        return isset($this->userEmails[$email]) && $this->userEmails[$email] > 1;
+    }
+
+    /**
      * @param array $row
      */
     protected function setTenant(array $row)
