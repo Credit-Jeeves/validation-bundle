@@ -66,6 +66,25 @@ class ReportSynchronizer
     }
 
     /**
+     * @param ReversalReportTransaction $reportTransaction
+     *
+     * @return bool
+     */
+    protected function isAlreadyProcessedReversal(ReversalReportTransaction $reportTransaction)
+    {
+        $transaction = $this->em->getRepository('RjDataBundle:Heartland')
+            ->findOneBy([
+                'transactionId' => $reportTransaction->getTransactionId(),
+                'status' => TransactionStatus::REVERSED,
+            ]);
+        if ($transaction) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param ReversalReportTransaction $transaction
      */
     protected function processReversalTransaction(ReversalReportTransaction $transaction)
@@ -98,14 +117,17 @@ class ReportSynchronizer
             return;
         }
 
-        if ($batchCloseDate = $reportTransaction->getBatchCloseDate()) {
+        // if transaction doesn't have batch date, but report transaction does - then update it
+        if (!$transaction->getBatchDate() && $batchCloseDate = $reportTransaction->getBatchCloseDate()) {
             $transaction->setBatchDate($batchCloseDate);
         }
 
         if ($reportTransaction->getDepositAmount() > 0 && $reportDepositDate = $reportTransaction->getDepositDate()) {
             $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
-            $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportDepositDate);
-            $transaction->setDepositDate($depositDate);
+            if (!$transaction->getDepositDate()) {
+                $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportDepositDate);
+                $transaction->setDepositDate($depositDate);
+            }
         }
         $this->em->flush();
     }
@@ -117,6 +139,11 @@ class ReportSynchronizer
      */
     protected function processReturned(ReversalReportTransaction $reportTransaction)
     {
+        if ($this->isAlreadyProcessedReversal($reportTransaction)) {
+            $this->logger->debug('Transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed');
+            return;
+        }
+
         $this->logger->debug(
             'Processing RETURNED transaction with original transaction ID ' .
             $reportTransaction->getOriginalTransactionId()
@@ -154,6 +181,11 @@ class ReportSynchronizer
      */
     protected function processRefunded(ReversalReportTransaction $reportTransaction)
     {
+        if ($this->isAlreadyProcessedReversal($reportTransaction)) {
+            $this->logger->debug('Transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed');
+            return;
+        }
+
         $this->logger->debug(
             'Processing REFUNDED transaction with original transaction ID ' .
             $reportTransaction->getOriginalTransactionId()
@@ -188,6 +220,11 @@ class ReportSynchronizer
      */
     protected function processCancelled(ReversalReportTransaction $reportTransaction)
     {
+        if ($this->isAlreadyProcessedReversal($reportTransaction)) {
+            $this->logger->debug('Transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed');
+            return;
+        }
+
         $this->logger->debug(
             'Processing CANCELLED transaction with original transaction ID ' .
             $reportTransaction->getOriginalTransactionId()

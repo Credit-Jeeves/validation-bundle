@@ -76,6 +76,28 @@ class PaymentReportCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldNotSendEmailsTwice()
+    {
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $this->executeCommand();
+
+        $this->assertNotNull($count = $plugin->getPreSendMessages());
+        $this->assertCount(4, $count);
+
+        // get all report files back to dir
+        $this->tearDown();
+
+        $plugin->clean();
+        $this->executeCommand();
+
+        $this->assertCount(0, $plugin->getPreSendMessages());
+    }
+
+    /**
+     * @test
+     */
     public function shouldCreateReversalTransactionForVoidedCCPayment()
     {
         $this->executeCommand();
