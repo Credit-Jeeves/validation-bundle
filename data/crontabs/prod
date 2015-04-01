@@ -1,5 +1,5 @@
-10 3 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize deposit --archive=true >> /var/log/renttrack.log 2>&1
-15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize reversal --archive=true >> /var/log/renttrack.log 2>&1
+10 3 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:report:synchronize >> /var/log/renttrack.log 2>&1
+15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:report:synchronize >> /var/log/renttrack.log 2>&1
 # Run the payments early in the morning to hit all the recurring payments:
 30 4 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
 # Run payments every two hours during working day:

@@ -9,7 +9,7 @@ use RuntimeException;
 use DateTime;
 
 /**
- * @DI\Service("payment_processor.hps_report.archiver")
+ * @DI\Service("payment_processor.hps_report.archiver", public=false)
  */
 class HpsReportArchiver
 {
@@ -18,7 +18,7 @@ class HpsReportArchiver
 
     /**
      * @DI\InjectParams({
-     *     "reportPath" = @DI\Inject("%payment_report_path%"),
+     *     "reportPath" = @DI\Inject("%payment_processor.hps.report_path%"),
      * })
      */
     public function __construct($reportPath)

@@ -14,4 +14,4 @@ parameters:
     server_name_cj: stg2.creditjeeves.com
     server_name_rj: stg.renttrack.com
     api.admin_dealer_code: 1a1dc91c9073
-    payment_report_path: /home/heartland
+    payment_processor.hps.report_path: /home/heartland

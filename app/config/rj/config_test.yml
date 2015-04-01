@@ -5,7 +5,7 @@ parameters:
     router.request_context.base_url: '/rj_test.php'
     doctrine.dbal.connection.wrapper_class: 'CreditJeeves\TestBundle\Doctrine\DBAL\PersistedConnection'
 
-    payment_report_path: 'src/RentJeeves/CheckoutBundle/Tests/Fixtures/hps'
+    payment_processor.hps.report_path: 'src/RentJeeves/CheckoutBundle/Tests/Fixtures/hps'
 
     credit_services:
         credit_summary_vendor: experian # supported values are 'transunion' or 'experian'

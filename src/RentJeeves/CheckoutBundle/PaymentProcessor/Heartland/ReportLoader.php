@@ -77,7 +77,7 @@ class ReportLoader
     protected function loadDepositReport()
     {
         if (!$reportFiles = $this->findReports(self::DEPOSIT_REPORT_FILENAME_SUFFIX)) {
-            $this->logger->debug('HPS: deposit report not found');
+            $this->logger->alert('HPS: deposit report not found');
             return [];
         }
 
@@ -92,7 +92,7 @@ class ReportLoader
             $reportTransactions += $serializer->deserialize(
                 $reportFilename,
                 'RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction',
-                'hps_csv_file'
+                HPSDepositReportDenormalizer::FORMAT
             );
 
             $this->logger->debug('HPS: archiving deposit report ' . $reportFilename);
@@ -108,7 +108,7 @@ class ReportLoader
     protected function loadReversalReport()
     {
         if (!$reportFiles = $this->findReports(self::REVERSAL_REPORT_FILENAME_SUFFIX)) {
-            $this->logger->debug('HPS: reversal report not found');
+            $this->logger->alert('HPS: reversal report not found');
             return [];
         }
 
@@ -124,7 +124,7 @@ class ReportLoader
             $reportTransactions += $serializer->deserialize(
                 $reportFilename,
                 'RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction',
-                'hps_csv_file'
+                HPSReversalReportDenormalizer::FORMAT
             );
 
             $this->logger->debug('HPS: archiving reversal report ' . $reportFilename);
@@ -140,7 +140,7 @@ class ReportLoader
      */
     protected function findReports($fileSuffix)
     {
-        return $this->fileFinder->findBySuffix($fileSuffix);
+        return $this->fileFinder->find($fileSuffix);
     }
 
     /**

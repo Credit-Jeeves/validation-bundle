@@ -6,14 +6,8 @@ use RentJeeves\CoreBundle\DateTime;
 
 class DepositReportTransaction extends PaymentProcessorReportTransaction
 {
-    /** @var string */
-    protected $batchId;
-
     /** @var DateTime */
     protected $batchCloseDate;
-
-    /** @var float */
-    protected $depositAmount;
 
     /** @var DateTime */
     protected $depositDate;
@@ -32,42 +26,6 @@ class DepositReportTransaction extends PaymentProcessorReportTransaction
     public function setBatchCloseDate($batchCloseDate)
     {
         $this->batchCloseDate = $batchCloseDate;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBatchId()
-    {
-        return $this->batchId;
-    }
-
-    /**
-     * @param string $batchId
-     */
-    public function setBatchId($batchId)
-    {
-        $this->batchId = $batchId;
-
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getDepositAmount()
-    {
-        return $this->depositAmount;
-    }
-
-    /**
-     * @param float $depositAmount
-     */
-    public function setDepositAmount($depositAmount)
-    {
-        $this->depositAmount = $depositAmount;
 
         return $this;
     }

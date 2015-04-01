@@ -21,7 +21,7 @@ class HPSDepositReportDenormalizer implements DenormalizerInterface
             $depositTransaction
                 ->setBatchId($transaction['BatchID'])
                 ->setTransactionId($transaction['TransactionID'])
-                ->setDepositAmount($transaction['MerchantDepositAmount']);
+                ->setAmount($transaction['MerchantDepositAmount']);
 
             $batchDate = $transaction['BatchCloseDate'];
             if (!empty($batchDate)) {

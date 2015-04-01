@@ -8,7 +8,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
- * @DI\Service("payment_processor.hps_report.finder")
+ * @DI\Service("payment_processor.hps_report.finder", public=false)
  */
 class HpsReportFinder
 {
@@ -16,7 +16,7 @@ class HpsReportFinder
 
     /**
      * @DI\InjectParams({
-     *     "reportPath" = @DI\Inject("%payment_report_path%"),
+     *     "reportPath" = @DI\Inject("%payment_processor.hps.report_path%"),
      * })
      */
     public function __construct($reportPath)
@@ -44,14 +44,5 @@ class HpsReportFinder
         }
 
         return $foundFiles;
-    }
-
-    /**
-     * @param $suffix
-     * @return array
-     */
-    public function findBySuffix($suffix)
-    {
-        return $this->find($suffix);
     }
 }
