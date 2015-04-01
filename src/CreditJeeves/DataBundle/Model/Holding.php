@@ -140,8 +140,7 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\YardiSettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="LAZY"
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $yardiSettings;
@@ -150,8 +149,7 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\MRISettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="LAZY"
+     *     cascade={"persist", "remove", "merge"}
      * )
      * @var MRISettings
      */
@@ -161,8 +159,7 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\ResManSettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="LAZY"
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $resManSettings;
@@ -171,8 +168,7 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\AccountingSettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="LAZY"
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $accountingSettings;
@@ -181,8 +177,7 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\AMSISettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="LAZY"
+     *     cascade={"persist", "remove", "merge"}
      * )
      * @var AMSISettings
      */
