@@ -290,7 +290,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
         $residentMapping = $this->currentImportModel->getResidentMapping();
         $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0 || $this->isUsedResidentId($residentMapping)) {
+        if (count($errors) > 0 || $this->isUsedResidentId() || $this->isUsedEmail()) {
             return false;
         }
 
@@ -664,13 +664,17 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public function manageException(Exception $e)
     {
+        if ($e instanceof \Doctrine\ORM\ORMException) {
+            $this->reConnectDB();
+        }
         $uniqueKeyException = uniqid();
         $exception = new ImportHandlerException($e);
         $exception->setUniqueKey($uniqueKeyException);
         $this->currentImportModel->setUniqueKeyException($uniqueKeyException);
         $this->exceptionCatcher->handleException($exception);
         $messageForLogging = sprintf(
-            'Exception message: %s, in File: %s, In Line: %s',
+            'Exception %s: %s, in File: %s, In Line: %s',
+            $uniqueKeyException,
             $e->getMessage(),
             $e->getFile(),
             $e->getLine()
@@ -688,6 +692,16 @@ abstract class HandlerAbstract implements HandlerInterface
         }
         if (!$this->currentImportModel->getUnitMapping()) {
             $this->currentImportModel->setUnitMapping(new UnitMapping());
+        }
+    }
+
+    protected function reConnectDB()
+    {
+        if (!$this->em->isOpen()) {
+            $this->em = $this->em->create(
+                $this->em->getConnection(),
+                $this->em->getConfiguration()
+            );
         }
     }
 

@@ -70,11 +70,26 @@ class UnitMappingAdmin extends Admin
                         )
                     );
 
+                $existUnitDifferentMap = $em->getRepository('RjDataBundle:UnitMapping')
+                    ->findOneBy(
+                        array(
+                            'unit'     => $unitMapping->getUnit()->getId(),
+                        )
+                    );
+
                 if ($existingUnitMapping) {
                     $form->get('externalUnitId')->addError(
                         new FormError(
                             $translation->trans(
                                 'admin.form.error.unit_mapping'
+                            )
+                        )
+                    );
+                } elseif ($existUnitDifferentMap) {
+                    $form->get('externalUnitId')->addError(
+                        new FormError(
+                            $translation->trans(
+                                'admin.form.error.unit_mapping.unit_exist'
                             )
                         )
                     );

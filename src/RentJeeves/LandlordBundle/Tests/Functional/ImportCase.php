@@ -964,6 +964,9 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
 
+        $this->waitReviewAndPost(false);
+        $this->assertNotNull($invite = $this->page->find('css', '.0_sendInvite'));
+        $invite->check();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
 
@@ -1858,9 +1861,9 @@ class ImportCase extends BaseTestCase
         $this->logout();
         // We must make sure the data saved into DB, so we count before import and after
         $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertEquals(29, count($contracts));
+        $this->assertEquals(28, count($contracts));
         $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(22, count($contractsWaiting));
+        $this->assertEquals(23, count($contractsWaiting));
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             array(
                 'externalLeaseId' => 'a0668dcf-045d-4183-926c-b7d50a571506',

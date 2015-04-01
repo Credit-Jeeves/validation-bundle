@@ -90,6 +90,10 @@
                 <source>admin.form.error.unit_mapping</source>
                 <target>This unit mapping already exists.</target>
             </trans-unit>
+            <trans-unit id="admin.form.error.unit_mapping.unit_exist">
+                <source>admin.form.error.unit_mapping.unit_exist</source>
+                <target>The RentTrack Unit ID above is already assigned to a different External Unit ID.</target>
+            </trans-unit>
             <trans-unit id="admin.list.order.jobs_action">
                 <source>admin.list.order.jobs_action</source>
                 <target>Jobs</target>
