@@ -13,7 +13,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -86,7 +86,7 @@ class ResidentBalanceSynchronizer
         /** @var $residentClient ResidentTransactionsClient */
         $residentClient = $this->clientFactory->getClient(
             $holding->getYardiSettings(),
-            YardiClientEnum::RESIDENT_TRANSACTIONS
+            SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS
         );
         $propertySets = ceil($repo->countContractPropertiesByHolding($holding) / self::COUNT_PROPERTIES_PER_SET);
         for ($offset = 1; $offset <= $propertySets; $offset++) {

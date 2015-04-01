@@ -165,6 +165,8 @@ bazinga_geocoder:
 
 be_simple_soap:
     clients:
+        amsi:
+            wsdl: ExternalApiBundle:AMSI:leasing.html.twig
         yardi_resident_transactions:
             wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20.html.twig
         yardi_resident_data:

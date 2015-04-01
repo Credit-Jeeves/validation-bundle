@@ -4,7 +4,9 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
-use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
+use RentJeeves\ExternalApiBundle\Traits\SoapDebuggableTrait as SoapDebug;
+use RentJeeves\ExternalApiBundle\Traits\SoapExceptionLoggableTrait as SoapExceptionLog;
+use RentJeeves\ExternalApiBundle\Traits\StandartDebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Message;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
@@ -22,6 +24,8 @@ abstract class AbstractClient implements ClientInterface
 {
     use Debug;
     use Settings;
+    use SoapDebug;
+    use SoapExceptionLog;
 
     const MAPPING_DESERIALIZER_CLASS = 'class';
 
@@ -324,6 +328,7 @@ abstract class AbstractClient implements ClientInterface
         } catch (SoapFault $e) {
             if ($this->numberOfRetriesTheSameSoapCall > self::MAX_NUMBER_OF_RETRIES) {
                 $this->exceptionLog($e);
+                $this->setErrorMessage($e->getMessage());
                 throw $e;
             }
             $this->numberOfRetriesTheSameSoapCall++;
@@ -339,24 +344,8 @@ abstract class AbstractClient implements ClientInterface
             return $this->sendRequest($function, $params);
         } catch (Exception $e) {
             $this->exceptionLog($e);
+            $this->setErrorMessage($e->getMessage());
         }
-    }
-
-    protected function exceptionLog(Exception $e)
-    {
-        $this->logger->addCritical(
-            sprintf(
-                'Exception on Yardi message(%s), file(%s), line(%s), request(%s) header(%s)',
-                $e->getMessage(),
-                $e->getFile(),
-                $e->getLine(),
-                $this->soapClient->__getLastRequest(),
-                $this->soapClient->__getLastRequestHeaders()
-            )
-        );
-        $this->exceptionCatcher->handleException($e);
-        $this->setErrorMessage($e->getMessage());
-        $this->debugMessage($e->getMessage());
     }
 
     /**
@@ -405,31 +394,5 @@ abstract class AbstractClient implements ClientInterface
             $deserializeClass,
             'xml'
         );
-    }
-
-    public function getFullResponse($show = true)
-    {
-        return $this->getSoapData('__getLastResponse', $show);
-    }
-
-    public function getFullRequest($show = true)
-    {
-        return $this->getSoapData('__getLastRequest', $show);
-    }
-
-    protected function getSoapData($method, $show)
-    {
-        $methodHeader = $method.'Headers';
-        $request = array(
-            'method' => $method,
-            'header' => $this->soapClient->$methodHeader(),
-            'body'   => $this->soapClient->$method()
-        );
-
-        if ($show) {
-            print_r($request, true);
-        }
-
-        return $request;
     }
 }
