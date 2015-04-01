@@ -62,7 +62,7 @@ abstract class Order
      *     nullable=true
      * )
      */
-    protected $type = OrderType::CASH;
+    protected $type;
 
     /**
      * @ORM\Column(
@@ -159,7 +159,7 @@ abstract class Order
     }
 
     /**
-     * @param OrderExternalApi $externalApi
+     * @param OrderExternalApi $sentOrder
      */
     public function addSendOrder(OrderExternalApi $sentOrder)
     {
@@ -302,7 +302,7 @@ abstract class Order
     /**
      * Set created_date
      *
-     * @param DateTime $createdDate
+     * @param DateTime $createdAt
      * @return Order
      */
     public function setCreatedAt($createdAt)
@@ -371,7 +371,7 @@ abstract class Order
     /**
      * Add order's operation
      *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $operations
+     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
      * @return Order
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)

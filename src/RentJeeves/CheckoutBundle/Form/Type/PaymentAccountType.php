@@ -2,7 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use CreditJeeves\DataBundle\Model\User;
-use Payum2\Heartland\Soap\Base\ACHDepositType;
+use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositType;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use Symfony\Component\Form\AbstractType;
@@ -160,7 +160,7 @@ class PaymentAccountType extends AbstractType
                 'choices' => array(
                     ACHDepositType::CHECKING => 'checkout.account_type.checking',
                     ACHDepositType::SAVINGS => 'checkout.account_type.savings',
-                    ACHDepositType::UNASSIGNED => 'checkout.account_type.business_checking'
+                    ACHDepositType::BUSINESS_CHECKING => 'checkout.account_type.business_checking'
                 ),
                 'empty_value'  => false,
                 'invalid_message' => 'checkout.error.account_type.invalid',

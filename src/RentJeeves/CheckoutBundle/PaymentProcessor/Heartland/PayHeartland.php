@@ -40,7 +40,7 @@ class PayHeartland
 
     /**
      * @DI\InjectParams({
-     *     "payum" = @DI\Inject("payum"),
+     *     "payum" = @DI\Inject("payum2"),
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "rtMerchantName" = @DI\Inject("%rt_merchant_name%"),
      * })

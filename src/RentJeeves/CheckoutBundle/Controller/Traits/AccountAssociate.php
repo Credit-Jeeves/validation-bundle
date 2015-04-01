@@ -84,11 +84,11 @@ trait AccountAssociate
         if (method_exists($this, 'getContainer')) {
             /** @var Payment $payment */
             $payment = $this->getContainer()
-                ->get('payum')
+                ->get('payum2')
                 ->getPayment('heartland');
         } else {
             /** @var Payment $payment */
-            $payment = $this->get('payum')
+            $payment = $this->get('payum2')
                 ->getPayment('heartland');
         }
 

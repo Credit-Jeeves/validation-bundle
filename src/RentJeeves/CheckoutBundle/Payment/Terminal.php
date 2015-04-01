@@ -31,7 +31,7 @@ class Terminal
     /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "payum" = @DI\Inject("payum"),
+     *     "payum" = @DI\Inject("payum2"),
      *     "merchantName" = @DI\Inject("%rt_merchant_name%"),
      * })
      */

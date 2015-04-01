@@ -127,7 +127,7 @@ stof_doctrine_extensions:
     class:
         loggable: RentJeeves\DataBundle\EventListener\LoggableListener
 
-payum:
+payum2:
     contexts:
         heartland:
             heartland:
