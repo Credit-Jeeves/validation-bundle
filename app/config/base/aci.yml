@@ -1,0 +1,2 @@
+parameters:
+    aci.key_path: "%kernel.root_dir%/config/secrets/aci/pgp.key"
