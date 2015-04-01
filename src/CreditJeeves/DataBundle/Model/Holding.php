@@ -209,7 +209,7 @@ abstract class Holding
     /**
      * @param AMSISettings $amsiSettings
      */
-    public function setAmsiSettings(AMSISettings $amsiSettings)
+    public function setAmsiSettings(AMSISettings $amsiSettings = null)
     {
         $this->amsiSettings = $amsiSettings;
     }

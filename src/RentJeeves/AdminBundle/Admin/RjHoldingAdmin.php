@@ -146,7 +146,7 @@ class RjHoldingAdmin extends Admin
         if ($amsiSettings && $amsiSettings->getUser()) {
             $amsiSettings->setHolding($holding);
         } else {
-            $holding->setMriSettings(null);
+            $holding->setAmsiSettings(null);
         }
     }
 

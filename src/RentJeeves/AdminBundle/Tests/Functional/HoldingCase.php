@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\AdminBundle\Tests\Functional;
 
-use Doctrine\ORM\EntityManager;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class HoldingCase extends BaseTestCase
@@ -13,7 +12,6 @@ class HoldingCase extends BaseTestCase
     public function create()
     {
         $this->load(true);
-        /** @var $em EntityManager */
         $em = $this->getEntityManager();
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
         $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
