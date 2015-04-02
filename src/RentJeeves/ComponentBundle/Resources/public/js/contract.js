@@ -27,7 +27,6 @@ function Contract() {
     this.errorsAdd = ko.observableArray([]);
     this.statusBeforeTriedSave = ko.observable();
     this.isSingleProperty = ko.observable(true);
-    this.isFirstLoad = ko.observable(true);
 
     this.cancelEdit = function (data) {
         $('#tenant-edit-property-popup').dialog('close');
@@ -55,10 +54,7 @@ function Contract() {
     };
 
     this.currentPropertyId.subscribe(function(newValue) {
-        // this condition is to prevent loading units twice (for first property on the list and for selected property)
-        if (!self.isFirstLoad()) {
-            self.getUnits(newValue);
-        }
+        self.getUnits(newValue);
     });
 
     this.getProperties = function (propertyId) {
@@ -71,7 +67,6 @@ function Contract() {
             success: function (response) {
                 $('#property-edit').parent().find('.loader').hide();
                 self.propertiesList(response);
-                self.isFirstLoad(false);
                 self.currentPropertyId(propertyId);
             }
         });
