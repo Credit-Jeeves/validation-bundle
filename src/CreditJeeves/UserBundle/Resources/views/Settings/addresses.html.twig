@@ -56,6 +56,11 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
+            {% for flashMessage in app.session.flashbag.get('error') %}
+                <div class="flash-error">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
             <div class="row-20"></div>
 
             <div class="properties-table-block table-wrap">

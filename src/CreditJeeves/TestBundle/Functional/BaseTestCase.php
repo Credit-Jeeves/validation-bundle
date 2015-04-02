@@ -69,7 +69,7 @@ abstract class BaseTestCase extends Base
     }
 
     /**
-     * (@inheritdoc}
+     * {@inheritdoc}
      */
     public function setUp()
     {
@@ -125,7 +125,6 @@ abstract class BaseTestCase extends Base
      *
      * @param \Behat\Mink\Element\NodeElement $form
      * @param array $fields
-     * @param string $locator
      */
     protected function fillForm(\Behat\Mink\Element\NodeElement $form, array $fields)
     {
