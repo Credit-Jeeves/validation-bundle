@@ -112,6 +112,10 @@
         },
         {
             "type": "git",
+            "url": "git@github.com:Credit-Jeeves/ACIClient.git"
+        },
+        {
+            "type": "git",
             "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git"
         },
         {
@@ -227,6 +231,7 @@
         "jms/di-extra-bundle": "1.4.*",
         "friendsofsymfony/user-bundle": "v1.3.2",
         "friendsofsymfony/jsrouting-bundle": "~1.1",
+        "payum/aci" : "dev-master",
         "payum2/payum": "dev-master as 0.5.x-dev",
         "payum2/payum-bundle": "dev-heartland",
         "payum2/heartland": "dev-master",

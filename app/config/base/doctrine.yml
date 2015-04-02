@@ -34,16 +34,13 @@ doctrine:
                 dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
                 alias: GedmoLoggable # this one is optional and will default to the name set for the mapping
                 is_bundle: false
-# This need for new Payum
-#            payum:
-#                is_bundle: false
-#                type: xml
-#                dir: %kernel.root_dir%/../vendor/payum/core/Payum/Core/Bridge/Doctrine/Resources/mapping
-#
-#                # set this dir instead if you use `payum/payum` library
-#                #dir: %kernel.root_dir%/../vendor/payum/payum/src/Payum/Core/Bridge/Doctrine/Resources/mapping
-#
-#                prefix: Payum\Core\Model
+            # @see  http://stackoverflow.com/questions/24873780/error-with-doctrineschemavalidate-for-payum-token
+            payum:
+                is_bundle: false
+                type: xml
+                dir: %kernel.root_dir%/../vendor/payum/core/Payum/Core/Bridge/Doctrine/Resources/mapping
+
+                prefix: Payum\Core\Model
         auto_mapping: true
 
 stof_doctrine_extensions:
