@@ -12,7 +12,7 @@ trait SoapExceptionLoggableTrait
         if ($this->logger) {
             $this->logger->addCritical(
                 sprintf(
-                    'Exception on Yardi message(%s), file(%s), line(%s), request(%s) header(%s)',
+                    'Exception on External API: message(%s), file(%s), line(%s), request(%s) header(%s)',
                     $e->getMessage(),
                     $e->getFile(),
                     $e->getLine(),

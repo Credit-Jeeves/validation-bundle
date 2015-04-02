@@ -6,7 +6,7 @@ use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\SoapDebuggableTrait as SoapDebug;
 use RentJeeves\ExternalApiBundle\Traits\SoapExceptionLoggableTrait as SoapExceptionLog;
-use RentJeeves\ExternalApiBundle\Traits\StandartDebuggableTrait as Debug;
+use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Message;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;

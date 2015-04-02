@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Traits;
 
 use Monolog\Logger;
 
-trait StandartDebuggableTrait
+trait DebuggableTrait
 {
     /**
      * @var boolean

@@ -23,21 +23,21 @@ trait SoapDebuggableTrait
     }
 
     /**
-     * @param $method
-     * @param $show
+     * @param string $method
+     * @param boolean $show
      * @return array
      */
     protected function getSoapData($method, $show)
     {
         $methodHeader = $method.'Headers';
-        $request = array(
+        $request = [
             'method' => $method,
             'header' => $this->soapClient->$methodHeader(),
             'body'   => $this->soapClient->$method()
-        );
+        ];
 
         if ($show) {
-            print_r($request, true);
+            print_r($request);
         }
 
         return $request;

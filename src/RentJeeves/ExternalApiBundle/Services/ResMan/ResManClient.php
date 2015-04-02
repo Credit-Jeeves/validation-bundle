@@ -9,7 +9,7 @@ use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
-use RentJeeves\ExternalApiBundle\Traits\StandartDebuggableTrait as Debug;
+use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
 use Guzzle\Http\Client as HttpClient;
 use Exception;

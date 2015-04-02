@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
 use RentJeeves\ExternalApiBundle\Model\MRI\Payment;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
-use RentJeeves\ExternalApiBundle\Traits\StandartDebuggableTrait as Debug;
+use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
 use Guzzle\Http\Client as HttpClient;
 use Exception;
