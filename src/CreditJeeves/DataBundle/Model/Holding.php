@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AccountingSettings;
+use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
@@ -139,8 +140,7 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\YardiSettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="EAGER"
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $yardiSettings;
@@ -149,8 +149,7 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\MRISettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="EAGER"
+     *     cascade={"persist", "remove", "merge"}
      * )
      * @var MRISettings
      */
@@ -160,8 +159,7 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\ResManSettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="EAGER"
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $resManSettings;
@@ -170,11 +168,20 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\AccountingSettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="EAGER"
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $accountingSettings;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AMSISettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     * @var AMSISettings
+     */
+    protected $amsiSettings;
 
     public function __construct()
     {
@@ -184,6 +191,22 @@ abstract class Holding
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
+    }
+
+    /**
+     * @return AMSISettings
+     */
+    public function getAmsiSettings()
+    {
+        return $this->amsiSettings;
+    }
+
+    /**
+     * @param AMSISettings $amsiSettings
+     */
+    public function setAmsiSettings(AMSISettings $amsiSettings = null)
+    {
+        $this->amsiSettings = $amsiSettings;
     }
 
     /**

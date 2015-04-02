@@ -12,23 +12,22 @@ class HoldingCase extends BaseTestCase
     public function create()
     {
         $this->load(true);
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getEntityManager();
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
         $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
         $mriSettings = $em->getRepository('RjDataBundle:MRISettings')->findAll();
+        $amsiSettings = $em->getRepository('RjDataBundle:AMSISettings')->findAll();
         $this->assertCount(1, $resManSettings);
         $this->assertCount(1, $accountingSettings);
         $this->assertCount(1, $mriSettings);
+        $this->assertCount(1, $amsiSettings);
 
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
         $tableBlock->clickLink('link_add');
         $this->assertNotNull($textFields = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(20, $textFields);
+        $this->assertCount(23, $textFields);
         $textFields[0]->setValue('Test');
         $this->assertNotNull(
             $links = $this->page->findAll(
@@ -38,7 +37,7 @@ class HoldingCase extends BaseTestCase
         );
         $links[2]->click();
         $this->assertNotNull($urlTextFields = $this->page->findAll('css', 'input[type=url]'));
-        $this->assertCount(2, $urlTextFields);
+        $this->assertCount(3, $urlTextFields);
         $urlTextFields[0]->setValue('https://www.iyardiasp.com/8223thirdparty708dev/');
         $textFields[1]->setValue('renttrackws');
         $textFields[2]->setValue('57742');
@@ -60,8 +59,13 @@ class HoldingCase extends BaseTestCase
         $textFields[17]->setValue('OP');
         $textFields[18]->setValue('RNT');
         $textFields[19]->setValue('C225999');
-
         $urlTextFields[1]->setValue('https://mri45pc.saas.mrisoftware.com/mriapiservices/api.asp');
+
+        $links[5]->click();
+        $textFields[20]->setValue('RentTrack');
+        $textFields[21]->setValue('RentTrack');
+        $textFields[22]->setValue('RentTrack');
+        $urlTextFields[2]->setValue('https://amsitest.infor.com/amsiweb/edexweb/esite/leasing.asmx');
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
@@ -94,7 +98,7 @@ class HoldingCase extends BaseTestCase
             )
         );
         $links[2]->click();
-        $this->assertCount(20, $textFields);
+        $this->assertCount(23, $textFields);
         $textFields[2]->setValue('57742111111111111');
         $this->assertNotNull(
             $test = $this->page->find(
@@ -114,7 +118,9 @@ class HoldingCase extends BaseTestCase
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
         $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
         $mriSettings = $em->getRepository('RjDataBundle:MRISettings')->findAll();
+        $amsiSettings = $em->getRepository('RjDataBundle:AMSISettings')->findAll();
 
+        $this->assertCount(2, $amsiSettings);
         $this->assertCount(2, $resManSettings);
         $this->assertCount(2, $accountingSettings);
         $this->assertCount(2, $mriSettings);

@@ -1,0 +1,8 @@
+model: RentJeeves\DataBundle\Entity\AMSISettings
+fixtures:
+    AMSISetting_1:
+        url: https://amsitest.infor.com/amsiweb/edexweb/esite/leasing.asmx
+        user: RentTrack
+        password: RentTrack
+        portfolioName: RentTrack
+        holding: rjHolding_1
