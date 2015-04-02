@@ -5,9 +5,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Monolog\Logger;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorReportType;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReport;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReport;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer\HPSDepositReportDenormalizer;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Encoder\CsvFileDecoder;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer\HPSReversalReportDenormalizer;
@@ -27,119 +25,122 @@ class ReportLoader
     /** @var HpsReportFinder */
     protected $fileFinder;
 
+    /** @var HpsReportArchiver */
+    protected $fileArchiver;
+
     /** @var Logger */
     protected $logger;
 
     /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "fileFinder" = @DI\Inject("payment.report.finder"),
+     *     "fileFinder" = @DI\Inject("payment_processor.hps_report.finder"),
+     *     "fileArchiver" = @DI\Inject("payment_processor.hps_report.archiver"),
      *     "logger" = @DI\Inject("logger")
      * })
      */
-    public function __construct(EntityManagerInterface $em, HpsReportFinder $fileFinder, Logger $logger)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        HpsReportFinder $fileFinder,
+        HpsReportArchiver $fileArchiver,
+        Logger $logger
+    ) {
         $this->em = $em;
         $this->fileFinder = $fileFinder;
+        $this->fileArchiver = $fileArchiver;
         $this->logger = $logger;
     }
 
     /**
-     * Loads report by report type.
+     * Loads deposits and reversals from Heartland report.
      *
-     * @param string $reportType
-     * @return DepositReport | ReversalReport
-     * @throws \Exception
+     * @return PaymentProcessorReport
      */
-    public function loadReport($reportType, array $settings)
+    public function loadReport()
     {
-        $makeArchive = isset($settings['make_archive'])? $settings['make_archive'] : false;
-        $this->logger->debug('HPS: Trying to load report of type ' . $reportType);
-        switch ($reportType) {
-            case PaymentProcessorReportType::DEPOSIT:
-                return $this->loadDepositReport($makeArchive);
-            case PaymentProcessorReportType::REVERSAL:
-                return $this->loadReversalReport($makeArchive);
-            default:
-                throw new \Exception('HPS: Unexpected report type.');
-        }
+        $this->logger->debug('HPS: Trying to load report');
+
+        $depositReport = $this->loadDepositReport();
+        $reversalReport = $this->loadReversalReport();
+
+        $reportTransactions = array_merge($depositReport, $reversalReport);
+
+        $report = new PaymentProcessorReport();
+        $report->setTransactions($reportTransactions);
+
+        return $report;
     }
 
     /**
-     * @param bool $makeArchive
-     * @return DepositReport
+     * @return array
      */
-    protected function loadDepositReport($makeArchive)
+    protected function loadDepositReport()
     {
-        if (!$filename = $this->findReportFile(self::DEPOSIT_REPORT_FILENAME_SUFFIX)) {
-            $this->logger->debug('HPS: deposit report not found');
-            return null;
+        if (!$reportFiles = $this->findReports(self::DEPOSIT_REPORT_FILENAME_SUFFIX)) {
+            $this->logger->alert('HPS: deposit report not found');
+            return [];
         }
-
-        $this->logger->debug('HPS: loading deposit report ' . $filename);
 
         $csvDecoder = new CsvFileDecoder();
         $denormalizer = new HPSDepositReportDenormalizer();
-
         $serializer = new Serializer([$denormalizer], [$csvDecoder]);
 
-        /** @var DepositReport $report */
-        $report = $serializer->deserialize(
-            $filename,
-            'RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReport',
-            'hps_csv_file'
-        );
+        $reportTransactions = [];
+        foreach ($reportFiles as $reportFilename) {
+            $this->logger->debug('HPS: loading deposit report ' . $reportFilename);
 
-        // Archive loaded report
-        if ($makeArchive) {
-            $this->logger->debug('HPS: archiving deposit report ' . $filename);
-            $this->archiveReportFile($filename, self::DEPOSIT_REPORT_FILENAME_SUFFIX);
+            $reportTransactions += $serializer->deserialize(
+                $reportFilename,
+                'RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction',
+                HPSDepositReportDenormalizer::FORMAT
+            );
+
+            $this->logger->debug('HPS: archiving deposit report ' . $reportFilename);
+            $this->archiveReport($reportFilename, self::DEPOSIT_REPORT_FILENAME_SUFFIX);
         }
 
-        return $report;
+        return $reportTransactions;
     }
 
     /**
-     * @param bool $makeArchive
-     * @return ReversalReport
+     * @return array
      */
-    protected function loadReversalReport($makeArchive)
+    protected function loadReversalReport()
     {
-        if (!$filename = $this->findReportFile(self::REVERSAL_REPORT_FILENAME_SUFFIX)) {
-            $this->logger->debug('HPS: reversal report not found');
-            return null;
+        if (!$reportFiles = $this->findReports(self::REVERSAL_REPORT_FILENAME_SUFFIX)) {
+            $this->logger->alert('HPS: reversal report not found');
+            return [];
         }
 
-        $this->logger->debug('HPS: loading reversal report ' . $filename);
+        $reportTransactions = [];
+        foreach ($reportFiles as $reportFilename) {
+            $this->logger->debug('HPS: loading reversal report ' . $reportFilename);
 
-        $csvDecoder = new CsvFileDecoder();
-        $denormalizer = new HPSReversalReportDenormalizer();
+            $csvDecoder = new CsvFileDecoder();
+            $denormalizer = new HPSReversalReportDenormalizer();
 
-        $serializer = new Serializer([$denormalizer], [$csvDecoder]);
+            $serializer = new Serializer([$denormalizer], [$csvDecoder]);
 
-        /** @var ReversalReport $report */
-        $report = $serializer->deserialize(
-            $filename,
-            'RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReport',
-            'hps_csv_file'
-        );
+            $reportTransactions += $serializer->deserialize(
+                $reportFilename,
+                'RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction',
+                HPSReversalReportDenormalizer::FORMAT
+            );
 
-        // Archive loaded report
-        if ($makeArchive) {
-            $this->logger->debug('HPS: archiving reversal report ' . $filename);
-            $this->archiveReportFile($filename, self::REVERSAL_REPORT_FILENAME_SUFFIX);
+            $this->logger->debug('HPS: archiving reversal report ' . $reportFilename);
+            $this->archiveReport($reportFilename, self::REVERSAL_REPORT_FILENAME_SUFFIX);
         }
 
-        return $report;
+        return $reportTransactions;
     }
 
     /**
      * @param string $fileSuffix
-     * @return null|string
+     * @return array
      */
-    protected function findReportFile($fileSuffix)
+    protected function findReports($fileSuffix)
     {
-        return $this->fileFinder->findBySuffix($fileSuffix);
+        return $this->fileFinder->find($fileSuffix);
     }
 
     /**
@@ -147,8 +148,8 @@ class ReportLoader
      * @param string $fileSuffix
      * @return bool
      */
-    protected function archiveReportFile($file, $fileSuffix)
+    protected function archiveReport($file, $fileSuffix)
     {
-        return $this->fileFinder->archive($file, $fileSuffix);
+        return $this->fileArchiver->archive($file, $fileSuffix);
     }
 }

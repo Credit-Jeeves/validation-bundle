@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer;
 
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -25,26 +24,24 @@ class HPSReversalReportDenormalizer implements DenormalizerInterface
      */
     public function denormalize($data, $class, $format = null, array $context = array())
     {
-        $report = new ReversalReport();
-
+        $result = [];
         foreach ($data as $transaction) {
             $reversalTransaction = new ReversalReportTransaction();
-
             $reversalTransaction
-                ->setBatchID($transaction['BatchID'])
+                ->setBatchId($transaction['BatchID'])
                 ->setAmount($transaction['AmountAppliedToBill'])
                 ->setTransactionID($transaction['TransactionID'])
-                ->setOriginalTransactionID($transaction['OriginalTransactionID'])
+                ->setOriginalTransactionId($transaction['OriginalTransactionID'])
                 ->setTransactionDate(
                     $transaction['TransactionDate'] ? new DateTime($transaction['TransactionDate']) : null
                 )
                 ->setTransactionType($this->getTransactionType($transaction))
                 ->setReversalDescription($transaction['ReversalCodeDescription']);
 
-            $report->addTransaction($reversalTransaction);
+            $result[] = $reversalTransaction;
         }
 
-        return $report;
+        return $result;
     }
 
     /**

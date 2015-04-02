@@ -21,7 +21,7 @@ parameters:
     google_maps_key: 'AIzaSyBWwRKgFPdWQYzzwGKaDL83ojLxGGFvGV4' # API account with systems@renttrack.com
 
     session.lifetime: 900 #in seconds
-    payment_report_path: /home/heartland
+    payment_processor.hps.report_path: /home/heartland
     authorize_net:
         login_id: '29fDg7sU24G'
         transaction_key: '474v43G35wJ6Gm2d'

@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
 use RentJeeves\CoreBundle\DateTime;
 
-class ReversalReportTransaction
+class ReversalReportTransaction extends PaymentProcessorReportTransaction
 {
     const TYPE_CANCEL = 'cancel';
     const TYPE_RETURN = 'return';
@@ -13,69 +13,30 @@ class ReversalReportTransaction
 
     /** @var DateTime */
     protected $transactionDate;
+
     /** @var string */
     protected $transactionType;
-    /** @var float */
-    protected $amount;
+
     /** @var string */
-    protected $transactionID;
-    /** @var string */
-    protected $originalTransactionID;
-    /** @var string */
-    protected $batchID;
+    protected $originalTransactionId;
+
     /** @var string */
     protected $reversalDescription;
 
     /**
-     * @return float
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
-
-    /**
-     * @param float $amount
-     */
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
-    public function getBatchID()
+    public function getOriginalTransactionId()
     {
-        return $this->batchID;
+        return $this->originalTransactionId;
     }
 
     /**
-     * @param string $batchID
+     * @param string $originalTransactionId
      */
-    public function setBatchID($batchID)
+    public function setOriginalTransactionId($originalTransactionId)
     {
-        $this->batchID = $batchID;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOriginalTransactionID()
-    {
-        return $this->originalTransactionID;
-    }
-
-    /**
-     * @param string $originalTransactionID
-     */
-    public function setOriginalTransactionID($originalTransactionID)
-    {
-        $this->originalTransactionID = $originalTransactionID;
+        $this->originalTransactionId = $originalTransactionId;
 
         return $this;
     }
@@ -112,24 +73,6 @@ class ReversalReportTransaction
     public function setTransactionDate($transactionDate)
     {
         $this->transactionDate = $transactionDate;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTransactionID()
-    {
-        return $this->transactionID;
-    }
-
-    /**
-     * @param string $transactionID
-     */
-    public function setTransactionID($transactionID)
-    {
-        $this->transactionID = $transactionID;
 
         return $this;
     }

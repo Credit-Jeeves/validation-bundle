@@ -3,8 +3,9 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
 
-abstract class PaymentProcessorReport
+class PaymentProcessorReport
 {
+    /** @var array */
     protected $transactions = [];
 
     /**
@@ -13,5 +14,21 @@ abstract class PaymentProcessorReport
     public function getTransactions()
     {
         return $this->transactions;
+    }
+
+    /**
+     * @param array<PaymentProcessorReportTransaction> $transactions
+     */
+    public function setTransactions(array $transactions)
+    {
+        $this->transactions = $transactions;
+    }
+
+    /**
+     * @param PaymentProcessorReportTransaction $transaction
+     */
+    public function addTransaction(PaymentProcessorReportTransaction $transaction)
+    {
+        $this->transactions[] = $transaction;
     }
 }
