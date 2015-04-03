@@ -147,14 +147,15 @@ class AMSIClient implements ClientInterface
 
     /**
      * @param string $propertyId
+     * @param string $leaseStatus
      * @return PropertyResidents
      * @throws Exception
      */
-    public function getPropertyResidents($propertyId)
+    public function getPropertyResidents($propertyId, $leaseStatus)
     {
         $result = $this->sendRequest(
             'GetPropertyResidents',
-            $this->getParametersForPropertyResidents($propertyId)
+            $this->getParametersForPropertyResidents($propertyId, $leaseStatus)
         );
 
         $result = SerializerXmlHelper::replaceEscapeToCorrectSymbol($result);
@@ -175,12 +176,14 @@ class AMSIClient implements ClientInterface
 
     /**
      * @param string $propertyId
+     * @param string $leaseStatus
      * @return array
      */
-    protected function getParametersForPropertyResidents($propertyId)
+    protected function getParametersForPropertyResidents($propertyId, $leaseStatus)
     {
         $edex = new EDEX();
         $edex->setPropertyId($propertyId);
+        $edex->setLeaseStatus($leaseStatus);
 
         $xmlData = SerializerXmlHelper::removeStandartHeaderXml(
             $this->serializer->serialize(
