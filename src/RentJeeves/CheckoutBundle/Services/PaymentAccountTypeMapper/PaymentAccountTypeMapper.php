@@ -55,7 +55,8 @@ class PaymentAccountTypeMapper
             ->set('card_number', $paymentAccountType->get('CardNumber')->getData())
             ->set('routing_number', $paymentAccountType->get('RoutingNumber')->getData())
             ->set('account_number', $paymentAccountType->get('AccountNumber')->getData())
-            ->set('ach_deposit_type', $paymentAccountType->get('ACHDepositType')->getData());
+            ->set('ach_deposit_type', $paymentAccountType->get('ACHDepositType')->getData())
+            ->set('csc_code', $paymentAccountType->get('VerificationCode')->getData());
 
         return $paymentAccountData;
     }
@@ -102,7 +103,8 @@ class PaymentAccountTypeMapper
                 ->set('address_choice', null)
                 // TODO add to form billing_address_url for exists addresses
                 // $paymentAccountType->get('card')->get('billing_address_url')->getData()
-                ->set('card_number', $paymentAccountType->get('card')->get('account')->getData());
+                ->set('card_number', $paymentAccountType->get('card')->get('account')->getData())
+                ->set('csc_code', $paymentAccountType->get('card')->get('cvv')->getData());
         }
 
         return $paymentAccountData;

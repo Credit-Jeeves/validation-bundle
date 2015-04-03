@@ -11,10 +11,6 @@ use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
 
-/**
- * @method assertEquals
- * @method assertTrue
- */
 class BaseApiTestCase extends BaseTestCase
 {
     const URL_PREFIX = '/api/tenant';
@@ -48,15 +44,20 @@ class BaseApiTestCase extends BaseTestCase
             $response->getContent()
         );
 
-        $contentType = $response->headers->get('Content-Type');
+        // Added because
+        //  - no necessary check it for no-content response
+        //  - Symfony 2.4.10 doesn't return content-type for no-content response
+        if ($statusCode != 204) {
+            $contentType = $response->headers->get('Content-Type');
 
-        $this->assertTrue(isset(static::$formats[$format]), "Content Type \"$contentType\" is not available.");
+            $this->assertTrue(isset(static::$formats[$format]), "Content Type \"$contentType\" is not available.");
 
-        $this->assertContains(
-            $contentType,
-            static::$formats[$format],
-            $response->headers
-        );
+            $this->assertContains(
+                $contentType,
+                static::$formats[$format],
+                $response->headers
+            );
+        }
     }
 
     protected function assertResponseContent($content, $result, $format = 'json')

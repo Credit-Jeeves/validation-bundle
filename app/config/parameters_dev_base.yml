@@ -19,10 +19,6 @@ parameters:
     google_maps_key: 'AIzaSyBsW5-jPDZ2C-l9d62DVgdvQMerbt0XvNo' # API account with staging@renttrack.com
 
     payment_report_path: /tmp
-    authorize_net:
-        login_id: '7hNc5K44'
-        transaction_key: '5588K4QpHFhhqL5A'
-        sandbox: true
     heartland:
         env: testing
         application_id: 3

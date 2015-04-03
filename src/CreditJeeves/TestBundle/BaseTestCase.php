@@ -95,7 +95,7 @@ abstract class BaseTestCase extends MinkTestCase
         }
         $this->getContainer()->get('backup_restore.factory')
             ->getRestoreInstance('doctrine.dbal.default_connection')
-            ->restoreDatabase(AppKernel::BACKUP_DIR_NAME . '/' . AppKernel::BACKUP_FILE_NAME);
+            ->restoreDatabase(__DIR__ . '/../../../' . AppKernel::BACKUP_DIR_NAME . '/' . AppKernel::BACKUP_FILE_NAME);
         self::$isFixturesLoaded = true;
         //@TODO Its hack, because after use load function, for load fixtures, we have problem.
         static::$kernel = null;

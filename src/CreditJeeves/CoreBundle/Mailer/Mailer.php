@@ -105,20 +105,6 @@ class Mailer extends BaseMailer implements MailerInterface
         );
     }
 
-    public function sendReportReceipt(Order $order)
-    {
-        $dateShortFormat = $this->container->getParameter('date_short');
-        return $this->sendEmail(
-            $order->getUser(),
-            'receipt',
-            array(
-                'date' => $order->getCreatedAt()->format($dateShortFormat),
-                'amout' => '$9.00', // TODO move to config file and add correct currency formatting
-                'number' => $order->getAuthorizes()->last()->getTransactionId(),
-            )
-        );
-    }
-
     /**
      * @param User $user
      * @return array

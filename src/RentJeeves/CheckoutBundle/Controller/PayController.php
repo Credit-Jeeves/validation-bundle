@@ -1,9 +1,6 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
@@ -18,7 +15,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use JMS\Serializer\SerializationContext;
 use Exception;

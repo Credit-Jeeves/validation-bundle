@@ -3,7 +3,7 @@
 namespace RentJeeves\ApiBundle\Forms\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
-use Payum\Heartland\Soap\Base\ACHDepositType as HeartlandACHDepositType;
+use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositType as BaseACHDepositType;
 
 class ACHDepositType extends Enum
 {
@@ -19,6 +19,6 @@ class ACHDepositType extends Enum
             return ucfirst($type);
         }
 
-        return HeartlandACHDepositType::UNASSIGNED;
+        return BaseACHDepositType::BUSINESS_CHECKING;
     }
 }

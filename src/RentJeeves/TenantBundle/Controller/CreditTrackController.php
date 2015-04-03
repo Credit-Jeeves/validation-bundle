@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\TenantBundle\Controller;
 
-use Payum\Request\BinaryMaskStatusRequest;
+use Payum2\Request\BinaryMaskStatusRequest;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use RentJeeves\DataBundle\Entity\UserSettings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use JMS\Serializer\SerializationContext;

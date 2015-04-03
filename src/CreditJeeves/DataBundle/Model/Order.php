@@ -62,7 +62,7 @@ abstract class Order
      *     nullable=true
      * )
      */
-    protected $type = OrderType::AUTHORIZE_CARD;
+    protected $type;
 
     /**
      * @ORM\Column(
@@ -99,17 +99,6 @@ abstract class Order
      * @Gedmo\Timestampable(on="update")
      */
     protected $updated_at;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim",
-     *     mappedBy="order",
-     *     cascade={"persist", "remove", "merge"}
-     * )
-     *
-     * @var ArrayCollection
-     */
-    protected $authorizes;
 
     /**
      * @ORM\OneToMany(
@@ -163,7 +152,6 @@ abstract class Order
     public function __construct()
     {
         $this->operations = new ArrayCollection();
-        $this->authorizes = new ArrayCollection();
         $this->heartlands = new ArrayCollection();
         $this->operations = new ArrayCollection();
         $this->sentOrder  = new ArrayCollection();
@@ -171,7 +159,7 @@ abstract class Order
     }
 
     /**
-     * @param OrderExternalApi $externalApi
+     * @param OrderExternalApi $sentOrder
      */
     public function addSendOrder(OrderExternalApi $sentOrder)
     {
@@ -314,7 +302,7 @@ abstract class Order
     /**
      * Set created_date
      *
-     * @param DateTime $createdDate
+     * @param DateTime $createdAt
      * @return Order
      */
     public function setCreatedAt($createdAt)
@@ -381,56 +369,9 @@ abstract class Order
     }
 
     /**
-     * Add Authorize
-     *
-     * @param \CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim
-     * @return Order
-     */
-    public function addAuthorize(\CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim $authorize)
-    {
-        $this->authorizes[] = $authorize;
-
-        return $this;
-    }
-
-    /**
-     * Set authorizes
-     *
-     * @param ArrayCollection $authorizes
-     *
-     * @return Order
-     */
-    public function setAuthorizes(ArrayCollection $authorizes)
-    {
-        $this->authorizes = $authorizes;
-
-        return $this;
-    }
-
-    /**
-     * Remove authorize
-     *
-     * @param \CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim $authorize
-     */
-    public function removeAuthorize(\CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim $authorize)
-    {
-        $this->authorizes->removeElement($authorize);
-    }
-
-    /**
-     * Get authorizes
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAuthorizes()
-    {
-        return $this->authorizes;
-    }
-
-    /**
      * Add order's operation
      *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $operations
+     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
      * @return Order
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)

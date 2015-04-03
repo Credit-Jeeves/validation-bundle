@@ -30,7 +30,7 @@ class PaymentAccountCase extends BaseTestCase
      */
     public function createToken()
     {
-        $payum = $this->getContainer()->get('payum');
+        $payum = $this->getContainer()->get('payum2');
         $paymentAccount = new PaymentAccountManager();
         $paymentAccount->setPayum($payum);
 

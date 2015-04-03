@@ -120,23 +120,19 @@ doctrine:
             heartland:
                 is_bundle: false
                 type: xml
-                dir: %kernel.root_dir%/../vendor/payum/heartland/src/Payum/Heartland/Bridge/Doctrine/Resources/mapping
-                prefix: Payum\Heartland\Bridge\Doctrine\Entity
+                dir: %kernel.root_dir%/../vendor/payum2/heartland/src/Payum2/Heartland/Bridge/Doctrine/Resources/mapping
+                prefix: Payum2\Heartland\Bridge\Doctrine\Entity
 
 stof_doctrine_extensions:
     class:
         loggable: RentJeeves\DataBundle\EventListener\LoggableListener
 
-payum:
+payum2:
     contexts:
         heartland:
             heartland:
                 api:
                     options: %heartland%
-        simple_purchase_authorize_net:
-            authorize_net_aim:
-                api:
-                    options: %authorize_net%
 
 services:
     pdo:

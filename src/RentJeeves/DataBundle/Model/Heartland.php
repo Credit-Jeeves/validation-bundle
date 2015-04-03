@@ -5,7 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Payum\Heartland\Bridge\Doctrine\Entity\PaymentDetails;
+use Payum2\Heartland\Bridge\Doctrine\Entity\PaymentDetails;
 use \DateTime;
 
 /**

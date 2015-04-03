@@ -10,14 +10,13 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
-use Payum\Heartland\Soap\Base\BillTransaction;
-use Payum\Heartland\Soap\Base\CardProcessingMethod;
-use Payum\Heartland\Soap\Base\MakePaymentRequest;
-use Payum\Heartland\Soap\Base\TokenToCharge;
-use Payum\Heartland\Soap\Base\Transaction;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
-use RentJeeves\DataBundle\Entity\Landlord;
+use Payum2\Heartland\Soap\Base\BillTransaction;
+use Payum2\Heartland\Soap\Base\CardProcessingMethod;
+use Payum2\Heartland\Soap\Base\MakePaymentRequest;
+use Payum2\Heartland\Soap\Base\TokenToCharge;
+use Payum2\Heartland\Soap\Base\Transaction;
+use Payum2\Request\BinaryMaskStatusRequest;
+use Payum2\Request\CaptureRequest;
 use RuntimeException;
 use DateTime;
 
@@ -32,7 +31,7 @@ class Terminal
     /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "payum" = @DI\Inject("payum"),
+     *     "payum" = @DI\Inject("payum2"),
      *     "merchantName" = @DI\Inject("%rt_merchant_name%"),
      * })
      */

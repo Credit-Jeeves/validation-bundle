@@ -36,7 +36,7 @@ class AppCjKernel extends AppKernel
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
-            new Payum\Bundle\PayumBundle\PayumBundle(),
+            new Payum2\Bundle\PayumBundle\Payum2Bundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
             new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),

@@ -200,7 +200,6 @@ class OrderAdmin extends Admin
             ->add('sum')
             ->add('created_at')
             ->add('updated_at')
-            ->add('authorizes', null, array('route' => array('name' => 'show')))
             ->add('heartlands', null, array('route' => array('name' => 'show')))
             ->add('operations', null, array('route' => array('name' => 'show')))
             ->add('jobs', null, array('template' => 'AdminBundle:CRUD:orders_show_jobs.html.twig'));
