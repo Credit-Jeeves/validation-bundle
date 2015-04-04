@@ -3,6 +3,7 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -81,11 +82,18 @@ class SourcesController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
-        // TODO: deal with multiple gruops
+        // TODO: deal with multiple groups
         $group = $paymentAccount->getDepositAccounts()->first()->getGroup();
 
         try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser(), $group);
+            // There we can only just edit so we can use any contract
+            // because profile already created for ACI
+            $contract = $this->getUser()->getContracts()->filter(
+                function (Contract $entry) use ($group) {
+                    return $entry->getGroup()->getId() === $group->getId();
+                }
+            )->first();
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
         } catch (\Exception $e) {
             return new JsonResponse(
                 array(

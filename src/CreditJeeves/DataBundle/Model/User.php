@@ -12,6 +12,7 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
@@ -667,6 +668,18 @@ abstract class User extends BaseUser
      * )
      */
     protected $settings;
+
+    /**
+     * @var AciCollectPayUserProfile
+     *
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayUserProfile",
+     *      mappedBy="user",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $aciCollectPayProfile;
 
     /**
      * @ORM\OneToOne(
@@ -2017,6 +2030,23 @@ abstract class User extends BaseUser
     {
         return $this->authCodes;
     }
+
+    /**
+     * @param AciCollectPayUserProfile $aciCollectPayProfile
+     */
+    public function setAciCollectPayProfile(AciCollectPayUserProfile $aciCollectPayProfile)
+    {
+        $this->aciCollectPayProfile = $aciCollectPayProfile;
+    }
+
+    /**
+     * @return AciCollectPayUserProfile
+     */
+    public function getAciCollectPayProfile()
+    {
+        return $this->aciCollectPayProfile;
+    }
+
 
     /**
      * @param PartnerCode $partnerCode

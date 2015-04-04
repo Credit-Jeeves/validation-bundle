@@ -250,6 +250,7 @@ function Pay(parent, contractId) {
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
     this.paymentSource.groupId(contract.groupId);
+    this.paymentSource.contractId(contract.id);
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
     this.questions = ko.observable(parent.questions);

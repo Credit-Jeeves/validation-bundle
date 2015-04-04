@@ -10,6 +10,8 @@ use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
@@ -47,8 +49,16 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaymentAccount(PaymentAccountData $paymentAccountData, User $user, Group $group)
+    public function createPaymentAccount(PaymentAccountData $paymentAccountData, Contract $contract)
     {
+        $group = $contract->getGroup();
+
+        if ($paymentAccountData->getEntity() instanceof GroupAwareInterface) {
+            $user = $paymentAccountData->get('landlord');
+        } else {
+            $user = $contract->getTenant();
+        }
+
         return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group);
     }
 
@@ -66,5 +76,18 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     public function loadReport($reportType, array $settings = [])
     {
         return $this->reportLoader->loadReport($reportType, $settings);
+    }
+
+    /**
+     * Creates a new payment account for User and Group.
+     * Returns payment account token.
+     *
+     * @param PaymentAccountData $data
+     * @param Contract $contract
+     * @return string
+     */
+    public function createPaymentAccountC(PaymentAccountData $data, Contract $contract)
+    {
+        // TODO: Implement createPaymentAccountC() method.
     }
 }

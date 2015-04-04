@@ -83,6 +83,10 @@
             }
         },
         {
+            "type": "vcs",
+            "url": "https://github.com/goetas/serializer.git"
+        },
+        {
             "type": "git",
             "url": "git@github.com:Credit-Jeeves/CoreBundle.git"
         },
@@ -242,7 +246,7 @@
         "fp/universal-error-catcher": "1.0.*",
         "fp/badaboom-bundle": "dev-ton",
         "jms/serializer-bundle": "dev-master",
-        "jms/serializer": "dev-master",
+        "jms/serializer": "xsd2php-dev as 0.18.0",
         "stof/doctrine-extensions-bundle": "dev-master",
         "a2lix/translation-form-bundle": "dev-master",
         "rj/email-bundle": "dev-master",

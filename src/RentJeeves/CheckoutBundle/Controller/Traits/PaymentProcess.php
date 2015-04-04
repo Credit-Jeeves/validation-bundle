@@ -2,7 +2,6 @@
 namespace RentJeeves\CheckoutBundle\Controller\Traits;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Payum2\Payment;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
@@ -21,7 +20,7 @@ use \DateTime;
  * @method mixed get()
  * @method array renderErrors()
  * @method \Doctrine\Bundle\DoctrineBundle\Registry getDoctrine()
- * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
+ * @method \RentJeeves\DataBundle\Entity\Tenant|\RentJeeves\DataBundle\Entity\Landlord getUser()
  */
 trait PaymentProcess
 {
@@ -41,18 +40,22 @@ trait PaymentProcess
      * Creates a new payment account. Right now only Heartland is supported.
      *
      * @param Form $paymentAccountType
-     * @param User $user
-     * @param Group $group
+     * @param Contract $contract
      * @return mixed
      */
-    protected function savePaymentAccount(Form $paymentAccountType, User $user, Group $group)
+    protected function savePaymentAccount(Form $paymentAccountType, Contract $contract)
     {
         $em = $this->getDoctrine()->getManager();
         $paymentAccountEntity = $paymentAccountType->getData();
 
+        $group = $contract->getGroup();
+        $user = $contract->getTenant();
+        $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
+
         if ($paymentAccountEntity instanceof GroupAwareInterface) {
             // if the account can have the group set directly, then set it
             $paymentAccountEntity->setGroup($group);
+            $paymentAccountMapped->set('landlord', $this->getUser());
         } else {
             // otherwise add the the associated depositAccount
             $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneByGroup($group);
@@ -63,14 +66,14 @@ trait PaymentProcess
             }
         }
 
-        $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
         /** @var PaymentProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
-        $token = $paymentProcessor->createPaymentAccount($paymentAccountMapped, $user, $group);
+        $token = $paymentProcessor->createPaymentAccount($paymentAccountMapped, $contract);
 
         $paymentAccountEntity->setToken($token);
 
         if ($paymentAccountEntity instanceof UserAwareInterface) {
+            $paymentAccountEntity->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
             $paymentAccountEntity->setUser($user);
         }
 

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8a7303eb5f22315c8d6a160ff8bfcaee",
+    "hash": "b8a8eeab21c01fa36362f87ee8a82377",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -3030,16 +3030,16 @@
         },
         {
             "name": "jms/serializer",
-            "version": "dev-master",
+            "version": "dev-xsd2php",
             "source": {
                 "type": "git",
-                "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "9b82ea58425f86ea497fce7a592e1ff512be4aaf"
+                "url": "https://github.com/goetas/serializer.git",
+                "reference": "24598efd7b1057cef8179a670e84330131709070"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/9b82ea58425f86ea497fce7a592e1ff512be4aaf",
-                "reference": "9b82ea58425f86ea497fce7a592e1ff512be4aaf",
+                "url": "https://api.github.com/repos/goetas/serializer/zipball/24598efd7b1057cef8179a670e84330131709070",
+                "reference": "24598efd7b1057cef8179a670e84330131709070",
                 "shasum": ""
             },
             "require": {
@@ -3067,7 +3067,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.15-dev"
+                    "dev-master": "0.17-dev"
                 }
             },
             "autoload": {
@@ -3075,16 +3075,13 @@
                     "JMS\\Serializer": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache2"
             ],
             "authors": [
                 {
                     "name": "Johannes M. Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
-                    "role": "Developer of wrapped JMSSerializerBundle"
+                    "email": "schmittjoh@gmail.com"
                 }
             ],
             "description": "Library for (de-)serializing data of any complexity; supports XML, JSON, and YAML.",
@@ -3096,7 +3093,10 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2014-05-02 06:32:31"
+            "support": {
+                "source": "https://github.com/goetas/serializer/tree/xsd2php"
+            },
+            "time": "2015-03-15 20:43:21"
         },
         {
             "name": "jms/serializer-bundle",
@@ -3720,7 +3720,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ACIClient.git",
-                "reference": "8b254917f4a788214334a60384a7fbb733d1c49f"
+                "reference": "ffc7b28adf16e2205a37a9e7293d70a71eef6b41"
             },
             "require": {
                 "ext-curl": "*",
@@ -3765,7 +3765,7 @@
             ],
             "description": "ACI integration with Payum",
             "homepage": "https://github.com/Credit-Jeeves/ACIClient",
-            "time": "2015-03-25 10:38:03"
+            "time": "2015-04-03 23:59:32"
         },
         {
             "name": "payum/core",
@@ -8150,6 +8150,12 @@
             "alias_normalized": "dev-not-approved",
             "version": "dev-ton",
             "package": "fp/badaboom"
+        },
+        {
+            "alias": "0.18.0",
+            "alias_normalized": "0.18.0.0",
+            "version": "dev-xsd2php",
+            "package": "jms/serializer"
         },
         {
             "alias": "0.1.x-dev",

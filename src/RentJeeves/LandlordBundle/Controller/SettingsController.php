@@ -124,9 +124,12 @@ class SettingsController extends Controller
         }
 
         try {
-            $landlord = $this->getUser();
             $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
-            $billing = $this->savePaymentAccount($billingAccountType, $landlord, $this->getCurrentGroup());
+            $billing = $this->savePaymentAccount(
+                $billingAccountType,
+                // We can use any contract because we use only it just for get group in this case
+                $this->getCurrentGroup()->getContracts()->first()
+            );
         } catch (\Exception $e) {
             return new JsonResponse(
                 array(

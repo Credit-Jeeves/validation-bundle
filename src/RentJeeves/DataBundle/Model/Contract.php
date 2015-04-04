@@ -395,6 +395,19 @@ abstract class Contract
      */
     protected $externalLeaseId;
 
+    /**
+     * @var AciCollectPayContractBilling
+     *
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayContractBilling",
+     *      mappedBy="contract",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $aciCollectPayContractBilling;
+
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
@@ -962,5 +975,21 @@ abstract class Contract
     public function getTransUnionStartAt()
     {
         return $this->transUnionStartAt;
+    }
+
+    /**
+     * @param AciCollectPayContractBilling $aciCollectPayContractBilling
+     */
+    public function setAciCollectPayContractBilling(AciCollectPayContractBilling $aciCollectPayContractBilling)
+    {
+        $this->aciCollectPayContractBilling = $aciCollectPayContractBilling;
+    }
+
+    /**
+     * @return AciCollectPayContractBilling
+     */
+    public function getAciCollectPayContractBilling()
+    {
+        return $this->aciCollectPayContractBilling;
     }
 }
