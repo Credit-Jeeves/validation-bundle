@@ -9,6 +9,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
@@ -81,11 +82,11 @@ class AccountingController extends Controller
         $this->checkAccessToAccounting(self::EXPORT);
         if ($request->getMethod() == 'POST') {
             $form = $request->request->get('base_order_report_type');
-            $validationRule = array(
+            $validationRule = [
                 $form['type']
-            );
+            ];
         } else {
-            $validationRule = array('yardi');
+            $validationRule = ['yardi'];
         }
 
         $group = $this->get('core.session.landlord')->getGroup();
@@ -151,13 +152,13 @@ class AccountingController extends Controller
         }
 
         if (!$form->isValid()) {
-            return array(
+            return [
                 'form'            => $form->createView(),
                 'nGroups'         => $this->getGroups()->count(),
                 'source'          => $form->get('fileType')->getData(),
                 'importType'      => $form->get('importType')->getData(),
                 'integrationType' => $integrationType
-            );
+            ];
         }
 
         $importStorage = $importFactory->getStorage($form['fileType']->getData());
@@ -425,14 +426,18 @@ class AccountingController extends Controller
     {
         $importFactory = $this->get('accounting.import.factory');
         $mapping = $importFactory->getMapping();
+        /** @var StorageAbstract $storage */
         $storage = $importFactory->getStorage();
         $propertyMappingManager = $this->get('property_mapping.manager');
-        $propertyMapping = $propertyMappingManager->createPropertyMapping(
-            $storage->getImportPropertyId(),
-            $storage->getImportExternalPropertyId()
-        );
 
-        $residents = $mapping->getResidents($propertyMapping->getExternalPropertyId());
+        if (!$storage->isMultipleProperty()) {
+            $propertyMappingManager->createPropertyMapping(
+                $storage->getImportPropertyId(),
+                $storage->getImportExternalPropertyId()
+            );
+        }
+
+        $residents = $mapping->getResidents($storage->getImportExternalPropertyId());
         $result = $storage->saveToFile($residents);
 
         if ($storage->isOnlyException()) {
@@ -466,6 +471,18 @@ class AccountingController extends Controller
      * )
      */
     public function getResidentsMri()
+    {
+        return $this->getBaseResidents();
+    }
+
+    /**
+     * @Route(
+     *     "/import/residents/amsi",
+     *     name="accounting_import_residents_amsi",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getResidentsAmsi()
     {
         return $this->getBaseResidents();
     }

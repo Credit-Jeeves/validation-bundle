@@ -20,11 +20,22 @@ class YardiSettings extends Base implements SettingsInterface
     const PAYMENT_TYPE_CHECK = 'check';
     const PAYMENT_TYPE_OTHER = 'other';
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParameters()
     {
         return array(
             'url' => $this->getUrl()
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isMultiProperty()
+    {
+        return false;
     }
 
     public function getOrderType(Order $order)

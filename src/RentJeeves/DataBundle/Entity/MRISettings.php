@@ -26,4 +26,12 @@ class MRISettings extends Base implements SettingsInterface
             'authorization' => base64_encode($data),
         ];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isMultiProperty()
+    {
+        return false;
+    }
 }

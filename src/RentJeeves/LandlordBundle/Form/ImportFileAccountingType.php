@@ -85,6 +85,22 @@ class ImportFileAccountingType extends AbstractType
             ]
         );
 
+        $integrationApiSettings = $this->currentGroup->getIntegratedApiSettings();
+
+        if (!is_null($integrationApiSettings) && $integrationApiSettings->isMultiProperty()) {
+            $dataBindProperty =  sprintf(
+                'visible: ($root.source() == "csv")',
+                ImportType::SINGLE_PROPERTY
+            );
+            $propertyGroupValidation = [];
+        } else {
+            $dataBindProperty =  sprintf(
+                'visible: ($root.importType() == "%s" || $root.source() == "integrated_api")',
+                ImportType::SINGLE_PROPERTY
+            );
+            $propertyGroupValidation = ['integrated_api', 'single_property'];
+        }
+
         $builder->add(
             'property',
             'entity',
@@ -95,14 +111,10 @@ class ImportFileAccountingType extends AbstractType
                 'attr'          => array(
                     'force_row' => true,
                     'class' => 'original widthSelect',
-                    'data-bind' => 'visible: ($root.importType() == "' .
-                        ImportType::SINGLE_PROPERTY .
-                        '" || $root.source() == "integrated_api")',
+                    'data-bind' => $dataBindProperty,
                 ),
                 'label_attr' => array(
-                    'data-bind' => 'visible: ($root.importType() == "' .
-                        ImportType::SINGLE_PROPERTY .
-                        '" || $root.source() == "integrated_api")',
+                    'data-bind' => $dataBindProperty,
                 ),
                 'required'      => false,
                 'mapped'        => false,
@@ -117,7 +129,7 @@ class ImportFileAccountingType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
-                            'groups'  => array('integrated_api', 'single_property'),
+                            'groups'  => $propertyGroupValidation,
                             'message' => 'import.errors.single_property_select'
                         )
                     )

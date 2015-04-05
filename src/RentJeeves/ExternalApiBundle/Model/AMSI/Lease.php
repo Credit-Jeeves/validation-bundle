@@ -226,7 +226,7 @@ class Lease
      * @Serializer\Groups({"AMSI"})
      * @Serializer\Type("string")
      *
-     * @var float
+     * @var string
      */
     protected $leaseEndDate;
 
@@ -269,6 +269,58 @@ class Lease
      * @var float
      */
     protected $quotedRent;
+
+    /**
+     * @Serializer\SerializedName("ActualMoveOutDate")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $actualMoveOutDate;
+
+    /**
+     * @Serializer\SerializedName("State")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $state;
+
+    /**
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActualMoveOutDate()
+    {
+        return $this->actualMoveOutDate;
+    }
+
+    /**
+     * @param string $actualMoveOutDate
+     */
+    public function setActualMoveOutDate($actualMoveOutDate)
+    {
+        $this->actualMoveOutDate = $actualMoveOutDate;
+    }
 
     /**
      * @return Address
@@ -559,10 +611,14 @@ class Lease
     }
 
     /**
-     * @return string
+     * @return string|DateTime
      */
-    public function getLeaseBeginDate()
+    public function getLeaseBeginDate($returnObject = false)
     {
+        if ($returnObject && !empty($this->leaseBeginDate)) {
+            return \DateTime::createFromFormat('d/m/Y', $this->leaseBeginDate);
+        }
+
         return $this->leaseBeginDate;
     }
 
@@ -575,15 +631,19 @@ class Lease
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getLeaseEndDate()
+    public function getLeaseEndDate($returnObject)
     {
+        if ($returnObject && !empty($this->leaseEndDate)) {
+            return \DateTime::createFromFormat('d/m/Y', $this->leaseEndDate);
+        }
+
         return $this->leaseEndDate;
     }
 
     /**
-     * @param float $leaseenddate
+     * @param string $leaseenddate
      */
     public function setLeaseEndDate($leaseenddate)
     {

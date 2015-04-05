@@ -6,7 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Entity\DepositAccount;
@@ -164,5 +166,28 @@ class Group extends BaseGroup
         }
 
         return $this->accountNumberMapping;
+    }
+
+    /**
+     * @return null|SettingsInterface
+     */
+    public function getIntegratedApiSettings()
+    {
+        $holding = $this->getHolding();
+        $accountingSetting = $holding->getAccountingSettings();
+        $apiIntegration = $accountingSetting->getApiIntegration();
+
+        switch ($apiIntegration) {
+            case ApiIntegrationType::AMSI:
+                return $holding->getAmsiSettings();
+            case ApiIntegrationType::MRI:
+                return $holding->getMriSettings();
+            case ApiIntegrationType::RESMAN:
+                return $holding->getResManSettings();
+            case ApiIntegrationType::YARDI_VOYAGER:
+                return $holding->getYardiSettings();
+        }
+
+        return null;
     }
 }
