@@ -16,6 +16,6 @@ class AMSISettings extends Base implements SettingsInterface
      */
     public function getParameters()
     {
-        return [];
+        return ['url' => $this->getUrl()];
     }
 }

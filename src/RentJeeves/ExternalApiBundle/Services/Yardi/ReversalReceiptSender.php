@@ -15,7 +15,7 @@ use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum as SoapClient;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum as SoapClient;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -157,7 +157,7 @@ class ReversalReceiptSender
     protected function pushReceipts(YardiSettings $settings, $transactions)
     {
         /** @var $residentClient ResidentTransactionsClient */
-        $residentClient = $this->clientFactory->getClient($settings, SoapClient::RESIDENT_TRANSACTIONS);
+        $residentClient = $this->clientFactory->getClient($settings, SoapClient::YARDI_RESIDENT_TRANSACTIONS);
 
         /** @var Order $transaction */
         foreach ($transactions as $transaction) {

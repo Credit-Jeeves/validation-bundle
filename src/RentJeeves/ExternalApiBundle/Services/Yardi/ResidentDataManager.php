@@ -8,7 +8,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 
 /**
@@ -106,7 +106,7 @@ class ResidentDataManager
      */
     public function getResidentTransactions(Holding $holding, $externalPropertyId)
     {
-        $client = $this->getApiClient($holding, YardiClientEnum::RESIDENT_TRANSACTIONS);
+        $client = $this->getApiClient($holding, SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS);
 
         return $client->getResidentTransactions($externalPropertyId);
     }
@@ -115,7 +115,7 @@ class ResidentDataManager
      * @param Holding $holding
      * @return ResidentDataClient
      */
-    protected function getApiClient(Holding $holding, $client = YardiClientEnum::RESIDENT_DATA)
+    protected function getApiClient(Holding $holding, $client = SoapClientEnum::YARDI_RESIDENT_DATA)
     {
         return $this->clientFactory->getClient(
             $holding->getYardiSettings(),

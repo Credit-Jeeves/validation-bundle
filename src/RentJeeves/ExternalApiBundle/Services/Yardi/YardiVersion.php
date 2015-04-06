@@ -7,7 +7,7 @@ use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -55,7 +55,7 @@ class YardiVersion
                 /** @var ResidentTransactionsClient $residentClient */
                 $residentClient = $this->clientFactory->getClient(
                     $holding->getYardiSettings(),
-                    YardiClientEnum::RESIDENT_TRANSACTIONS
+                    SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS
                 );
                 $version = $residentClient->getVersionNumber();
                 $this->logMessage(sprintf("Current version for holding %s is %s", $holding->getName(), $version));

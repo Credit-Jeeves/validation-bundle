@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Soap;
 
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use \Exception;
@@ -18,7 +18,7 @@ class SoapClientFactory
 
     public function getClient(SettingsInterface $settings, $type, $debug = false)
     {
-        if (!in_array($type, YardiClientEnum::all())) {
+        if (!in_array($type, SoapClientEnum::all())) {
             throw new Exception("Such client({$type}) does not exist");
         }
 

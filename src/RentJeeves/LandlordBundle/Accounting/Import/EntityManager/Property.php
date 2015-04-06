@@ -65,9 +65,7 @@ trait Property
     protected function tryMapPropertyByUnit(EntityProperty $property, $unitName, $unitId)
     {
         if ($this->group) {
-            /**
-             * @var $unit Unit
-             */
+            /** @var $unit Unit */
             $unit = $this->em->getRepository('RjDataBundle:Unit')
                 ->getImportUnit(
                     $this->group->getId(),
