@@ -14,6 +14,7 @@ imports:
     - { resource: ../rj/twig.yml }
     - { resource: ../base/apy_js_form_validation.yml }
     - { resource: ../base/fos_oauth_server.yml }
+    - { resource: ../base/aci.yml }
 
 parameters:
     server_name: '%server_name_rj%'
