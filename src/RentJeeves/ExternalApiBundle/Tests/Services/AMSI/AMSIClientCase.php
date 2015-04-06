@@ -2,9 +2,11 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Services\AMSI;
 
+use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use RentJeeves\ExternalApiBundle\Model\AMSI\OpenItem;
+use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
 use RentJeeves\ExternalApiBundle\Services\AMSI\AMSIClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
@@ -13,6 +15,9 @@ class AMSIClientCase extends Base
 {
     const EXTERNAL_PROPERTY_ID = '001';
 
+    /**
+     * @var AMSISettings
+     */
     public $settings;
 
     /**
@@ -79,6 +84,23 @@ class AMSIClientCase extends Base
             $openItem
         );
         $this->assertNotEmpty($openItem->getOccuLastName());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldGetPropertyUnits()
+    {
+        $client = $this->getClient();
+        $client->setDebug(false);
+        $units = $client->getPropertyUnits(self::EXTERNAL_PROPERTY_ID);
+        $this->assertCount(64, $units);
+        /** @var Unit $unit */
+        $unit = $units[0];
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\AMSI\Unit',
+            $unit
+        );
     }
 
     /**

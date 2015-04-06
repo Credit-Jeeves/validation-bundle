@@ -7,6 +7,7 @@ use JMS\Serializer\SerializationContext;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\ExternalApiBundle\Model\AMSI\EDEX;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents;
+use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyUnits;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\SoapDebuggableTrait as SoapDebug;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
@@ -146,6 +147,64 @@ class AMSIClient implements ClientInterface
     }
 
     /**
+     * @param $propertyId
+     * @return array
+     * @throws Exception
+     */
+    public function getPropertyUnits($propertyId)
+    {
+        $result = $this->sendRequest(
+            'GetPropertyUnits',
+            $this->getParametersForPropertyUnits($propertyId)
+        );
+
+
+        $result = SerializerXmlHelper::replaceEscapeToCorrectSymbol($result);
+        /** @var PropertyUnits $propertyUnits */
+        $propertyUnits = $this->serializer->deserialize(
+            $result,
+            'RentJeeves\ExternalApiBundle\Model\AMSI\PropertyUnits',
+            'xml',
+            $this->getDeserializationContext()
+        );
+
+        if ($propertyUnits instanceof PropertyUnits && count($propertyUnits->getUnits()) > 0) {
+            return $propertyUnits->getUnits();
+        }
+
+        throw new Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
+    }
+
+    /**
+     * @param $propertyId
+     * @return array
+     */
+    protected function getParametersForPropertyUnits($propertyId)
+    {
+        $edex = new EDEX();
+        $edex->setPropertyId($propertyId);
+
+        $xmlData = SerializerXmlHelper::removeStandartHeaderXml(
+            $this->serializer->serialize(
+                $edex,
+                'xml',
+                $this->getSerializationContext(['GetPropertyUnits'])
+            )
+        );
+        $xmlData = SerializerXmlHelper::addCDataToString($xmlData);
+        $xmlData = SerializerXmlHelper::addTagWithNameSpaceToString('XMLData', 'ns1', $xmlData);
+
+        $parameters = [
+            'GetPropertyUnits' => array_merge(
+                $this->getLoginCredentials(),
+                ['XMLData'=> new \SoapVar($xmlData, XSD_ANYXML)]
+            ),
+        ];
+
+        return $parameters;
+    }
+
+    /**
      * @param string $propertyId
      * @param string $leaseStatus
      * @return PropertyResidents
@@ -189,7 +248,7 @@ class AMSIClient implements ClientInterface
             $this->serializer->serialize(
                 $edex,
                 'xml',
-                $this->getSerializationContext()
+                $this->getSerializationContext(['GetPropertyResidents'])
             )
         );
         $xmlData = SerializerXmlHelper::addCDataToString($xmlData);
@@ -218,12 +277,13 @@ class AMSIClient implements ClientInterface
     }
 
     /**
+     * @param array $groups
      * @return SerializationContext
      */
-    protected function getSerializationContext()
+    protected function getSerializationContext($groups)
     {
         $serializerContext = new SerializationContext();
-        $serializerContext->setGroups(['AMSI']);
+        $serializerContext->setGroups($groups);
 
         return $serializerContext;
     }
