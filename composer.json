@@ -277,7 +277,8 @@
         "sensio/generator-bundle": "dev-master",
         "khepin/yaml-fixtures-bundle": "dev-master",
         "comfortablynumb/backup-restore-bundle": "dev-master",
-        "ton/email-bundle": "1.0.*"
+        "ton/email-bundle": "1.0.*",
+        "fabpot/php-cs-fixer": "@stable"
     },
     "scripts": {
         "post-install-cmd": [
