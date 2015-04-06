@@ -2,7 +2,6 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
@@ -99,6 +98,20 @@ abstract class DepositAccount
      */
     protected $paymentAccounts;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(type="integer", length=11, nullable=true)
+     */
+    protected $mid;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", name="is_passed_ach")
+     */
+    protected $passedAch;
+
     public function __construct()
     {
         $this->paymentAccounts = new ArrayCollection();
@@ -107,7 +120,7 @@ abstract class DepositAccount
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -117,7 +130,7 @@ abstract class DepositAccount
     /**
      * Set processorToken
      *
-     * @param string $merchantName
+     * @param  string         $merchantName
      * @return DepositAccount
      */
     public function setMerchantName($merchantName)
@@ -217,12 +230,13 @@ abstract class DepositAccount
     /**
      * Add payment account
      *
-     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
+     * @param  \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
      * @return DepositAccount
      */
     public function addPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
     {
         $this->paymentAccounts->add($paymentAccount);
+
         return $this;
     }
 
@@ -244,5 +258,37 @@ abstract class DepositAccount
     public function getPaymentAccounts()
     {
         return $this->paymentAccounts;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMid()
+    {
+        return $this->mid;
+    }
+
+    /**
+     * @param int $mid
+     */
+    public function setMid($mid)
+    {
+        $this->mid = $mid;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPassedAch()
+    {
+        return $this->passedAch;
+    }
+
+    /**
+     * @param boolean $passedAch
+     */
+    public function setPassedAch($passedAch)
+    {
+        $this->passedAch = $passedAch;
     }
 }

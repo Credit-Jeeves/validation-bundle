@@ -60,7 +60,7 @@ class OrderManager
     /**
      * Creates a new order for rent payment.
      *
-     * @param Payment $payment
+     * @param  Payment $payment
      * @return Order
      */
     public function createRentOrder(Payment $payment)
@@ -78,7 +78,12 @@ class OrderManager
             $order->setFee(round($order->getSum() * ($contract->getDepositAccount()->getFeeCC() / 100), 2));
             $order->setType(OrderType::HEARTLAND_CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $order->setFee($contract->getDepositAccount()->getFeeACH());
+            if (true === $contract->getDepositAccount()->isPassedAch()) {
+                $order->setFee($contract->getDepositAccount()->getFeeACH());
+            } else {
+                $order->setFee(0);
+            }
+
             $order->setType(OrderType::HEARTLAND_BANK);
         }
 
@@ -88,7 +93,7 @@ class OrderManager
     /**
      * Creates a new order for credit track payment.
      *
-     * @param PaymentAccount $paymentAccount
+     * @param  PaymentAccount $paymentAccount
      * @return Order
      */
     public function createCreditTrackOrder(PaymentAccount $paymentAccount)
@@ -118,7 +123,7 @@ class OrderManager
      * Creates rent operations for given payment and order.
      *
      * @param Payment $payment
-     * @param Order $order
+     * @param Order   $order
      */
     protected function createRentOperations(Payment $payment, Order $order)
     {
@@ -136,7 +141,7 @@ class OrderManager
      * Creates operations if only balance is paid.
      *
      * @param Payment $payment
-     * @param Order $order
+     * @param Order   $order
      */
     protected function createBalanceBasedOperations(Payment $payment, Order $order)
     {
@@ -185,7 +190,7 @@ class OrderManager
      * Creates plain rent operations.
      *
      * @param Payment $payment
-     * @param Order $order
+     * @param Order   $order
      */
     protected function createRegularOperations(Payment $payment, Order $order)
     {
