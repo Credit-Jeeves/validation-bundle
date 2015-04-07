@@ -13,12 +13,12 @@ use Symfony\Component\Security\Core\SecurityContext;
 class MappingAMSI extends MappingCsv
 {
     /**
-     * @var $residentDataManager ResidentDataManager
+     * @var ResidentDataManager $residentDataManager
      */
     protected $residentDataManager;
 
     /**
-     * @var $settings AMSISettings
+     * @var AMSISettings $settings
      */
     protected $settings;
 
@@ -37,7 +37,7 @@ class MappingAMSI extends MappingCsv
         if (empty($holding)) {
             throw new ImportMappingException(
                 sprintf(
-                    "User(id:%s) don't have holding",
+                    "User(id:%s) doesn't have holding",
                     $securityContext->getToken()->getUser()->getId()
                 )
             );

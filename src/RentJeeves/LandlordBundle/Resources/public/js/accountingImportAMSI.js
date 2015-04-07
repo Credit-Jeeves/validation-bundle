@@ -12,9 +12,12 @@ function accountingImportAmsi() {
         self.classLoadDataMessage('');
         self.showSpinner(false);
 
-        return self.superclass.loadData(false);
+        self.superclass.loadData(false);
     }
 
+    /**
+     * @param boolean next
+     */
     this.loadData = function(next) {
         if (self.isFinishUploadDataToServer() === false) {
             self.showSpinner(true);

@@ -2754,15 +2754,15 @@
             </trans-unit>
             <trans-unit id="mri.import.error.getResidents">
                 <source>mri.import.error.getResidents</source>
-                <target>Can not get resident from MRI api.</target>
+                <target>Can not get residents from MRI api.</target>
             </trans-unit>
             <trans-unit id="amsi.import.error.getResidents">
                 <source>amsi.import.error.getResidents</source>
-                <target>Can not get resident from AMSI api.</target>
+                <target>Can not get residents from AMSI api.</target>
             </trans-unit>
             <trans-unit id="resman.import.error.getResidents">
                 <source>resman.import.error.getResidents</source>
-                <target>Can not get resident from resman api.</target>
+                <target>Can not get residents from resman api.</target>
             </trans-unit>
             <trans-unit id="csv.import.error.update_matched_contracts">
                 <source>csv.import.error.update_matched_contracts</source>

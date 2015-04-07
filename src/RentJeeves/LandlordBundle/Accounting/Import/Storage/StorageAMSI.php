@@ -56,11 +56,12 @@ class StorageAMSI extends ExternalApiStorage
     }
 
     /**
-     * @param array $residents
+     * @param  array   $residentLeases
+     * @return boolean
      */
-    public function saveToFile(array $residents)
+    public function saveToFile(array $residentLeases)
     {
-        if (count($residents) <= 0) {
+        if (count($residentLeases) <= 0) {
             return false;
         }
 
@@ -70,7 +71,7 @@ class StorageAMSI extends ExternalApiStorage
         }
 
         /** @var Lease $lease */
-        foreach ($residents as $lease) {
+        foreach ($residentLeases as $lease) {
             $paymentAccepted = $lease->getBlockPaymentAccess();
             if (strtolower($paymentAccepted) === 'y') {
                 $paymentAccepted = PaymentAccepted::ANY;
@@ -84,8 +85,8 @@ class StorageAMSI extends ExternalApiStorage
 
             $balance = $lease->getEndBalance();
             $rent = $lease->getRentAmount();
-            $startAt = $lease->getLeaseBeginDate(true);
-            $finishAt = $lease->getLeaseEndDate(true);
+            $startAt = $lease->getLeaseBeginDateObject();
+            $finishAt = $lease->getLeaseEndDateObject();
             $today = new \DateTime();
             if ($finishAt instanceof \DateTime && $today > $finishAt) {
                 $monthToMonth = 'Y';
@@ -116,7 +117,7 @@ class StorageAMSI extends ExternalApiStorage
                     $lease->getUnitId()
                 );
 
-                $data = array(
+                $data = [
                     $residentId,
                     $unitName,
                     $this->getDateString($startAt),
@@ -125,7 +126,7 @@ class StorageAMSI extends ExternalApiStorage
                     $firstName,
                     $lastName,
                     $email,
-                    $moveOut = null,
+                    $moveOut = null, // see todo
                     $balance,
                     $monthToMonth,
                     $paymentAccepted,
@@ -136,7 +137,7 @@ class StorageAMSI extends ExternalApiStorage
                     $zip,
                     $country,
                     $state
-                );
+                ];
 
                 $this->writeCsvToFile($data);
             }

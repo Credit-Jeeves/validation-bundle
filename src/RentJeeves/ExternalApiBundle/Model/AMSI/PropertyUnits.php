@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Model\AMSI;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Serializer\XmlRoot("PropertyResidents")
+ * @Serializer\XmlRoot("PropertyUnits")
  */
 class PropertyUnits
 {

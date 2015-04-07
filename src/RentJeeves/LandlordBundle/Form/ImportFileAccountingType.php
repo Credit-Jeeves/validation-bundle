@@ -4,7 +4,6 @@ namespace RentJeeves\LandlordBundle\Form;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -88,13 +87,10 @@ class ImportFileAccountingType extends AbstractType
         $integrationApiSettings = $this->currentGroup->getIntegratedApiSettings();
 
         if (!is_null($integrationApiSettings) && $integrationApiSettings->isMultiProperty()) {
-            $dataBindProperty =  sprintf(
-                'visible: ($root.source() == "csv")',
-                ImportType::SINGLE_PROPERTY
-            );
+            $dataBindProperty = 'visible: ($root.source() == "csv")';
             $propertyGroupValidation = [];
         } else {
-            $dataBindProperty =  sprintf(
+            $dataBindProperty = sprintf(
                 'visible: ($root.importType() == "%s" || $root.source() == "integrated_api")',
                 ImportType::SINGLE_PROPERTY
             );
@@ -173,7 +169,6 @@ class ImportFileAccountingType extends AbstractType
             )
         );
 
-
         $builder->add(
             'attachment',
             'file',
@@ -230,7 +225,6 @@ class ImportFileAccountingType extends AbstractType
                 ),
             )
         );
-
 
         $builder->add(
             'textDelimiter',
@@ -300,7 +294,6 @@ class ImportFileAccountingType extends AbstractType
                 ),
             )
         );
-
 
         $builder->add(
             'onlyException',
@@ -372,6 +365,7 @@ class ImportFileAccountingType extends AbstractType
 
                         return $groups;
                     }
+
                     return $self->validationGroups;
                 }
             )

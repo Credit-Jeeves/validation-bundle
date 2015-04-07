@@ -2,12 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Fp\BadaBoomBundle\ExceptionCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
-use RentJeeves\ExternalApiBundle\Services\AMSI\AMSIClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
@@ -55,17 +52,17 @@ class ResidentDataManager
     }
 
     /**
-     * @param $externalPropertyId
+     * @param  string $externalPropertyId
      * @return array
      */
     public function getResidents($externalPropertyId)
     {
         $this->logger->debug(sprintf("Get AMSI Residents by external property ID:%s", $externalPropertyId));
         $client = $this->getApiClient();
-        $propertyResidentsC = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'C'); // (C)urrent
-        $propertyResidentsN = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'N'); //(N)otice
+        $currentResidents = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'C'); // (C)urrent
+        $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'N'); //(N)otice
 
-        $leases = array_merge($propertyResidentsC->getLease(), $propertyResidentsN->getLease());
+        $leases = array_merge($currentResidents->getLease(), $residentsOnNotice->getLease());
 
         $units = $client->getPropertyUnits($externalPropertyId);
         /** @var Unit $unit */

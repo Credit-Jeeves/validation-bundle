@@ -16,13 +16,9 @@ use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\DataBundle\Model\Unit;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\LandlordBundle\Form\Enum\ImportType;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- */
-class ImportCase extends BaseTestCase
+class ImportCase extends ImportBaseAbstract
 {
     protected $mapFile = array(
         '1' => ImportMapping::KEY_UNIT,
@@ -77,27 +73,8 @@ class ImportCase extends BaseTestCase
         $sep = DIRECTORY_SEPARATOR;
         $filePath = getcwd();
         $filePath .= $sep.'data'.$sep.'fixtures'.$sep.$fileName;
+
         return $filePath;
-    }
-
-    protected function waitReviewAndPost($waitSubmit = true)
-    {
-        $this->session->wait(
-            10000,
-            "$('.overlay-trigger').length > 0"
-        );
-
-        $this->session->wait(
-            21000,
-            "$('.overlay-trigger').length <= 0"
-        );
-
-        if ($waitSubmit == true) {
-            $this->session->wait(
-                10000,
-                "$('.submitImportFile>span').is(':visible')"
-            );
-        }
     }
 
     protected function getParsedTrsByStatus()
@@ -784,7 +761,6 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(1, count($trs), "Count statuses is wrong");
         $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
 
-
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
         $this->assertNotNull($firstName1 = $this->page->find('css', 'input.1_first_name'));
@@ -1252,7 +1228,6 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
-
         /**
          * @var $em EntityManager
          */
@@ -1325,7 +1300,6 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(1, count($contracts));
         $this->logout();
     }
-
 
     /**
      * @test
@@ -1571,7 +1545,6 @@ class ImportCase extends BaseTestCase
         );
     }
 
-
     /**
      * @test
      * @dataProvider providerForShouldCreateOperation
@@ -1699,7 +1672,6 @@ class ImportCase extends BaseTestCase
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $this->assertNull($errorFields = $this->page->find('css', 'input.errorField'));
-
 
         $trs = $this->getParsedTrsByStatus();
 
@@ -1872,7 +1844,6 @@ class ImportCase extends BaseTestCase
         $this->assertNotEmpty($contract);
     }
 
-
     /**
      * @test
      */
@@ -2012,10 +1983,7 @@ class ImportCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getEntityManager();
         /** @var $landlord Landlord */
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
         /** @var AccountingSettings $accountingSettings */
@@ -2070,55 +2038,5 @@ class ImportCase extends BaseTestCase
         $this->assertCount(25, $contract);
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
         $this->assertCount(10, $contractWaiting);
-    }
-
-
-    /**
-     * @test
-     */
-    public function amsiBaseImport()
-    {
-        $this->load(true);
-        $this->setDefaultSession('selenium2');
-        $em = $this->getEntityManager();
-        /** @var $landlord Landlord */
-        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
-        /** @var AccountingSettings $accountingSettings */
-        $accountingSettings = $landlord->getHolding()->getAccountingSettings();
-        $accountingSettings->setApiIntegration(ApiIntegrationType::AMSI);
-        $em->flush($accountingSettings);
-        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        // We must make sure the data saved into DB, so we count before import and after
-        $this->assertEquals(23, count($contract));
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(1, count($contractWaiting));
-
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        //First Step
-        $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
-        $this->assertNotNull($source = $this->page->findAll('css', '.radio'));
-        $source[1]->click();
-        $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
-        $propertyId->setValue('001');
-        $submitImport->click();
-
-        $this->session->wait(
-            80000,
-            "$('table').is(':visible')"
-        );
-        $this->waitReviewAndPost();
-        for ($i = 0; $i <= 2; $i++) {
-            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
-            $submitImportFile->click();
-            $this->waitReviewAndPost();
-        }
-
-        // We must make sure the data saved into DB, so we count before import and after
-        $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertEquals(31, count($contracts));
-        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(14, count($contractsWaiting));
     }
 }

@@ -634,9 +634,14 @@ class Lease
     /**
      * @return string|DateTime
      */
-    public function getLeaseBeginDate($returnObject = false)
+    public function getLeaseBeginDate()
     {
-        if ($returnObject && !empty($this->leaseBeginDate)) {
+        return $this->leaseBeginDate;
+    }
+
+    public function getLeaseBeginDateObject()
+    {
+        if (!empty($this->leaseBeginDate)) {
             return \DateTime::createFromFormat('d/m/Y', $this->leaseBeginDate);
         }
 
@@ -654,9 +659,14 @@ class Lease
     /**
      * @return string
      */
-    public function getLeaseEndDate($returnObject)
+    public function getLeaseEndDate()
     {
-        if ($returnObject && !empty($this->leaseEndDate)) {
+        return $this->leaseEndDate;
+    }
+
+    public function getLeaseEndDateObject()
+    {
+        if (!empty($this->leaseEndDate)) {
             return \DateTime::createFromFormat('d/m/Y', $this->leaseEndDate);
         }
 
