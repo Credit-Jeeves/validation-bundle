@@ -39,31 +39,42 @@ trait Tenant
      */
     protected function setTenant(array $row)
     {
+        $residentId = $row[Mapping::KEY_RESIDENT_ID];
+        $email = $row[Mapping::KEY_EMAIL];
         /**
          * @var $tenant EntityTenant
          */
+        $this->logger->debug(
+            sprintf('Looking up resident by external resident id: %s or email: %s', $residentId,  $email)
+        );
         $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImportWithResident(
-            $row[Mapping::KEY_EMAIL],
-            $row[Mapping::KEY_RESIDENT_ID],
+            $email,
+            $residentId,
             $this->user->getHolding()->getId()
         );
 
         if (!empty($tenant)) {
             /** @var $residentMapping ResidentMapping */
             $residentMapping = $tenant->getResidentsMapping()->first();
-            if ($residentMapping && $residentMapping->getResidentId() !== $row[Mapping::KEY_RESIDENT_ID]) {
+            if ($residentMapping && $residentMapping->getResidentId() !== $residentId) {
+                $this->logger->warn(
+                    "Imported resident id: " . $residentId . " doesn't match DB " . $residentMapping->getResidentId()
+                );
                 $tenant = $this->createTenant($row);
                 $this->currentImportModel->setTenant($tenant);
                 $this->userEmails[$tenant->getEmail()] = 2; //Make it error, because resident ID different
 
                 return;
             }
+
+            $this->logger->debug(sprintf('Tenant found: %s',$tenant->getFullName()));
             $this->currentImportModel->setTenant($tenant);
             $this->fillUsersEmailAndResident($tenant, $row);
 
             return;
         }
 
+        $this->logger->debug('Tenant not found. Create new record.');
         $this->currentImportModel->setTenant($tenant = $this->createTenant($row));
         $this->fillUsersEmailAndResident($tenant, $row);
     }

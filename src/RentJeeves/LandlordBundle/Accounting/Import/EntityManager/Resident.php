@@ -29,14 +29,17 @@ trait Resident
     protected function addResidentId($residentId)
     {
         $email = $this->currentImportModel->getTenant()->getEmail();
+        // note that we have seen this residentId before
         if (!isset($this->usedResidentsIds[$residentId])) {
             $this->usedResidentsIds[$residentId] = 1;
         }
 
+        // note that we have seen email before for this residentId
         if (!empty($email) && !isset($this->usedEmails[$email])) {
             $this->usedEmails[$email] = $residentId;
         }
 
+        // note that we have seen this residentId for more than one email
         if (!empty($email) && $residentId !== $this->usedEmails[$email]) {
             $this->usedResidentsIds[$residentId]++;
             $this->usedEmails[$email] = $residentId;

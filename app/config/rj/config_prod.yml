@@ -17,6 +17,7 @@ framework:
 #        query_cache_driver: apc
 
 monolog:
+    channels: ["import"]
     handlers:
         main:
             type:         fingers_crossed

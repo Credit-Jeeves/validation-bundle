@@ -11,6 +11,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Monolog\Logger;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -35,12 +36,14 @@ class StorageCsv extends StorageAbstract
 
     /**
      * @InjectParams({
-     *     "session" = @Inject("session")
+     *     "session" = @Inject("session"),
+     *     "logger"  = @Inject("monolog.logger.import")
      * })
      */
-    public function __construct(Session $session)
+    public function __construct(Session $session, Logger $logger)
     {
         $this->session = $session;
+        $this->logger = $logger;
     }
 
     public function setDateFormat($format)
@@ -158,6 +161,8 @@ class StorageCsv extends StorageAbstract
 
         $this->setOnlyException($onlyException);
         $this->setDateFormat($dateFormat);
+
+        $this->logger->debug(sprintf('Setup import of type: %s', $importType));
     }
 
     /**

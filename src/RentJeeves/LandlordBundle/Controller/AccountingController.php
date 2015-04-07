@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\Serializer\Serializer;
+use Monolog\Logger;
 
 /**
  * @Route("/accounting")
@@ -40,6 +41,16 @@ class AccountingController extends Controller
     const IMPORT = 'import';
 
     const EXPORT = 'export';
+
+    /**
+     * @return Logger
+     */
+    protected function getImportLogger()
+    {
+        # custom channel configured in app/config/rj/config_*.yml
+        # see http://symfony.com/doc/current/cookbook/logging/channels_handlers.html#cookbook-monolog-channels-config
+        return $this->get('monolog.logger.import');
+    }
 
     protected function checkAccessToAccounting($type = self::IMPORT)
     {
@@ -128,6 +139,8 @@ class AccountingController extends Controller
      */
     public function importFileAction(Request $request)
     {
+        $this->getImportLogger()->debug("Enter: importFileAction");
+
         $this->checkAccessToAccounting();
         $form = $this->createForm(
             new ImportFileAccountingType(
@@ -154,6 +167,8 @@ class AccountingController extends Controller
             ];
         }
 
+        $this->getImportLogger()->debug("Import requested. Type: " + $form['fileType']->getData());
+
         $importStorage = $importFactory->getStorage($form['fileType']->getData());
         $importStorage->setImportData($form);
         $importStorage->setStorageType(
@@ -174,6 +189,8 @@ class AccountingController extends Controller
      */
     public function matchFileAction(Request $request)
     {
+        $this->getImportLogger()->debug("Enter: matchFileAction");
+
         $this->checkAccessToAccounting();
         try {
             /**
@@ -236,6 +253,8 @@ class AccountingController extends Controller
      */
     public function importAction(Request $request)
     {
+        $this->getImportLogger()->debug("Enter: importAction");
+
         $this->checkAccessToAccounting();
         try {
             /** @var ImportFactory $importFactory */
@@ -279,12 +298,16 @@ class AccountingController extends Controller
      */
     public function getRowsAction(Request $request)
     {
+        $this->getImportLogger()->debug("Enter: getRowsAction");
+
         $result = array(
             'error'   => false,
             'message' => '',
         );
 
         if (!$this->isAjaxRequestValid()) {
+            $this->getImportLogger()->error($this->get('translator')->trans('import.error.access'));
+
             $result['error'] = true;
             $result['message'] = $this->get('translator')->trans('import.error.access');
 
@@ -295,11 +318,18 @@ class AccountingController extends Controller
          * @var $importFactory ImportFactory
          */
         $importFactory = $this->get('accounting.import.factory');
+
+        $this->getImportLogger()->debug("Getting Import Storage");
         $storage = $importFactory->getStorage();
+        $this->getImportLogger()->debug("Getting Import Mapping");
         $mapping = $importFactory->getMapping();
+
+        $this->getImportLogger()->debug("Import ready!");
 
         // convert from string to boolean
         $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
+
+        $this->getImportLogger()->debug("Import fetching " . ImportHandler::ROW_ON_PAGE . " rows at offset " . $storage->getOffsetStart());
 
         if ($newRows) {
             $storage->setOffsetStart($storage->getOffsetStart() + ImportHandler::ROW_ON_PAGE);
@@ -309,6 +339,8 @@ class AccountingController extends Controller
 
         $handler = $importFactory->getHandler();
         $total = $mapping->getTotal();
+
+        $this->getImportLogger()->debug("Getting total of " . $total);
 
         if ($total > 0) {
             $collection = $handler->getCurrentCollectionImportModel();
@@ -323,8 +355,10 @@ class AccountingController extends Controller
         $result['rows'] = $collection;
         $result['total'] = $total;
 
+        $this->getImportLogger()->debug("Reading from file...");
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');
+        $this->getImportLogger()->debug("Sending response...");
 
         return $response;
     }
