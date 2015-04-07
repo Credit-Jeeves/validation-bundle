@@ -2,6 +2,14 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="finished">
+                <source>finished</source>
+                <target>finished</target>
+            </trans-unit>
+            <trans-unit id="pending">
+                <source>pending</source>
+                <target>pending</target>
+            </trans-unit>
             <trans-unit id="admin.action.run">
                 <source>admin.action.run</source>
                 <target>Run</target>
