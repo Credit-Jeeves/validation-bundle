@@ -307,7 +307,7 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $property = $this->currentImportModel->getContract()->getProperty();
-        if (!$property || !$property->getNumber()) {
+        if (empty($property) || !$property->getNumber()) {
             return false;
         }
 
