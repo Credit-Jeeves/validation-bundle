@@ -5,6 +5,8 @@ namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 use Doctrine\Common\Collections\ArrayCollection;
 use Fp\BadaBoomBundle\ExceptionCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
+use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
 use RentJeeves\ExternalApiBundle\Services\AMSI\AMSIClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
@@ -63,9 +65,21 @@ class ResidentDataManager
         $propertyResidentsC = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'C'); // (C)urrent
         $propertyResidentsN = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'N'); //(N)otice
 
-        $lease = array_merge($propertyResidentsC->getLease(), $propertyResidentsN->getLease());
+        $leases = array_merge($propertyResidentsC->getLease(), $propertyResidentsN->getLease());
 
-        return $lease;
+        $units = $client->getPropertyUnits($externalPropertyId);
+        /** @var Unit $unit */
+        foreach ($units as $key => $unit) {
+            unset($units[$key]);
+            $units[$unit->getUnitId()] = $unit;
+        }
+        /** @var Lease $lease */
+        foreach ($leases as $lease)
+        {
+            $lease->setUnit($units[$lease->getUnitId()]);
+        }
+
+        return $leases;
     }
 
     /**

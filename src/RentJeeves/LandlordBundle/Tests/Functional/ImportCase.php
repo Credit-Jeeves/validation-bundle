@@ -2117,8 +2117,8 @@ class ImportCase extends BaseTestCase
 
         // We must make sure the data saved into DB, so we count before import and after
         $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertEquals(30, count($contracts));
+        $this->assertEquals(31, count($contracts));
         $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertEquals(11, count($contractsWaiting));
+        $this->assertEquals(14, count($contractsWaiting));
     }
 }

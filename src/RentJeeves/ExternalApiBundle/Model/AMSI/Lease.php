@@ -291,6 +291,27 @@ class Lease
     protected $state;
 
     /**
+     * @var Unit
+     */
+    protected $unit;
+
+    /**
+     * @return Unit
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+
+    /**
+     * @param Unit $unit
+     */
+    public function setUnit(Unit $unit)
+    {
+        $this->unit = $unit;
+    }
+
+    /**
      * @return string
      */
     public function getState()

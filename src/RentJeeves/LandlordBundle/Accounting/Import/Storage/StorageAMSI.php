@@ -93,15 +93,13 @@ class StorageAMSI extends ExternalApiStorage
                 $monthToMonth = 'N';
             }
 
-            /**
-             * @TODO use another data, seems it's wrong
-             */
-            $address = $lease->getAddress();
-            $city = $address->getCity();
-            $country = $address->getCountry();
-            $zip = $address->getZipCode();
-            $street = $address->getAddressLine2();
-            $state = $address->getState();
+            $unit = $lease->getUnit();
+
+            $street = $unit->getAddress1();
+            $city = $unit->getCity();
+            $country = $unit->getCountry();
+            $zip = $unit->getZip();
+            $state = $unit->getState();
 
             $occupants = $lease->getOccupants();
             /** @var Occupant $occupant */
