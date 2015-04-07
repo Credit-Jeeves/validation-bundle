@@ -161,6 +161,36 @@ trait Contract
     }
 
     /**
+     * @param array $row
+     * @param Property $property
+     * @return null|EntityContract
+     */
+    protected function getContractFromDataBase(array $row, EntityProperty $property)
+    {
+        $tenant = $this->currentImportModel->getTenant();
+        if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy(
+                [
+                    'tenant' => $tenant,
+                    'property' => $property,
+                    'externalLeaseId' => $row[Mapping::KEY_EXTERNAL_LEASE_ID],
+                ]
+            );
+        }
+
+        if (empty($contract)) {
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
+                $tenant->getId(),
+                ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
+                isset($row[Mapping::KEY_UNIT_ID]) ? $row[Mapping::KEY_UNIT_ID] : null,
+                $property->getId()
+            );
+        }
+
+        return $contract;
+    }
+
+    /**
      * @param $row
      */
     protected function setContract(array $row)
@@ -171,13 +201,7 @@ trait Contract
         if (!$tenant->getId() || !$property) {
             $this->setNewContract($row);
         } else {
-            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
-                $tenant->getId(),
-                ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
-                isset($row[Mapping::KEY_UNIT_ID])? $row[Mapping::KEY_UNIT_ID] : null,
-                $property->getId()
-            );
-            $this->currentImportModel->setContract($contract);
+            $this->currentImportModel->setContract($this->getContractFromDataBase($row, $property));
         }
 
         if (!$this->currentImportModel->getContract()) {

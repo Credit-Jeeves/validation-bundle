@@ -26,7 +26,7 @@ class EDEX
      *
      * @var string
      */
-    protected $leaseStatus = 'C N';
+    protected $leaseStatus = 'C';
 
     /**
      * @Serializer\SerializedName("includeprimaryaddress")

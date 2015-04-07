@@ -74,8 +74,7 @@ class ResidentDataManager
             $units[$unit->getUnitId()] = $unit;
         }
         /** @var Lease $lease */
-        foreach ($leases as $lease)
-        {
+        foreach ($leases as $lease) {
             $lease->setUnit($units[$lease->getUnitId()]);
         }
 
