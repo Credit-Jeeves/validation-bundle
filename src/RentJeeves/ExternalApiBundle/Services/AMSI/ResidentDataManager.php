@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
+use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
@@ -79,13 +80,13 @@ class ResidentDataManager
     }
 
     /**
-     * @return AMSIClient
+     * @return AMSILeasingClient
      */
     protected function getApiClient()
     {
         return $this->clientFactory->getClient(
             $this->settings,
-            SoapClientEnum::AMSI_CLIENT
+            SoapClientEnum::AMSI_LEASING
         );
     }
 }

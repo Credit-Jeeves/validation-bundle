@@ -7,7 +7,7 @@ use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use RentJeeves\ExternalApiBundle\Model\AMSI\OpenItem;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
-use RentJeeves\ExternalApiBundle\Services\AMSI\AMSIClient;
+use RentJeeves\ExternalApiBundle\Services\AMSI\AMSILeasingClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 
@@ -104,7 +104,7 @@ class AMSIClientCase extends Base
     }
 
     /**
-     * @return AMSIClient
+     * @return AMSILeasingClient
      */
     protected function getClient()
     {
@@ -114,7 +114,7 @@ class AMSIClientCase extends Base
 
         $client = $soapClientFactory->getClient(
             $this->settings,
-            SoapClientEnum::AMSI_CLIENT
+            SoapClientEnum::AMSI_LEASING
         );
 
         return $client;
