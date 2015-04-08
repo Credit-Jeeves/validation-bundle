@@ -1,0 +1,269 @@
+<?php
+
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader;
+
+use JMS\DiExtraBundle\Annotation as DI;
+use Monolog\Logger;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDownloaderException;
+use RentJeeves\CoreBundle\Services\SftpClient;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
+
+/**
+ * @DI\Service("payment_processor.aci.files_downloader", public=false)
+ */
+class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
+{
+    const NUMBER_OF_RETRY = 5;
+
+    /**
+     * @var SftpClient
+     */
+    private $sftpClient;
+
+    /**
+     * @var string
+     */
+    private $host;
+
+    /**
+     * @var string
+     */
+    private $port;
+
+    /**
+     * @var string
+     */
+    protected $login;
+
+    /**
+     * @var string
+     */
+    protected $password;
+
+    /**
+     * @var string
+     */
+    protected $reportPath;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @param string     $host
+     * @param string     $port
+     * @param string     $login
+     * @param string     $password
+     * @param string     $reportPath
+     * @param Logger     $logger
+     * @param SftpClient $sftpClient
+     *
+     * @DI\InjectParams({
+     *      "host" = @DI\Inject("%aci.sftp.host%"),
+     *      "port" = @DI\Inject("%aci.sftp.port%"),
+     *      "login" = @DI\Inject("%aci.sftp.login%"),
+     *      "password" = @DI\Inject("%aci.sftp.password%"),
+     *      "reportPath" = @DI\Inject("%aci.sftp.report_path%"),
+     *      "logger" = @DI\Inject("logger"),
+     *      "sftpClient" = @DI\Inject("sftp_client")
+     * })
+     */
+    public function __construct($host, $port, $login, $password, $reportPath, Logger $logger, SftpClient $sftpClient)
+    {
+        $this->host = $host;
+        $this->port = (int) $port;
+        $this->login = $login;
+        $this->password = $password;
+        $this->reportPath = $reportPath;
+        $this->logger = $logger;
+        $this->sftpClient = $sftpClient;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function initializeSshConnect()
+    {
+        $i = 1;
+        while ($i <= self::NUMBER_OF_RETRY) {
+            try {
+                $this->logger->debug(sprintf('ACI: The %s attempt to initialize SSH connection.', $i));
+                $this->sftpClient->sshConnect($this->host, $this->port);
+                $this->sftpClient->sshAuthPassword($this->login, $this->password);
+                break;
+            } catch (\Exception $e) {
+                $this->logger->debug(
+                    sprintf(
+                        'ACI: The %s attempt to initialize SSH connection - FAILED: %s',
+                        $i,
+                        $e->getMessage()
+                    )
+                );
+                if ($i === self::NUMBER_OF_RETRY) {
+                    throw new AciDownloaderException($e->getMessage());
+                }
+                $this->logger->debug('ACI: Waiting before attempting to initialize the SSH connection.');
+                sleep((int) exp($i));
+                $i++;
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function initializeSftpSubsystem()
+    {
+        try {
+            $this->logger->debug('ACI: Initialize SFTP subsystem.');
+            $this->sftpClient->sshSftp();
+        } catch (\Exception $e) {
+            $this->logger->debug(
+                sprintf(
+                    'ACI: Initialize SFTP subsystem - FAILED : %s',
+                    $e->getMessage()
+                )
+            );
+            throw new AciDownloaderException($e->getMessage());
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function download()
+    {
+        if (false === is_resource($this->getSsh())) {
+            $this->initializeSshConnect();
+        }
+        if (false === is_resource($this->getSftp())) {
+            $this->initializeSftpSubsystem();
+        }
+
+        foreach ($this->getAllFilesFromSftpRootDirectory() as $remoteFile) {
+            $remoteFileName = basename($remoteFile);
+            $outputPath = sprintf('%s/%s', $this->reportPath, $remoteFileName);
+            $this->downloadRemoteFile($remoteFile, $outputPath);
+            $this->archiveLocalFile($outputPath);
+        }
+    }
+
+    /**
+     * @param string $pathToDir
+     *
+     * @return array with paths for files on SFTP server
+     *
+     * @throws AciDownloaderException
+     */
+    protected function getAllFilesFromSftpByPath($pathToDir)
+    {
+        $path = $this->getSftpPathToRemoteDir($pathToDir);
+
+        if (false === is_dir($path)) {
+            throw new AciDownloaderException('Invalid path to the directory');
+        }
+
+        $remoteFiles = [];
+
+        foreach (scandir($path) as $item) {
+            $fullItemPath = $path . '/' . $item;
+            if (true === is_file($fullItemPath) && true === is_readable($fullItemPath)) {
+                $remoteFiles[] = $fullItemPath;
+            }
+        }
+
+        return $remoteFiles;
+    }
+
+    /**
+     * @return array
+     *
+     * @throws AciDownloaderException
+     */
+    protected function getAllFilesFromSftpRootDirectory()
+    {
+        return $this->getAllFilesFromSftpByPath('/.');
+    }
+
+    /**
+     * @param string $inputFilePath
+     * @param string $outFilePath
+     *
+     * @throws AciDownloaderException
+     */
+    protected function downloadRemoteFile($inputFilePath, $outFilePath)
+    {
+        try {
+            $this->logger->debug(sprintf('ACI: Trying to download report "%s".', $inputFilePath));
+            $fileData = file_get_contents($inputFilePath);
+            file_put_contents($outFilePath, $fileData);
+        } catch (\Exception $e) {
+            $this->logger->debug(
+                sprintf(
+                    'ACI: Download report - FAILED: %s',
+                    $e->getMessage()
+                )
+            );
+            throw new AciDownloaderException($e->getMessage());
+        }
+    }
+
+    /**
+     * @param string $filePath
+     *
+     * @throws AciDownloaderException
+     */
+    protected function archiveLocalFile($filePath)
+    {
+        $fileExtension = substr(strrchr($filePath, '.'), 1);
+
+        $now = new \DateTime();
+        $archiveDir = sprintf('%s/archive/%s/%s', $this->reportPath, $now->format('Y'), $now->format('m'));
+        $archiveFilename = sprintf('%s/%s.%s', $archiveDir, $now->format('d-H-i-s'), $fileExtension);
+
+        try {
+            $this->logger->debug(sprintf('ACI: Trying to archive report "%s".', $filePath));
+            $filesystem = new Filesystem();
+            $filesystem->mkdir($archiveDir);
+            $filesystem->rename($filePath, $archiveFilename);
+        } catch (IOException $e) {
+            $this->logger->debug(
+                sprintf(
+                    'ACI: Archive ACI report - FAILED : %s',
+                    $e->getMessage()
+                )
+            );
+            throw new AciDownloaderException(
+                sprintf('An error occurred while trying to archive ACI report: %s', $e->getMessage())
+            );
+        }
+    }
+
+    /**
+     * @param string $pathToDir
+     *
+     * @return string
+     */
+    protected function getSftpPathToRemoteDir($pathToDir)
+    {
+        return $this->sftpClient->getSftpPath() . $pathToDir;
+    }
+
+    /**
+     * @return resource
+     */
+    protected function getSsh()
+    {
+        return $this->sftpClient->getSsh();
+    }
+
+    /**
+     * @return resource
+     */
+    protected function getSftp()
+    {
+        return $this->sftpClient->getSftp();
+    }
+}
