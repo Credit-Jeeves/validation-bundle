@@ -23,7 +23,7 @@ class ContractCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($submit = $form->find('css', 'input.btn-primary'));
         $this->assertCount(6, $fields = $this->page->findAll('css', 'form input'));
-        $this->assertCount(22, $fieldsSelected = $this->page->findAll('css', 'form select'));
+        $this->assertCount(23, $fieldsSelected = $this->page->findAll('css', 'form select'));
         $statusTo = $fieldsSelected[5]->getValue();
         $search = $fields[0]->getValue();
         $this->assertFalse($statusTo == 'invite');

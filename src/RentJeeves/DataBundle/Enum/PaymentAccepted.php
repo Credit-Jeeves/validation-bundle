@@ -17,4 +17,24 @@ class PaymentAccepted extends Enum
             self::DO_NOT_ACCEPT, self::CASH_EQUIVALENT
         );
     }
+
+    /**
+     * Returns an array of values with currentValue as a first value
+     *
+     * @param $currentState
+     * @return array
+     */
+    public static function getValues($currentValue)
+    {
+        $currentValues = [$currentValue => $currentValue];
+        $otherValues = array_diff(
+            PaymentAccepted::all(),
+            $currentValues
+        );
+        $result = [];
+        foreach (($currentValues + $otherValues) as $key => $value) {
+            $result[$value]= $value;
+        }
+        return $result;
+    }
 }
