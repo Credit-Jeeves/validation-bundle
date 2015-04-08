@@ -1,12 +1,13 @@
 <?php
 namespace RentJeeves\CoreBundle\Controller;
 
+use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Score;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class TenantController extends Controller
+class TenantController extends BaseController
 {
     /**
      * @var Report
@@ -23,6 +24,7 @@ class TenantController extends Controller
         if ($user = parent::getUser()) {
             $user = $this->get('core.session.applicant')->getUser();
             $this->getUserDetails($user);
+
             return $user;
         }
     }
