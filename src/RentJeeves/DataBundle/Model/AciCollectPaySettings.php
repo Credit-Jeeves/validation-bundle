@@ -26,10 +26,6 @@ abstract class AciCollectPaySettings
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     inversedBy="aciCollectPaySettings"
      * )
-     * @ORM\JoinColumn(
-     *     name="group_id",
-     *     referencedColumnName="id"
-     * )
      */
     protected $group;
 
@@ -43,17 +39,6 @@ abstract class AciCollectPaySettings
      * )
      */
     protected $businessId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(
-     *     name="holder_name",
-     *     type="string",
-     *     nullable=false
-     * )
-     */
-    protected $holderName;
 
     /**
      * @return int
@@ -80,7 +65,7 @@ abstract class AciCollectPaySettings
     }
 
     /**
-     * @param $businessId
+     * @param int $businessId
      */
     public function setBusinessId($businessId)
     {
@@ -93,21 +78,5 @@ abstract class AciCollectPaySettings
     public function getBusinessId()
     {
        return $this->businessId;
-    }
-
-    /**
-     * @param $holderName
-     */
-    public function setHolderName($holderName)
-    {
-        $this->holderName = $holderName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHolderName()
-    {
-        return $this->holderName;
     }
 }

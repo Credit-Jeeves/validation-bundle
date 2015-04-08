@@ -86,8 +86,8 @@ class SourcesController extends Controller
         $group = $paymentAccount->getDepositAccounts()->first()->getGroup();
 
         try {
-            // There we can only just edit so we can use any contract
-            // because profile already created for ACI
+            // We can use any contract of this group
+            // because profile already created for aci_collect_pay
             $contract = $this->getUser()->getContracts()->filter(
                 function (Contract $entry) use ($group) {
                     return $entry->getGroup()->getId() === $group->getId();

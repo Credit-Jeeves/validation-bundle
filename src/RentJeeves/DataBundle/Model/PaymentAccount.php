@@ -42,6 +42,9 @@ abstract class PaymentAccount
     /**
      * @ORM\Column(
      *     type="PaymentProcessor",
+     *     options={
+     *         "default"="heartland"
+     *     },
      *     name="payment_processor",
      *     nullable=false
      * )

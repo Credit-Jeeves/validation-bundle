@@ -3,8 +3,8 @@
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
 use ACI\Utils\OldProfilesStorage;
-use Doctrine\ORM\EntityManager;
-use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\EnrollmentManager;
+use Payum\AciCollectPay\Model\Profile;
+use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -47,12 +47,7 @@ class AciCollectPayCase extends BaseTestCase
         );
 
         if ($profileId = $this->getOldProfileId('tenant11examplecom')) {
-            /** @var EnrollmentManager $enrollmentManager */
-            $enrollmentManager = $this->getContainer()->get('payment.aci_collect_pay.enrollment_manager');
-
-            $enrollmentManager->deleteProfile($profileId);
-
-            $this->unsetOldProfileId($profileId);
+            $this->deleteProfile($profileId);
         }
 
         $contractToSelect = 2;
@@ -64,17 +59,14 @@ class AciCollectPayCase extends BaseTestCase
         $paySettings = new AciCollectPaySettings();
 
         $paySettings->setBusinessId(564075);
-        $paySettings->setHolderName('Test Holder');
         $paySettings->setGroup($this->contract->getGroup());
 
         $this->contract->getGroup()->setAciCollectPaySettings($paySettings);
 
-        /** @var EntityManager $em */
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $em->persist($this->contract->getGroup());
-        $em->persist($paySettings);
+        $this->getEntityManager()->persist($this->contract->getGroup());
+        $this->getEntityManager()->persist($paySettings);
 
-        $em->flush();
+        $this->getEntityManager()->flush();
 
         $this->paidForString = $this->getPaidForDate($this->contract)->format('Y-m-d');
         $this->payButtonName = "contract-pay-" . ($contractToSelect);
@@ -97,14 +89,11 @@ class AciCollectPayCase extends BaseTestCase
      */
     public function createAccount($type)
     {
-        $countsBefore = $this->contract->getTenant()->getPaymentAccounts()->filter(function ($paymentAccount) {
-            if (PaymentProcessor::ACI_COLLECT_PAY == $paymentAccount->getPaymentProcessor()) {
-                return true;
-            }
-            return false;
-        })->count();
-
         $this->setDefaultSession('selenium2');
+        $repo = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount');
+
+        $countsBefore = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY]));
+        $repo->clear();
 
         $this->login('tenant11@example.com', 'pass');
 
@@ -125,10 +114,8 @@ class AciCollectPayCase extends BaseTestCase
             [
                 'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
-                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
-                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
-                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => date('j/n/Y'),
             ]
         );
 
@@ -153,29 +140,23 @@ class AciCollectPayCase extends BaseTestCase
             "!jQuery('#id-source-step').is(':visible')"
         );
 
-        /** @var $em EntityManager */
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $this->getEntityManager()->refresh($this->contract);
+        $this->getEntityManager()->refresh($this->contract->getTenant());
 
-        $em->refresh($this->contract);
-        $em->refresh($this->contract->getTenant());
-
-        $this->assertNotEmpty($this->contract->getTenant()->getAciCollectPayProfile());
+        $this->assertNotEmpty($this->contract->getTenant()->getAciCollectPayProfileId());
 
         $this->setOldProfileId(
             'tenant11examplecom',
-            $this->contract->getTenant()->getAciCollectPayProfile()->getProfileId()
+            $this->contract->getTenant()->getAciCollectPayProfileId()
         );
 
         $this->assertNotEmpty($this->contract->getAciCollectPayContractBilling());
 
-        $countsAfter = $this->contract->getTenant()->getPaymentAccounts()->filter(function ($paymentAccount) {
-            if (PaymentProcessor::ACI_COLLECT_PAY == $paymentAccount->getPaymentProcessor()) {
-                return true;
-            }
-            return false;
-        })->count();
+        $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY]));
 
         $this->assertEquals($countsBefore +1, $countsAfter);
+
+        $this->deleteProfile($this->contract->getTenant()->getAciCollectPayProfileId());
     }
 
     /**
@@ -216,16 +197,18 @@ class AciCollectPayCase extends BaseTestCase
      */
     private function getContract($tenantEmail, $contractIndex)
     {
-        /** @var EntityManager $em */
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         /**
          * @var $tenant Tenant
          */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(array('email' => $tenantEmail));
+        $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => $tenantEmail]);
         $contracts = array_reverse($tenant->getContracts()->toArray()); # contract buttons numbered from bottom up
         return $contracts[$contractIndex - 1];
     }
 
+    /**
+     * @param Contract $contract
+     * @return DateTime
+     */
     private function getPaidForDate(Contract $contract)
     {
         $paidFor = new DateTime();
@@ -233,4 +216,26 @@ class AciCollectPayCase extends BaseTestCase
 
         return $paidFor;
     }
+
+    /**
+     * @param int $profileId
+     * @throws \Exception
+     */
+    protected function deleteProfile($profileId)
+    {
+        $profile = new Profile();
+
+        $profile->setProfileId($profileId);
+
+        $request = new DeleteProfile($profile);
+
+        $this->getContainer()->get('payum')->getPayment('aci_collect_pay')->execute($request);
+
+        if (!$request->getIsSuccessful()) {
+            throw new \Exception($request->getMessages());
+        }
+
+        $this->unsetOldProfileId($profileId);
+    }
+
 }

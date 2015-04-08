@@ -5,14 +5,10 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 class Version20150404033401 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf(
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
@@ -37,7 +33,6 @@ class Version20150404033401 extends AbstractMigration
             "CREATE TABLE rj_aci_collect_pay_settings (id INT AUTO_INCREMENT NOT NULL,
                 group_id BIGINT DEFAULT NULL,
                 business_id INT NOT NULL,
-                holder_name VARCHAR(255) NOT NULL,
                 UNIQUE INDEX UNIQ_50CD37FCFE54D947 (group_id),
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
@@ -62,7 +57,7 @@ class Version20150404033401 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_payment_account
                 ADD payment_processor ENUM('heartland','aci_collect_pay')
-                    COMMENT '(DC2Type:PaymentProcessor)' NOT NULL"
+                    COMMENT '(DC2Type:PaymentProcessor)' DEFAULT 'heartland' NOT NULL"
         );
         $this->addSql(
             "ALTER TABLE rj_group_settings
@@ -73,7 +68,6 @@ class Version20150404033401 extends AbstractMigration
 
     public function down(Schema $schema)
     {
-        // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf(
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."

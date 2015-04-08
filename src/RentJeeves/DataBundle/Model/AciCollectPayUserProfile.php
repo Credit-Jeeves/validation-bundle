@@ -28,10 +28,6 @@ abstract class AciCollectPayUserProfile
      *     targetEntity="CreditJeeves\DataBundle\Entity\User",
      *     inversedBy="aciCollectPayProfile"
      * )
-     * @ORM\JoinColumn(
-     *     name="user_id",
-     *     referencedColumnName="id"
-     * )
      */
     protected $user;
 
@@ -82,7 +78,7 @@ abstract class AciCollectPayUserProfile
     }
 
     /**
-     * @param $profileId
+     * @param int $profileId
      */
     public function setProfileId($profileId)
     {
@@ -99,12 +95,10 @@ abstract class AciCollectPayUserProfile
 
     /**
      * @param DateTime $createdAt
-     * @return static
      */
     public function setCreatedAt(DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
-        return $this;
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
-
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\BillingAccountManager;
@@ -33,6 +32,10 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
     protected $fundingAccountManager;
 
     /**
+     * @param EnrollmentManager $enrollmentManager
+     * @param BillingAccountManager $billingAccountManager
+     * @param FundingAccountManager $fundingAccountManager
+     *
      * @DI\InjectParams({
      *     "enrollmentManager" = @DI\Inject("payment.aci_collect_pay.enrollment_manager"),
      *     "billingAccountManager" = @DI\Inject("payment.aci_collect_pay.billing_account_manager"),
@@ -55,14 +58,14 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
     public function createPaymentAccount(PaymentAccountData $data, Contract $contract)
     {
         if ($data->getEntity() instanceof GroupAwareInterface) {
-            throw new \Exception('Not implement yet.');
+            throw new \Exception('Virtual Terminal is not implement yet for aci_collect_pay.');
         }
 
         $user = $contract->getTenant();
 
-        if (!$profileId = $this->enrollmentManager->getProfileId($user)) {
+        if (!($profileId = $user->getAciCollectPayProfileId())) {
             $profileId = $this->enrollmentManager->createProfile($contract);
-        } elseif (!$this->billingAccountManager->hasBillingAccount($contract)) {
+        } elseif ($contract->getAciCollectPayContractBilling()) {
             $this->billingAccountManager->addBillingAccount($profileId, $contract);
         }
 
@@ -84,7 +87,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
         $paymentType = PaymentGroundType::RENT
     )
     {
-        throw new \Exception('Not implement yet.');
+        throw new \Exception('executeOrder is not implement yet for aci_collect_pay.');
     }
 
     /**
@@ -92,6 +95,6 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
      */
     public function loadReport($reportType, array $settings = [])
     {
-        throw new \Exception('Not implement yet.');
+        throw new \Exception('loadReport is not implement yet for aci_collect_pay.');
     }
 }

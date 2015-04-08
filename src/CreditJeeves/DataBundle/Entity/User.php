@@ -426,4 +426,14 @@ abstract class User extends BaseUser
         $partnerUserMapping->setPartner($partner);
         $this->partner = $partnerUserMapping;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getAciCollectPayProfileId()
+    {
+        if ($this->getAciCollectPayProfile()) {
+            return $this->getAciCollectPayProfile()->getProfileId();
+        }
+    }
 }

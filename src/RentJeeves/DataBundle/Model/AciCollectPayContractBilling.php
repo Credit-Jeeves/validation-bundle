@@ -4,7 +4,6 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -27,15 +26,11 @@ abstract class AciCollectPayContractBilling
      *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
      *     inversedBy="aciCollectPayContractBilling"
      * )
-     * @ORM\JoinColumn(
-     *     name="contract_id",
-     *     referencedColumnName="id"
-     * )
      */
     protected $contract;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
@@ -70,17 +65,15 @@ abstract class AciCollectPayContractBilling
     }
 
     /**
-     * @param DateTime $createdAt
-     * @return static
+     * @param \DateTime $createdAt
      */
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
-        return $this;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {

@@ -3,10 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use Exception;
 use JMS\DiExtraBundle\Annotation as DI;
-use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
@@ -27,9 +24,14 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     /** @var PayHeartland */
     protected $paymentManager;
 
+    /** @var ReportLoader */
     protected $reportLoader;
 
     /**
+     * @param PaymentAccountManager $paymentAccountManager
+     * @param PayHeartland $paymentManager
+     * @param ReportLoader $reportLoader
+     *
      * @DI\InjectParams({
      *     "paymentAccountManager" = @DI\Inject("payment.account.heartland"),
      *     "paymentManager" = @DI\Inject("payment.pay_heartland"),
@@ -76,18 +78,5 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     public function loadReport($reportType, array $settings = [])
     {
         return $this->reportLoader->loadReport($reportType, $settings);
-    }
-
-    /**
-     * Creates a new payment account for User and Group.
-     * Returns payment account token.
-     *
-     * @param PaymentAccountData $data
-     * @param Contract $contract
-     * @return string
-     */
-    public function createPaymentAccountC(PaymentAccountData $data, Contract $contract)
-    {
-        // TODO: Implement createPaymentAccountC() method.
     }
 }

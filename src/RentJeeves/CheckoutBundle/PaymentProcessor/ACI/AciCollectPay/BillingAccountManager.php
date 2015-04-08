@@ -6,72 +6,75 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Payum\AciCollectPay\Request\ProfileRequest\AddBilling;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
-use RentJeeves\DataBundle\Entity\AciCollectPayContractBillingRepository;
 use RentJeeves\DataBundle\Entity\Contract;
 use Payum\AciCollectPay\Model as RequestModel;
 
 /**
- * @DI\Service("payment.aci_collect_pay.billing_account_manager")
+ * @DI\Service("payment.aci_collect_pay.billing_account_manager", public=false)
  */
 class BillingAccountManager extends AbstractManager
 {
     /**
+     * @param int $profileId
      * @param Contract $contract
-     * @return bool
-     */
-    public function hasBillingAccount(Contract $contract)
-    {
-        /** @var AciCollectPayContractBillingRepository $repo */
-        $repo = $this->em->getRepository('RjDataBundle:AciCollectPayContractBilling');
-
-        return !!$repo->findByContract($contract);
-    }
-
-    /**
-     * @param $profileId
-     * @param Contract $contract
+     * @throws PaymentProcessorRuntimeException
      */
     public function addBillingAccount($profileId, Contract $contract)
     {
-        $group = $contract->getGroup();
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Try to add billing account to profile "%d" for contract with id ="%d"',
+                $profileId,
+                $contract->getId()
+            )
+        );
 
         $profile = new RequestModel\Profile();
 
         $profile->setProfileId($profileId);
 
-        $billingAccount = new RequestModel\SubModel\BillingAccount();
-
-        $billingAccount->setAccountNumber($contract->getId());
-        $billingAccount->setBusinessId($group->getAciCollectPaySettings()->getBusinessId());
-        $billingAccount->setHoldername($group->getAciCollectPaySettings()->getHolderName());
-        $billingAccount->setNickname($contract->getGroup()->getName());
-
-        // TODO Need Implement this
-//        $billingAccountAddress = new RequestModel\SubModel\Address();
-//
-//        $billingAccountAddress->setAddress1($group->getStreetAddress1());
-//        $billingAccountAddress->setAddress2($group->getStreetAddress2());
-//        $billingAccountAddress->setCity($group->getCity());
-//        $billingAccountAddress->setPostalCode($group->getZip());
-//        $billingAccountAddress->setState($group->getState());
-//
-//        $billingAccount->setAddress($billingAccountAddress);
+        $billingAccount = $this->prepareBillingAccount($contract);
 
         $profile->setBillingAccount($billingAccount);
 
         $request = new AddBilling($profile);
 
-        $this->paymentProcessor->execute($request);
+        try {
+            $this->paymentProcessor->execute($request);
+        } catch(\Exception $e) {
+            $this->logger->err(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            throw new $e;
+        }
 
         if (!$request->getIsSuccessful()) {
+            $this->logger->err(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
             throw new PaymentProcessorRuntimeException($request->getMessages());
         }
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id ="%d"',
+                $request->getModel()->getProfileId(),
+                $contract->getId()
+            )
+        );
 
         $contractBilling = new AciCollectPayContractBilling();
         $contractBilling->setContract($contract);
 
+        $contract->setAciCollectPayContractBilling($contractBilling);
+
+        $this->em->persist($contract);
         $this->em->persist($contractBilling);
 
         $this->em->flush();
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id ="%d"',
+                $request->getModel()->getProfileId(),
+                $contract->getId()
+            )
+        );
     }
 }

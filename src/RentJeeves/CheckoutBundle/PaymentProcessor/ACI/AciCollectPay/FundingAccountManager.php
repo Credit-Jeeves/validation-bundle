@@ -17,13 +17,13 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use DateTime;
 
 /**
- * @DI\Service("payment.aci_collect_pay.funding_account_manager")
+ * @DI\Service("payment.aci_collect_pay.funding_account_manager", public=false)
  */
 class FundingAccountManager extends AbstractManager
 {
     /**
-     * @param $fundingAccountId
-     * @param $profileId
+     * @param int $fundingAccountId
+     * @param int $profileId
      * @param FundingAccountData $fundingAccountData
      * @param Contract $contract
      * @return int
@@ -34,11 +34,11 @@ class FundingAccountManager extends AbstractManager
         FundingAccountData $fundingAccountData,
         Contract $contract
     ) {
-        throw new \Exception("Not implement yet");
+        throw new \Exception("modifyFundingAccount is not implement yet for aci_collect_pay.");
     }
 
     /**
-     * @param $profileId
+     * @param int $profileId
      * @param FundingAccountData $fundingAccountData
      * @param Contract $contract
      * @return int
@@ -46,6 +46,14 @@ class FundingAccountManager extends AbstractManager
      */
     public function addFundingAccount($profileId, FundingAccountData $fundingAccountData, Contract $contract)
     {
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Try to add new funding account for user with id = "%d" and profile "%d"',
+                $contract->getTenant()->getId(),
+                $profileId
+            )
+        );
+
         $profile = new RequestModel\Profile();
 
         $profile->setProfileId($profileId);
@@ -56,11 +64,25 @@ class FundingAccountManager extends AbstractManager
 
         $request = new AddFunding($profile);
 
-        $this->paymentProcessor->execute($request);
+        try {
+            $this->paymentProcessor->execute($request);
+        } catch(\Exception $e) {
+            $this->logger->err(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            throw new $e;
+        }
 
         if (!$request->getIsSuccessful()) {
+            $this->logger->err(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
             throw new PaymentProcessorRuntimeException($request->getMessages());
         }
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Added funding account to profile "%d" for user with id ="%d"',
+                $request->getModel()->getProfileId(),
+                $contract->getTenant()->getId()
+            )
+        );
 
         return $request->getModel()->getFundingAccount()->getFundingAccountId();
     }

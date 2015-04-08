@@ -402,11 +402,11 @@ abstract class Contract
      *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayContractBilling",
      *      mappedBy="contract",
      *      cascade={"all"},
-     *      orphanRemoval=true
+     *      orphanRemoval=true,
+     *      fetch="EAGER"
      * )
      */
     protected $aciCollectPayContractBilling;
-
 
     public function __construct()
     {
