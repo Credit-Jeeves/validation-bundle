@@ -77,6 +77,6 @@ abstract class AciCollectPaySettings
      */
     public function getBusinessId()
     {
-       return $this->businessId;
+        return $this->businessId;
     }
 }

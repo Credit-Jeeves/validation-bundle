@@ -41,13 +41,13 @@ class BillingAccountManager extends AbstractManager
 
         try {
             $this->paymentProcessor->execute($request);
-        } catch(\Exception $e) {
-            $this->logger->err(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+        } catch (\Exception $e) {
+            $this->logger->critical(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
             throw new $e;
         }
 
         if (!$request->getIsSuccessful()) {
-            $this->logger->err(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
             throw new PaymentProcessorRuntimeException($request->getMessages());
         }
 

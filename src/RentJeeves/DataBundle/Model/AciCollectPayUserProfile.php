@@ -5,7 +5,6 @@ namespace RentJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -43,7 +42,7 @@ abstract class AciCollectPayUserProfile
     protected $profileId;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
@@ -94,15 +93,15 @@ abstract class AciCollectPayUserProfile
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param \DateTime $createdAt
      */
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {

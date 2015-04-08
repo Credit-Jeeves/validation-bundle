@@ -12,7 +12,6 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
-use DateTime;
 use Symfony\Component\Config\FileLocator;
 
 class AciCollectPayCase extends BaseTestCase
@@ -207,11 +206,11 @@ class AciCollectPayCase extends BaseTestCase
 
     /**
      * @param Contract $contract
-     * @return DateTime
+     * @return \DateTime
      */
     private function getPaidForDate(Contract $contract)
     {
-        $paidFor = new DateTime();
+        $paidFor = new \DateTime();
         $paidFor = $paidFor->setDate($paidFor->format('Y'), $paidFor->format('m'), $contract->getDueDate());
 
         return $paidFor;
@@ -237,5 +236,4 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->unsetOldProfileId($profileId);
     }
-
 }

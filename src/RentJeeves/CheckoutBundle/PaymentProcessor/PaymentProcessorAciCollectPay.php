@@ -85,8 +85,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
         Order $order,
         PaymentAccount $paymentAccount,
         $paymentType = PaymentGroundType::RENT
-    )
-    {
+    ) {
         throw new \Exception('executeOrder is not implement yet for aci_collect_pay.');
     }
 

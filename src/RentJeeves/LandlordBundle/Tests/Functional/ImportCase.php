@@ -374,7 +374,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('950', $contractNew->getRent());
         $this->assertEquals('0', $contractNew->getIntegratedBalance());
         $this->assertEquals('03/18/2011', $contractNew->getStartAt()->format('m/d/Y'));
-        $this->assertEquals('03/31/2015', $contractNew->getFinishAt()->format('m/d/Y'));
+        $this->assertEquals('03/31/2025', $contractNew->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
     }
 

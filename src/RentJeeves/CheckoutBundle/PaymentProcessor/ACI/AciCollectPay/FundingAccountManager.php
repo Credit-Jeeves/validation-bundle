@@ -14,7 +14,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
-use DateTime;
 
 /**
  * @DI\Service("payment.aci_collect_pay.funding_account_manager", public=false)
@@ -66,13 +65,13 @@ class FundingAccountManager extends AbstractManager
 
         try {
             $this->paymentProcessor->execute($request);
-        } catch(\Exception $e) {
-            $this->logger->err(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+        } catch (\Exception $e) {
+            $this->logger->critical(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
             throw new $e;
         }
 
         if (!$request->getIsSuccessful()) {
-            $this->logger->err(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
             throw new PaymentProcessorRuntimeException($request->getMessages());
         }
 
@@ -107,7 +106,7 @@ class FundingAccountManager extends AbstractManager
         if (PaymentAccountTypeEnum::CARD == $paymentAccount->getType()) {
             $ccMonth = $fundingAccountData->get('expiration_month');
             $ccYear = $fundingAccountData->get('expiration_year');
-            $paymentAccount->setCcExpiration(new DateTime("last day of {$ccYear}-{$ccMonth}"));
+            $paymentAccount->setCcExpiration(new \DateTime("last day of {$ccYear}-{$ccMonth}"));
             /** @var Address $address */
             if ($fundingAccountData->get('address_choice')) {
                 $address = $fundingAccountData->get('address_choice');

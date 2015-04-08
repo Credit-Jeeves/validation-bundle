@@ -93,6 +93,11 @@ class SourcesController extends Controller
                     return $entry->getGroup()->getId() === $group->getId();
                 }
             )->first();
+
+            if (!$contract) {
+                throw new \RuntimeException('Contract for this Payment Source doesn\'t exist.');
+            }
+
             $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
         } catch (\Exception $e) {
             return new JsonResponse(
