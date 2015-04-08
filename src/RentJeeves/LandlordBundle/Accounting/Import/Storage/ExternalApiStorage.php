@@ -5,6 +5,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
@@ -59,7 +60,13 @@ class ExternalApiStorage extends StorageCsv
      */
     public function setImportData(FormInterface $form)
     {
-        $this->setImportPropertyId($form['property']->getData()->getId());
+        $property = $form['property']->getData();
+        if ($property instanceof Property) {
+            $this->setImportPropertyId($property->getId());
+            $this->setIsMultipleProperty(false);
+        } else {
+            $this->setIsMultipleProperty(true);
+        }
         $this->setImportExternalPropertyId($form['propertyId']->getData());
         $this->setOnlyException($form['onlyException']->getData());
         $this->setImportLoaded(false);
@@ -113,7 +120,11 @@ class ExternalApiStorage extends StorageCsv
         return true;
     }
 
-
+    /**
+     * Create and write header into CSV file
+     *
+     * @throws ImportStorageException
+     */
     protected function initializeParameters()
     {
         $this->setFieldDelimiter(self::FIELD_DELIMITER);

@@ -31,7 +31,7 @@ trait FormBind
      *
      * @param ModelImport $import
      * @param $postData
-     * @param array &$errors
+     * @param array       &$errors
      *
      * @return boolean
      */
@@ -43,10 +43,10 @@ trait FormBind
 
         self::prepareSubmit($postData);
 
-
         if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData)) {
             $this->collectionImportModel->removeElement($this->currentImportModel);
             $this->detach();
+
             return false;
         }
 
@@ -92,7 +92,7 @@ trait FormBind
     }
 
     /**
-     * @param Form $form
+     * @param Form        $form
      * @param ModelImport $import
      */
     protected function bindImportContractForm(Form $form)
@@ -109,6 +109,7 @@ trait FormBind
                 $this->currentImportModel->getResidentMapping(),
                 $sendInvite
             );
+
             return;
         }
 
@@ -131,7 +132,7 @@ trait FormBind
     }
 
     /**
-     * @param Form $form
+     * @param Form        $form
      * @param ModelImport $import
      */
     protected function bindImportNewUserWithContractForm(Form $form)
@@ -164,10 +165,10 @@ trait FormBind
     }
 
     /**
-     * @param Tenant $tenant
-     * @param Contract $contract
+     * @param Tenant          $tenant
+     * @param Contract        $contract
      * @param ResidentMapping $residentMapping
-     * @param boolean $sendInvite
+     * @param boolean         $sendInvite
      */
     protected function processingContractWaiting($sendInvite)
     {
@@ -296,7 +297,10 @@ trait FormBind
             $this->em->detach($unit);
         }
         $tenant = $this->currentImportModel->getTenant();
-        if ($this->isPersisted($tenant) && $this->userEmails[$tenant->getEmail()] === 1) {
+        if ($this->isPersisted($tenant) &&
+            isset($this->userEmails[$tenant->getEmail()]) &&
+            $this->userEmails[$tenant->getEmail()] === 1
+        ) {
             $this->em->detach($tenant);
         }
 
@@ -307,7 +311,7 @@ trait FormBind
     }
 
     /**
-     * @param object $entity
+     * @param  object $entity
      * @return bool
      */
     protected function isPersisted($entity)

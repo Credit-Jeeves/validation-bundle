@@ -6,9 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
-use RentJeeves\DataBundle\Enum\DepositAccountStatus;
-use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 
 /**
@@ -51,12 +50,14 @@ class Group extends BaseGroup
             $aAddress[] = $zip;
         }
         $aResult[] = implode(' ', $aAddress);
+
         return $aResult;
     }
 
     public function getCountLeads()
     {
         $leads = $this->getLeads();
+
         return $leads ? count($leads) : 0;
     }
 
@@ -68,12 +69,14 @@ class Group extends BaseGroup
     public function getCountProperties()
     {
         $properties = $this->getGroupProperties();
+
         return $properties ? count($properties) : 0;
     }
 
     public function getMerchantName()
     {
         $depositAccount = $this->getDepositAccount();
+
         return !empty($depositAccount) ? $depositAccount->getMerchantName() : '';
     }
 
@@ -90,6 +93,7 @@ class Group extends BaseGroup
                 return $dealer;
             }
         }
+
         return $dealer;
     }
 
@@ -164,5 +168,27 @@ class Group extends BaseGroup
         }
 
         return $this->accountNumberMapping;
+    }
+
+    /**
+     * @return null|SettingsInterface
+     */
+    public function getIntegratedApiSettings()
+    {
+        $holding = $this->getHolding();
+        $apiIntegration = $holding->getAccountingSettings()->getApiIntegration();
+
+        switch ($apiIntegration) {
+            case ApiIntegrationType::AMSI:
+                return $holding->getAmsiSettings();
+            case ApiIntegrationType::MRI:
+                return $holding->getMriSettings();
+            case ApiIntegrationType::RESMAN:
+                return $holding->getResManSettings();
+            case ApiIntegrationType::YARDI_VOYAGER:
+                return $holding->getYardiSettings();
+        }
+
+        return null;
     }
 }

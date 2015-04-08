@@ -17,4 +17,12 @@ class ResManSettings extends Base implements SettingsInterface
             'AccountID' => $this->getAccountId()
         );
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isMultiProperty()
+    {
+        return false;
+    }
 }

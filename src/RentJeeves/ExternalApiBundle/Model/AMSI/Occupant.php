@@ -140,6 +140,136 @@ class Occupant
     protected $responsibleFlag;
 
     /**
+     * @Serializer\SerializedName("Email")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $email;
+
+    /**
+     * @Serializer\SerializedName("City")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $city;
+
+    /**
+     * @Serializer\SerializedName("State")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $state;
+
+    /**
+     * @Serializer\SerializedName("ZipCode")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $zipCode;
+
+    /**
+     * @Serializer\SerializedName("Country")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $country;
+
+    /**
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+
+    /**
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZipCode()
+    {
+        return $this->zipCode;
+    }
+
+    /**
+     * @param string $zipCode
+     */
+    public function setZipCode($zipCode)
+    {
+        $this->zipCode = $zipCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
      * @return string
      */
     public function getBldgId()

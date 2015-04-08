@@ -18,7 +18,7 @@ abstract class StorageAbstract implements StorageInterface
 
     protected $mapping;
 
-    protected $availableTypes = array('csv', 'yardi', 'resman', 'mri');
+    protected $availableTypes = ['csv', 'yardi', 'resman', 'mri', 'amsi'];
 
     public function setMapping(array $mappedData)
     {

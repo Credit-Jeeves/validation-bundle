@@ -11,4 +11,9 @@ interface SettingsInterface
      * @return array
      */
     public function getParameters();
+
+    /**
+     * @return boolean
+     */
+    public function isMultiProperty();
 }

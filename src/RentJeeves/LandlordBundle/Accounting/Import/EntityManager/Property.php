@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
 trait Property
@@ -19,9 +20,21 @@ trait Property
             return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
         }
 
-        /**
-         * @var $property EntityProperty
-         */
+        if (isset($row[Mapping::KEY_UNIT_ID]) && !empty($row[Mapping::KEY_UNIT_ID]) && $this->group) {
+            /** @var UnitMapping $mapping */
+            $mapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
+                $this->group,
+                $row[Mapping::KEY_UNIT_ID]
+            );
+
+            $property = (!empty($mapping))? $mapping->getUnit()->getProperty() : null;
+        }
+
+        if (!empty($property)) {
+            return $property;
+        }
+
+        /** @var $property EntityProperty */
         $property =  $this->mapping->createProperty($row);
         if ($propertyByUnit = $this->tryMapPropertyByUnit(
             $property,

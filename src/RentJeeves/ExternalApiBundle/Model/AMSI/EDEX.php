@@ -11,7 +11,7 @@ class EDEX
     /**
      * @Serializer\SerializedName("propertyid")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Groups({"GetPropertyResidents", "GetPropertyUnits"})
      * @Serializer\XmlElement(cdata=false)
      *
      * @var string
@@ -21,7 +21,7 @@ class EDEX
     /**
      * @Serializer\SerializedName("leasestatus")
      * @Serializer\Type("string")
-     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Groups({"GetPropertyResidents"})
      * @Serializer\XmlElement(cdata=false)
      *
      * @var string
@@ -31,7 +31,7 @@ class EDEX
     /**
      * @Serializer\SerializedName("includeprimaryaddress")
      * @Serializer\Type("integer")
-     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Groups({"GetPropertyResidents"})
      *
      * @var string
      */
@@ -40,7 +40,7 @@ class EDEX
     /**
      * @Serializer\SerializedName("includecontactdetails")
      * @Serializer\Type("integer")
-     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Groups({"GetPropertyResidents"})
      *
      * @var string
      */

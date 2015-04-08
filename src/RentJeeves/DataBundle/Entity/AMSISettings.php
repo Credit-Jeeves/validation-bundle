@@ -18,4 +18,12 @@ class AMSISettings extends Base implements SettingsInterface
     {
         return ['url' => $this->getUrl()];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isMultiProperty()
+    {
+        return true;
+    }
 }
