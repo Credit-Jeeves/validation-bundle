@@ -25,4 +25,21 @@ class ResidentMappingRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @param Holding $holding
+     * @param string  $residentId
+     *
+     * @return ResidentMapping|null
+     */
+    public function findOneResidentByHoldingAndResidentId(Holding $holding, $residentId)
+    {
+        return $this->createQueryBuilder('mp')
+            ->where('mp.holding = :holding')
+            ->andWhere('mp.residentId = :residentId')
+            ->setParameter('holding', $holding)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

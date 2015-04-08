@@ -3106,6 +3106,11 @@
                 <source>landlord_export.export_by_deposits.description_help</source>
                 <target>This will export all the payments by their estimated deposit date. Payments will have a "batch ID," or will be grouped by the batch that was deposited to your account, so that you can sum them up and reconcile against your bank </target>
             </trans-unit>
+
+            <trans-unit id="new.user.error.without_invite_code">
+                <source>new.user.error.without_invite_code</source>
+                <target>It looks like you already have an account. Please login or click "Get a new one".</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

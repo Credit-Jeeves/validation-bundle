@@ -2,99 +2,79 @@
 
 namespace RentJeeves\CoreBundle\EventListener;
 
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\Tag;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Inject;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Router;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 /**
- * @Service("core.event_listener.kernel.mobile_denied")
+ * @DI\Service("core.event_listener.kernel.request")
  *
- *  @Tag(
- *      "kernel.event_listener",
- *       attributes = {
- *           "event" = "kernel.request",
- *           "method" = "onKernelRequest",
- *      }
- * )
+ * @DI\Tag("kernel.event_listener", attributes = {
+ *      "event" = "kernel.request",
+ *      "method" = "onKernelRequest",
+ *      "priority" = 9,
+ * })
+ *
+ * For correct work of the current listener
+ * its priority should be larger
+ * than firewall`s priority for "kernel.request" (it is 8)
+ * @see \Symfony\Component\Security\Http\Firewall
+ *
+ * @link https://credit.atlassian.net/browse/RT-1246 a description of why it's done
  */
-class MobileDeniedListener
+class RequestListener
 {
-
-    const SKIP_CONTROLLER_REG_EXP = "/flashAction|getTranslationsAction|PublicBundle/";
-
-    protected $router;
-
-    protected $session;
-
-    protected $translator;
+    const PARAMETER_HOLDING_ID = 'holding_id';
+    const PARAMETER_RESIDENT_ID = 'resident_id';
 
     /**
-     * @InjectParams({
-     *      "router"                 = @Inject("router"),
-     *      "session"                = @Inject("session"),
-     *      "translator"             = @Inject("translator")
+     * @var SecurityContextInterface
+     */
+    private $context;
+
+    /**
+     * @var Session
+     */
+    private $session;
+
+    /**
+     * @param SecurityContextInterface $context
+     * @param Session                  $session
+     *
+     * @DI\InjectParams({
+     * "context" = @DI\Inject("security.context"),
+     * "session" = @DI\Inject("session"),
      * })
      */
-    public function __construct(
-        Router $router,
-        Session $session,
-        $translator
-    ) {
-        $this->router = $router;
+    public function __construct(SecurityContextInterface $context, Session $session)
+    {
+        $this->context = $context;
         $this->session = $session;
-        $this->translator = $translator;
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $controller = $event->getRequest()->attributes->get('_controller');
-
-        if (($this->isMobile() && !preg_match(self::SKIP_CONTROLLER_REG_EXP, $controller))
-            && ($event->getRequestType() === 1)
-        ) {
-            $title = $this->session->getFlashBag()->set(
-                'message_title',
-                $this->translator->trans('access.denied')
-            );
-            $text = $this->session->getFlashBag()->set(
-                'message_body',
-                $this->translator->trans('access.denied.description')
-            );
-            $route = $this->router->generate('public_message_flash');
-            $event->setResponse(new RedirectResponse($route));
+        if (null === $this->context->getToken()) {
+            $request = $event->getRequest();
+            $this->getDefiniteParametersAndAddToSession($request);
         }
     }
 
     /**
-     * @deprecated
-     * @return bool
+     * @param Request $request
      */
-    protected function isMobile()
+    private function getDefiniteParametersAndAddToSession(Request $request)
     {
-        //On task https://credit.atlassian.net/browse/RT-276
-        //was changed, currently we need allow ipad/mobile
-        return false;
-
-        $userAgent = (isset($_SERVER['HTTP_USER_AGENT']))? $_SERVER['HTTP_USER_AGENT'] : null;
-
-        if (!$userAgent) {
-            return false;
+        if ($holdingId = $request->query->get(self::PARAMETER_HOLDING_ID)) {
+            $this->session->set(self::PARAMETER_HOLDING_ID, $holdingId);
         }
-
-        $preg = "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|";
-        $preg .= "windows ce|nokia|fennec|hiptop|kindle|mot |mot-|IEMobile|Android|";
-        $preg .= "webos\/|samsung|sonyericsson|^sie-|nintendo|";
-        $preg .= "mobile|pda;|avantgo|eudoraweb|minimo|netfront|brew|teleca|lg;|lge |wap;| wap /";
-
-        if (preg_match($preg, $userAgent)) {
-            return true;
+        if ($residentId = $request->query->get(self::PARAMETER_RESIDENT_ID)) {
+            $this->session->set(self::PARAMETER_RESIDENT_ID, $residentId);
         }
-
-        return false;
     }
 }
