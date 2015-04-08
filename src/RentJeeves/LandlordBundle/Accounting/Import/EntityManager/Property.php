@@ -20,7 +20,7 @@ trait Property
             return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
         }
 
-        if (isset($row[Mapping::KEY_UNIT_ID]) && !empty($row[Mapping::KEY_UNIT_ID])) {
+        if (isset($row[Mapping::KEY_UNIT_ID]) && !empty($row[Mapping::KEY_UNIT_ID]) && $this->group) {
             /** @var UnitMapping $mapping */
             $mapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
                 $this->group,
