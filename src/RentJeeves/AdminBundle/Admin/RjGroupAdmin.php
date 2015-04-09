@@ -172,7 +172,7 @@ class RjGroupAdmin extends Admin
                 ->add(
                     'depositAccount.passedAch',
                     'checkbox',
-                    ['label' => 'Is passed ach']
+                    ['label' => 'Is passed ach', 'required' => false]
                 )
             ->end()
             ->with('Group Phones')

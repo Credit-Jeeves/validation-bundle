@@ -17,6 +17,8 @@ class DepositAccount extends Base
         if ($group) {
             $this->setGroup($group);
         }
+
+        parent::__construct();
     }
 
     public function isComplete()
@@ -26,6 +28,6 @@ class DepositAccount extends Base
 
     public function __toString()
     {
-        return (string)$this->status;
+        return (string) $this->status;
     }
 }

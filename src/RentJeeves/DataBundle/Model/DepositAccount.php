@@ -115,6 +115,7 @@ abstract class DepositAccount
     public function __construct()
     {
         $this->paymentAccounts = new ArrayCollection();
+        $this->passedAch = false;
     }
 
     /**

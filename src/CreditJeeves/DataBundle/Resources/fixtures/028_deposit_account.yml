@@ -25,4 +25,4 @@ fixtures:
     status: complete
     feeCC: "0"
     feeACH: "0"
-    passedAch: 0
+    passedAch: 1
