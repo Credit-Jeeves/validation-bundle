@@ -35,6 +35,7 @@ class PaymentAccepted extends Enum
         foreach (($currentValues + $otherValues) as $key => $value) {
             $result[$value]= $value;
         }
+        
         return $result;
     }
 }
