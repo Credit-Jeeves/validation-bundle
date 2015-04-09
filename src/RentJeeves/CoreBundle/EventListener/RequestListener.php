@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
  *
  * @DI\Tag("kernel.event_listener", attributes = {
  *      "event" = "kernel.request",
- *      "method" = "onKernelRequest",
+ *      "method" = "parseRequest",
  *      "priority" = 9,
  * })
  *
@@ -44,8 +44,8 @@ class RequestListener
      * @param Session                  $session
      *
      * @DI\InjectParams({
-     * "context" = @DI\Inject("security.context"),
-     * "session" = @DI\Inject("session"),
+     *      "context" = @DI\Inject("security.context"),
+     *      "session" = @DI\Inject("session"),
      * })
      */
     public function __construct(SecurityContextInterface $context, Session $session)
@@ -57,7 +57,7 @@ class RequestListener
     /**
      * @param GetResponseEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function parseRequest(GetResponseEvent $event)
     {
         if (null === $this->context->getToken()) {
             $request = $event->getRequest();

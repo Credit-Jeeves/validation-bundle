@@ -213,8 +213,9 @@ class PublicController extends Controller
         $tenant = new Tenant();
 
         if (null !== $session->get('holding_id') || null !== $session->get('resident_id')) {
-            $residentId = $session->get('resident_id');
-            if (null === $holding = $em->getRepository('DataBundle:Holding')->find($session->get('holding_id'))) {
+            $residentId = $session->get('resident_id', '');
+            $holdingId = $session->get('holding_id', '');
+            if (null === $holding = $em->getRepository('DataBundle:Holding')->find($holdingId)) {
                 $session->remove('holding_id');
                 $session->remove('resident_id');
 
@@ -232,7 +233,7 @@ class PublicController extends Controller
 
                     return $this->redirectToRoute('tenant_invite', ['code' => $inviteCode]);
                 } else {
-                    $session->getFlashBag()->add('error','new.user.error.without_invite_code');
+                    $session->getFlashBag()->add('error', 'new.user.error.without_invite_code');
 
                     return $this->redirectToRoute('fos_user_security_login');
                 }
@@ -240,11 +241,11 @@ class PublicController extends Controller
                 $contracts = $em->getRepository('RjDataBundle:ContractWaiting')
                     ->findAllByHoldingAndResidentId($holding, $residentId);
                 if (null !== $contracts) {
-                    $contractsId = [];
+                    $contractIds = [];
                     foreach ($contracts as $contract) {
-                        $contractsId[] = $contract->getId();
+                        $contractIds[] = $contract->getId();
                     }
-                    $contractUnits = $em->getRepository('RjDataBundle:Unit')->findAllByContractWaitingIds($contractsId);
+                    $contractUnits = $em->getRepository('RjDataBundle:Unit')->findAllByContractWaitingIds($contractIds);
                     $contractProperties = [];
                     foreach ($contractUnits as $unit) {
                         $contractProperties[] = $unit->getProperty();

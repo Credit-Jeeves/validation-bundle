@@ -5,7 +5,6 @@ use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Score;
 use RentJeeves\DataBundle\Entity\Tenant;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class TenantController extends BaseController
 {

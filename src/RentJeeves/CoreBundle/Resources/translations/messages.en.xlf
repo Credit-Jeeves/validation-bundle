@@ -3109,7 +3109,7 @@
 
             <trans-unit id="new.user.error.without_invite_code">
                 <source>new.user.error.without_invite_code</source>
-                <target>It looks like you already have an account. Please login or click "Get a new one".</target>
+                <target>It looks like you already have an account. Please login or click "Get a new one" if you forgot your password.</target>
             </trans-unit>
         </body>
     </file>
