@@ -339,10 +339,10 @@
   </wsdl:binding>
   <wsdl:service name="Ledger">
     <wsdl:port name="LedgerSoap" binding="tns:LedgerSoap">
-      <soap:address location="{{ url }}" />
+      <soap:address location="{{ url }}/ledger.asmx" />
     </wsdl:port>
     <wsdl:port name="LedgerSoap12" binding="tns:LedgerSoap12">
-      <soap12:address location="{{ url }}" />
+      <soap12:address location="{{ url }}/ledger.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

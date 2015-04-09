@@ -30,11 +30,40 @@ class AMSILeasingClient extends AMSIBaseClient
             $result,
             'RentJeeves\ExternalApiBundle\Model\AMSI\PropertyUnits',
             'xml',
-            $this->getDeserializationContext()
+            $this->getDeserializationContext(['AMSI'])
         );
 
         if ($propertyUnits instanceof PropertyUnits && count($propertyUnits->getUnits()) > 0) {
             return $propertyUnits->getUnits();
+        }
+
+        throw new Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
+    }
+
+    /**
+     * @param string $propertyId
+     * @param string $leaseStatus
+     * @return PropertyResidents
+     * @throws Exception
+     */
+    public function getPropertyResidents($propertyId, $leaseStatus)
+    {
+        $result = $this->sendRequest(
+            'GetPropertyResidents',
+            $this->getParametersForPropertyResidents($propertyId, $leaseStatus)
+        );
+
+        $result = SerializerXmlHelper::replaceEscapeToCorrectSymbol($result);
+        /** @var PropertyResidents $propertyResidents */
+        $propertyResidents = $this->serializer->deserialize(
+            $result,
+            'RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents',
+            'xml',
+            $this->getDeserializationContext(['AMSI'])
+        );
+
+        if ($propertyResidents instanceof PropertyResidents && count($propertyResidents->getLease()) > 0) {
+            return $propertyResidents;
         }
 
         throw new Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
@@ -72,35 +101,6 @@ class AMSILeasingClient extends AMSIBaseClient
     /**
      * @param string $propertyId
      * @param string $leaseStatus
-     * @return PropertyResidents
-     * @throws Exception
-     */
-    public function getPropertyResidents($propertyId, $leaseStatus)
-    {
-        $result = $this->sendRequest(
-            'GetPropertyResidents',
-            $this->getParametersForPropertyResidents($propertyId, $leaseStatus)
-        );
-
-        $result = SerializerXmlHelper::replaceEscapeToCorrectSymbol($result);
-        /** @var PropertyResidents $propertyResidents */
-        $propertyResidents = $this->serializer->deserialize(
-            $result,
-            'RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents',
-            'xml',
-            $this->getDeserializationContext()
-        );
-
-        if ($propertyResidents instanceof PropertyResidents && count($propertyResidents->getLease()) > 0) {
-            return $propertyResidents;
-        }
-
-        throw new Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
-    }
-
-    /**
-     * @param string $propertyId
-     * @param string $leaseStatus
      * @return array
      */
     protected function getParametersForPropertyResidents($propertyId, $leaseStatus)
@@ -127,40 +127,5 @@ class AMSILeasingClient extends AMSIBaseClient
         ];
 
         return $parameters;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getLoginCredentials()
-    {
-        return [
-            'UserID'  => $this->settings->getUser(),
-            'Password'=> $this->settings->getPassword(),
-            'PortfolioName' => $this->settings->getPortfolioName(),
-        ];
-    }
-
-    /**
-     * @param array $groups
-     * @return SerializationContext
-     */
-    protected function getSerializationContext($groups)
-    {
-        $serializerContext = new SerializationContext();
-        $serializerContext->setGroups($groups);
-
-        return $serializerContext;
-    }
-
-    /**
-     * @return DeserializationContext
-     */
-    protected function getDeserializationContext()
-    {
-        $deserializerContext = new DeserializationContext();
-        $deserializerContext->setGroups(['AMSI']);
-
-        return $deserializerContext;
     }
 }

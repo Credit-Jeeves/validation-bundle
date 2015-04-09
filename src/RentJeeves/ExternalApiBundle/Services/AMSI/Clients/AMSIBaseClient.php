@@ -3,6 +3,8 @@
 namespace RentJeeves\ExternalApiBundle\Services\AMSI\Clients;
 
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Monolog\Logger;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
@@ -114,5 +116,41 @@ class AMSIBaseClient implements ClientInterface
     public function canWorkWithBatches()
     {
         return false;
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function getLoginCredentials()
+    {
+        return [
+            'UserID'  => $this->settings->getUser(),
+            'Password'=> $this->settings->getPassword(),
+            'PortfolioName' => $this->settings->getPortfolioName(),
+        ];
+    }
+
+    /**
+     * @param array $groups
+     * @return SerializationContext
+     */
+    protected function getSerializationContext(array $groups)
+    {
+        $serializerContext = new SerializationContext();
+        $serializerContext->setGroups($groups);
+
+        return $serializerContext;
+    }
+
+    /**
+     * @return DeserializationContext
+     */
+    protected function getDeserializationContext(array $groups)
+    {
+        $deserializerContext = new DeserializationContext();
+        $deserializerContext->setGroups($groups);
+
+        return $deserializerContext;
     }
 }
