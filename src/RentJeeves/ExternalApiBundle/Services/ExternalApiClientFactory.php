@@ -50,7 +50,7 @@ class ExternalApiClientFactory
     }
 
     /**
-     * @param SettingsInterface $settings
+     * @param  SettingsInterface $settings
      * @return $this
      */
     public function setSettings(SettingsInterface $settings)

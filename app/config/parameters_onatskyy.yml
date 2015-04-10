@@ -3,7 +3,6 @@ imports:
 
 parameters:
     database_name: credit_jeeves2
-#    database_name: renttrack_stage
     database_user: root
     database_password: 123456
 

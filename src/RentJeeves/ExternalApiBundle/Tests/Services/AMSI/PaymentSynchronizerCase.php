@@ -1,0 +1,96 @@
+<?php
+
+namespace RentJeeves\ExternalApiBundle\Tests\Services\AMSI;
+
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
+use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
+use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
+use RentJeeves\TestBundle\Functional\BaseTestCase;
+
+class PaymentSynchronizerCase extends BaseTestCase
+{
+    use TransactionAvailableTrait;
+    use ContractAvailableTrait;
+
+    /**
+     * @test
+     */
+    public function shouldSendPaymentToAmsiAndReturnTrue()
+    {
+        $this->load(true);
+
+        $transaction = $this->createTransaction(
+            ApiIntegrationType::AMSI,
+            'test',
+            '001',
+            20,
+            '001|01|101'
+        );
+
+        $order = $transaction->getOrder();
+
+        $synchronizer = $this->getSynchronizer();
+        $response = $synchronizer->sendOrderToAccountingSystem($order);
+        $this->assertTrue($response);
+
+        return $order;
+    }
+
+    /**
+     * @test
+     * @depends shouldSendPaymentToAmsiAndReturnTrue
+     */
+    public function shouldReturnPaymentForOrderAndReturnTrue(Order $order)
+    {
+        $order->setStatus(OrderStatus::CANCELLED);
+
+        $completedTransaction = $order->getCompleteTransaction();
+
+        $transaction = new Heartland();
+        $transaction->setTransactionId(rand(9999,9999999));
+        $transaction->setAmount($completedTransaction->getAmount());
+        $transaction->setIsSuccessful(true);
+        $transaction->setStatus(TransactionStatus::REVERSED);
+        $transaction->setMessages('Test message');
+        $transaction->setBatchId(rand(9999,9999999));
+
+        $order->addHeartland($transaction);
+
+        $this->getEntityManager()->persist($transaction);
+        $this->getEntityManager()->flush();
+
+        $settings = $order->getContract()->getHolding()->getAmsiSettings();
+
+        $amsiLedgerClient = $this->createAmsiLedgerClient($settings);
+        $response = $amsiLedgerClient->returnPayment($order);
+
+        $this->assertTrue($response);
+    }
+
+    /**
+     * @return \RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer
+     */
+    protected function getSynchronizer()
+    {
+        return $this->getContainer()->get('accounting.payment_sync');
+    }
+
+    /**
+     * @param SettingsInterface $settings
+     *
+     * @return AMSILedgerClient
+     */
+    protected function createAmsiLedgerClient(SettingsInterface $settings)
+    {
+        $clientFactory = $this->getContainer()->get('soap.client.factory');
+
+        return $clientFactory->getClient($settings, SoapClientEnum::AMSI_LEDGER);
+    }
+}

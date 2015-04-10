@@ -8,14 +8,13 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @Serializer\XmlRoot("Payments")
  */
-class Payments
+class ReturnPayments
 {
     /**
-     * @Serializer\SerializedName("Payment")
-     * @Serializer\Type("ArrayCollection<RentJeeves\ExternalApiBundle\Model\AMSI\Payment>")
+     * @Serializer\Type("ArrayCollection<RentJeeves\ExternalApiBundle\Model\AMSI\ReturnPayment>")
      * @Serializer\XmlList(inline = true, entry = "Payment")
+     * @Serializer\Groups({"returnPayment" , "returnPaymentResponse"})
      * @Serializer\XmlKeyValuePairs
-     * @Serializer\Groups({"addPayment", "addPaymentResponse", "returnPayment"})
      *
      * @var ArrayCollection
      */
@@ -35,9 +34,9 @@ class Payments
     }
 
     /**
-     * @param array $payments
+     * @param ReturnPayment $payment
      */
-    public function addPayment(Payment $payment)
+    public function addPayment(ReturnPayment $payment)
     {
         $this->payments->add($payment);
     }

@@ -8,6 +8,9 @@ use RentJeeves\ExternalApiBundle\Model\AMSI\Batches;
 use RentJeeves\ExternalApiBundle\Model\AMSI\EdexSettlement;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Payments;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Payment;
+use RentJeeves\ExternalApiBundle\Model\AMSI\ReturnPayment;
+use RentJeeves\ExternalApiBundle\Model\AMSI\ReturnPayments;
+use RentJeeves\ExternalApiBundle\Services\AMSI\Enum\ReversalReasonEnum;
 
 class AMSILedgerClient extends AMSIBaseClient
 {
@@ -16,6 +19,7 @@ class AMSILedgerClient extends AMSIBaseClient
 
     /**
      * @param Order $order
+     *
      * @return bool
      */
     public function postPayment(Order $order)
@@ -131,6 +135,79 @@ class AMSILedgerClient extends AMSIBaseClient
     }
 
     /**
+     * @param Order $order
+     *
+     * @return boolean
+     */
+    public function returnPayment(Order $order)
+    {
+        $payment = new ReturnPayment();
+
+        $payment->setClientTransactionId($order->getCompleteTransaction()->getTransactionId());
+        $payment->setReason(ReversalReasonEnum::getReasonByOrder($order));
+        $payment->setClientJnlNo($order->getCompleteTransaction()->getBatchId());
+        $payment->setDescription($order->getReversedTransaction()->getMessages());
+
+        $payments = new ReturnPayments();
+        $payments->addPayment($payment);
+
+        try {
+            $xmlData = SerializerXmlHelper::removeStandartHeaderXml(
+                $this->serializer->serialize(
+                    $payments,
+                    'xml',
+                    $this->getSerializationContext(['returnPayment'])
+                )
+            );
+            $xmlData = SerializerXmlHelper::addCDataToString($xmlData);
+            $xmlData = SerializerXmlHelper::addTagWithNameSpaceToString('XMLData', 'ns1', $xmlData);
+
+            $parameters = [
+                'ReturnPayment' => array_merge(
+                    $this->getLoginCredentials(),
+                    ['XMLData' => new \SoapVar($xmlData, XSD_ANYXML)]
+                ),
+            ];
+
+            $rawResponse = $this->sendRequest('ReturnPayment', $parameters);
+            $paymentsResponse = $this->serializer->deserialize(
+                $rawResponse,
+                'RentJeeves\ExternalApiBundle\Model\AMSI\ReturnPayments',
+                'xml',
+                $this->getDeserializationContext(['returnPaymentResponse'])
+            );
+
+            if ($paymentsResponse instanceof ReturnPayments && $paymentsResponse->getPayments()->first()) {
+                /** @var Payment $resultPayment */
+                $resultPayment = $paymentsResponse->getPayments()->first();
+                if (self::SUCCESSFUL_RESPONSE_CODE == $resultPayment->getErrorCode()) {
+                    return true;
+                } else {
+                    $this->logger->alert(sprintf(
+                        'AMSI: Failed posting order(ID#%d). Got error code %d, error description %s',
+                        $order->getId(),
+                        $resultPayment->getErrorCode(),
+                        $resultPayment->getErrorDescription()
+                    ));
+                }
+            } else {
+                $this->logger->alert(sprintf(
+                    'AMSI: Failed posting order(ID#%d). Cannot deserialize response.',
+                    $order->getId()
+                ));
+            }
+        } catch (\Exception $e) {
+            $this->logger->alert(sprintf(
+                'AMSI: Failed posting order(ID#%d). Got exception %s',
+                $order->getId(),
+                $e->getMessage()
+            ));
+        }
+
+        return false;
+    }
+
+    /**
      * @return array
      */
     protected function getLoginCredentials()
@@ -139,7 +216,7 @@ class AMSILedgerClient extends AMSIBaseClient
     }
 
     /**
-     * @param Order $order
+     * @param  Order  $order
      * @return string
      */
     protected function getParametersForAddPaymentCall(Order $order)

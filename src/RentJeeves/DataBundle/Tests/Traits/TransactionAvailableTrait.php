@@ -7,12 +7,11 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Heartland;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
-use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\CoreBundle\DateTime;
 
 trait TransactionAvailableTrait
@@ -20,12 +19,20 @@ trait TransactionAvailableTrait
     /**
      * @param string $apiIntegrationType
      * @param string $residentId
-     * @param string $externalProperyId
-     * @param null $externalLeaseId
+     * @param string $externalPropertyId
+     * @param string $externalLeaseId
+     * @param string $externalUnitId
+     *
      * @return Heartland
      */
-    public function createTransaction($apiIntegrationType, $residentId, $externalProperyId, $externalLeaseId = null)
-    {
+    public function createTransaction(
+        $apiIntegrationType,
+        $residentId,
+        $externalPropertyId,
+        $externalLeaseId = null,
+        $externalUnitId = null
+    ) {
+        /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $startAt = new DateTime();
         $startAt->modify('-5 month');
@@ -38,10 +45,23 @@ trait TransactionAvailableTrait
         }
         $unit = $contract->getUnit();
         $unit->setName('2');
+
+        if ($externalUnitId !== null) {
+            if (false == $unitMapping = $unit->getUnitMapping()) {
+                $unitMapping = new UnitMapping();
+
+                $unitMapping->setUnit($unit);
+                $unit->setUnitMapping($unitMapping);
+
+                $em->persist($unitMapping);
+            }
+            $unitMapping->setExternalUnitId($externalUnitId);
+        }
+
         $holding = $contract->getHolding();
         $holding->getAccountingSettings()->setApiIntegration($apiIntegrationType);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($holding);
-        $propertyMapping->setExternalPropertyId($externalProperyId);
+        $propertyMapping->setExternalPropertyId($externalPropertyId);
 
         $tenant = $contract->getTenant();
         $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
@@ -75,17 +95,9 @@ trait TransactionAvailableTrait
         $transaction->setBatchDate(new DateTime());
         $transaction->setStatus(TransactionStatus::COMPLETE);
         $transaction->setIsSuccessful(true);
-        $transaction->setTransactionId(uniqid());
+        $transaction->setTransactionId(rand(9999,9999999));
         $order->addHeartland($transaction);
 
-        /** @var PaymentBatchMappingRepository $repo */
-        $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
-
-        $this->assertFalse($repo->isOpenedBatch(
-            $transaction->getBatchId(),
-            ApiIntegrationType::RESMAN,
-            ResManClientCase::EXTERNAL_PROPERTY_ID
-        ));
         $em->persist($transaction);
         $em->persist($operation);
         $em->persist($order);
