@@ -2,11 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 
-use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
-use RentJeeves\ExternalApiBundle\Model\AMSI\Payment;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
@@ -21,8 +19,6 @@ use Symfony\Bridge\Monolog\Logger;
 class ResidentDataManager
 {
     use SettingsTrait;
-
-    const SUCCESSFUL_RESPONSE_CODE = 0;
 
     /**
      * @var SoapClientFactory
@@ -82,38 +78,6 @@ class ResidentDataManager
         }
 
         return $leases;
-    }
-
-    /**
-     * @param Order $order
-     * @return bool
-     */
-    public function postPayment(Order $order)
-    {
-        try {
-            $client = $this->getApiClient(SoapClientEnum::AMSI_LEDGER);
-            /** @var Payment $payment */
-            $payment = $client->addPayment($order);
-            if (self::SUCCESSFUL_RESPONSE_CODE == $payment->getErrorCode()) {
-                return true;
-            }
-            $this->logger->critical(sprintf(
-                'AMSI: Failed posting order(ID#%s). Got error code %d, error description %s',
-                $order->getId(),
-                $payment->getErrorCode(),
-                $payment->getErrorDescription()
-            ));
-
-            return false;
-        } catch (\Exception $e) {
-            $this->logger->critical(sprintf(
-                'AMSI: Failed posting order(ID#%s). Got exception %s',
-                $order->getId(),
-                $e->getMessage()
-            ));
-        }
-
-        return false;
     }
 
     /**

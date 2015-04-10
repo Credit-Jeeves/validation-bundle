@@ -113,11 +113,18 @@ class AMSIBaseClient implements ClientInterface
     /**
      * {@inheritdoc}
      */
-    public function canWorkWithBatches()
+    public function supportsBatches()
     {
         return false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsProperties()
+    {
+        return false;
+    }
 
     /**
      * @return array

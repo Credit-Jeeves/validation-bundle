@@ -9,14 +9,80 @@ use RentJeeves\ExternalApiBundle\Model\AMSI\Payment;
 
 class AMSILedgerClient extends AMSIBaseClient
 {
-    public function addPayment(Order $order)
+    const SUCCESSFUL_RESPONSE_CODE = 0;
+
+    /**
+     * @param Order $order
+     * @return bool
+     */
+    public function postPayment(Order $order)
+    {
+        try {
+            $parameters = $this->getParametersForAddPaymentCall($order);
+            $rawResponse = $this->sendRequest('AddPayment', $parameters);
+            /** @var Payments $paymentsResponse */
+            $paymentsResponse = $this->serializer->deserialize(
+                $rawResponse,
+                'RentJeeves\ExternalApiBundle\Model\AMSI\Payments',
+                'xml',
+                $this->getDeserializationContext(['addPaymentResponse'])
+            );
+            if ($paymentsResponse instanceof Payments && isset($paymentsResponse->getPayments()[0])) {
+                /** @var Payment $resultPayment */
+                $resultPayment = $paymentsResponse->getPayments()[0];
+                if (self::SUCCESSFUL_RESPONSE_CODE == $resultPayment->getErrorCode()) {
+                    return true;
+                } else {
+                    $this->logger->alert(sprintf(
+                        'AMSI: Failed posting order(ID#%d). Got error code %d, error description %s',
+                        $order->getId(),
+                        $resultPayment->getErrorCode(),
+                        $resultPayment->getErrorDescription()
+                    ));
+                }
+            } else {
+                $this->logger->alert(sprintf(
+                    'AMSI: Failed posting order(ID#%d). Cannot deserialize response.',
+                    $order->getId()
+                ));
+            }
+        } catch (\Exception $e) {
+            $this->logger->alert(sprintf(
+                'AMSI: Failed posting order(ID#%d). Got exception %s',
+                $order->getId(),
+                $e->getMessage()
+            ));
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getLoginCredentials()
+    {
+        return parent::getLoginCredentials() + ['preliminary' => 0];
+    }
+
+    /**
+     * @param Order $order
+     * @return string
+     */
+    protected function getParametersForAddPaymentCall(Order $order)
     {
         $contract = $order->getContract();
         $externalUnitId = $contract->getUnit()->getUnitMapping()->getExternalUnitId();
         list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
+        if (!($propertyId && $buildingId && $unitId)) {
+            throw new \RuntimeException(sprintf(
+                'AMSI: Cannot post order #%d: external unit mapping (%s) invalid',
+                $order->getId(),
+                $externalUnitId
+            ));
+        }
 
         $payment = new Payment();
-
         $payment->setPropertyId($propertyId);
         $payment->setBldgId($buildingId);
         $payment->setUnitId($unitId);
@@ -43,31 +109,10 @@ class AMSILedgerClient extends AMSIBaseClient
         $parameters = [
             'AddPayment' => array_merge(
                 $this->getLoginCredentials(),
-                ['XMLData'=> new \SoapVar($xmlData, XSD_ANYXML)]
+                ['XMLData' => new \SoapVar($xmlData, XSD_ANYXML)]
             ),
         ];
 
-        if ($rawResponse = $this->sendRequest('AddPayment', $parameters)) {
-            /** @var Payments $paymentsResponse */
-            $paymentsResponse = $this->serializer->deserialize(
-                $rawResponse,
-                'RentJeeves\ExternalApiBundle\Model\AMSI\Payments',
-                'xml',
-                $this->getDeserializationContext(['addPaymentResponse'])
-            );
-            if (is_array($paymentsResponse->getPayments()) && isset($paymentsResponse->getPayments()[0])) {
-                return $paymentsResponse->getPayments()[0];
-            }
-        }
-
-        throw new \RuntimeException('AMSI: Can not deserialize response');
-    }
-
-    /**
-     * @return array
-     */
-    protected function getLoginCredentials()
-    {
-        return parent::getLoginCredentials() + ['preliminary' => 0];
+        return $parameters;
     }
 }
