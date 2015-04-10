@@ -24,8 +24,8 @@ class GroupCase extends BaseTestCase
         $menu[4]->click();
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(4, $checkbox);
-        $checkbox[3]->check(); //Check pay balance only
+        $this->assertCount(5, $checkbox);
+        $checkbox[4]->check(); //Check pay balance only
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
 
@@ -36,15 +36,14 @@ class GroupCase extends BaseTestCase
         $menu[4]->click();
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(4, $checkbox);
-        $checkbox[1]->check();  //Check is integrated
-        $checkbox[3]->check(); //Check pay balance only
+        $this->assertCount(5, $checkbox);
+        $checkbox[2]->check();  //Check is integrated
+        $checkbox[4]->check(); //Check pay balance only
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
 
         $this->assertNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
-        $this->logout();
     }
 
     /**
@@ -65,15 +64,14 @@ class GroupCase extends BaseTestCase
         $menu[4]->click();
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(7, $checkbox); // TODO check only current tab
-        $checkbox[4]->check();  //Check is integrated
-        $checkbox[6]->check(); //Check pay balance only
+        $this->assertCount(8, $checkbox); // TODO check only current tab
+        $checkbox[5]->check();  //Check is integrated
+        $checkbox[7]->check(); //Check pay balance only
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
 
         $this->assertNotNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
         $this->assertEquals('pay.balance.only.reccuring_error', $error->getText());
-        $this->logout();
     }
 }

@@ -2,7 +2,6 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\AdminBundle\Form\GroupSettingsType;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -57,7 +56,7 @@ class RjGroupAdmin extends Admin
             $query->andWhere($alias.'.holding_id = :holding_id');
             $query->setParameter('holding_id', $nHoldingId);
         }
-        
+
         return $query;
     }
 
@@ -165,6 +164,16 @@ class RjGroupAdmin extends Admin
                     'number',
                     array('label' => 'ACH Fee ($)', 'required' => false) //admin.deposit_account.fee_ach
                 )
+                ->add(
+                    'depositAccount.mid',
+                    'number',
+                    ['label' => 'Mid', 'required' => false]
+                )
+                ->add(
+                    'depositAccount.passedAch',
+                    'checkbox',
+                    ['label' => 'Is passed ach', 'required' => false]
+                )
             ->end()
             ->with('Group Phones')
                 ->add(
@@ -246,7 +255,6 @@ class RjGroupAdmin extends Admin
             ->add('depositAccount.status', null, array('label' => 'Merchant status'));
     }
 
-    
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
     {
         $nHoldingId = $this->getRequest()->get('holding_id', $this->request->getSession()->get('holding_id', null));
@@ -295,10 +303,9 @@ class RjGroupAdmin extends Admin
                 'uri' => $this->routeGenerator->generate('admin_rj_group_list')
             )
         );
+
         return $this->breadcrumbs[$action] = $menu;
     }
-
-
 
     protected function configureShowField(ShowMapper $showMapper)
     {
