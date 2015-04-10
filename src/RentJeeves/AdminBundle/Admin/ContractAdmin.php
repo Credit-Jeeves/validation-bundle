@@ -12,6 +12,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 class ContractAdmin extends Admin
 {
@@ -136,6 +137,7 @@ class ContractAdmin extends Admin
             ->add('unit', null, array('route' => array('name' => 'show')))
             ->add('search')
             ->add('status')
+            ->add('payment_accepted')
             ->add('paidTo')
             ->add('reportToExperian')
             ->add('experianStartAt')
@@ -234,6 +236,11 @@ class ContractAdmin extends Admin
                 'status',
                 'choice',
                 ['choices' => ContractStatus::getStatuses($this->getSubject()->getStatus())]
+            )
+            ->add(
+                'payment_accepted',
+                'choice',
+                ['choices' => PaymentAccepted::getValues($this->getSubject()->getPaymentAccepted())]
             )
             ->add('paidTo')
             ->add('reportToExperian')
