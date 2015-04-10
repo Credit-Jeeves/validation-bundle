@@ -27,21 +27,37 @@
 
 
 <script>
-    $(document).ready(function(){
-        h=$.mobile.getScreenHeight();
-        h-=60;
-    $(".ui-content").css('min-height',h+'px');
-    })
+
 
     var contractsJson={{ contractsJson | raw }};
     var paidForArr={{ paidForArr | serialize('json') | raw }};
 
+    $(document).ready(function(){
+        $( ".selector" ).loader({
+            disabled: true
+        });
+
+        h=$.mobile.getScreenHeight();
+        h-=60;
+    $(".ui-content").css('min-height',h+'px');
+        for (i = 0; i < contractsJson.length;i++) {
+            $("#contractPayTo"+contractsJson[i].id).html(contractsJson[i].payToName)
+            if(contractsJson[i].payment){
+                $("#contractFromAcc"+contractsJson[i].id).html(payAccounts[contractsJson[i].payment.paymentAccountId].name)
+            }
+            {#
+            ^^^^
+            contract object does not have payToName
+            so we can just use the JSON object to put this in.
+            #}
+        }
+    })
 
     function setupPayForm(id) {
 
         $(".fields-box").css('padding-bottom','10px')
 
-        $("#backToContract").href="contract"+id
+        $("#backToContract").attr("href","#contract"+id)
 
         for (i = 0; i < contractsJson.length;i++) {
             if(contractsJson[i].id==id){
@@ -77,9 +93,11 @@
                 paidFor=paidForArr[contract.id]
                 $("#rentjeeves_checkoutbundle_paymenttype_paidFor").html("");
                 $.each(paidFor,function(index,value){
-                    a=""
-                    if(value==contract.payment.paidFor){
-                        a="selected"
+                    if(contract.payment) {
+                        a = ""
+                        if (value == contract.payment.paidFor) {
+                            a = "selected"
+                        }
                     }
                     $("#rentjeeves_checkoutbundle_paymenttype_paidFor").append("<option value='"+index+"'"+a+">"+value+"</option>")
                 })
@@ -192,14 +210,39 @@
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
                     <a href="#contract{{ contract.id }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
-            <div onclick="$('a{{ contract.id }}').click()" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
+            <div onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
                 <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
                 <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a></a>
                             <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
                         <br>
                             <span style="font-size: 14;">{{ contract.rent }}</span>
                     <br>
+                {#
                         <b style="font-size: 14;">Due Next: {{ contract.payment_next }}</b>
+                #}
+                {% if contract.status == 'pending' %}
+                   <span style="color: red;">{{ 'contract.status.pending.text' | trans }}</span>
+                {% elseif contract.payment_status == 'processing' %}
+                    <span style="color: red;">{{ 'contract.status.processing.text' | trans }}</span>
+
+                    {#
+                {% elseif contract.status == 'invite' %}
+                    {{ 'contract.status.invite.text' | trans }}
+                    #}
+
+                {% elseif contract.payment_type == 'recurring' %}
+                    Scheduled: {{ contract.payment_due_date }}
+                {% elseif contract.payment_type == 'one_time' %}
+                    Scheduled: {{  contract.payment_due_date }}
+                {% elseif contract.status == 'approved' %}
+                    {{ 'contract.status.approved.text' | trans }}
+                {% elseif contract.status == 'current' %}
+                    Setup your first payment!
+                {% elseif contract.status == 'finished' %}
+                    {{ 'contract.status.finished.text' | trans }}
+                {% else %}
+                    {{ contract.status | upper }}
+                {% endif %}
 
                     </div>
                     </a>
@@ -228,10 +271,17 @@
 
                     <br><br>
 
-                    <div style="margin-top: 65px; font-family: PT Sans Caption; font-size: 10pt;">Amount</div>
+
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">AMOUNT</div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt;">{{ contract.rent }}</div>
 
-                    <br><br>
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAY TO</div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractPayTo{{ contract.id }}"></div>
+
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">FROM ACCOUNT</div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractFromAcc{{ contract.id }}"></div>
+
+                    <br>
 
                     <div style="color: white; border-radius: 3px; background: #eb6024; padding: 10px; text-shadow: none; font-size: 10pt; font-family: PT Sans Caption;">
                         {% if contract.status == 'pending' %}
@@ -255,6 +305,9 @@
                         {% endif %}
                     </div>
 
+
+
+                    <br>
                     <br>
 
                     <div style="font-family: PT Sans Caption; font-size: 10pt; font-weight: bold;">

@@ -13,15 +13,14 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
     {
         return array_merge(parent::amountAttrs(),
             array(
-
+                'onchange'=>'updateTotal()'
             )
         );
-
     }
 
     function typeAttrs()
     {
-        return array_merge(parent::amountAttrs(),
+        return array_merge(parent::typeAttrs(),
             array(
                 'data-native-menu' => "false",
                 'onchange' => "if(this.value=='recurring'){formType(false)}else{formType(true)}"
@@ -72,4 +71,5 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
             'onchange'=>'if(this.value!="monthly"){freqHide(false)}else{freqHide(true)};'
         ));
     }
+
 }

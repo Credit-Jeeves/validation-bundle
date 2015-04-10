@@ -13,13 +13,17 @@
 
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
         <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" data-role="none" role="button" class="headerButton" style="color: white;">Back</a>
-        <h1 class="ui-title" role="heading" aria-level="1">Edit Rent Payment</h1>
+        <h1 class="ui-title" role="heading" aria-level="1">Edit Payment</h1>
         <a href="#review" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px;">Next</a>
     </div>
 
         <div class="ui-content" role="main">
 
-            <form {{ form_enctype(paymentType) }} method="post" name="rentForm" action="checkout/exec" novalidate>
+            <div id='errorMsg' style='display: none;background: red; padding: 4px; width: 100%;color: white; text-shadow: none; border-radius: 2px;'>
+
+                </div>
+
+            <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" novalidate>
                 {{ form_widget(paymentType) }}
                 {{ JSFV(paymentType) }}
 
@@ -30,7 +34,7 @@
             {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
 
 
-                <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white;">Next</button></a>
+                <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">Next</button></a>
 
 
             <div style="height: 140px;">
@@ -46,25 +50,46 @@
 
 <script>
 
+    jQuery.fn.swap = function(b){
+        b = jQuery(b)[0];
+        var a = this[0];
+        var t = a.parentNode.insertBefore(document.createTextNode(''), a);
+        b.parentNode.insertBefore(a, b);
+        t.parentNode.insertBefore(b, t);
+        t.parentNode.removeChild(t);
+        return this;
+    };
+
     function createReview(){
         $("#rentjeeves_checkoutbundle_paymenttype_paymentAccountId").val($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").val());
         $("#contract_id").val($("#rentjeeves_checkoutbundle_paymenttype_contractId").val());
         $("#revRentAmount").html($("#rentjeeves_checkoutbundle_paymenttype_amount").val());
         $("#revMethod").html($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount option:selected").html());
-        $("#revSendOn").html($("#rentjeeves_checkoutbundle_paymenttype_start_date").val());
+
         if($('#rentjeeves_checkoutbundle_paymenttype_type').val()=="one_time") {
             a="One time"
             $('#revEndsLabel').hide()
+            $("#revSendOn").html($("#rentjeeves_checkoutbundle_paymenttype_start_date").val());
+            $("#rentjeeves_checkoutbundle_paymenttype_ends").val('cancelled');
         }else{
+            if($("#rentjeeves_checkoutbundle_paymenttype_frequency").val()=="monthly"){
+                $("#revSendOn").html("Day "+$("#rentjeeves_checkoutbundle_paymenttype_dueDate").val()+" of each month");
+            }else{
+                $("#revSendOn").html("Last day of month");
+            }
+
+            if($("#rentjeeves_checkoutbundle_paymenttype_ends").val()=="cancelled"){
+                $('#revEnds').html(" when cancelled")
+            }else{
+                $('#revEnds').html($("#rentjeeves_checkoutbundle_paymenttype_endMonth").val()+"/"+$("#rentjeeves_checkoutbundle_paymenttype_endYear").val())
+            }
+
+
             a="Recurring"
         }
 
         $("#revRecurring").html(a);
         $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").prop('disabled',true);
-
-        if($('#rentjeeves_checkoutbundle_paymenttype_type').val()=="one_time"){
-            $("#rentjeeves_checkoutbundle_paymenttype_ends").val('cancelled');
-        }
 
     }
     recurringFormIds=[
@@ -128,11 +153,48 @@
     }
 
     function freqHide(i){
-        if(i){//hide
-            $('#rentjeeves_checkoutbundle_paymenttype_dueDate').hide()
+        if(!i){//hide
+            $('#rentjeeves_checkoutbundle_paymenttype_dueDate_box').hide()
         }else{
-            $('#rentjeeves_checkoutbundle_paymenttype_dueDate').show()
+            $('#rentjeeves_checkoutbundle_paymenttype_dueDate_box').show()
         }
+    }
+
+
+    function updateTotal(){
+        t=$("#rentjeeves_checkoutbundle_paymenttype_amount").val()+$("#rentjeeves_checkoutbundle_paymenttype_amountOther").val()
+        $("#rentjeeves_checkoutbundle_paymenttype_total_view").html(t)
+    }
+
+
+    function submitForm(){
+
+        $.ajax({
+            url: 'checkout/exec',
+            data: $('#rentjeeves_checkoutbundle_paymenttype').serialize(),
+            type: 'post',
+            async: 'true',
+
+            success: function (result) {
+                a=result
+                console.log(result)
+                $.mobile.changePage('#pay')
+                msg="";
+                $.each(result,function(i,k){
+                    $.each(k,function(h,j){
+                        msg+=j+"<br>"
+                    })
+                })
+                $("#errorMsg").html(msg)
+                $("#errorMsg").show()
+            },
+            error: function (request, error) {
+                $.mobile.changePage('#pay')
+                msg="An error occurred. ("+error+")"
+                $("#errorMsg").html(msg)
+                $("#errorMsg").show()
+            }
+        });
     }
 </script>
 
@@ -140,21 +202,18 @@
 
 
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-        <a href="#pay" data-transition="slide" data-direction="reverse" data-role="button" class="headerButton" role="button" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
+        <a href="#pay" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Review</h1>
         <a href="#review" href="#popupBasic" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px;" data-role="none">Pay Rent</a>
     </div>
 
-    <div class="ui-content" role="main">
+    <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/lightblur-bgnd.png); min-height: 653px;">
     <b><span id="revRecurring">Single</span> rent payment for <span id="contractAddress"></span></b>
         <hr>
         <h4>Who's getting paid:</h4>
 
     <span id="payTo">
-        John Doe<br>
-        123 State St.<br>
-        Santa Barbara, CA<br>
-        93107<br>
+
     </span><br><br>
 
         <b>
@@ -179,8 +238,8 @@
 
         <br><br>
 
-        <a href="#popupBasic" onclick="document.forms['rentForm'].submit()" data-rel="popup" data-transition="pop" data-position-to="window">
-        <input type="button" value="Pay Rent" data-role="none" style="background: #eb6024; color: white;">
+        <a href="#popupBasic" onclick="submitForm()" data-rel="popup" data-transition="pop" data-position-to="window" style="text-decoration: none;">
+        <button role="button" data-role="none" style="background: #eb6024; color: white; font-weight: normal;" class=" ui-btn ui-shadow ui-corner-all">Pay Rent</button>
         </a>
 
 

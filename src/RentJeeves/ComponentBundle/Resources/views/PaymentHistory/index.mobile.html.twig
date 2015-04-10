@@ -5,10 +5,10 @@
             <div data-role="page" id="paymentHistory{{ contract.id }}">
 
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-                    <a href="#contract{{ contract.id }}" data-transition="slide" data-direction="reverse" data-role="button" role="button" style="background: transparent;border: none; color: white;">Back</a>
+                    <a href="#contract{{ contract.id }}" class="headerButton ui-btn-left" data-transition="slide" data-direction="reverse" data-role="none" role="none" style="background: transparent; color: white;">Back</a>
                     <h1 class="ui-title" role="heading" aria-level="1">Payment History</h1>
                 </div>
-                <div class="ui-content" role="main">
+                <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png);">
             {% include 'RjComponentBundle:PaymentHistory:paymentRow.mobile.html.twig'
                 with {
                     'aContract': contract,
@@ -23,10 +23,10 @@
                 <div data-role="page" id="paymentHistory{{ contract.id }}">
 
                     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-                        <a href="#contract{{ contract.id }}" data-transition="slide" data-direction="reverse" data-role="button" role="button" style="background: transparent;border: none; color: white;">Back</a>
+                        <a href="#contract{{ contract.id }}" class="headerButton ui-btn-left" data-transition="slide" data-direction="reverse" data-role="none" role="none" style="background: transparent; color: white;">Back</a>
                         <h1 class="ui-title" role="heading" aria-level="1">Payment History</h1>
                     </div>
-                    <div class="ui-content" role="main">
+                    <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png);">
             {% include 'RjComponentBundle:PaymentHistory:paymentRow.mobile.html.twig'
                 with {
                     'aContract': contract,
