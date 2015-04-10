@@ -47,15 +47,20 @@ class AMSILedgerClient extends AMSIBaseClient
             ),
         ];
 
-        $rawResponse = $this->sendRequest('AddPayment', $parameters);
-        $paymentsResponse = $this->serializer->deserialize(
-            $rawResponse,
-            'RentJeeves\ExternalApiBundle\Model\AMSI\Payments',
-            'xml',
-            $this->getDeserializationContext(['addPaymentResponse'])
-        );
+        if ($rawResponse = $this->sendRequest('AddPayment', $parameters)) {
+            /** @var Payments $paymentsResponse */
+            $paymentsResponse = $this->serializer->deserialize(
+                $rawResponse,
+                'RentJeeves\ExternalApiBundle\Model\AMSI\Payments',
+                'xml',
+                $this->getDeserializationContext(['addPaymentResponse'])
+            );
+            if (is_array($paymentsResponse->getPayments()) && isset($paymentsResponse->getPayments()[0])) {
+                return $paymentsResponse->getPayments()[0];
+            }
+        }
 
-        return true;
+        throw new \RuntimeException('AMSI: Can not deserialize response');
     }
 
     /**

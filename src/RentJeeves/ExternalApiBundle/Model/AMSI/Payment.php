@@ -50,9 +50,9 @@ class Payment
      * @Serializer\SerializedName("ClientMerchantID")
      * @Serializer\XmlAttribute
      * @Serializer\Groups({"addPayment", "addPaymentResponse"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      *
-     * @var string
+     * @var int
      */
     protected $clientMerchantId;
 
@@ -60,9 +60,9 @@ class Payment
      * @Serializer\SerializedName("ClientTransactionID")
      * @Serializer\XmlAttribute
      * @Serializer\Groups({"addPayment", "addPaymentResponse"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      *
-     * @var string
+     * @var int
      */
     protected $clientTransactionId;
 
@@ -80,9 +80,9 @@ class Payment
      * @Serializer\SerializedName("Amount")
      * @Serializer\XmlAttribute
      * @Serializer\Groups({"addPayment", "addPaymentResponse"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("double")
      *
-     * @var string
+     * @var double
      */
     protected $amount;
 
@@ -90,9 +90,9 @@ class Payment
      * @Serializer\SerializedName("ClientJnlNo")
      * @Serializer\XmlAttribute
      * @Serializer\Groups({"addPayment", "addPaymentResponse"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      *
-     * @var string
+     * @var int
      */
     protected $clientJnlNo;
 
@@ -118,7 +118,7 @@ class Payment
 
     /**
      * @Serializer\SerializedName("CheckNo")
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
      * @Serializer\Groups({"addPayment", "addPaymentResponse"})
      *
@@ -128,7 +128,7 @@ class Payment
 
     /**
      * @Serializer\SerializedName("ChargeIncCode")
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
      * @Serializer\Groups({"addPayment", "addPaymentResponse"})
      *
@@ -158,7 +158,7 @@ class Payment
 
     /**
      * @Serializer\SerializedName("ErrorCode")
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      * @Serializer\XmlElement(cdata=false)
      * @Serializer\Groups({"addPaymentResponse"})
      *
@@ -197,7 +197,17 @@ class Payment
     protected $evolutionReferenceDescription;
 
     /**
-     * @return string
+     * @Serializer\SerializedName("AdditionalData")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\AMSI\AdditionalData")
+     * @Serializer\XmlElement(cdata=false)
+     * @Serializer\Groups({"addPaymentResponse"})
+     *
+     * @var AdditionalData
+     */
+    protected $additionalData;
+
+    /**
+     * @return double
      */
     public function getAmount()
     {
@@ -205,7 +215,7 @@ class Payment
     }
 
     /**
-     * @param string $amount
+     * @param double $amount
      */
     public function setAmount($amount)
     {
@@ -229,7 +239,7 @@ class Payment
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getClientJnlNo()
     {
@@ -237,7 +247,7 @@ class Payment
     }
 
     /**
-     * @param string $clientJnlNo
+     * @param int $clientJnlNo
      */
     public function setClientJnlNo($clientJnlNo)
     {
@@ -245,7 +255,7 @@ class Payment
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getClientMerchantId()
     {
@@ -253,7 +263,7 @@ class Payment
     }
 
     /**
-     * @param string $clientMerchantId
+     * @param int $clientMerchantId
      */
     public function setClientMerchantId($clientMerchantId)
     {
@@ -277,7 +287,7 @@ class Payment
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getClientTransactionId()
     {
@@ -285,7 +295,7 @@ class Payment
     }
 
     /**
-     * @param string $clientTransactionId
+     * @param int $clientTransactionId
      */
     public function setClientTransactionId($clientTransactionId)
     {
@@ -402,5 +412,117 @@ class Payment
     public function setEvolutionReferenceDescription($evolutionReferenceDescription)
     {
         $this->evolutionReferenceDescription = $evolutionReferenceDescription;
+    }
+
+    /**
+     * @return AdditionalData
+     */
+    public function getAdditionalData()
+    {
+        return $this->additionalData;
+    }
+
+    /**
+     * @param AdditionalData $additionalData
+     */
+    public function setAdditionalData($additionalData)
+    {
+        $this->additionalData = $additionalData;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChargeDateFrom()
+    {
+        return $this->chargeDateFrom;
+    }
+
+    /**
+     * @param string $chargeDateFrom
+     */
+    public function setChargeDateFrom($chargeDateFrom)
+    {
+        $this->chargeDateFrom = $chargeDateFrom;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChargeDateThru()
+    {
+        return $this->chargeDateThru;
+    }
+
+    /**
+     * @param string $chargeDateThru
+     */
+    public function setChargeDateThru($chargeDateThru)
+    {
+        $this->chargeDateThru = $chargeDateThru;
+    }
+
+    /**
+     * @return int
+     */
+    public function getChargeIncCode()
+    {
+        return $this->chargeIncCode;
+    }
+
+    /**
+     * @param int $chargeIncCode
+     */
+    public function setChargeIncCode($chargeIncCode)
+    {
+        $this->chargeIncCode = $chargeIncCode;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCheckNo()
+    {
+        return $this->checkNo;
+    }
+
+    /**
+     * @param int $checkNo
+     */
+    public function setCheckNo($checkNo)
+    {
+        $this->checkNo = $checkNo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentType()
+    {
+        return $this->paymentType;
+    }
+
+    /**
+     * @param string $paymentType
+     */
+    public function setPaymentType($paymentType)
+    {
+        $this->paymentType = $paymentType;
     }
 }
