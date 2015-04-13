@@ -266,7 +266,7 @@ class TransUnionReportRecord
                 return 'OO';
             }
         } elseif ($this->contract->getStatus() == ContractStatus::FINISHED
-                   && $this->contract->getUncollectedBalance()) {
+                   && $this->contract->getUncollectedBalance() > 10) {
             return 'SS';
         }
 
