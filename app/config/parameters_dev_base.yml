@@ -25,6 +25,12 @@ parameters:
         username: RTAPI
         password: $RTapi13
 
+    aci_collect_pay:
+        sandbox: true
+        businessId: 563375
+        login: RentTrackEnrollConnect
+        password: KI9DPqXaJ8
+
     login.attempts: 1
     login.delay: 1
     net_connect.precise_id.userpwd: 'renttrack_pid_demo:d8ccULH0IcEn' #required! # overwritten by DB

@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
@@ -37,6 +38,18 @@ abstract class PaymentAccount
      * @var \RentJeeves\DataBundle\Entity\Tenant
      */
     protected $user;
+
+    /**
+     * @ORM\Column(
+     *     type="PaymentProcessor",
+     *     options={
+     *         "default"="heartland"
+     *     },
+     *     name="payment_processor",
+     *     nullable=false
+     * )
+     */
+    protected $paymentProcessor = PaymentProcessor::HEARTLAND;
 
     /**
      * @ORM\ManyToOne(
@@ -508,5 +521,21 @@ abstract class PaymentAccount
     public function getCreditTrackUserSetting()
     {
         return $this->creditTrackUserSetting;
+    }
+
+    /**
+     * @param string $paymentProcessor
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
     }
 }

@@ -127,6 +127,14 @@ stof_doctrine_extensions:
     class:
         loggable: RentJeeves\DataBundle\EventListener\LoggableListener
 
+payum:
+    security:
+        token_storage:
+            RentJeeves\DataBundle\Entity\PaymentToken: { doctrine: orm }
+    payments:
+        aci_collect_pay:
+            aci_collect_pay: %aci_collect_pay%
+
 payum2:
     contexts:
         heartland:

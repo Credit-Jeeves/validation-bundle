@@ -3,13 +3,12 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use Exception;
 use JMS\DiExtraBundle\Annotation as DI;
-use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
@@ -25,9 +24,14 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     /** @var PayHeartland */
     protected $paymentManager;
 
+    /** @var ReportLoader */
     protected $reportLoader;
 
     /**
+     * @param PaymentAccountManager $paymentAccountManager
+     * @param PayHeartland $paymentManager
+     * @param ReportLoader $reportLoader
+     *
      * @DI\InjectParams({
      *     "paymentAccountManager" = @DI\Inject("payment.account.heartland"),
      *     "paymentManager" = @DI\Inject("payment.pay_heartland"),
@@ -47,8 +51,16 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaymentAccount(PaymentAccountData $paymentAccountData, User $user, Group $group)
+    public function createPaymentAccount(PaymentAccountData $paymentAccountData, Contract $contract)
     {
+        $group = $contract->getGroup();
+
+        if ($paymentAccountData->getEntity() instanceof GroupAwareInterface) {
+            $user = $paymentAccountData->get('landlord');
+        } else {
+            $user = $contract->getTenant();
+        }
+
         return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group);
     }
 

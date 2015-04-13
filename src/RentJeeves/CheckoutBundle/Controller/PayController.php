@@ -153,10 +153,13 @@ class PayController extends Controller
         }
 
         $em = $this->get('doctrine.orm.default_entity_manager');
-        $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
+        /** @var Contract $contract */
+        $contract = $em
+            ->getRepository('RjDataBundle:Contract')
+            ->find($paymentAccountType->get('contractId')->getData());
 
         try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser(), $group);
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
         } catch (Exception $e) {
             return new JsonResponse(
                 array(

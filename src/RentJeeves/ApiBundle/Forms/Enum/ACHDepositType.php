@@ -3,7 +3,7 @@
 namespace RentJeeves\ApiBundle\Forms\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
-use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositType as BaseACHDepositType;
+use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum as BaseACHDepositType;
 
 class ACHDepositType extends Enum
 {

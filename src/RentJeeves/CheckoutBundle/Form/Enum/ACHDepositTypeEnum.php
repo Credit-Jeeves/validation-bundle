@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\Form\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
 
-class ACHDepositType extends Enum
+class ACHDepositTypeEnum extends Enum
 {
     const BUSINESS_CHECKING = 'Unassigned';
 

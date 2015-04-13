@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -352,6 +353,19 @@ abstract class Group
      */
     protected $groupSettings;
 
+
+    /**
+     * @var AciCollectPaySettings
+     *
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPaySettings",
+     *      mappedBy="group",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $aciCollectPaySettings;
+
     /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
@@ -421,6 +435,22 @@ abstract class Group
     }
 
     /**
+     * @param AciCollectPaySettings $aciCollectPaySettings
+     */
+    public function setAciCollectPaySettings(AciCollectPaySettings $aciCollectPaySettings)
+    {
+        $this->aciCollectPaySettings = $aciCollectPaySettings;
+    }
+
+    /**
+     * @return AciCollectPaySettings
+     */
+    public function getAciCollectPaySettings()
+    {
+        return $this->aciCollectPaySettings;
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -455,7 +485,7 @@ abstract class Group
     /**
      * Set name
      *
-     * @param string $type
+     * @param string $name
      * @return Group
      */
     public function setName($name)

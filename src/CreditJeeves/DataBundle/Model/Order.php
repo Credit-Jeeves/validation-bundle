@@ -62,7 +62,7 @@ abstract class Order
      *     nullable=true
      * )
      */
-    protected $type;
+    protected $type = OrderType::CASH;
 
     /**
      * @ORM\Column(

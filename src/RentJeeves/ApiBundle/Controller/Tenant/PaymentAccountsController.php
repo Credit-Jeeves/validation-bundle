@@ -229,7 +229,7 @@ class PaymentAccountsController extends Controller
             /** @var Contract $contract */
             $contract = $form->get('contract_url')->getData();
             try {
-                $this->savePaymentAccount($form, $this->getUser(), $contract->getGroup());
+                $this->savePaymentAccount($form, $contract);
 
                 return $this->get('response_resource.factory')->getResponse($paymentAccountEntity);
             } catch (RuntimeException $e) {

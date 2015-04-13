@@ -9,5 +9,5 @@ class PaymentProcessor extends Enum
 {
     const HEARTLAND = 'heartland';
 
-    const ACI = 'aci';
+    const ACI_COLLECT_PAY = 'aci_collect_pay';
 }
