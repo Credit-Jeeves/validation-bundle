@@ -2,7 +2,6 @@
 {% form_theme paymentBalanceOnlyType 'RjCoreBundle::form.html.twig' %}
 {% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
 
-
 <div data-role="page" id="pay">
 
     <div data-role="popup" id="dateConfirmed" data-overlay-theme="b" class="ui-content" style="font-family: PT Sans Caption;">
@@ -21,7 +20,7 @@
 
             <div id='errorMsg' style='display: none;background: red; padding: 4px; width: 100%;color: white; text-shadow: none; border-radius: 2px;'>
 
-                </div>
+                </div><br>
 
             <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" novalidate>
                 {{ form_widget(paymentType) }}
@@ -78,13 +77,11 @@
                 $("#revSendOn").html("Last day of month");
             }
 
-            if($("#rentjeeves_checkoutbundle_paymenttype_ends").val()=="cancelled"){
+            if($("#rentjeeves_checkoutbundle_paymenttype_ends_0").val()!="on"){
                 $('#revEnds').html(" when cancelled")
             }else{
                 $('#revEnds').html($("#rentjeeves_checkoutbundle_paymenttype_endMonth").val()+"/"+$("#rentjeeves_checkoutbundle_paymenttype_endYear").val())
             }
-
-
             a="Recurring"
         }
 
@@ -178,15 +175,23 @@
             success: function (result) {
                 a=result
                 console.log(result)
-                $.mobile.changePage('#pay')
-                msg="";
-                $.each(result,function(i,k){
-                    $.each(k,function(h,j){
-                        msg+=j+"<br>"
+                if(result.success!=true){
+                    $.mobile.changePage('#pay')
+                    msg="";
+                    $.each(result,function(i,k){
+                        $.each(k,function(h,j){
+                            msg+=j+"<br>"
+                        })
                     })
-                })
-                $("#errorMsg").html(msg)
-                $("#errorMsg").show()
+                    $("#errorMsg").html(msg)
+                    $("#errorMsg").show()
+                }else{
+                    $("#popupBasic").popup( "open" )
+                    $("#errorMsg").hide()
+                    setTimeout(function(){
+                        $.mobile.changePage('#main')
+                    },3000)
+                }
             },
             error: function (request, error) {
                 $.mobile.changePage('#pay')
@@ -238,7 +243,7 @@
 
         <br><br>
 
-        <a href="#popupBasic" onclick="submitForm()" data-rel="popup" data-transition="pop" data-position-to="window" style="text-decoration: none;">
+        <a href="javascript: void(0)" onclick="submitForm()" data-rel="popup" data-transition="pop" data-position-to="window" style="text-decoration: none;">
         <button role="button" data-role="none" style="background: #eb6024; color: white; font-weight: normal;" class=" ui-btn ui-shadow ui-corner-all">Pay Rent</button>
         </a>
 
@@ -251,3 +256,25 @@
     </div>
 
 </div>
+
+
+    <div data-role="page" id="notVerified">
+
+        <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+            <a href="#main" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
+            <h1 class="ui-title" role="heading" aria-level="1">Verification</h1>
+        </div>
+
+        <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/lightblur-bgnd.png); min-height: 653px;">
+            <b>Identity Verification Required</b>
+            <br><br>
+            To keep thing secure here at RentTrack, we'll need you to login from a laptop or desktop
+            to verify your identity.
+            <br><br>
+            Please set up your first payment on a computer. After that, you'll be able to use this mobile site to set up new payments.
+
+
+
+                </div>
+
+        </div>

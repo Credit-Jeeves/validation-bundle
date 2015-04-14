@@ -238,12 +238,12 @@ class PayController extends Controller
      */
     public function execAction(Request $request)
     {
+
         $paymentType = $this->createPaymentForm($request);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
-
 
 
         $em = $this->getDoctrine()->getManager();
@@ -255,6 +255,8 @@ class PayController extends Controller
         if (!$contract = $em->getRepository('RjDataBundle:Contract')->find($contractId)) {
             throw $this->createNotFoundException('Contract does not exist');
         }
+
+
         /**
          * @var PaymentAccount $paymentAccount
          */
@@ -268,6 +270,7 @@ class PayController extends Controller
         if (!$payBalanceOnly && 'on' != $paymentType->get('ends')->getData()) {
             $recurring = true;
         }
+
 
         $this->savePayment(
             $request,

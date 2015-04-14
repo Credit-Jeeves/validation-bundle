@@ -41,9 +41,17 @@
         h-=60;
     $(".ui-content").css('min-height',h+'px');
         for (i = 0; i < contractsJson.length;i++) {
-            $("#contractPayTo"+contractsJson[i].id).html(contractsJson[i].payToName)
-            if(contractsJson[i].payment){
-                $("#contractFromAcc"+contractsJson[i].id).html(payAccounts[contractsJson[i].payment.paymentAccountId].name)
+            contract=contractsJson[i]
+            console.log(contract)
+            $("#contractPayTo"+contract.id).html(contract.payToName)
+            if(contract.payment){
+
+                $.each(payAccounts,function(i,k){
+                    if(k.id==contract.payment.paymentAccountId){
+                        $("#contractFromAcc"+contract.id).html(k.name)
+                    }})
+            }else{
+                $("#contractFromAccLabel"+contract.id).hide()
             }
             {#
             ^^^^
@@ -55,6 +63,9 @@
 
     function setupPayForm(id) {
 
+        $("#errorMsg").html("")
+        $("#errorMsg").hide()
+
         $(".fields-box").css('padding-bottom','10px')
 
         $("#backToContract").attr("href","#contract"+id)
@@ -62,7 +73,16 @@
         for (i = 0; i < contractsJson.length;i++) {
             if(contractsJson[i].id==id){
 
+
                 contract=contractsJson[i]
+
+                if('{{ user.getIsVerified }}'!='passed' && contract.isPidVerificationSkipped==false){
+                    $.mobile.changePage('#notVerified')
+                    break;
+                }else{
+                    $.mobile.changePage('#pay')
+                }
+
 
                 a=[]
                 for(j=0;j<contract.groupSetting.dueDays.length;j++){
@@ -146,7 +166,7 @@
                     $("#rentjeeves_checkoutbundle_paymenttype_type").val("recurring")
                 }
 
-                $("#rentjeeves_checkoutbundle_paymenttype_paidTo").val(contractsJson[i].paidTo)
+                $("#rentjeeves_checkoutbundle_paymenttype_paidTo").val(contract.paidTo)
 
                 $("#revEnds").html(contract.finishAt)
 
@@ -259,7 +279,7 @@
                     <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
                     <h1 class="ui-title" role="heading" aria-level="1">Current Payment</h1>
                     {% if contract.status != 'pending' %}
-                        <a href="#pay" onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">Edit</a>
+                        <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">Edit</a>
                     {% endif %}
                 </div>
 
@@ -278,7 +298,7 @@
                     <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAY TO</div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractPayTo{{ contract.id }}"></div>
 
-                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">FROM ACCOUNT</div>
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;" id="contractFromAccLabel{{ contract.id }}">FROM ACCOUNT</div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractFromAcc{{ contract.id }}"></div>
 
                     <br>
