@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Model\AMSI;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -11,17 +12,22 @@ class Payments
 {
     /**
      * @Serializer\SerializedName("Payment")
-     * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\AMSI\Payment>")
+     * @Serializer\Type("ArrayCollection<RentJeeves\ExternalApiBundle\Model\AMSI\Payment>")
      * @Serializer\XmlList(inline = true, entry = "Payment")
      * @Serializer\XmlKeyValuePairs
      * @Serializer\Groups({"addPayment", "addPaymentResponse"})
      *
-     * @var array<Payment>
+     * @var ArrayCollection
      */
     protected $payments;
 
+    public function __construct()
+    {
+        $this->payments = new ArrayCollection();
+    }
+
     /**
-     * @return array
+     * @return ArrayCollection
      */
     public function getPayments()
     {
@@ -31,8 +37,8 @@ class Payments
     /**
      * @param array $payments
      */
-    public function setPayments($payments)
+    public function addPayment(Payment $payment)
     {
-        $this->payments = $payments;
+        $this->payments->add($payment);
     }
 }

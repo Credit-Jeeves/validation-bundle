@@ -27,9 +27,9 @@ class AMSILedgerClient extends AMSIBaseClient
                 'xml',
                 $this->getDeserializationContext(['addPaymentResponse'])
             );
-            if ($paymentsResponse instanceof Payments && isset($paymentsResponse->getPayments()[0])) {
+            if ($paymentsResponse instanceof Payments && $paymentsResponse->getPayments()->first()) {
                 /** @var Payment $resultPayment */
-                $resultPayment = $paymentsResponse->getPayments()[0];
+                $resultPayment = $paymentsResponse->getPayments()->first();
                 if (self::SUCCESSFUL_RESPONSE_CODE == $resultPayment->getErrorCode()) {
                     return true;
                 } else {
@@ -94,7 +94,7 @@ class AMSILedgerClient extends AMSIBaseClient
         $payment->setClientTransactionId($order->getCompleteTransaction()->getTransactionId());
 
         $payments = new Payments();
-        $payments->setPayments([$payment]);
+        $payments->addPayment($payment);
 
         $xmlData = SerializerXmlHelper::removeStandartHeaderXml(
             $this->serializer->serialize(
