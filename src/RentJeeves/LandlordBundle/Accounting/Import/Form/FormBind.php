@@ -70,7 +70,7 @@ trait FormBind
             switch ($form->getName()) {
                 case 'import_contract_finish':
                     $contract = $form->getData();
-                    $this->em->persist($contract);
+                    $this->persistEntity($contract);
                     break;
                 case 'import_contract':
                     $this->bindImportContractForm($form);
@@ -120,7 +120,7 @@ trait FormBind
             if (!$unitMapping->getUnit()) {
                 $unitMapping->setUnit($contract->getUnit());
             }
-            $this->em->persist($unitMapping);
+            $this->persistEntity($unitMapping);
         }
 
         if ($sendInvite && !$contract->getId()) {
@@ -128,7 +128,7 @@ trait FormBind
         }
 
         $residentMapping = $form->get('residentMapping')->getData();
-        $this->em->persist($residentMapping);
+        $this->persistEntity($residentMapping);
     }
 
     /**
@@ -148,15 +148,15 @@ trait FormBind
             if (!$unitMapping->getUnit()) {
                 $unitMapping->setUnit($contract->getUnit());
             }
-            $this->em->persist($unitMapping);
+            $this->persistEntity($unitMapping);
         }
         $email = $tenant->getEmail();
         $residentMapping = $form->get('contract')->get('residentMapping')->getData();
         if (empty($email)) {
             $waitingContract = $this->getContractWaiting();
-            $this->em->persist($waitingContract);
+            $this->persistEntity($waitingContract);
         } else {
-            $this->em->persist($residentMapping);
+            $this->persistEntity($residentMapping);
         }
 
         if (isset($data['sendInvite']) && $data['sendInvite']) {
@@ -180,18 +180,18 @@ trait FormBind
         if ($this->currentImportModel->getTenant()->getEmail()) {
             //Remove contract because we get duplicate contract
             $this->currentImportModel->getTenant()->removeContract($this->currentImportModel->getContract());
-            $this->em->persist($this->currentImportModel->getTenant());
+            $this->persistEntity($this->currentImportModel->getTenant());
             $contract = $this->contractProcess->createContractFromWaiting(
                 $this->currentImportModel->getTenant(),
                 $waitingContract
             );
             $contract->setStatus(ContractStatus::INVITE);
-            $this->em->persist($contract);
+            $this->persistEntity($contract);
             if ($sendInvite) {
                 $this->isNeedSendInvite = true;
             }
         } else {
-            $this->em->persist($waitingContract);
+            $this->persistEntity($waitingContract);
         }
     }
 
@@ -209,7 +209,7 @@ trait FormBind
         $operation->setContract($contract);
         $operation->setOrder($order);
 
-        $this->em->persist($order);
+        $this->persistEntity($order);
     }
 
     /**

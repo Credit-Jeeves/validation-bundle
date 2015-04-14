@@ -229,7 +229,7 @@ abstract class HandlerAbstract implements HandlerInterface
     }
 
     /**
-     * @param string $field
+     * @param  string         $field
      * @return \DateTime|null
      */
     public function getDateByField($field)
@@ -248,6 +248,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
         if (!empty($errors['warning_count']) || !empty($errors['errors'])) {
             $this->currentImportModel->setIsValidDateFormat(false);
+
             return null;
         }
 
@@ -257,16 +258,19 @@ abstract class HandlerAbstract implements HandlerInterface
 
         if ($formattedMonth < 1 || $formattedMonth > 12) {
             $this->currentImportModel->setIsValidDateFormat(false);
+
             return null;
         }
 
         if ($formattedDay < 1 || $formattedDay > 31) {
             $this->currentImportModel->setIsValidDateFormat(false);
+
             return null;
         }
 
         if ($formattedYear < 1900 || $formattedYear > 2250) {
             $this->currentImportModel->setIsValidDateFormat(false);
+
             return null;
         }
 
@@ -325,7 +329,7 @@ abstract class HandlerAbstract implements HandlerInterface
      *
      * Create model objects for imported row
      *
-     * @param array $row
+     * @param array   $row
      * @param integer $lineNumber
      *
      * @return ModelImport
@@ -476,14 +480,13 @@ abstract class HandlerAbstract implements HandlerInterface
             $errors[$lineNumber][uniqid()][$keyFieldInUI] = $this->translator->trans('import.error.invalid_property');
         }
 
-
         $this->currentImportModel->setErrors($errors);
     }
 
     /**
      * @param $form
      * @param $lineNumber
-     * @param null $token
+     * @param  null  $token
      * @return array
      */
     protected function runFormValidation($form, $lineNumber, $token = null)
@@ -509,7 +512,7 @@ abstract class HandlerAbstract implements HandlerInterface
      * This method get field from form and create array from it, which we can use
      * for $form->submit($data); And after that we can run validation.
      *
-     * @param array $children
+     * @param  array $children
      * @return array
      */
     protected function getSubmittedDataFromForm(array $children)
@@ -575,7 +578,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $errorsNotEditableFields = [];
 
         foreach ($data as $postData) {
-            $postData['line'] = (int)$postData['line'];
+            $postData['line'] = (int) $postData['line'];
 
             /** @var $import Import */
             foreach ($this->getCurrentCollectionImportModel() as $keyCollection => $import) {
@@ -650,6 +653,7 @@ abstract class HandlerAbstract implements HandlerInterface
             $this->em->flush();
         } catch (Exception $e) {
             $this->manageException($e);
+
             return false;
         }
 
@@ -735,5 +739,26 @@ abstract class HandlerAbstract implements HandlerInterface
             $message = sprintf("Can't send invite email to user %s", $contract->getTenant()->getEmail());
             throw new ImportHandlerException($message);
         }
+    }
+
+    /**
+     * @param  object $entity
+     * @return bool
+     */
+    protected function persistEntity($entity)
+    {
+        try {
+            $this->em->persist($entity);
+        } catch (\Doctrine\ORM\ORMException $e) {
+            $this->reConnectDB();
+
+            return $this->persistEntity($entity);
+        } catch (Exception $e) {
+            $this->manageException($e);
+
+            return false;
+        }
+
+        return true;
     }
 }
