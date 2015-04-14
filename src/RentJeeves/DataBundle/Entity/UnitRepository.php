@@ -15,6 +15,7 @@ class UnitRepository extends EntityRepository
             $item['name'] = $unit->getName();
             $result[] = $item;
         }
+
         return $result;
     }
 
@@ -120,5 +121,24 @@ class UnitRepository extends EntityRepository
             ->setParameter('zip', $zip)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param array $contractWaitingIds
+     *
+     * @return Unit[]
+     */
+    public function findAllByContractWaitingIds(array $contractWaitingIds)
+    {
+        if (true === empty($contractWaitingIds)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('u')
+            ->innerJoin('u.contractsWaiting', 'cw')
+            ->where('cw.id IN (:ids)')
+            ->setParameter('ids', implode(' , ', $contractWaitingIds))
+            ->getQuery()
+            ->execute();
     }
 }

@@ -40,4 +40,22 @@ class ContractWaitingRepository extends EntityRepository
         $query->setParameter('residentId', $residentId);
         $query->getQuery()->execute();
     }
+
+    /**
+     * @param Holding $holding
+     * @param string  $residentId
+     *
+     * @return ContractWaiting[]
+     */
+    public function findAllByHoldingAndResidentId(Holding $holding, $residentId)
+    {
+        return $this->createQueryBuilder('cw')
+            ->innerJoin('cw.group', 'groups')
+            ->where('groups.holding = :holding')
+            ->andWhere('cw.residentId = :residentId')
+            ->setParameter('holding', $holding)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->execute();
+    }
 }
