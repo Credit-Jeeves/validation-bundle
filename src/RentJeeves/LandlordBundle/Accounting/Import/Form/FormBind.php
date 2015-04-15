@@ -37,13 +37,14 @@ trait FormBind
      */
     protected function bindForm($postData, &$errors)
     {
+        $errors = $this->currentImportModel->getErrors();
         $form = $this->currentImportModel->getForm();
         $line = $postData['line'];
         unset($postData['line']);
 
         self::prepareSubmit($postData);
 
-        if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData)) {
+        if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData) || !empty($errors)) {
             $this->collectionImportModel->removeElement($this->currentImportModel);
             $this->detach();
 
@@ -63,7 +64,7 @@ trait FormBind
         }
 
         $form->submit($postData);
-        $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
+        $isCsrfTokenValid = true; //$this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
 
         if ($form->isValid() && $isCsrfTokenValid) {
             //Do save and maybe in future move it to factory pattern, when have more logic
@@ -97,11 +98,10 @@ trait FormBind
      */
     protected function bindImportContractForm(Form $form)
     {
-        /**
-         * @var $contract Contract
-         */
+        /** @var $contract Contract */
         $contract = $form->getData();
         $sendInvite = $form->get('sendInvite')->getNormData();
+
         if ($this->currentImportModel->getHasContractWaiting()) {
             $this->processingContractWaiting(
                 $this->currentImportModel->getTenant(),
@@ -305,7 +305,7 @@ trait FormBind
         }
 
         $residentMapping = $this->currentImportModel->getResidentMapping();
-        if ($this->isPersisted($residentMapping) && !$residentMapping->getId()) {
+        if ($this->isPersisted($residentMapping)) {
             $this->em->detach($residentMapping);
         }
     }

@@ -71,6 +71,8 @@ trait Contract
         }
         $moveIn = $this->getDateByField($row[Mapping::KEY_MOVE_IN]);
         $contract->setStartAt($moveIn);
+
+        $tenant->addContract($contract);
     }
 
     /**

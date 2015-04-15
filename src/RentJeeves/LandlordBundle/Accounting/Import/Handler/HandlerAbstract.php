@@ -491,6 +491,10 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected function runFormValidation($form, $lineNumber, $token = null)
     {
+        if ($this->currentImportModel->getIsSkipped()) {
+            return [$lineNumber => []];
+        }
+
         $viewForm = $form->createView();
         $submittedData = $this->getSubmittedDataFromForm($viewForm->children);
         if (!is_null($token)) {
@@ -500,12 +504,12 @@ abstract class HandlerAbstract implements HandlerInterface
         $form->submit($submittedData);
 
         if (!$form->isValid()) {
-            return array(
+            return [
                 $lineNumber => $this->getFormErrors($form)
-            );
+            ];
         }
 
-        return array($lineNumber => array());
+        return [$lineNumber => []];
     }
 
     /**
