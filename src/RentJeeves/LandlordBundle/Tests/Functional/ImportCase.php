@@ -258,7 +258,7 @@ class ImportCase extends ImportBaseAbstract
         $submitImportFile->click();
 
         $this->session->wait(
-            10000,
+            12000,
             "$('.finishedTitle').length > 0"
         );
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
@@ -266,9 +266,7 @@ class ImportCase extends ImportBaseAbstract
 
         //Check notify tenant invite for new user or update his contract rent
         $this->assertCount(9, $this->getEmails(), 'Wrong number of emails');
-        /**
-         * @var $em EntityManager
-         */
+        /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         /**
          * @var $tenant Tenant
@@ -309,18 +307,14 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals('11/09/2013', $contract->getStartAt()->format('m/d/Y'));
         $this->assertEquals('11/08/2015', $contract->getFinishAt()->format('m/d/Y'));
 
-        /**
-         * @var $tenant Tenant
-         */
+        /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'tenant11@example.com',
-            )
+            ['email' => 'tenant11@example.com']
         );
 
         $contracts = $tenant->getContracts();
         $contractEnded = null;
-        $contractMatch = null;
+        $contractMatch = null; //Contract MATCH work not correctly
         foreach ($contracts as $contract) {
             if ($contract->getUnit()->getName() === '1-b') {
                 $contractMatch = $contract;
@@ -607,7 +601,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            8000,
+            11000,
             "$('.finishedTitle').length > 0"
         );
 
@@ -706,13 +700,14 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
         $propertySelector->selectOption($property->getId());
     }
+
     /**
      * @test
      */
     public function importMultipleProperties()
     {
         $this->load(true);
-        /** @var $em EntityManager */
+        /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine')->getManager();
         $this->assertEquals(1, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
         $this->setDefaultSession('selenium2');
@@ -1078,7 +1073,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            10000,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1115,7 +1110,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            6000,
+            11000,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1173,7 +1168,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            10000,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1221,16 +1216,14 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            5000,
+            11000,
             "$('.finishedTitle').length > 0"
         );
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
-        /**
-         * @var $em EntityManager
-         */
+        /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
             array(

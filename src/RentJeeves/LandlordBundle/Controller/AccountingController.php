@@ -7,16 +7,13 @@ use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
-use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
-use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\LandlordBundle\Accounting\Import\ImportFactory;
@@ -222,6 +219,7 @@ class AccountingController extends Controller
 
         if ($form->isValid()) {
             $importMapping->setupMapping($form, $data, $group);
+
             return $this->redirect($this->generateUrl('accounting_import'));
         }
 
@@ -244,9 +242,7 @@ class AccountingController extends Controller
     {
         $this->checkAccessToAccounting();
         try {
-            /**
-             * @var $importFactory ImportFactory
-             */
+            /** @var ImportFactory $importFactory */
             $importFactory = $this->get('accounting.import.factory');
             $storage = $importFactory->getStorage();
             $storage->clearDataBeforeReview();
@@ -254,7 +250,7 @@ class AccountingController extends Controller
             if ($mapping->isNeedManualMapping()) {
                 $storage->getImportData();
             }
-        } catch (ImportStorageException $e) {
+        } catch (\Exception $e) {
             return $this->redirect($this->generateUrl('accounting_import_file'));
         }
 
@@ -272,8 +268,8 @@ class AccountingController extends Controller
             'importStorage'           => $storage,
             'importMapping'           => $mapping,
             //Make it string because it's var for js and I want boolean
-            'isMultipleProperty'      => ($storage->isMultipleProperty())? "true" : "false",
-            'importOnlyException'     => ($storage->isOnlyException())? "true" : "false",
+            'isMultipleProperty'      => ($storage->isMultipleProperty()) ? "true" : "false",
+            'importOnlyException'     => ($storage->isOnlyException()) ? "true" : "false",
             'supportEmail'            => $this->container->getParameter('support_email'),
         );
     }
@@ -384,6 +380,7 @@ class AccountingController extends Controller
          */
         $importFactory = $this->get('accounting.import.factory');
         $importStorage = $importFactory->getStorage();
+
         return $importStorage->isValid();
     }
 
@@ -555,7 +552,7 @@ class AccountingController extends Controller
 
         $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
         $response->headers->set('Content-Type', 'application/json');
-        $statusCode = ($responseData['result'])? 200 : 400;
+        $statusCode = ($responseData['result']) ? 200 : 400;
         $response->setStatusCode($statusCode);
 
         return $response;

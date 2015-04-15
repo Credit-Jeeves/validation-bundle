@@ -150,7 +150,7 @@ trait Contract
         $contract = $this->currentImportModel->getContract();
         if ($contract->getGroup()) {
             $groupSettings = $contract->getGroup()->getGroupSettings();
-            $dueDate = ($contract->getDueDate()) ? $contract->getDueDate() : $groupSettings->getDueDate();
+            $dueDate = $contract->getDueDate() ?: $groupSettings->getDueDate();
 
             return $dueDate;
         }

@@ -294,7 +294,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
         $residentMapping = $this->currentImportModel->getResidentMapping();
         $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0 || $this->isUsedResidentId() || $this->isUsedEmail()) {
+        if (count($errors) > 0 || $this->isUsedResidentId()) {
             return false;
         }
 
@@ -486,7 +486,7 @@ abstract class HandlerAbstract implements HandlerInterface
     /**
      * @param $form
      * @param $lineNumber
-     * @param  null  $token
+     * @param  string $token
      * @return array
      */
     protected function runFormValidation($form, $lineNumber, $token = null)
@@ -521,7 +521,7 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected function getSubmittedDataFromForm(array $children)
     {
-        $submittedData = array();
+        $submittedData = [];
         foreach ($children as $fieldName => $data) {
             if (!empty($data->children)) {
                 $submittedData[$data->vars['name']] = $this->getSubmittedDataFromForm($data->children);
@@ -539,7 +539,7 @@ abstract class HandlerAbstract implements HandlerInterface
     public function initCollectionImportModel()
     {
         $data       = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
-        $this->collectionImportModel = new ArrayCollection(array());
+        $this->collectionImportModel = new ArrayCollection([]);
 
         foreach ($data as $key => $values) {
             try {
@@ -654,7 +654,37 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function tryToSaveRow($lineNumber)
     {
         try {
-            $this->em->flush();
+            $tenantEmail = $this->currentImportModel->getTenant()->getEmail();
+
+            if (empty($tenantEmail)) {
+                $contractWaiting = $this->getContractWaiting();
+                $this->flushEntity($contractWaiting);
+
+                return true;
+            }
+
+            if (!empty($tenantEmail) && $this->currentImportModel->getHasContractWaiting()) {
+                //Remove contract because we get duplicate contract
+                $this->currentImportModel->getTenant()->removeContract($this->currentImportModel->getContract());
+                $this->flushEntity($this->currentImportModel->getTenant());
+                $contract = $this->contractProcess->createContractFromWaiting(
+                    $this->currentImportModel->getTenant(),
+                    $this->currentImportModel->getContractWaiting()
+                );
+
+                $contract->setStatus(ContractStatus::INVITE);
+            } else {
+                $contract = $this->currentImportModel->getContract();
+            }
+
+            $this->flushEntity($this->currentImportModel->getTenant());
+            $this->flushEntity($contract);
+            $this->flushEntity($unit = $contract->getUnit());
+            $unitMapping = $unit->getUnitMapping();
+            if ($unitMapping instanceof UnitMapping) {
+                $this->flushEntity($unitMapping);
+            }
+            $this->flushEntity($this->currentImportModel->getResidentMapping());
         } catch (Exception $e) {
             $this->manageException($e);
 
@@ -749,18 +779,19 @@ abstract class HandlerAbstract implements HandlerInterface
      * @param  object $entity
      * @return bool
      */
-    protected function persistEntity($entity)
+    protected function flushEntity($entity)
     {
+        if (!is_object($entity)) {
+            return false;
+        }
+
         try {
             $this->em->persist($entity);
+            $this->em->flush($entity);
         } catch (\Doctrine\ORM\ORMException $e) {
             $this->reConnectDB();
 
-            return $this->persistEntity($entity);
-        } catch (Exception $e) {
-            $this->manageException($e);
-
-            return false;
+            return $this->flushEntity($entity);
         }
 
         return true;

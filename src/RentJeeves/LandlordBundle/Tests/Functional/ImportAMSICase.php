@@ -53,7 +53,7 @@ class ImportAMSICase extends ImportBaseAbstract
 
         // We must make sure the data saved into DB, so we count before import and after
         $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertEquals(30, count($contracts));
+        $this->assertEquals(29, count($contracts));
         $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
         $this->assertEquals(14, count($contractsWaiting));
     }
