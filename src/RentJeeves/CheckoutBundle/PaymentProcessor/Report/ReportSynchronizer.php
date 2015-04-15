@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
-use RentJeeves\DataBundle\Entity\Heartland as HeartlandTransaction;
+use RentJeeves\DataBundle\Entity\Transaction as HeartlandTransaction;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
@@ -209,7 +209,7 @@ class ReportSynchronizer
 
         $order = $originalTransaction->getOrder();
         $order->setStatus(OrderStatus::CANCELLED);
-        $originalTransaction->setDepositDate(null);
+        $originalTransaction->setDepositDate();
         $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
 
         $this->em->persist($voidedTransaction);
@@ -222,7 +222,7 @@ class ReportSynchronizer
      */
     protected function findTransaction($transactionId)
     {
-        return $this->em->getRepository('RjDataBundle:Heartland')->findOneByTransactionId($transactionId);
+        return $this->em->getRepository('RjDataBundle:Transaction')->findOneByTransactionId($transactionId);
     }
 
     /**

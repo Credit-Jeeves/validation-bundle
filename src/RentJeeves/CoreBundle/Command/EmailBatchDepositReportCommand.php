@@ -2,10 +2,9 @@
 
 namespace RentJeeves\CoreBundle\Command;
 
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use RentJeeves\CoreBundle\Mailer\Mailer;
-use RentJeeves\DataBundle\Entity\HeartlandRepository;
+use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Entity\LandlordRepository;
 use RentJeeves\DataBundle\Entity\Landlord;
 use CreditJeeves\DataBundle\Entity\Group;
@@ -68,8 +67,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         $doctrine = $this->getContainer()->get('doctrine');
         /** @var LandlordRepository $repoLandlord */
         $repoLandlord = $doctrine->getRepository('RjDataBundle:Landlord');
-        /** @var HeartlandRepository $repoHeartland */
-        $repoHeartland = $doctrine->getRepository('RjDataBundle:Heartland');
+        /** @var TransactionRepository $repoTransaction */
+        $repoTransaction = $doctrine->getRepository('RjDataBundle:Transaction');
 
         $output->writeln('Sending emails to holding admins.');
 
@@ -80,8 +79,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
             $groups = [];
             foreach ($holdingAdmin->getGroups() as $group) {
                 /** @var Group $group */
-                $batchData = $repoHeartland->getBatchDepositedInfo($group, $date);
-                $reversalData = $repoHeartland->getReversalDepositedInfo($group, $date);
+                $batchData = $repoTransaction->getBatchDepositedInfo($group, $date);
+                $reversalData = $repoTransaction->getReversalDepositedInfo($group, $date);
                 $groups[] = [
                     'groupName' => $group->getName(),
                     'accountNumber' => $group->getAccountNumber(),
@@ -110,8 +109,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
             /** @var Landlord $landlord */
             foreach ($landlord->getAgentGroups() as $group) {
                 /** @var Group $group */
-                $batchData = $repoHeartland->getBatchDepositedInfo($group, $date);
-                $reversalData = $repoHeartland->getReversalDepositedInfo($group, $date);
+                $batchData = $repoTransaction->getBatchDepositedInfo($group, $date);
+                $reversalData = $repoTransaction->getReversalDepositedInfo($group, $date);
                 // only send if no groupid option specified, or if groupid option matches current group
                 if ((!$groupid) || ($groupid && ($group->getId() == $groupid))) {
                     if (count($batchData) > 0 || count($reversalData) > 0) {

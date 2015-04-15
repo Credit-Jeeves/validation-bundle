@@ -8,7 +8,6 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
-use RentJeeves\DataBundle\Model\DepositAccount;
 
 /**
  * @ORM\MappedSuperclass
@@ -210,7 +209,7 @@ abstract class PaymentAccount
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Heartland",
+     *     targetEntity="RentJeeves\DataBundle\Entity\Transaction",
      *     mappedBy="paymentAccount"
      * )
      *

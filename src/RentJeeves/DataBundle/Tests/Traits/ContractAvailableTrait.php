@@ -2,17 +2,11 @@
 
 namespace RentJeeves\DataBundle\Tests\Traits;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\DataBundle\Enum\TransactionStatus;
-use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\CoreBundle\DateTime;
 
 trait ContractAvailableTrait

@@ -114,7 +114,7 @@ class AciCollectPayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
-                'rentjeeves_checkoutbundle_paymenttype_start_date' => date('j/n/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => date('n/j/Y'),
             ]
         );
 

@@ -1075,7 +1075,7 @@ class AjaxController extends Controller
         $group = $this->getCurrentGroup();
         $em = $this->getDoctrine()->getManager();
         $orderRepo = $em->getRepository('DataBundle:Order');
-        $transactionRepo = $em->getRepository('RjDataBundle:Heartland');
+        $transactionRepo = $em->getRepository('RjDataBundle:Transaction');
 
         $total = $transactionRepo->getCountDeposits($group, $filter);
         $deposits = array();

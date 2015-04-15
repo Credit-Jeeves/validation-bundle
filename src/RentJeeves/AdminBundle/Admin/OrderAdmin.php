@@ -88,7 +88,7 @@ class OrderAdmin extends Admin
                             return;
                         }
                         $queryBuilder
-                            ->innerJoin($alias.'.heartlands', $alias.'_h')
+                            ->innerJoin($alias.'.transactions', $alias.'_h')
                             ->where($alias.'_h.transactionId = :id')
                             ->setParameter('id', $value['value']);
 
@@ -200,7 +200,7 @@ class OrderAdmin extends Admin
             ->add('sum')
             ->add('created_at')
             ->add('updated_at')
-            ->add('heartlands', null, array('route' => array('name' => 'show')))
+            ->add('transactions', null, array('route' => array('name' => 'show')))
             ->add('operations', null, array('route' => array('name' => 'show')))
             ->add('jobs', null, array('template' => 'AdminBundle:CRUD:orders_show_jobs.html.twig'));
     }

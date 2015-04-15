@@ -271,11 +271,11 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.property', 'prop');
         $query->innerJoin('t.unit', 'unit');
         $query->innerJoin('t.group', 'g');
-        $query->innerJoin('o.heartlands', 'heartland');
+        $query->innerJoin('o.transactions', 'transaction');
 
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
-            $query->where('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
-            $query->andWhere("heartland.depositDate BETWEEN :start AND :end");
+            $query->where('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
+            $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
             $query->andWhere('o.status = :status');
             $query->setParameter('status', OrderStatus::COMPLETE);
         } else {
@@ -310,15 +310,15 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('ten.residentsMapping', 'res');
         $query->innerJoin('t.unit', 'unit');
         $query->innerJoin('unit.unitMapping', 'uMap');
-        $query->innerJoin('o.heartlands', 'heartland');
+        $query->innerJoin('o.transactions', 'transaction');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
 
 
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
             $query->where('o.status = :status');
-            $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
-            $query->andWhere("heartland.depositDate BETWEEN :start AND :end");
+            $query->andWhere('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
+            $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
             $query->setParameter('status', OrderStatus::COMPLETE);
         } else {
             $query->where('o.status = :status1 OR o.status = :status2');
@@ -338,7 +338,7 @@ class OrderRepository extends EntityRepository
         $query->setParameter('groupId', $group->getId());
         $query->setParameter('holding', $group->getHolding());
         $query->orderBy('res.residentId', 'ASC');
-        $query->orderBy('heartland.batchId', 'ASC');
+        $query->orderBy('transaction.batchId', 'ASC');
         $query = $query->getQuery();
 
         return $query->execute();
@@ -349,7 +349,7 @@ class OrderRepository extends EntityRepository
         $ordersQuery = $this->createQueryBuilder('o');
         $ordersQuery->innerJoin('o.operations', 'p');
         $ordersQuery->innerJoin('p.contract', 't');
-        $ordersQuery->innerJoin('o.heartlands', 'h');
+        $ordersQuery->innerJoin('o.transactions', 'h');
         $ordersQuery->where('t.group = :group');
         $ordersQuery->andWhere('h.depositDate IS NOT NULL');
         if ($batchId) {
@@ -414,7 +414,7 @@ class OrderRepository extends EntityRepository
         $limit
     ) {
         $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
-        $query->groupBy("heartland.batchId");
+        $query->groupBy("transaction.batchId");
         $query = $query->getQuery();
 
         return $query->execute();
@@ -428,7 +428,7 @@ class OrderRepository extends EntityRepository
         $limit
     ) {
         $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
-        $query->andWhere("heartland.batchId = :batchId");
+        $query->andWhere("transaction.batchId = :batchId");
         $query->setParameter('batchId', $batchId);
 
         $query = $query->getQuery();
@@ -449,16 +449,16 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('group.holding', 'holding');
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('property.propertyMapping', 'mapping');
-        $query->innerJoin('ord.heartlands', 'heartland');
+        $query->innerJoin('ord.transactions', 'transaction');
         $query->leftJoin(
             'ord.sentOrder',
             'externalApi',
             Expr\Join::WITH,
             'externalApi.depositDate = :depositDate1 AND externalApi.apiType = :apiType'
         );
-        $query->where("heartland.depositDate = :depositDate2");
+        $query->where("transaction.depositDate = :depositDate2");
         $query->andWhere('externalApi.id IS NULL');
-        $query->andWhere('heartland.isSuccessful = 1');
+        $query->andWhere('transaction.isSuccessful = 1');
         $query->andWhere('mapping.externalPropertyId IS NOT NULL');
         $query->andWhere('ord.status = :orderStatus');
         $query->andWhere('operation.type = :rentStatus OR operation.type = :otherStatus');
@@ -485,10 +485,10 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('contract.holding', 'holding');
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('property.propertyMapping', 'mapping');
-        $query->innerJoin('ord.heartlands', 'heartland');
+        $query->innerJoin('ord.transactions', 'transaction');
 
-        $query->where("heartland.depositDate = :depositDate");
-        $query->andWhere('heartland.isSuccessful = 1 and heartland.status = :reversedStatus');
+        $query->where("transaction.depositDate = :depositDate");
+        $query->andWhere('transaction.isSuccessful = 1 and transaction.status = :reversedStatus');
         $query->andWhere('mapping.externalPropertyId IS NOT NULL');
         $query->andWhere('ord.status in (:orderStatuses)');
         $query->andWhere('operation.type = :rentStatus OR operation.type = :otherStatus');
