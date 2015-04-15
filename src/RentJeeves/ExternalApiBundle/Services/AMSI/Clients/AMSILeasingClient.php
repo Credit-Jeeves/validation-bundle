@@ -2,8 +2,6 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\AMSI\Clients;
 
-use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\SerializationContext;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\ExternalApiBundle\Model\AMSI\EDEX;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents;
@@ -91,7 +89,7 @@ class AMSILeasingClient extends AMSIBaseClient
         $parameters = [
             'GetPropertyUnits' => array_merge(
                 $this->getLoginCredentials(),
-                ['XMLData'=> new \SoapVar($xmlData, XSD_ANYXML)]
+                ['XMLData' => new \SoapVar($xmlData, XSD_ANYXML)]
             ),
         ];
 
@@ -122,7 +120,7 @@ class AMSILeasingClient extends AMSIBaseClient
         $parameters = [
             'GetPropertyResidents' => array_merge(
                 $this->getLoginCredentials(),
-                ['XMLData'=> new \SoapVar($xmlData, XSD_ANYXML)]
+                ['XMLData' => new \SoapVar($xmlData, XSD_ANYXML)]
             ),
         ];
 

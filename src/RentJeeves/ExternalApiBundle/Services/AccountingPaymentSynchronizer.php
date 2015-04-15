@@ -154,7 +154,7 @@ class AccountingPaymentSynchronizer
             if (!$this->isAllowedToSend($holding)) {
                 $this->logger->debug(
                     sprintf(
-                        "Order(%s) is not allowed to immediately send to accounting system.",
+                        "Order(%d) is not allowed to be sent to accounting system.",
                         $order->getId()
                     )
                 );
@@ -170,7 +170,7 @@ class AccountingPaymentSynchronizer
             )) {
                 $this->logger->debug(
                     sprintf(
-                        "Order(%s) can not be sent to accounting system(%s)",
+                        "Order(%d) can not be sent to accounting system(%s)",
                         $order->getId(),
                         $accountingType
                     )
@@ -181,7 +181,7 @@ class AccountingPaymentSynchronizer
 
             $this->logger->debug(
                 sprintf(
-                    "Trying to send order(%s) to accounting system(%s)...",
+                    "Trying to send order(%d) to accounting system(%s)...",
                     $order->getId(),
                     $accountingType
                 )
@@ -191,7 +191,7 @@ class AccountingPaymentSynchronizer
             }
             $result = $this->addPaymentToBatch($order);
             $message = sprintf(
-                "Order(%s) was sent to accounting system (%s) with result: %s",
+                "Order(%d) was sent to accounting system(%s) with result: %s",
                 $order->getId(),
                 $accountingType,
                 $result
@@ -396,8 +396,10 @@ class AccountingPaymentSynchronizer
             );
         } else {
             $apiClient = $this->apiClientFactory->createClient($accountingType);
-            $apiClient->setSettings($accountingSettings);
             $apiClient->setDebug($this->debug);
+            if ($accountingSettings) {
+                $apiClient->setSettings($accountingSettings);
+            }
         }
 
         return $apiClient;

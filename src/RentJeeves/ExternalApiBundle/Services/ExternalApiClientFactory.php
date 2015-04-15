@@ -25,17 +25,13 @@ class ExternalApiClientFactory
      *     "mriClient"    = @DI\Inject("mri.client")
      * })
      */
-    public function __construct(
-        ResManClient $resManClient,
-        MRIClient $mriClient
-    ) {
+    public function __construct(ResManClient $resManClient, MRIClient $mriClient) {
         $this->accountingServiceClientMap[ApiIntegrationType::RESMAN] = $resManClient;
         $this->accountingServiceClientMap[ApiIntegrationType::MRI] = $mriClient;
     }
 
     /**
      * @param string $accountingType
-     * @param string $clientType
      * @return ClientInterface
      */
     public function createClient($accountingType)
