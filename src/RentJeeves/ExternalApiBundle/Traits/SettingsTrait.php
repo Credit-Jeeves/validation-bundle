@@ -20,7 +20,7 @@ trait SettingsTrait
     }
 
     /**
-     * @return YardiSettings
+     * @return SettingsInterface
      */
     public function getSettings()
     {

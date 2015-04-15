@@ -109,9 +109,9 @@ class StorageAMSI extends ExternalApiStorage
                 $lastName = $occupant->getOccuLastName();
                 $email = $occupant->getEmail();
                 $unitName = $occupant->getUnitId();
-                $residentId = $occupant->getResiId();
+                $residentId = $occupant->getOccuSeqNo();
                 $externalUnitId = sprintf(
-                    '%s%s%s',
+                    '%s|%s|%s',
                     $lease->getPropertyId(),
                     $lease->getBldgId(),
                     $lease->getUnitId()

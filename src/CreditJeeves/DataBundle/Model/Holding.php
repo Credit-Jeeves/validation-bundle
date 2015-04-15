@@ -255,6 +255,8 @@ abstract class Holding
                     return $this->getYardiSettings();
                 case ApiIntegrationType::MRI:
                     return $this->getMriSettings();
+                case ApiIntegrationType::AMSI:
+                    return $this->getAmsiSettings();
             }
         }
 

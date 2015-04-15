@@ -733,10 +733,10 @@
   </wsdl:binding>
   <wsdl:service name="Leasing">
     <wsdl:port name="LeasingSoap" binding="tns:LeasingSoap">
-      <soap:address location="{{ url }}" />
+      <soap:address location="{{ url }}/leasing.asmx" />
     </wsdl:port>
     <wsdl:port name="LeasingSoap12" binding="tns:LeasingSoap12">
-      <soap12:address location="{{ url }}" />
+      <soap12:address location="{{ url }}/leasing.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
