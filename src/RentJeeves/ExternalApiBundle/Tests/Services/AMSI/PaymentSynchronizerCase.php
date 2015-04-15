@@ -54,12 +54,12 @@ class PaymentSynchronizerCase extends BaseTestCase
         $completedTransaction = $order->getCompleteTransaction();
 
         $transaction = new Heartland();
-        $transaction->setTransactionId(rand(9999,9999999));
+        $transaction->setTransactionId(rand(9999, 9999999));
         $transaction->setAmount($completedTransaction->getAmount());
         $transaction->setIsSuccessful(true);
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setMessages('Test message');
-        $transaction->setBatchId(rand(9999,9999999));
+        $transaction->setBatchId(rand(9999, 9999999));
 
         $order->addHeartland($transaction);
 

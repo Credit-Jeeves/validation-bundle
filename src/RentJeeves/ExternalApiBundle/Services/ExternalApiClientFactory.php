@@ -32,7 +32,7 @@ class ExternalApiClientFactory
     }
 
     /**
-     * @param string $accountingType
+     * @param  string          $accountingType
      * @return ClientInterface
      */
     public function createClient($accountingType)

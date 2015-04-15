@@ -11,9 +11,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
-use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Payment;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -46,6 +44,7 @@ class OrderListener
      * 1. Set paidTo for contract
      * 2. Set daysLate for order
      * 3. Mark tenant as ready for charge
+     *
      * @param LifecycleEventArgs $eventArgs
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -76,12 +75,7 @@ class OrderListener
             return;
         }
 
-        $oldStatus = $eventArgs->getOldValue('status');
-        $newStatus = $eventArgs->getNewValue('status');
-
-        $this->logger->debug(
-            sprintf('Order ID %s changes status to %s', $entity->getId(), $newStatus)
-        );
+        $this->logger->debug('Order ID ' . $entity->getId() .' changes status to ' . $entity->getStatus());
         $this->syncTransactions($entity);
 
         $operations = $entity->getRentOperations();
@@ -95,15 +89,12 @@ class OrderListener
         foreach ($operations as $operation) {
             $contract = $operation->getContract();
             $movePaidFor = null;
-            switch ($newStatus) {
+            switch ($entity->getStatus()) {
                 case OrderStatus::REFUNDED:
                 case OrderStatus::CANCELLED:
                 case OrderStatus::RETURNED:
                     $contract->unshiftPaidTo($operation->getAmount());
                     $movePaidFor = '-1';
-                    if (true === $this->canPostReversalsToAmsi($entity,$oldStatus)) {
-                        $this->addJobForPostReversalsToAmsi($entity);
-                    }
                     break;
                 case OrderStatus::COMPLETE:
                     $contract->shiftPaidTo($operation->getAmount());
@@ -194,7 +185,7 @@ class OrderListener
 
         if ($save) {
             $this->logger->debug(
-                'Flush contract ID' . $operation->getContract()->getId() .
+                'Flush contract ID' .  $operation->getContract()->getId() .
                 ' and complete transaction of order ID ' . $order->getId()
             );
             // changes to contract are made in preUpdate since only there we can check whether the order
@@ -385,48 +376,5 @@ class OrderListener
             $em->persist($payment);
             $em->flush($payment);
         }
-    }
-
-    /**
-     * @param Order $order
-     */
-    protected function addJobForPostReversalsToAmsi(Order $order)
-    {
-        $unitOfWork = $this->getEntityManager()->getUnitOfWork();
-        $executeTime = new \DateTime();
-        $executeTime->modify('+5 minutes');
-
-        $job = new Job('api:accounting:amsi:return-payment', [$order->getId()]);
-        $job->addRelatedEntity($order);
-        $job->setExecuteAfter($executeTime);
-
-        $this->getEntityManager()->persist($job);
-        $metadata = $this->getEntityManager()->getClassMetadata('RentJeeves\DataBundle\Entity\Job');
-        $unitOfWork->computeChangeSet($metadata, $job);
-    }
-
-    /**
-     * @param Order  $order
-     * @param string $previousStatus
-     *
-     * @return boolean
-     */
-    protected function canPostReversalsToAmsi(Order $order, $previousStatus)
-    {
-        $apiType = $order->getContract()->getHolding()->getAccountingSettings()->getApiIntegration();
-        $cancelStatuses = [OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED];
-        if ($apiType === ApiIntegrationType::AMSI && false === in_array($previousStatus, $cancelStatuses)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    protected function getEntityManager()
-    {
-        return $this->container->get('doctrine')->getManager();
     }
 }

@@ -32,7 +32,9 @@ class AmsiReturnPaymentCommand extends ContainerAwareCommand
     {
         $orderRepository = $this->getEntityManager()->getRepository('DataBundle:Order');
         if (false == $order = $orderRepository->find($input->getArgument('orderId'))) {
-            throw new \InvalidArgumentException(sprintf('Order %s not found', $input->getArgument('orderId')));
+            throw new \InvalidArgumentException(
+                sprintf('Order %s not found when trying to return to AMSI', $input->getArgument('orderId'))
+            );
         }
 
         $settings = $order->getContract()->getHolding()->getAmsiSettings();

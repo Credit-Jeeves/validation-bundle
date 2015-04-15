@@ -95,7 +95,7 @@ trait TransactionAvailableTrait
         $transaction->setBatchDate(new DateTime());
         $transaction->setStatus(TransactionStatus::COMPLETE);
         $transaction->setIsSuccessful(true);
-        $transaction->setTransactionId(rand(9999,9999999));
+        $transaction->setTransactionId(rand(9999, 9999999));
         $order->addHeartland($transaction);
 
         $em->persist($transaction);

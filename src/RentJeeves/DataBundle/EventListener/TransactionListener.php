@@ -4,8 +4,11 @@ namespace RentJeeves\DataBundle\EventListener;
 use JMS\DiExtraBundle\Annotation as DI;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * I can't just inject service which I need because have error
@@ -27,6 +30,8 @@ class TransactionListener
 {
     /**
      * @DI\Inject("service_container", required = true)
+     *
+     * @var Container
      */
     public $container;
 
@@ -40,7 +45,12 @@ class TransactionListener
         if (!$transaction instanceof Heartland) {
             return;
         }
+
         $this->manageAccountingSynchronization($transaction);
+
+        if (true === $this->canCreateJobReturnForAmsi($transaction)) {
+            $this->addJobForPostReversalsToAmsi($transaction);
+        }
     }
 
     /**
@@ -65,6 +75,7 @@ class TransactionListener
                     $transaction->getStatus()
                 )
             );
+
             return;
         }
 
@@ -75,6 +86,7 @@ class TransactionListener
                     $transaction->getId()
                 )
             );
+
             return;
         }
 
@@ -85,6 +97,7 @@ class TransactionListener
                     $transaction->getId()
                 )
             );
+
             return;
         }
 
@@ -95,5 +108,51 @@ class TransactionListener
         if ($accountingPaymentSync->isAllowedToSend($contract->getHolding())) {
             $accountingPaymentSync->createJob($transaction->getOrder());
         }
+    }
+
+    /**
+     * @param Heartland $transaction
+     */
+    protected function addJobForPostReversalsToAmsi(Heartland $transaction)
+    {
+        $order = $transaction->getOrder();
+
+        $executeTime = new \DateTime();
+        $executeTime->modify('+5 minutes');
+
+        $job = new Job('api:accounting:amsi:return-payment', [$order->getId()]);
+        $job->setExecuteAfter($executeTime);
+
+        $this->getEntityManager()->persist($job);
+        $this->getEntityManager()->flush($job);
+    }
+
+    /**
+     * @param Heartland $transaction
+     *
+     * @return boolean
+     */
+    protected function canCreateJobReturnForAmsi(Heartland $transaction)
+    {
+        if ($transaction->getStatus() === TransactionStatus::REVERSED) {
+            if ($contract = $transaction->getOrder()->getContract()) {
+                if ($accountingSettings = $contract->getHolding()->getAccountingSettings()) {
+                    $apiType = $accountingSettings->getApiIntegration();
+                    if ($apiType === ApiIntegrationType::AMSI) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->container->get('doctrine')->getManager();
     }
 }

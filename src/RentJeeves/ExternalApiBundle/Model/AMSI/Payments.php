@@ -15,7 +15,7 @@ class Payments
      * @Serializer\Type("ArrayCollection<RentJeeves\ExternalApiBundle\Model\AMSI\Payment>")
      * @Serializer\XmlList(inline = true, entry = "Payment")
      * @Serializer\XmlKeyValuePairs
-     * @Serializer\Groups({"addPayment", "addPaymentResponse", "returnPayment"})
+     * @Serializer\Groups({"addPayment", "addPaymentResponse"})
      *
      * @var ArrayCollection
      */

@@ -41,7 +41,7 @@ class AMSILedgerClient extends AMSIBaseClient
                     return true;
                 } else {
                     $this->logger->alert(sprintf(
-                        'AMSI: Failed posting order(ID#%d). Got error code %d, error description %s',
+                        'AMSI: Failed when trying to return order(ID#%d). Got error code %d, error description %s',
                         $order->getId(),
                         $resultPayment->getErrorCode(),
                         $resultPayment->getErrorDescription()
@@ -49,13 +49,13 @@ class AMSILedgerClient extends AMSIBaseClient
                 }
             } else {
                 $this->logger->alert(sprintf(
-                    'AMSI: Failed posting order(ID#%d). Cannot deserialize response.',
+                    'AMSI: Failed when trying to return order(ID#%d). Cannot deserialize response.',
                     $order->getId()
                 ));
             }
         } catch (\Exception $e) {
             $this->logger->alert(sprintf(
-                'AMSI: Failed posting order(ID#%d). Got exception %s',
+                'AMSI: Failed when trying to return order(ID#%d). Got exception %s',
                 $order->getId(),
                 $e->getMessage()
             ));
