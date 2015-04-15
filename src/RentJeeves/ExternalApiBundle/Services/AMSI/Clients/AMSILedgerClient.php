@@ -4,12 +4,15 @@ namespace RentJeeves\ExternalApiBundle\Services\AMSI\Clients;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
+use RentJeeves\ExternalApiBundle\Model\AMSI\Batches;
+use RentJeeves\ExternalApiBundle\Model\AMSI\EdexSettlement;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Payments;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Payment;
 
 class AMSILedgerClient extends AMSIBaseClient
 {
     const SUCCESSFUL_RESPONSE_CODE = 0;
+    const SETTLEMENT_APPROVAL_CODE = 'RentTrack';
 
     /**
      * @param Order $order
@@ -50,6 +53,76 @@ class AMSILedgerClient extends AMSIBaseClient
             $this->logger->alert(sprintf(
                 'AMSI: Failed posting order(ID#%d). Got exception %s',
                 $order->getId(),
+                $e->getMessage()
+            ));
+        }
+
+        return false;
+    }
+
+    public function updateSettlementData($batchId, $clientMerchantId, $settlementAmount, \DateTime $settlementDate)
+    {
+        $this->logger->debug(sprintf(
+            'AMSI: updateSettlementData with params: batchID %d, groupID %d, amount %d, date %s',
+            $batchId,
+            $clientMerchantId,
+            $settlementAmount,
+            $settlementDate->format('m/d/Y')
+        ));
+
+        try {
+            $edex = new EdexSettlement();
+            $edex->setExternalJnlNo($batchId);
+            $edex->setClientMerchantId($clientMerchantId);
+            $edex->setSettlementAmount($settlementAmount);
+            $edex->setSettlementDate($settlementDate);
+            $edex->setApprovalCode(self::SETTLEMENT_APPROVAL_CODE);
+
+            $xmlData = SerializerXmlHelper::removeStandartHeaderXml(
+                $this->serializer->serialize(
+                    $edex,
+                    'xml',
+                    $this->getSerializationContext(['updateSettlementData'])
+                )
+            );
+            $xmlData = SerializerXmlHelper::addCDataToString($xmlData);
+            $xmlData = SerializerXmlHelper::addTagWithNameSpaceToString('XMLData', 'ns1', $xmlData);
+
+            $parameters = [
+                'UpdateSettlementData' => array_merge(
+                    $this->getLoginCredentials(),
+                    ['XMLData' => new \SoapVar($xmlData, XSD_ANYXML)]
+                ),
+            ];
+
+            $rawResponse = $this->sendRequest('UpdateSettlementData', $parameters);
+            $batchesResponse = $this->serializer->deserialize(
+                $rawResponse,
+                'RentJeeves\ExternalApiBundle\Model\AMSI\Batches',
+                'xml',
+                $this->getDeserializationContext(['updateSettlementDataResponse'])
+            );
+            if ($batchesResponse instanceof Batches && $edexResponse = $batchesResponse->getEdex()) {
+                if (self::SUCCESSFUL_RESPONSE_CODE == $edexResponse->getErrorCode()) {
+                    return true;
+                } else {
+                    $this->logger->alert(sprintf(
+                        'AMSI: Failed updateSettlementData for batchID #%d. Got error code %d, error description %s',
+                        $batchId,
+                        $edexResponse->getErrorCode(),
+                        $edexResponse->getErrorDescription()
+                    ));
+                }
+            } else {
+                $this->logger->alert(sprintf(
+                    'AMSI: Failed updateSettlementData for batchID #%d. Cannot deserialize response.',
+                    $batchId
+                ));
+            }
+        } catch (\Exception $e) {
+            $this->logger->alert(sprintf(
+                'AMSI: Failed updateSettlementData for batchID #%d. Got exception %s',
+                $batchId,
                 $e->getMessage()
             ));
         }

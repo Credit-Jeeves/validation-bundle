@@ -6,7 +6,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @Serializer\XmlRoot("EDEX")
  */
-class EDEX
+class EdexResidents
 {
     /**
      * @Serializer\SerializedName("propertyid")

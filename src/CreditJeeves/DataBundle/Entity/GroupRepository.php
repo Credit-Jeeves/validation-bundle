@@ -65,4 +65,15 @@ class GroupRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function getAllGroupIdsInHolding(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('g')
+            ->select('g.id')
+            ->where('g.holding = :holding')
+            ->setParameter('holding', $holding)
+            ->getQuery();
+
+        return $query->getResult();
+    }
 }
