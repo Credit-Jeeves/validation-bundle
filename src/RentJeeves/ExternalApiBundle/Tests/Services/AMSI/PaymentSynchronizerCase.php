@@ -72,6 +72,32 @@ class PaymentSynchronizerCase extends BaseTestCase
         $response = $amsiLedgerClient->returnPayment($order);
 
         $this->assertTrue($response);
+
+        return $order;
+    }
+
+    /**
+     * @test
+     * @depends shouldSendPaymentToAmsiAndReturnTrue
+     */
+    public function shouldUpdateSettlementDataAndReturnTrue(Order $order)
+    {
+        $settings = $order->getContract()->getHolding()->getAmsiSettings();
+
+        $settlementDate = $this->getSettlementData()->getSettlementDate(
+            $order->getReversedTransaction()->getBatchDate(),
+            $order->getReversedTransaction()->getDepositDate()
+        );
+
+        $amsiLedgerClient = $this->createAmsiLedgerClient($settings);
+        $response = $amsiLedgerClient->updateSettlementData(
+            $order->getCompleteTransaction()->getTransactionId(),
+            $order->getContract()->getGroupId(),
+            $order->getSum(),
+            $settlementDate
+        );
+
+        $this->assertTrue($response);
     }
 
     /**
@@ -92,5 +118,10 @@ class PaymentSynchronizerCase extends BaseTestCase
         $clientFactory = $this->getContainer()->get('soap.client.factory');
 
         return $clientFactory->getClient($settings, SoapClientEnum::AMSI_LEDGER);
+    }
+
+    protected function getSettlementData()
+    {
+        return $this->getContainer()->get('accounting.amsi_settlement');
     }
 }
