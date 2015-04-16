@@ -85,10 +85,11 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
             return $depositDate;
         }
 
+        $date = new \DateTime();
         if ($batchDate) {
-            return BusinessDaysCalculator::getNextBusinessDate($batchDate);
+            $date = $batchDate;
         }
 
-        return BusinessDaysCalculator::getNextBusinessDate(new \DateTime());
+        return BusinessDaysCalculator::getBusinessDate($date, 3); // Amount of days to get payment deposited = 3
     }
 }

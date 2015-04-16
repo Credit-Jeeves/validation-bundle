@@ -18,4 +18,17 @@ class BusinessDaysCalculator
 
         return $nextBusinessDate;
     }
+
+    public static function getBusinessDate(DateTime $startDate, $targetShift)
+    {
+        $businessDate = $startDate;
+        $shiftedDays = 0;
+
+        while ($shiftedDays < $targetShift) {
+            $businessDate = self::getNextBusinessDate($businessDate);
+            $shiftedDays++;
+        }
+
+        return $businessDate;
+    }
 }
