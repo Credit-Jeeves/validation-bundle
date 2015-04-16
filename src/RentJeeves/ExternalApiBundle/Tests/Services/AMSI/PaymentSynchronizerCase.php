@@ -60,10 +60,10 @@ class PaymentSynchronizerCase extends BaseTestCase
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setMessages('Test message');
         $transaction->setBatchId(rand(9999, 9999999));
+        $transaction->setOrder($order);
 
         $order->addHeartland($transaction);
 
-        $this->getEntityManager()->persist($transaction);
         $this->getEntityManager()->flush();
 
         $settings = $order->getContract()->getHolding()->getAmsiSettings();

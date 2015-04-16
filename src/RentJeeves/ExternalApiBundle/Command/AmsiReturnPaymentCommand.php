@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Command;
 
+use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -40,7 +41,26 @@ class AmsiReturnPaymentCommand extends ContainerAwareCommand
         $settings = $order->getContract()->getHolding()->getAmsiSettings();
 
         $amsiLedgerClient = $this->createAmsiLedgerClient($settings);
-        $amsiLedgerClient->returnPayment($order);
+
+        if (true === $amsiLedgerClient->returnPayment($order)) {
+            $amsiLedgerClient->updateSettlementData(
+                $order->getCompleteTransaction()->getTransactionId(),
+                $order->getContract()->getGroupId(),
+                $order->getSum(),
+                $this->getSettlementDate($order->getReversedTransaction())
+            );
+        }
+    }
+
+    /**
+     * @param Heartland $transaction
+     *
+     * @return \DateTime
+     */
+    protected function getSettlementDate(Heartland $transaction)
+    {
+        return $this->getSettlementData()
+            ->getSettlementDate($transaction->getBatchDate(), $transaction->getDepositDate());
     }
 
     /**
@@ -61,5 +81,13 @@ class AmsiReturnPaymentCommand extends ContainerAwareCommand
         $clientFactory = $this->getContainer()->get('soap.client.factory');
 
         return $clientFactory->getClient($settings, SoapClientEnum::AMSI_LEDGER);
+    }
+
+    /**
+     * @return \RentJeeves\ExternalApiBundle\Services\AMSI\SettlementData
+     */
+    protected function getSettlementData()
+    {
+        return $this->getContainer()->get('accounting.amsi_settlement');
     }
 }

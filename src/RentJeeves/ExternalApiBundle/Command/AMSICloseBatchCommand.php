@@ -4,7 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Command;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Monolog\Logger;
-use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
 use RentJeeves\ExternalApiBundle\Services\AMSI\SettlementData;
@@ -77,19 +76,19 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
     /**
      * @param \DateTime $batchDate
      * @param \DateTime $depositDate
+     *
      * @return \DateTime
      */
     protected function getSettlementDate(\DateTime $batchDate = null, \DateTime $depositDate = null)
     {
-        if ($depositDate) {
-            return $depositDate;
-        }
+        return $this->getSettlementData()->getSettlementDate($batchDate, $depositDate);
+    }
 
-        $date = new \DateTime();
-        if ($batchDate) {
-            $date = $batchDate;
-        }
-
-        return BusinessDaysCalculator::getBusinessDate($date, 3); // Amount of days to get payment deposited = 3
+    /**
+     * @return \RentJeeves\ExternalApiBundle\Services\AMSI\SettlementData
+     */
+    protected function getSettlementData()
+    {
+        return $this->getContainer()->get('accounting.amsi_settlement');
     }
 }
