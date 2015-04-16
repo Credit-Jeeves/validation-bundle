@@ -41,7 +41,8 @@ class OperationRepository extends EntityRepository
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :orderStatus');
         $query->where('c.id = :contractId');
         $query->andWhere('op.type = :operationType');
-        $query->andWhere('MONTH(op.paidFor) = :month');  // <-- TODO: Consider lease closures with no payments this month!
+        // TODO: Consider lease closures with no payments this month! RT-1299
+        $query->andWhere('MONTH(op.paidFor) = :month');
         $query->andWhere('YEAR(op.paidFor) = :year');
         $query->groupBy('op.paidFor');
         $query->setParameter('contractId', $contractId);
