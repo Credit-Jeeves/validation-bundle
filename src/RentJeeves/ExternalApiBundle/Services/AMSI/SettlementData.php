@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Model\Holding;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
@@ -28,14 +29,15 @@ class SettlementData
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+        $this->em = $em;
     }
 
     /**
      * Returns an array of [batchId, amount, groupId, depositDate, batchDate].
      * Batch is closed the same day as it was created - so orders can be in COMPLETE or PENDING state.
      *
-     * @param \DateTime $date
-     * @param Holding $holding
+     * @param  \DateTime $date
+     * @param  Holding   $holding
      * @return array
      */
     public function getBatchesToClose(\DateTime $date, Holding $holding)
@@ -77,7 +79,7 @@ class SettlementData
     }
 
     /**
-     * @param Holding $holding
+     * @param  Holding $holding
      * @return array
      */
     protected function getGroupIds(Holding $holding)
@@ -89,5 +91,25 @@ class SettlementData
         }, $groups);
 
         return $result;
+    }
+
+    /**
+     * @param \DateTime $batchDate
+     * @param \DateTime $depositDate
+     *
+     * @return \DateTime
+     */
+    public function getSettlementDate(\DateTime $batchDate = null, \DateTime $depositDate = null)
+    {
+        if ($depositDate) {
+            return $depositDate;
+        }
+
+        $date = new \DateTime();
+        if ($batchDate) {
+            $date = $batchDate;
+        }
+
+        return BusinessDaysCalculator::getBusinessDate($date, 3); // Amount of days to get payment deposited = 3
     }
 }

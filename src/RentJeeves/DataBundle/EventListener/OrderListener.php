@@ -44,6 +44,7 @@ class OrderListener
      * 1. Set paidTo for contract
      * 2. Set daysLate for order
      * 3. Mark tenant as ready for charge
+     *
      * @param LifecycleEventArgs $eventArgs
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -59,7 +60,7 @@ class OrderListener
      * Why we need to use preUpdate event?
      * Because Order always(!!!) is created with status "NEWONE"
      * It will be changed after attempt of payment
-     * 
+     *
      * @param PreUpdateEventArgs $eventArgs
      */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
@@ -69,7 +70,6 @@ class OrderListener
         if (!$entity instanceof Order) {
             return;
         }
-
 
         if (!$eventArgs->hasChangedField('status')) {
             return;
@@ -115,7 +115,6 @@ class OrderListener
 
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
     }
-
 
     private function updateStartAtOfContract($eventArgs)
     {
@@ -216,7 +215,7 @@ class OrderListener
      * More description on this page https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
      * See table Possible Paths
      *
-     * @param Order $order
+     * @param Order         $order
      * @param EntityManager $em
      */
     private function getStartAtOfContract(Order $order, EntityManager $em)

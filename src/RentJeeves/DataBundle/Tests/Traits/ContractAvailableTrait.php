@@ -2,24 +2,17 @@
 
 namespace RentJeeves\DataBundle\Tests\Traits;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\DataBundle\Enum\TransactionStatus;
-use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\CoreBundle\DateTime;
 
 trait ContractAvailableTrait
 {
     /**
-     * @param DateTime $startAt
-     * @param DateTime $finishAt
+     * @TODO: add contract as attribute
+     *
+     * @param  DateTime $startAt
+     * @param  DateTime $finishAt
      * @return Contract
      */
     public function getContract(DateTime $startAt = null, DateTime $finishAt = null)

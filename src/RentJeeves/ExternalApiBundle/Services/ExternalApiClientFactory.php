@@ -32,7 +32,7 @@ class ExternalApiClientFactory
     }
 
     /**
-     * @param string $accountingType
+     * @param  string          $accountingType
      * @return ClientInterface
      */
     public function createClient($accountingType)
@@ -50,7 +50,7 @@ class ExternalApiClientFactory
     }
 
     /**
-     * @param SettingsInterface $settings
+     * @param  SettingsInterface $settings
      * @return $this
      */
     public function setSettings(SettingsInterface $settings)
