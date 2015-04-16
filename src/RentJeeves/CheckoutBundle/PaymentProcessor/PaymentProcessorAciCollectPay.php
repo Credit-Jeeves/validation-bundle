@@ -7,11 +7,14 @@ use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\BillingAccountManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\EnrollmentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\FundingAccountManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\PaymentManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @DI\Service("payment_processor.aci_collect_pay")
@@ -30,26 +33,34 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
      * @var FundingAccountManager
      */
     protected $fundingAccountManager;
+    /**
+     * @var PaymentManager
+     */
+    protected $paymentManager;
 
     /**
      * @param EnrollmentManager $enrollmentManager
      * @param BillingAccountManager $billingAccountManager
      * @param FundingAccountManager $fundingAccountManager
+     * @param PaymentManager $paymentManager
      *
      * @DI\InjectParams({
      *     "enrollmentManager" = @DI\Inject("payment.aci_collect_pay.enrollment_manager"),
      *     "billingAccountManager" = @DI\Inject("payment.aci_collect_pay.billing_account_manager"),
-     *     "fundingAccountManager" = @DI\Inject( "payment.aci_collect_pay.funding_account_manager")
+     *     "fundingAccountManager" = @DI\Inject( "payment.aci_collect_pay.funding_account_manager"),
+     *     "paymentManager" = @DI\Inject("payment.aci_collect_pay.payment_manager")
      * })
      */
     public function __construct(
         EnrollmentManager $enrollmentManager,
         BillingAccountManager $billingAccountManager,
-        FundingAccountManager $fundingAccountManager
+        FundingAccountManager $fundingAccountManager,
+        PaymentManager $paymentManager
     ) {
         $this->enrollmentManager = $enrollmentManager;
         $this->billingAccountManager = $billingAccountManager;
         $this->fundingAccountManager = $fundingAccountManager;
+        $this->paymentManager = $paymentManager;
     }
 
     /**
@@ -61,11 +72,9 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
             throw new \Exception('Virtual Terminal is not implement yet for aci_collect_pay.');
         }
 
-        $user = $contract->getTenant();
-
-        if (!($profileId = $user->getAciCollectPayProfileId())) {
+        if (!($profileId = $contract->getTenant()->getAciCollectPayProfileId())) {
             $profileId = $this->enrollmentManager->createProfile($contract);
-        } elseif ($contract->getAciCollectPayContractBilling()) {
+        } elseif (!$contract->getAciCollectPayContractBilling()) {
             $this->billingAccountManager->addBillingAccount($profileId, $contract);
         }
 
@@ -86,7 +95,13 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
         PaymentAccount $paymentAccount,
         $paymentType = PaymentGroundType::RENT
     ) {
-        throw new \Exception('executeOrder is not implement yet for aci_collect_pay.');
+        if (!$this->isAllowedToExecuteOrder($order, $paymentAccount)) {
+            throw PaymentProcessorInvalidArgumentException::createInvalidPaymentProcessor(
+                PaymentProcessor::ACI_COLLECT_PAY
+            );
+        }
+
+        return $this->paymentManager->executePayment($order, $paymentAccount, $paymentType);
     }
 
     /**
@@ -95,5 +110,21 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
     public function loadReport($reportType, array $settings = [])
     {
         throw new \Exception('loadReport is not implement yet for aci_collect_pay.');
+    }
+
+    /**
+     * @param Order $order
+     * @param PaymentAccount $paymentAccount
+     * @return bool
+     */
+    protected function isAllowedToExecuteOrder(Order $order, PaymentAccount $paymentAccount)
+    {
+        if ($order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
+            $order->getPaymentProcessor() == PaymentProcessor::ACI_COLLECT_PAY
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

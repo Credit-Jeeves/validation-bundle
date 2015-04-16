@@ -71,6 +71,7 @@ class OrderManager
         $order->setSum($payment->getAmount() + $payment->getOther());
         $order->setUser($paymentAccount->getUser());
         $order->setStatus(OrderStatus::NEWONE);
+        $order->setPaymentProcessor($paymentAccount->getPaymentProcessor());
 
         $this->createRentOperations($payment, $order);
 
@@ -97,6 +98,7 @@ class OrderManager
         $order->setUser($paymentAccount->getUser());
         $order->setSum($this->creditTrackAmount);
         $order->setStatus(OrderStatus::NEWONE);
+        $order->setPaymentProcessor($paymentAccount->getPaymentProcessor());
 
         /** @var DepositAccount $depositAccount */
         $depositAccount = $this->em->getRepository('DataBundle:Group')

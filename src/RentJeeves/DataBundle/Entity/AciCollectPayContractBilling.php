@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Model\AciCollectPayContractBilling as Base;
 
 /**
  * @ORM\Table(name="rj_aci_collect_pay_contract_billing")
- * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\AciCollectPayContractBillingRepository")
+ * @ORM\Entity
  */
 class AciCollectPayContractBilling extends Base
 {

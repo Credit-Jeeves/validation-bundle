@@ -45,13 +45,13 @@ class AciCollectPayCase extends BaseTestCase
             [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
         );
 
-        if ($profileId = $this->getOldProfileId('tenant11examplecom')) {
-            $this->deleteProfile($profileId);
-        }
-
         $contractToSelect = 2;
         $tenantEmail = 'tenant11@example.com';
         $this->contract = $this->getContract($tenantEmail, $contractToSelect);
+
+        if ($profileId = $this->getOldProfileId(md5($this->contract->getTenant()->getId()))) {
+            $this->deleteProfile($profileId);
+        }
 
         $this->contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
 
@@ -145,7 +145,7 @@ class AciCollectPayCase extends BaseTestCase
         $this->assertNotEmpty($this->contract->getTenant()->getAciCollectPayProfileId());
 
         $this->setOldProfileId(
-            'tenant11examplecom',
+            md5($this->contract->getTenant()->getId()),
             $this->contract->getTenant()->getAciCollectPayProfileId()
         );
 

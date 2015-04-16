@@ -81,18 +81,32 @@ class PayRent
         $this->em->persist($order);
         $this->em->flush();
 
-        $orderStatus = $this->getPaymentProcessor($payment)->executeOrder(
-            $order,
-            $payment->getPaymentAccount(),
-            PaymentGroundType::RENT
-        );
-        $order->setStatus($orderStatus);
+        $additionalInformation = '';
+        try {
+            $orderStatus = $this->getPaymentProcessor($payment)->executeOrder(
+                $order,
+                $payment->getPaymentAccount(),
+                PaymentGroundType::RENT
+            );
+            $order->setStatus($orderStatus);
+        } catch (\Exception $e) {
+            $order->setStatus(OrderStatus::ERROR);
+            $additionalInformation = ' ' . $e->getMessage();
+        }
+
         if (OrderStatus::ERROR == $orderStatus) {
             $this->closePaymentIfRecurring($payment, $order);
         } else {
             $this->setContractAsCurrent($payment->getContract());
         }
-        $this->logger->debug('New order ID ' . $order->getId() . ', status: ' . $order->getStatus());
+        $this->logger->debug(
+            sprintf(
+                'New order ID %d, status: %s%s',
+                $order->getId(),
+                $order->getStatus(),
+                $additionalInformation
+            )
+        );
 
         $this->em->flush();
 

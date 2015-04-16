@@ -72,7 +72,7 @@ class PayHeartland
      * @param Order $order
      * @param PaymentAccount $paymentAccount
      * @param string $paymentType
-     * @return bool
+     * @return string
      */
     public function executePayment(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
     {

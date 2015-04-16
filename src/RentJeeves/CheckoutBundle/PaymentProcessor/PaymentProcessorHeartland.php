@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
@@ -12,6 +13,7 @@ use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @DI\Service("payment_processor.heartland")
@@ -69,6 +71,12 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
      */
     public function executeOrder(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
     {
+        if (!$this->isAllowedToExecuteOrder($order, $paymentAccount)) {
+            throw PaymentProcessorInvalidArgumentException::createInvalidPaymentProcessor(
+                PaymentProcessor::HEARTLAND
+            );
+        }
+
         return $this->paymentManager->executePayment($order, $paymentAccount, $paymentType);
     }
 
@@ -78,5 +86,21 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     public function loadReport($reportType, array $settings = [])
     {
         return $this->reportLoader->loadReport($reportType, $settings);
+    }
+
+    /**
+     * @param Order $order
+     * @param PaymentAccount $paymentAccount
+     * @return bool
+     */
+    protected function isAllowedToExecuteOrder(Order $order, PaymentAccount $paymentAccount)
+    {
+        if ($order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
+            $order->getPaymentProcessor() == PaymentProcessor::HEARTLAND
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
