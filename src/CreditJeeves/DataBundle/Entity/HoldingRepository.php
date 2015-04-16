@@ -31,4 +31,19 @@ class HoldingRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @param string $apiIntegrationType
+     * @return array
+     */
+    public function findAllByApiIntegration($apiIntegrationType)
+    {
+        $query = $this->createQueryBuilder('holding');
+        $query->innerJoin('holding.accountingSettings', 'accountingSettings');
+        $query->where('accountingSettings.apiIntegration = :apiIntegrationType');
+        $query->setParameter('apiIntegrationType', $apiIntegrationType);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
 }

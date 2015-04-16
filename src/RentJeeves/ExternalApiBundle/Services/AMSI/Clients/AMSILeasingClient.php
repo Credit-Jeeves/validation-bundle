@@ -3,7 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\AMSI\Clients;
 
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
-use RentJeeves\ExternalApiBundle\Model\AMSI\EDEX;
+use RentJeeves\ExternalApiBundle\Model\AMSI\EdexResidents;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyUnits;
 use Exception;
@@ -73,7 +73,7 @@ class AMSILeasingClient extends AMSIBaseClient
      */
     protected function getParametersForPropertyUnits($propertyId)
     {
-        $edex = new EDEX();
+        $edex = new EdexResidents();
         $edex->setPropertyId($propertyId);
 
         $xmlData = SerializerXmlHelper::removeStandartHeaderXml(
@@ -103,7 +103,7 @@ class AMSILeasingClient extends AMSIBaseClient
      */
     protected function getParametersForPropertyResidents($propertyId, $leaseStatus)
     {
-        $edex = new EDEX();
+        $edex = new EdexResidents();
         $edex->setPropertyId($propertyId);
         $edex->setLeaseStatus($leaseStatus);
 
