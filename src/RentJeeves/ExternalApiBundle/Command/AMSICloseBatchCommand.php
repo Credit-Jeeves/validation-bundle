@@ -14,6 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AMSICloseBatchCommand extends ContainerAwareCommand
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -23,6 +26,9 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
             );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $date = new \DateTime();
@@ -64,7 +70,7 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
     }
 
     /**
-     * @return array
+     * @return Holding[]
      */
     protected function getAMSIHoldings()
     {

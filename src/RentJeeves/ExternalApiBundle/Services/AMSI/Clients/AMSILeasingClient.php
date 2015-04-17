@@ -6,14 +6,13 @@ use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\ExternalApiBundle\Model\AMSI\EdexResidents;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyUnits;
-use Exception;
 
 class AMSILeasingClient extends AMSIBaseClient
 {
     /**
-     * @param $propertyId
+     * @param  integer    $propertyId
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function getPropertyUnits($propertyId)
     {
@@ -35,14 +34,14 @@ class AMSILeasingClient extends AMSIBaseClient
             return $propertyUnits->getUnits();
         }
 
-        throw new Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
+        throw new \Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
     }
 
     /**
-     * @param string $propertyId
-     * @param string $leaseStatus
+     * @param  string            $propertyId
+     * @param  string            $leaseStatus
      * @return PropertyResidents
-     * @throws Exception
+     * @throws \Exception
      */
     public function getPropertyResidents($propertyId, $leaseStatus)
     {
@@ -64,11 +63,11 @@ class AMSILeasingClient extends AMSIBaseClient
             return $propertyResidents;
         }
 
-        throw new Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
+        throw new \Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
     }
 
     /**
-     * @param $propertyId
+     * @param  integer $propertyId
      * @return array
      */
     protected function getParametersForPropertyUnits($propertyId)
@@ -97,8 +96,8 @@ class AMSILeasingClient extends AMSIBaseClient
     }
 
     /**
-     * @param string $propertyId
-     * @param string $leaseStatus
+     * @param  string $propertyId
+     * @param  string $leaseStatus
      * @return array
      */
     protected function getParametersForPropertyResidents($propertyId, $leaseStatus)
