@@ -64,6 +64,14 @@ class AMSILedgerClient extends AMSIBaseClient
         return false;
     }
 
+    /**
+     * @param integer   $batchId
+     * @param integer   $clientMerchantId
+     * @param float     $settlementAmount
+     * @param \DateTime $settlementDate
+     *
+     * @return bool
+     */
     public function updateSettlementData($batchId, $clientMerchantId, $settlementAmount, \DateTime $settlementDate)
     {
         $this->logger->debug(sprintf(

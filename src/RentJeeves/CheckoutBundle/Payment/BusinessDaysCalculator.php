@@ -19,6 +19,12 @@ class BusinessDaysCalculator
         return $nextBusinessDate;
     }
 
+    /**
+     * @param DateTime $startDate
+     * @param integer  $targetShift
+     *
+     * @return DateTime
+     */
     public static function getBusinessDate(DateTime $startDate, $targetShift)
     {
         $businessDate = $startDate;

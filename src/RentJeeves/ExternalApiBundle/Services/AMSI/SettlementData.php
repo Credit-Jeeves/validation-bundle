@@ -29,7 +29,6 @@ class SettlementData
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->em = $em;
     }
 
     /**
