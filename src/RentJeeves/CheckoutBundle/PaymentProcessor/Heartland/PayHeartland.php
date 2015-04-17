@@ -45,7 +45,7 @@ class PayHeartland
      * @param ContainerAwareRegistry $payum
      * @param EntityManager $em
      * @param PaymentDetailsMapper $paymentDetailsMapper
-     * @param $rtMerchantName
+     * @param string $rtMerchantName
      *
      * @DI\InjectParams({
      *     "payum" = @DI\Inject("payum2"),
@@ -118,6 +118,8 @@ class PayHeartland
     }
 
     /**
+     * @param Order $order
+     * @param string $paymentType
      * @return PaymentDetails
      */
     protected function getPaymentDetails(Order $order, $paymentType)

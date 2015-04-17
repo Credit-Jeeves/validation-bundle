@@ -91,7 +91,7 @@ class PayRent
             $order->setStatus($orderStatus);
         } catch (\Exception $e) {
             $order->setStatus(OrderStatus::ERROR);
-            $additionalInformation = ' ' . $e->getMessage();
+            $additionalInformation = ', reason: ' . $e->getMessage();
         }
 
         if (OrderStatus::ERROR == $orderStatus) {

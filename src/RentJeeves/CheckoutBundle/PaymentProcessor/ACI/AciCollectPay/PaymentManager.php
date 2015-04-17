@@ -21,10 +21,9 @@ class PaymentManager extends AbstractManager
     /**
      * @param Order $order
      * @param PaymentAccount $paymentAccount
-     * @param string $paymentType
      * @return string
      */
-    public function executePayment(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
+    public function executePayment(Order $order, PaymentAccount $paymentAccount)
     {
         $payment = new Payment();
 
@@ -76,9 +75,9 @@ class PaymentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Created new %s transaction for user with id = "%d"',
+                '[ACI CollectPay Info]:Created new %s transaction for contract with id = "%d"',
                 $request->getIsSuccessful() ? "successful" : "failed",
-                $order->getContract()->getTenant()->getId()
+                $order->getContract()->getId()
             )
         );
 

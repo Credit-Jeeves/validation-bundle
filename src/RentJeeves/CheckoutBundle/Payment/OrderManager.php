@@ -14,6 +14,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RuntimeException;
 
 /**
@@ -71,7 +72,7 @@ class OrderManager
         $order->setSum($payment->getAmount() + $payment->getOther());
         $order->setUser($paymentAccount->getUser());
         $order->setStatus(OrderStatus::NEWONE);
-        $order->setPaymentProcessor($paymentAccount->getPaymentProcessor());
+        $order->setPaymentProcessor($payment->getContract()->getGroup()->getGroupSettings()->getPaymentProcessor());
 
         $this->createRentOperations($payment, $order);
 
@@ -98,7 +99,8 @@ class OrderManager
         $order->setUser($paymentAccount->getUser());
         $order->setSum($this->creditTrackAmount);
         $order->setStatus(OrderStatus::NEWONE);
-        $order->setPaymentProcessor($paymentAccount->getPaymentProcessor());
+        /** Not implement for ACI, PaymentProcess should be gotten from Group */
+        $order->setPaymentProcessor(PaymentProcessor::HEARTLAND);
 
         /** @var DepositAccount $depositAccount */
         $depositAccount = $this->em->getRepository('DataBundle:Group')

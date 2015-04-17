@@ -72,7 +72,7 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     public function executeOrder(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
     {
         if (!$this->isAllowedToExecuteOrder($order, $paymentAccount)) {
-            throw PaymentProcessorInvalidArgumentException::createInvalidPaymentProcessor(
+            throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
                 PaymentProcessor::HEARTLAND
             );
         }

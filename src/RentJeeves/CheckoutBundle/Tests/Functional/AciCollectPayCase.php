@@ -218,7 +218,6 @@ class AciCollectPayCase extends BaseTestCase
 
     /**
      * @param int $profileId
-     * @throws \Exception
      */
     protected function deleteProfile($profileId)
     {
@@ -230,9 +229,7 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->getContainer()->get('payum')->getPayment('aci_collect_pay')->execute($request);
 
-        if (!$request->getIsSuccessful()) {
-            throw new \Exception($request->getMessages());
-        }
+        $this->assertTrue($request->getIsSuccessful());
 
         $this->unsetOldProfileId($profileId);
     }

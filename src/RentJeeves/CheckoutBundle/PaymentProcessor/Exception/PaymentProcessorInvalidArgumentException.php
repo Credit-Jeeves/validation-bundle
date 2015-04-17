@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Exception;
 
 class PaymentProcessorInvalidArgumentException extends \InvalidArgumentException
 {
-    public static function createInvalidPaymentProcessor($paymentProcessor)
+    public static function invalidPaymentProcessor($paymentProcessor)
     {
         return new self(
             sprintf(
