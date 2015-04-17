@@ -50,7 +50,7 @@ class GroupRepository extends EntityRepository
 
     /**
      * @param $accountNumber
-     * @param Holding $holding
+     * @param  Holding                                $holding
      * @return null|Group
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -64,5 +64,20 @@ class GroupRepository extends EntityRepository
             ->setParameter('holding', $holding)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Holding $holding
+     *
+     * @return Group[]
+     */
+    public function getAllGroupIdsInHolding(Holding $holding)
+    {
+        return $this->createQueryBuilder('g')
+            ->select('g.id')
+            ->where('g.holding = :holding')
+            ->setParameter('holding', $holding)
+            ->getQuery()
+            ->getResult();
     }
 }

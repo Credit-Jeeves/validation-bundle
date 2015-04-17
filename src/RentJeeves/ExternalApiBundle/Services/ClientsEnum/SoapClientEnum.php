@@ -12,5 +12,7 @@ class SoapClientEnum extends Enum
 
     const YARDI_PAYMENT = 'soap.client.yardi.payment';
 
-    const AMSI_CLIENT = 'soap.client.amsi';
+    const AMSI_LEASING = 'soap.client.amsi.leasing';
+
+    const AMSI_LEDGER = 'soap.client.amsi.ledger';
 }

@@ -147,7 +147,15 @@ abstract class AbstractClient implements ClientInterface
     /**
      * @return bool
      */
-    public function canWorkWithBatches()
+    public function supportsBatches()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsProperties()
     {
         return true;
     }

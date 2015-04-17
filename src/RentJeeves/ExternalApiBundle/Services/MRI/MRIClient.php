@@ -84,9 +84,17 @@ class MRIClient implements ClientInterface
     /**
      * @return bool
      */
-    public function canWorkWithBatches()
+    public function supportsBatches()
     {
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsProperties()
+    {
+        return true;
     }
 
     /**

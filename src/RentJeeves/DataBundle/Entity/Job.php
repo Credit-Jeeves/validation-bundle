@@ -29,7 +29,6 @@ class Job extends Base
      */
     protected $retryJobs;
 
-
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(
@@ -50,8 +49,12 @@ class Job extends Base
      */
     protected $dependencies;
 
-    public function __construct($command = '', array $args = array(), $confirmed = true)
+    public function __construct($command = '', array $args = [], $confirmed = true)
     {
+        if (false === in_array('--app=rj', $args)) {
+            $args[] = '--app=rj';
+        }
+
         parent::__construct($command, $args, $confirmed);
     }
 

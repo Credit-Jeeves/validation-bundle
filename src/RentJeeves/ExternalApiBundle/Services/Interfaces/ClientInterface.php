@@ -32,5 +32,10 @@ interface ClientInterface
     /**
      * @return boolean
      */
-    public function canWorkWithBatches();
+    public function supportsBatches();
+
+    /**
+     * @return boolean
+     */
+    public function supportsProperties();
 }

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="AddACHPayment">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="bCreateACH" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddACHPaymentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddACHPaymentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddBilling">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddBillingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddBillingResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddPaymentWithCheckImage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Tiff_Image_Front" type="s:base64Binary" />
+            <s:element minOccurs="0" maxOccurs="1" name="Tiff_Image_Back" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddPaymentWithCheckImageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddPaymentWithCheckImageResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddPayment">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddPaymentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddPaymentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdatePayment">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdatePaymentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdatePaymentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateSettlementData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateSettlementDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateSettlementDataResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ReturnPayment">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ReturnPaymentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ReturnPaymentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="AddACHPaymentSoapIn">
+    <wsdl:part name="parameters" element="tns:AddACHPayment" />
+  </wsdl:message>
+  <wsdl:message name="AddACHPaymentSoapOut">
+    <wsdl:part name="parameters" element="tns:AddACHPaymentResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddBillingSoapIn">
+    <wsdl:part name="parameters" element="tns:AddBilling" />
+  </wsdl:message>
+  <wsdl:message name="AddBillingSoapOut">
+    <wsdl:part name="parameters" element="tns:AddBillingResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddPaymentWithCheckImageSoapIn">
+    <wsdl:part name="parameters" element="tns:AddPaymentWithCheckImage" />
+  </wsdl:message>
+  <wsdl:message name="AddPaymentWithCheckImageSoapOut">
+    <wsdl:part name="parameters" element="tns:AddPaymentWithCheckImageResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddPaymentSoapIn">
+    <wsdl:part name="parameters" element="tns:AddPayment" />
+  </wsdl:message>
+  <wsdl:message name="AddPaymentSoapOut">
+    <wsdl:part name="parameters" element="tns:AddPaymentResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePaymentSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdatePayment" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePaymentSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdatePaymentResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateSettlementDataSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateSettlementData" />
+  </wsdl:message>
+  <wsdl:message name="UpdateSettlementDataSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateSettlementDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="ReturnPaymentSoapIn">
+    <wsdl:part name="parameters" element="tns:ReturnPayment" />
+  </wsdl:message>
+  <wsdl:message name="ReturnPaymentSoapOut">
+    <wsdl:part name="parameters" element="tns:ReturnPaymentResponse" />
+  </wsdl:message>
+  <wsdl:portType name="LedgerSoap">
+    <wsdl:operation name="AddACHPayment">
+      <wsdl:input message="tns:AddACHPaymentSoapIn" />
+      <wsdl:output message="tns:AddACHPaymentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddBilling">
+      <wsdl:input message="tns:AddBillingSoapIn" />
+      <wsdl:output message="tns:AddBillingSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPaymentWithCheckImage">
+      <wsdl:input message="tns:AddPaymentWithCheckImageSoapIn" />
+      <wsdl:output message="tns:AddPaymentWithCheckImageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPayment">
+      <wsdl:input message="tns:AddPaymentSoapIn" />
+      <wsdl:output message="tns:AddPaymentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePayment">
+      <wsdl:input message="tns:UpdatePaymentSoapIn" />
+      <wsdl:output message="tns:UpdatePaymentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateSettlementData">
+      <wsdl:input message="tns:UpdateSettlementDataSoapIn" />
+      <wsdl:output message="tns:UpdateSettlementDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ReturnPayment">
+      <wsdl:input message="tns:ReturnPaymentSoapIn" />
+      <wsdl:output message="tns:ReturnPaymentSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LedgerSoap" type="tns:LedgerSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AddACHPayment">
+      <soap:operation soapAction="http://tempuri.org/AddACHPayment" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddBilling">
+      <soap:operation soapAction="http://tempuri.org/AddBilling" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPaymentWithCheckImage">
+      <soap:operation soapAction="http://tempuri.org/AddPaymentWithCheckImage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPayment">
+      <soap:operation soapAction="http://tempuri.org/AddPayment" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePayment">
+      <soap:operation soapAction="http://tempuri.org/UpdatePayment" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateSettlementData">
+      <soap:operation soapAction="http://tempuri.org/UpdateSettlementData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReturnPayment">
+      <soap:operation soapAction="http://tempuri.org/ReturnPayment" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="LedgerSoap12" type="tns:LedgerSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AddACHPayment">
+      <soap12:operation soapAction="http://tempuri.org/AddACHPayment" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddBilling">
+      <soap12:operation soapAction="http://tempuri.org/AddBilling" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPaymentWithCheckImage">
+      <soap12:operation soapAction="http://tempuri.org/AddPaymentWithCheckImage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPayment">
+      <soap12:operation soapAction="http://tempuri.org/AddPayment" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePayment">
+      <soap12:operation soapAction="http://tempuri.org/UpdatePayment" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateSettlementData">
+      <soap12:operation soapAction="http://tempuri.org/UpdateSettlementData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReturnPayment">
+      <soap12:operation soapAction="http://tempuri.org/ReturnPayment" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Ledger">
+    <wsdl:port name="LedgerSoap" binding="tns:LedgerSoap">
+      <soap:address location="{{ url }}/ledger.asmx" />
+    </wsdl:port>
+    <wsdl:port name="LedgerSoap12" binding="tns:LedgerSoap12">
+      <soap12:address location="{{ url }}/ledger.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

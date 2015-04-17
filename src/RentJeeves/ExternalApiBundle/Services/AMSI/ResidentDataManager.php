@@ -5,6 +5,8 @@ namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
+use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient;
+use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
@@ -58,7 +60,7 @@ class ResidentDataManager
     public function getResidents($externalPropertyId)
     {
         $this->logger->debug(sprintf("Get AMSI Residents by external property ID:%s", $externalPropertyId));
-        $client = $this->getApiClient();
+        $client = $this->getApiClient(SoapClientEnum::AMSI_LEASING);
         $currentResidents = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'C'); // (C)urrent
         $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'N'); //(N)otice
 
@@ -79,13 +81,10 @@ class ResidentDataManager
     }
 
     /**
-     * @return AMSIClient
+     * @return AMSILeasingClient|AMSILedgerClient
      */
-    protected function getApiClient()
+    protected function getApiClient($apiType)
     {
-        return $this->clientFactory->getClient(
-            $this->settings,
-            SoapClientEnum::AMSI_CLIENT
-        );
+        return $this->clientFactory->getClient($this->settings, $apiType);
     }
 }
