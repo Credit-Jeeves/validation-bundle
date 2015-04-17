@@ -59,6 +59,14 @@
             so we can just use the JSON object to put this in.
             #}
         }
+
+        $("<span>Total to Pay: </span><span id='total'></span> ").insertAfter($("#rentjeeves_checkoutbundle_paymenttype_amountOther"))
+        $("#rentjeeves_checkoutbundle_paymenttype_total_row").hide()
+        $("#rentjeeves_checkoutbundle_paymenttype_amount").onchange=updateTotal;
+        $("#rentjeeves_checkoutbundle_paymenttype_amountOther").onchange=updateTotal
+        $("#rentjeeves_checkoutbundle_paymenttype_type_label").html("One-Time or Recurring<sup>*</sup>");
+
+
     })
 
     function setupPayForm(id) {
@@ -156,10 +164,14 @@
                     $("#rentjeeves_checkoutbundle_paymenttype_type").selectmenu("refresh")
 
 
-                    $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(contract.payment.startMonth).selectmenu("refresh");
-                    $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(contract.payment.startYear).selectmenu("refresh");
-                    $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val(contract.payment.endMonth).selectmenu("refresh");
-                    $("#rentjeeves_checkoutbundle_paymenttype_endYear").val(contract.payment.endYear).selectmenu("refresh");
+                    $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(contract.payment.startMonth);
+                    $("#rentjeeves_checkoutbundle_paymenttype_startMonth").selectmenu("refresh");
+                    $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(contract.payment.startYear);
+                    $("#rentjeeves_checkoutbundle_paymenttype_startYear").selectmenu("refresh");
+                    $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val(contract.payment.endMonth);
+                    $("#rentjeeves_checkoutbundle_paymenttype_endMonth").selectmenu("refresh");
+                    $("#rentjeeves_checkoutbundle_paymenttype_endYear").val(contract.payment.endYear);
+                    $("#rentjeeves_checkoutbundle_paymenttype_endYear").selectmenu("refresh");
 
                 }else{
                     formType(false)
@@ -186,6 +198,7 @@
             }
         }
 
+        updateTotal()
 
     }
 

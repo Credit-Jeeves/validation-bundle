@@ -159,8 +159,8 @@
 
 
     function updateTotal(){
-        t=$("#rentjeeves_checkoutbundle_paymenttype_amount").val()+$("#rentjeeves_checkoutbundle_paymenttype_amountOther").val()
-        $("#rentjeeves_checkoutbundle_paymenttype_total_view").html(t)
+        t=parseFloat($("#rentjeeves_checkoutbundle_paymenttype_amount").val())+parseFloat($("#rentjeeves_checkoutbundle_paymenttype_amountOther").val())
+        $("#total").html("$"+t)
     }
 
 
