@@ -46,21 +46,31 @@ class AmsiReturnPaymentCommand extends ContainerAwareCommand
             $amsiLedgerClient->updateSettlementData(
                 $order->getCompleteTransaction()->getTransactionId(),
                 $order->getContract()->getGroupId(),
-                $order->getSum(),
+                $this->getSettlementAmount($order->getCompleteTransaction()),
                 $this->getSettlementDate($order->getReversedTransaction())
             );
         }
     }
 
     /**
-     * @param Heartland $transaction
+     * @param Heartland $reversedTransaction
      *
      * @return \DateTime
      */
-    protected function getSettlementDate(Heartland $transaction)
+    protected function getSettlementDate(Heartland $reversedTransaction)
     {
         return $this->getSettlementData()
-            ->getSettlementDate($transaction->getBatchDate(), $transaction->getDepositDate());
+            ->getSettlementDate($reversedTransaction->getBatchDate(), $reversedTransaction->getDepositDate());
+    }
+
+    /**
+     * @param Heartland $completeTransaction
+     *
+     * @return double
+     */
+    protected function getSettlementAmount(Heartland $completeTransaction)
+    {
+        return $completeTransaction->getDepositDate() ? $completeTransaction->getOrder()->getSum() : 0;
     }
 
     /**
