@@ -624,6 +624,7 @@ class ContractRepository extends EntityRepository
         $query->where(
             'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :startDate'
         );
+        // TODO This is a problem. We will lose 15-31st closures. RT-1299
         $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('finished', ContractStatus::FINISHED);
