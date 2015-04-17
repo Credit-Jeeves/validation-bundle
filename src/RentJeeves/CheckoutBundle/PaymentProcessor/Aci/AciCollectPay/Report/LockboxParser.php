@@ -62,25 +62,29 @@ class LockboxParser
         $decodedLockboxData = $this->decodeCsv($data);
 
         foreach ($decodedLockboxData as $reportRecord) {
-            if (!$this->isPaymentDetailRecord($reportRecord)) {
-                continue;
-            }
+            try {
+                if (!$this->isPaymentDetailRecord($reportRecord)) {
+                    continue;
+                }
 
-            $paymentType = $this->getRecordField($reportRecord, self::KEY_CREDIT_DEBIT_MODE);
-            switch ($paymentType) {
-                case self::PAYMENT_CREDIT:
-                    $paymentProcessorReport->addTransaction($this->getCreditTransaction($reportRecord));
-                    break;
-                case self::PAYMENT_DEBIT:
-                    $paymentProcessorReport->addTransaction($this->getDebitTransaction($reportRecord));
-                    break;
-                default:
-                    $this->logger->critical(sprintf('ACI: Unknown payment type %s in report', $paymentType));
+                $paymentType = $this->getRecordField($reportRecord, self::KEY_CREDIT_DEBIT_MODE);
+                switch ($paymentType) {
+                    case self::PAYMENT_CREDIT:
+                        $paymentProcessorReport->addTransaction($this->getCreditTransaction($reportRecord));
+                        break;
+                    case self::PAYMENT_DEBIT:
+                        $paymentProcessorReport->addTransaction($this->getDebitTransaction($reportRecord));
+                        break;
+                    default:
+                        $this->logger->alert(sprintf('ACI: Unknown payment type %s in report', $paymentType));
+                }
+            } catch (\Exception $e) {
+                $this->logger->alert(sprintf('ACI: Unexpected error: %s', $e->getMessage()));
             }
         }
 
-        if (!count($paymentProcessorReport->getTransactions())) {
-            $this->logger->critical('ACI: Lockbox parser found no transactions in the lockbox data');
+        if (count($paymentProcessorReport->getTransactions()) == 0) {
+            $this->logger->alert('ACI: Lockbox parser found no transactions in the lockbox data');
         }
 
         return $paymentProcessorReport;
