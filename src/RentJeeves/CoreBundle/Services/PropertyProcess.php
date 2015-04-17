@@ -146,12 +146,12 @@ class PropertyProcess
             } else {
                 $msg = $logPrefix . "Has a unit but wrong name";
                 $this->logger->error($msg);
-                throw RuntimeException($msg);
+                throw new RuntimeException($msg);
             }
         } else {
             $msg = $logPrefix . "Already has multiple units -- cannot set as single property";
             $this->logger->error($msg);
-            throw RuntimeException($msg);
+            throw new RuntimeException($msg);
         }
 
         return $unit;
