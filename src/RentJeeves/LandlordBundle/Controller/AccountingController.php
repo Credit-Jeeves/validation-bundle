@@ -552,7 +552,7 @@ class AccountingController extends Controller
 
         $response = new Response($this->get('jms_serializer')->serialize($responseData, 'json'));
         $response->headers->set('Content-Type', 'application/json');
-        $statusCode = ($responseData['result']) ? 200 : 400;
+        $statusCode = ($responseData['result']) ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST;
         $response->setStatusCode($statusCode);
 
         return $response;

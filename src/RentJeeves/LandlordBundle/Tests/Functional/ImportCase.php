@@ -266,15 +266,10 @@ class ImportCase extends ImportBaseAbstract
 
         //Check notify tenant invite for new user or update his contract rent
         $this->assertCount(9, $this->getEmails(), 'Wrong number of emails');
-        /** @var EntityManager $em */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /**
-         * @var $tenant Tenant
-         */
+        $em = $this->getEntityManager();
+        /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => '2test@mail.com',
-            )
+            ['email' => '2test@mail.com']
         );
         $this->assertNotNull($tenant);
         $this->assertEquals($tenant->getFirstName(), 'Trent Direnna');
@@ -314,7 +309,7 @@ class ImportCase extends ImportBaseAbstract
 
         $contracts = $tenant->getContracts();
         $contractEnded = null;
-        $contractMatch = null; //Contract MATCH work not correctly
+        $contractMatch = null;
         foreach ($contracts as $contract) {
             if ($contract->getUnit()->getName() === '1-b') {
                 $contractMatch = $contract;
@@ -707,8 +702,7 @@ class ImportCase extends ImportBaseAbstract
     public function importMultipleProperties()
     {
         $this->load(true);
-        /** @var EntityManager $em */
-        $em = $this->getContainer()->get('doctrine')->getManager();
+        $em = $this->getEntityManager();
         $this->assertEquals(1, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
@@ -1168,7 +1162,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            10000,
+            11000,
             "$('.finishedTitle').length > 0"
         );
 
@@ -1223,8 +1217,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
 
-        /** @var EntityManager $em */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getEntityManager();
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
             array(
                 'integratedBalance' => '-29.80',
@@ -1275,16 +1268,13 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->session->wait(
-            8000,
+            11000,
             "$('.finishedTitle').length > 0"
         );
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getEntityManager();
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
             array(
                 'rent' => 777666,
@@ -1302,10 +1292,7 @@ class ImportCase extends ImportBaseAbstract
         $this->setDefaultSession('selenium2');
         $this->load(true);
 
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getEntityManager();
 
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             array(
@@ -1417,8 +1404,7 @@ class ImportCase extends ImportBaseAbstract
         // get count of property
         /** @var PropertyRepository $repo */
         $repo = $this
-            ->getContainer()
-            ->get('doctrine.orm.entity_manager')
+            ->getEntityManager()
             ->getRepository('RjDataBundle:Property');
         $count = $repo->createQueryBuilder('p')->select('count(p.id)')->getQuery()->getSingleScalarResult();
 
@@ -1532,10 +1518,10 @@ class ImportCase extends ImportBaseAbstract
 
     public function providerForShouldCreateOperation()
     {
-        return array(
-            array($isFirstRunTest = true),
-            array($isFirstRunTest = false),
-        );
+        return [
+            [$isFirstRunTest = true],
+            [$isFirstRunTest = false],
+        ];
     }
 
     /**
@@ -1620,7 +1606,6 @@ class ImportCase extends ImportBaseAbstract
             $em->flush($contract);
         } else {
             $today = new DateTime();
-            $this->assertEquals(count($operations = $contract->getOperations()), 1);
             $this->assertTrue(
                 $contract->getPaidTo()->format('Ym') > $today->format('Ym'),
                 "Contract paidTo date did not advance"
@@ -1629,6 +1614,7 @@ class ImportCase extends ImportBaseAbstract
                 $contract->getStartAt()->format('Ym') === $today->format('Ym'),
                 "Contract startAt date did not advance"
             );
+            $this->assertCount(1, $operations = $contract->getOperations());
         }
     }
 
@@ -1843,16 +1829,14 @@ class ImportCase extends ImportBaseAbstract
     public function shouldGetException()
     {
         $this->load(true);
-        /** @var $em EntityManager */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-
-        /** @var Property $property */
+        $em = $this->getEntityManager();
+        /** @var Property $property   */
         $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+            [
                 'street' => 'Broadway',
                 'number' => '785',
                 'zip'    => '10003'
-            )
+            ]
         );
 
         /*

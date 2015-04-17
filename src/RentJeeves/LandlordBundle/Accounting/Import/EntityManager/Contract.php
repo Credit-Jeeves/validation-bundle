@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Entity\Group as EntityGroup;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
-use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
@@ -160,7 +159,7 @@ trait Contract
 
     /**
      * @param  array               $row
-     * @param  Property            $property
+     * @param  EntityProperty      $property
      * @return null|EntityContract
      */
     protected function getContractFromDataBase(array $row, EntityProperty $property)
@@ -197,6 +196,9 @@ trait Contract
 
         if (empty($property)) {
             $this->currentImportModel->setIsSkipped(true);
+            $this->currentImportModel->setSkippedMessage(
+                $this->translator->trans('import.skipped.by_property')
+            );
         }
 
         if (!$tenant->getId() || !$property) {

@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Handler;
 
 use CreditJeeves\DataBundle\Entity\Group as GroupEntity;
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
@@ -11,6 +12,7 @@ use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface as ImportStorage;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
@@ -590,7 +592,6 @@ abstract class HandlerAbstract implements HandlerInterface
                     $lineNumber = $postData['line'];
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
-
                     // Validate data which get from client by post request
                     $resultBind = $this->bindForm($postData, $errors);
 
@@ -607,7 +608,6 @@ abstract class HandlerAbstract implements HandlerInterface
                     }
 
                     $isException = $this->currentImportModel->getUniqueKeyException();
-
                     if (!empty($isException)) {
                         continue;
                     }
@@ -663,28 +663,33 @@ abstract class HandlerAbstract implements HandlerInterface
                 return true;
             }
 
-            if (!empty($tenantEmail) && $this->currentImportModel->getHasContractWaiting()) {
-                //Remove contract because we get duplicate contract
-                $this->currentImportModel->getTenant()->removeContract($this->currentImportModel->getContract());
-                $this->flushEntity($this->currentImportModel->getTenant());
-                $contract = $this->contractProcess->createContractFromWaiting(
-                    $this->currentImportModel->getTenant(),
-                    $this->currentImportModel->getContractWaiting()
-                );
-
-                $contract->setStatus(ContractStatus::INVITE);
-            } else {
-                $contract = $this->currentImportModel->getContract();
-            }
-
-            $this->flushEntity($this->currentImportModel->getTenant());
-            $this->flushEntity($contract);
+            $contract = $this->currentImportModel->getContract();
             $this->flushEntity($unit = $contract->getUnit());
             $unitMapping = $unit->getUnitMapping();
             if ($unitMapping instanceof UnitMapping) {
                 $this->flushEntity($unitMapping);
             }
+
+            if (!empty($tenantEmail) && $this->currentImportModel->getHasContractWaiting()) {
+                //Remove contract because we get duplicate contract
+                $this->currentImportModel->getTenant()->removeContract($contract);
+                $this->flushEntity($this->currentImportModel->getTenant());
+                $contract = $this->contractProcess->createContractFromWaiting(
+                    $this->currentImportModel->getTenant(),
+                    $this->currentImportModel->getContractWaiting()
+                );
+                $contract->setStatus(ContractStatus::INVITE);
+                $this->flushEntity($contract);
+
+                return true;
+            }
+
+            $this->flushEntity($this->currentImportModel->getTenant());
+            $this->flushEntity($contract);
             $this->flushEntity($this->currentImportModel->getResidentMapping());
+            if ($this->currentImportModel->getOrder() instanceof Order) {
+                $this->flushEntity($this->currentImportModel->getOrder());
+            }
         } catch (Exception $e) {
             $this->manageException($e);
 
@@ -777,13 +782,20 @@ abstract class HandlerAbstract implements HandlerInterface
 
     /**
      * @param  object $entity
-     * @return bool
+     * @param  int    $numberOfRetries
+     * @return mixed
      */
-    protected function flushEntity($entity)
+    protected function flushEntity($entity, $numberOfRetries = 0)
     {
         if (!is_object($entity)) {
-            return false;
+            return;
         }
+
+        if ($numberOfRetries > 1) {
+            return;
+        }
+
+        $numberOfRetries++;
 
         try {
             $this->em->persist($entity);
@@ -791,9 +803,9 @@ abstract class HandlerAbstract implements HandlerInterface
         } catch (\Doctrine\ORM\ORMException $e) {
             $this->reConnectDB();
 
-            return $this->flushEntity($entity);
+            return $this->flushEntity($entity, $numberOfRetries);
         }
 
-        return true;
+        return;
     }
 }

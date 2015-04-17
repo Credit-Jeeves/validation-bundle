@@ -7,10 +7,6 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use Symfony\Component\Form\Form;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
@@ -37,6 +33,11 @@ trait FormBind
      */
     protected function bindForm($postData, &$errors)
     {
+        $isException = $this->currentImportModel->getUniqueKeyException();
+        if (!empty($isException)) {
+            return false;
+        }
+
         $form = $this->currentImportModel->getForm();
         $line = $postData['line'];
         unset($postData['line']);
@@ -92,12 +93,10 @@ trait FormBind
         $sendInvite = $form->get('sendInvite')->getNormData();
 
         if ($this->currentImportModel->getHasContractWaiting()) {
-            $this->processingContractWaiting(
-                $this->currentImportModel->getTenant(),
-                $contract,
-                $this->currentImportModel->getResidentMapping(),
-                $sendInvite
-            );
+            $email = $this->currentImportModel->getTenant()->getEmail();
+            if (!empty($email) && $sendInvite) {
+                $this->isNeedSendInvite = true;
+            }
 
             return;
         }
@@ -147,35 +146,6 @@ trait FormBind
     }
 
     /**
-     * @param Tenant          $tenant
-     * @param Contract        $contract
-     * @param ResidentMapping $residentMapping
-     * @param boolean         $sendInvite
-     */
-    protected function processingContractWaiting($sendInvite)
-    {
-        $email = $this->currentImportModel->getTenant()->getEmail();
-        if (empty($email)) {
-            return;
-        }
-        /** @var $waitingContract ContractWaiting */
-        $waitingContract = $this->getContractWaiting();
-        //Remove contract because we get duplicate contract
-        $this->currentImportModel->getTenant()->removeContract($this->currentImportModel->getContract());
-        $contract = $this->contractProcess->createContractFromWaiting(
-            $this->currentImportModel->getTenant(),
-            $waitingContract
-        );
-        $contract->setStatus(ContractStatus::INVITE);
-        if ($sendInvite) {
-            $this->isNeedSendInvite = true;
-        }
-        $this->currentImportModel->setContract($contract);
-    }
-
-    /**
-     * Not used now at all
-     *
      * @param Operation $operation
      */
     public function processingOperationAndOrder(Operation $operation)
@@ -191,6 +161,9 @@ trait FormBind
 
         $operation->setContract($contract);
         $operation->setOrder($order);
+        $order->addOperation($operation);
+
+        $this->currentImportModel->setOrder($order);
     }
 
     /**
