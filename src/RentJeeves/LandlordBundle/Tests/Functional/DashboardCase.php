@@ -19,15 +19,23 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '#payments-block td'));
-        // This was commented because by default we use sort by date
-        //$this->assertEquals('order.status.text.new', $td[0]->getText(), 'Wrong text in field');
+        
+        $this->assertEquals(
+            'order.status.text.new',
+            $td[0]->getText(),
+            'Expected order.status.text.new status of 1st order, got ' . $td[0]->getText()
+        );
 
         $this->assertNotNull($status = $this->page->find('css', '#status'));
         $status->click();
         $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '#payments-block td'));
-        $this->assertEquals('order.status.text.new', $td[0]->getText(), 'Wrong text in field');
+        $this->assertEquals(
+            'order.status.text.cancelled',
+            $td[0]->getText(),
+            'Wrong text in field: expected order.status.text.cancelled, got ' . $td[0]->getText()
+        );
 
         $this->assertNotNull($status = $this->page->find('css', '#status'));
         $status->click();
