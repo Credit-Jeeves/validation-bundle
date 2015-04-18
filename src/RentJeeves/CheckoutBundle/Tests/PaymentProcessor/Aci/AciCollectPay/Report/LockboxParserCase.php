@@ -10,19 +10,6 @@ class LockboxParserCase extends BaseTestCase
 {
     /**
      * @test
-     * @expectedException \RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException
-     * @expectedExceptionMessage ACI: Field #14 not found in report
-     */
-    public function shouldThrowExceptionIfPaymentDetailRecordDoesNotHaveRequiredField()
-    {
-        $data = file_get_contents(__DIR__ . '/../../../../Fixtures/Aci/lockboxInvalid.csv');
-
-        $parser = new LockboxParser($this->getContainer()->get('logger'));
-        $parser->parse($data);
-    }
-
-    /**
-     * @test
      */
     public function shouldParseLockboxDataIntoPaymentProcessorReport()
     {
