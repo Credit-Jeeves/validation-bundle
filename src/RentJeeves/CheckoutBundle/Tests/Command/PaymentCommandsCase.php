@@ -1,14 +1,24 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
+use ACI\Utils\OldProfilesStorage;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
+use Payum\AciCollectPay\Model\Profile;
+use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
+use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use Symfony\Component\Config\FileLocator;
 use Ton\EmailBundle\EventListener\EmailListener;
-use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -20,16 +30,25 @@ use RentJeeves\TestBundle\Command\BaseTestCase;
 
 class PaymentCommandsCase extends BaseTestCase
 {
+    use OldProfilesStorage;
     /**
      * @var EmailListener
      */
     protected $plugin;
+    /**
+     * @var FileLocator
+     */
+    protected $fixtureLocator;
 
     protected function setUp()
     {
         $this->load(true);
         $this->plugin = $this->registerEmailListener();
         $this->plugin->clean();
+
+        $this->fixtureLocator = new FileLocator(
+            [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
+        );
     }
 
     protected function executePayCommand($jobId)
@@ -278,6 +297,134 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertContains(PaymentCloseReason::RECURRING_ERROR, $resultPayment->getCloseDetails()['1']);
     }
 
+    protected function prepareFixturesCollectAndPayAciCollectPay(EntityManager $em)
+    {
+        /* Remove all payments */
+        $query = $em->createQuery('DELETE FROM RjDataBundle:Payment');
+        $query->execute();
+        /** @var Contract $contract */
+        $contract = $this->getContract($em);
+
+        /* Prepare Group */
+        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+
+        $paySettings = new AciCollectPaySettings();
+
+        $paySettings->setBusinessId(564075);
+        $paySettings->setGroup($contract->getGroup());
+
+        $contract->getGroup()->setAciCollectPaySettings($paySettings);
+
+        $em->persist($contract->getGroup());
+        $em->persist($paySettings);
+
+        /* Remove enrollment Account if it was created before */
+        if ($profileId = $this->getOldProfileId(md5($contract->getTenant()->getId()))) {
+            $this->deleteAciCollectPayProfile($profileId);
+        }
+
+        /* Create Payment Accounts */
+        /** @var PaymentProcessorAciCollectPay $paymentProcessor */
+        $paymentProcessor = $this->getContainer()->get('payment_processor.aci_collect_pay');
+
+        $paymentAccount1 = new PaymentAccount();
+
+        $paymentAccount1->setUser($contract->getTenant());
+        $paymentAccount1->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+        $paymentAccount1->setType(PaymentAccountTypeEnum::BANK);
+        $paymentAccount1->setName('Test ACI Bank');
+
+        $paymentAccountData = new PaymentAccountData();
+
+        $paymentAccountData->setEntity($paymentAccount1);
+
+        $paymentAccountData
+            ->set('account_name', $contract->getTenant()->getFullName())
+            ->set('expiration_month', '12')
+            ->set('expiration_year', '2025')
+            ->set('address_choice', null)
+            ->set('card_number', '5110200200001115')
+            ->set('routing_number', '063113057')
+            ->set('account_number', '123245678')
+            ->set('ach_deposit_type', ACHDepositTypeEnum::CHECKING)
+            ->set('csc_code', '123');
+
+
+        $paymentAccount2 = clone $paymentAccount1;
+
+        $paymentAccount1->setToken($paymentProcessor->createPaymentAccount($paymentAccountData, $contract));
+
+        $this->setOldProfileId(
+            md5($contract->getTenant()->getId()),
+            $contract->getTenant()->getAciCollectPayProfileId()
+        );
+
+        $em->persist($paymentAccount1);
+
+        $paymentAccount2->setType(PaymentAccountTypeEnum::CARD);
+        $paymentAccount2->setName('Test ACI Card');
+
+        $paymentAccountData->setEntity($paymentAccount2);
+
+        $paymentAccount2->setToken($paymentProcessor->createPaymentAccount($paymentAccountData, $contract));
+
+        $em->persist($paymentAccount2);
+
+        $em->flush();
+
+        return [$paymentAccount1, $paymentAccount2];
+    }
+
+    /**
+     * @test
+     */
+    public function collectAndPayAciCollectPay()
+    {
+        /** @var EntityManager $em */
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
+        list ($bankPaymentAccount, $cardPaymentAccount) = $this->prepareFixturesCollectAndPayAciCollectPay($em);
+
+        $contract = $this->getContract($em);
+
+        $cardPayment = $this->createPayment($contract, 1001);
+
+        $cardPayment->setPaidFor(new DateTime());
+        $cardPayment->setPaymentAccount($cardPaymentAccount);
+
+        $bankPayment = clone $cardPayment;
+
+        $bankPayment->setPaymentAccount($bankPaymentAccount);
+
+        $cardPayment->setAmount(-200);
+
+        $em->persist($cardPayment);
+        $em->persist($bankPayment);
+        $em->flush();
+
+        $this->executeCommand();
+        $orders = $em->getRepository('DataBundle:Order')->findBy(
+            ['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY],
+            ['status' => 'ASC']
+        );
+
+        $this->assertCount(2, $orders);
+
+        $this->assertEquals(OrderStatus::COMPLETE, $orders[0]->getStatus());
+        $this->assertEquals(OrderStatus::ERROR, $orders[1]->getStatus());
+
+        $this->assertNotEmpty($orders[0]->getTransactions()->first()->getTransactionId());
+        $this->assertNotEmpty($orders[1]->getTransactions()->first()->getMessages());
+
+        $this->deleteAciCollectPayProfile($orders[0]->getContract()->getTenant()->getAciCollectPayProfileId());
+    }
+
+    /**
+     * @param Contract $contract
+     * @param $amount
+     * @param string $type
+     * @return Payment
+     */
     protected function createPayment(Contract $contract, $amount, $type = PaymentType::ONE_TIME)
     {
         $tenant = $contract->getTenant();
@@ -342,5 +489,23 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertNotNull($contract);
 
         return $contract;
+    }
+
+    /**
+     * @param int $profileId
+     */
+    protected function deleteAciCollectPayProfile($profileId)
+    {
+        $profile = new Profile();
+
+        $profile->setProfileId($profileId);
+
+        $request = new DeleteProfile($profile);
+
+        $this->getContainer()->get('payum')->getPayment('aci_collect_pay')->execute($request);
+
+        $this->assertTrue($request->getIsSuccessful());
+
+        $this->unsetOldProfileId($profileId);
     }
 }

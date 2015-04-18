@@ -72,7 +72,7 @@ class EnrollmentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Created new profile "%d" for user with id ="%d"',
+                '[ACI CollectPay Info]:Created new profile "%d" for user with id = "%d"',
                 $request->getModel()->getProfileId(),
                 $user->getId()
             )
@@ -80,7 +80,7 @@ class EnrollmentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id ="%d"',
+                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id = "%d"',
                 $request->getModel()->getProfileId(),
                 $contract->getId()
             )
@@ -106,7 +106,7 @@ class EnrollmentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Saved profile "%d" for user with id ="%d"',
+                '[ACI CollectPay Info]:Saved profile "%d" for user with id = "%d"',
                 $request->getModel()->getProfileId(),
                 $user->getId()
             )
@@ -114,7 +114,7 @@ class EnrollmentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id ="%d"',
+                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id = "%d"',
                 $request->getModel()->getProfileId(),
                 $contract->getId()
             )

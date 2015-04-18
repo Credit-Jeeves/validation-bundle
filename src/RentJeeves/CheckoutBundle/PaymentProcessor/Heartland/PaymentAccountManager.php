@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Heartland\Soap\Base\ACHAccountType;
 use Payum2\Heartland\Soap\Base\ACHDepositType;
 use Payum2\Heartland\Soap\Base\GetTokenRequest;
@@ -17,7 +18,6 @@ use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
-use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use RuntimeException;

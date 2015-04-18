@@ -23,7 +23,7 @@ class BillingAccountManager extends AbstractManager
     {
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Try to add billing account to profile "%d" for contract with id ="%d"',
+                '[ACI CollectPay Info]:Try to add billing account to profile "%d" for contract with id = "%d"',
                 $profileId,
                 $contract->getId()
             )
@@ -53,7 +53,7 @@ class BillingAccountManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id ="%d"',
+                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id = "%d"',
                 $request->getModel()->getProfileId(),
                 $contract->getId()
             )
@@ -71,7 +71,7 @@ class BillingAccountManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id ="%d"',
+                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id = "%d"',
                 $request->getModel()->getProfileId(),
                 $contract->getId()
             )

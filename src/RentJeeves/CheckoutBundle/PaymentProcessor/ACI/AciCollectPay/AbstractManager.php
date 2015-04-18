@@ -5,6 +5,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Monolog\Logger;
+use Payum\AciCollectPay\Model\SubModel\Address;
 use Payum\AciCollectPay\Model\SubModel\BillingAccount;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum\Core\Payment as PaymentProcessor;
@@ -62,16 +63,16 @@ abstract class AbstractManager
         $billingAccount->setHoldername($contract->getTenant()->getFullName());
         $billingAccount->setNickname($group->getName() . $contract->getId());
 
-        // TODO Need Implement this
-//        $billingAccountAddress = new RequestModel\SubModel\Address();
-//
-//        $billingAccountAddress->setAddress1($group->getStreetAddress1());
-//        $billingAccountAddress->setAddress2($group->getStreetAddress2());
-//        $billingAccountAddress->setCity($group->getCity());
-//        $billingAccountAddress->setPostalCode($group->getZip());
-//        $billingAccountAddress->setState($group->getState());
-//
-//        $billingAccount->setAddress($billingAccountAddress);
+        $billingAccountAddress = new Address();
+
+        $billingAccountAddress->setAddress1($contract->getProperty()->getAddress());
+        $billingAccountAddress->setAddress2($contract->getUnit()->getName());
+        $billingAccountAddress->setCity($contract->getProperty()->getCity());
+        $billingAccountAddress->setPostalCode($contract->getProperty()->getZip());
+        $billingAccountAddress->setState($contract->getProperty()->getArea());
+        $billingAccountAddress->setCountryCode($contract->getProperty()->getCountry());
+
+        $billingAccount->setAddress($billingAccountAddress);
 
         return $billingAccount;
     }

@@ -2,18 +2,17 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
-use CreditJeeves\DataBundle\Model\Group;
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -212,7 +211,7 @@ class AjaxController extends Controller
         $id4Field = $request->request->get('customData');
 
         try {
-            /** @var Heartland $result */
+            /** @var Transaction $result */
             $result = $this->get('payment_terminal')->pay($group, $amount, $id4Field);
         } catch (Exception $e) {
             return new JsonResponse(array('message' => 'Payment failed: ' . $e->getMessage()), 200);

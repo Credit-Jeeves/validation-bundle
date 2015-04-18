@@ -27,7 +27,7 @@ class YardiVersionNumberCommandCase extends BaseTestCase
         );
 
         $this->assertRegExp(
-            '/Current version for holding Rent Holding is 7Sv4_2\..*/',
+            '/Current version for holding Rent Holding is 7Sv.*/',
             trim($commandTester->getDisplay())
         );
     }

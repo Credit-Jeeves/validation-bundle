@@ -11,7 +11,7 @@ use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
-class HeartlandRepository extends EntityRepository
+class TransactionRepository extends EntityRepository
 {
     /**
      * @param Group $group
@@ -273,7 +273,7 @@ class HeartlandRepository extends EntityRepository
      */
     public function getMerchantHoldingByBatchId($batchId)
     {
-        /** @var Heartland $transaction */
+        /** @var Transaction $transaction */
         $transaction = $this
             ->createQueryBuilder('h')
             ->where('h.batchId = :batchId')

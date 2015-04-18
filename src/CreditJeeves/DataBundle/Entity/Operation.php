@@ -1,14 +1,11 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
-use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Operation as Base;
 use JMS\Serializer\Annotation as Serializer;
-use RentJeeves\LandlordBundle\Model\Detail;
-use Exception;
 
 /**
  * Operation
@@ -29,7 +26,7 @@ class Operation extends Base
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getActualPaymentTransactionDate()
     {
@@ -376,7 +373,7 @@ class Operation extends Base
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getPostMonth()
     {

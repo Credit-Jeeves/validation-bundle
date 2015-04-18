@@ -15,7 +15,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CheckoutBundle\Command\PaymentReportCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction as HeartlandTransaction;
 
 class PaymentReportCase extends BaseTestCase
 {
@@ -76,11 +76,11 @@ class PaymentReportCase extends BaseTestCase
         $originalTransId = 258258;
         $voidTransId = 258259;
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        /** @var Heartland $originalTransaction */
-        $originalTransaction = $em->getRepository('RjDataBundle:Heartland')->findOneByTransactionId($originalTransId);
+        /** @var HeartlandTransaction $originalTransaction */
+        $originalTransaction = $em->getRepository('RjDataBundle:Transaction')->findOneByTransactionId($originalTransId);
         $this->assertNotNull($originalTransaction);
-        /** @var Heartland $voidTransaction */
-        $voidTransaction = $em->getRepository('RjDataBundle:Heartland')->findOneByTransactionId($voidTransId);
+        /** @var HeartlandTransaction $voidTransaction */
+        $voidTransaction = $em->getRepository('RjDataBundle:Transaction')->findOneByTransactionId($voidTransId);
         $this->assertNotNull($voidTransaction);
         $this->assertNull($originalTransaction->getDepositDate());
         $this->assertEquals(0, $originalTransaction->getAmount() + $voidTransaction->getAmount());
@@ -97,7 +97,7 @@ class PaymentReportCase extends BaseTestCase
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $transaction = $em->getRepository('RjDataBundle:Heartland')->findOneBy(['transactionId' => $transactionId]);
+        $transaction = $em->getRepository('RjDataBundle:Transaction')->findOneBy(['transactionId' => $transactionId]);
         $order = $transaction->getOrder();
 
         $this->assertEquals($firstStatus, $order->getStatus());
@@ -128,8 +128,8 @@ class PaymentReportCase extends BaseTestCase
         $this->executeCommand(PaymentProcessorReportType::DEPOSIT);
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $repo = $em->getRepository('RjDataBundle:Heartland');
-        /** @var Heartland $resultTransaction */
+        $repo = $em->getRepository('RjDataBundle:Transaction');
+        /** @var HeartlandTransaction $resultTransaction */
         $this->assertNotNull($resultTransaction = $repo->findOneBy(['transactionId' => $transactionId]));
         $this->assertNotNull($batchDate = $resultTransaction->getBatchDate());
         $this->assertNotNull($depositDate = $resultTransaction->getDepositDate());
@@ -151,8 +151,8 @@ class PaymentReportCase extends BaseTestCase
         $this->executeCommand(PaymentProcessorReportType::DEPOSIT);
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $repo = $em->getRepository('RjDataBundle:Heartland');
-        /** @var Heartland $resultTransaction */
+        $repo = $em->getRepository('RjDataBundle:Transaction');
+        /** @var HeartlandTransaction $resultTransaction */
         $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));
         $this->assertNotNull($batchDate = $resultTransaction->getBatchDate());
         $this->assertEquals(null, $resultTransaction->getDepositDate());
@@ -166,10 +166,10 @@ class PaymentReportCase extends BaseTestCase
     public function shouldFillEmptyBatchIdForCompleteTransactions()
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $repo = $em->getRepository('RjDataBundle:Heartland');
+        $repo = $em->getRepository('RjDataBundle:Transaction');
 
         $transactionId = 789789;
-        /** @var Heartland $transaction */
+        /** @var HeartlandTransaction $transaction */
         $transaction = $repo->findOneBy(array('transactionId' => $transactionId));
         $this->assertNotNull($transaction);
 
@@ -182,7 +182,7 @@ class PaymentReportCase extends BaseTestCase
 
         $this->executeCommand(PaymentProcessorReportType::REVERSAL);
 
-        /** @var Heartland $resultTransaction */
+        /** @var HeartlandTransaction $resultTransaction */
         $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));
         // 145176 is a value from heartland report file fixture
         $this->assertEquals(145176, $resultTransaction->getBatchId(), 'Batch id was not updated');
@@ -207,7 +207,7 @@ class PaymentReportCase extends BaseTestCase
         $operation->setPaidFor(new DateTime('8/1/2014'));
         $operation->setContract($tenant->getContracts()->last());
 
-        $transaction = new Heartland();
+        $transaction = new HeartlandTransaction();
         $transaction->setIsSuccessful(true);
         $transaction->setOrder($order);
         $transaction->setTransactionId($transactionId);

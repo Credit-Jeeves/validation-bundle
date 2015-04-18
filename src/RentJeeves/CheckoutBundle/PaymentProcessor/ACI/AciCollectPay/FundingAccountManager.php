@@ -77,7 +77,7 @@ class FundingAccountManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Added funding account to profile "%d" for user with id ="%d"',
+                '[ACI CollectPay Info]:Added funding account to profile "%d" for user with id = "%d"',
                 $request->getModel()->getProfileId(),
                 $contract->getTenant()->getId()
             )

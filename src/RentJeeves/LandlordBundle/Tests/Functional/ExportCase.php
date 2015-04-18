@@ -8,7 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use \DateTime;
@@ -82,7 +82,7 @@ class ExportCase extends BaseTestCase
         $operation->setPaidFor(new DateTime('8/1/2014'));
         $operation->setContract($contract);
 
-        $transaction = new Heartland();
+        $transaction = new Transaction();
         $transaction->setIsSuccessful(false);
         $transaction->setOrder($order);
         $transaction->setTransactionId("1");

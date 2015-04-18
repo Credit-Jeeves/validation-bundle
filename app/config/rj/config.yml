@@ -113,16 +113,6 @@ twig:
         landlord_payment_per_month_dollars: %landlord_payment_per_month_dollars%
         landlord_payment_per_month_cents: %landlord_payment_per_month_cents%
         
-
-doctrine:
-    orm:
-        mappings:
-            heartland:
-                is_bundle: false
-                type: xml
-                dir: %kernel.root_dir%/../vendor/payum2/heartland/src/Payum2/Heartland/Bridge/Doctrine/Resources/mapping
-                prefix: Payum2\Heartland\Bridge\Doctrine\Entity
-
 stof_doctrine_extensions:
     class:
         loggable: RentJeeves\DataBundle\EventListener\LoggableListener

@@ -2,19 +2,16 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
-use RentJeeves\DataBundle\Model\Heartland as Base;
+use RentJeeves\DataBundle\Model\Transaction as Base;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\HeartlandRepository")
- * @ORM\Table(name="rj_checkout_heartland")
- *
- * @method getRequest $this
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\TransactionRepository")
+ * @ORM\Table(name="rj_transaction")
  */
-class Heartland extends Base
+class Transaction extends Base
 {
     public function __toString()
     {

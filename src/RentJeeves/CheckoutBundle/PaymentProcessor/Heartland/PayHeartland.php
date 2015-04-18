@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry;
+use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Heartland\Soap\Base\BillTransaction;
 use Payum2\Heartland\Soap\Base\CardProcessingMethod;
 use Payum2\Heartland\Soap\Base\MakePaymentRequest;
@@ -14,7 +15,7 @@ use Payum2\Heartland\Soap\Base\TokenToCharge;
 use Payum2\Payment as Payum;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
@@ -27,28 +28,41 @@ class PayHeartland
      * @var Payum
      */
     protected $payum;
-
     /**
      * @var EntityManager
      */
     protected $em;
-
+    /**
+     * @var PaymentDetailsMapper
+     */
+    protected $paymentDetailsMapper;
     /**
      * @var string
      */
     protected $rtMerchantName;
 
     /**
+     * @param ContainerAwareRegistry $payum
+     * @param EntityManager $em
+     * @param PaymentDetailsMapper $paymentDetailsMapper
+     * @param string $rtMerchantName
+     *
      * @DI\InjectParams({
      *     "payum" = @DI\Inject("payum2"),
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
+     *     "paymentDetailsMapper" = @DI\Inject("payment.heartland.payment_details_mapper"),
      *     "rtMerchantName" = @DI\Inject("%rt_merchant_name%"),
      * })
      */
-    public function __construct(ContainerAwareRegistry $payum, $em, $rtMerchantName)
-    {
+    public function __construct(
+        ContainerAwareRegistry $payum,
+        EntityManager $em,
+        PaymentDetailsMapper $paymentDetailsMapper,
+        $rtMerchantName
+    ) {
         $this->payum = $payum->getPayment('heartland');
         $this->em = $em;
+        $this->paymentDetailsMapper = $paymentDetailsMapper;
         $this->rtMerchantName = $rtMerchantName;
     }
 
@@ -58,12 +72,11 @@ class PayHeartland
      * @param Order $order
      * @param PaymentAccount $paymentAccount
      * @param string $paymentType
-     * @return bool
+     * @return string
      */
     public function executePayment(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
     {
         $paymentDetails = $this->getPaymentDetails($order, $paymentType);
-        $paymentDetails->setPaymentAccount($paymentAccount);
 
         /** @var MakePaymentRequest $request */
         $request = $paymentDetails->getRequest();
@@ -85,18 +98,29 @@ class PayHeartland
             $billTransaction->setID1("report");
         }
 
-        $this->addToken($paymentDetails, $paymentAccount->getToken());
+        /** @var Transaction $transaction */
+        $transaction = $this->paymentDetailsMapper->map($paymentDetails);
+        $transaction->setOrder($order);
+        $transaction->setPaymentAccount($paymentAccount);
 
-        $statusRequest = $this->execute($paymentDetails, $order);
+        $this->addToken($paymentDetails, $paymentAccount->getToken(), $order);
+
+        $statusRequest = $this->execute($paymentDetails);
+
+        $transaction = $this->paymentDetailsMapper->map($paymentDetails, $transaction);
         $isSuccessful = $statusRequest->isSuccess();
-        $paymentDetails->setIsSuccessful($isSuccessful);
-        $this->em->persist($paymentDetails);
+        $transaction->setIsSuccessful($isSuccessful);
+        $order->addTransaction($transaction);
+
+        $this->em->persist($transaction);
 
         return $this->getOrderStatus($order, $isSuccessful);
     }
 
     /**
-     * @return Heartland
+     * @param Order $order
+     * @param string $paymentType
+     * @return PaymentDetails
      */
     protected function getPaymentDetails(Order $order, $paymentType)
     {
@@ -110,11 +134,9 @@ class PayHeartland
             ->setAmount($order->getSum())
             ->setFeeAmount($order->getFee());
 
-        $paymentDetails = new Heartland();
+        $paymentDetails = new PaymentDetails();
         $paymentDetails->setRequest($request);
-        $paymentDetails->setOrder($order);
         $paymentDetails->setAmount($order->getSum() + $order->getFee());
-        $order->addHeartland($paymentDetails);
 
         if (PaymentGroundType::RENT == $paymentType) {
             $paymentDetails->setMerchantName($order->getContract()->getGroup()->getMerchantName());
@@ -127,14 +149,14 @@ class PayHeartland
     }
 
     /**
-     * @param Heartland $paymentDetails
-     * @param string  $token
+     * @param PaymentDetails $paymentDetails
+     * @param string $token
+     * @param Order $order
      * @return $this
      */
-    protected function addToken(Heartland $paymentDetails, $token)
+    protected function addToken(PaymentDetails $paymentDetails, $token, Order $order)
     {
         $tokenToCharge = new TokenToCharge();
-        $order = $paymentDetails->getOrder();
         $tokenToCharge->setAmount($order->getSum());
         $tokenToCharge->setExpectedFeeAmount($order->getFee());
         $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
@@ -151,15 +173,15 @@ class PayHeartland
     }
 
     /**
-     * @param Heartland $paymentDetails
+     * @param PaymentDetails $paymentDetails
      * @return BinaryMaskStatusRequest
      */
-    protected function execute(Heartland $paymentDetails)
+    protected function execute(PaymentDetails $paymentDetails)
     {
         $captureRequest = new CaptureRequest($paymentDetails);
         $this->payum->execute($captureRequest);
 
-        /** @var Heartland $model */
+        /** @var PaymentDetails $model */
         $model = $captureRequest->getModel();
         $statusRequest = new BinaryMaskStatusRequest($model);
         $this->payum->execute($statusRequest);

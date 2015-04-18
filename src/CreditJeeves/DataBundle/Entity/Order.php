@@ -7,13 +7,12 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
-use RentJeeves\ExternalApiBundle\Model\MRI\Error;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -637,13 +636,13 @@ class Order extends BaseOrder
     }
 
     /**
-     * @return boolean|Heartland
+     * @return boolean|Transaction
      */
     public function getCompleteTransaction()
     {
-        return $this->getHeartlands()
+        return $this->getTransactions()
             ->filter(
-                function (Heartland $transaction) {
+                function (Transaction $transaction) {
                     if (TransactionStatus::COMPLETE == $transaction->getStatus() && $transaction->getIsSuccessful()) {
                         return true;
                     }
@@ -654,9 +653,9 @@ class Order extends BaseOrder
 
     public function getReversedTransaction()
     {
-        return $this->getHeartlands()
+        return $this->getTransactions()
             ->filter(
-                function (Heartland $transaction) {
+                function (Transaction $transaction) {
                     if (TransactionStatus::REVERSED == $transaction->getStatus() && $transaction->getIsSuccessful()) {
                         return true;
                     }
@@ -667,7 +666,7 @@ class Order extends BaseOrder
 
     public function getHeartlandBatchId()
     {
-        /** @var Heartland $transaction */
+        /** @var Transaction $transaction */
         if ($transaction = $this->getHeartlandTransaction()) {
             return $transaction->getBatchId();
         }
@@ -703,10 +702,10 @@ class Order extends BaseOrder
      */
     public function getErrorMessage()
     {
-        /** @var Heartland $transaction */
-        $transaction = $this->getHeartlands()
+        /** @var Transaction $transaction */
+        $transaction = $this->getTransactions()
             ->filter(
-                function (Heartland $transaction) {
+                function (Transaction $transaction) {
                     if (TransactionStatus::COMPLETE == $transaction->getStatus() && !$transaction->getIsSuccessful()) {
                         return true;
                     }
@@ -724,7 +723,7 @@ class Order extends BaseOrder
 
     public function getReversalDescription()
     {
-        /** @var Heartland $transaction */
+        /** @var Transaction $transaction */
         if ($transaction = $this->getReversedTransaction()) {
             return $transaction->getMessages();
         }
@@ -741,9 +740,9 @@ class Order extends BaseOrder
     public function getHeartlandTransactionIds($asString = true, $glue = ', ')
     {
         $result = array();
-        /** @var Heartland $heartland */
-        foreach ($this->getHeartlands() as $heartland) {
-            $result[] = $heartland->getTransactionId();
+        /** @var Transaction $transaction */
+        foreach ($this->getTransactions() as $transaction) {
+            $result[] = $transaction->getTransactionId();
         }
 
         if ($asString) {
@@ -817,7 +816,7 @@ class Order extends BaseOrder
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Reversal")
      * @Serializer\Groups({"soapYardiReversed"})
-     * @Serializer\Type("RentJeeves\DataBundle\Entity\Heartland")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\Transaction")
      * @Serializer\XmlElement(cdata=false)
      *
      * @return string

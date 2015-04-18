@@ -45,13 +45,13 @@ class AciCollectPayCase extends BaseTestCase
             [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
         );
 
-        if ($profileId = $this->getOldProfileId('tenant11examplecom')) {
-            $this->deleteProfile($profileId);
-        }
-
         $contractToSelect = 2;
         $tenantEmail = 'tenant11@example.com';
         $this->contract = $this->getContract($tenantEmail, $contractToSelect);
+
+        if ($profileId = $this->getOldProfileId(md5($this->contract->getTenant()->getId()))) {
+            $this->deleteProfile($profileId);
+        }
 
         $this->contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
 
@@ -114,7 +114,7 @@ class AciCollectPayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
-                'rentjeeves_checkoutbundle_paymenttype_start_date' => date('j/n/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => date('n/j/Y'),
             ]
         );
 
@@ -145,7 +145,7 @@ class AciCollectPayCase extends BaseTestCase
         $this->assertNotEmpty($this->contract->getTenant()->getAciCollectPayProfileId());
 
         $this->setOldProfileId(
-            'tenant11examplecom',
+            md5($this->contract->getTenant()->getId()),
             $this->contract->getTenant()->getAciCollectPayProfileId()
         );
 
@@ -218,7 +218,6 @@ class AciCollectPayCase extends BaseTestCase
 
     /**
      * @param int $profileId
-     * @throws \Exception
      */
     protected function deleteProfile($profileId)
     {
@@ -230,9 +229,7 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->getContainer()->get('payum')->getPayment('aci_collect_pay')->execute($request);
 
-        if (!$request->getIsSuccessful()) {
-            throw new \Exception($request->getMessages());
-        }
+        $this->assertTrue($request->getIsSuccessful());
 
         $this->unsetOldProfileId($profileId);
     }

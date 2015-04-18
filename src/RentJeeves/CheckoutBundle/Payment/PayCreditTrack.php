@@ -71,14 +71,18 @@ class PayCreditTrack
         $this->em->persist($order);
         $this->em->flush();
 
-        $orderStatus = $this->getPaymentProcessor($paymentAccount)->executeOrder(
-            $order,
-            $paymentAccount,
-            PaymentGroundType::REPORT
-        );
-        $order->setStatus($orderStatus);
+        try {
+            $orderStatus = $this->getPaymentProcessor($paymentAccount)->executeOrder(
+                $order,
+                $paymentAccount,
+                PaymentGroundType::REPORT
+            );
+            $order->setStatus($orderStatus);
+        } catch (\Exception $e) {
+            $order->setStatus(OrderStatus::ERROR);
+        }
 
-        if (OrderStatus::ERROR != $orderStatus) {
+        if (OrderStatus::ERROR != $order->getStatus()) {
             $report = $this->createReport($paymentAccount->getUser());
             $operation = $this->createOperation($order);
             $operation->setReportD2c($report);

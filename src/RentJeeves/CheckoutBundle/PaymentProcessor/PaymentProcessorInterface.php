@@ -1,9 +1,8 @@
 <?php
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -30,6 +29,7 @@ interface PaymentProcessorInterface
      * @param PaymentAccount $paymentAccount
      * @param string $paymentType
      * @return string
+     * @throws PaymentProcessorInvalidArgumentException|\Exception
      */
     public function executeOrder(
         Order $order,

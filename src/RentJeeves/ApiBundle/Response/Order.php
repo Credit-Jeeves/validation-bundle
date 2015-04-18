@@ -182,7 +182,7 @@ class Order extends ResponseResource
     protected function getTransaction()
     {
         if ($this->entity->getStatus() == OrderStatus::ERROR) {
-            return $this->entity->getHeartlands()->first();
+            return $this->entity->getTransactions()->first();
         } else {
             return $this->entity->getCompleteTransaction();
         }

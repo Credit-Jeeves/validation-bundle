@@ -102,14 +102,14 @@ abstract class Order
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="\RentJeeves\DataBundle\Entity\Heartland",
+     *     targetEntity="\RentJeeves\DataBundle\Entity\Transaction",
      *     mappedBy="order",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
      * @var ArrayCollection
      */
-    protected $heartlands;
+    protected $transactions;
 
     /**
      * @ORM\OneToMany(
@@ -151,11 +151,11 @@ abstract class Order
 
     public function __construct()
     {
-        $this->operations = new ArrayCollection();
-        $this->heartlands = new ArrayCollection();
-        $this->operations = new ArrayCollection();
-        $this->sentOrder  = new ArrayCollection();
-        $this->created_at = new DateTime();
+        $this->operations   = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
+        $this->operations   = new ArrayCollection();
+        $this->sentOrder    = new ArrayCollection();
+        $this->created_at   = new DateTime();
     }
 
     /**
@@ -402,36 +402,36 @@ abstract class Order
     }
 
     /**
-     * Add heartland 
+     * Add transaction
      *
-     * @param \RentJeeves\DataBundle\Entity\Heartland
+     * @param \RentJeeves\DataBundle\Entity\Transaction $transaction
      * @return Order
      */
-    public function addHeartland(\RentJeeves\DataBundle\Entity\Heartland $heartland)
+    public function addTransaction(\RentJeeves\DataBundle\Entity\Transaction $transaction)
     {
-        $this->heartlands[] = $heartland;
+        $this->transactions[] = $transaction;
     
         return $this;
     }
 
     /**
-     * Remove heartland
+     * Remove transaction
      *
-     * @param \RentJeeves\DataBundle\Entity\Heartland $heartland
+     * @param \RentJeeves\DataBundle\Entity\Transaction $transaction
      */
-    public function removeHeartland(\RentJeeves\DataBundle\Entity\Heartland $heartland)
+    public function removeTransaction(\RentJeeves\DataBundle\Entity\Transaction $transaction)
     {
-        $this->heartlands->removeElement($heartland);
+        $this->transactions->removeElement($transaction);
     }
 
     /**
-     * Get heartlands
+     * Get transactions
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getHeartlands()
+    public function getTransactions()
     {
-        return $this->heartlands;
+        return $this->transactions;
     }
 
     /**
