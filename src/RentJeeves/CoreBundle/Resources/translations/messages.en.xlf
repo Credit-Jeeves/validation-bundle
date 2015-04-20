@@ -2612,6 +2612,10 @@
               <source>import.error.propertyId</source>
               <target><![CDATA[Property ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
+            <trans-unit id="import.skipped.by_property">
+              <source>import.skipped.by_property</source>
+              <target>This row will be skipped, because does not have valid property.</target>
+            </trans-unit>
             <trans-unit id="import.error.invalid_property">
               <source>import.error.invalid_property</source>
               <target>Property address is invalid.</target>

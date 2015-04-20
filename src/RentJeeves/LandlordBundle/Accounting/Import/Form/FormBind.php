@@ -7,10 +7,6 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use Symfony\Component\Form\Form;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
@@ -37,28 +33,22 @@ trait FormBind
      */
     protected function bindForm($postData, &$errors)
     {
+        $isException = $this->currentImportModel->getUniqueKeyException();
+        if (!empty($isException)) {
+            return false;
+        }
+
         $form = $this->currentImportModel->getForm();
         $line = $postData['line'];
         unset($postData['line']);
 
         self::prepareSubmit($postData);
 
-        if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData)) {
+        if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData) ||
+            !$this->isValidNotEditedFields($postData) || !$form || !isset($postData['_token'])
+        ) {
             $this->collectionImportModel->removeElement($this->currentImportModel);
-            $this->detach();
 
-            return false;
-        }
-
-        if (!$this->isValidNotEditedFields($postData)) {
-            return false;
-        }
-
-        if (!$form) {
-            return false;
-        }
-
-        if (!isset($postData['_token'])) {
             return false;
         }
 
@@ -69,8 +59,9 @@ trait FormBind
             //Do save and maybe in future move it to factory pattern, when have more logic
             switch ($form->getName()) {
                 case 'import_contract_finish':
-                    $contract = $form->getData();
-                    $this->em->persist($contract);
+                    $this->currentImportModel->setContract(
+                        $form->getData()
+                    );
                     break;
                 case 'import_contract':
                     $this->bindImportContractForm($form);
@@ -97,18 +88,15 @@ trait FormBind
      */
     protected function bindImportContractForm(Form $form)
     {
-        /**
-         * @var $contract Contract
-         */
+        /** @var Contract $contract  */
         $contract = $form->getData();
         $sendInvite = $form->get('sendInvite')->getNormData();
+
         if ($this->currentImportModel->getHasContractWaiting()) {
-            $this->processingContractWaiting(
-                $this->currentImportModel->getTenant(),
-                $contract,
-                $this->currentImportModel->getResidentMapping(),
-                $sendInvite
-            );
+            $email = $this->currentImportModel->getTenant()->getEmail();
+            if (!empty($email) && $sendInvite) {
+                $this->isNeedSendInvite = true;
+            }
 
             return;
         }
@@ -120,7 +108,6 @@ trait FormBind
             if (!$unitMapping->getUnit()) {
                 $unitMapping->setUnit($contract->getUnit());
             }
-            $this->em->persist($unitMapping);
         }
 
         if ($sendInvite && !$contract->getId()) {
@@ -128,7 +115,8 @@ trait FormBind
         }
 
         $residentMapping = $form->get('residentMapping')->getData();
-        $this->em->persist($residentMapping);
+        $this->currentImportModel->setResidentMapping($residentMapping);
+        $this->currentImportModel->setContract($contract);
     }
 
     /**
@@ -137,64 +125,29 @@ trait FormBind
      */
     protected function bindImportNewUserWithContractForm(Form $form)
     {
-        $data = $form->getData();
-        $tenant = $data['tenant'];
-        /** @var $contract Contract  */
-        $contract = $data['contract'];
+        /** @var Contract $contract  */
+        $contract = $form->get('contract')->getData();
         if ($this->storage->isMultipleProperty()) {
             $isSingle = $form->get('contract')->get('isSingle')->getData();
             $this->afterBindForm($isSingle);
             $unitMapping = $form->get('contract')->get('unitMapping')->getData();
             if (!$unitMapping->getUnit()) {
-                $unitMapping->setUnit($contract->getUnit());
+                $unitMapping->setUnit($unit = $contract->getUnit());
+                $unit->setUnitMapping($unitMapping);
             }
-            $this->em->persist($unitMapping);
-        }
-        $email = $tenant->getEmail();
-        $residentMapping = $form->get('contract')->get('residentMapping')->getData();
-        if (empty($email)) {
-            $waitingContract = $this->getContractWaiting();
-            $this->em->persist($waitingContract);
-        } else {
-            $this->em->persist($residentMapping);
         }
 
-        if (isset($data['sendInvite']) && $data['sendInvite']) {
+        if (isset($form->getData()['sendInvite']) && $form->getData()['sendInvite']) {
             $this->isNeedSendInvite = true;
         }
+
+        $this->currentImportModel->setContract($contract);
+        $this->currentImportModel->setTenant($form->get('tenant')->getData());
     }
 
     /**
-     * @param Tenant          $tenant
-     * @param Contract        $contract
-     * @param ResidentMapping $residentMapping
-     * @param boolean         $sendInvite
+     * @param Operation $operation
      */
-    protected function processingContractWaiting($sendInvite)
-    {
-        /**
-         * @var $waitingContract ContractWaiting
-         */
-        $waitingContract = $this->getContractWaiting();
-
-        if ($this->currentImportModel->getTenant()->getEmail()) {
-            //Remove contract because we get duplicate contract
-            $this->currentImportModel->getTenant()->removeContract($this->currentImportModel->getContract());
-            $this->em->persist($this->currentImportModel->getTenant());
-            $contract = $this->contractProcess->createContractFromWaiting(
-                $this->currentImportModel->getTenant(),
-                $waitingContract
-            );
-            $contract->setStatus(ContractStatus::INVITE);
-            $this->em->persist($contract);
-            if ($sendInvite) {
-                $this->isNeedSendInvite = true;
-            }
-        } else {
-            $this->em->persist($waitingContract);
-        }
-    }
-
     public function processingOperationAndOrder(Operation $operation)
     {
         $tenant = $this->currentImportModel->getTenant();
@@ -208,8 +161,9 @@ trait FormBind
 
         $operation->setContract($contract);
         $operation->setOrder($order);
+        $order->addOperation($operation);
 
-        $this->em->persist($order);
+        $this->currentImportModel->setOrder($order);
     }
 
     /**
@@ -305,7 +259,7 @@ trait FormBind
         }
 
         $residentMapping = $this->currentImportModel->getResidentMapping();
-        if ($this->isPersisted($residentMapping) && !$residentMapping->getId()) {
+        if ($this->isPersisted($residentMapping)) {
             $this->em->detach($residentMapping);
         }
     }

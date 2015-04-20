@@ -135,7 +135,6 @@ class StorageAMSI extends ExternalApiStorage
                     $city,
                     $street,
                     $zip,
-                    $country,
                     $state
                 ];
 

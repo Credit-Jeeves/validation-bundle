@@ -6,12 +6,9 @@ use CreditJeeves\DataBundle\Entity\Group as EntityGroup;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
-use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\LandlordBundle\Model\Import;
 
@@ -55,7 +52,7 @@ trait Contract
         }
 
         $property = $this->getProperty($row);
-        if ($property) {
+        if (!empty($property)) {
             $contract->setProperty($property);
         }
         if ($this->group && $property) {
@@ -152,7 +149,7 @@ trait Contract
         $contract = $this->currentImportModel->getContract();
         if ($contract->getGroup()) {
             $groupSettings = $contract->getGroup()->getGroupSettings();
-            $dueDate = ($contract->getDueDate())? $contract->getDueDate() : $groupSettings->getDueDate();
+            $dueDate = $contract->getDueDate() ?: $groupSettings->getDueDate();
 
             return $dueDate;
         }
@@ -161,8 +158,8 @@ trait Contract
     }
 
     /**
-     * @param array $row
-     * @param Property $property
+     * @param  array               $row
+     * @param  EntityProperty      $property
      * @return null|EntityContract
      */
     protected function getContractFromDataBase(array $row, EntityProperty $property)
@@ -172,7 +169,6 @@ trait Contract
             $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy(
                 [
                     'tenant' => $tenant,
-                    'property' => $property,
                     'externalLeaseId' => $row[Mapping::KEY_EXTERNAL_LEASE_ID],
                 ]
             );
@@ -197,6 +193,13 @@ trait Contract
     {
         $tenant = $this->currentImportModel->getTenant();
         $property = $this->getProperty($row);
+
+        if (empty($property)) {
+            $this->currentImportModel->setIsSkipped(true);
+            $this->currentImportModel->setSkippedMessage(
+                $this->translator->trans('import.skipped.by_property')
+            );
+        }
 
         if (!$tenant->getId() || !$property) {
             $this->setNewContract($row);
@@ -275,6 +278,7 @@ trait Contract
             $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
             $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
             $contractWaitingInDb->setPaymentAccepted($contractWaiting->getPaymentAccepted());
+
             return $contractWaitingInDb;
         }
 
@@ -294,7 +298,8 @@ trait Contract
     public function isContractInPast()
     {
         $today = new DateTime();
+
         return ($this->currentImportModel->getContract()->getFinishAt() &&
-                $this->currentImportModel->getContract()->getFinishAt() < $today)? true : false;
+                $this->currentImportModel->getContract()->getFinishAt() < $today) ? true : false;
     }
 }

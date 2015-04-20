@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Handler;
 
 use CreditJeeves\DataBundle\Entity\Group as GroupEntity;
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
@@ -11,6 +12,7 @@ use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface as ImportStorage;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
@@ -229,7 +231,7 @@ abstract class HandlerAbstract implements HandlerInterface
     }
 
     /**
-     * @param string $field
+     * @param  string         $field
      * @return \DateTime|null
      */
     public function getDateByField($field)
@@ -248,6 +250,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
         if (!empty($errors['warning_count']) || !empty($errors['errors'])) {
             $this->currentImportModel->setIsValidDateFormat(false);
+
             return null;
         }
 
@@ -257,16 +260,19 @@ abstract class HandlerAbstract implements HandlerInterface
 
         if ($formattedMonth < 1 || $formattedMonth > 12) {
             $this->currentImportModel->setIsValidDateFormat(false);
+
             return null;
         }
 
         if ($formattedDay < 1 || $formattedDay > 31) {
             $this->currentImportModel->setIsValidDateFormat(false);
+
             return null;
         }
 
         if ($formattedYear < 1900 || $formattedYear > 2250) {
             $this->currentImportModel->setIsValidDateFormat(false);
+
             return null;
         }
 
@@ -290,7 +296,7 @@ abstract class HandlerAbstract implements HandlerInterface
 
         $residentMapping = $this->currentImportModel->getResidentMapping();
         $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0 || $this->isUsedResidentId() || $this->isUsedEmail()) {
+        if (count($errors) > 0 || $this->isUsedResidentId()) {
             return false;
         }
 
@@ -303,7 +309,7 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $property = $this->currentImportModel->getContract()->getProperty();
-        if (!$property || !$property->getNumber()) {
+        if (empty($property) || !$property->getNumber()) {
             return false;
         }
 
@@ -325,7 +331,7 @@ abstract class HandlerAbstract implements HandlerInterface
      *
      * Create model objects for imported row
      *
-     * @param array $row
+     * @param array   $row
      * @param integer $lineNumber
      *
      * @return ModelImport
@@ -476,18 +482,21 @@ abstract class HandlerAbstract implements HandlerInterface
             $errors[$lineNumber][uniqid()][$keyFieldInUI] = $this->translator->trans('import.error.invalid_property');
         }
 
-
         $this->currentImportModel->setErrors($errors);
     }
 
     /**
      * @param $form
      * @param $lineNumber
-     * @param null $token
+     * @param  string $token
      * @return array
      */
     protected function runFormValidation($form, $lineNumber, $token = null)
     {
+        if ($this->currentImportModel->getIsSkipped()) {
+            return [$lineNumber => []];
+        }
+
         $viewForm = $form->createView();
         $submittedData = $this->getSubmittedDataFromForm($viewForm->children);
         if (!is_null($token)) {
@@ -497,24 +506,24 @@ abstract class HandlerAbstract implements HandlerInterface
         $form->submit($submittedData);
 
         if (!$form->isValid()) {
-            return array(
+            return [
                 $lineNumber => $this->getFormErrors($form)
-            );
+            ];
         }
 
-        return array($lineNumber => array());
+        return [$lineNumber => []];
     }
 
     /**
      * This method get field from form and create array from it, which we can use
      * for $form->submit($data); And after that we can run validation.
      *
-     * @param array $children
+     * @param  array $children
      * @return array
      */
     protected function getSubmittedDataFromForm(array $children)
     {
-        $submittedData = array();
+        $submittedData = [];
         foreach ($children as $fieldName => $data) {
             if (!empty($data->children)) {
                 $submittedData[$data->vars['name']] = $this->getSubmittedDataFromForm($data->children);
@@ -532,7 +541,7 @@ abstract class HandlerAbstract implements HandlerInterface
     public function initCollectionImportModel()
     {
         $data       = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
-        $this->collectionImportModel = new ArrayCollection(array());
+        $this->collectionImportModel = new ArrayCollection([]);
 
         foreach ($data as $key => $values) {
             try {
@@ -575,7 +584,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $errorsNotEditableFields = [];
 
         foreach ($data as $postData) {
-            $postData['line'] = (int)$postData['line'];
+            $postData['line'] = (int) $postData['line'];
 
             /** @var $import Import */
             foreach ($this->getCurrentCollectionImportModel() as $keyCollection => $import) {
@@ -583,7 +592,6 @@ abstract class HandlerAbstract implements HandlerInterface
                     $lineNumber = $postData['line'];
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
-
                     // Validate data which get from client by post request
                     $resultBind = $this->bindForm($postData, $errors);
 
@@ -600,7 +608,6 @@ abstract class HandlerAbstract implements HandlerInterface
                     }
 
                     $isException = $this->currentImportModel->getUniqueKeyException();
-
                     if (!empty($isException)) {
                         continue;
                     }
@@ -647,9 +654,45 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function tryToSaveRow($lineNumber)
     {
         try {
-            $this->em->flush();
+            $tenantEmail = $this->currentImportModel->getTenant()->getEmail();
+
+            if (empty($tenantEmail)) {
+                $contractWaiting = $this->getContractWaiting();
+                $this->flushEntity($contractWaiting);
+
+                return true;
+            }
+
+            $contract = $this->currentImportModel->getContract();
+            $this->flushEntity($unit = $contract->getUnit());
+            $unitMapping = $unit->getUnitMapping();
+            if ($unitMapping instanceof UnitMapping) {
+                $this->flushEntity($unitMapping);
+            }
+
+            if (!empty($tenantEmail) && $this->currentImportModel->getHasContractWaiting()) {
+                //Remove contract because we get duplicate contract
+                $this->currentImportModel->getTenant()->removeContract($contract);
+                $this->flushEntity($this->currentImportModel->getTenant());
+                $contract = $this->contractProcess->createContractFromWaiting(
+                    $this->currentImportModel->getTenant(),
+                    $this->currentImportModel->getContractWaiting()
+                );
+                $contract->setStatus(ContractStatus::INVITE);
+                $this->flushEntity($contract);
+
+                return true;
+            }
+
+            $this->flushEntity($this->currentImportModel->getTenant());
+            $this->flushEntity($contract);
+            $this->flushEntity($this->currentImportModel->getResidentMapping());
+            if ($this->currentImportModel->getOrder() instanceof Order) {
+                $this->flushEntity($this->currentImportModel->getOrder());
+            }
         } catch (Exception $e) {
             $this->manageException($e);
+
             return false;
         }
 
@@ -735,5 +778,34 @@ abstract class HandlerAbstract implements HandlerInterface
             $message = sprintf("Can't send invite email to user %s", $contract->getTenant()->getEmail());
             throw new ImportHandlerException($message);
         }
+    }
+
+    /**
+     * @param  object $entity
+     * @param  int    $numberOfRetries
+     * @return mixed
+     */
+    protected function flushEntity($entity, $numberOfRetries = 0)
+    {
+        if (!is_object($entity)) {
+            return;
+        }
+
+        if ($numberOfRetries > 1) {
+            return;
+        }
+
+        $numberOfRetries++;
+
+        try {
+            $this->em->persist($entity);
+            $this->em->flush($entity);
+        } catch (\Doctrine\ORM\ORMException $e) {
+            $this->reConnectDB();
+
+            return $this->flushEntity($entity, $numberOfRetries);
+        }
+
+        return;
     }
 }
