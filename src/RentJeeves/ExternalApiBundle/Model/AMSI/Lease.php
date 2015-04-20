@@ -639,6 +639,9 @@ class Lease
         return $this->leaseBeginDate;
     }
 
+    /**
+     * @return \DateTime|null
+     */
     public function getLeaseBeginDateObject()
     {
         if (!empty($this->leaseBeginDate)) {
@@ -646,6 +649,18 @@ class Lease
         }
 
         return $this->leaseBeginDate;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getActualMoveOutDateObject()
+    {
+        if (!empty($this->actualMoveOutDate)) {
+            return \DateTime::createFromFormat('Y-m-d\TH:i:s', $this->actualMoveOutDate);
+        }
+
+        return $this->actualMoveOutDate;
     }
 
     /**
