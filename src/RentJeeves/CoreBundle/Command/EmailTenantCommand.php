@@ -206,7 +206,9 @@ class EmailTenantCommand extends ContainerAwareCommand
     {
         if ($this->shouldSendEmail($tenant)) {
             $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract, $paymentType);
-            $this->output->write("\n" . $tenant->getId() . " : " . $tenant->getEmail() ." - sent", OutputInterface::VERBOSITY_VERBOSE);
+            $this->output->write(
+                "\n" . $tenant->getId() . " : " . $tenant->getEmail() ." - sent", OutputInterface::VERBOSITY_VERBOSE
+            );
             $this->output->write('.');
         }
     }
