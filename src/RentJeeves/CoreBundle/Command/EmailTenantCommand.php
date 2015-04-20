@@ -165,6 +165,8 @@ class EmailTenantCommand extends ContainerAwareCommand
                         $contract = $payment->getContract();
                         $tenant = $contract->getTenant();
                         $this->sendPaymentDueEmail($mailer, $tenant, $contract, $payment->getType());
+                        $doctrine->getManager()->detach($contract);
+                        $doctrine->getManager()->detach($tenant);
                         $doctrine->getManager()->detach($payment);
                     }
                     $output->write("\nFinished command \"Email:tenant --auto\"");
@@ -177,6 +179,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                     foreach ($contracts as $contract) {
                         $tenant = $contract->getTenant();
                         $this->sendPaymentDueEmail($mailer, $tenant, $contract);
+                        $doctrine->getManager()->detach($tenant);
                         $doctrine->getManager()->detach($contract);
                     }
                     $output->writeln("\nOK");
@@ -203,6 +206,10 @@ class EmailTenantCommand extends ContainerAwareCommand
     {
         if ($this->shouldSendEmail($tenant)) {
             $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract, $paymentType);
+            $this->output->write(
+                "\n" . $tenant->getId() . " : " . $tenant->getEmail() ." - sent",
+                OutputInterface::VERBOSITY_VERBOSE
+            );
             $this->output->write('.');
         }
     }
