@@ -243,7 +243,8 @@ trait Contract
             $leaseEnd <= $today
         ) {
             $this->currentImportModel->getContract()->setFinishAt($leaseEnd);
-            $this->setFinishedContract();
+            // Do not set the contract to finished for now. Promas customer data not perfect.
+            // $this->setFinishedContract();
         } else {
             $this->currentImportModel->getContract()->setFinishAt($leaseEnd);
         }
