@@ -231,7 +231,6 @@ class Order extends BaseOrder
         return $this->getCreatedAt()->format('m/d/Y');
     }
 
-
     /**
      * Date time of actual payment transaction with Heartland
      *
@@ -442,6 +441,7 @@ class Order extends BaseOrder
                     if (OperationType::RENT == $operation->getType()) {
                         return true;
                     }
+
                     return false;
                 }
             );
@@ -458,6 +458,7 @@ class Order extends BaseOrder
                     if (OperationType::OTHER == $operation->getType()) {
                         return true;
                     }
+
                     return false;
                 }
             );
@@ -489,14 +490,13 @@ class Order extends BaseOrder
         return number_format($result, 2, '.', '');
     }
 
-
-
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
         $return = parent::addOperation($operation);
         if (!$operation->getOrder()) {
             $operation->setOrder($this);
         }
+
         return $return;
     }
 
@@ -522,11 +522,11 @@ class Order extends BaseOrder
         /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
         $result['amount'] = $this->getSum(); //TODO check. May be it must be operation getAmount()
-        $result['tenant'] = $contract? $contract->getTenant()->getFullName() : '';
-        $result['address'] = $contract? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
+        $result['tenant'] = $contract ? $contract->getTenant()->getFullName() : '';
+        $result['address'] = $contract ? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
         $depositDate = $this->getDepositDate();
-        $result['depositDate'] = $depositDate? $depositDate->format('m/d/Y') : 'N/A';
+        $result['depositDate'] = $depositDate ? $depositDate->format('m/d/Y') : 'N/A';
         $result['finish'] = '--';
         $result['style'] = $this->getOrderStatusStyle();
         $result['icon'] = $this->getOrderTypes();
@@ -534,10 +534,10 @@ class Order extends BaseOrder
         $result['status'] = 'order.status.text.'.$status;
         $result['errorMessage'] = $this->getHeartlandMessage();
         switch ($status) {
-            case OrderStatus::COMPLETE:
+            case OrderStatus::COMPLETE :
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
-            case OrderStatus::PENDING:
+            case OrderStatus::PENDING :
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
             case OrderStatus::ERROR:
@@ -547,6 +547,7 @@ class Order extends BaseOrder
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
         }
+
         return $result;
     }
 
@@ -600,7 +601,7 @@ class Order extends BaseOrder
         $result['errorMessage'] = $this->getHeartlandMessage();
         $result['style'] = $this->getOrderStatusStyle();
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
-        $result['property'] = $this->getContract()? $this->getContract()->getRentAddress() : 'N/A';
+        $result['property'] = $this->getContract() ? $this->getContract()->getRentAddress() : 'N/A';
 
         $result['rent'] = $this->getRentAmount();
         $result['other'] = $this->getOtherAmount();
@@ -647,6 +648,7 @@ class Order extends BaseOrder
                     if (TransactionStatus::COMPLETE == $transaction->getStatus() && $transaction->getIsSuccessful()) {
                         return true;
                     }
+
                     return false;
                 }
             )->first();
@@ -660,6 +662,7 @@ class Order extends BaseOrder
                     if (TransactionStatus::REVERSED == $transaction->getStatus() && $transaction->getIsSuccessful()) {
                         return true;
                     }
+
                     return false;
                 }
             )->first();
@@ -676,7 +679,7 @@ class Order extends BaseOrder
     }
 
     /**
-     * @param bool $onlyReversal
+     * @param  bool   $onlyReversal
      * @return string
      */
     public function getHeartlandMessage($onlyReversal = true)
@@ -710,10 +713,10 @@ class Order extends BaseOrder
                     if (TransactionStatus::COMPLETE == $transaction->getStatus() && !$transaction->getIsSuccessful()) {
                         return true;
                     }
+
                     return false;
                 }
             )->last();
-
 
         if ($transaction) {
             return $transaction->getMessages();
@@ -733,8 +736,8 @@ class Order extends BaseOrder
     }
 
     /**
-     * @param bool $asString Defines whether to return a string or an array
-     * @param string $glue A glue for string result
+     * @param bool   $asString Defines whether to return a string or an array
+     * @param string $glue     A glue for string result
      *
      * @return array|string
      */
@@ -785,9 +788,8 @@ class Order extends BaseOrder
 
     public function __toString()
     {
-        return (string)$this->getId();
+        return (string) $this->getId();
     }
-
 
     /**
      * @Serializer\VirtualProperty
@@ -838,7 +840,6 @@ class Order extends BaseOrder
     {
         return $this->getCreatedAt()->format('Y-m-d');
     }
-
 
     /**
      * @Serializer\VirtualProperty
@@ -945,14 +946,17 @@ class Order extends BaseOrder
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
-     * @return string
+     * @return string|null
      */
-    public function getPropertyPrimaryID()
+    public function getPropertyPrimaryId()
     {
         /** @var PropertyMapping $propertyMapping */
         $propertyMapping = $this->getContract()->getProperty()->getPropertyMappingByHolding(
             $this->getContract()->getGroup()->getHolding()
         );
+        if (false == $propertyMapping) {
+            return null;
+        }
 
         return strtolower($propertyMapping->getExternalPropertyId());
     }
@@ -1103,6 +1107,6 @@ class Order extends BaseOrder
      */
     public function getMriPropertyID()
     {
-        return $this->getPropertyPrimaryID();
+        return $this->getPropertyPrimaryId();
     }
 }
