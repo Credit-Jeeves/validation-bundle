@@ -205,7 +205,7 @@ class AjaxController extends Controller
         $billingAccount = $group->getActiveBillingAccount();
 
         if (!$billingAccount) {
-            return new JsonResponse(array('message' => 'Payment account not found'));
+            return new JsonResponse(array('message' => 'Billing account not found'));
         }
 
         $amount = $request->request->get('amount');

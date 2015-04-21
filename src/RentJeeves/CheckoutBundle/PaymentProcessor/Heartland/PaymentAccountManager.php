@@ -24,7 +24,19 @@ use RuntimeException;
 
 class PaymentAccountManager
 {
+    protected $defaultMerchantName;
+
     protected $payum;
+
+    public function setDefaultMerchantName($defaultMerchantName)
+    {
+        $this->defaultMerchantName = $defaultMerchantName;
+    }
+
+    public function getDefaultMerchantName()
+    {
+        return $this->defaultMerchantName;
+    }
 
     public function setPayum($payum)
     {
@@ -139,13 +151,16 @@ class PaymentAccountManager
      *
      * @param PaymentAccountData $paymentAccountData
      * @param User $user
-     * @param Group $group
+     * @param Group $group if group is null use the default merchant account
      * @return string
      * @throws PaymentProcessorConfigurationException
      */
-    public function getToken(PaymentAccountData $paymentAccountData, User $user, Group $group)
+    public function getToken(PaymentAccountData $paymentAccountData, User $user, Group $group = null)
     {
-        $merchantName = $group->getMerchantName();
+        $merchantName = $this->defaultMerchantName;
+        if ($group !== null) {
+            $merchantName = $group->getMerchantName();
+        }
         if (empty($merchantName)) {
             throw new PaymentProcessorConfigurationException(
                 'Heartland payment processor error: merchant name not found'

@@ -47,7 +47,7 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaymentAccount(PaymentAccountData $paymentAccountData, User $user, Group $group)
+    public function createPaymentAccount(PaymentAccountData $paymentAccountData, User $user, Group $group = null)
     {
         return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group);
     }

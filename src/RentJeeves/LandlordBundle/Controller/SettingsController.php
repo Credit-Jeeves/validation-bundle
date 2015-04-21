@@ -117,6 +117,9 @@ class SettingsController extends Controller
      */
     public function createBillingAction(Request $request)
     {
+        $logger = $this->get('logger');
+        $current_group = $this->getCurrentGroup();
+        $logger->debug("Creating landlord billing account for " . $current_group->getName());
         $billingAccountType = $this->createForm(new BillingAccountType());
         $billingAccountType->handleRequest($request);
         if (!$billingAccountType->isValid()) {
@@ -125,9 +128,9 @@ class SettingsController extends Controller
 
         try {
             $landlord = $this->getUser();
-            $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
-            $billing = $this->savePaymentAccount($billingAccountType, $landlord, $this->getCurrentGroup());
+            $billing = $this->createBillingAccount($billingAccountType, $landlord, $current_group);
         } catch (\Exception $e) {
+            $logger->error("Exception occurred! " . $e->getMessage());
             return new JsonResponse(
                 array(
                     $billingAccountType->getName() => array(
