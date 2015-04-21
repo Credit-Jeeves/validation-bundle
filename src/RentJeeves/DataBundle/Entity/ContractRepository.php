@@ -559,8 +559,8 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param  Tenant                                 $tenant
-     * @param $unitName
+     * @param  integer                                $tenantId
+     * @param  string                                 $unitName
      * @param  string                                 $externalUnitId
      * @param  string                                 $propertyId
      * @param  Group                                  $group
@@ -569,7 +569,7 @@ class ContractRepository extends EntityRepository
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getImportContract(
-        Tenant $tenant,
+        $tenantId,
         $unitName,
         $externalUnitId = null,
         $propertyId = null,
@@ -613,7 +613,7 @@ class ContractRepository extends EntityRepository
         $query->setParameter('approved', ContractStatus::APPROVED);
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('invite', ContractStatus::INVITE);
-        $query->setParameter('tenantId', $tenant);
+        $query->setParameter('tenantId', $tenantId);
 
         $query->setMaxResults(1);
         $query = $query->getQuery();

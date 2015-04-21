@@ -21,7 +21,7 @@ class ResidentDataManagerCase extends Base
         $residentDataManager = $this->getContainer()->get('amsi.resident_data');
         $residentDataManager->setSettings($settings);
         $leases = $residentDataManager->getResidents(AMSIClientCase::EXTERNAL_PROPERTY_ID);
-        $this->assertCount(54, $leases);
+        $this->assertCount(53, $leases);
         /** @var Lease $lease */
         $lease = $leases[0];
         $this->assertInstanceOf(
