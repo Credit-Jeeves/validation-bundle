@@ -228,7 +228,7 @@ class PublicController extends Controller
             $session->remove('holding_id');
             $session->remove('resident_id');
 
-            if (null != $resident) {
+            if (!$resident) {
                 if (null != $inviteCode = $resident->getTenant()->getInviteCode()) { // not NULL or not ""
 
                     return $this->redirectToRoute('tenant_invite', ['code' => $inviteCode]);
@@ -240,7 +240,7 @@ class PublicController extends Controller
             } else {
                 $contracts = $em->getRepository('RjDataBundle:ContractWaiting')
                     ->findAllByHoldingAndResidentId($holding, $residentId);
-                if (null !== $contracts) {
+                if (!empty($contracts)) {
                     $contractIds = [];
                     foreach ($contracts as $contract) {
                         $contractIds[] = $contract->getId();
