@@ -79,10 +79,7 @@ class StorageAMSI extends ExternalApiStorage
                 $paymentAccepted = PaymentAccepted::DO_NOT_ACCEPT;
             }
 
-            //@TODO we don't have it in response and don't know format this field,
-            // don't use it, wait response from customer
-            $moveOutDate = $lease->getActualMoveOutDate();
-
+            $moveOutDate = $lease->getActualMoveOutDateObject();
             $balance = $lease->getEndBalance();
             $rent = $lease->getRentAmount();
             $startAt = $lease->getLeaseBeginDateObject();
@@ -98,7 +95,6 @@ class StorageAMSI extends ExternalApiStorage
 
             $street = $unit->getAddress1();
             $city = $unit->getCity();
-            $country = $unit->getCountry();
             $zip = $unit->getZip();
             $state = $unit->getState();
 
@@ -126,7 +122,7 @@ class StorageAMSI extends ExternalApiStorage
                     $firstName,
                     $lastName,
                     $email,
-                    $moveOut = null, // see todo
+                    $this->getDateString($moveOutDate),
                     $balance,
                     $monthToMonth,
                     $paymentAccepted,
