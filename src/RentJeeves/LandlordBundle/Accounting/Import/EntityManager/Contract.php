@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract as Handler;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\LandlordBundle\Model\Import;
@@ -15,6 +16,7 @@ use RentJeeves\LandlordBundle\Model\Import;
 /**
  * @property EntityGroup group
  * @property Import currentImportModel
+ * @property Handler storage
  * @method EntityProperty getProperty
  * @method EntityUnit getUnit
  */
@@ -165,13 +167,28 @@ trait Contract
     protected function getContractFromDataBase(array $row, EntityProperty $property)
     {
         $tenant = $this->currentImportModel->getTenant();
+
+        if ($this->storage->isMultipleGroup()) {
+            $holding = $this->group->getHolding();
+            $group = null;
+        } else {
+            $holding = null;
+            $group = $this->group;
+        }
+
         if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
-            $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy(
-                [
-                    'tenant' => $tenant,
-                    'externalLeaseId' => $row[Mapping::KEY_EXTERNAL_LEASE_ID],
-                ]
-            );
+            $searchParams = [
+                'tenant' => $tenant,
+                'externalLeaseId' => $row[Mapping::KEY_EXTERNAL_LEASE_ID],
+            ];
+
+            if (!empty($group)) {
+                $searchParams['group'] = $group;
+            } else {
+                $searchParams['holding'] = $holding;
+            }
+
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy($searchParams);
         }
 
         if (empty($contract)) {
@@ -179,7 +196,9 @@ trait Contract
                 $tenant->getId(),
                 ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
                 isset($row[Mapping::KEY_UNIT_ID]) ? $row[Mapping::KEY_UNIT_ID] : null,
-                $property->getId()
+                $property->getId(),
+                $group,
+                $holding
             );
         }
 
