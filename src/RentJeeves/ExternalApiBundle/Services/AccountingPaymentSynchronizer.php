@@ -97,7 +97,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Holding $holding
+     * @param  Holding $holding
      * @return bool
      */
     public function isAllowedToSend(Holding $holding)
@@ -118,7 +118,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Order $order
+     * @param  Order $order
      * @return bool
      */
     public function createJob(Order $order)
@@ -134,7 +134,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Order $order
+     * @param  Order $order
      * @return bool
      */
     public function sendOrderToAccountingSystem(Order $order)
@@ -147,6 +147,7 @@ class AccountingPaymentSynchronizer
                         $order->getId()
                     )
                 );
+
                 return false;
             }
 
@@ -158,6 +159,7 @@ class AccountingPaymentSynchronizer
                         $order->getId()
                     )
                 );
+
                 return false;
             }
 
@@ -212,7 +214,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param bool $debug
+     * @param  bool  $debug
      * @return $this
      */
     public function setDebug($debug)
@@ -223,8 +225,8 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Order $order
-     * @param ClientInterface $apiClient
+     * @param  Order           $order
+     * @param  ClientInterface $apiClient
      * @return bool
      */
     protected function existsExternalMapping(Order $order, ClientInterface $apiClient)
@@ -257,14 +259,15 @@ class AccountingPaymentSynchronizer
      */
     protected function addPaymentToBatch(Order $order)
     {
+        $externalPropertyId = null;
         $holding = $order->getContract()->getHolding();
         $settings = $holding->getAccountingSettings();
         $accountingPackageType = $settings->getApiIntegration();
-        $externalPropertyId = $order->getPropertyPrimaryID();
         $paymentBatchId = $order->getCompleteTransaction()->getBatchId();
         $apiClient = $this->getApiClientByOrder($order);
 
-        if ($apiClient->supportsBatches()) {
+        if ($apiClient->supportsBatches() && $apiClient->supportsProperties()) {
+            $externalPropertyId = $order->getPropertyPrimaryId();
             /** @var PaymentBatchMappingRepository $repo */
             $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
             $batchId = $repo->getAccountingBatchId(
@@ -288,7 +291,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Order $order
+     * @param  Order $order
      * @return bool
      */
     protected function openBatch(Order $order)
@@ -296,7 +299,7 @@ class AccountingPaymentSynchronizer
         $transaction = $order->getCompleteTransaction();
         $paymentBatchId = $transaction->getBatchId();
         $accountingType = $this->getAccountingType($order);
-        $externalPropertyId = $order->getPropertyPrimaryID();
+        $externalPropertyId = $order->getPropertyPrimaryId();
 
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
@@ -364,7 +367,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Order $order
+     * @param  Order                      $order
      * @return Interfaces\ClientInterface
      */
     protected function getApiClientByOrder(Order $order)
@@ -379,7 +382,7 @@ class AccountingPaymentSynchronizer
 
     /**
      * @param $accountingType
-     * @param null $accountingSettings
+     * @param  null                       $accountingSettings
      * @return Interfaces\ClientInterface
      */
     protected function getApiClient($accountingType, $accountingSettings = null)
@@ -406,7 +409,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Order $order
+     * @param  Order  $order
      * @return string
      */
     protected function getAccountingType(Order $order)
