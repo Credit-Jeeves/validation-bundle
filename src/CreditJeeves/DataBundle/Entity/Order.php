@@ -954,7 +954,7 @@ class Order extends BaseOrder
         $propertyMapping = $this->getContract()->getProperty()->getPropertyMappingByHolding(
             $this->getContract()->getGroup()->getHolding()
         );
-        if (false == $propertyMapping) {
+        if (null === $propertyMapping) {
             return null;
         }
 
