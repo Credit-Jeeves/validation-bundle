@@ -44,21 +44,20 @@ trait Unit
         }
 
         // unit name is empty -- treat as a new single property
-        $unitId = (isset($row[Mapping::KEY_UNIT_ID]))? $row[Mapping::KEY_UNIT_ID] : '';
+        $unitId = (isset($row[Mapping::KEY_UNIT_ID])) ? $row[Mapping::KEY_UNIT_ID] : '';
         $unitName = $row[Mapping::KEY_UNIT];
         if ($this->isEmptyString($unitName) && !$this->isEmptyString($unitId)) {
             $this->logger->debug("Unit name is empty, but has unit id (" . $unitId . ")");
             $property->addPropertyGroup($this->group);
             $this->propertyProcess->setupSingleProperty($property);
+
             return $property->getUnits()->first();
         }
 
         /*
          * find unit within multi-unit property...
          */
-        $params = array(
-            'name' => $row[Mapping::KEY_UNIT],
-        );
+        $params['name'] = $row[Mapping::KEY_UNIT];
 
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
@@ -102,7 +101,7 @@ trait Unit
     }
 
     /**
-     * @param array $row
+     * @param  array       $row
      * @return UnitMapping
      */
     public function getUnitMapping(array $row, EntityUnit $unit)
@@ -124,6 +123,7 @@ trait Unit
         if (!$this->storage->isMultipleProperty()) {
             $unitMapping = new UnitMapping();
             $this->externalUnitIdList[$externalUnitId] = $unitMapping;
+
             return $unitMapping;
         }
 
