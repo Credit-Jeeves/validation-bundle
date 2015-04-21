@@ -3,7 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Model\Holding;
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
@@ -558,13 +558,23 @@ class ContractRepository extends EntityRepository
         return $groupIds;
     }
 
+    /**
+     * @param  Tenant                                 $tenant
+     * @param $unitName
+     * @param  string                                 $externalUnitId
+     * @param  string                                 $propertyId
+     * @param  Group                                  $group
+     * @param  Holding                                $holding
+     * @return Contract
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getImportContract(
-        $tenant,
+        Tenant $tenant,
         $unitName,
         $externalUnitId = null,
         $propertyId = null,
-        $group = null,
-        $holding = null
+        Group $group = null,
+        Holding $holding = null
     ) {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
