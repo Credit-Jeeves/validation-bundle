@@ -118,8 +118,8 @@ class SettingsController extends Controller
     public function createBillingAction(Request $request)
     {
         $logger = $this->get('logger');
-        $current_group = $this->getCurrentGroup();
-        $logger->debug("Creating landlord billing account for " . $current_group->getName());
+        $currentGroup = $this->getCurrentGroup();
+        $logger->debug("Creating landlord billing account for " . $currentGroup->getName());
         $billingAccountType = $this->createForm(new BillingAccountType());
         $billingAccountType->handleRequest($request);
         if (!$billingAccountType->isValid()) {
@@ -128,7 +128,7 @@ class SettingsController extends Controller
 
         try {
             $landlord = $this->getUser();
-            $billing = $this->createBillingAccount($billingAccountType, $landlord, $current_group);
+            $billing = $this->createBillingAccount($billingAccountType, $landlord, $currentGroup);
         } catch (\Exception $e) {
             $logger->error("Exception occurred! " . $e->getMessage());
             return new JsonResponse(
