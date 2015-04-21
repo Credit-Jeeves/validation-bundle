@@ -240,7 +240,7 @@ class PublicController extends Controller
             } else {
                 $contracts = $em->getRepository('RjDataBundle:ContractWaiting')
                     ->findAllByHoldingAndResidentId($holding, $residentId);
-                if (null !== $contracts) {
+                if (!empty($contracts)) {
                     $contractIds = [];
                     foreach ($contracts as $contract) {
                         $contractIds[] = $contract->getId();
