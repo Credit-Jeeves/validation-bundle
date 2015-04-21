@@ -176,7 +176,13 @@ class Group extends BaseGroup
     public function getIntegratedApiSettings()
     {
         $holding = $this->getHolding();
-        $apiIntegration = $holding->getAccountingSettings()->getApiIntegration();
+        $accountingSettings = $holding->getAccountingSettings();
+
+        if (empty($accountingSettings)) {
+            return null;
+        }
+
+        $apiIntegration = $accountingSettings->getApiIntegration();
 
         switch ($apiIntegration) {
             case ApiIntegrationType::AMSI:

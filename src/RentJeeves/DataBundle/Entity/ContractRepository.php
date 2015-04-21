@@ -3,11 +3,10 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Model\Holding;
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -16,7 +15,6 @@ use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Entity\Property;
 
 class ContractRepository extends EntityRepository
 {
@@ -35,8 +33,8 @@ class ContractRepository extends EntityRepository
      * In other cases, please use native names
      *
      * @param QueryBuilder $query
-     * @param string $searchField
-     * @param string $searchString
+     * @param string       $searchField
+     * @param string       $searchString
      *
      * @return mixed
      */
@@ -94,6 +92,7 @@ class ContractRepository extends EntityRepository
             $query->andWhere('c.status <> :status');
             $query->setParameter('status', ContractStatus::DELETED);
         }
+
         return $query;
     }
 
@@ -106,13 +105,14 @@ class ContractRepository extends EntityRepository
     {
         $search = preg_replace('/\s+/', ' ', trim($search));
         $search = explode(' ', $search);
+
         return $search;
     }
 
     /**
      * @param QueryBuilder $query
-     * @param string $sortField
-     * @param string $sortOrder
+     * @param string       $sortField
+     * @param string       $sortOrder
      *
      * @return mixed
      */
@@ -167,7 +167,7 @@ class ContractRepository extends EntityRepository
     /**
      * Count records for Tenant Tab
      *
-     * @param Group $group
+     * @param Group  $group
      * @param string $searchBy
      * @param string $search
      *
@@ -182,18 +182,19 @@ class ContractRepository extends EntityRepository
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $query->getQuery();
+
         return $query->getScalarResult();
     }
 
     /**
-     * 
+     *
      * @param \CreditJeeves\DataBundle\Entity\Group $group
-     * @param integer $page
-     * @param integer $limit
-     * @param string $sortField
-     * @param string $sortOrder
-     * @param string $searchField
-     * @param string $searchString
+     * @param integer                               $page
+     * @param integer                               $limit
+     * @param string                                $sortField
+     * @param string                                $sortOrder
+     * @param string                                $searchField
+     * @param string                                $searchString
      *
      * @return mixed
      */
@@ -218,13 +219,14 @@ class ContractRepository extends EntityRepository
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
     /**
-     * @param Group $group
-     * @param int $page
-     * @param int $limit
+     * @param Group  $group
+     * @param int    $page
+     * @param int    $limit
      * @param string $sortField
      * @param string $sortOrder
      * @param string $searchField
@@ -307,6 +309,7 @@ class ContractRepository extends EntityRepository
         );
         $query->setParameter('tenant', $tenant->getId());
         $query = $query->getQuery();
+
         return $query->getSingleScalarResult();
     }
 
@@ -369,6 +372,7 @@ class ContractRepository extends EntityRepository
         $query->where('c.group IN (:groups)');
         $query->setParameter('groups', $groupsIds);
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -393,6 +397,7 @@ class ContractRepository extends EntityRepository
         $query->setParameter('end', $end->format('Y-m-d'));
         $query->groupBy('h.id');
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -403,6 +408,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.holding', 'h');
         $query->groupBy('h.id');
         $query = $query->getQuery();
+
         return $query->iterate();
     }
 
@@ -425,6 +431,7 @@ class ContractRepository extends EntityRepository
         $query->setParameter('end', $end->format('Y-m-d'));
         $query = $query->getQuery();
         $result = $query->getOneOrNullResult();
+
         return !empty($result) ? $result[1] : 0;
     }
 
@@ -440,13 +447,14 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new DateTime());
         $query = $query->getQuery();
         $result = $query->getOneOrNullResult();
+
         return !empty($result) ? $result[1] : 0;
     }
 
     /**
      * Complicated query, have unit test
      *
-     * @param int $days
+     * @param  int             $days
      * @return ArrayCollection
      */
     public function getLateContracts($days = 5)
@@ -488,8 +496,8 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param Holding $holding
-     * @param array $status
+     * @param  Holding         $holding
+     * @param  array           $status
      * @return ArrayCollection
      */
     public function getAllLateContractsByHolding(
@@ -513,8 +521,8 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param ArrayCollection $groups
-     * @param array $status
+     * @param  ArrayCollection $groups
+     * @param  array           $status
      * @return ArrayCollection
      */
     public function getAllLateContractsByGroups($groups, $status = [ContractStatus::CURRENT, ContractStatus::APPROVED])
@@ -536,7 +544,7 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param ArrayCollection $groups
+     * @param  ArrayCollection $groups
      * @return array
      */
     protected function getGroupIds($groups)
@@ -550,9 +558,24 @@ class ContractRepository extends EntityRepository
         return $groupIds;
     }
 
-
-    public function getImportContract($tenant, $unitName, $externalUnitId = null, $propertyId = null)
-    {
+    /**
+     * @param  integer                                $tenantId
+     * @param  string                                 $unitName
+     * @param  string                                 $externalUnitId
+     * @param  string                                 $propertyId
+     * @param  Group                                  $group
+     * @param  Holding                                $holding
+     * @return Contract
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getImportContract(
+        $tenantId,
+        $unitName,
+        $externalUnitId = null,
+        $propertyId = null,
+        Group $group = null,
+        Holding $holding = null
+    ) {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
@@ -572,6 +595,17 @@ class ContractRepository extends EntityRepository
             $query->andWhere('property.id = :propertyId');
             $query->setParameter('propertyId', $propertyId);
         }
+
+        if ($holding) {
+            $query->andWhere('contract.holding = :holding');
+            $query->setParameter('holding', $holding);
+        }
+
+        if ($group) {
+            $query->andWhere('contract.group = :group');
+            $query->setParameter('group', $group);
+        }
+
         // if 2 or more contract get contract with status current in first priority
         $query->addOrderBy('contract.status', "DESC");
         //If 2 or more contract, get last updated
@@ -579,7 +613,7 @@ class ContractRepository extends EntityRepository
         $query->setParameter('approved', ContractStatus::APPROVED);
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('invite', ContractStatus::INVITE);
-        $query->setParameter('tenantId', $tenant);
+        $query->setParameter('tenantId', $tenantId);
 
         $query->setMaxResults(1);
         $query = $query->getQuery();
@@ -639,7 +673,7 @@ class ContractRepository extends EntityRepository
      * We have test for this query because query not so clear as I want
      * Test name ContractRepositoryCase
      *
-     * @param DateTime $date
+     * @param  DateTime $date
      * @return mixed
      */
     public function getPotentialLateContract(DateTime $date)
@@ -695,8 +729,8 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param QueryBuilder $query
-     * @param string $orderStatus
-     * @param int $monthAgo
+     * @param string       $orderStatus
+     * @param int          $monthAgo
      *
      * @return QueryBuilder
      */
@@ -805,8 +839,8 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param Tenant $tenant
-     * @param Unit $unit
+     * @param  Tenant $tenant
+     * @param  Unit   $unit
      * @return bool
      */
     public function isExistDuplicateByTenantUnit(Tenant $tenant, Unit $unit, $id = null)
@@ -850,7 +884,7 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param Tenant $tenant
+     * @param  Tenant $tenant
      * @return bool
      */
     public function isTurnedOnBureauReporting(Tenant $tenant)
