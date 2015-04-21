@@ -12,6 +12,8 @@ use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\LandlordBundle\Form\BillingAccountType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,18 +30,6 @@ use \DateTime;
  */
 trait PaymentProcess
 {
-    protected $merchantName = null;
-
-    protected function setMerchantName($merchantName)
-    {
-        $this->merchantName = $merchantName;
-    }
-
-    protected function getMerchantName(Group $group)
-    {
-        return $this->merchantName ?: $group->getMerchantName();
-    }
-
     /**
      * Creates a new payment account. Right now only Heartland is supported.
      *
@@ -81,6 +71,36 @@ trait PaymentProcess
         $em->flush();
 
         return $paymentAccountEntity;
+    }
+
+    /**
+     * Creates a new billing account, so a landlord can pay RentTrack.
+     *
+     * @param Form $billingAccountType
+     * @param User $user
+     * @param Group $group
+     * @return mixed
+     */
+    protected function createBillingAccount(Form $billingAccountType, User $user, Group $group)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        // get BillingAccount entity from form data
+        /** @var BillingAccount $billingAccount */
+        $billingAccount = $billingAccountType->getData();
+        $billingAccount->setGroup($group);
+
+        // call out to PaymentProcessor interface for RentTrack payment token
+        $mapper = $this->get('payment_account.type.mapper');
+        $paymentAccountMapped = $mapper->mapLandlordAccountTypeForm($billingAccountType);
+        $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
+        $token = $paymentProcessor->createPaymentAccount($paymentAccountMapped, $user, null);
+        $billingAccount->setToken($token);
+
+        $em->persist($billingAccount);
+        $em->flush();
+
+        return $billingAccount;
     }
 
     protected function savePayment(

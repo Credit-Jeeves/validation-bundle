@@ -17,10 +17,10 @@ interface PaymentProcessorInterface
      *
      * @param PaymentAccountData $data
      * @param User $user
-     * @param Group $group
+     * @param Group $group The group that will receive payments. Set to null for RentTrack account.
      * @return string
      */
-    public function createPaymentAccount(PaymentAccountData $data, User $user, Group $group);
+    public function createPaymentAccount(PaymentAccountData $data, User $user, Group $group = null);
 
     /**
      * Executes order of a given payment type (rent or report).

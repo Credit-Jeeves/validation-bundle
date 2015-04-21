@@ -17,6 +17,9 @@ use Symfony\Component\Form\Form;
 class PaymentAccountTypeMapper
 {
     /**
+     * TODO: Using this function makes the code harder to follow.
+     * TODO: Instead, please use the concrete mapping functions (below) directly.
+     *
      * @param Form $paymentAccountType
      * @return PaymentAccount
      * @throws PaymentAccountTypeMapException
@@ -25,8 +28,6 @@ class PaymentAccountTypeMapper
     {
         if (TenantPaymentAccount::NAME == $paymentAccountType->getName()) {
             $paymentAccountData = $this->mapTenantAccountTypeForm($paymentAccountType);
-        } elseif (LandlordPaymentAccount::NAME == $paymentAccountType->getName()) {
-            $paymentAccountData = $this->mapLandlordAccountTypeForm($paymentAccountType);
         } elseif (ApiPaymentAccount::NAME == $paymentAccountType->getName()) {
             $paymentAccountData = $this->mapApiAccountTypeForm($paymentAccountType);
         } else {
