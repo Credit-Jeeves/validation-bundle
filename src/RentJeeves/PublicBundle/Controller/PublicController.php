@@ -228,7 +228,7 @@ class PublicController extends Controller
             $session->remove('holding_id');
             $session->remove('resident_id');
 
-            if (null !== $resident) {
+            if (null != $resident) {
                 if (null != $inviteCode = $resident->getTenant()->getInviteCode()) { // not NULL or not ""
 
                     return $this->redirectToRoute('tenant_invite', ['code' => $inviteCode]);
