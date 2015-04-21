@@ -73,7 +73,7 @@ class StorageAMSI extends ExternalApiStorage
         /** @var Lease $lease */
         foreach ($residentLeases as $lease) {
             $paymentAccepted = $lease->getBlockPaymentAccess();
-            if (strtolower($paymentAccepted) === 'y') {
+            if (strtolower($paymentAccepted) === 'n') {
                 $paymentAccepted = PaymentAccepted::ANY;
             } else {
                 $paymentAccepted = PaymentAccepted::DO_NOT_ACCEPT;
