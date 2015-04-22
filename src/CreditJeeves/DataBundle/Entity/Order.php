@@ -534,10 +534,10 @@ class Order extends BaseOrder
         $result['status'] = 'order.status.text.'.$status;
         $result['errorMessage'] = $this->getHeartlandMessage();
         switch ($status) {
-            case OrderStatus::COMPLETE :
+            case OrderStatus::COMPLETE:
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
-            case OrderStatus::PENDING :
+            case OrderStatus::PENDING:
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
             case OrderStatus::ERROR:
