@@ -681,6 +681,8 @@ abstract class HandlerAbstract implements HandlerInterface
                 $contract->setStatus(ContractStatus::INVITE);
                 $this->flushEntity($contract);
 
+                $this->sendInviteEmail();
+
                 return true;
             }
 
