@@ -28,12 +28,12 @@ class PaymentPushCommandCase extends BaseTestCase
                 ResManClientCase::EXTERNAL_PROPERTY_ID,
                 ResManClientCase::EXTERNAL_LEASE_ID
             ],
-/*            [
+            [
                 ApiIntegrationType::MRI,
                 MRIClientCase::RESIDENT_ID,
                 MRIClientCase::PROPERTY_ID,
                 null
-            ]*/
+            ]
         ];
     }
 
