@@ -94,7 +94,7 @@ class PayRent
             $additionalInformation = ', reason: ' . $e->getMessage();
         }
 
-        if (OrderStatus::ERROR == $orderStatus) {
+        if (OrderStatus::ERROR == $order->getStatus()) {
             $this->closePaymentIfRecurring($payment, $order);
         } else {
             $this->setContractAsCurrent($payment->getContract());
