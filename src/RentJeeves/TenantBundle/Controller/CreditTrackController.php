@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\TenantBundle\Controller;
 
-use Payum\Request\BinaryMaskStatusRequest;
+use Payum2\Request\BinaryMaskStatusRequest;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use RentJeeves\DataBundle\Entity\UserSettings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use JMS\Serializer\SerializationContext;
 use DateTime;
 
@@ -39,6 +37,7 @@ class CreditTrackController extends Controller
             ) {
                 return false;
             }
+
             return true;
         });
         $serializer = $this->get('jms_serializer');
@@ -93,6 +92,7 @@ class CreditTrackController extends Controller
             $em->persist($settings);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'credittrack.pay.saved');
+
             return new JsonResponse(
                 array(
                     'success' => true,
@@ -146,6 +146,7 @@ class CreditTrackController extends Controller
     {
         /** @var Tenant $user */
         $user = $this->getUser();
+
         return array(
             'creditTrackEnabled' => $user->getSettings()->isCreditTrack()
         );
@@ -166,6 +167,7 @@ class CreditTrackController extends Controller
             $em->persist($settings);
             $em->flush();
         }
+
         return $this->redirect($this->generateUrl('user_plans'));
     }
 }

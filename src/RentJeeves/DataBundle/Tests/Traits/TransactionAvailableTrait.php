@@ -9,7 +9,8 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\CoreBundle\DateTime;
@@ -23,7 +24,7 @@ trait TransactionAvailableTrait
      * @param string $externalLeaseId
      * @param string $externalUnitId
      *
-     * @return Heartland
+     * @return Transaction
      */
     public function createTransaction(
         $apiIntegrationType,
@@ -88,7 +89,7 @@ trait TransactionAvailableTrait
         $operation->setPaidFor($paidFor);
         $operation->setOrder($order);
 
-        $transaction = new Heartland();
+        $transaction = new Transaction();
         $transaction->setAmount(500);
         $transaction->setOrder($order);
         $transaction->setBatchId(55558888);
@@ -96,7 +97,7 @@ trait TransactionAvailableTrait
         $transaction->setStatus(TransactionStatus::COMPLETE);
         $transaction->setIsSuccessful(true);
         $transaction->setTransactionId(rand(9999, 9999999));
-        $order->addHeartland($transaction);
+        $order->addTransaction($transaction);
 
         $em->persist($transaction);
         $em->persist($operation);

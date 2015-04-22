@@ -11,11 +11,11 @@ use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
-class HeartlandRepository extends EntityRepository
+class TransactionRepository extends EntityRepository
 {
     /**
-     * @param Group $group
-     * @param DateTime $date
+     * @param  Group    $group
+     * @param  DateTime $date
      * @return mixed
      */
     public function getBatchDepositedInfo(Group $group, DateTime $date)
@@ -63,7 +63,7 @@ class HeartlandRepository extends EntityRepository
     }
 
     /**
-     * @param \Doctrine\Common\Collections\ArrayCollection $groups
+     * @param  \Doctrine\Common\Collections\ArrayCollection $groups
      * @param $start
      * @param $end
      * @return mixed
@@ -137,7 +137,7 @@ class HeartlandRepository extends EntityRepository
         return $query->getQuery()->execute();
     }
     /**
-     * @param \Doctrine\Common\Collections\ArrayCollection $groups
+     * @param  \Doctrine\Common\Collections\ArrayCollection $groups
      * @return array
      */
     protected function getGroupIds($groups)
@@ -147,6 +147,7 @@ class HeartlandRepository extends EntityRepository
             /** @var Group $group */
             $groupIds[] = $group->getId();
         }
+
         return $groupIds;
     }
 
@@ -273,7 +274,7 @@ class HeartlandRepository extends EntityRepository
      */
     public function getMerchantHoldingByBatchId($batchId)
     {
-        /** @var Heartland $transaction */
+        /** @var Transaction $transaction */
         $transaction = $this
             ->createQueryBuilder('h')
             ->where('h.batchId = :batchId')

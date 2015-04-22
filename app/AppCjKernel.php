@@ -1,8 +1,5 @@
 <?php
 
-use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 /**
@@ -36,7 +33,7 @@ class AppCjKernel extends AppKernel
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
-            new Payum\Bundle\PayumBundle\PayumBundle(),
+            new Payum2\Bundle\PayumBundle\Payum2Bundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
             new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
@@ -75,7 +72,7 @@ class AppCjKernel extends AppKernel
             $bundles[] = new Behat\MinkBundle\MinkBundle();
             $bundles[] = new CreditJeeves\TestBundle\TestBundle(); // Must be last included bundle
         }
-    
+
         return $bundles;
     }
 

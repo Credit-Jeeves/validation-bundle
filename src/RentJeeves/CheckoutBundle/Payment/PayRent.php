@@ -67,7 +67,7 @@ class PayRent
     /**
      * Runs rent payment.
      *
-     * @param Payment $payment
+     * @param  Payment $payment
      * @return Order
      */
     public function executePayment(Payment $payment)
@@ -81,18 +81,32 @@ class PayRent
         $this->em->persist($order);
         $this->em->flush();
 
-        $orderStatus = $this->getPaymentProcessor($payment)->executeOrder(
-            $order,
-            $payment->getPaymentAccount(),
-            PaymentGroundType::RENT
-        );
-        $order->setStatus($orderStatus);
-        if (OrderStatus::ERROR == $orderStatus) {
+        $additionalInformation = '';
+        try {
+            $orderStatus = $this->getPaymentProcessor($payment)->executeOrder(
+                $order,
+                $payment->getPaymentAccount(),
+                PaymentGroundType::RENT
+            );
+            $order->setStatus($orderStatus);
+        } catch (\Exception $e) {
+            $order->setStatus(OrderStatus::ERROR);
+            $additionalInformation = ', reason: ' . $e->getMessage();
+        }
+
+        if (OrderStatus::ERROR == $order->getStatus()) {
             $this->closePaymentIfRecurring($payment, $order);
         } else {
             $this->setContractAsCurrent($payment->getContract());
         }
-        $this->logger->debug('New order ID ' . $order->getId() . ', status: ' . $order->getStatus());
+        $this->logger->debug(
+            sprintf(
+                'New order ID %d, status: %s%s',
+                $order->getId(),
+                $order->getStatus(),
+                $additionalInformation
+            )
+        );
 
         $this->em->flush();
 
@@ -102,7 +116,7 @@ class PayRent
     /**
      * Finds payment processor for a given payment.
      *
-     * @param Payment $payment
+     * @param  Payment                                                               $payment
      * @return \RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface
      */
     protected function getPaymentProcessor(Payment $payment)
@@ -113,7 +127,7 @@ class PayRent
     /**
      * Closes one-time payment.
      *
-     * @param Payment $payment
+     * @param  Payment    $payment
      * @throws \Exception
      */
     protected function closePaymentIfOneTime(Payment $payment)
@@ -128,8 +142,8 @@ class PayRent
     /**
      * Closes recurring payment if payment source is credit card.
      *
-     * @param Payment $payment
-     * @param Order $order
+     * @param  Payment    $payment
+     * @param  Order      $order
      * @throws \Exception
      */
     protected function closePaymentIfRecurring(Payment $payment, Order $order)

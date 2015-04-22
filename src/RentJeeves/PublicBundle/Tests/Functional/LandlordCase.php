@@ -1,8 +1,6 @@
 <?php
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
-use Payum\Heartland\Soap\Base\ACHAccountType;
-use Payum\Heartland\Soap\Base\ACHDepositType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
@@ -47,7 +45,7 @@ class LandlordCase extends BaseTestCase
         $this->assertCount(1, $buttons, 'Wrong number of buttons');
         $buttons[0]->click();
         $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
-        
+
         $this->assertNotNull($form = $this->page->find('css', '#LandlordAddressType'));
         $this->fillForm(
             $form,

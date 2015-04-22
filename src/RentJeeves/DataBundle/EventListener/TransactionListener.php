@@ -3,9 +3,9 @@ namespace RentJeeves\DataBundle\EventListener;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use Symfony\Component\DependencyInjection\Container;
@@ -40,9 +40,9 @@ class TransactionListener
      */
     public function postPersist(LifecycleEventArgs $event)
     {
-        /** @var Heartland $transaction */
+        /** @var Transaction $transaction */
         $transaction = $event->getEntity();
-        if (!$transaction instanceof Heartland) {
+        if (!$transaction instanceof Transaction) {
             return;
         }
 
@@ -54,9 +54,9 @@ class TransactionListener
     }
 
     /**
-     * @param Heartland $transaction
+     * @param Transaction $transaction
      */
-    public function manageAccountingSynchronization(Heartland $transaction)
+    public function manageAccountingSynchronization(Transaction $transaction)
     {
         if (!$transaction->getIsSuccessful() ||
             !$transaction->getBatchId() ||
@@ -111,9 +111,9 @@ class TransactionListener
     }
 
     /**
-     * @param Heartland $transaction
+     * @param Transaction $transaction
      */
-    protected function addJobForPostReversalsToAmsi(Heartland $transaction)
+    protected function addJobForPostReversalsToAmsi(Transaction $transaction)
     {
         $order = $transaction->getOrder();
 
@@ -128,11 +128,11 @@ class TransactionListener
     }
 
     /**
-     * @param Heartland $transaction
+     * @param Transaction $transaction
      *
      * @return boolean
      */
-    protected function canCreateJobReturnForAmsi(Heartland $transaction)
+    protected function canCreateJobReturnForAmsi(Transaction $transaction)
     {
         if ($transaction->getStatus() === TransactionStatus::REVERSED) {
             if ($contract = $transaction->getOrder()->getContract()) {

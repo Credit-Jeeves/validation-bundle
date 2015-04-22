@@ -105,7 +105,6 @@ class Order extends ResponseResource
         switch ($this->entity->getType()) {
             case OrderType::HEARTLAND_BANK:
                 return 'bank';
-            case OrderType::AUTHORIZE_CARD:
             case OrderType::HEARTLAND_CARD:
                 return 'card';
             default:
@@ -183,7 +182,7 @@ class Order extends ResponseResource
     protected function getTransaction()
     {
         if ($this->entity->getStatus() == OrderStatus::ERROR) {
-            return $this->entity->getHeartlands()->first();
+            return $this->entity->getTransactions()->first();
         } else {
             return $this->entity->getCompleteTransaction();
         }

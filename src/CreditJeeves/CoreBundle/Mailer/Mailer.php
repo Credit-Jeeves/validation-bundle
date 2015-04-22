@@ -2,14 +2,9 @@
 namespace CreditJeeves\CoreBundle\Mailer;
 
 use CreditJeeves\DataBundle\Entity\Lead;
-use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Model\UserInterface;
-use JMS\DiExtraBundle\Annotation as DI;
-use \Exception;
-use \RuntimeException;
-use CreditJeeves\CoreBundle\Mailer\BaseMailer;
 
 /**
  */
@@ -17,9 +12,9 @@ class Mailer extends BaseMailer implements MailerInterface
 {
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param string $sTemplate
-     * @param array $vars
+     * @param array  $vars
      *
      * @return bool
      */
@@ -95,7 +90,7 @@ class Mailer extends BaseMailer implements MailerInterface
             array('code' => $user->getInviteCode()),
             true
         );
-    
+
         return $this->sendEmail(
             $user,
             $sTemplate,
@@ -105,22 +100,8 @@ class Mailer extends BaseMailer implements MailerInterface
         );
     }
 
-    public function sendReportReceipt(Order $order)
-    {
-        $dateShortFormat = $this->container->getParameter('date_short');
-        return $this->sendEmail(
-            $order->getUser(),
-            'receipt',
-            array(
-                'date' => $order->getCreatedAt()->format($dateShortFormat),
-                'amout' => '$9.00', // TODO move to config file and add correct currency formatting
-                'number' => $order->getAuthorizes()->last()->getTransactionId(),
-            )
-        );
-    }
-
     /**
-     * @param User $user
+     * @param  User  $user
      * @return array
      */
     public function prepareUser($user)

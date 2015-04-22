@@ -5,14 +5,10 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\User as BaseUser;
-use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\Partner;
 use RentJeeves\DataBundle\Entity\PartnerUserMapping;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\True;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -148,6 +144,7 @@ abstract class User extends BaseUser
                 $return = $order;
             }
         }
+
         return $return;
     }
 
@@ -161,7 +158,7 @@ abstract class User extends BaseUser
      */
     public function getLastCompleteReportOperation()
     {
-        $orders = array_reverse((array)$this->getOrders()->getIterator());
+        $orders = array_reverse((array) $this->getOrders()->getIterator());
 
         /** @var Order $order */
         foreach ($orders as $order) {
@@ -174,6 +171,7 @@ abstract class User extends BaseUser
                 }
             }
         }
+
         return null;
     }
 
@@ -263,6 +261,7 @@ abstract class User extends BaseUser
             $return['zip'] = $address->getZip();
             $return['country'] = $address->getCountry();
         }
+
         return $return;
     }
 
@@ -285,6 +284,7 @@ abstract class User extends BaseUser
         $User->setLocked($this->locked);
         $User->setExpired($this->expired);
         $User->setCredentialsExpired($this->credentialsExpired);
+
         return $User;
     }
 
@@ -301,6 +301,7 @@ abstract class User extends BaseUser
                 break;
             }
         }
+
         return $return;
     }
 
@@ -312,6 +313,7 @@ abstract class User extends BaseUser
         if ($address = $this->getDefaultAddress()) {
             return $address->getStreet();
         }
+
         return null;
     }
 
@@ -323,6 +325,7 @@ abstract class User extends BaseUser
         if ($address = $this->getDefaultAddress()) {
             return $address->getUnit();
         }
+
         return null;
     }
 
@@ -334,6 +337,7 @@ abstract class User extends BaseUser
         if ($address = $this->getDefaultAddress()) {
             return $address->getArea();
         }
+
         return null;
     }
 
@@ -345,6 +349,7 @@ abstract class User extends BaseUser
         if ($address = $this->getDefaultAddress()) {
             return $address->getZip();
         }
+
         return null;
     }
 
@@ -356,12 +361,14 @@ abstract class User extends BaseUser
         if ($address = $this->getDefaultAddress()) {
             return $address->getCity();
         }
+
         return null;
     }
 
     public function getLastScore()
     {
         $score = $this->getScores()->last();
+
         return $score ? $score->getScore() : 0;
     }
 
@@ -370,7 +377,8 @@ abstract class User extends BaseUser
         $score = $this->getLastScore();
         $nFicoScore = round(10 * (($score - 483.06) / 11.079) + 490);
         $nFicoScore = $nFicoScore > 850 ? 850 : $nFicoScore;
-        return $score ? $nFicoScore: 0;
+
+        return $score ? $nFicoScore : 0;
     }
 
     /**
@@ -379,7 +387,8 @@ abstract class User extends BaseUser
     public function getDBO()
     {
         $dbo = parent::getDateOfBirth();
-        return $dbo?$dbo->format('mdY'):'';
+
+        return $dbo ? $dbo->format('mdY') : '';
     }
 
     /**
@@ -425,5 +434,15 @@ abstract class User extends BaseUser
         }
         $partnerUserMapping->setPartner($partner);
         $this->partner = $partnerUserMapping;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAciCollectPayProfileId()
+    {
+        if ($this->getAciCollectPayProfile()) {
+            return $this->getAciCollectPayProfile()->getProfileId();
+        }
     }
 }

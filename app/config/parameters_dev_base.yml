@@ -19,15 +19,16 @@ parameters:
     google_maps_key: 'AIzaSyBsW5-jPDZ2C-l9d62DVgdvQMerbt0XvNo' # API account with staging@renttrack.com
 
     payment_processor.hps.report_path: /tmp
-    authorize_net:
-        login_id: '7hNc5K44'
-        transaction_key: '5588K4QpHFhhqL5A'
-        sandbox: true
     heartland:
         env: testing
         application_id: 3
         username: RTAPI
         password: $RTapi13
+    aci_collect_pay:
+        sandbox: true
+        businessId: 563375
+        login: RentTrackEnrollConnect
+        password: KI9DPqXaJ8
 
     login.attempts: 1
     login.delay: 1

@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -122,6 +123,19 @@ class Group extends BaseGroup
         }
 
         return $this->groupSettings;
+    }
+
+    /**
+     * @return AciCollectPaySettings
+     */
+    public function getAciCollectPaySettings()
+    {
+        if (empty($this->aciCollectPaySettings)) {
+            $this->aciCollectPaySettings = new AciCollectPaySettings();
+            $this->aciCollectPaySettings->setGroup($this);
+        }
+
+        return $this->aciCollectPaySettings;
     }
 
     /**

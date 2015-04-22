@@ -10,7 +10,7 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -62,7 +62,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -97,7 +97,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -120,7 +120,6 @@ class OrderListenerCase extends Base
 
         $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
     }
-
 
     public function getDataForUpdateBalanceContract()
     {
@@ -226,7 +225,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum($orderAmount);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::PENDING);
 
         $operation = new Operation();
@@ -375,7 +374,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -435,12 +434,12 @@ class OrderListenerCase extends Base
         $operation->setPaidFor($paidFor);
         $operation->setOrder($order);
 
-        $transaction = new Heartland();
+        $transaction = new Transaction();
         $transaction->setAmount(500);
         $transaction->setOrder($order);
         $transaction->setStatus(TransactionStatus::COMPLETE);
         $transaction->setIsSuccessful(true);
-        $order->addHeartland($transaction);
+        $order->addTransaction($transaction);
 
         $em->persist($operation);
         $em->persist($transaction);
@@ -450,12 +449,12 @@ class OrderListenerCase extends Base
         $this->assertNotNull($transactionId = $transaction->getId());
         $this->assertNull($transaction->getBatchDate());
         $this->assertNull($transaction->getDepositDate());
-        
+
         // change status to COMPLETE - here is the place where OrderListener:syncTransactions works
         $order->setStatus(OrderStatus::COMPLETE);
         $em->flush($order);
-        
-        $this->assertNotNull($newTransaction = $em->find('RjDataBundle:Heartland', $transactionId));
+
+        $this->assertNotNull($newTransaction = $em->find('RjDataBundle:Transaction', $transactionId));
         $this->assertNotNull($batchDate = $newTransaction->getBatchDate());
         $this->assertNotNull($depositDate = $newTransaction->getDepositDate());
         $this->assertEquals((new DateTime())->format('Ymd'), $batchDate->format('Ymd'));
@@ -547,6 +546,7 @@ class OrderListenerCase extends Base
                 if (PaymentAccountType::BANK == $paymentAccount->getType()) {
                     return true;
                 }
+
                 return false;
             }
         )->first();

@@ -62,7 +62,7 @@ abstract class Order
      *     nullable=true
      * )
      */
-    protected $type = OrderType::AUTHORIZE_CARD;
+    protected $type = OrderType::CASH;
 
     /**
      * @ORM\Column(
@@ -102,25 +102,14 @@ abstract class Order
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim",
-     *     mappedBy="order",
-     *     cascade={"persist", "remove", "merge"}
-     * )
-     *
-     * @var ArrayCollection
-     */
-    protected $authorizes;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="\RentJeeves\DataBundle\Entity\Heartland",
+     *     targetEntity="\RentJeeves\DataBundle\Entity\Transaction",
      *     mappedBy="order",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
      * @var ArrayCollection
      */
-    protected $heartlands;
+    protected $transactions;
 
     /**
      * @ORM\OneToMany(
@@ -162,16 +151,15 @@ abstract class Order
 
     public function __construct()
     {
-        $this->operations = new ArrayCollection();
-        $this->authorizes = new ArrayCollection();
-        $this->heartlands = new ArrayCollection();
-        $this->operations = new ArrayCollection();
-        $this->sentOrder  = new ArrayCollection();
-        $this->created_at = new DateTime();
+        $this->operations   = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
+        $this->operations   = new ArrayCollection();
+        $this->sentOrder    = new ArrayCollection();
+        $this->created_at   = new DateTime();
     }
 
     /**
-     * @param OrderExternalApi $externalApi
+     * @param OrderExternalApi $sentOrder
      */
     public function addSendOrder(OrderExternalApi $sentOrder)
     {
@@ -199,7 +187,7 @@ abstract class Order
     /**
      * Set cj_applicant_id
      *
-     * @param integer $cjApplicantId
+     * @param  integer $cjApplicantId
      * @return Order
      */
     public function setCjApplicantId($cjApplicantId)
@@ -222,7 +210,7 @@ abstract class Order
     /**
      * Set status
      *
-     * @param OrderStatus $status
+     * @param  OrderStatus $status
      * @return Order
      */
     public function setStatus($status)
@@ -245,16 +233,16 @@ abstract class Order
     /**
      * Set type
      *
-     * @param OrderType $type
+     * @param  OrderType $type
      * @return Order
      */
     public function setType($type)
     {
         $this->type = $type;
-    
+
         return $this;
     }
-    
+
     /**
      * Get type
      *
@@ -268,13 +256,13 @@ abstract class Order
     /**
      * Set sum
      *
-     * @param double $sum
+     * @param  double $sum
      * @return Order
      */
     public function setSum($sum)
     {
         $this->sum = $sum;
-    
+
         return $this;
     }
 
@@ -291,7 +279,7 @@ abstract class Order
     /**
      * Set fee
      *
-     * @param double $fee
+     * @param  double $fee
      * @return Order
      */
     public function setFee($fee)
@@ -300,7 +288,7 @@ abstract class Order
 
         return $this;
     }
-    
+
     /**
      * Get sum
      *
@@ -308,13 +296,13 @@ abstract class Order
      */
     public function getSum()
     {
-        return (double)$this->sum;
+        return (double) $this->sum;
     }
-    
+
     /**
      * Set created_date
      *
-     * @param DateTime $createdDate
+     * @param  DateTime $createdAt
      * @return Order
      */
     public function setCreatedAt($createdAt)
@@ -337,7 +325,7 @@ abstract class Order
     /**
      * Set updated_at
      *
-     * @param DateTime $updatedAt
+     * @param  DateTime $updatedAt
      * @return Order
      */
     public function setUpdatedAt($updatedAt)
@@ -360,7 +348,7 @@ abstract class Order
     /**
      * Set user
      *
-     * @param \CreditJeeves\DataBundle\Entity\User $user
+     * @param  \CreditJeeves\DataBundle\Entity\User $user
      * @return Order
      */
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
@@ -381,56 +369,9 @@ abstract class Order
     }
 
     /**
-     * Add Authorize
-     *
-     * @param \CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim
-     * @return Order
-     */
-    public function addAuthorize(\CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim $authorize)
-    {
-        $this->authorizes[] = $authorize;
-
-        return $this;
-    }
-
-    /**
-     * Set authorizes
-     *
-     * @param ArrayCollection $authorizes
-     *
-     * @return Order
-     */
-    public function setAuthorizes(ArrayCollection $authorizes)
-    {
-        $this->authorizes = $authorizes;
-
-        return $this;
-    }
-
-    /**
-     * Remove authorize
-     *
-     * @param \CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim $authorize
-     */
-    public function removeAuthorize(\CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim $authorize)
-    {
-        $this->authorizes->removeElement($authorize);
-    }
-
-    /**
-     * Get authorizes
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAuthorizes()
-    {
-        return $this->authorizes;
-    }
-
-    /**
      * Add order's operation
      *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $operations
+     * @param  \CreditJeeves\DataBundle\Entity\Operation $operation
      * @return Order
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
@@ -461,36 +402,36 @@ abstract class Order
     }
 
     /**
-     * Add heartland 
+     * Add transaction
      *
-     * @param \RentJeeves\DataBundle\Entity\Heartland
+     * @param  \RentJeeves\DataBundle\Entity\Transaction $transaction
      * @return Order
      */
-    public function addHeartland(\RentJeeves\DataBundle\Entity\Heartland $heartland)
+    public function addTransaction(\RentJeeves\DataBundle\Entity\Transaction $transaction)
     {
-        $this->heartlands[] = $heartland;
-    
+        $this->transactions[] = $transaction;
+
         return $this;
     }
 
     /**
-     * Remove heartland
+     * Remove transaction
      *
-     * @param \RentJeeves\DataBundle\Entity\Heartland $heartland
+     * @param \RentJeeves\DataBundle\Entity\Transaction $transaction
      */
-    public function removeHeartland(\RentJeeves\DataBundle\Entity\Heartland $heartland)
+    public function removeTransaction(\RentJeeves\DataBundle\Entity\Transaction $transaction)
     {
-        $this->heartlands->removeElement($heartland);
+        $this->transactions->removeElement($transaction);
     }
 
     /**
-     * Get heartlands
+     * Get transactions
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getHeartlands()
+    public function getTransactions()
     {
-        return $this->heartlands;
+        return $this->transactions;
     }
 
     /**

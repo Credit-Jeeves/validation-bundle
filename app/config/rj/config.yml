@@ -114,30 +114,24 @@ twig:
         landlord_payment_per_month_dollars: %landlord_payment_per_month_dollars%
         landlord_payment_per_month_cents: %landlord_payment_per_month_cents%
         
-
-doctrine:
-    orm:
-        mappings:
-            heartland:
-                is_bundle: false
-                type: xml
-                dir: %kernel.root_dir%/../vendor/payum/heartland/src/Payum/Heartland/Bridge/Doctrine/Resources/mapping
-                prefix: Payum\Heartland\Bridge\Doctrine\Entity
-
 stof_doctrine_extensions:
     class:
         loggable: RentJeeves\DataBundle\EventListener\LoggableListener
 
 payum:
+    security:
+        token_storage:
+            RentJeeves\DataBundle\Entity\PaymentToken: { doctrine: orm }
+    payments:
+        aci_collect_pay:
+            aci_collect_pay: %aci_collect_pay%
+
+payum2:
     contexts:
         heartland:
             heartland:
                 api:
                     options: %heartland%
-        simple_purchase_authorize_net:
-            authorize_net_aim:
-                api:
-                    options: %authorize_net%
 
 services:
     pdo:
