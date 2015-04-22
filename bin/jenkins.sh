@@ -16,7 +16,7 @@ if [ $1 ]; then
 fi
 
 if [ ! -f $DIR/vendor/autoload.php ]; then
-     php bin/composer.phar install --no-scripts
+     php bin/composer.phar install --no-scripts --no-dev
 fi
 
 php bin/environment.php --$BUILD || exit 1
