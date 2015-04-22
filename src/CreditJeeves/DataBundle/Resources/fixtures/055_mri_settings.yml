@@ -10,8 +10,5 @@ fixtures:
         user: RENTTRACKAPI
         password: k8raKFPJ
         siteId: @
-        paymentType: C
-        sourceCode: CR
-        cashType: OP
         chargeCode: RNT
 

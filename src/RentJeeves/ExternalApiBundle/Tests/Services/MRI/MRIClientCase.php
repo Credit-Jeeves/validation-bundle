@@ -10,7 +10,6 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\ExternalApiBundle\Model\MRI\Payment;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
@@ -122,10 +121,8 @@ class MRIClientCase extends Base
      */
     public function shouldPostPayments()
     {
-        $this->markTestSkipped(
-            "MRI api was changed and we can't successfully put payment"
-        );
         $mriClient = $this->getMriClient();
+        $mriClient->setDebug(false);
         $order = $this->getOrder();
         $property = $order->getContract()->getProperty();
         /** @var PropertyMapping $propertyMapping */
@@ -136,42 +133,17 @@ class MRIClientCase extends Base
         $residentMapping = $tenant->getResidentForHolding($order->getContract()->getHolding());
         $residentMapping->setResidentId(self::RESIDENT_ID);
 
+        $transaction = $order->getCompleteTransaction();
+        $transaction->setTransactionId(uniqid());
+        $transaction->setCreatedAt(new \DateTime());
+        $order->setSum(rand(100, 100000));
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $em->persist($residentMapping);
+        $em->persist($transaction);
         $em->persist($propertyMapping);
         $em->flush();
 
-        $mriClient->setDebug(false);
         $this->assertTrue($mriClient->postPayment($order, self::PROPERTY_ID));
-    }
-
-    /**
-     * @test
-     */
-    public function shouldCheckPaymentXml()
-    {
-        $order = $this->getOrder();
-
-        /** @var MRIClient $mriClient */
-        $mriClient = $this->getMriClient();
-        $payment = new Payment();
-        $payment->setEntryRequest($order);
-
-        $xml = $mriClient->paymentToStringFormat($payment, $format = 'xml');
-
-        $kernel = $this->getKernel();
-        $path = $kernel->locateResource(
-            '@ExternalApiBundle/Resources/fixtures/mri_payment.xml'
-        );
-
-        $fixtureXml = file_get_contents($path);
-        $fixtureXml = str_replace(
-            ['%date%'],
-            [$order->getMriPaymentInitiationDatetime()],
-            $xml
-        );
-
-        $this->assertEquals($fixtureXml, $xml);
     }
 }

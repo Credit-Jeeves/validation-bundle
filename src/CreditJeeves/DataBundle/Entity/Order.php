@@ -986,58 +986,24 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("ChargeCode")
-     * @Serializer\Groups({"MRI"})
-     * @Serializer\Type("string")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return string
-     */
-    public function getMriChargeCode()
-    {
-        return $this->getContract()->getHolding()->getMriSettings()->getChargeCode();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("CashType")
-     * @Serializer\Groups({"MRI"})
-     * @Serializer\Type("string")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return string
-     */
-    public function getMriCashType()
-    {
-        return $this->getContract()->getHolding()->getMriSettings()->getCashType();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("SourceCode")
-     * @Serializer\Groups({"MRI"})
-     * @Serializer\Type("string")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return string
-     */
-    public function getMriSourceCode()
-    {
-        return $this->getContract()->getHolding()->getMriSettings()->getSourceCode();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PaymentType")
      * @Serializer\Groups({"MRI"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
-     * @return string
+     * @return string|null
      */
     public function getMriPaymentType()
     {
-        return $this->getContract()->getHolding()->getMriSettings()->getPaymentType();
+        if ($this->getType() === OrderType::HEARTLAND_CARD) {
+            return 'C';
+        }
+
+        if ($this->getType() === OrderType::HEARTLAND_BANK) {
+            return 'K';
+        }
+
+        return null;
     }
 
     /**
@@ -1064,6 +1030,20 @@ class Order extends BaseOrder
      * @return string
      */
     public function getMriCheckNumber()
+    {
+        return $this->getCompleteTransaction()->getTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ExternalTransactionNumber")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriExternalTransactionNumber()
     {
         return $this->getCompleteTransaction()->getTransactionId();
     }
@@ -1108,5 +1088,33 @@ class Order extends BaseOrder
     public function getMriPropertyID()
     {
         return $this->getPropertyPrimaryId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PartnerName")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getPartnerName()
+    {
+        return 'RentTrack';
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ExternalBatchId")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getExternalBatchId()
+    {
+        return $this->getCompleteTransaction()->getBatchId();
     }
 }
