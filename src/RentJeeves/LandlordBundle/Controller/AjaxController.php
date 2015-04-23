@@ -921,11 +921,12 @@ class AjaxController extends Controller
             ->find($data['contract_id']);
         $tenant = $contract->getTenant();
         $action = $data['action'];
+
         switch ($action) {
-            case Contract::RESOLVE_EMAIL :
+            case Contract::RESOLVE_EMAIL:
                 $this->get('project.mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
                 break;
-            case Contract::RESOLVE_PAID :
+            case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
                 if ($amount) {
                     $paidFor = new DateTime($data['paid_for']);
@@ -979,7 +980,7 @@ class AjaxController extends Controller
                 $em->persist($contract);
                 $em->flush();
                 break;
-            case Contract::RESOLVE_UNPAID :
+            case Contract::RESOLVE_UNPAID:
                 // @TODO Here will be report to Experian
                 break;
         }

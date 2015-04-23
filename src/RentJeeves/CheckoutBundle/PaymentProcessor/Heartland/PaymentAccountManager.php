@@ -149,9 +149,9 @@ class PaymentAccountManager
     /**
      * Requests a token for given payment account, user and group merchant name.
      *
-     * @param  PaymentAccountData                     $paymentAccountData
-     * @param  User                                   $user
-     * @param  Group                                  $group              if group is null use the default merchant account
+     * @param  PaymentAccountData $paymentAccountData
+     * @param  User $user
+     * @param  Group $group if group is null use the default merchant account
      * @return string
      * @throws PaymentProcessorConfigurationException
      */
