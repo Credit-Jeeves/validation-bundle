@@ -13,7 +13,7 @@
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
         <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" data-role="none" role="button" class="headerButton" style="color: white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Edit Payment</h1>
-        <a href="#review" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px;">Next</a>
+        <a href="#review" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px; text-shadow: none;">Next</a>
     </div>
 
     <div class="ui-content" role="main">
@@ -22,7 +22,7 @@
 
         </div><br>
 
-        <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" novalidate>
+        <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" style="line-height: 32px;" novalidate>
             {{ form_widget(paymentType) }}
             {{ JSFV(paymentType) }}
 
@@ -33,7 +33,7 @@
         {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
 
 
-        <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">Next</button></a>
+        <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">NEXT</button></a>
 
 
         <div style="height: 140px;">
@@ -234,7 +234,7 @@
                     $("#errorMsg").hide()
                     setTimeout(function(){
                         window.location.reload(true)
-                    },1000)
+                    },500)
                 }
             },
             error: function (request, error) {
@@ -253,7 +253,9 @@
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
         <a href="#pay" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Review</h1>
+        {#
         <a href="javascript: void(0)" onclick="submitForm()" data-rel="popup" data-transition="pop" data-position-to="window" style="text-decoration: none;padding: 10px; color: white; border-left: 1px solid white; border-right: 0px;" data-role="none">Pay Rent</a>
+        #}
     </div>
 
     <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/lightblur-bgnd.png); min-height: 653px;">
@@ -302,11 +304,11 @@
         <br><br>
 
         <a href="javascript: void(0)" onclick="submitForm()" data-rel="popup" data-transition="pop" data-position-to="window" style="text-decoration: none;">
-            <button role="button" data-role="none" style="background: #eb6024; color: white; font-weight: normal; text-shadow: none;" class=" ui-btn ui-shadow ui-corner-all">Pay Rent</button>
+            <button role="button" id="payRentBttn" data-role="none" style="background: #eb6024; color: white; font-weight: normal; text-shadow: none;" class=" ui-btn ui-shadow ui-corner-all">PAY RENT</button>
         </a>
 
-        <div data-role="popup" id="popupBasic" data-overlay-theme="b" class="ui-popup ui-body-inherit ui-overlay-shadow ui-corner-all">
-            <p>Payment Scheduled</p>
+        <div data-role="popup" id="popupBasic" data-overlay-theme="b" class="ui-popup ui-body-inherit ui-overlay-shadow ui-corner-all" style="background: #00a651;text-shadow: none;color: white;padding: 10px 20px 10px 20px;margin-left: -20px;">
+            <p><i class="fa fa-check-circle-o" style="margin-right: 3px;"></i> Payment Scheduled</p>
         </div>
 
     </div>

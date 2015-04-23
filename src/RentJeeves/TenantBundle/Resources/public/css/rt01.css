@@ -1,55 +1,3 @@
-body{
-    font-family: PT Sans Caption;
-}
-
-#main .ui-content{
-    font-family: PT Sans Caption;
-}
-.headerButton{
-    text-shadow: none;
-    padding: 10px;
-    border-right: 1px solid white;
-    text-decoration: none;
-    color: white;
-}
-
-.menuOptions{
-    background: black !important;
-    text-shadow: none !important;
-    color: #fff !important;
-    font-family: PT Sans Caption !important;
-    font-size: 12pt !important;
-    font-weight: normal;
-    background-image: none;
-}
-
-.paymentHistoryTable{
-    background: rgb(220,220,220);
-    border-radius: 5px;
-    text-shadow: none;
-    font-family: PT Sans Caption;
-}
-
-.paymentHistoryTable td{
-    padding: 9px;
-}
-
-.paymentHistoryTable tr:nth-child(odd){
-    background: rgb(200,200,200);
-}
-.paymentHistoryTable headingYear{
-    background: rgb(220,220,220);
-    padding: 12px;
-}
-.paymentHistoryTable headingAddress !important{
-    background: rgb(220,220,220);
-    border-bottom: 1px solid rgb(200,200,200);
-    padding: 12px;
-}
-
-
-
-
 /*!
 * jQuery Mobile 1.4.5
 * Git HEAD hash: 68e55e78b292634d3991c795f06f5e37a512decc <> Date: Fri Oct 31 2014 17:33:30 UTC
@@ -631,4 +579,76 @@ button[disabled],
 .ui-noboxshadow .ui-focus {
     outline-width: 1px;
     outline-style: auto;
+}
+
+
+
+/*CUSTOM
+-----------------------------------------------------------------------------------------------------------*/
+
+
+body{
+    font-family: PT Sans Caption;
+}
+
+#main .ui-content{
+    font-family: PT Sans Caption;
+}
+.headerButton{
+    text-shadow: none;
+    padding: 10px;
+    border-right: 1px solid white;
+    text-decoration: none;
+    color: white;
+}
+
+.menuOptions{
+    background: black !important;
+    text-shadow: none !important;
+    color: #fff !important;
+    font-family: PT Sans Caption !important;
+    font-size: 12pt !important;
+    font-weight: normal;
+    background-image: none;
+}
+
+.paymentHistoryTable{
+    background: rgb(220,220,220);
+    border-radius: 5px;
+    text-shadow: none;
+    font-family: PT Sans Caption;
+}
+
+.paymentHistoryTable td{
+    padding: 9px;
+}
+
+.paymentHistoryTable tr:nth-child(odd){
+    background: rgb(200,200,200);
+}
+.paymentHistoryTable headingYear{
+    background: rgb(220,220,220);
+    padding: 12px;
+}
+.paymentHistoryTable headingAddress !important{
+    background: rgb(220,220,220);
+    border-bottom: 1px solid rgb(200,200,200);
+    padding: 12px;
+}
+
+.ui-loading .ui-loader
+{
+    display:none !important;
+}
+
+.ui-mobile label, div.ui-controlgroup-label{
+    font-weight: bold;
+}
+
+.ui-page-theme-a .ui-btn{
+    background: white;
+}
+
+.ui-btn-icon-left:after, .ui-btn-icon-right:after, .ui-btn-icon-top:after, .ui-btn-icon-bottom:after, .ui-btn-icon-notext:after{
+    background-color: #00aeef;
 }
