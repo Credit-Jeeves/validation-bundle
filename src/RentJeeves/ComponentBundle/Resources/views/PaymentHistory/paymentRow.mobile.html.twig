@@ -2,10 +2,11 @@
 <table data-role="none" class="paymentHistoryTable">
     <tr>
         <td colspan="3" class="headingAddress">
-            <i class="fa fa-home"></i> <b>{{aContract.address }}</b>
+            <i class="fa fa-home"></i> <b>{{contract.address }}</b>
         </td>
     </tr>
-    {% for nYear, aData in aContract.history %}
+    {% for nYear, aData in contract.history | reverse(true) %}
+        {% if (date(nYear) <= date('-1month')) and ((aData|length)>0) %}
     <tr>
         <td colspan="3" class="headingYear">
             <div><b>{{ nYear }}</b></div>
@@ -15,30 +16,20 @@
             <tbody>
 
 
+                    {% for nMonth, aStatus in aData | reverse(true) %}
 
+                        {% if aStatus.status!='empty-month' %}
 
-                    {% if nYear == aContract.balance_year %}
-                        {% set nEmpty = aContract.balance_month - aData | length  %}
-                    {% else %}
-                        {% set nEmpty = 11 - aData | length %}
-                    {% endif %}
-                        {% if nEmpty > 0 %}
-                            {% for i in range (0, nEmpty) %}
-                              <!--<div class="tradeline-history-empty-month payment-history-month"></div>//-->
-                            {% endfor %}
+                        <tr><td>{{ aMonthes[nMonth-1] }}</td><td>${{ aStatus.amount }}</td><td>PAID</td></tr>
+
                         {% endif %}
-
-
-                    {% for nMonth, aStatus in aData %}
-
-                        <tr><td>{{ aMonthes[nMonth-1] }}</td><td>${{ aStatus.amount }}</td><td><b>Paid</b>{#{{ aStatus.text }}#}</td></tr>
 
 
                     {% endfor %}
 
             </tbody>
 
-
+                {% endif %}
 
             {% endfor %}
 

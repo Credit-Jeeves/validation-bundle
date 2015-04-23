@@ -59,7 +59,7 @@ function TenantPaymentsViewModel()
         return Translator.trans('order.status.text.' + status);
     };
 
-    this.isSuccessfulStatus = function(status)
+    this.isSuccessfulStatus= function(status)
     {
         if (status == 'new' || status == 'complete' || status == 'pending') {
             return true;

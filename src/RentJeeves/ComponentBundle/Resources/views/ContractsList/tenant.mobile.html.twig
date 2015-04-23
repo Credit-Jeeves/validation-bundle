@@ -33,6 +33,21 @@
     var paidForArr={{ paidForArr | serialize('json') | raw }};
 
     $(document).ready(function(){
+
+
+        $(document).delegate('#opendialog', 'click', function() {
+            $('<div>').simpledialog2({
+                mode: 'blank',
+                headerText: 'Cancel Payment',
+                headerClose: false,
+                blankContent :
+                "<span>Are you sure you want to cancel this payment?</span>"+
+                "<br><a href='' data-ajax='false' id='confirmCancel' style='text-decoration: none;'>"+
+                "<button style='color: white; background: rgb(232,65,65);text-shadow:none; border-radius: 7px;'>Cancel Payment</button></a>" +
+                "<a rel='close' href='\#main' data-ajax='false' style='text-decoration: none;'><button style='text-shadow:none; border-radius: 7px;'>Back</button></a>"
+            })
+        })
+
         $( ".selector" ).loader({
             disabled: true
         });
@@ -45,6 +60,9 @@
             console.log(contract)
             $("#contractPayTo"+contract.id).html(contract.payToName)
             if(contract.payment){
+
+                $("#cancel"+contract.id).attr("onclick","cancelPayment("+contract.payment.id+"); setTimeout(function(){$('.ui-dialog').hide()},50)")
+                        //settimeout hide dialog fixes weird bug with simpledialog
 
                 $.each(payAccounts,function(i,k){
                     if(k.id==contract.payment.paymentAccountId){
@@ -60,7 +78,7 @@
             #}
         }
 
-        $("<span>Total to Pay: </span><span id='total'></span> ").insertAfter($("#rentjeeves_checkoutbundle_paymenttype_amountOther"))
+        $("<span>Total to Pay: </span>$<span id='total'></span> ").insertAfter($("#rentjeeves_checkoutbundle_paymenttype_amountOther"))
         $("#rentjeeves_checkoutbundle_paymenttype_total_row").hide()
         $("#rentjeeves_checkoutbundle_paymenttype_amount").onchange=updateTotal;
         $("#rentjeeves_checkoutbundle_paymenttype_amountOther").onchange=updateTotal
@@ -69,7 +87,15 @@
 
     })
 
+    function cancelPayment(i){
+        $("#confirmCancel").attr("href","/checkout/cancel/"+i);
+    }
+
+    var gId=-1;
+
     function setupPayForm(id) {
+
+        gId=id;
 
         $("#errorMsg").html("")
         $("#errorMsg").hide()
@@ -77,6 +103,17 @@
         $(".fields-box").css('padding-bottom','10px')
 
         $("#backToContract").attr("href","#contract"+id)
+
+        var today = new Date();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+
+        if(mm<10) {
+            mm='0'+mm
+        }
+
+        $("#rentjeeves_checkoutbundle_paymenttype_amountOther").val("0.00")
 
         for (i = 0; i < contractsJson.length;i++) {
             if(contractsJson[i].id==id){
@@ -146,8 +183,6 @@
                     $("#rentjeeves_checkoutbundle_paymenttype_dueDate").append("<option" + a + ">" + i + "</option>")
                 }
 
-                //$("#rentjeeves_checkoutbundle_paymenttype_dueDate").selectmenu("refresh")
-
 
                 if(contract.payment) {
 
@@ -165,35 +200,49 @@
 
 
                     $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(contract.payment.startMonth);
-                    $("#rentjeeves_checkoutbundle_paymenttype_startMonth").selectmenu("refresh");
                     $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(contract.payment.startYear);
-                    $("#rentjeeves_checkoutbundle_paymenttype_startYear").selectmenu("refresh");
                     $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val(contract.payment.endMonth);
-                    $("#rentjeeves_checkoutbundle_paymenttype_endMonth").selectmenu("refresh");
                     $("#rentjeeves_checkoutbundle_paymenttype_endYear").val(contract.payment.endYear);
-                    $("#rentjeeves_checkoutbundle_paymenttype_endYear").selectmenu("refresh");
+
+
+
+                    $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(mm+"/"+(contract.payment.dueDate)+"/"+yyyy)
+                    $("#rentjeeves_checkoutbundle_paymenttype_dueDate").append("<option value='"+contract.payment.dueDate+"' selected></option>")
+
 
                 }else{
-                    formType(false)
-                    $("#rentjeeves_checkoutbundle_paymenttype_type").val("recurring")
+                    $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(mm+"/"+((new Date()).getDate())+"/"+yyyy)
+
+                    formType(true)
+                    $("#rentjeeves_checkoutbundle_paymenttype_type").val("one_time")
+                    $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val((new Date()).getMonth()+1)
+                    $("#rentjeeves_checkoutbundle_paymenttype_startYear").val((new Date()).getFullYear())
+
+                    $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val((new Date()).getMonth()+1)
+                    $("#rentjeeves_checkoutbundle_paymenttype_endYear").val((new Date()).getFullYear())
+
+                    $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",true)
+                    $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",false)
+                    whenCancelled(false)
+
+                    $("#rentjeeves_checkoutbundle_paymenttype_ends_0").checkboxradio("refresh");
+                    $("#rentjeeves_checkoutbundle_paymenttype_ends_1").checkboxradio("refresh");
+
                 }
+
+                $("#rentjeeves_checkoutbundle_paymenttype_type").selectmenu("refresh");
+                $("#rentjeeves_checkoutbundle_paymenttype_startYear").selectmenu("refresh");
+                $("#rentjeeves_checkoutbundle_paymenttype_startMonth").selectmenu("refresh");
+                $("#rentjeeves_checkoutbundle_paymenttype_paidFor").selectmenu("refresh")
+                $("#rentjeeves_checkoutbundle_paymenttype_dueDate").selectmenu("refresh")
+                $("#rentjeeves_checkoutbundle_paymenttype_endMonth").selectmenu("refresh");
+                $("#rentjeeves_checkoutbundle_paymenttype_endYear").selectmenu("refresh");
 
                 $("#rentjeeves_checkoutbundle_paymenttype_paidTo").val(contract.paidTo)
 
+
                 $("#revEnds").html(contract.finishAt)
 
-                var today = new Date();
-                var mm = today.getMonth()+1; //January is 0!
-                var yyyy = today.getFullYear();
-
-
-                if(mm<10) {
-                    mm='0'+mm
-                }
-
-
-                $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(mm+"/"+(contract.payment.dueDate)+"/"+yyyy)
-                $("#rentjeeves_checkoutbundle_paymenttype_dueDate").append("<option value='"+contract.payment.dueDate+"' selected></option>")
                 break;
             }
         }
@@ -292,7 +341,13 @@
                     <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
                     <h1 class="ui-title" role="heading" aria-level="1">Current Payment</h1>
                     {% if contract.status != 'pending' %}
-                        <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">Edit</a>
+                        <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">
+                            {% if contract.payment_type != 'one_time' and contract.payment_type != 'recurring' %}
+                            Pay
+                            {% else %}
+                            Edit
+                            {% endif %}
+                        </a>
                     {% endif %}
                 </div>
 
@@ -346,10 +401,11 @@
                     <div style="font-family: PT Sans Caption; font-size: 10pt; font-weight: bold;">
                     Due Next: {{ contract.payment_next }} {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
 
-
-
                 {% endif %}
                     <br>
+                    {% if contract.status!='pending' and (contract.payment_type=='recurring' or contract.payment_type=='one_time') %}
+                    <a id="opendialog" href="#cancel" data-ajax="false" style="text-decoration: none;"><button id='cancel{{ contract.id }}' style="color: white; background: rgb(232,65,65);text-shadow:none; border-radius: 7px;">Cancel Payment</button></a>
+                    {% endif %}
 
                     <a href="#paymentHistory{{ contract.id }}" style="text-decoration: none;"><button{% if contract.status == 'pending' %} disabled{% endif %}>Payment History</button></a>
                     </div>

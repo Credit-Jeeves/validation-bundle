@@ -18,6 +18,15 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
         );
     }
 
+    function amountOtherAttrs()
+    {
+        return array_merge(parent::amountOtherAttrs(),
+            array(
+                'onchange'=>'updateTotal()'
+            )
+        );
+    }
+
     function typeAttrs()
     {
         return array_merge(parent::typeAttrs(),

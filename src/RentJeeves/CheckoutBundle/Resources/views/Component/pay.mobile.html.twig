@@ -5,8 +5,8 @@
 <div data-role="page" id="pay">
 
     <div data-role="popup" id="dateConfirmed" data-overlay-theme="b" class="ui-content" style="font-family: PT Sans Caption;">
-            <p>Your landlord will be notified that your payment was sent on <span id="selectedDate"></span>.</p>
-            <a href="#pay" onclick="$('#dateConfirmed').popup('close')" data-role="button" data-theme="b" class="ui-link ui-btn ui-btn-b ui-shadow ui-corner-all" style="background: #eb6024; font-family: PT Sans Caption; font-size: 20pt;" role="button">OK</a>
+        <p>Your landlord will be notified that your payment was sent on <span id="selectedDate"></span>.</p>
+        <a href="#pay" onclick="$('#dateConfirmed').popup('close')" data-role="button" data-theme="b" class="ui-link ui-btn ui-btn-b ui-shadow ui-corner-all" style="background: #eb6024; font-family: PT Sans Caption; font-size: 20pt;" role="button">OK</a>
     </div>
 
 
@@ -16,66 +16,108 @@
         <a href="#review" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px;">Next</a>
     </div>
 
-        <div class="ui-content" role="main">
+    <div class="ui-content" role="main">
 
-            <div id='errorMsg' style='display: none;background: red; padding: 4px; width: 100%;color: white; text-shadow: none; border-radius: 2px;'>
+        <div id='errorMsg' style='display: none;background: red; padding: 4px; width: 100%;color: white; text-shadow: none; border-radius: 2px;'>
 
-                </div><br>
+        </div><br>
 
-            <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" novalidate>
-                {{ form_widget(paymentType) }}
-                {{ JSFV(paymentType) }}
+        <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" novalidate>
+            {{ form_widget(paymentType) }}
+            {{ JSFV(paymentType) }}
 
-                <input type="hidden" id="contract_id" name="contract_id">
-            </form>
-
-
-            {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
+            <input type="hidden" id="contract_id" name="contract_id">
+        </form>
 
 
-                <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">Next</button></a>
+        {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
 
 
-            <div style="height: 140px;">
-                <p style="color: grey;">
-                    RentTrack is a registered payment processor. Your account is safe and secure.
-                </p>
-                <img src="/bundles/rjcore/Images/mobile/footer-norton.png" style="float: left;">
-                <img src="/bundles/rjcore/Images/mobile/footer-logo.png" style="float: right;">
-            </div>
+        <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">Next</button></a>
+
+
+        <div style="height: 140px;">
+            <p style="color: grey;">
+                RentTrack is a registered payment processor. Your account is safe and secure.
+            </p>
+            <img src="/bundles/rjcore/Images/mobile/footer-norton.png" style="float: left;">
+            <img src="/bundles/rjcore/Images/mobile/footer-logo.png" style="float: right;">
         </div>
+    </div>
 
 </div>
 
 <script>
 
-    jQuery.fn.swap = function(b){
-        b = jQuery(b)[0];
-        var a = this[0];
-        var t = a.parentNode.insertBefore(document.createTextNode(''), a);
-        b.parentNode.insertBefore(a, b);
-        t.parentNode.insertBefore(b, t);
-        t.parentNode.removeChild(t);
-        return this;
-    };
-
     function createReview(){
+
+        updateTotal();
+
+        for (i = 0; i < contractsJson.length;i++) {
+            if (contractsJson[i].id == gId) {
+
+
+                contract = contractsJson[i]
+
+                method=""
+                $.each(payAccounts,function(i,k){
+                    if(k.id==parseInt($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").val())){
+                        method= k.type;
+                    }})
+                var fee = 0.00;
+                if ('card' == method) {
+                    fee = parseFloat(contract.depositAccount.feeCC) / 100 * total;
+                    $("#revTechFeeCont").show()
+                } else if ('bank' == method) {
+                    fee = parseFloat(contract.depositAccount.feeACH);
+                    $("#revTechFeeCont").hide()
+                }
+
+                $("#revTechFee").html(accounting.formatNumber(fee,2))
+
+            }
+        }
+
+        total=accounting.formatNumber((total+fee),2);
+
+
         $("#rentjeeves_checkoutbundle_paymenttype_paymentAccountId").val($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").val());
         $("#contract_id").val($("#rentjeeves_checkoutbundle_paymenttype_contractId").val());
-        $("#revRentAmount").html($("#rentjeeves_checkoutbundle_paymenttype_amount").val());
+        $("#revRentAmount").html(accounting.formatNumber($("#rentjeeves_checkoutbundle_paymenttype_amount").val(),2));
+        $("#revOtherAmount").html(accounting.formatNumber($("#rentjeeves_checkoutbundle_paymenttype_amountOther").val(),2));
+        $("#revTotalAmount").html(total);
         $("#revMethod").html($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount option:selected").html());
 
         if($('#rentjeeves_checkoutbundle_paymenttype_type').val()=="one_time") {
             a="One time"
             $('#revEndsLabel').hide()
-            $("#revSendOn").html($("#rentjeeves_checkoutbundle_paymenttype_start_date").val());
+            $('#revEnds').hide()
+
+            //convert to readable date
+            $("#revSendOn").html(new Date($("#rentjeeves_checkoutbundle_paymenttype_start_date").val()).toDateString());
+
+            //fix some things-- if one time, change start month/day to match startdate
+            d=$("#rentjeeves_checkoutbundle_paymenttype_start_date").val().split("/")
+            $("#rentjeeves_checkoutbundle_paymenttype_frequency").val("monthly")
+            $("#rentjeeves_checkoutbundle_paymenttype_dueDate").val(parseInt(d[1].replace("0","")))
+            $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(parseInt(d[0].replace("0","")))
+            $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(parseInt(d[2]));
+            $("#rentjeeves_checkoutbundle_paymenttype_startYear").selectmenu("refresh");
+
+
             $("#rentjeeves_checkoutbundle_paymenttype_ends").val('cancelled');
         }else{
+
+
             if($("#rentjeeves_checkoutbundle_paymenttype_frequency").val()=="monthly"){
                 $("#revSendOn").html("Day "+$("#rentjeeves_checkoutbundle_paymenttype_dueDate").val()+" of each month");
             }else{
                 $("#revSendOn").html("Last day of month");
+                $("#rentjeeves_checkoutbundle_paymenttype_dueDate").val(31)
             }
+
+            d=$("#rentjeeves_checkoutbundle_paymenttype_startMonth").val()+"/"+$("#rentjeeves_checkoutbundle_paymenttype_dueDate").val()+"/"+$("#rentjeeves_checkoutbundle_paymenttype_startYear").val();
+            $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(d)
 
             if($("#rentjeeves_checkoutbundle_paymenttype_ends_0").val()!="on"){
                 $('#revEnds').html(" when cancelled")
@@ -86,51 +128,44 @@
         }
 
         $("#revRecurring").html(a);
-        $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").prop('disabled',true);
+        $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").prop('disabled',true);   {# submission will fail w/o this for some reason #}
 
     }
     recurringFormIds=[
-            "rentjeeves_checkoutbundle_paymenttype_frequency_row",
-            "rentjeeves_checkoutbundle_paymenttype_startMonth_row",
-            "rentjeeves_checkoutbundle_paymenttype_ends_row",
-            "rentjeeves_checkoutbundle_paymenttype_endMonth",
-            "rentjeeves_checkoutbundle_paymenttype_endYear"
+        "rentjeeves_checkoutbundle_paymenttype_frequency_row",
+        "rentjeeves_checkoutbundle_paymenttype_startMonth_row",
+        "rentjeeves_checkoutbundle_paymenttype_ends_row",
+        "rentjeeves_checkoutbundle_paymenttype_endMonth",
+        "rentjeeves_checkoutbundle_paymenttype_endYear"
     ]
     onetimeFormIds=[
-            "rentjeeves_checkoutbundle_paymenttype_start_date_row"
+        "rentjeeves_checkoutbundle_paymenttype_start_date_row"
     ]
 
     function formType(i){
-            $.each(recurringFormIds,function(index,value){
-                if(i) {
-                    $('#' + value).hide();
-                    $('#' + value).prop( "disabled", true );
-                }else{
-                    $('#' + value).show();
-                    $('#' + value).prop( "disabled", false );
-                }
-            })
-            $.each(onetimeFormIds,function(index,value){
-                if(!i) {
-                    $('#' + value).hide();
-                    $('#' + value).prop( "disabled", true );
-                }else{
-                    $('#' + value).show();
-                    $('#' + value).prop( "disabled", false );
-                }
-            })
-        if(i){
-            //one-time
-            $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",true)
-            $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",false)
-            whenCancelled(false)
+        $.each(recurringFormIds,function(index,value){
+            if(i) {
+                $('#' + value).hide();
+                $('#' + value).prop( "disabled", true );
+            }else{
+                $('#' + value).show();
+                $('#' + value).prop( "disabled", false );
+            }
+        })
+        $.each(onetimeFormIds,function(index,value){
+            if(!i) {
+                $('#' + value).hide();
+                $('#' + value).prop( "disabled", true );
+            }else{
+                $('#' + value).show();
+                $('#' + value).prop( "disabled", false );
+            }
+        })
 
-        }else{
-            //recurring
-            $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",false)
-            $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",true)
-            whenCancelled(true)
-        }
+        $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",true)
+        $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",false)
+        whenCancelled(false)
+
         $("#rentjeeves_checkoutbundle_paymenttype_ends_0").checkboxradio("refresh");
         $("#rentjeeves_checkoutbundle_paymenttype_ends_1").checkboxradio("refresh");
     }
@@ -158,9 +193,18 @@
     }
 
 
+    total=0;
+
     function updateTotal(){
-        t=parseFloat($("#rentjeeves_checkoutbundle_paymenttype_amount").val())+parseFloat($("#rentjeeves_checkoutbundle_paymenttype_amountOther").val())
-        $("#total").html("$"+t)
+        a=parseFloat($("#rentjeeves_checkoutbundle_paymenttype_amount").val())
+        o=parseFloat($("#rentjeeves_checkoutbundle_paymenttype_amountOther").val())
+        t=0;
+        if(!isNaN(a))
+            t+=a;
+        if(!isNaN(o))
+            t+=o;
+        total=a+o
+        $("#total").html(accounting.formatNumber(t,2))
     }
 
 
@@ -189,8 +233,8 @@
                     $("#popupBasic").popup( "open" )
                     $("#errorMsg").hide()
                     setTimeout(function(){
-                        $.mobile.changePage('#main')
-                    },3000)
+                        window.location.reload(true)
+                    },1000)
                 }
             },
             error: function (request, error) {
@@ -209,11 +253,11 @@
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
         <a href="#pay" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Review</h1>
-        <a href="#review" href="#popupBasic" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px;" data-role="none">Pay Rent</a>
+        <a href="javascript: void(0)" onclick="submitForm()" data-rel="popup" data-transition="pop" data-position-to="window" style="text-decoration: none;padding: 10px; color: white; border-left: 1px solid white; border-right: 0px;" data-role="none">Pay Rent</a>
     </div>
 
     <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/lightblur-bgnd.png); min-height: 653px;">
-    <b><span id="revRecurring">Single</span> rent payment for <span id="contractAddress"></span></b>
+        <b><span id="revRecurring">Single</span> rent payment for <span id="contractAddress"></span></b>
         <hr>
         <h4>Who's getting paid:</h4>
 
@@ -227,6 +271,20 @@
 
         $<span id="revRentAmount"></span><br>
 
+        <b>Other Amount:</b>
+
+        $<span id="revOtherAmount"></span><br>
+
+        <div id="revTechFeeCont">
+            <b>Technology Fee: </b>
+
+            $<span id="revTechFee"></span>
+        </div>
+
+        <b>Total to pay:</b>
+
+        $<span id="revTotalAmount"></span><br><br>
+
         <b>Send on: </b>
 
         <span id="revSendOn"></span><br>
@@ -239,15 +297,13 @@
 
         <h4>How You're Paying</h4>
 
-        <b>Method:</b> <span id="revMethod"></span>
+        <b>Source:</b> <span id="revMethod"></span>
 
         <br><br>
 
         <a href="javascript: void(0)" onclick="submitForm()" data-rel="popup" data-transition="pop" data-position-to="window" style="text-decoration: none;">
-        <button role="button" data-role="none" style="background: #eb6024; color: white; font-weight: normal;" class=" ui-btn ui-shadow ui-corner-all">Pay Rent</button>
+            <button role="button" data-role="none" style="background: #eb6024; color: white; font-weight: normal; text-shadow: none;" class=" ui-btn ui-shadow ui-corner-all">Pay Rent</button>
         </a>
-
-
 
         <div data-role="popup" id="popupBasic" data-overlay-theme="b" class="ui-popup ui-body-inherit ui-overlay-shadow ui-corner-all">
             <p>Payment Scheduled</p>
@@ -258,23 +314,23 @@
 </div>
 
 
-    <div data-role="page" id="notVerified">
+<div data-role="page" id="notVerified">
 
-        <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-            <a href="#main" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
-            <h1 class="ui-title" role="heading" aria-level="1">Verification</h1>
-        </div>
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a href="#main" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
+        <h1 class="ui-title" role="heading" aria-level="1">Verification</h1>
+    </div>
 
-        <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/lightblur-bgnd.png); min-height: 653px;">
-            <b>Identity Verification Required</b>
-            <br><br>
-            To keep thing secure here at RentTrack, we'll need you to login from a laptop or desktop
-            to verify your identity.
-            <br><br>
-            Please set up your first payment on a computer. After that, you'll be able to use this mobile site to set up new payments.
+    <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/lightblur-bgnd.png); min-height: 653px;">
+        <b>Identity Verification Required</b>
+        <br><br>
+        To keep things secure here at RentTrack, we'll need you to login from a laptop or desktop
+        to verify your identity.
+        <br><br>
+        Please set up your first payment on a computer. After that, you'll be able to use this mobile site to set up new payments.
 
 
 
-                </div>
+    </div>
 
-        </div>
+</div>
