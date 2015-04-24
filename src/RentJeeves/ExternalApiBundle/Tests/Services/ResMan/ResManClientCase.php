@@ -69,7 +69,7 @@ class ResManClientCase extends Base
     }
 
     /**
-     * #test
+     * @test
      * @depends shouldReturnResidentTransactions
      */
     public function shouldOpenNewBatch()
@@ -87,7 +87,7 @@ class ResManClientCase extends Base
     }
 
     /**
-     * #test
+     * @test
      * @depends shouldOpenNewBatch
      */
     public function shouldAddPaymentToBatch()
@@ -114,7 +114,7 @@ class ResManClientCase extends Base
     }
 
     /**
-     * #test
+     * @test
      * @depends shouldOpenNewBatch
      */
     public function shouldCloseBatch()

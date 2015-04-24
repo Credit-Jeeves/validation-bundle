@@ -50,7 +50,8 @@ class StorageResman extends ExternalApiStorage
             15 => Mapping::KEY_CITY,
             16 => Mapping::KEY_STREET,
             17 => Mapping::KEY_ZIP,
-            18 => Mapping::KEY_STATE
+            18 => Mapping::KEY_STATE,
+            19 => Mapping::KEY_EXTERNAL_PROPERTY_ID
         ];
 
         $this->writeCsvToFile($mapping);
@@ -132,7 +133,8 @@ class StorageResman extends ExternalApiStorage
                     $address->getCity(),
                     $address->getAddress1(),
                     $address->getPostalCode(),
-                    $address->getState()
+                    $address->getState(),
+                    $this->getImportExternalPropertyId()
                 ];
 
                 $this->writeCsvToFile($data);

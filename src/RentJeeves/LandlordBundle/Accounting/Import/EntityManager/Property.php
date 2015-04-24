@@ -3,13 +3,57 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Model\Import;
 
+/**
+ * @property Import currentImportModel
+ */
 trait Property
 {
-    protected $propertyList = array();
+    /**
+     * @var array
+     */
+    protected $propertyList = [];
+
+    /**
+     * @param Import $currentImportModel
+     * @param array  $row
+     */
+    protected function setPropertyMapping(Import $currentImportModel, array $row)
+    {
+        if (empty($row[Mapping::KEY_EXTERNAL_PROPERTY_ID])) {
+            return;
+        }
+
+        $property = $currentImportModel->getContract()->getProperty();
+
+        if (empty($property)) {
+            return;
+        }
+
+        $holding = $currentImportModel->getContract()->getGroup()->getHolding();
+        $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+            [
+                'property' => $property,
+                'holding' => $holding
+            ]
+        );
+
+        if ($propertyMapping) {
+            return;
+        }
+
+        $propertyMapping = new PropertyMapping();
+        $propertyMapping->setProperty($property);
+        $propertyMapping->setExternalPropertyId($row[Mapping::KEY_EXTERNAL_PROPERTY_ID]);
+        $propertyMapping->setHolding($holding);
+
+        $this->currentImportModel->setPropertyMapping($propertyMapping);
+    }
 
     /**
      * @return EntityProperty|null
@@ -27,7 +71,7 @@ trait Property
                 $row[Mapping::KEY_UNIT_ID]
             );
 
-            $property = (!empty($mapping))? $mapping->getUnit()->getProperty() : null;
+            $property = (!empty($mapping)) ? $mapping->getUnit()->getProperty() : null;
         }
 
         if (!empty($property)) {
@@ -87,6 +131,7 @@ trait Property
                 );
             if ($unit) {
                 $this->propertyList[md5($property->getFullAddress())] = $unit->getProperty();
+
                 return $unit->getProperty();
             }
         }
