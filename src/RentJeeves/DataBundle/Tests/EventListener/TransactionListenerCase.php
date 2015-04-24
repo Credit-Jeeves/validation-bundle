@@ -25,7 +25,6 @@ class TransactionListenerCase extends BaseTestCase
     public function shouldAddJobToDbIfCreateReversedTransaction()
     {
         $this->load(true);
-
         $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
         $this->assertCount(2, $jobs);
 

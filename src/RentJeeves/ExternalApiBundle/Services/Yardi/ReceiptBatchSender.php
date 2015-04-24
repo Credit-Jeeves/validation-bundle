@@ -4,8 +4,8 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\HoldingRepository;
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -13,8 +13,6 @@ use JMS\DiExtraBundle\Annotation\Service;
 use JMS\Serializer\SerializationContext;
 use \DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
-use RentJeeves\ExternalApiBundle\Services\Yardi\YardiBatchReceiptMailer;
-use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\ExternalApi;
@@ -26,7 +24,6 @@ use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use JMS\Serializer\Serializer;
 use \Exception;
 use Symfony\Component\Console\Output\OutputInterface;
-use DOMDocument;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 /**
@@ -37,11 +34,8 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 class ReceiptBatchSender
 {
     const LIMIT_ORDERS = 500;
-
     const LIMIT_HOLDING = 50;
-
     const REQUEST_SUCCESSFUL = 'Success';
-
     const REQUEST_FAILED = 'Failed';
 
     /**
@@ -130,16 +124,18 @@ class ReceiptBatchSender
     public function setDebug($debug)
     {
         $this->debug = $debug;
+
         return $this;
     }
 
     /**
-     * @param OutputInterface $logger
+     * @param  OutputInterface $logger
      * @return $this
      */
     public function usingOutput(OutputInterface $logger)
     {
         $this->logger = $logger;
+
         return $this;
     }
 
@@ -150,6 +146,7 @@ class ReceiptBatchSender
     public function isCleanDBAlreadySentOut($isCleanDBAlreadySentOut)
     {
         $this->isCleanDBAlreadySentOut = $isCleanDBAlreadySentOut;
+
         return $this;
     }
 
@@ -267,7 +264,7 @@ class ReceiptBatchSender
     }
 
     /**
-     * @param Holding $holding
+     * @param  Holding    $holding
      * @param $batchId
      * @param $remotePropertyId
      * @throws \Exception
@@ -346,7 +343,7 @@ class ReceiptBatchSender
     }
 
     /**
-     * @param array $orders
+     * @param array  $orders
      * @param string $batchId
      */
     protected function sendReceiptsBatchToApi($orders, $batchId)
@@ -478,7 +475,7 @@ class ReceiptBatchSender
     }
 
     /**
-     * @return \Doctrine\ORM\EntityRepository
+     * @return HoldingRepository
      */
     protected function getHoldingRepository()
     {
