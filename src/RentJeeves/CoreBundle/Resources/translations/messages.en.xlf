@@ -2754,19 +2754,19 @@
             </trans-unit>
             <trans-unit id="yardi.import.error.getResidents">
                 <source>yardi.import.error.getResidents</source>
-                <target>Can not get resident from yardi api.</target>
+                <target>Network interruption when connecting to Yardi server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="mri.import.error.getResidents">
                 <source>mri.import.error.getResidents</source>
-                <target>Can not get residents from MRI api.</target>
+                <target>Network interruption when connecting to MRI server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="amsi.import.error.getResidents">
                 <source>amsi.import.error.getResidents</source>
-                <target>Can not get residents from AMSI api.</target>
+                <target>Network interruption when connecting to AMSI server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="resman.import.error.getResidents">
                 <source>resman.import.error.getResidents</source>
-                <target>Can not get residents from resman api.</target>
+                <target>Network interruption when connecting to ResMan server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="csv.import.error.update_matched_contracts">
                 <source>csv.import.error.update_matched_contracts</source>
