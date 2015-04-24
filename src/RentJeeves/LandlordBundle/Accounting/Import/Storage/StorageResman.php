@@ -114,7 +114,7 @@ class StorageResman extends ExternalApiStorage
                 $residentId = $customerUser->getCustomerId();
                 $address = $customerUser->getAddress();
 
-                $data = array(
+                $data = [
                     $residentId,
                     $customerBase->getRtUnit()->getUnitId(),
                     $startAt,
@@ -128,11 +128,12 @@ class StorageResman extends ExternalApiStorage
                     $monthToMonth,
                     $paymentAccepted,
                     $externalLeaseId,
+                    $customerBase->getRtUnit()->getUnitId(),
                     $address->getCity(),
                     $address->getAddress1(),
                     $address->getPostalCode(),
                     $address->getState()
-                );
+                ];
 
                 $this->writeCsvToFile($data);
             }

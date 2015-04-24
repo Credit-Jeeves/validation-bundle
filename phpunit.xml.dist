@@ -16,6 +16,10 @@
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory suffix="Case.php">vendor/credit-jeeves/api-bundle/CreditJeeves/*/Tests/CreditJeeves</directory>
+            <!-- Not pic up this test by reg link -->
+            <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/Services/MRI</directory>
+            <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/Services/ResMan</directory>
+            <!-- end -->
             <directory suffix="Case.php">src/*/*Bundle/Tests</directory>
             <directory suffix="Case.php">src/*/*Bundle/Tests/*</directory>
             <directory suffix="Case.php">src/*/Bundle/*Bundle/Tests</directory>
