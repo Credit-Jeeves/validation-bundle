@@ -2,7 +2,6 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Entity\AccountingSettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -1766,10 +1765,9 @@ class ImportCase extends ImportBaseAbstract
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         /** @var $landlord Landlord */
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
-        /** @var AccountingSettings $accountingSettings */
-        $accountingSettings = $landlord->getHolding()->getAccountingSettings();
-        $accountingSettings->setApiIntegration(ApiIntegrationType::RESMAN);
-        $em->flush($accountingSettings);
+        $holding = $landlord->getHolding();
+        $holding->setApiIntegrationType(ApiIntegrationType::RESMAN);
+        $em->flush($holding);
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
         // We must make sure the data saved into DB, so we count before import and after
         $this->assertEquals(23, count($contract));
@@ -1963,10 +1961,9 @@ class ImportCase extends ImportBaseAbstract
         $em = $this->getEntityManager();
         /** @var $landlord Landlord */
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
-        /** @var AccountingSettings $accountingSettings */
-        $accountingSettings = $landlord->getHolding()->getAccountingSettings();
-        $accountingSettings->setApiIntegration(ApiIntegrationType::MRI);
-        $em->flush($accountingSettings);
+        $holding = $landlord->getHolding();
+        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $em->flush($holding);
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
         $this->assertCount(23, $contract);

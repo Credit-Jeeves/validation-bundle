@@ -176,15 +176,7 @@ class Group extends BaseGroup
     public function getIntegratedApiSettings()
     {
         $holding = $this->getHolding();
-        $accountingSettings = $holding->getAccountingSettings();
-
-        if (empty($accountingSettings)) {
-            return null;
-        }
-
-        $apiIntegration = $accountingSettings->getApiIntegration();
-
-        switch ($apiIntegration) {
+        switch ($holding->getApiIntegrationType()) {
             case ApiIntegrationType::AMSI:
                 return $holding->getAmsiSettings();
             case ApiIntegrationType::MRI:
@@ -193,8 +185,9 @@ class Group extends BaseGroup
                 return $holding->getResManSettings();
             case ApiIntegrationType::YARDI_VOYAGER:
                 return $holding->getYardiSettings();
+            case ApiIntegrationType::NONE:
+            default:
+                return null;
         }
-
-        return null;
     }
 }

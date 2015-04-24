@@ -133,9 +133,7 @@ class ImportFileAccountingType extends AbstractType
             )
         );
 
-        $accountingSettings = $this->currentGroup->getHolding()->getAccountingSettings();
-
-        if (!empty($accountingSettings) && $accountingSettings->getApiIntegration() !== ApiIntegrationType::NONE) {
+        if ($this->currentGroup->getHolding()->getApiIntegrationType() !== ApiIntegrationType::NONE) {
             $choices = array(
                 'csv'               => 'common.csv',
                 'integrated_api'    => 'import.integrated_api',

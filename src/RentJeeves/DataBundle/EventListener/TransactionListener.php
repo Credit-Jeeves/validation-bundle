@@ -136,11 +136,8 @@ class TransactionListener
     {
         if ($transaction->getStatus() === TransactionStatus::REVERSED) {
             if ($contract = $transaction->getOrder()->getContract()) {
-                if ($accountingSettings = $contract->getHolding()->getAccountingSettings()) {
-                    $apiType = $accountingSettings->getApiIntegration();
-                    if ($apiType === ApiIntegrationType::AMSI) {
-                        return true;
-                    }
+                if ($contract->getHolding()->getApiIntegrationType() === ApiIntegrationType::AMSI) {
+                    return true;
                 }
             }
         }

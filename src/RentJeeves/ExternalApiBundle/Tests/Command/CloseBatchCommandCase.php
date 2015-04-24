@@ -53,14 +53,13 @@ class CloseBatchCommandCase extends BaseTestCase
 
         $holding = $repo->getMerchantHoldingByBatchId(self::BATCH_ID);
 
-        $holding->getAccountingSettings()->setApiIntegration(ApiIntegrationType::RESMAN);
+        $holding->setApiIntegrationType(ApiIntegrationType::RESMAN);
 
         $this->em->persist($this->batchMapping);
         $this->em->persist($holding);
 
         $this->em->flush();
     }
-
 
     /**
      * @test

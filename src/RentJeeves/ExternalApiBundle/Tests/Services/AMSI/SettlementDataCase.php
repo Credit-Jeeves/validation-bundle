@@ -20,7 +20,7 @@ class SettlementDataCase extends Base
         $this->load(true);
         $this->holding = $this->getEntityManager()->getRepository('DataBundle:Holding')
             ->findOneByName('Rent Holding');
-        $this->holding->getAccountingSettings()->setApiIntegration(ApiIntegrationType::AMSI);
+        $this->holding->setApiIntegrationType(ApiIntegrationType::AMSI);
         $this->getEntityManager()->flush($this->holding);
     }
 
@@ -87,8 +87,8 @@ class SettlementDataCase extends Base
      * @dataProvider batchIdDatesDataProvider
      *
      * @param \DateTime $date
-     * @param int $countBatches
-     * @param array $expectedResult
+     * @param int       $countBatches
+     * @param array     $expectedResult
      */
     public function shouldReturnBatchIdDataByDate(\DateTime $date, $countBatches, $expectedResult)
     {

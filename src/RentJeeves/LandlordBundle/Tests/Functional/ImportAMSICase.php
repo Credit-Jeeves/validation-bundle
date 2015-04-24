@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
-use RentJeeves\DataBundle\Entity\AccountingSettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -19,10 +18,9 @@ class ImportAMSICase extends ImportBaseAbstract
         $em = $this->getEntityManager();
         /** @var $landlord Landlord */
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
-        /** @var AccountingSettings $accountingSettings */
-        $accountingSettings = $landlord->getHolding()->getAccountingSettings();
-        $accountingSettings->setApiIntegration(ApiIntegrationType::AMSI);
-        $em->flush($accountingSettings);
+        $holding = $landlord->getHolding();
+        $holding->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $em->flush($holding);
         $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
         // We must make sure the data saved into DB, so we count before import and after
         $this->assertEquals(23, count($contracts));
