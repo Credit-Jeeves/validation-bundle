@@ -31,12 +31,12 @@ trait Property
      *
      * @throws ImportHandlerException
      */
-    protected function isMatchExternalPropertyId(PropertyMapping $propertyMapping, $externalPropertyId)
+    protected function catchMatchedExternalPropertyId(PropertyMapping $propertyMapping, $externalPropertyId)
     {
         if ($propertyMapping->getExternalPropertyId() !== $externalPropertyId) {
             throw new ImportHandlerException(
                 sprintf(
-                    'External property mapping is different (%s) (%s)',
+                    'Given external property mapping (%s) does not match the existing one (%s)',
                     $propertyMapping->getExternalPropertyId(),
                     $externalPropertyId
                 )
@@ -54,25 +54,37 @@ trait Property
             return;
         }
 
+        $externalPropertyId = $row[Mapping::KEY_EXTERNAL_PROPERTY_ID];
         $property = $currentImportModel->getContract()->getProperty();
 
         if (empty($property)) {
             return;
         }
 
-        $holding = $currentImportModel->getContract()->getGroup()->getHolding();
-        /** @var PropertyMapping $propertyMapping */
-        $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
-            [
-                'property' => $property,
-                'holding' => $holding
-            ]
-        );
-
-        if ($propertyMapping) {
-            $this->isMatchExternalPropertyId($propertyMapping, $row[Mapping::KEY_EXTERNAL_PROPERTY_ID]);
+        if (isset($this->propertyMappingList[$externalPropertyId])) {
+            $this->currentImportModel->setPropertyMapping(
+                $this->propertyMappingList[$externalPropertyId]
+            );
 
             return;
+        }
+
+        $holding = $currentImportModel->getContract()->getGroup()->getHolding();
+
+        if ($property->getId()) {
+            /** @var PropertyMapping $propertyMapping */
+            $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+                [
+                    'property' => $property,
+                    'holding' => $holding
+                ]
+            );
+
+            if ($propertyMapping) {
+                $this->catchMatchedExternalPropertyId($propertyMapping, $row[Mapping::KEY_EXTERNAL_PROPERTY_ID]);
+
+                return;
+            }
         }
 
         $propertyMapping = new PropertyMapping();
@@ -80,13 +92,8 @@ trait Property
         $propertyMapping->setExternalPropertyId($row[Mapping::KEY_EXTERNAL_PROPERTY_ID]);
         $propertyMapping->setHolding($holding);
 
-        if (!array_keys($this->propertyMappingList, $propertyMapping->__toString())) {
-            $this->propertyMappingList[$propertyMapping->__toString()] = $propertyMapping;
-        }
-
-        $this->currentImportModel->setPropertyMapping(
-            $this->propertyMappingList[$propertyMapping->__toString()]
-        );
+        $this->propertyMappingList[$externalPropertyId] = $propertyMapping;
+        $this->currentImportModel->setPropertyMapping($propertyMapping);
     }
 
     /**

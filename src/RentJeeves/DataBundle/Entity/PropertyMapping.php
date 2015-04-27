@@ -23,21 +23,4 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PropertyMapping extends Base
 {
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-
-        if ($this->getId()) {
-            return sprintf(
-                '%s|%s|%s',
-                $this->getHolding()->getId(),
-                $this->getProperty()->getId(),
-                $this->getExternalPropertyId()
-            );
-        }
-
-        return null;
-    }
 }
