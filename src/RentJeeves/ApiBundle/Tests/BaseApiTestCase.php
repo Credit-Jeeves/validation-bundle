@@ -11,10 +11,6 @@ use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
 
-/**
- * @method assertEquals
- * @method assertTrue
- */
 class BaseApiTestCase extends BaseTestCase
 {
     const URL_PREFIX = '/api/tenant';
@@ -77,6 +73,11 @@ class BaseApiTestCase extends BaseTestCase
         $this->assertTrue(isset($urlInfo['path']));
     }
 
+    /**
+     * @param  string $content
+     * @param  string $format
+     * @return mixed
+     */
     protected function parseContent($content, $format = 'json')
     {
         /** @var Serializer $serializer */
@@ -117,6 +118,9 @@ class BaseApiTestCase extends BaseTestCase
         }
     }
 
+    /**
+     * @return \Symfony\Bundle\FrameworkBundle\Client
+     */
     protected function getClient()
     {
         $this->prepareClient();
@@ -124,6 +128,9 @@ class BaseApiTestCase extends BaseTestCase
         return parent::createClient();
     }
 
+    /**
+     * @return EntityManager
+     */
     protected function getEm()
     {
         if (!$this->em) {
@@ -133,17 +140,27 @@ class BaseApiTestCase extends BaseTestCase
         return $this->em;
     }
 
+    /**
+     * @param  string                                                                       $entityPath
+     * @return \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
     protected function getEntityRepository($entityPath)
     {
         return $this->getEm()->getRepository($entityPath);
     }
 
+    /**
+     * @param string $email
+     */
     protected function setTenantEmail($email)
     {
         $this->tenantEmail = $email;
         static::$instance = false;
     }
 
+    /**
+     * @return string
+     */
     protected function getTenantEmail()
     {
         return $this->tenantEmail;
@@ -160,8 +177,8 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param string $idEncoderServiceId
-     * @param bool $refresh
+     * @param  string                    $idEncoderServiceId
+     * @param  bool                      $refresh
      * @return AttributeEncoderInterface
      */
     protected function getIdEncoder($idEncoderServiceId = 'api.default_id_encoder', $refresh = false)
@@ -174,8 +191,8 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param string $urlEncoderServiceId
-     * @param bool $refresh
+     * @param  string                    $urlEncoderServiceId
+     * @param  bool                      $refresh
      * @return AttributeEncoderInterface
      */
     protected function getUrlEncoder($urlEncoderServiceId = 'api.default_url_encoder', $refresh = false)
@@ -188,8 +205,8 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param array $requestParams
-     * @param string $format
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function postRequest(array $requestParams = [], $format = 'json')
@@ -198,9 +215,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param null $attributes
-     * @param array $requestParams
-     * @param string $format
+     * @param  null|string   $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function putRequest($attributes = null, array $requestParams = [], $format = 'json')
@@ -209,9 +226,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param null $attributes
-     * @param array $requestParams
-     * @param string $format
+     * @param  null|string   $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function getRequest($attributes = null, array $requestParams = [], $format = 'json')
@@ -220,9 +237,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param null|string $attributes
-     * @param array $requestParams
-     * @param string $format
+     * @param  null|string   $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function deleteRequest($attributes = null, array $requestParams = [], $format = 'json')
@@ -231,11 +248,11 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param string|null $fullUrl
-     * @param string $method
-     * @param string $format
-     * @param string|null $attributes
-     * @param array $requestParams
+     * @param  string|null   $fullUrl
+     * @param  string        $method
+     * @param  string        $format
+     * @param  string|null   $attributes
+     * @param  array         $requestParams
      * @return null|Response
      */
     protected function request(
@@ -267,10 +284,42 @@ class BaseApiTestCase extends BaseTestCase
         return $client->getResponse();
     }
 
-    protected function prepareUrl($id = null, $format = 'json', $requestUrl = '')
+    /**
+     * @param  null|int    $id
+     * @param  string|bool $format
+     * @param  string      $requestUrl
+     * @param  bool        $isAbsolutePath
+     * @return string
+     */
+    protected function prepareUrl($id = null, $format = 'json', $requestUrl = '', $isAbsolutePath = false)
     {
         $requestUrl = $requestUrl ?: static::REQUEST_URL;
 
-        return static::URL_PREFIX . '/' . $requestUrl . ( $id ? "/{$id}" : '') . ".{$format}" ;
+        $siteUrl = '';
+        if ($isAbsolutePath) {
+            $siteUrl = $this->getSiteUrl();
+        }
+
+        return sprintf(
+            '%s%s/%s%s%s',
+            $siteUrl,
+            static::URL_PREFIX,
+            $requestUrl,
+            $id ? '/' . $id : '',
+            $format ? '.' . $format : ''
+        );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSiteUrl()
+    {
+        $https = $this->getClient()->getServerParameter('HTTPS', 'off');
+        $port = $this->getClient()->getServerParameter('SERVER_PORT', 80);
+        $protocol = ($https !== 'off' || $port == 443) ? "https" : "http";
+        $domainName = $this->getClient()->getServerParameter('HTTP_HOST');
+
+        return sprintf('%s://%s', $protocol, $domainName);
     }
 }

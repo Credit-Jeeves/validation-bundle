@@ -45,7 +45,6 @@ class PaymentsController extends Controller
      */
     public function getPaymentsAction()
     {
-        /** @var Tenant $user */
         $user = $this->getUser();
 
         $payments = $this
@@ -78,7 +77,7 @@ class PaymentsController extends Controller
      * @Rest\View(serializerGroups={"Base", "PaymentDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
@@ -170,11 +169,11 @@ class PaymentsController extends Controller
      */
     public function createPaymentAction(Request $request)
     {
-        return $this->processForm($request, new PaymentEntity);
+        return $this->processForm($request, new PaymentEntity());
     }
 
     /**
-     * @param int $id
+     * @param int     $id
      * @param Request $request
      *
      * @ApiDoc(
@@ -192,7 +191,7 @@ class PaymentsController extends Controller
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      * @RequestParam(
      *     name="payment_account_url",
@@ -274,7 +273,7 @@ class PaymentsController extends Controller
      * @Rest\View(serializerGroups={"Base", "PaymentDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
@@ -296,12 +295,19 @@ class PaymentsController extends Controller
             $em = $this->getDoctrine()->getManager();
             $payment->setClosed($this, PaymentCloseReason::USER_CANCELLED);
             $em->flush($payment);
+
             return ['result' => true];
         } else {
             return ['result' => false, 'message' => 'Payment is already closed.'];
         }
     }
 
+    /**
+     * @param  Request                      $request
+     * @param  PaymentEntity                $entity
+     * @param  string                       $method
+     * @return \Symfony\Component\Form\Form
+     */
     protected function processForm(Request $request, PaymentEntity $entity, $method = 'POST')
     {
         $form = $this->createForm(

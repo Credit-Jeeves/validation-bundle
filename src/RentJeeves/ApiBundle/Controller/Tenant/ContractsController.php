@@ -33,7 +33,7 @@ class ContractsController extends Controller
      * @Rest\View(serializerGroups={"Base", "ContractDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
@@ -94,6 +94,13 @@ class ContractsController extends Controller
         return $this->processForm($request, new ContractEntity());
     }
 
+    /**
+     * @param  Request                      $request
+     * @param  ContractEntity               $entity
+     * @param  string                       $method
+     * @return \Symfony\Component\Form\Form
+     * @throws \Exception
+     */
     protected function processForm(Request $request, ContractEntity $entity, $method = 'POST')
     {
         $form = $this->createForm(
@@ -125,7 +132,7 @@ class ContractsController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param int     $id
      * @param Request $request
      *
      * @ApiDoc(
@@ -143,7 +150,7 @@ class ContractsController extends Controller
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      * This is needed for correct parsing url and get id
      * @RequestParam(
