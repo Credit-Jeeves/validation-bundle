@@ -27,6 +27,26 @@ abstract class Partner
     protected $name;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $logoName;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $loginUrl;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $address;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isPoweredBy;
+
+    /**
      * @ORM\Column(
      *     name="request_name",
      *     type="string",
@@ -126,5 +146,69 @@ abstract class Partner
     public function __toString()
     {
         return $this->getName() ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogoName()
+    {
+        return $this->logoName;
+    }
+
+    /**
+     * @param string $logoName
+     */
+    public function setLogoName($logoName)
+    {
+        $this->logoName = $logoName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginUrl()
+    {
+        return $this->loginUrl;
+    }
+
+    /**
+     * @param string $loginUrl
+     */
+    public function setLoginUrl($loginUrl)
+    {
+        $this->loginUrl = $loginUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPoweredBy()
+    {
+        return $this->isPoweredBy;
+    }
+
+    /**
+     * @param boolean $isPoweredBy
+     */
+    public function setIsPoweredBy($isPoweredBy)
+    {
+        $this->isPoweredBy = $isPoweredBy;
     }
 }
