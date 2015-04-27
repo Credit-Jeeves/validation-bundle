@@ -23,11 +23,6 @@ class ResManClientCase extends Base
     const EXTERNAL_LEASE_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
 
     /**
-     * @var string
-     */
-    public static $batchId;
-
-    /**
      * @test
      */
     public function shouldReturnResidentTransactions()
@@ -71,6 +66,8 @@ class ResManClientCase extends Base
     /**
      * @test
      * @depends shouldReturnResidentTransactions
+     *
+     * @return string
      */
     public function shouldOpenNewBatch()
     {
@@ -83,14 +80,20 @@ class ResManClientCase extends Base
         $resManClient->setSettings($settings);
 
         $batchId = $resManClient->openBatch(self::EXTERNAL_PROPERTY_ID, new \DateTime());
-        $this->assertNotEmpty(self::$batchId = $batchId);
+        $this->assertNotEmpty($batchId);
+
+        return $batchId;
     }
 
     /**
+     * @param $batchId
+     *
      * @test
      * @depends shouldOpenNewBatch
+     *
+     * @return string
      */
-    public function shouldAddPaymentToBatch()
+    public function shouldAddPaymentToBatch($batchId)
     {
         $this->load(true);
         $container = $this->getKernel()->getContainer();
@@ -111,13 +114,17 @@ class ResManClientCase extends Base
 
         $result = $resManClient->addPaymentToBatch($order, self::EXTERNAL_PROPERTY_ID);
         $this->assertTrue($result);
+
+        return $batchId;
     }
 
     /**
+     * @param $batchId
+     *
      * @test
-     * @depends shouldOpenNewBatch
+     * @depends shouldAddPaymentToBatch
      */
-    public function shouldCloseBatch()
+    public function shouldCloseBatch($batchId)
     {
         $container = $this->getKernel()->getContainer();
         /** @var $resManClient ResManClient */
@@ -127,7 +134,7 @@ class ResManClientCase extends Base
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
 
-        $result = $resManClient->closeBatch(self::EXTERNAL_PROPERTY_ID, self::$batchId);
+        $result = $resManClient->closeBatch(self::EXTERNAL_PROPERTY_ID, $batchId);
 
         $this->assertTrue($result);
     }

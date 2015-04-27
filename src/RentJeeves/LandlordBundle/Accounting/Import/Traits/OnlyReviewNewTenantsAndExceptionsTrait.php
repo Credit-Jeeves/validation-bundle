@@ -18,7 +18,6 @@ use Exception;
  * @property Import $currentImportModel
  * @property StorageInterface $storage
  * @property array $lines
- * @method createCurrentImportModel
  * @method manageException
  */
 trait OnlyReviewNewTenantsAndExceptionsTrait
@@ -65,6 +64,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
 
         if (empty($data)) {
             $this->currentImportModel = null;
+
             return;
         }
 
@@ -73,7 +73,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
     }
 
     /**
-     * @param ContractEntity $contract
+     * @param  ContractEntity $contract
      * @return bool
      */
     protected function isContractEndedAndActiveInOurDB(ContractEntity $contract)
@@ -127,11 +127,13 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
 
             if (!empty($errors)) {
                 call_user_func($callbackFailed);
+
                 return;
             }
 
             if ($this->currentImportModel->getIsSkipped()) {
                 call_user_func($callbackSuccess);
+
                 return;
             }
 
@@ -142,6 +144,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             ) {
                 $this->em->flush($contract);
                 call_user_func($callbackSuccess);
+
                 return;
             }
 
@@ -153,6 +156,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             ) {
                 $this->em->flush($contractWaiting);
                 call_user_func($callbackSuccess);
+
                 return;
             }
 

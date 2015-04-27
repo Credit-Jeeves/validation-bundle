@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import;
 
 /**
@@ -18,6 +19,30 @@ trait Property
      * @var array
      */
     protected $propertyList = [];
+
+    /**
+     * @var array
+     */
+    protected $propertyMappingList = [];
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     * @param $externalPropertyId
+     *
+     * @throws ImportHandlerException
+     */
+    protected function isMatchExternalPropertyId(PropertyMapping $propertyMapping, $externalPropertyId)
+    {
+        if ($propertyMapping->getExternalPropertyId() !== $externalPropertyId) {
+            throw new ImportHandlerException(
+                sprintf(
+                    'External property mapping is different (%s) (%s)',
+                    $propertyMapping->getExternalPropertyId(),
+                    $externalPropertyId
+                )
+            );
+        }
+    }
 
     /**
      * @param Import $currentImportModel
@@ -36,6 +61,7 @@ trait Property
         }
 
         $holding = $currentImportModel->getContract()->getGroup()->getHolding();
+        /** @var PropertyMapping $propertyMapping */
         $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
             [
                 'property' => $property,
@@ -44,6 +70,8 @@ trait Property
         );
 
         if ($propertyMapping) {
+            $this->isMatchExternalPropertyId($propertyMapping, $row[Mapping::KEY_EXTERNAL_PROPERTY_ID]);
+
             return;
         }
 
@@ -52,7 +80,13 @@ trait Property
         $propertyMapping->setExternalPropertyId($row[Mapping::KEY_EXTERNAL_PROPERTY_ID]);
         $propertyMapping->setHolding($holding);
 
-        $this->currentImportModel->setPropertyMapping($propertyMapping);
+        if (!array_keys($this->propertyMappingList, $propertyMapping->__toString())) {
+            $this->propertyMappingList[$propertyMapping->__toString()] = $propertyMapping;
+        }
+
+        $this->currentImportModel->setPropertyMapping(
+            $this->propertyMappingList[$propertyMapping->__toString()]
+        );
     }
 
     /**
