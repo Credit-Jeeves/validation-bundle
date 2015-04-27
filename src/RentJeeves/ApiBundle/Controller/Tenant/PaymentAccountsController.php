@@ -37,7 +37,7 @@ class PaymentAccountsController extends Controller
      *     }
      * )
      * @Rest\Get("/payment_accounts")
-     * @Rest\View(serializerGroups={"Base", "PaymentAccountDetails"})
+     * @Rest\View(serializerGroups={"Base", "PaymentAccountShort"})
      *
      * @return ResponseCollection
      */
@@ -71,7 +71,7 @@ class PaymentAccountsController extends Controller
      * @Rest\View(serializerGroups={"Base", "PaymentAccountDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
@@ -164,7 +164,7 @@ class PaymentAccountsController extends Controller
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      * @RequestParam(
      *     name="contract_url",
@@ -213,6 +213,12 @@ class PaymentAccountsController extends Controller
         throw new NotFoundHttpException('Payment Account not found');
     }
 
+    /**
+     * @param  Request                      $request
+     * @param  PaymentAccountEntity         $entity
+     * @param  string                       $method
+     * @return \Symfony\Component\Form\Form
+     */
     protected function processForm(Request $request, PaymentAccountEntity $entity, $method = 'POST')
     {
         $form = $this->createForm(
