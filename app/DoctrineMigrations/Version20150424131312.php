@@ -39,8 +39,16 @@ class Version20150424131312 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_holding
-                DROP apiIntegrationType"
+                DROP api_integration_type"
         );
 
+        $this->addSql(
+            "CREATE TABLE accounting_settings (id BIGINT AUTO_INCREMENT NOT NULL,
+                holding_id BIGINT NOT NULL,
+                api_integration ENUM('none','yardi voyager','resman','mri','amsi')
+                    COMMENT '(DC2Type:ApiIntegrationType)' NOT NULL,
+                UNIQUE INDEX UNIQ_5DC18D376CD5FBA3 (holding_id),
+                PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
+        );
     }
 }
