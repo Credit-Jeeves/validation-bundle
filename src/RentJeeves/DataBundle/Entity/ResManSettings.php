@@ -23,6 +23,6 @@ class ResManSettings extends Base implements SettingsInterface
      */
     public function isMultiProperty()
     {
-        return false;
+        return true;
     }
 }

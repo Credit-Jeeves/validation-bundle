@@ -3,7 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use JMS\Serializer\SerializationContext;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
@@ -82,11 +81,11 @@ class ResManClient implements ClientInterface
 
     /**
      * @param ExceptionCatcher $exceptionCatcher
-     * @param Serializer $serializer
-     * @param Logger $logger
-     * @param string $integrationPartnerId
-     * @param string $apiKey
-     * @param string $apiUrl
+     * @param Serializer       $serializer
+     * @param Logger           $logger
+     * @param string           $integrationPartnerId
+     * @param string           $apiKey
+     * @param string           $apiUrl
      */
     public function __construct(
         ExceptionCatcher $exceptionCatcher,
@@ -136,7 +135,7 @@ class ResManClient implements ClientInterface
 
     /**
      * @param $method
-     * @param array $params
+     * @param  array  $params
      * @return ResMan
      */
     public function sendRequest($method, array $params)
@@ -244,15 +243,18 @@ class ResManClient implements ClientInterface
 
         $this->debugMessage("Call ResMan method: {$method}");
         $resMan = $this->sendRequest($method, $params);
+        if ($resMan instanceof ResMan) {
+            return $resMan->getResponse()->getResidentTransactions();
+        }
 
-        return $resMan->getResponse()->getResidentTransactions();
+        throw new Exception(sprintf('Can\'t get residents for ResMan by propertyID - %s', $externalPropertyId));
     }
 
     /**
      * @param $externalPropertyId
-     * @param DateTime $batchDate
-     * @param string $description
-     * @param mixed $accountId Can be get from settings
+     * @param  DateTime $batchDate
+     * @param  string   $description
+     * @param  mixed    $accountId   Can be get from settings
      * @return mixed
      */
     public function openBatch($externalPropertyId, DateTime $batchDate, $description = null, $accountId = null)
@@ -279,7 +281,7 @@ class ResManClient implements ClientInterface
     /**
      * @param $externalPropertyId
      * @param $accountingBatchId
-     * @param mixed $accountId Can be get from settings
+     * @param  mixed $accountId Can be get from settings
      * @return bool
      */
     public function closeBatch($externalPropertyId, $accountingBatchId, $accountId = null)
@@ -295,12 +297,12 @@ class ResManClient implements ClientInterface
 
         $resMan = $this->sendRequest($method, $params);
 
-        return ($resMan instanceof ResMan)? true : false;
+        return $resMan instanceof ResMan;
     }
 
     /**
      * @param $residentTransactionsXml
-     * @param string $externalPropertyId
+     * @param  string $externalPropertyId
      * @return bool
      */
     public function addPaymentToBatch(
@@ -319,11 +321,11 @@ class ResManClient implements ClientInterface
 
         $result = $this->sendRequest($method, $paramsToRequest);
 
-        return ($result instanceof ResMan)? true : false;
+        return $result instanceof ResMan;
     }
 
     /**
-     * @param Order $order
+     * @param  Order  $order
      * @return string
      */
     protected function getResidentTransactionXml(Order $order)
