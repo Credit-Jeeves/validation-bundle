@@ -52,7 +52,7 @@ class PaymentManager extends AbstractManager
         try {
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
-            $this->logger->critical(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
             $transaction->setMessages($e->getMessage());
             $transaction->setIsSuccessful(false);
             $this->em->persist($transaction);

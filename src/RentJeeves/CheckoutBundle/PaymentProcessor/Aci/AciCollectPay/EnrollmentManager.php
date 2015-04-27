@@ -61,7 +61,7 @@ class EnrollmentManager extends AbstractManager
         try {
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
-            $this->logger->critical(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
             throw new $e();
         }
 

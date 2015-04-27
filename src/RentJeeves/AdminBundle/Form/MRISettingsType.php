@@ -21,9 +21,6 @@ class MRISettingsType extends Base
         $builder->add('partnerKey');
         $builder->add('hash');
         $builder->add('siteId');
-        $builder->add('paymentType');
-        $builder->add('sourceCode');
-        $builder->add('cashType');
         $builder->add('chargeCode');
         $builder->add('clientId');
     }

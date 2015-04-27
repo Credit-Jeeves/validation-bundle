@@ -123,47 +123,6 @@ abstract class MRISettings
 
     /**
      * @ORM\Column(
-     *     name="payment_type",
-     *     type="encrypt",
-     *     nullable=false
-     * )
-     * @Assert\NotBlank()
-     * @Assert\Length(
-     *      min = 1,
-     *      max = 1
-     * )
-     *
-     * @var string
-     */
-    protected $paymentType;
-
-
-    /**
-     * @ORM\Column(
-     *     name="source_code",
-     *     type="encrypt",
-     *     nullable=false
-     * )
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $sourceCode;
-
-    /**
-     * @ORM\Column(
-     *     name="cash_type",
-     *     type="encrypt",
-     *     nullable=false
-     * )
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $cashType;
-
-    /**
-     * @ORM\Column(
      *     name="charge_code",
      *     type="encrypt",
      *     nullable=false
@@ -189,22 +148,6 @@ abstract class MRISettings
     /**
      * @return string
      */
-    public function getCashType()
-    {
-        return $this->cashType;
-    }
-
-    /**
-     * @param string $cashType
-     */
-    public function setCashType($cashType)
-    {
-        $this->cashType = $cashType;
-    }
-
-    /**
-     * @return string
-     */
     public function getChargeCode()
     {
         return $this->chargeCode;
@@ -216,22 +159,6 @@ abstract class MRISettings
     public function setChargeCode($chargeCode)
     {
         $this->chargeCode = $chargeCode;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPaymentType()
-    {
-        return $this->paymentType;
-    }
-
-    /**
-     * @param string $paymentType
-     */
-    public function setPaymentType($paymentType)
-    {
-        $this->paymentType = $paymentType;
     }
 
     /**
@@ -249,23 +176,6 @@ abstract class MRISettings
     {
         $this->siteId = $siteId;
     }
-
-    /**
-     * @return string
-     */
-    public function getSourceCode()
-    {
-        return $this->sourceCode;
-    }
-
-    /**
-     * @param string $sourceCode
-     */
-    public function setSourceCode($sourceCode)
-    {
-        $this->sourceCode = $sourceCode;
-    }
-
 
     /**
      * @return string

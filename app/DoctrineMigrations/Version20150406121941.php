@@ -34,7 +34,7 @@ class Version20150406121941 extends AbstractMigration
 
             UPDATE rj_deposit_account
             SET is_passed_ach = 1
-            WHERE feeACH is NULL OR feeACH = 0;
+            WHERE feeACH != 0;
         ");
     }
 

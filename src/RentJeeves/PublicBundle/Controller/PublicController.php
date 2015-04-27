@@ -225,10 +225,9 @@ class PublicController extends Controller
             $resident = $em->getRepository('RjDataBundle:ResidentMapping')
                 ->findOneResidentByHoldingAndResidentId($holding, $residentId);
 
-            $session->remove('holding_id');
-            $session->remove('resident_id');
-
-            if (null != $resident) {
+            if (null !== $resident) {
+                $session->remove('holding_id');
+                $session->remove('resident_id');
                 if (null != $inviteCode = $resident->getTenant()->getInviteCode()) { // not NULL or not ""
 
                     return $this->redirectToRoute('tenant_invite', ['code' => $inviteCode]);
@@ -254,6 +253,9 @@ class PublicController extends Controller
 
                     $tenant->setFirstName($contracts[0]->getFirstName());
                     $tenant->setLastName($contracts[0]->getLastName());
+                } else {
+                    $holdingPropertyList = $em->getRepository('RjDataBundle:Property')
+                        ->findByHoldingAndAlphaNumericSort($holding);
                 }
             }
         }
@@ -270,30 +272,22 @@ class PublicController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $password = $form->get('password')->getData();
-            /**
-             * @var $tenant Tenant
-             */
+            /** @var $tenant Tenant */
             $tenant = $form->getData();
             $password = $this->container->get('user.security.encoder.digest')
                 ->encodePassword($password, $tenant->getSalt());
             $tenant->setPassword($password);
             $tenant->setCulture($this->container->getParameter('kernel.default_locale'));
-            /**
-             * @var $unit Unit
-             */
+            /** @var Unit $unit */
             $unit = $form->get('unit')->getData();
             $propertyIdForm = $form->get('propertyId')->getData();
-            /**
-             * @var $propertyForm Property
-             */
+            /** @var Property $propertyForm */
             $propertyForm = $em->getRepository('RjDataBundle:Property')
                 ->findOneWithUnitAndAlphaNumericSort($propertyIdForm);
 
             $em->persist($tenant);
             $em->flush();
-            /**
-             * @var $contractProcess ContractProcess
-             */
+            /** @var ContractProcess $contractProcess */
             $contractProcess = $this->get('contract.process');
             $contractProcess->createContractFromTenantSide(
                 $tenant,
@@ -303,6 +297,9 @@ class PublicController extends Controller
             );
 
             $this->get('project.mailer')->sendRjCheckEmail($tenant);
+
+            $session->remove('holding_id');
+            $session->remove('resident_id');
 
             return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
         }
@@ -327,6 +324,10 @@ class PublicController extends Controller
 
         if (self::TYPE_HOLDING === $type && $holding) {
             $propertyList = $em->getRepository('RjDataBundle:Property')->findByHoldingAndAlphaNumericSort($holding);
+        }
+
+        if (true === isset($holdingPropertyList)) {
+            $propertyList = $holdingPropertyList;
         }
 
         $parameters = [

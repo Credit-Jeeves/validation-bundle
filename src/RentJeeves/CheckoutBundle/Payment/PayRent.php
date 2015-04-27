@@ -81,7 +81,6 @@ class PayRent
         $this->em->persist($order);
         $this->em->flush();
 
-        $additionalInformation = '';
         try {
             $orderStatus = $this->getPaymentProcessor($payment)->executeOrder(
                 $order,
@@ -90,8 +89,8 @@ class PayRent
             );
             $order->setStatus($orderStatus);
         } catch (\Exception $e) {
+            $this->logger->alert('Order Error:' .  $e->getMessage());
             $order->setStatus(OrderStatus::ERROR);
-            $additionalInformation = ', reason: ' . $e->getMessage();
         }
 
         if (OrderStatus::ERROR == $order->getStatus()) {
@@ -101,10 +100,9 @@ class PayRent
         }
         $this->logger->debug(
             sprintf(
-                'New order ID %d, status: %s%s',
+                'New order ID %d, status: %s',
                 $order->getId(),
-                $order->getStatus(),
-                $additionalInformation
+                $order->getStatus()
             )
         );
 

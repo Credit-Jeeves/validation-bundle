@@ -13,6 +13,7 @@ use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
 use CreditJeeves\DataBundle\Entity\Address;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
@@ -49,10 +50,10 @@ class PaymentAccountManager
     }
 
     /**
-     * @param  PaymentAccountData                                                                                   $paymentAccountData
-     * @param  User                                                                                                 $user
+     * @param  PaymentAccountData $paymentAccountData
+     * @param  User $user
      * @return GetTokenRequest
-     * @throws \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException
+     * @throws InvalidAttributeNameException
      */
     protected function getTokenRequest(PaymentAccountData $paymentAccountData, User $user)
     {
