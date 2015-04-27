@@ -83,7 +83,7 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
 
-    const KEY_EXTERNAL_PROPERTY_ID = 'externalPropertyId';
+    const KEY_EXTERNAL_PROPERTY_ID = 'external_property_id';
 
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,

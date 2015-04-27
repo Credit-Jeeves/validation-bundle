@@ -247,7 +247,7 @@ class ResManClient implements ClientInterface
             return $resMan->getResponse()->getResidentTransactions();
         }
 
-        throw new Exception(sprintf("Can't get residents for ResMan by propertyID - %s", $externalPropertyId));
+        throw new Exception(sprintf('Can\'t get residents for ResMan by propertyID - %s', $externalPropertyId));
     }
 
     /**
@@ -297,7 +297,7 @@ class ResManClient implements ClientInterface
 
         $resMan = $this->sendRequest($method, $params);
 
-        return ($resMan instanceof ResMan) ? true : false;
+        return $resMan instanceof ResMan;
     }
 
     /**
