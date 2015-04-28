@@ -238,7 +238,7 @@ class MRIClient implements ClientInterface
             $error = $payment->getEntryResponse()->getError();
 
             if (!empty($error)) {
-                throw new Exception(sprintf("Api return error %s", $error->getMessage()));
+                throw new Exception(sprintf('Api returned error %s', $error->getMessage()));
             }
 
             return true;

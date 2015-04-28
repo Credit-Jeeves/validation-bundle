@@ -149,17 +149,15 @@ class StorageAMSI extends ExternalApiStorage
     protected function getLeaseRent(Lease $lease)
     {
         $rent = $lease->getRentAmount();
-        if ($lease->getRentAmount() > 0) {
-            return $rent;
-        }
-
-        /** @var RecurringCharge $recurringCharge */
-        foreach ($lease->getRecurringCharges() as $recurringCharge) {
-            if (RecurringCharge::RENT_INCOME_CODE_ID == $recurringCharge->getIncCode() &&
-                RecurringCharge::FREQUENCY_MONTH == $recurringCharge->getFreqCode() &&
-                Lease::STATUS_CURRENT == $lease->getOccuStatusCode()
-            ) {
-                return $recurringCharge->getAmount();
+        if ($rent == 0) {
+            /** @var RecurringCharge $recurringCharge */
+            foreach ($lease->getRecurringCharges() as $recurringCharge) {
+                if (RecurringCharge::RENT_INCOME_CODE_ID == $recurringCharge->getIncCode() &&
+                    RecurringCharge::FREQUENCY_MONTH == $recurringCharge->getFreqCode() &&
+                    Lease::STATUS_CURRENT == $lease->getOccuStatusCode()
+                ) {
+                    return $recurringCharge->getAmount();
+                }
             }
         }
 

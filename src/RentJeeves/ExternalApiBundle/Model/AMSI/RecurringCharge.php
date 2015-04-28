@@ -72,7 +72,6 @@ class RecurringCharge
      */
     protected $incCode;
 
-
     /**
      * @Serializer\SerializedName("ChargeBeginDate")
      * @Serializer\XmlAttribute

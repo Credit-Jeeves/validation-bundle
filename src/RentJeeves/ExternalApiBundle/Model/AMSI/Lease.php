@@ -817,7 +817,7 @@ class Lease
     /**
      * @param array $recurringCharges
      */
-    public function setRecurringCharges($recurringCharges)
+    public function setRecurringCharges(array $recurringCharges)
     {
         $this->recurringCharges = $recurringCharges;
     }
