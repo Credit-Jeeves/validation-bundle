@@ -9,6 +9,9 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Lease
 {
+    const STATUS_CURRENT = 'C';
+    const STATUS_NOTICE = 'N';
+
     /**
      * @Serializer\SerializedName("Occupant")
      * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\AMSI\Occupant>")
@@ -30,6 +33,17 @@ class Lease
      * @var array
      */
     protected $openItems;
+
+    /**
+     * @Serializer\SerializedName("RecurringCharge")
+     * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\AMSI\RecurringCharge>")
+     * @Serializer\XmlList(inline = true, entry = "RecurringCharge")
+     * @Serializer\XmlKeyValuePairs
+     * @Serializer\Groups({"AMSI"})
+     *
+     * @var array
+     */
+    protected $recurringCharges;
 
     /**
      * @Serializer\SerializedName("Address")
@@ -790,5 +804,21 @@ class Lease
     public function setSecurityDepositOnHand($securityDepositOnHand)
     {
         $this->securityDepositOnHand = $securityDepositOnHand;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRecurringCharges()
+    {
+        return $this->recurringCharges;
+    }
+
+    /**
+     * @param array $recurringCharges
+     */
+    public function setRecurringCharges($recurringCharges)
+    {
+        $this->recurringCharges = $recurringCharges;
     }
 }

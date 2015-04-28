@@ -33,7 +33,7 @@ class EdexResidents
      * @Serializer\Type("integer")
      * @Serializer\Groups({"GetPropertyResidents"})
      *
-     * @var string
+     * @var int
      */
     protected $includePrimaryAddress = 1;
 
@@ -42,9 +42,19 @@ class EdexResidents
      * @Serializer\Type("integer")
      * @Serializer\Groups({"GetPropertyResidents"})
      *
-     * @var string
+     * @var int
      */
     protected $includeContactDetails = 1;
+
+    /**
+     * @Serializer\SerializedName("includerecurringcharges")
+     * @Serializer\Type("integer")
+     * @Serializer\Groups({"GetPropertyResidents"})
+     *
+     * @var int
+     */
+    protected $includeRecurringCharges = 1;
+
 
     /**
      * @return string
@@ -108,5 +118,21 @@ class EdexResidents
     public function setLeaseStatus($leaseStatus)
     {
         $this->leaseStatus = $leaseStatus;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIncludeRecurringCharges()
+    {
+        return $this->includeRecurringCharges;
+    }
+
+    /**
+     * @param int $includeRecurringCharges
+     */
+    public function setIncludeRecurringCharges($includeRecurringCharges)
+    {
+        $this->includeRecurringCharges = $includeRecurringCharges;
     }
 }
