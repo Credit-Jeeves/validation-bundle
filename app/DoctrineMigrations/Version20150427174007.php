@@ -5,7 +5,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-class Version20150427154816 extends AbstractMigration
+class Version20150427174007 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -16,12 +16,11 @@ class Version20150427154816 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE partner
-                ADD logoName VARCHAR(255) NOT NULL,
-                ADD loginUrl VARCHAR(255) NOT NULL,
-                ADD address VARCHAR(255) NOT NULL,
-                ADD isPoweredBy TINYINT(1) NOT NULL"
+                ADD logo_name VARCHAR(255) DEFAULT NULL,
+                ADD login_url VARCHAR(255) DEFAULT NULL,
+                ADD address VARCHAR(255) DEFAULT NULL,
+                ADD is_powered_by TINYINT(1) NOT NULL"
         );
-
     }
 
     public function down(Schema $schema)
@@ -33,10 +32,10 @@ class Version20150427154816 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE partner
-                DROP logoName,
-                DROP loginUrl,
+                DROP logo_name,
+                DROP login_url,
                 DROP address,
-                DROP isPoweredBy"
+                DROP is_powered_by"
         );
     }
 }

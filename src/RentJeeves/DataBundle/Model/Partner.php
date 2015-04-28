@@ -27,22 +27,22 @@ abstract class Partner
     protected $name;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="logo_name", type="string", nullable=true)
      */
     protected $logoName;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="login_url", type="string", nullable=true)
      */
     protected $loginUrl;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $address;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(name="is_powered_by", type="boolean")
      */
     protected $isPoweredBy;
 

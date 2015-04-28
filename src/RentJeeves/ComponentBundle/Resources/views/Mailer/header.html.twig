@@ -1,3 +1,4 @@
+{# @TODO move style to css file #}
 <div style="
         padding: 0 20px 0 0;
         border-left: 1px solid #c8c8c8;
@@ -8,10 +9,10 @@
         height: 95px;
         ">
     <div style="float: left;">
-        <img width="auto" src="http://{{ serverName }}/bundles/rjpublic/images/logo_rj.png"/>
+            <img width="auto" src="http://{{ serverName }}/bundles/rjpublic/images/{{ logoName }}"/>
     </div>
     <div style="float: right; margin-top: 40px;">
-        <a href="my.renttrack.com" style="
+        <a href="{{ loginUrl }}" style="
             border: none;
             padding: 2px 7px;
             text-align: left;

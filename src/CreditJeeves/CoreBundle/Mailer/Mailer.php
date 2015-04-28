@@ -9,6 +9,17 @@ use FOS\UserBundle\Model\UserInterface;
 class Mailer extends BaseMailer implements MailerInterface
 {
     /**
+     * @var array
+     */
+    protected $defaultValuesForEmail = [
+        'logoName' => 'logo_rj.png',
+        'partnerName' => 'RentTrack',
+        'partnerAddress' => '13911 Ridgedale Drive, Suite 401C, Minnetonka, MN 55305',
+        'loginUrl' => 'my.renttrack.com',
+        'isPoweredBy' => false
+    ];
+
+    /**
      * @param User   $user
      * @param string $sTemplate
      * @param array  $vars
@@ -152,8 +163,17 @@ class Mailer extends BaseMailer implements MailerInterface
             );
         }
         try {
+            $params += $this->defaultValuesForEmail;
             if (null !== $user = $this->getUserByEmail($emailTo)) {
-
+                if (false != $partner = $user->getPartner()) {
+                    if (true === $partner->isPoweredBy()) {
+                        $params['logoName'] = $partner->getLogoName();
+                        $params['partnerName'] = $partner->getName();
+                        $params['partnerAddress'] = $partner->getAddress();
+                        $params['loginUrl'] = $partner->getLoginUrl();
+                        $params['isPoweredBy'] = $partner->isPoweredBy();
+                    }
+                }
             }
 
             $htmlContent = $this->manager->renderEmail($template->getName(), $culture, $params);

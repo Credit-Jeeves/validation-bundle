@@ -1,6 +1,7 @@
 model:  RentJeeves\DataBundle\Entity\Partner
 fixtures:
-  partner_1:
-    client: client_3
-    name: creditcom
-    request_name: CREDITCOM
+    partner_1:
+        client: client_3
+        name: creditcom
+        request_name: CREDITCOM
+        is_powered_by: 0
