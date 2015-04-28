@@ -15,8 +15,8 @@ class SourcesCase extends BaseTestCase
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('rent.sources');
 
-        $this->session->wait($this->timeout, "jQuery('#payment-account-row-1').length");
-        $this->assertNotNull($row = $this->page->find('css', '#payment-account-row-1'));
+        $this->session->wait($this->timeout, "jQuery('#payment-account-row-3').length");
+        $this->assertNotNull($row = $this->page->find('css', '#payment-account-row-3'));
         $row->clickLink('edit');
 
         $this->session->wait(
@@ -64,9 +64,9 @@ class SourcesCase extends BaseTestCase
 
         $this->page->pressButton('payment_account.edit.save');
 
-        $this->session->wait($this->timeout + 15000, "jQuery('#payment-account-row-1 td:first').text() == 'New Card'");
+        $this->session->wait($this->timeout + 15000, "jQuery('#payment-account-row-3 td:first').text() == 'New Card'");
 
-        $this->assertNotNull($cols = $this->page->findAll('css', '#payment-account-row-1 td'));
+        $this->assertNotNull($cols = $this->page->findAll('css', '#payment-account-row-3 td'));
         $this->assertEquals('New Card', $cols[0]->getText());
 
         $this->logout();

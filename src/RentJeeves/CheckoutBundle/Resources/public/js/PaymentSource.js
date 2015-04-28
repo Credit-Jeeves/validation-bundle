@@ -20,6 +20,7 @@ function PaymentSource(parent, isForceSave, newAddress, defaultType) {
     this.save = ko.observable(isForceSave);
     this.isForceSave = ko.observable(isForceSave);
     this.groupId = ko.observable(null);
+    this.contractId = ko.observable(null);
 
     this.getCardNumber = ko.computed(function() {
         var card = self.CardNumber().toString().split('');

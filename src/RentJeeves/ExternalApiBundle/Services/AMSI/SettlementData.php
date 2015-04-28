@@ -54,7 +54,7 @@ class SettlementData
             ->groupBy('op.order');
 
         // main query
-        $query = $this->em->getRepository('RjDataBundle:Heartland')->createQueryBuilder('tr')
+        $query = $this->em->getRepository('RjDataBundle:Transaction')->createQueryBuilder('tr')
             ->select('tr.batchId AS batchId, SUM(o.sum) AS amount, tr.depositDate, tr.batchDate')
             ->addSelect(sprintf('(%s) as groupId', $qb->getDQL()))
             ->join('tr.order', 'o')

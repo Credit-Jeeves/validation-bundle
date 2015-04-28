@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
-use RentJeeves\DataBundle\Entity\Heartland as HeartlandTransaction;
+use RentJeeves\DataBundle\Entity\Transaction as HeartlandTransaction;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
@@ -37,7 +37,7 @@ class ReportSynchronizer
     /**
      * Synchronizes payment processor report's data.
      *
-     * @param PaymentProcessorReport $report
+     * @param  PaymentProcessorReport $report
      * @return int
      * @throws \Exception
      */
@@ -45,6 +45,7 @@ class ReportSynchronizer
     {
         if (!$report->getTransactions()) {
             $this->logger->alert('Report synchronizer: No transactions in payment processor report');
+
             return 0;
         }
 
@@ -72,7 +73,7 @@ class ReportSynchronizer
      */
     protected function isAlreadyProcessedReversal(ReversalReportTransaction $reportTransaction)
     {
-        $transaction = $this->em->getRepository('RjDataBundle:Heartland')
+        $transaction = $this->em->getRepository('RjDataBundle:Transaction')
             ->findOneBy([
                 'transactionId' => $reportTransaction->getTransactionId(),
                 'status' => TransactionStatus::REVERSED,
@@ -114,6 +115,7 @@ class ReportSynchronizer
         /** @var HeartlandTransaction $transaction */
         if (!$transaction = $this->findTransaction($reportTransaction->getTransactionId())) {
             $this->logger->alert('Deposit transaction ID ' . $reportTransaction->getTransactionId() . ' not found');
+
             return;
         }
 
@@ -143,6 +145,7 @@ class ReportSynchronizer
             $this->logger->debug(
                 'Returned transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed'
             );
+
             return;
         }
 
@@ -155,6 +158,7 @@ class ReportSynchronizer
             $this->logger->alert(
                 'Returned transaction ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
             );
+
             return;
         }
 
@@ -187,6 +191,7 @@ class ReportSynchronizer
             $this->logger->debug(
                 'Refunded transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed'
             );
+
             return;
         }
 
@@ -199,6 +204,7 @@ class ReportSynchronizer
             $this->logger->alert(
                 'Refunded transaction ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
             );
+
             return;
         }
 
@@ -228,6 +234,7 @@ class ReportSynchronizer
             $this->logger->debug(
                 'Cancelled transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed'
             );
+
             return;
         }
 
@@ -240,12 +247,13 @@ class ReportSynchronizer
             $this->logger->alert(
                 'Cancelled transaction ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
             );
+
             return;
         }
 
         $order = $originalTransaction->getOrder();
         $order->setStatus(OrderStatus::CANCELLED);
-        $originalTransaction->setDepositDate(null);
+        $originalTransaction->setDepositDate();
         $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
 
         $this->em->persist($voidedTransaction);
@@ -258,12 +266,12 @@ class ReportSynchronizer
      */
     protected function findTransaction($transactionId)
     {
-        return $this->em->getRepository('RjDataBundle:Heartland')->findOneByTransactionId($transactionId);
+        return $this->em->getRepository('RjDataBundle:Transaction')->findOneByTransactionId($transactionId);
     }
 
     /**
-     * @param Order $order
-     * @param ReversalReportTransaction $reportTransaction
+     * @param  Order                     $order
+     * @param  ReversalReportTransaction $reportTransaction
      * @return HeartlandTransaction
      */
     protected function createReversalTransaction(Order $order, ReversalReportTransaction $reportTransaction)

@@ -5,5 +5,5 @@ services:
     payment.account.heartland:
         class: "%payment_account.heartland.class%"
         calls:
-            - [setPayum, ["@payum"]]
+            - [setPayum, ["@payum2"]]
             - [setDefaultMerchantName, ["%rt_merchant_name%"]]

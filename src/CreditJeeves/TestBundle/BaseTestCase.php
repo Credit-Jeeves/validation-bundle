@@ -2,7 +2,6 @@
 namespace CreditJeeves\TestBundle;
 
 use Behat\MinkBundle\Test\MinkTestCase;
-use Doctrine\ORM\Tools\SchemaTool;
 use ReflectionClass;
 use Symfony\Component\DomCrawler\Crawler;
 use Ton\EmailBundle\EventListener\EmailListener;
@@ -19,7 +18,7 @@ abstract class BaseTestCase extends MinkTestCase
     const APP = 'AppCj';
 
     /**
-     * 
+     *
      * @var boolean
      */
     protected static $isFixturesLoaded = false;
@@ -36,6 +35,7 @@ abstract class BaseTestCase extends MinkTestCase
             static::$class = null;
             $this->setMink();
         }
+
         return parent::getKernel();
     }
 
@@ -50,6 +50,7 @@ abstract class BaseTestCase extends MinkTestCase
         require_once $dir . 'AppKernel.php';
         require_once $dir . static::APP . 'Kernel.php';
         require_once $dir . static::APP . 'TestKernel.php';
+
         return static::APP . 'TestKernel';
     }
 
@@ -58,7 +59,7 @@ abstract class BaseTestCase extends MinkTestCase
      *
      * @param string $obj
      * @param string $methodName
-     * @param array $args
+     * @param array  $args
      *
      * @return mixed
      */
@@ -67,6 +68,7 @@ abstract class BaseTestCase extends MinkTestCase
         $class = new ReflectionClass($obj);
         $method = $class->getMethod($methodName);
         $method->setAccessible(true);
+
         return $method->invokeArgs($obj, $args);
     }
 
@@ -79,13 +81,14 @@ abstract class BaseTestCase extends MinkTestCase
         $mailer = $container->get('mailer');
         $plugin = new EmailListener();
         $mailer->registerPlugin($plugin);
+
         return $plugin;
     }
 
     /**
      * Load fixtures
      *
-     * @param bool $reload
+     * @param  bool $reload
      * @return void
      */
     protected function load($reload = false)
@@ -95,7 +98,7 @@ abstract class BaseTestCase extends MinkTestCase
         }
         $this->getContainer()->get('backup_restore.factory')
             ->getRestoreInstance('doctrine.dbal.default_connection')
-            ->restoreDatabase(AppKernel::BACKUP_DIR_NAME . '/' . AppKernel::BACKUP_FILE_NAME);
+            ->restoreDatabase(__DIR__ . '/../../../' . AppKernel::BACKUP_DIR_NAME . '/' . AppKernel::BACKUP_FILE_NAME);
         self::$isFixturesLoaded = true;
         //@TODO Its hack, because after use load function, for load fixtures, we have problem.
         static::$kernel = null;
@@ -104,7 +107,7 @@ abstract class BaseTestCase extends MinkTestCase
     /**
      * Clear DB
      *
-     * @param bool $reload
+     * @param  bool $reload
      * @return void
      */
     protected function clear()
@@ -154,6 +157,7 @@ abstract class BaseTestCase extends MinkTestCase
     {
         $crawler = new Crawler();
         $crawler->addContent($html);
+
         return $crawler;
     }
 }

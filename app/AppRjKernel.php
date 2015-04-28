@@ -37,6 +37,7 @@ class AppRjKernel extends AppKernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
             new Rj\EmailBundle\RjEmailBundle(),
+            new Payum2\Bundle\PayumBundle\Payum2Bundle(),
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Sonata\CoreBundle\SonataCoreBundle(),
@@ -97,7 +98,7 @@ class AppRjKernel extends AppKernel
             $bundles[] = new CreditJeeves\TestBundle\TestBundle(); // Must be one of last included bundle
             $bundles[] = new RentJeeves\TestBundle\TestBundle(); // Must be last included bundle
         }
-    
+
         return $bundles;
     }
 

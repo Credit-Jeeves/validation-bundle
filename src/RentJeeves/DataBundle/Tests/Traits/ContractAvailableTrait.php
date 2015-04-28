@@ -2,7 +2,10 @@
 
 namespace RentJeeves\DataBundle\Tests\Traits;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
 

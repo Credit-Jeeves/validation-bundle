@@ -7,8 +7,8 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
@@ -54,7 +54,7 @@ class TransactionListenerCase extends BaseTestCase
         $this->getEntityManager()->persist($order);
         $this->getEntityManager()->flush($order);
 
-        $transaction = new Heartland();
+        $transaction = new Transaction();
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setIsSuccessful(true);
         $transaction->setAmount(123);

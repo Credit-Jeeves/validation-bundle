@@ -7,7 +7,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\HeartlandRepository;
+use RentJeeves\DataBundle\Entity\TransactionRepository;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
@@ -111,8 +111,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Order $order
-     * @return bool
+     * @param Order $order
      */
     public function createJob(Order $order)
     {
@@ -338,8 +337,8 @@ class AccountingPaymentSynchronizer
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
         $mappingBatches = $repo->getTodayBatches($accountingType);
 
-        /** @var HeartlandRepository $repo */
-        $repo = $this->em->getRepository('RjDataBundle:Heartland');
+        /** @var TransactionRepository $repo */
+        $repo = $this->em->getRepository('RjDataBundle:Transaction');
 
         foreach ($mappingBatches as $mappingBatch) {
             /** @var PaymentBatchMapping $mappingBatch */
@@ -373,7 +372,7 @@ class AccountingPaymentSynchronizer
 
     /**
      * @param $accountingType
-     * @param  null                       $accountingSettings
+     * @param $accountingSettings
      * @return Interfaces\ClientInterface
      */
     protected function getApiClient($accountingType, $accountingSettings = null)
