@@ -351,7 +351,8 @@ class Mailer extends BaseMailer
 
         return $this->sendBaseLetter(
             'rjContractRemovedFromDbByTenant',
-            $vars, $landlord->getEmail(),
+            $vars,
+            $landlord->getEmail(),
             $landlord->getCulture()
         );
     }
