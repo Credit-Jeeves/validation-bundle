@@ -234,13 +234,17 @@ class MRIClient implements ClientInterface
         $this->debugMessage("Call MRI method: {$method}");
         /** @var Payment $payment */
         $payment = $this->sendRequest($method, $params);
-        $error = $payment->getEntryResponse()->getError();
+        if ($payment instanceof Payment) {
+            $error = $payment->getEntryResponse()->getError();
 
-        if (!empty($error)) {
-            throw new Exception(sprintf("Api return error %s", $error->getMessage()));
+            if (!empty($error)) {
+                throw new Exception(sprintf("Api return error %s", $error->getMessage()));
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
