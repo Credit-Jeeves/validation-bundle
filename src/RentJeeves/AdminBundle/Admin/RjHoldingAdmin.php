@@ -5,9 +5,7 @@ use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\YardiSettings;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use CreditJeeves\DataBundle\Enum\GroupType;
@@ -30,6 +28,7 @@ class RjHoldingAdmin extends Admin
                 )
             )
         );
+
         return $query;
     }
 
@@ -40,16 +39,14 @@ class RjHoldingAdmin extends Admin
         $formMapper
             ->with('Accounting Settings')
             ->add(
-                'accountingSettings',
-                $container->get('form.accounting_settings'),
-                array(
-                    'required'   => true
-                ),
-                array(
-                    'edit'      => 'inline',
-                    'inline'    => 'table',
-                    'sortable'  => 'position',
-                )
+                'apiIntegrationType',
+                'choice',
+                [
+                    'choices'           => array_map(
+                        'ucwords',
+                        ApiIntegrationType::cachedTitles()
+                    )
+                ]
             )
             ->with('Yardi Settings')
             ->add(

@@ -59,7 +59,7 @@ trait TransactionAvailableTrait
         }
 
         $holding = $contract->getHolding();
-        $holding->getAccountingSettings()->setApiIntegration($apiIntegrationType);
+        $holding->setApiIntegrationType($apiIntegrationType);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($holding);
         $propertyMapping->setExternalPropertyId($externalPropertyId);
 

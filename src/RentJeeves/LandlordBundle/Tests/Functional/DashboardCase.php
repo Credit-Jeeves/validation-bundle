@@ -10,41 +10,34 @@ class DashboardCase extends BaseTestCase
     /**
      * @test
      */
-    public function sort()
+    public function shouldSortOrderByStatus()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
+
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
-        $this->assertNotNull($td = $this->page->findAll('css', '#payments-block td'));
+        $this->assertNotNull($this->page->findAll('css', '#payments-block td'));
 
         $this->assertNotNull($status = $this->page->find('css', '#status'));
         $status->click();
-        $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
-        $this->assertNotNull($td = $this->page->findAll('css', '#payments-block td'));
+
+        $this->session->wait(5000, "$('#processPayment').is(':visible')");
+        $this->session->wait(5000, "$('#processPayment').is(':hidden')");
+        $this->assertNotNull($span = $this->page->findAll('css', '#payments-block-tbody td>span'));
         $this->assertEquals(
-            'order.status.text.new',
-            $td[0]->getText(),
-            'Wrong text in field: expected order.status.text.new, got ' . $td[0]->getText()
+            'order.status.text.cancelled',
+            $span[0]->getText(),
+            sprintf('Wrong text in field: expected order.status.text.cancelled, got %s', $span[0]->getText())
         );
 
         $this->assertNotNull($status = $this->page->find('css', '#status'));
         $status->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        $this->assertNotNull($td = $this->page->findAll('css', '#payments-block td'));
-        $this->assertEquals('order.status.text.returned', $td[0]->getText(), 'Wrong text in field');
 
-        $this->assertNotNull($propertyA = $this->page->find('css', '#propertyA'));
-        $propertyA->click();
-        $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
-        $this->assertNotNull($td = $this->page->findAll('css', '#actions-block td'));
-
-        $this->logout();
+        $this->session->wait(5000, "$('#processPayment').is(':visible')");
+        $this->session->wait(5000, "$('#processPayment').is(':hidden')");
+        $this->assertNotNull($span = $this->page->findAll('css', '#payments-block-tbody td>span'));
+        $this->assertEquals('order.status.text.returned', $span[0]->getText(), 'Wrong text in field');
     }
 
     /**
@@ -84,8 +77,6 @@ class DashboardCase extends BaseTestCase
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
         $this->assertEquals('payments.total (39)', $allh2->getHtml(), 'Wrong count');
-
-        $this->logout();
     }
 
     /**
@@ -115,8 +106,6 @@ class DashboardCase extends BaseTestCase
         // the test should check payments.batch_deposits, but selenium doesn't know about this text
         // the main goal is to check the amount
         $this->assertEquals('payments.total (9)', $title->getHtml());
-
-        $this->logout();
     }
 
     /**
@@ -155,9 +144,6 @@ class DashboardCase extends BaseTestCase
          */
         $this->assertNotNull($td = $this->page->find('css', '#payments-block-tbody .actions-status span'));
         $this->assertEquals('order.status.text.returned', $td->getHtml());
-
-
-        $this->logout();
     }
 
     /**
@@ -169,9 +155,7 @@ class DashboardCase extends BaseTestCase
         $this->load(true);
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $order = $em->getRepository('DataBundle:Order')->findOneBy([
-            'sum'   => 3700
-        ]);
+        $order = $em->getRepository('DataBundle:Order')->findOneBy(['sum' => 3700]);
         $order->setType(OrderType::CASH);
         $em->flush($order);
         $this->login('landlord1@example.com', 'pass');

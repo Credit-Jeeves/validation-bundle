@@ -25,7 +25,6 @@ class TransactionListenerCase extends BaseTestCase
     public function shouldAddJobToDbIfCreateReversedTransaction()
     {
         $this->load(true);
-
         $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
         $this->assertCount(2, $jobs);
 
@@ -34,7 +33,7 @@ class TransactionListenerCase extends BaseTestCase
         $finishAt = new DateTime();
         $finishAt->modify('+24 month');
         $contract = $this->getContract($startAt, $finishAt);
-        $contract->getHolding()->getAccountingSettings()->setApiIntegration(ApiIntegrationType::AMSI);
+        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
 
         $order = new Order();
         $order->setUser($contract->getTenant());

@@ -16,6 +16,7 @@ fixtures:
         name:           Rent Holding
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        apiIntegrationType:     yardi voyager
     rjHolding_2:
         name:           Estate Holding
         createdAt:     '-60 days'
