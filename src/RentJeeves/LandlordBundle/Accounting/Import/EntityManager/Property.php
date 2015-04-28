@@ -27,7 +27,7 @@ trait Property
                 $row[Mapping::KEY_UNIT_ID]
             );
 
-            $property = (!empty($mapping))? $mapping->getUnit()->getProperty() : null;
+            $property = !empty($mapping) ? $mapping->getUnit()->getProperty() : null;
         }
 
         if (!empty($property)) {
@@ -87,6 +87,7 @@ trait Property
                 );
             if ($unit) {
                 $this->propertyList[md5($property->getFullAddress())] = $unit->getProperty();
+
                 return $unit->getProperty();
             }
         }
