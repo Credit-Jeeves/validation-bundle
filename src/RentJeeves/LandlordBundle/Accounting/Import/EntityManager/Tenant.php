@@ -11,7 +11,6 @@ use Symfony\Component\Validator\Validator;
 
 /**
  * @property Import currentImportModel
- * @propery Validator validator
  */
 trait Tenant
 {
@@ -97,8 +96,16 @@ trait Tenant
         return $tenant;
     }
 
+    /**
+     * @param EntityTenant $tenant
+     * @param $phone
+     */
     protected function setUserPhone(EntityTenant $tenant, $phone)
     {
+        if ($tenant->getPhone()) {
+            return;
+        }
+
         $phone = PhoneNumberFormatter::formatToDigitsOnly($phone);
         $tenant->setPhone($phone);
         $errors = $this->validator->validate($tenant, ['import_phone']);

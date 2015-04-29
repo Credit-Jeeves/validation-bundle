@@ -201,7 +201,7 @@ class MappingCsv extends MappingAbstract
         $skip = false;
 
         foreach ($this->skipValues as $keySkip => $valueSkip) {
-            if ($row[$keySkip] === $valueSkip || strtolower($row[$keySkip]) === strtolower($valueSkip)) {
+            if (strtolower($row[$keySkip]) === strtolower($valueSkip)) {
                 $skip = true;
                 break;
             }

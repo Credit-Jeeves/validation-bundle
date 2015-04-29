@@ -238,13 +238,14 @@ trait Contract
         $this->setLeaseId($row);
         $this->setPaymentAccepted($row);
         //set data from csv file
+
         if (!empty($row[Mapping::KEY_CREDITS])) {
             $integratedBalance = $row[Mapping::KEY_BALANCE] - $row[Mapping::KEY_CREDITS];
-            $this->currentImportModel->getContract()->setIntegratedBalance($integratedBalance);
         } else {
-            $this->currentImportModel->getContract()->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
+            $integratedBalance = $row[Mapping::KEY_BALANCE];
         }
 
+        $this->currentImportModel->getContract()->setIntegratedBalance($integratedBalance);
         $this->currentImportModel->getContract()->setRent($row[Mapping::KEY_RENT]);
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {

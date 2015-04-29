@@ -51,7 +51,7 @@ class ImportMatchFileType extends AbstractType
     }
 
     /**
-     * @param $i
+     * @param  integer $i
      * @return string
      */
     public static function getFieldNameByNumber($i)

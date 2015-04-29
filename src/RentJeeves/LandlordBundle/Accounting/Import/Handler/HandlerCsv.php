@@ -18,6 +18,10 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
  */
 class HandlerCsv extends HandlerAbstract
 {
+    const YES = 'y';
+
+    const NO = 'n';
+
     /**
      * @InjectParams({
      *     "translator"       = @Inject("translator"),
@@ -41,7 +45,7 @@ class HandlerCsv extends HandlerAbstract
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function setPaymentAccepted(array $row)
     {
@@ -49,11 +53,11 @@ class HandlerCsv extends HandlerAbstract
             return;
         }
         //We have negative logic for CSV
-        if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === 'y') {
+        if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === self::YES) {
             $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::DO_NOT_ACCEPT;
         }
 
-        if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === 'n') {
+        if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === self::NO) {
             $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::ANY;
         }
 

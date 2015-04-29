@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 
 abstract class MappingAbstract implements MappingInterface
 {
@@ -89,6 +90,9 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_IGNORE_ROW = 'ignore_row';
 
+    /**
+     * @var array
+     */
     protected $requiredKeysDefault = [
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
@@ -101,9 +105,14 @@ abstract class MappingAbstract implements MappingInterface
         self::KEY_UNIT,
     ];
 
+    /**
+     * @var StorageAbstract
+     */
     protected $storage;
 
-    /** @var EntityManager $em */
+    /**
+     * @var EntityManager $em
+     */
     protected $em;
 
     public function setEntityManager(EntityManager $em)

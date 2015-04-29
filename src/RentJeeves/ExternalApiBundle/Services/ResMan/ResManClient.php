@@ -293,7 +293,7 @@ class ResManClient implements ClientInterface
 
         $resMan = $this->sendRequest($method, $params);
 
-        return ($resMan instanceof ResMan) ? true : false;
+        return $resMan instanceof ResMan;
     }
 
     /**
@@ -317,7 +317,7 @@ class ResManClient implements ClientInterface
 
         $result = $this->sendRequest($method, $paramsToRequest);
 
-        return ($result instanceof ResMan) ? true : false;
+        return $result instanceof ResMan;
     }
 
     /**

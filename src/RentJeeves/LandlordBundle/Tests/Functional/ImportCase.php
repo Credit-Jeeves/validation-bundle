@@ -1948,46 +1948,49 @@ class ImportCase extends ImportBaseAbstract
 
         $trs = $this->getParsedTrsByStatus();
         $this->assertCount(2, $trs, "Count statuses is wrong");
-        $this->assertCount(3, $trs['import.status.new'], "New contract is wrong number");
-        $this->assertCount(1, $trs['import.status.skip'], "Skip contract is wrong number");
+        $this->assertCount(3, $trs['import.status.new'], "Count of new contracts is wrong");
+        $this->assertCount(1, $trs['import.status.skip'], "Count of skipped contracts is wrong");
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
         $em = $this->getEntityManager();
-        /** @var Tenant $userPhone */
-        $userPhone = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('user_phone@mail.com');
+        /** @var Tenant $phoneUser */
+        $phoneUser = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('user_phone@mail.com');
         /** @var Tenant $openCredits */
         $openCredits = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('open_credits@mail.com');
         /** @var Tenant $paymentAccepted */
         $paymentAccepted = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('payment_accepted@mail.com');
 
-        $this->assertNotNull($userPhone);
+        $this->assertNotNull($phoneUser);
         $this->assertNotNull($openCredits);
         $this->assertNotNull($paymentAccepted);
 
-        $this->assertEquals('0978822205', $userPhone->getPhone());
-        $this->assertEmpty($openCredits->getPhone());
-        $this->assertEmpty($paymentAccepted->getPhone());
+        $this->assertEquals('0978822205', $phoneUser->getPhone());
 
+        $contractPhoneUser = $phoneUser->getContracts()->first();
+        $this->assertNotEmpty($contractPhoneUser);
         $this->assertEquals(
             PaymentAccepted::DO_NOT_ACCEPT,
-            $userPhone->getContracts()->first()->getPaymentAccepted()
+            $contractPhoneUser->getPaymentAccepted()
         );
+        $contractOpenCredits = $openCredits->getContracts()->first();
+        $this->assertNotEmpty($contractOpenCredits);
         $this->assertEquals(
             PaymentAccepted::DO_NOT_ACCEPT,
-            $openCredits->getContracts()->first()->getPaymentAccepted()
+            $contractOpenCredits->getPaymentAccepted()
         );
-
+        $contractPaymentAccepted = $paymentAccepted->getContracts()->first();
+        $this->assertNotEmpty($contractPaymentAccepted);
         $this->assertEquals(
             PaymentAccepted::ANY,
-            $paymentAccepted->getContracts()->first()->getPaymentAccepted()
+            $contractPaymentAccepted->getPaymentAccepted()
         );
 
         $this->assertEquals(
             200,
-            $openCredits->getContracts()->first()->getIntegratedBalance()
+            $contractOpenCredits->getIntegratedBalance()
         );
     }
 
