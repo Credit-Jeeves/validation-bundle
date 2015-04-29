@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="email_rj.creditjeeves.team">
                 <source>email_rj.creditjeeves.team</source>
-                <target>The RentTrack Team</target>
+                <target>The %partnerName% Team</target>
             </trans-unit>
             <trans-unit id="rj.footer.title">
                 <source>rj.footer.title</source>
