@@ -52,13 +52,13 @@ class HandlerCsv extends HandlerAbstract
         if (!isset($row[MappingCsv::KEY_PAYMENT_ACCEPTED])) {
             return;
         }
-        //We have negative logic for CSV
+
         if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === self::YES) {
-            $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::DO_NOT_ACCEPT;
+            $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::ANY;
         }
 
         if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === self::NO) {
-            $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::ANY;
+            $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::DO_NOT_ACCEPT;
         }
 
         parent::setPaymentAccepted($row);

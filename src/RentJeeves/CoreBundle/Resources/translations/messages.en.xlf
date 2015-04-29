@@ -3126,9 +3126,9 @@
                 <source>common.tenant.past</source>
                 <target>Past Tenant</target>
             </trans-unit>
-            <trans-unit id="common.no_payments">
-                <source>common.no_payments</source>
-                <target>No Payments</target>
+            <trans-unit id="common.payment_accepted">
+                <source>common.payment_accepted</source>
+                <target>Payment Accepted</target>
             </trans-unit>
         </body>
     </file>
