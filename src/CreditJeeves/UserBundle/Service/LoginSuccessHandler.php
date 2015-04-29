@@ -111,6 +111,13 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     protected function getRefererExceptLogin(Request $request)
     {
         $url = $request->headers->get('referer');
+        $loginUrl = $this->getRouter()->generate('fos_user_security_login');
+        $loginUrlIframe = $this->getRouter()->generate('management_login');
+        $loginUrlReset = $this->getRouter()->generate(
+            'fos_user_resetting_reset',
+            array('token' => ''),
+            true
+        );
 
         if ($this->getRouter()->getRouteCollection()->get('fos_user_security_login') != null) {
             $loginUrl = $this->getRouter()->generate('fos_user_security_login');
@@ -124,6 +131,9 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             if (false !== strstr($url, $loginUrlIframe)) {
                 $url = null;
             }
+        }
+        if (false !== strstr($url, $loginUrlReset)) {
+            $url = null;
         }
 
         return $url;
