@@ -44,7 +44,7 @@ abstract class Partner
     /**
      * @ORM\Column(name="is_powered_by", type="boolean")
      */
-    protected $isPoweredBy;
+    protected $poweredBy;
 
     /**
      * @ORM\Column(
@@ -78,6 +78,11 @@ abstract class Partner
      * )
      */
     protected $client;
+
+    public function __construct()
+    {
+        $this->poweredBy = false;
+    }
 
     /**
      * @return int
@@ -201,14 +206,14 @@ abstract class Partner
      */
     public function isPoweredBy()
     {
-        return $this->isPoweredBy;
+        return $this->poweredBy;
     }
 
     /**
-     * @param boolean $isPoweredBy
+     * @param boolean $poweredBy
      */
-    public function setIsPoweredBy($isPoweredBy)
+    public function setPoweredBy($poweredBy)
     {
-        $this->isPoweredBy = $isPoweredBy;
+        $this->poweredBy = $poweredBy;
     }
 }

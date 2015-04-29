@@ -5,6 +5,7 @@ use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -13,11 +14,11 @@ use RentJeeves\DataBundle\Entity\Contract;
 class Mailer extends BaseMailer
 {
     /**
-     * @param Tenant $user
+     * @param User $user
      *
      * @return bool
      */
-    public function sendRjCheckEmail(Tenant $user)
+    public function sendRjCheckEmail(User $user)
     {
         $url = $this->container->get('router')->generate('tenant_new_check', ['code' => $user->getInviteCode()], true);
 
@@ -152,13 +153,13 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $landlord
-     * @param float  $amount
-     * @param string $sTemplate
+     * @param Landlord $landlord
+     * @param float    $amount
+     * @param string   $sTemplate
      *
      * @return bool
      */
-    public function sendTodayPayments(Tenant $landlord, $amount, $sTemplate = 'rjTodayPayments')
+    public function sendTodayPayments(Landlord $landlord, $amount, $sTemplate = 'rjTodayPayments')
     {
         $vars = [
             'nameLandlord' => $landlord->getFullName(),
@@ -204,11 +205,11 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenants
+     * @param array    $tenants
      *
      * @return bool
      */
-    public function sendListLateContracts(Landlord $landlord, Tenant $tenants)
+    public function sendListLateContracts(Landlord $landlord, array $tenants)
     {
         $vars = [
             'nameLandlord' => $landlord->getFullName(),

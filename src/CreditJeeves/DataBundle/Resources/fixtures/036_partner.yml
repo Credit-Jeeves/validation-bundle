@@ -4,4 +4,4 @@ fixtures:
         client: client_3
         name: creditcom
         request_name: CREDITCOM
-        is_powered_by: 0
+        powered_by: 0
