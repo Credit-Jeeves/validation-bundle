@@ -2,7 +2,6 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
-
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -10,7 +9,6 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
-use JMS\DiExtraBundle\Annotation\Inject;
 
 abstract class MappingAbstract implements MappingInterface
 {
@@ -85,7 +83,13 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
 
-    protected $requiredKeysDefault = array(
+    const KEY_USER_PHONE = 'user_phone';
+
+    const KEY_CREDITS = 'credits';
+
+    const KEY_IGNORE_ROW = 'ignore_row';
+
+    protected $requiredKeysDefault = [
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
         self::KEY_BALANCE,
@@ -95,7 +99,7 @@ abstract class MappingAbstract implements MappingInterface
         self::KEY_RENT,
         self::KEY_TENANT_NAME,
         self::KEY_UNIT,
-    );
+    ];
 
     protected $storage;
 
@@ -118,7 +122,7 @@ abstract class MappingAbstract implements MappingInterface
     /**
      * @param integer $offset
      * @param integer $rowCount
-     * @param bool $useMapping
+     * @param bool    $useMapping
      *
      * @return array
      */
@@ -142,8 +146,8 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
-     * @param Tenant $tenant
-     * @param Contract $contract
+     * @param Tenant          $tenant
+     * @param Contract        $contract
      * @param ResidentMapping $residentMapping
      *
      * @return ContractWaiting
@@ -295,7 +299,7 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
-     * @param array $mappedData
+     * @param  array $mappedData
      * @return array
      */
     protected function makeSureAllKeysExist(array $mappedData)

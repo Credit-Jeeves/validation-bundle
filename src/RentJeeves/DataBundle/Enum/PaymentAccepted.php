@@ -11,11 +11,12 @@ class PaymentAccepted extends Enum
 
     const CASH_EQUIVALENT = 2;
 
+    /**
+     * @return array
+     */
     public static function getDeniedValues()
     {
-        return array(
-            self::DO_NOT_ACCEPT, self::CASH_EQUIVALENT
-        );
+        return [self::DO_NOT_ACCEPT, self::CASH_EQUIVALENT];
     }
 
     /**
@@ -35,7 +36,7 @@ class PaymentAccepted extends Enum
         foreach (($currentValues + $otherValues) as $key => $value) {
             $result[$value]= $value;
         }
-        
+
         return $result;
     }
 }

@@ -1899,6 +1899,101 @@ class ImportCase extends ImportBaseAbstract
     /**
      * @test
      */
+    public function shouldImportPromasExtraField()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('promas_extra_field.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
+        $importTypeSelected->selectOption(ImportType::SINGLE_PROPERTY);
+        $this->setPropertyFirst();
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        //Second Step
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $mapFile = [
+            '1' => ImportMapping::KEY_UNIT,
+            '2' => ImportMapping::KEY_RESIDENT_ID,
+            '3' => ImportMapping::KEY_TENANT_NAME,
+            '4' => ImportMapping::KEY_RENT,
+            '5' => ImportMapping::KEY_BALANCE,
+            '6' => ImportMapping::KEY_MOVE_IN,
+            '7' => ImportMapping::KEY_LEASE_END,
+            '8' => ImportMapping::KEY_MOVE_OUT,
+            '9' => ImportMapping::KEY_EMAIL,
+            '10'=> ImportMapping::KEY_USER_PHONE,
+            '11'=> ImportMapping::KEY_CREDITS,
+            '12'=> ImportMapping::KEY_IGNORE_ROW,
+            '13'=> ImportMapping::KEY_PAYMENT_ACCEPTED,
+        ];
+        for ($i = 1; $i <= 13; $i++) {
+            if (isset($mapFile[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $choice->selectOption($mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount(2, $trs, "Count statuses is wrong");
+        $this->assertCount(3, $trs['import.status.new'], "New contract is wrong number");
+        $this->assertCount(1, $trs['import.status.skip'], "Skip contract is wrong number");
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $em = $this->getEntityManager();
+        /** @var Tenant $userPhone */
+        $userPhone = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('user_phone@mail.com');
+        /** @var Tenant $openCredits */
+        $openCredits = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('open_credits@mail.com');
+        /** @var Tenant $paymentAccepted */
+        $paymentAccepted = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('payment_accepted@mail.com');
+
+        $this->assertNotNull($userPhone);
+        $this->assertNotNull($openCredits);
+        $this->assertNotNull($paymentAccepted);
+
+        $this->assertEquals('0978822205', $userPhone->getPhone());
+        $this->assertEmpty($openCredits->getPhone());
+        $this->assertEmpty($paymentAccepted->getPhone());
+
+        $this->assertEquals(
+            PaymentAccepted::DO_NOT_ACCEPT,
+            $userPhone->getContracts()->first()->getPaymentAccepted()
+        );
+        $this->assertEquals(
+            PaymentAccepted::DO_NOT_ACCEPT,
+            $openCredits->getContracts()->first()->getPaymentAccepted()
+        );
+
+        $this->assertEquals(
+            PaymentAccepted::ANY,
+            $paymentAccepted->getContracts()->first()->getPaymentAccepted()
+        );
+
+        $this->assertEquals(
+            200,
+            $openCredits->getContracts()->first()->getIntegratedBalance()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function shouldCreateContractFromWaitingOnOnlyNewAndException()
     {
         $this->load(true);

@@ -2,7 +2,6 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use Symfony\Component\Form\AbstractType;
@@ -17,15 +16,33 @@ class ImportMatchFileType extends AbstractType
 {
     const EMPTY_VALUE = 'empty_value';
 
+    /**
+     * @var integer
+     */
     protected $numberRow;
 
+    /**
+     * @var Translator
+     */
     protected $translator;
 
+    /**
+     * @var StorageCsv
+     */
     protected $storage;
 
+    /**
+     * @var array
+     */
     protected $defaultValue;
 
-    public function __construct($number, Translator $translator, StorageCsv $storage, $defaultValue)
+    /**
+     * @param integer    $number
+     * @param Translator $translator
+     * @param StorageCsv $storage
+     * @param array      $defaultValue
+     */
+    public function __construct($number, Translator $translator, StorageCsv $storage, array $defaultValue)
     {
         $this->numberRow  = $number;
         $this->translator = $translator;
@@ -33,14 +50,22 @@ class ImportMatchFileType extends AbstractType
         $this->defaultValue = $defaultValue;
     }
 
+    /**
+     * @param $i
+     * @return string
+     */
     public static function getFieldNameByNumber($i)
     {
         return 'column'.$i;
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $choicesRequired =  array(
+        $choicesRequired =  [
             ImportMapping::KEY_BALANCE         => $this->translator->trans('common.balance'),
             ImportMapping::KEY_RESIDENT_ID     => $this->translator->trans('import.residentId'),
             ImportMapping::KEY_TENANT_NAME     => $this->translator->trans('common.tenant_name'),
@@ -48,14 +73,18 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_LEASE_END       => $this->translator->trans('import.lease_end'),
             ImportMapping::KEY_MOVE_IN         => $this->translator->trans('import.move_in'),
             ImportMapping::KEY_MOVE_OUT        => $this->translator->trans('import.move_out'),
-        );
+        ];
 
-        $choicesNoneRequired = array(
+        $choicesNoneRequired = [
             ImportMapping::KEY_EMAIL                => $this->translator->trans('email'),
             ImportMapping::KEY_PAYMENT_AMOUNT       => $this->translator->trans('import.payment.amount'),
             ImportMapping::KEY_PAYMENT_DATE         => $this->translator->trans('import.payment.date'),
             ImportMapping::KEY_MONTH_TO_MONTH       => $this->translator->trans('common.month_to_month'),
-        );
+            ImportMapping::KEY_USER_PHONE           => $this->translator->trans('common.tenant.cell'),
+            ImportMapping::KEY_CREDITS              => $this->translator->trans('common.open_credits'),
+            ImportMapping::KEY_PAYMENT_ACCEPTED     => $this->translator->trans('common.no_payments'),
+            ImportMapping::KEY_IGNORE_ROW           => $this->translator->trans('common.tenant.past'),
+        ];
 
         if ($this->storage->isMultipleGroup()) {
             $choicesRequired[ImportMapping::KEY_GROUP_ACCOUNT_NUMBER] = $this
@@ -82,7 +111,7 @@ class ImportMatchFileType extends AbstractType
         );
 
         $choices = array_merge(
-            array(self::EMPTY_VALUE => $this->translator->trans('common.choose_an_option')),
+            [self::EMPTY_VALUE => $this->translator->trans('common.choose_an_option')],
             $choicesRequired,
             $choicesNoneRequired
         );
@@ -91,15 +120,15 @@ class ImportMatchFileType extends AbstractType
             $builder->add(
                 self::getFieldNameByNumber($i),
                 'choice',
-                array(
+                [
                     'choices'   => $choices,
                     'data' => (isset($this->defaultValue[$i]) ? $this->defaultValue[$i] : null),
                     'error_bubbling' => false,
                     'mapped'         => false,
-                    'attr'           => array(
+                    'attr'           => [
                         'class' => 'original'
-                    )
-                )
+                    ]
+                ]
             );
         }
 
@@ -134,28 +163,30 @@ class ImportMatchFileType extends AbstractType
                     $fieldsMissed = implode(',', $fieldsMissed);
                     $errorMessage = $self->translator->trans(
                         'you.need.map',
-                        array(
+                        [
                             '%VALUE_WHICH_NEED_SELECT%' => $fieldsMissed,
                             '%NUMBER%'                  => count($choicesRequired)
-                        )
+                        ]
                     );
                     $form->addError(new FormError($errorMessage));
+
                     return;
                 }
             }
         );
     }
 
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'csrf_protection'    => true,
-                'cascade_validation' => true,
-            )
-        );
+        $resolver->setDefaults(['csrf_protection' => true, 'cascade_validation' => true]);
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'import_match_file_type';

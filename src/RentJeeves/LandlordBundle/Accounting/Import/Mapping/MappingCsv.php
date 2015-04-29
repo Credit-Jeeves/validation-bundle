@@ -22,6 +22,7 @@ class MappingCsv extends MappingAbstract
      */
     protected $skipValues = array(
         MappingCsv::KEY_RESIDENT_ID => 'VACANT',
+        MappingCsv::KEY_IGNORE_ROW => 'Y'
     );
 
     /**
@@ -101,7 +102,7 @@ class MappingCsv extends MappingAbstract
      * Sometimes storage(specific situation when csv file not so good)
      * can return not correct array, so we need be sure, all key will exist
      *
-     * @param array $mappedData
+     * @param  array $mappedData
      * @return array
      */
     protected function makeSureAllKeysExist(array $mappedData)
@@ -155,7 +156,7 @@ class MappingCsv extends MappingAbstract
             $dataView[] = array(
                 'name' => $headers[$i-1],
                 'row1' => $data[1][$headers[$i-1]],
-                'row2' => (isset($data[2]) && isset($data[2][$headers[$i-1]]))? $data[2][$headers[$i-1]] : null,
+                'row2' => (isset($data[2]) && isset($data[2][$headers[$i-1]])) ? $data[2][$headers[$i-1]] : null,
                 'form' => ImportMatchFileType::getFieldNameByNumber($i),
             );
         }
@@ -166,7 +167,7 @@ class MappingCsv extends MappingAbstract
     /**
      * Set mapping into session
      *
-     * @param Form $form
+     * @param Form  $form
      * @param array $data
      * @param Group $group
      */
@@ -200,7 +201,7 @@ class MappingCsv extends MappingAbstract
         $skip = false;
 
         foreach ($this->skipValues as $keySkip => $valueSkip) {
-            if ($row[$keySkip] === $valueSkip) {
+            if ($row[$keySkip] === $valueSkip || strtolower($row[$keySkip]) === strtolower($valueSkip)) {
                 $skip = true;
                 break;
             }
@@ -221,7 +222,7 @@ class MappingCsv extends MappingAbstract
 
     /**
      * @param $headerHash
-     * @param Group $group
+     * @param  Group                    $group
      * @return ImportMappingChoice|null
      */
     public function getSelectedImportMapping($headerHash, Group $group)

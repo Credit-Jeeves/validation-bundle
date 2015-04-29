@@ -1,0 +1,5 @@
+Unit,Resident,Name,Market Rent,Balance,Move In,Lease Expiration,Move Out,Email,Phone,Credits,Past Tenant,No Payments
+1019F,t00135345,Kristief Mikel,1200,0,12/29/2012,12/28/2018,,user_phone@mail.com,(097)88 222 05,0,N,Y
+1020F,t0013535,Sem Sem,1000,280,12/29/2013,12/28/2018,,open_credits@mail.com,,80,N,Y
+1021F,t0013534,Kristiel Mikel,1210,0,12/29/2014,12/28/2018,,ignore_row@mail.com,,0,Y,Y
+1022F,t0013537,KristieJ Mikel,1110,0,12/29/2015,12/28/2018,,payment_accepted@mail.com,,0,N,N
