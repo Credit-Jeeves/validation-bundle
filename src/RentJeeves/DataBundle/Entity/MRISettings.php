@@ -32,6 +32,6 @@ class MRISettings extends Base implements SettingsInterface
      */
     public function isMultiProperty()
     {
-        return false;
+        return true;
     }
 }
