@@ -118,15 +118,6 @@ class ContractProcessor
             throw new BadRequestHttpException('api.errors.contracts.property.invalid');
         }
 
-        if (!$property->getId() && !$unitName) {
-            $property->setIsSingle(true);
-        } elseif ($property->getId() && !$property->getIsSingle() && !$unitName) {
-            throw new BadRequestHttpException('api.errors.contracts.property.not_standalone');
-        }
-
-        $this->em->persist($property);
-        $this->em->flush();
-
         /** @var Landlord $landlord */
         $landlord = $newUnitForm->get('landlord')->getData();
 
@@ -160,6 +151,14 @@ class ContractProcessor
 
         $group->addGroupProperty($property);
         $property->addPropertyGroup($group);
+
+        if (!$property->getId() && !$unitName) {
+            $unit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+            $this->em->persist($unit);
+        } elseif ($property->getId() && !$property->getIsSingle() && !$unitName) {
+            throw new BadRequestHttpException('api.errors.contracts.property.not_standalone');
+        }
+
         $this->em->persist($property);
         $this->em->persist($group);
 

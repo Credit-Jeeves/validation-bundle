@@ -1,0 +1,23 @@
+<div class="scroll-box" style="padding-top: 0;">
+    <div id="vi-questions" class="scroll" style="padding-top: 0;">
+        <div class="vi-questions-content"
+             data-bind="html: questions"
+             style="width:300px; height:235px; overflow-y:scroll; padding-top: 10px;"
+                >
+        </div>
+    </div>
+    <div class="tooltip-box type3 pie-el">
+        <p class="verify">
+            {{ 'checkout.questions.tooltip.line1' | trans }}
+        </p>
+        <p class="verify">
+            {{ 'checkout.questions.tooltip.line2' | trans }}
+        </p>
+        <p class="verify">
+            <a target="_blank" class="underline" href="{{ 'http://'~external_urls['user_voice']~'/knowledgebase/articles/269425-why-do-i-have-to-verify-my-identity-' }}">
+                {{ 'checkout.questions.tooltip.question'|trans }}
+            </a>
+        </p>
+    </div>
+</div>
+{{ JSFV(questionsType) }}

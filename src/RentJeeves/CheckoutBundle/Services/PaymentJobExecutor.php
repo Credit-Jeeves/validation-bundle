@@ -2,9 +2,11 @@
 namespace RentJeeves\CheckoutBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
-use Payum\Request\BinaryMaskStatusRequest;
+use Monolog\Logger;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
 use RentJeeves\CheckoutBundle\Payment\PayRent;
 use RentJeeves\CoreBundle\DateTime;
@@ -31,6 +33,11 @@ class PaymentJobExecutor
     protected $payRent;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @var PayCreditTrack
      */
     protected $payCreditTrack;
@@ -54,14 +61,16 @@ class PaymentJobExecutor
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "payRent" = @DI\Inject("payment.pay_rent"),
-     *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track")
+     *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track"),
+     *     "logger" = @DI\Inject("logger")
      * })
      */
-    public function __construct($em, $payRent, $payCreditTrack)
+    public function __construct($em, $payRent, $payCreditTrack, $logger)
     {
         $this->em = $em;
         $this->payRent = $payRent;
         $this->payCreditTrack = $payCreditTrack;
+        $this->logger = $logger;
     }
 
     public function getMessage()
@@ -91,24 +100,27 @@ class PaymentJobExecutor
                     return $this->executeCreditTrack($relatedEntity->getCreditTrackPaymentAccount());
                     break;
             }
-
         }
         $this->message = sprintf("Job ID:'%s' must have related payment", $job->getId());
+        $this->logger->debug('Related entity for job ID ' . $job->getId() .' not found');
+
         return false;
     }
 
     /**
-     * @param BinaryMaskStatusRequest $statusRequest
+     * @param Order $order
      *
      * @return bool
      */
-    protected function processStatus($statusRequest)
+    protected function processStatus(Order $order)
     {
-        if (!$statusRequest->isSuccess()) {
-            $this->message = $statusRequest->getModel()->getMessages();
+        if (OrderStatus::ERROR == $order->getStatus()) {
+            $this->message = $order->getErrorMessage();
             $this->exitCode = 1;
+
             return false;
         }
+
         return true;
     }
 
@@ -119,28 +131,40 @@ class PaymentJobExecutor
      */
     protected function executePayment(Payment $payment)
     {
+        $this->logger->debug('Starting execute rent payment ID ' . $payment->getId());
+
         $date = new DateTime();
         $contract = $payment->getContract();
 
         $filterClosure = function (Operation $operation) use ($date) {
             if (($order = $operation->getOrder()) &&
                 $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
-                OrderStatus::ERROR != $order->getStatus()
+                $order->getType() != OrderType::CASH &&
+                OrderStatus::ERROR != $order->getStatus() &&
+                OrderStatus::CANCELLED != $order->getStatus()
             ) {
                 return true;
             }
+
             return false;
         };
         if ($contract->getOperations()->filter($filterClosure)->count()) {
             $this->message = 'Payment already executed.';
             $this->exitCode = 1;
+            $this->logger->debug('Payment already executed. Payment ID ' . $payment->getId());
+
             return false;
         }
 
-        $this->payRent->newOrder();
-        $this->job->addRelatedEntity($this->payRent->getOrder());
+        $order = $this->payRent->executePayment($payment);
+
+        $this->logger->debug('Add created order to job related entities. Job ID ' . $this->job->getId());
+        $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);
-        return $this->processStatus($this->payRent->executePayment($payment));
+        $this->em->flush();
+        $this->em->clear();
+
+        return $this->processStatus($order);
     }
 
     /**
@@ -150,8 +174,10 @@ class PaymentJobExecutor
      */
     protected function executeCreditTrack(PaymentAccount $paymentAccount)
     {
-        $this->job->addRelatedEntity($this->payCreditTrack->getOrder());
+        $order = $this->payCreditTrack->executePaymentAccount($paymentAccount);
+        $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);
-        return $this->processStatus($this->payCreditTrack->executePaymentAccount($paymentAccount));
+
+        return $this->processStatus($order);
     }
 }

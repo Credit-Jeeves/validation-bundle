@@ -7,11 +7,10 @@ use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ExternalApi;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
@@ -44,14 +43,18 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
-     * @param string $searchBy
-     * @param string $search
+     * @param  Group  $group
+     * @param  string $searchBy
+     * @param  string $search
+     * @param  bool   $showCashPayments
      * @return array
      */
-    public function countOrders(\CreditJeeves\DataBundle\Entity\Group $group, $searchBy = '', $search = '')
-    {
+    public function countOrders(
+        \CreditJeeves\DataBundle\Entity\Group $group,
+        $searchBy = '',
+        $search = '',
+        $showCashPayments = true
+    ) {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
@@ -68,19 +71,27 @@ class OrderRepository extends EntityRepository
                 $query->setParameter('search', '%'.$item.'%');
             }
         }
+
+        if (!$showCashPayments) {
+            $query->andWhere('o.type != :cash');
+            $query->setParameter('cash', OrderType::CASH);
+        }
+
         $query->groupBy('o.id');
         $query = $query->getQuery();
+
         return $query->getScalarResult();
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
-     * @param integer $page
-     * @param integer $limit
-     * @param string $sort
-     * @param string $order
-     * @param string $searchBy
-     * @param string $search
+     * @param  Group  $group
+     * @param  int    $page
+     * @param  int    $limit
+     * @param  string $sort
+     * @param  string $order
+     * @param  string $searchBy
+     * @param  string $search
+     * @param  bool   $showCashPayments
      * @return mixed
      */
     public function getOrdersPage(
@@ -90,7 +101,8 @@ class OrderRepository extends EntityRepository
         $sort = 'o.status',
         $order = 'ASC',
         $searchBy = 'p.street',
-        $search = ''
+        $search = '',
+        $showCashPayments = true
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
@@ -132,10 +144,14 @@ class OrderRepository extends EntityRepository
                 break;
         }
         $this->applySortField($sort);
-
+        if (!$showCashPayments) {
+            $query->andWhere('o.type != :cash');
+            $query->setParameter('cash', OrderType::CASH);
+        }
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -191,13 +207,14 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param string $search
+     * @param  string $search
      * @return array
      */
     private function prepareSearch($search)
     {
         $search = preg_replace('/\s+/', ' ', trim($search));
         $search = explode(' ', $search);
+
         return $search;
     }
 
@@ -213,6 +230,7 @@ class OrderRepository extends EntityRepository
         $query->setParameter('contract', $contract);
         $query->orderBy('o.created_at', 'ASC');
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -230,6 +248,7 @@ class OrderRepository extends EntityRepository
         $query->orderBy('o.created_at', 'DESC');
         $query->setMaxResults(1);
         $query = $query->getQuery();
+
         return $query->getOneOrNullResult();
     }
 
@@ -237,16 +256,18 @@ class OrderRepository extends EntityRepository
         $start,
         $end,
         $groupId,
+        $exportBy,
         $propertyId = null
     ) {
-        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end);
+        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end, $exportBy);
     }
 
     public function getOrdersForRealPageReport(
         $groupId,
         $propertyId,
         $start,
-        $end
+        $end,
+        $exportBy
     ) {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -255,9 +276,20 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.property', 'prop');
         $query->innerJoin('t.unit', 'unit');
         $query->innerJoin('t.group', 'g');
-        $query->innerJoin('o.heartlands', 'heartland');
-        $query->where("heartland.depositDate BETWEEN :start AND :end");
-        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+        $query->innerJoin('o.transactions', 'transaction');
+
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->where('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
+            $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
+            $query->andWhere('o.status = :status');
+            $query->setParameter('status', OrderStatus::COMPLETE);
+        } else {
+            $query->where("STR_TO_DATE(o.created_at, '%Y-%c-%e') BETWEEN :start AND :end");
+            $query->andWhere('o.status = :status1 or o.status = :status2');
+            $query->setParameter('status1', OrderStatus::COMPLETE);
+            $query->setParameter('status2', OrderStatus::PENDING);
+        }
+
         $query->andWhere('g.id = :groupId');
 
         if (!is_null($propertyId)) {
@@ -265,17 +297,16 @@ class OrderRepository extends EntityRepository
             $query->setParameter('propId', $propertyId);
         }
 
-        $query->andWhere('o.status = :status');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('status', OrderStatus::COMPLETE);
         $query->setParameter('groupId', $groupId);
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
-    public function getOrdersForPromasReport(Group $group, $start, $end)
+    public function getOrdersForPromasReport(Group $group, $start, $end, $exportBy)
     {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -284,24 +315,34 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('ten.residentsMapping', 'res');
         $query->innerJoin('t.unit', 'unit');
         $query->innerJoin('unit.unitMapping', 'uMap');
-        $query->innerJoin('o.heartlands', 'heartland');
+        $query->innerJoin('o.transactions', 'transaction');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
-        $query->where("heartland.depositDate BETWEEN :start AND :end");
-        $query->andWhere('o.status = :status');
-        $query->andWhere('heartland.isSuccessful = 1 AND heartland.depositDate IS NOT NULL');
+
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->where('o.status = :status');
+            $query->andWhere('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
+            $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
+            $query->setParameter('status', OrderStatus::COMPLETE);
+        } else {
+            $query->where('o.status = :status1 OR o.status = :status2');
+            $query->andWhere("STR_TO_DATE(o.created_at, '%Y-%c-%e') BETWEEN :start AND :end");
+            $query->setParameter('status1', OrderStatus::COMPLETE);
+            $query->setParameter('status2', OrderStatus::PENDING);
+        }
+
         $query->andWhere('o.type in (:orderType)');
         $query->andWhere('g.id = :groupId');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('res.holding = :holding');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('status', OrderStatus::COMPLETE);
+
         $query->setParameter('orderType', array(OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK));
         $query->setParameter('groupId', $group->getId());
         $query->setParameter('holding', $group->getHolding());
         $query->orderBy('res.residentId', 'ASC');
-        $query->orderBy('heartland.batchId', 'ASC');
+        $query->orderBy('transaction.batchId', 'ASC');
         $query = $query->getQuery();
 
         return $query->execute();
@@ -312,7 +353,7 @@ class OrderRepository extends EntityRepository
         $ordersQuery = $this->createQueryBuilder('o');
         $ordersQuery->innerJoin('o.operations', 'p');
         $ordersQuery->innerJoin('p.contract', 't');
-        $ordersQuery->innerJoin('o.heartlands', 'h');
+        $ordersQuery->innerJoin('o.transactions', 'h');
         $ordersQuery->where('t.group = :group');
         $ordersQuery->andWhere('h.depositDate IS NOT NULL');
         if ($batchId) {
@@ -377,7 +418,7 @@ class OrderRepository extends EntityRepository
         $limit
     ) {
         $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
-        $query->groupBy("heartland.batchId");
+        $query->groupBy("transaction.batchId");
         $query = $query->getQuery();
 
         return $query->execute();
@@ -391,7 +432,7 @@ class OrderRepository extends EntityRepository
         $limit
     ) {
         $query = $this->getBaseReceiptBatchQuery($depositDate, $holding, $start, $limit);
-        $query->andWhere("heartland.batchId = :batchId");
+        $query->andWhere("transaction.batchId = :batchId");
         $query->setParameter('batchId', $batchId);
 
         $query = $query->getQuery();
@@ -412,16 +453,16 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('group.holding', 'holding');
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('property.propertyMapping', 'mapping');
-        $query->innerJoin('ord.heartlands', 'heartland');
+        $query->innerJoin('ord.transactions', 'transaction');
         $query->leftJoin(
             'ord.sentOrder',
             'externalApi',
             Expr\Join::WITH,
             'externalApi.depositDate = :depositDate1 AND externalApi.apiType = :apiType'
         );
-        $query->where("heartland.depositDate = :depositDate2");
+        $query->where("transaction.depositDate = :depositDate2");
         $query->andWhere('externalApi.id IS NULL');
-        $query->andWhere('heartland.isSuccessful = 1');
+        $query->andWhere('transaction.isSuccessful = 1');
         $query->andWhere('mapping.externalPropertyId IS NOT NULL');
         $query->andWhere('ord.status = :orderStatus');
         $query->andWhere('operation.type = :rentStatus OR operation.type = :otherStatus');
@@ -448,10 +489,10 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('contract.holding', 'holding');
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('property.propertyMapping', 'mapping');
-        $query->innerJoin('ord.heartlands', 'heartland');
+        $query->innerJoin('ord.transactions', 'transaction');
 
-        $query->where("heartland.depositDate = :depositDate");
-        $query->andWhere('heartland.isSuccessful = 1 and heartland.status = :reversedStatus');
+        $query->where("transaction.depositDate = :depositDate");
+        $query->andWhere('transaction.isSuccessful = 1 and transaction.status = :reversedStatus');
         $query->andWhere('mapping.externalPropertyId IS NOT NULL');
         $query->andWhere('ord.status in (:orderStatuses)');
         $query->andWhere('operation.type = :rentStatus OR operation.type = :otherStatus');
@@ -471,8 +512,8 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param User $user
-     * @param array $excludedStatuses
+     * @param  User  $user
+     * @param  array $excludedStatuses
      * @return mixed
      */
     public function getUserOrders(User $user, array $excludedStatuses = [OrderStatus::NEWONE])

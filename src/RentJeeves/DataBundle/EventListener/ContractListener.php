@@ -9,8 +9,9 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use Exception;
 
 /**
@@ -55,7 +56,7 @@ class ContractListener
 
         // if property is standalone we just add system unit to the contract
         $property = $contract->getProperty();
-        if ($property->isSingle() && $unit = $property->getSingleUnit()) {
+        if ($property->isSingle() && $unit = $property->getExistingSingleUnit()) {
             $contract->setUnit($unit);
             return;
         }
@@ -145,19 +146,19 @@ class ContractListener
 
     protected function isPaymentAcceptedFieldChanged(PreUpdateEventArgs $eventArgs)
     {
-        if (!$eventArgs->hasChangedField('yardiPaymentAccepted')) {
+        if (!$eventArgs->hasChangedField('paymentAccepted')) {
             return false;
         }
 
-        $newValue = (int) $eventArgs->getNewValue('yardiPaymentAccepted');
-        $oldValue = (int) $eventArgs->getOldValue('yardiPaymentAccepted');
+        $newValue = (int) $eventArgs->getNewValue('paymentAccepted');
+        $oldValue = (int) $eventArgs->getOldValue('paymentAccepted');
 
         if ($oldValue === $newValue) {
             return false;
         }
         $deniedPaymentStatuses = array(
-            YardiPaymentAccepted::DO_NOT_ACCEPT,
-            YardiPaymentAccepted::CASH_EQUIVALENT
+            PaymentAccepted::DO_NOT_ACCEPT,
+            PaymentAccepted::CASH_EQUIVALENT
         );
 
         if (in_array($newValue, $deniedPaymentStatuses) && in_array($oldValue, $deniedPaymentStatuses)) {
@@ -178,7 +179,7 @@ class ContractListener
             return;
         }
 
-        $payment->setStatus(PaymentStatus::CLOSE);
+        $payment->setClosed($this, PaymentCloseReason::CONTRACT_CHANGED);
         $eventArgs->getEntityManager()->flush($payment);
     }
 
@@ -188,16 +189,16 @@ class ContractListener
             return;
         }
 
-        $newValue = (int) $eventArgs->getNewValue('yardiPaymentAccepted');
+        $newValue = (int) $eventArgs->getNewValue('paymentAccepted');
         $result = true;
 
         switch ($newValue) {
-            case YardiPaymentAccepted::ANY:
+            case PaymentAccepted::ANY:
                 $result = $this->container->get('project.mailer')
                     ->sendEmailAcceptYardiPayment($contract->getTenant());
                 break;
-            case YardiPaymentAccepted::DO_NOT_ACCEPT:
-            case YardiPaymentAccepted::CASH_EQUIVALENT:
+            case PaymentAccepted::DO_NOT_ACCEPT:
+            case PaymentAccepted::CASH_EQUIVALENT:
                 $result = $this->container->get('project.mailer')
                     ->sendEmailDoNotAcceptYardiPayment($contract->getTenant());
                 break;
@@ -236,7 +237,7 @@ class ContractListener
         if ($this->hasToClosePayment) {
             $this->hasToClosePayment = false;
             if ($payment = $entity->getActivePayment()) {
-                $payment->setStatus(PaymentStatus::CLOSE);
+                $payment->setClosed($this, PaymentCloseReason::CONTRACT_CHANGED);
                 $eventArgs->getEntityManager()->persist($payment);
                 $eventArgs->getEntityManager()->flush($payment);
             }

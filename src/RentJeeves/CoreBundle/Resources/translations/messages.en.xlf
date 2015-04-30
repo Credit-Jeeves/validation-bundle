@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="email_rj.creditjeeves.team">
                 <source>email_rj.creditjeeves.team</source>
-                <target>The RentTrack Team</target>
+                <target>The %partnerName% Team</target>
             </trans-unit>
             <trans-unit id="rj.footer.title">
                 <source>rj.footer.title</source>
@@ -24,7 +24,7 @@
             </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
-                <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" and "Pay Rent. Build Credit History." are trademarks.</target>
+                <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" is a registered trademark.</target>
             </trans-unit>
             <trans-unit id="rj.footer.comment">
                 <source>rj.footer.comment</source>
@@ -176,13 +176,13 @@
             <trans-unit id="iframe.title">
                 <source>iframe.title</source>
                 <target>
-                        Pay Rent. Build Credit History.
+                        Pay Rent Online.
                 </target>
             </trans-unit>
             <trans-unit id="iframe.description">
                 <source>iframe.description</source>
                 <target>
-                       No more paper checks. Pay online with e-Check or Credit Card.
+                       Pay with e-Check or Credit Card and Build Credit History too.
                 </target>
             </trans-unit>
             <trans-unit id="iframe.find">
@@ -476,7 +476,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*$9.95 per month (5 Free eChecks Included). $1.95 each eCheck payment thereafter. No charge to you for CC payments.
+                <target>*$9.95 per month (5 Free eChecks Included). $2.49 each eCheck payment thereafter. No charge to you for CC payments.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -859,6 +859,10 @@
                 <source>error.balance.empty</source>
                 <target>Please specify the balance.</target>
             </trans-unit>
+           <trans-unit id="error.contract.duplicate">
+                <source>error.contract.duplicate</source>
+                <target>Sorry, you cannot add a duplicate contract for the same property.</target>
+            </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
                 <target>close</target>
@@ -1151,7 +1155,10 @@
                 <source>contract.property</source>
                 <target>Property</target>
             </trans-unit>
-
+            <trans-unit id="error.contract_details.loading">
+                <source>error.contract_details.loading</source>
+                <target>Contract loading failed.</target>
+            </trans-unit>
             <trans-unit id="contract.error.rent">
                 <source>contract.error.rent</source>
                 <target>Amount could not be empty</target>
@@ -1240,7 +1247,7 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.title_2">
                 <source>popup.invite.tenant.title_2</source>
-                <target>Build credit history while you pay rent. Introductory pricing.</target>
+                <target>Build credit history while you pay rent.</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.note.title">
                 <source>popup.invite.tenant.note.title</source>
@@ -1515,7 +1522,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_1">
                 <source>public.base.pay.title_1</source>
-                <target>Pay your rent on time. Build credit history.</target>
+                <target>Build Credit History when you Pay Rent Online.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_2">
                 <source>public.base.pay.title_2</source>
@@ -1810,6 +1817,10 @@
                 <source>alert.tenant.first_payment</source>
                 <target>Set up your first rent payment.</target>
             </trans-unit>
+            <trans-unit id="alert.tenant.bureau_reporting">
+                <source>alert.tenant.bureau_reporting</source>
+                <target>Turn on Bureau Reporting on the Build Credit History tab.</target>
+            </trans-unit>
             <trans-unit id="select.from.drop.down.list">
                 <source>select.from.drop.down.list</source>
                 <target>Please select an address from the drop-down and try again.</target>
@@ -1899,6 +1910,14 @@
                 <source>iframe.redirect.text</source>
                 <target>Find your rental to make a payment</target>
             </trans-unit>
+            <trans-unit id="iframe.redirect.login.title">
+                <source>iframe.redirect.login.title</source>
+                <target>Already registered?</target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.login.text">
+                <source>iframe.redirect.login.text</source>
+                <target>Click the button below to go to RentTrack</target>
+            </trans-unit>
             <trans-unit id="iframe.redirect.tenant">
                 <source>iframe.redirect.tenant</source>
                 <target>Tenant</target>
@@ -1909,7 +1928,7 @@
             </trans-unit>
             <trans-unit id="iframe.items.title">
                 <source>iframe.items.title</source>
-                <target>Pay Rent. Build Credit History.</target>
+                <target>Pay Rent Online.</target>
             </trans-unit>
             <trans-unit id="iframe.item.pay.title">
                 <source>iframe.item.pay.title</source>
@@ -1921,7 +1940,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.build.title">
                 <source>iframe.item.build.title</source>
-                <target>Build your credit</target>
+                <target>Build credit history</target>
             </trans-unit>
             <trans-unit id="iframe.item.build.text">
                 <source>iframe.item.build.text</source>
@@ -1929,11 +1948,11 @@
             </trans-unit>
             <trans-unit id="iframe.item.monitor.title">
                 <source>iframe.item.monitor.title</source>
-                <target>Monitor your progress</target>
+                <target>View your Credit Score</target>
             </trans-unit>
             <trans-unit id="iframe.item.monitor.text">
                 <source>iframe.item.monitor.text</source>
-                <target>RentTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
+                <target>View your latest score and profile. Monitor your rent reporting. Keeping tabs on your credit is the best way to make sure it’s accurate and moving in the right direction.</target>
             </trans-unit>
             <trans-unit id="iframe.questions">
                 <source>iframe.questions</source>
@@ -2003,14 +2022,6 @@
                 <source>landlord.hps.processing_message</source>
                 <target>We are processing your application. You will be notified when your application is approved. Once approved, you will be able to add tenants.</target>
             </trans-unit>
-            <trans-unit id="landlord.hps.error_message">
-                <source>landlord.hps.error_message</source>
-                <target>There was an error submitting your application, please contact help@renttrack.com or call 866-841-9090. %heartland_msg%</target>
-            </trans-unit>
-            <trans-unit id="landlord.hps.complete_application">
-                <source>landlord.hps.complete_application</source>
-                <target><![CDATA[Please complete your merchant application by filling out <a href="%complete_url%" target="_blank">this form</a> through our payment processor.]]></target>
-            </trans-unit>
             <trans-unit id="landlord.hps.contact_us_message">
                 <source>landlord.hps.contact_us_message</source>
                 <target>Please contact us at help@renttrack.com or call 866-841-9090 x2 to set up your merchant account.</target>
@@ -2022,10 +2033,6 @@
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>
                 <target><![CDATA[Verify your email address. <a href="#" id="verify-email" data-user-type="landlord">Resend Verification Email</a> <span id="verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
-            </trans-unit>
-            <trans-unit id="redirect.wait.notification">
-                <source>redirect.wait.notification</source>
-                <target><![CDATA[Please wait while we establish a secure connection to our processor's Online Merchant Application.]]></target>
             </trans-unit>
             <trans-unit id="property.id">
                 <source>property.id</source>
@@ -2209,6 +2216,7 @@
                     rent payments to credit bureaus, we need
                     to locate your credit file and verify your identity.
                     This soft inquiry will not impact your credit score.
+                    Please answer all questions - do not leave any blank.
                 </target>
             </trans-unit>
             <trans-unit id="personal.information">
@@ -2232,6 +2240,10 @@
                  to manually verify your identity.</a>
                 ]]>
                 </target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.unanswered_questions">
+               <source>pidkiq.error.unanswered_questions</source>
+               <target>Almost there. Only %COUNT% question(s) left to answer!</target>
             </trans-unit>
             <trans-unit id="payments.filter.group_by.deposit">
                 <source>payments.filter.group_by.deposit</source>
@@ -2600,6 +2612,14 @@
               <source>import.error.propertyId</source>
               <target><![CDATA[Property ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
+            <trans-unit id="import.skipped.by_property">
+              <source>import.skipped.by_property</source>
+              <target>This row will be skipped, because does not have valid property.</target>
+            </trans-unit>
+            <trans-unit id="import.error.invalid_property">
+              <source>import.error.invalid_property</source>
+              <target>Property address is invalid.</target>
+            </trans-unit>
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
@@ -2734,7 +2754,19 @@
             </trans-unit>
             <trans-unit id="yardi.import.error.getResidents">
                 <source>yardi.import.error.getResidents</source>
-                <target>Can not get resident from yardi api.</target>
+                <target>Network interruption when connecting to Yardi server. We're sorry, but you'll have to try again.</target>
+            </trans-unit>
+            <trans-unit id="mri.import.error.getResidents">
+                <source>mri.import.error.getResidents</source>
+                <target>Network interruption when connecting to MRI server. We're sorry, but you'll have to try again.</target>
+            </trans-unit>
+            <trans-unit id="amsi.import.error.getResidents">
+                <source>amsi.import.error.getResidents</source>
+                <target>Network interruption when connecting to AMSI server. We're sorry, but you'll have to try again.</target>
+            </trans-unit>
+            <trans-unit id="resman.import.error.getResidents">
+                <source>resman.import.error.getResidents</source>
+                <target>Network interruption when connecting to ResMan server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="csv.import.error.update_matched_contracts">
                 <source>csv.import.error.update_matched_contracts</source>
@@ -2755,6 +2787,10 @@
             <trans-unit id="yardi.import.message.download.contracts">
                 <source>yardi.import.message.download.contracts</source>
                 <target>Fetching lease contracts for resident %RESIDENT_ID%.</target>
+            </trans-unit>
+            <trans-unit id="import.message.download.contracts">
+                <source>import.message.download.contracts</source>
+                <target>Fetching lease contracts.</target>
             </trans-unit>
             <trans-unit id="landlord.form.import.multiple.property">
                 <source>landlord.form.import.multiple.property</source>
@@ -2948,6 +2984,10 @@
                 <source>deposit.date.range</source>
                 <target>Deposit Date Range:</target>
             </trans-unit>
+            <trans-unit id="payment.date.range">
+                <source>payment.date.range</source>
+                <target>Payment Date Range:</target>
+            </trans-unit>
             <trans-unit id="common.test.yardi_setting">
                 <source>common.test.yardi_setting</source>
                 <target>Test Yardi Setting</target>
@@ -3019,7 +3059,7 @@
             <trans-unit id="error.residentId.already_use">
                 <source>error.residentId.already_use</source>
                 <target>
-                    Accounting ID is already in use in the system by %email%.
+                    Resident ID is already in use in the system by %email%.
                     You can revoke their invitation first, or contact %support_email% for further assistance.
                 </target>
             </trans-unit>
@@ -3030,6 +3070,65 @@
             <trans-unit id="error.accountNumber.already_exists">
                 <source>error.accountNumber.already_exists</source>
                 <target>Account number already exists</target>
+            </trans-unit>
+            <trans-unit id="import.description_exception">
+                <source>import.description_exception</source>
+                <target>
+                    We encountered exceptions when attempting to import the rows below.
+                    Please contact %support_email% and reference the following import exception IDs:
+                </target>
+            </trans-unit>
+            <trans-unit id="import.skip_exception">
+                <source>import.skip_exception</source>
+                <target>Skip These Rows and Continue Import</target>
+            </trans-unit>
+            <trans-unit id="import.status.exception">
+                <source>import.status.exception</source>
+                <target>Exception (%id%)</target>
+            </trans-unit>
+            <trans-unit id="landlord_dashboard.payment.title">
+                <source>landlord_dashboard.payment.title</source>
+                <target>Created: %created%. Sent: %sent%</target>
+            </trans-unit>
+            <trans-unit id="landlord.payments_list.show_external_payments">
+                <source>landlord.payments_list.show_external_payments</source>
+                <target>Show External Payments</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_deposits.description">
+                <source>landlord_export.export_by_deposits.description</source>
+                <target>Export payments that have been deposited by deposit date.</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_payments.description">
+                <source>landlord_export.export_by_payments.description</source>
+                <target>Export all payments initiated by initiation date.</target>
+            </trans-unit>
+            <trans-unit id="landlord_export.export_by_payments.description_help">
+                <source>landlord_export.export_by_payments.description_help</source>
+                <target>This will export all the payments by their initial transaction date, whether or not they are deposited yet. Note that recent payments still may be returned.</target>
+            </trans-unit>
+          <trans-unit id="landlord_export.export_by_deposits.description_help">
+                <source>landlord_export.export_by_deposits.description_help</source>
+                <target>This will export all the payments by their estimated deposit date. Payments will have a "batch ID," or will be grouped by the batch that was deposited to your account, so that you can sum them up and reconcile against your bank </target>
+            </trans-unit>
+            <trans-unit id="new.user.error.without_invite_code">
+                <source>new.user.error.without_invite_code</source>
+                <target>It looks like you already have an account. Please login or click "Get a new one" if you forgot your password.</target>
+            </trans-unit>
+            <trans-unit id="common.tenant.cell">
+                <source>common.tenant.cell</source>
+                <target>Tenant cell</target>
+            </trans-unit>
+            <trans-unit id="common.open_credits">
+                <source>common.open_credits</source>
+                <target>Open Credits</target>
+            </trans-unit>
+            <trans-unit id="common.tenant.past">
+                <source>common.tenant.past</source>
+                <target>Past Tenant</target>
+            </trans-unit>
+            <trans-unit id="common.payment_accepted">
+                <source>common.payment_accepted</source>
+                <target>Payment Accepted</target>
             </trans-unit>
         </body>
     </file>

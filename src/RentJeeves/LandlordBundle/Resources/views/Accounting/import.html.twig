@@ -21,6 +21,16 @@
                     <div class="information-box pie-el"  data-bind="visible: ($root.isValidDateFormat() == false)">
                         {{ "import.error.mapping_date"|trans }}
                     </div>
+                    <div class="information-box pie-el"  data-bind="visible: ($root.hasException() == true)">
+                        <span>{{ "import.description_exception"|trans({'%support_email%':supportEmail}) }}</span>
+                        <span data-bind="foreach: $root.rows">
+                            <span data-bind="text: unique_key_exception, visible: unique_key_exception != null"></span>
+                        </span>
+                        <br>
+                        <a class="skipException" data-bind="click: $root.skipException">
+                            {{ 'import.skip_exception'|trans }}
+                        </a>
+                    </div>
                     {% image '@LandlordBundle/Resources/public/images/ajax.gif' %}
                         <img src="{{ asset_url }}" class="left" data-bind="visible: $root.showSpinner()" />
                     {% endimage %}
@@ -138,6 +148,9 @@
         '@LandlordBundle/Resources/public/js/accountingImport.js'
         '@LandlordBundle/Resources/public/js/accountingImportCsv.js'
         '@LandlordBundle/Resources/public/js/accountingImportYardi.js'
+        '@LandlordBundle/Resources/public/js/accountingImportResman.js'
+        '@LandlordBundle/Resources/public/js/accountingImportMRI.js'
+        '@LandlordBundle/Resources/public/js/accountingImportAMSI.js'
         '@LandlordBundle/Resources/public/js/accountingImportFactory.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

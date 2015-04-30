@@ -5,13 +5,23 @@ parameters:
     soap.client.yardi.resident_transactions.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'
     soap.client.yardi.resident_data.class: 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient'
     resman.client.class: RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient
+    mri.client.class: RentJeeves\ExternalApiBundle\Services\MRI\MRIClient
+    soap.client.amsi.leasing.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient'
+    soap.client.amsi.ledger.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient'
 
 services:
+    mri.client:
+        class: "%mri.client.class%"
+        arguments:
+            - "@fp_badaboom.exception_catcher"
+            - "@jms_serializer"
+            - "@logger"
     resman.client:
         class: "%resman.client.class%"
         arguments:
             - "@fp_badaboom.exception_catcher"
             - "@jms_serializer"
+            - "@logger"
             - "%resman.integration_partner_id%"
             - "%resman.api_key%"
             - "%resman.api_url%"
@@ -22,6 +32,7 @@ services:
     soap.client.yardi.payment:
         class: "%soap.client.yardi.payment.class%"
         arguments:
+            - "@logger"
             - "@soap.wsdl.twig.renderer"
             - "@besimple.soap.client.yardi_payment"
             - "@fp_badaboom.exception_catcher"
@@ -33,6 +44,7 @@ services:
     soap.client.yardi.resident_transactions:
         class: "%soap.client.yardi.resident_transactions.class%"
         arguments:
+            - "@logger"
             - "@soap.wsdl.twig.renderer"
             - "@besimple.soap.client.yardi_resident_transactions"
             - "@fp_badaboom.exception_catcher"
@@ -44,6 +56,7 @@ services:
     soap.client.yardi.resident_data:
         class: "%soap.client.yardi.resident_data.class%"
         arguments:
+            - "@logger"
             - "@soap.wsdl.twig.renderer"
             - "@besimple.soap.client.yardi_resident_data"
             - "@fp_badaboom.exception_catcher"
@@ -52,4 +65,20 @@ services:
             - "%soap.api.yardi.entity%"
             - "%soap.api.yardi.license%"
             - "%soap.api.yardi.path_to_classes%"
+    soap.client.amsi.leasing:
+        class: "%soap.client.amsi.leasing.class%"
+        arguments:
+            - "@logger"
+            - "@fp_badaboom.exception_catcher"
+            - "@soap.wsdl.twig.renderer"
+            - "@besimple.soap.client.amsi_leasing"
+            - "@jms_serializer"
+    soap.client.amsi.ledger:
+        class: "%soap.client.amsi.ledger.class%"
+        arguments:
+            - "@logger"
+            - "@fp_badaboom.exception_catcher"
+            - "@soap.wsdl.twig.renderer"
+            - "@besimple.soap.client.amsi_ledger"
+            - "@jms_serializer"
 

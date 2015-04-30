@@ -3,6 +3,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 
 class HoldingRepository extends EntityRepository
 {
@@ -21,10 +22,30 @@ class HoldingRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('holding');
         $query->innerJoin('holding.yardiSettings', 'yardiSetting');
+        $query->where('holding.apiIntegrationType = :yardi');
+        $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
         $query->setFirstResult($start);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param string $apiIntegrationType
+     *
+     * @return Holding[]
+     */
+    public function findAllByApiIntegration($apiIntegrationType)
+    {
+        if (false === ApiIntegrationType::isValid($apiIntegrationType)) {
+            throw new \InvalidArgumentException(sprintf('Incorrect API integration type "%s"', $apiIntegrationType));
+        }
+
+        return $this->createQueryBuilder('holding')
+            ->where('holding.apiIntegrationType = :apiIntegrationType')
+            ->setParameter('apiIntegrationType', $apiIntegrationType)
+            ->getQuery()
+            ->execute();
     }
 }

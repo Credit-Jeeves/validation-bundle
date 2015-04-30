@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingCsv;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 
@@ -17,8 +18,9 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
  */
 class HandlerCsv extends HandlerAbstract
 {
+    const YES = 'y';
 
-    protected $lines = [];
+    const NO = 'n';
 
     /**
      * @InjectParams({
@@ -39,65 +41,26 @@ class HandlerCsv extends HandlerAbstract
         $this->translator       = $translator;
         $this->storage          = $storage;
         $this->mapping          = $mapping;
+        parent::__construct();
     }
 
-    public function updateMatchedContracts()
+    /**
+     * {@inheritdoc}
+     */
+    protected function setPaymentAccepted(array $row)
     {
-        if (!$this->storage->isOnlyException()) {
-            return false;
+        if (!isset($row[MappingCsv::KEY_PAYMENT_ACCEPTED])) {
+            return;
         }
 
-        $this->lines = [];
-        ini_set('auto_detect_line_endings', true);
-
-        $newFilePath = $this->getNewFilePath();
-        $this->copyHeader($newFilePath);
-        $self = $this;
-        $total = $this->mapping->getTotal();
-
-        $callbackSuccess = function () use ($self) {
-            $self->removeLastLineInFile();
-        };
-
-        $callbackFailed = function () use ($self, $newFilePath) {
-            $self->moveLine($newFilePath);
-        };
-
-        for ($i = 1; $i <= $total; $i++) {
-            $this->updateMatchedContractsWithCallback(
-                $callbackSuccess,
-                $callbackFailed
-            );
+        if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === self::YES) {
+            $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::ANY;
         }
 
-        krsort($this->lines);
-        file_put_contents($newFilePath, implode('', $this->lines), FILE_APPEND | LOCK_EX);
-        $this->storage->setFilePath(basename($newFilePath));
+        if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === self::NO) {
+            $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::DO_NOT_ACCEPT;
+        }
 
-        return true;
-    }
-
-    public function moveLine($newFilePath)
-    {
-        $lines = file($this->storage->getFilePath());
-        $last = sizeof($lines) - 1 ;
-        $lastLine = $lines[$last];
-        $this->lines[] = $lastLine;
-
-        $this->removeLastLineInFile();
-    }
-
-    public function copyHeader($newFilePath)
-    {
-        $lines = file($this->storage->getFilePath());
-        $firstLine = reset($lines);
-        file_put_contents($newFilePath, $firstLine, FILE_APPEND | LOCK_EX);
-
-        return $newFilePath;
-    }
-
-    public function getNewFilePath()
-    {
-        return $this->storage->getFileDirectory().uniqid().".csv";
+        parent::setPaymentAccepted($row);
     }
 }

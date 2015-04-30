@@ -39,12 +39,36 @@ class Lease
     protected $leaseToDate;
 
     /**
+     * @Serializer\SerializedName("ActualMoveOut")
+     * @Serializer\Type("DateTime<'Y-m-d'>")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\XmlElement(namespace="http://www.w3.org/2005/Atom")
+     */
+    protected $actualMoveOut;
+
+    /**
      * @Serializer\SerializedName("ResponsibleForLease")
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"ResMan"})
      * @Serializer\XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
     protected $responsibleForLease;
+
+    /**
+     * @return \DateTime
+     */
+    public function getActualMoveOut()
+    {
+        return $this->actualMoveOut;
+    }
+
+    /**
+     * @param \DateTime $actualMoveOut
+     */
+    public function setActualMoveOut(\DateTime $actualMoveOut)
+    {
+        $this->actualMoveOut = $actualMoveOut;
+    }
 
     /**
      * @return float

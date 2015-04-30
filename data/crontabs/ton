@@ -1,1 +1,0 @@
-# */5 * * * *  php /srv/nginx/creditjeeves2/bin/console.php jms-job-queue:run --max-runtime=300 #Runs every 5 minute

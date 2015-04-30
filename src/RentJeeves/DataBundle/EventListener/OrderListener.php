@@ -10,6 +10,10 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
+use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
+use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -22,11 +26,17 @@ class OrderListener
     private $container;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, Logger $logger)
     {
         $this->container = $container;
+        $this->logger = $logger;
     }
 
     /**
@@ -34,6 +44,7 @@ class OrderListener
      * 1. Set paidTo for contract
      * 2. Set daysLate for order
      * 3. Mark tenant as ready for charge
+     *
      * @param LifecycleEventArgs $eventArgs
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -49,7 +60,7 @@ class OrderListener
      * Why we need to use preUpdate event?
      * Because Order always(!!!) is created with status "NEWONE"
      * It will be changed after attempt of payment
-     * 
+     *
      * @param PreUpdateEventArgs $eventArgs
      */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
@@ -64,6 +75,7 @@ class OrderListener
             return;
         }
 
+        $this->logger->debug('Order ID ' . $entity->getId() .' changes status to ' . $entity->getStatus());
         $this->syncTransactions($entity);
 
         $operations = $entity->getRentOperations();
@@ -91,13 +103,18 @@ class OrderListener
             }
 
             if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
+                $this->logger->debug("Move paidFor for $movePaidFor months, contract ID " . $contract->getId());
+                $oldPaidFor = clone $payment->getPaidFor();
                 $date = new DateTime($payment->getPaidFor()->format('c'));
-                $payment->setPaidFor($date->modify($movePaidFor . ' month'));
+                $newPaidFor = $date->modify($movePaidFor . ' month');
+                $payment->setPaidFor($newPaidFor);
+                $uow = $eventArgs->getEntityManager()->getUnitOfWork();
+                $uow->scheduleExtraUpdate($payment, ['paidFor' => [$oldPaidFor, $newPaidFor]]);
             }
         }
+
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
     }
-
 
     private function updateStartAtOfContract($eventArgs)
     {
@@ -108,8 +125,8 @@ class OrderListener
         if (!$startAt = $this->getStartAtOfContract($order, $em)) {
             return;
         }
-
         $contract = $order->getContract();
+        $this->logger->debug('Update startAt of contract ID ' . $contract->getId());
         $oldValue = $contract->getStartAt();
         $contract->setStartAt($startAt);
         $em->persist($contract);
@@ -150,6 +167,8 @@ class OrderListener
                     case OrderStatus::CANCELLED:
                     case OrderStatus::RETURNED:
                         $save = true;
+                        // if returned order is from recurring payment, close that payment!
+                        $this->closeRecurringPayment($order, $eventArgs->getEntityManager());
                         $this->container->get('project.mailer')->sendOrderCancelToTenant($order);
                         $this->container->get('project.mailer')->sendOrderCancelToLandlord($order);
                         break;
@@ -165,13 +184,14 @@ class OrderListener
         }
 
         if ($save) {
+            $this->logger->debug(
+                'Flush contract ID' .  $operation->getContract()->getId() .
+                ' and complete transaction of order ID ' . $order->getId()
+            );
             // changes to contract are made in preUpdate since only there we can check whether the order
             // status has been changed. But those changes aren't flushed. So the flush is here.
             $eventArgs->getEntityManager()->flush($operation->getContract());
             $eventArgs->getEntityManager()->flush($order->getCompleteTransaction());
-            if ($payment = $operation->getContract()->getActivePayment()) {
-                $eventArgs->getEntityManager()->flush($payment);
-            }
         }
     }
 
@@ -195,7 +215,7 @@ class OrderListener
      * More description on this page https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
      * See table Possible Paths
      *
-     * @param Order $order
+     * @param Order         $order
      * @param EntityManager $em
      */
     private function getStartAtOfContract(Order $order, EntityManager $em)
@@ -256,7 +276,9 @@ class OrderListener
         if (!$contract) {
             return;
         }
-
+        $this->logger->debug(
+            'Update contract balance. Contract ID ' . $contract->getId() . ', order ID ' . $order->getId()
+        );
         // Contract can be finished but last payment does not pass
 //        if ($contract->getStatus() !== ContractStatus::CURRENT) {
 //            return;
@@ -326,8 +348,33 @@ class OrderListener
         ) {
             $batchDate = clone $transaction->getCreatedAt();
             $transaction->setBatchDate($batchDate);
-            $businessDaysCalc = $this->container->get('business_days_calculator');
-            $transaction->setDepositDate($businessDaysCalc->getNextBusinessDate(clone $batchDate));
+            $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $batchDate));
+        }
+    }
+
+    protected function closeRecurringPayment(Order $order, EntityManager $em)
+    {
+        if (OrderType::HEARTLAND_BANK != $order->getType() && OrderStatus::RETURNED != $order->getStatus()) {
+            return;
+        }
+        /** @var Contract $contract */
+        $contract = $order->getContract();
+        if (!$contract) {
+            return;
+        }
+        /** @var Payment $payment */
+        $payment = $contract->getActivePayment();
+        if (!$payment) {
+            return;
+        }
+
+        if ($payment->isRecurring()) {
+            $this->logger->debug(
+                'Close ACH recurring payment ID ' . $payment->getId() . ' for order ID ' . $order->getId()
+            );
+            $payment->setClosed($this, PaymentCloseReason::RECURRING_RETURNED);
+            $em->persist($payment);
+            $em->flush($payment);
         }
     }
 }

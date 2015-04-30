@@ -310,8 +310,7 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_tenanttype_tos'                       => true,
             )
         );
-        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
-        $thisIsMyRental->click();
+        
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
     }
@@ -441,7 +440,7 @@ class IframeCase extends BaseTestCase
         $contract->setPaidTo(new DateTime());
         $property = $em->getRepository('RjDataBundle:Property')
             ->findOneByJbKbWithUnitAndAlphaNumericSort(40.7426129, -73.9828048);
-        $unit = $property->getSingleUnit();
+        $unit = $property->getExistingSingleUnit();
         $contract->setProperty($property);
         $contract->setUnit($unit);
         $contract->setStatus(ContractStatus::PENDING);

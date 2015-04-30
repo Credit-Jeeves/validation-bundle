@@ -8,10 +8,11 @@ class RtServiceTransactions
 {
     /**
      * @Serializer\SerializedName("Transactions")
-     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\Transactions")
+     * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\ResMan\Transactions>")
+     * @Serializer\XmlList(inline = true, entry="Transactions")
      * @Serializer\Groups({"ResMan"})
      */
-    protected $transactions;
+    protected $transactions = [];
 
     /**
      * @return Transactions
@@ -24,8 +25,8 @@ class RtServiceTransactions
     /**
      * @param Transactions $transactions
      */
-    public function setTransactions(Transactions $transactions)
+    public function addTransactions(Transactions $transactions)
     {
-        $this->transactions = $transactions;
+        $this->transactions[] = $transactions;
     }
 }

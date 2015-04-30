@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
+use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -83,10 +84,19 @@ class ContractsListController extends Controller
         $activeContracts = array();
         $paidForArr = array();
         $isNewUser = false;
+        $isInPaymentWindow = false;
         $hasIntegratedBalance = false;
         if ($contracts && 1 == count($contracts) && $contracts[0]->getStatus() == ContractStatus::INVITE) {
             $isNewUser = true;
+            /** @var Contract $contract */
+            $contract = $contracts[0];
+            $isInPaymentWindow = DayRangeValidator::inRange(
+                new DateTime(),
+                $contract->getGroup()->getGroupSettings()->getOpenDate(),
+                $contract->getGroup()->getGroupSettings()->getCloseDate()
+            );
         }
+
         /** @var $contract Contract */
         foreach ($contracts as $contract) {
             $contractsArr[] = $contract->getDatagridRow($em);
@@ -112,6 +122,7 @@ class ContractsListController extends Controller
             'user'          => $tenant,
             'isNewUser'     => $isNewUser,
             'hasIntegratedBalance' => $hasIntegratedBalance,
+            'isInPaymentWindow' => $isInPaymentWindow,
         );
 
         if($mobile){

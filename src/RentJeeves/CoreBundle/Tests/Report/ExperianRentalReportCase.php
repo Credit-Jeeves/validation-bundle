@@ -34,7 +34,7 @@ class ExperianRentalReportCase extends BaseTestCase
     {
         return array(
             array(2, 2014, __DIR__.'/../Fixtures/Report/experian.csv'),
-            array(1, 2014, __DIR__.'/../Fixtures/Report/experian_late.csv'),
+            // Multiple case transaction below also covers late case
             array(4, 2014, __DIR__.'/../Fixtures/Report/experian_multiple_transactions.csv'),
         );
     }

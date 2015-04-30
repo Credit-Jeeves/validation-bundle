@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
 trait Property
@@ -19,9 +20,21 @@ trait Property
             return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
         }
 
-        /**
-         * @var $property EntityProperty
-         */
+        if (isset($row[Mapping::KEY_UNIT_ID]) && !empty($row[Mapping::KEY_UNIT_ID]) && $this->group) {
+            /** @var UnitMapping $mapping */
+            $mapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
+                $this->group,
+                $row[Mapping::KEY_UNIT_ID]
+            );
+
+            $property = !empty($mapping) ? $mapping->getUnit()->getProperty() : null;
+        }
+
+        if (!empty($property)) {
+            return $property;
+        }
+
+        /** @var $property EntityProperty */
         $property =  $this->mapping->createProperty($row);
         if ($propertyByUnit = $this->tryMapPropertyByUnit(
             $property,
@@ -36,17 +49,19 @@ trait Property
             return $this->propertyList[$key];
         }
 
-        $isValid = $this->propertyProcess->isValidProperty(
+        if (!$this->propertyProcess->isValidProperty(
             $property
-        );
-
-        if (!$isValid) {
+        )) {
             return null;
         }
+
         $property = $this->propertyProcess->checkPropertyDuplicate(
             $property,
             $saveToGoogle = true
         );
+
+        /** Save valid property to DB */
+        $this->em->flush($property);
 
         $this->propertyList[$key] = $property;
 
@@ -63,9 +78,7 @@ trait Property
     protected function tryMapPropertyByUnit(EntityProperty $property, $unitName, $unitId)
     {
         if ($this->group) {
-            /**
-             * @var $unit Unit
-             */
+            /** @var $unit Unit */
             $unit = $this->em->getRepository('RjDataBundle:Unit')
                 ->getImportUnit(
                     $this->group->getId(),
@@ -74,6 +87,7 @@ trait Property
                 );
             if ($unit) {
                 $this->propertyList[md5($property->getFullAddress())] = $unit->getProperty();
+
                 return $unit->getProperty();
             }
         }

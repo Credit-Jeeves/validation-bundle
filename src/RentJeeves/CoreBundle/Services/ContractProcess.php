@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\CoreBundle\Traits\ValidateEntities;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -21,18 +22,24 @@ use RentJeeves\DataBundle\Entity\Contract;
 class ContractProcess
 {
 
+    use ValidateEntities;
+
     protected $em;
 
     protected $contract;
 
+    protected $isValidateContract = false;
+
     /**
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.default_entity_manager"),
+     *     "validator" = @Inject("validator")
      * })
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $validator)
     {
         $this->em = $em;
+        $this->validator = $validator;
     }
 
     public function setContract(Contract $contract)
@@ -40,6 +47,11 @@ class ContractProcess
         $this->contract = $contract;
 
         return $this;
+    }
+
+    public function setIsValidateContract($isValidateContract)
+    {
+        $this->isValidateContract = !!$isValidateContract;
     }
 
     /**
@@ -66,12 +78,11 @@ class ContractProcess
          * @var $contractWaiting ContractWaiting
          */
         if (empty($contractWaiting)) {
-
             if ($property->isSingle()) {
                 $propertyGroup = $property->getPropertyGroups()->first();
                 $contract->setHolding($propertyGroup->getHolding());
                 $contract->setGroup($propertyGroup);
-                $contract->setUnit($property->getSingleUnit());
+                $contract->setUnit($property->getExistingSingleUnit());
             } else {
                 if (!$unit = $property->searchUnit($unitName)) {
                     return $this->createContractForEachGroup($tenant, $property, $unitName);
@@ -82,11 +93,20 @@ class ContractProcess
                 $contract->setUnit($unit);
             }
 
+            !$this->isValidateContract || $this->validate($contract);
+
+            if ($this->hasErrors()) {
+                return false;
+            }
+
+
             $this->em->persist($contract);
             $this->em->flush();
 
             return $contract;
         }
+
+        $contract->setExternalLeaseId($contractWaiting->getExternalLeaseId());
 
         return $this->createContractFromWaiting($tenant, $contractWaiting);
     }
@@ -111,7 +131,8 @@ class ContractProcess
         $contract->setFinishAt($contractWaiting->getFinishAt());
         $contract->setIntegratedBalance($contractWaiting->getIntegratedBalance());
         $contract->setRent($contractWaiting->getRent());
-        $contract->setYardiPaymentAccepted($contractWaiting->getYardiPaymentAccepted());
+        $contract->setPaymentAccepted($contractWaiting->getPaymentAccepted());
+        $contract->setExternalLeaseId($contractWaiting->getExternalLeaseId());
         $this->em->persist($contract);
 
         $group = $contractWaiting->getGroup();
@@ -132,6 +153,12 @@ class ContractProcess
             $residentMapping->setHolding($holding);
             $residentMapping->setTenant($tenant);
             $this->em->persist($residentMapping);
+        }
+
+        !$this->isValidateContract || $this->validate($contract);
+
+        if ($this->hasErrors()) {
+            return false;
         }
 
         $this->em->remove($contractWaiting);
@@ -155,16 +182,25 @@ class ContractProcess
         $result = [];
         // If there is no such unit we'll send contract for all potential landlords
         $groups = $property->getPropertyGroups();
+        $contract = $this->contract ? clone $this->contract : new Contract();
+        $contract->setTenant($tenant);
+        $contract->setProperty($property);
+        $contract->setStatus(ContractStatus::PENDING);
+        $contract->setSearch($unitName);
+
+        // can be created duplicate contract for each group only first time
+        !$this->isValidateContract || $this->validate($contract);
+
+        if ($this->hasErrors()) {
+            return false;
+        }
+
         foreach ($groups as $group) {
-            $contract = $this->contract ? clone $this->contract : new Contract();
-            $contract->setTenant($tenant);
             $contract->setHolding($group->getHolding());
             $contract->setGroup($group);
-            $contract->setProperty($property);
-            $contract->setStatus(ContractStatus::PENDING);
-            $contract->setSearch($unitName);
             $this->em->persist($contract);
             $result[] = $contract;
+            $contract = clone $contract;
         }
 
         $this->em->flush();

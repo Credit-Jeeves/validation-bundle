@@ -10,6 +10,7 @@ class ReturnedCase extends BaseTestCase
      */
     public function userRemoveData()
     {
+        $this->markTestSkipped('We no longer support CJ. Therefore, this test can be skipped');
         $this->load(true);
         $this->setDefaultSession('symfony');
         $this->login('emilio@example.com', 'pass');

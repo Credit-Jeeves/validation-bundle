@@ -10,69 +10,30 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
+use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
+use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\BaseTestCase as Base;
+use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use RentJeeves\CheckoutBundle\Command\PayCommand;
+use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
 
 class OrderListenerCase extends Base
 {
-    protected function getContract(DateTime $startAt = null, DateTime $finishAt = null)
-    {
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-
-        if (empty($startAt) || empty($finishAt)) {
-            return $em->getRepository('RjDataBundle:Contract')->findOneBy(
-                array(
-                    'rent'    => 999999.99,
-                    'balance' => 9999.89
-                )
-            );
-        }
-        $contract = new Contract();
-        $contract->setRent(999999.99);
-        $contract->setBalance(9999.89);
-        $contract->setStartAt($startAt);
-        $contract->setFinishAt($finishAt);
-
-        /**
-         * @var $tenant Tenant
-         */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email'  => 'tenant11@example.com'
-            )
-        );
-
-        $this->assertNotNull($tenant);
-        $contract->setTenant($tenant);
-        /**
-         * @var $unit Unit
-         */
-        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
-            array(
-                'name'  => '1-a'
-            )
-        );
-
-        $this->assertNotNull($unit);
-
-        $contract->setUnit($unit);
-        $contract->setGroup($unit->getGroup());
-        $contract->setHolding($unit->getHolding());
-        $contract->setProperty($unit->getProperty());
-        $contract->setStatus(ContractStatus::APPROVED);
-
-        $em->persist($contract);
-        $em->flush();
-
-        return $contract;
-    }
+    use TransactionAvailableTrait;
+    use ContractAvailableTrait;
 
     /**
      * We test updated startAt on the table rj_contract when user create first order
@@ -101,7 +62,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -136,7 +97,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -159,7 +120,6 @@ class OrderListenerCase extends Base
 
         $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
     }
-
 
     public function getDataForUpdateBalanceContract()
     {
@@ -265,7 +225,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum($orderAmount);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::PENDING);
 
         $operation = new Operation();
@@ -414,7 +374,7 @@ class OrderListenerCase extends Base
         $order = new Order();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setType(OrderType::HEARTLAND_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -474,12 +434,12 @@ class OrderListenerCase extends Base
         $operation->setPaidFor($paidFor);
         $operation->setOrder($order);
 
-        $transaction = new Heartland();
+        $transaction = new Transaction();
         $transaction->setAmount(500);
         $transaction->setOrder($order);
         $transaction->setStatus(TransactionStatus::COMPLETE);
         $transaction->setIsSuccessful(true);
-        $order->addHeartland($transaction);
+        $order->addTransaction($transaction);
 
         $em->persist($operation);
         $em->persist($transaction);
@@ -489,15 +449,178 @@ class OrderListenerCase extends Base
         $this->assertNotNull($transactionId = $transaction->getId());
         $this->assertNull($transaction->getBatchDate());
         $this->assertNull($transaction->getDepositDate());
-        
+
         // change status to COMPLETE - here is the place where OrderListener:syncTransactions works
         $order->setStatus(OrderStatus::COMPLETE);
         $em->flush($order);
-        
-        $this->assertNotNull($newTransaction = $em->find('RjDataBundle:Heartland', $transactionId));
+
+        $this->assertNotNull($newTransaction = $em->find('RjDataBundle:Transaction', $transactionId));
         $this->assertNotNull($batchDate = $newTransaction->getBatchDate());
         $this->assertNotNull($depositDate = $newTransaction->getDepositDate());
         $this->assertEquals((new DateTime())->format('Ymd'), $batchDate->format('Ymd'));
         $this->assertGreaterThanOrEqual(1, $batchDate->diff($depositDate)->format('%r%a'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldMovePaymentPaidForWhenOrderIsComplete()
+    {
+        $startAt = (new DateTime())->modify('-5 month');
+        $finishAt = (new DateTime())->modify('+24 month');
+        $contract = $this->getContract($startAt, $finishAt);
+        $payment = $this->createPayment($contract);
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em->persist($payment);
+        $em->flush($payment);
+
+        // Run command "payment:pay"
+        $application = new Application($this->getKernel());
+        $application->add(new PayCommand());
+        $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertGreaterThanOrEqual(1, $jobs);
+        $command = $application->find('payment:pay');
+        $commandTester = new CommandTester($command);
+
+        foreach ($jobs as $job) {
+            $commandTester->execute(
+                array(
+                    'command' => $command->getName(),
+                    '--jms-job-id' => $job->getId(),
+                )
+            );
+        }
+        $this->assertCount(
+            1,
+            $orders = $em->getRepository('DataBundle:Order')->getContractHistory($contract),
+            'One order should be created for the given contract'
+        );
+        $order = $orders[0];
+        $this->assertEquals(OrderStatus::PENDING, $order->getStatus(), 'Verify that order is in PENDING status');
+        $expectedPaidFor = clone $payment->getPaidFor();
+        $expectedPaidFor->modify('+1 month');
+        // here is a moment when payment's paidFor is moved to next month
+        $order->setStatus(OrderStatus::COMPLETE);
+        $em->flush($order);
+
+        $this->assertNotNull($paymentResult = $em->find('RjDataBundle:Payment', $payment->getId()));
+        $actualPaidFor = $paymentResult->getPaidFor();
+        $this->assertEquals($expectedPaidFor->format('mdY'), $actualPaidFor->format('mdY'));
+    }
+
+    /**
+     * @test
+     * @depends shouldMovePaymentPaidForWhenOrderIsComplete
+     */
+    public function shouldCloseRecurringPaymentWhenACHPaymentReturned()
+    {
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        /** @var $order Order */
+        $this->assertNotNull(
+            $order = $em->getRepository('DataBundle:Order')->findOneBySum('999'),
+            'Expected order is not found'
+        );
+        $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
+        $this->assertNotNull(
+            $payment = $order->getContract()->getActivePayment(),
+            'Active payment for contract not found'
+        );
+        $order->setStatus(OrderStatus::RETURNED);
+        $em->flush($order);
+        // Reload payment from the DB
+        $resultPayment = $em->find('RjDataBundle:Payment', $payment->getId());
+
+        $this->assertEquals(PaymentStatus::CLOSE, $resultPayment->getStatus());
+        $this->assertCount(2, $resultPayment->getCloseDetails(), 'Payment close details should be an array of 2 items');
+        $this->assertContains(PaymentCloseReason::RECURRING_RETURNED, $resultPayment->getCloseDetails()['1']);
+    }
+
+    protected function createPayment(Contract $contract)
+    {
+        $tenant = $contract->getTenant();
+        $paymentAccount = $tenant->getPaymentAccounts()->filter(
+            function ($paymentAccount) {
+                if (PaymentAccountType::BANK == $paymentAccount->getType()) {
+                    return true;
+                }
+
+                return false;
+            }
+        )->first();
+
+        $payment = new Payment();
+        $payment->setAmount(999);
+        $payment->setTotal(999);
+        $payment->setType(PaymentType::RECURRING);
+        $payment->setStatus(PaymentStatus::ACTIVE);
+        $payment->setContract($contract);
+        $payment->setPaymentAccount($paymentAccount);
+        $today = new DateTime();
+        $payment->setDueDate($today->format('j'));
+        $payment->setStartMonth($today->format('n'));
+        $payment->setStartYear($today->format('Y'));
+        $paidFor = (new DateTime())->setDate(2015, 1, 1);
+        $payment->setPaidFor($paidFor);
+
+        return $payment;
+    }
+
+    public function dataForCreatePaymentPushCommand()
+    {
+        return [
+            [
+                ApiIntegrationType::RESMAN,
+                ResManClientCase::RESIDENT_ID,
+                ResManClientCase::EXTERNAL_PROPERTY_ID,
+                ResManClientCase::EXTERNAL_LEASE_ID
+            ],
+            [
+                ApiIntegrationType::MRI,
+                MRIClientCase::RESIDENT_ID,
+                MRIClientCase::PROPERTY_ID,
+                null
+            ]
+        ];
+    }
+
+    /**
+     * @param $apiIntegrationType
+     * @param $residentId
+     * @param $externalPropertyId
+     * @param $externalLeaseId
+     *
+     * @test
+     * @dataProvider dataForCreatePaymentPushCommand
+     */
+    public function shouldCreatePaymentPushCommand(
+        $apiIntegrationType,
+        $residentId,
+        $externalPropertyId,
+        $externalLeaseId
+    ) {
+        $this->load(true);
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:transaction:push']
+        );
+
+        $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId
+        );
+
+        $this->assertCount(0, $jobs);
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:payment:push']
+        );
+
+        $this->assertCount(1, $jobs);
     }
 }

@@ -1,0 +1,3 @@
+Unit,Unit Type,Unit Sq Ft,Resident,Name,Market Rent,Actual Rent,Resident Deposit,Other Deposit,Move In,Lease Expiration,Move Out,Balance,Email
+1-a,300-2/1u,885,t0013535,Tom Jonson,500,525,1200,0,9/1/2014,5/31/2015,,325,wait+exception@example.com
+1-a,300-2/1u,885,t0013553,John Jonson,500,525,1200,0,9/1/2014,5/31/2015,,325,tenant11@example.com

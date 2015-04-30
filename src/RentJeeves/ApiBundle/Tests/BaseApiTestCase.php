@@ -11,10 +11,6 @@ use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
 
-/**
- * @method assertEquals
- * @method assertTrue
- */
 class BaseApiTestCase extends BaseTestCase
 {
     const URL_PREFIX = '/api/tenant';
@@ -48,15 +44,20 @@ class BaseApiTestCase extends BaseTestCase
             $response->getContent()
         );
 
-        $contentType = $response->headers->get('Content-Type');
+        // Added because
+        //  - no necessary check it for no-content response
+        //  - Symfony 2.4.10 doesn't return content-type for no-content response
+        if ($statusCode != 204) {
+            $contentType = $response->headers->get('Content-Type');
 
-        $this->assertTrue(isset(static::$formats[$format]), "Content Type \"$contentType\" is not available.");
+            $this->assertTrue(isset(static::$formats[$format]), "Content Type \"$contentType\" is not available.");
 
-        $this->assertContains(
-            $contentType,
-            static::$formats[$format],
-            $response->headers
-        );
+            $this->assertContains(
+                $contentType,
+                static::$formats[$format],
+                $response->headers
+            );
+        }
     }
 
     protected function assertResponseContent($content, $result, $format = 'json')
@@ -160,8 +161,8 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param string $idEncoderServiceId
-     * @param bool $refresh
+     * @param  string                    $idEncoderServiceId
+     * @param  bool                      $refresh
      * @return AttributeEncoderInterface
      */
     protected function getIdEncoder($idEncoderServiceId = 'api.default_id_encoder', $refresh = false)
@@ -174,8 +175,8 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param string $urlEncoderServiceId
-     * @param bool $refresh
+     * @param  string                    $urlEncoderServiceId
+     * @param  bool                      $refresh
      * @return AttributeEncoderInterface
      */
     protected function getUrlEncoder($urlEncoderServiceId = 'api.default_url_encoder', $refresh = false)
@@ -188,8 +189,8 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param array $requestParams
-     * @param string $format
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function postRequest(array $requestParams = [], $format = 'json')
@@ -198,9 +199,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param null $attributes
-     * @param array $requestParams
-     * @param string $format
+     * @param  null          $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function putRequest($attributes = null, array $requestParams = [], $format = 'json')
@@ -209,9 +210,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param null $attributes
-     * @param array $requestParams
-     * @param string $format
+     * @param  null          $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function getRequest($attributes = null, array $requestParams = [], $format = 'json')
@@ -220,11 +221,22 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param string|null $fullUrl
-     * @param string $method
-     * @param string $format
-     * @param string|null $attributes
-     * @param array $requestParams
+     * @param  null|string   $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
+     * @return null|Response
+     */
+    protected function deleteRequest($attributes = null, array $requestParams = [], $format = 'json')
+    {
+        return $this->request(null, 'DELETE', $format, $attributes, $requestParams);
+    }
+
+    /**
+     * @param  string|null   $fullUrl
+     * @param  string        $method
+     * @param  string        $format
+     * @param  string|null   $attributes
+     * @param  array         $requestParams
      * @return null|Response
      */
     protected function request(

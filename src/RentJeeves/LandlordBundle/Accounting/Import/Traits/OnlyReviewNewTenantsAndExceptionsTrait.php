@@ -2,12 +2,24 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Traits;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingInterface;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface;
 use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
 use RentJeeves\LandlordBundle\Model\Import;
+use Exception;
 
+/**
+ * @property EntityManager $em
+ * @property MappingInterface $mapping
+ * @property Import $currentImportModel
+ * @property StorageInterface $storage
+ * @property array $lines
+ * @method manageException
+ */
 trait OnlyReviewNewTenantsAndExceptionsTrait
 {
     /**
@@ -15,30 +27,34 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
      * @param $repository
      * @return bool
      */
-    protected function isChangeImportantField($contract, $repository)
+    protected function isChangedImportantField($contract, $repository)
     {
         $contractInDb = $this->em->getRepository('RjDataBundle:'.$repository)->find($contract->getId());
 
+        if ($contractInDb instanceof ContractWaiting and $this->currentImportModel->getTenant()->getEmail()) {
+            return true;
+        }
+
         if ($contractInDb->getStartAt() !== $contract->getStartAt()) {
-            return false;
+            return true;
         }
 
         if ($contractInDb->getFinishAt() !== $contract->getFinishAt()) {
-            return false;
+            return true;
         }
 
         if ($contractInDb->getRent() !== $contract->getRent()) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
      * @return mixed
      * @throws ImportHandlerException
      */
-    protected function getLastModelFromFile()
+    protected function createLastModelFromFile()
     {
         $data = $this->mapping->getData($this->mapping->getTotal()-2, $rowCount = 1);
 
@@ -47,17 +63,17 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         }
 
         if (empty($data)) {
-            return null;
+            $this->currentImportModel = null;
+
+            return;
         }
 
-        $import = $this->getImport(end($data), 1);
-        $import->setNumber(1);
-
-        return $import;
+        $this->createCurrentImportModel(end($data), 1);
+        $this->currentImportModel->setNumber(1);
     }
 
     /**
-     * @param ContractEntity $contract
+     * @param  ContractEntity $contract
      * @return bool
      */
     protected function isContractEndedAndActiveInOurDB(ContractEntity $contract)
@@ -73,61 +89,80 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         return false;
     }
 
-    protected function removeLastLineInFile()
+    protected function removeLastLineInFile($filePath)
     {
         // load the data and delete the line from the array
-        $lines = file($this->storage->getFilePath());
-        $last = sizeof($lines) - 1 ;
-        unset($lines[$last]);
-
+        $lines = file($filePath, FILE_SKIP_EMPTY_LINES);
+        array_pop($lines);
         // write the new data to the file
-        $fp = fopen($this->storage->getFilePath(), 'w');
-        fwrite($fp, implode('', $lines));
-        fclose($fp);
+        file_put_contents($filePath, implode('', $lines));
+    }
+
+    protected function moveLine($filePath)
+    {
+        $lines = file($filePath, FILE_SKIP_EMPTY_LINES);
+
+        if (count($lines) > 0) {
+            $this->lineFromCsvFile[] = array_pop($lines);
+        }
+
+        file_put_contents($filePath, implode('', $lines));
     }
 
     protected function updateMatchedContractsWithCallback($callbackSuccess, $callbackFailed)
     {
-        /**
-         * @var $importModel Import
-         */
-        $importModel = $this->getLastModelFromFile();
-        if (empty($importModel)) {
+        $this->createLastModelFromFile();
+
+        if (!is_callable($callbackFailed) || !is_callable($callbackSuccess)) {
             return;
         }
 
-        $errors = $importModel->getErrors();
-        $errors = $errors[$importModel->getNumber()];
-        $contract = $importModel->getContract();
-
-        if ($importModel->getIsSkipped()) {
-            $callbackSuccess();
+        if (empty($this->currentImportModel)) {
             return;
         }
 
-        if (empty($errors) &&
-            !$importModel->getHasContractWaiting() &&
-            !is_null($contract->getId()) &&
-            $this->isChangeImportantField($contract, $repository = 'Contract')&&
-            !$this->isContractEndedAndActiveInOurDB($contract)
-        ) {
-            $this->em->flush($contract);
-            $callbackSuccess();
-            return;
+        try {
+            $errors = $this->currentImportModel->getErrors()[$this->currentImportModel->getNumber()];
+            $contract = $this->currentImportModel->getContract();
+
+            if (!empty($errors)) {
+                call_user_func($callbackFailed);
+
+                return;
+            }
+
+            if ($this->currentImportModel->getIsSkipped()) {
+                call_user_func($callbackSuccess);
+
+                return;
+            }
+
+            if (!$this->currentImportModel->getHasContractWaiting() &&
+                !is_null($contract->getId()) &&
+                !$this->isChangedImportantField($contract, $repository = 'Contract') &&
+                !$this->isContractEndedAndActiveInOurDB($contract)
+            ) {
+                $this->em->flush($contract);
+                call_user_func($callbackSuccess);
+
+                return;
+            }
+
+            $contractWaiting = $this->currentImportModel->getContractWaiting();
+
+            if ($this->currentImportModel->getHasContractWaiting() &&
+                !is_null($contractWaiting->getId()) &&
+                !$this->isChangedImportantField($contractWaiting, $repository = 'ContractWaiting')
+            ) {
+                $this->em->flush($contractWaiting);
+                call_user_func($callbackSuccess);
+
+                return;
+            }
+
+            call_user_func($callbackFailed);
+        } catch (\Exception $e) {
+            $this->manageException($e);
         }
-
-        $contractWaiting = $importModel->getContractWaiting();
-
-        if (empty($errors) &&
-            $importModel->getHasContractWaiting() &&
-            !is_null($contractWaiting->getId()) &&
-            $this->isChangeImportantField($contractWaiting, $repository = 'ContractWaiting')
-        ) {
-            $this->em->flush($contractWaiting);
-            $callbackSuccess();
-            return;
-        }
-
-        $callbackFailed();
     }
 }

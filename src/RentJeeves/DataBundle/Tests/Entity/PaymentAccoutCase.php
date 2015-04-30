@@ -2,9 +2,12 @@
 namespace RentJeeves\DataBundle\Tests\Entity;
 
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\UserSettings;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use Doctrine\ORM\Query\Expr;
@@ -42,10 +45,14 @@ class PaymentAccountCase extends BaseTestCase
             $em->flush($pa);
         }
         static::$kernel = null;
+        /** @var Payment $payment */
         $payment = $em->getRepository('RjDataBundle:Payment')->findOneBy(array('id' => $paymentId));
         $this->assertNotNull($payment);
         $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
-
+        $this->assertCount(2, $payment->getCloseDetails());
+        $this->assertContains(PaymentCloseReason::DELETED, $payment->getCloseDetails()[1]);
+        $today = new DateTime();
+        $this->assertEquals($today->format('Y-m-d'), $payment->getUpdatedAt()->format('Y-m-d'));
 
         /** @var DepositAccount $depositAccount */
         $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')

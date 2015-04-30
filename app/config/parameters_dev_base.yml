@@ -15,21 +15,24 @@ parameters:
     mink.base_url: 'http://%server_name%/_test.php'
     mink.coverage_script_url: 'http://%server_name%/bundles/mink/phpunit_coverage.php'
     server: dev
-    google_maps_key: 'AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24'
-    payment_report_path: /tmp
-    authorize_net:
-        login_id: '7hNc5K44'
-        transaction_key: '5588K4QpHFhhqL5A'
-        sandbox: true
+
+    google_maps_key: 'AIzaSyBsW5-jPDZ2C-l9d62DVgdvQMerbt0XvNo' # API account with staging@renttrack.com
+
+    payment_processor.hps.report_path: /tmp
     heartland:
         env: testing
         application_id: 3
         username: RTAPI
         password: $RTapi13
+    aci_collect_pay:
+        sandbox: true
+        businessId: 563375
+        login: RentTrackEnrollConnect
+        password: KI9DPqXaJ8
 
     login.attempts: 1
     login.delay: 1
-    net_connect.precise_id.userpwd: 'renttrack_pid_demo:5b7EnopiUeuQ' #required! # overwritten by DB
+    net_connect.precise_id.userpwd: 'renttrack_pid_demo:d8ccULH0IcEn' #required! # overwritten by DB
     net_connect.precise_id.eai: 'HRPCX4RA' #required! # overwritten by DB
     net_connect.precise_id.url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
     net_connect.precise_id.dbhost: 'PRECISE_ID_TEST' #required!
@@ -47,6 +50,9 @@ parameters:
 
     validator.translation_domain: messages
 
+    # parameter was added for task RT-362, we can fast allow and disallow feature that disallow duplicate contract
+    allow_duplicate_contracts: false
+
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
     resman.api_url: https://api.myresman.com/MITS/
@@ -56,3 +62,12 @@ parameters:
         db_id_col:       session_id
         db_data_col:     session_value
         db_time_col:     session_time
+
+    transunion.account_name: 'CC2RentTrack'
+    transunion.password: 'Pfr5Nm$c'
+    transunion.environment: stage
+    transunion.ssl_key: /var/www/%server_name_rj%/app/config/secrets/transunion/stg.renttrack.com.key
+    transunion.ca_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/prodsupCA.pem
+    transunion.ssl_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/CC2RentTrack-Test.crt
+    transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
+    transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'

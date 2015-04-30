@@ -1,93 +1,110 @@
 <div class="search-result-box clearfix pie-el">
-  <div class="search-result-text-box">
-    <div id="search-result-text" class="search-result-text">
-      {% if property.id %}
-        <h4 class="titleSearch">
-           {{ 'result.search'|trans({'%count%': countPropery, '%city%': property.city, '%area%': property.area}) }}
-        </h4>
-      {% elseif countPropery > 0 %}
-          <h4 class="titleSearch">
-              {{ 'result.search2'|trans({'%count%': countPropery}) }}
-          </h4>
-      {% endif %}
-      <h4 class="titleNotFound">
-        {{ 'notfoundrentalmessage'|trans|raw }}
-      </h4>
-      <ul>
-        <li class="notFound">
-          <i>1</i>
-          <strong>
-          <a href="#" class="moveToLocation" rel="notfound">
-            <span class="titleAddress"></span><br>
-            <span class="contentAddress"></span>
-          </a>
-          </strong>
-          <div class="buttons-box clearfix">
-            <div class="buttons left">
-              <a href="#" class="button middle inviteLandlord">
-                <span>{{ 'invite.landlord'|trans }}</span></a>
-            </div>
-          </div>
-          <input type="hidden" value="" class="lat">
-          <input type="hidden" value="" class="lng">
-          <input type="hidden" value="" class="addressSelect">
-        </li>
-        {% if propertyList %}
-            {% set i = 1 %}
-            {% for prop in propertyList %}
-            <li class="addressText" data="{{ prop.id }}" number="{{ i }}">
-              <i>{{ i }}</i>
-              <strong>
-              <a href="#" class="moveToLocation" rel="{{ i }}">
-                <span class="titleAddress">{{ prop.number }} {{ prop.street }}</span><br>
-                <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span>
-              </a>
-              </strong>
-              {% if prop.hasLandlord and not prop.isSingle %}
-                <div class="form-row clearfix">
-                    {% if prop.units|length == 0 %}
-                        <label>{{ 'add.unit'|trans }}</label>
-                    {% else %}
-                        <label class="lab1">{{ 'add.unit'|trans }}</label>
-                        <label class="lab2">{{ 'select.unit'|trans }}</label>
-                        <div class="fields-box selectUnit">
-                            <select id="idUnit{{ prop.id }}" name="unit{{ prop.id }}" class="select-unit linkselect-link">
-                              {% for unit in  prop.units %}
-                                <option value="{{ unit.name }}">{{ unit.name }}</option>
-                              {% endfor %}
-                              <option value="new" class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
-                            </select>
+    <div class="search-result-text-box">
+        <div id="search-result-text" class="search-result-text">
+            {% if property.id %}
+                <h4 class="titleSearch">
+                    {{ 'result.search'|trans({'%count%': countPropery, '%city%': property.city, '%area%': property.area}) }}
+                </h4>
+            {% elseif countPropery > 0 %}
+                <h4 class="titleSearch">
+                    {{ 'result.search2'|trans({'%count%': countPropery}) }}
+                </h4>
+            {% endif %}
+            <h4 class="titleNotFound">
+                {{ 'notfoundrentalmessage'|trans|raw }}
+            </h4>
+            <ul>
+                <li class="notFound">
+                    <i>1</i>
+                    <strong>
+                        <a href="#" class="moveToLocation" rel="notfound">
+                            <span class="titleAddress"></span><br>
+                            <span class="contentAddress"></span>
+                        </a>
+                    </strong>
+
+                    <div class="buttons-box clearfix">
+                        <div class="buttons left">
+                            <a href="#" class="button middle inviteLandlord">
+                                <span>{{ 'invite.landlord'|trans }}</span></a>
                         </div>
-                    {% endif %}
-                    <div class="fields-box{% if prop.units|length > 0 %} createNewUnit{% endif %}">
-                        <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A" style="width: 50px;"> <a href="#" class="see-all">{{ 'see.all'|trans }}</a>
                     </div>
-                </div>
-              {% endif %}
-              <div class="buttons-box clearfix">
-                <div class="buttons left buttonsMapSelectProperty">
-                  {% if prop.hasLandlord %}
-                    <button type="submit" class="button middle thisIsMyRental greyTenant" data="{{ prop.id }}">
-                      <span>{{ 'this.is.my.rental'|trans }}</span>
-                    </button>
-                  {% else %}
-                        <br />
-                        <a href="{{ path("iframe_invite", {'propertyId': prop.id } )}}" class="button middle inviteLandlord" >
-                        <span>{{ 'invite.landlord'|trans }}</span></a>
-                 {% endif %}
-                </div>
-              </div>
-              <input type="hidden" value="{{prop.jb }}" class="lat">
-              <input type="hidden" value="{{prop.kb }}" class="lng">
-              <input type="hidden" value="{{prop.address }}" class="addressSelect">
-            </li>
-            {% set i = i+1 %}
-            {% endfor %}
-        {% endif %}
-      </ul>
+                    <input type="hidden" value="" class="lat">
+                    <input type="hidden" value="" class="lng">
+                    <input type="hidden" value="" class="addressSelect">
+                </li>
+                {% if contractProperties is defined%}
+                    {% set propertyList = contractProperties %}
+                {% endif %}
+
+                {% if propertyList %}
+                    {% set i = 1 %}
+                    {% for prop in propertyList %}
+                        <li class="addressText" data="{{ prop.id }}" number="{{ i }}">
+                            <i>{{ i }}</i>
+                            <strong>
+                                <a href="#" class="moveToLocation" rel="{{ i }}">
+                                    <span class="titleAddress">{{ prop.number }} {{ prop.street }}</span><br>
+                                    <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span>
+                                </a>
+                            </strong>
+                            {% if prop.hasLandlord and not prop.isSingle %}
+                                <div class="form-row clearfix">
+                                    {% if prop.units|length == 0 %}
+                                        <label>{{ 'add.unit'|trans }}</label>
+                                    {% else %}
+                                        <label class="lab1">{{ 'add.unit'|trans }}</label>
+                                        <label class="lab2">{{ 'select.unit'|trans }}</label>
+                                        <div class="fields-box selectUnit">
+                                            <select id="idUnit{{ prop.id }}" name="unit{{ prop.id }}"
+                                                    class="select-unit linkselect-link">
+                                                {% if contractUnits is defined %}
+                                                    {% for unit in prop.units if unit in contractUnits %}
+                                                        <option value="{{ unit.name }}">{{ unit.name }}</option>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for unit in prop.units %}
+                                                        <option value="{{ unit.name }}">{{ unit.name }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                                <option value="new" class="addNewUnit"><a
+                                                            href="#">{{ 'add.new'|trans }}</a></option>
+                                            </select>
+                                        </div>
+                                    {% endif %}
+                                    <div class="fields-box{% if prop.units|length > 0 %} createNewUnit{% endif %}">
+                                        <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew"
+                                               placeholder="e.g. 3A" style="width: 50px;"> <a href="#"
+                                                                                              class="see-all">{{ 'see.all'|trans }}</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="buttons-box clearfix">
+                                <div class="buttons left buttonsMapSelectProperty">
+                                    {% if prop.hasLandlord %}
+                                        <button type="submit" class="button middle thisIsMyRental greyTenant"
+                                                data="{{ prop.id }}">
+                                            <span>{{ 'this.is.my.rental'|trans }}</span>
+                                        </button>
+                                    {% else %}
+                                        <br/>
+                                        <a href="{{ path("iframe_invite", {'propertyId': prop.id } ) }}"
+                                           class="button middle inviteLandlord">
+                                            <span>{{ 'invite.landlord'|trans }}</span></a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <input type="hidden" value="{{ prop.jb }}" class="lat">
+                            <input type="hidden" value="{{ prop.kb }}" class="lng">
+                            <input type="hidden" value="{{ prop.address }}" class="addressSelect">
+                        </li>
+                        {% set i = i+1 %}
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
     </div>
-  </div>
-  <div id="search-result-map" class="search-result-map" class="pie-el"> </div>
-  <div id="shade-top"> </div>
-  <div id="shade-left"> </div>
+    <div id="search-result-map" class="search-result-map" class="pie-el"></div>
+    <div id="shade-top"></div>
+    <div id="shade-left"></div>
 </div>

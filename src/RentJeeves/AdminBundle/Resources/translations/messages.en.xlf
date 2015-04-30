@@ -2,6 +2,14 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="finished">
+                <source>finished</source>
+                <target>finished</target>
+            </trans-unit>
+            <trans-unit id="pending">
+                <source>pending</source>
+                <target>pending</target>
+            </trans-unit>
             <trans-unit id="admin.action.run">
                 <source>admin.action.run</source>
                 <target>Run</target>
@@ -85,6 +93,14 @@
             <trans-unit id="admin.form.error.property_mapping">
                 <source>admin.form.error.property_mapping</source>
                 <target>This property mapping already exists.</target>
+            </trans-unit>
+            <trans-unit id="admin.form.error.unit_mapping">
+                <source>admin.form.error.unit_mapping</source>
+                <target>This unit mapping already exists.</target>
+            </trans-unit>
+            <trans-unit id="admin.form.error.unit_mapping.unit_exist">
+                <source>admin.form.error.unit_mapping.unit_exist</source>
+                <target>The RentTrack Unit ID above is already assigned to a different External Unit ID.</target>
             </trans-unit>
             <trans-unit id="admin.list.order.jobs_action">
                 <source>admin.list.order.jobs_action</source>

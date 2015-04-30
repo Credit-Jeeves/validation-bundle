@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\CoreBundle\Tests\Command;
 
-use Behat\Mink\Element\NodeElement;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -41,7 +40,7 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
          * Update date for all success transactions
          */
         $qb = $em->createQueryBuilder();
-        $qb->update('RjDataBundle:Heartland', 'h')
+        $qb->update('RjDataBundle:Transaction', 'h')
             ->set('h.depositDate', ':depositDate')
             ->where('h.batchId iS NOT NULL')
             ->andWhere('h.isSuccessful = 1')
@@ -59,13 +58,13 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([ 'command' => $command->getName() ]);
 
-        $this->assertRegExp('/Start prepare daily batch deposit report by/', $commandTester->getDisplay());
+        $this->assertRegExp('/Preparing daily batch deposit report for/', $commandTester->getDisplay());
         $this->assertCount(1, $plugin->getPreSendMessages());
         $this->assertCount(1, $parts = $plugin->getPreSendMessage(0)->getChildren());
         $crawler = $this->getCrawlerObject($parts[0]->getBody());
         $groupNamesNodes = $crawler->filter('.group-name');
 
-        $query = $em->getRepository('RjDataBundle:Heartland')->createQueryBuilder('h');
+        $query = $em->getRepository('RjDataBundle:Transaction')->createQueryBuilder('h');
         $query->select("h.batchId");
         $query->groupBy('g.id'); // first group by Group, because one bathId can be included to diff group
         $query->addGroupBy('h.batchId'); // after that be batchId remove duplicate

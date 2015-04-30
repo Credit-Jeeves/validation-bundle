@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Soap;
 
 use JMS\Serializer\Annotation as Serializer;
+use DateTime;
 
 class ResidentLeaseFile 
 {
@@ -55,7 +56,7 @@ class ResidentLeaseFile
     protected $ledgerDetails;
 
     /**
-     * @return mixed
+     * @return LeaseFileLedger|null
      */
     public function getLedgerDetails()
     {
@@ -103,10 +104,15 @@ class ResidentLeaseFile
     }
 
     /**
-     * @return mixed
+     * @param bool $returnObject
+     * @return DateTime
      */
-    public function getLeaseEnd()
+    public function getLeaseEnd($returnObject = false)
     {
+        if (!empty($this->leaseEnd) && is_string($this->leaseEnd) && $returnObject) {
+            return DateTime::createFromFormat('Y-m-d', $this->leaseEnd);
+        }
+
         return $this->leaseEnd;
     }
 

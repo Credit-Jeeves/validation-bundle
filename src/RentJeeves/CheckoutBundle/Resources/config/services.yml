@@ -1,8 +1,9 @@
 parameters:
-    payment_account.class: RentJeeves\CheckoutBundle\Payment\PaymentAccount
+    payment_account.heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager
 
 services:
-    payment.account:
-        class: "%payment_account.class%"
+    payment.account.heartland:
+        class: "%payment_account.heartland.class%"
         calls:
-            - [setPayum, ["@payum"]]
+            - [setPayum, ["@payum2"]]
+            - [setDefaultMerchantName, ["%rt_merchant_name%"]]

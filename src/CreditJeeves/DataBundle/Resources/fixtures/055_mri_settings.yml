@@ -1,0 +1,14 @@
+model: RentJeeves\DataBundle\Entity\MRISettings
+fixtures:
+    MRISetting_1:
+        clientId: C225999
+        holding: rjHolding_1
+        url: https://mri45pc.saas.mrisoftware.com/mriapiservices/api.asp
+        databaseName: RENTTRACK
+        hash: FE11CEE9FB6FDB03AA3950E3769C342FD58E3089EBF5BAD52FBB7D32B6152421
+        partnerKey: 3D5C25981F2911DA566EA5AC363B1B9B5CA8A5AD75EEDECB1EC0EDA76902926A
+        user: RENTTRACKAPI
+        password: k8raKFPJ
+        siteId: @
+        chargeCode: RNT
+

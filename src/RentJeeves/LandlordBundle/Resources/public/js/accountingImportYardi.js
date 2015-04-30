@@ -29,15 +29,13 @@ function accountingImportYardi() {
                 ),
                 type: 'POST',
                 data: {
-                    'paymentAccepted': residentsId[i].paymentAccepted,
-                    'moveOutDate': residentsId[i].MoveOutDate
+                    'resident':residentsId[i]
                 },
                 dataType: 'json',
                 error: function () {
-                    self.setProcessing(false);
-                    self.showSpinner(false);
-                    self.loadDataMessage(Translator.trans('yardi.import.error.getResidents'));
-                    self.classLoadDataMessage('errorMessage');
+                    //@TODO show some info for user with failed resident
+                    i++;
+                    self.saveContractData(residentsId, i, length);
                 },
                 success: function (response) {
                     i++;

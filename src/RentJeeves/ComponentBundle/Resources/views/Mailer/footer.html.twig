@@ -1,3 +1,4 @@
+{# @TODO move style to css file #}
 <div style="
         padding: 10px;
         border-left: 1px solid #c8c8c8;
@@ -11,7 +12,24 @@
         text-align: center;
         margin-top: 10px;
         ">
-        <a style="color: #1985ea;" href="http://renttrack.uservoice.com/">{{ 'email.help' | trans }}</a>&nbsp;|&nbsp;<a style="color: #1985ea;" href="http://www.renttrack.com/">{{ 'email.company' | trans }}</a>&nbsp;|&nbsp;<a style="color: #1985ea;" href="http://www.renttrack.com/blog">{{ 'email.blog' | trans }}</a>
+        {% if isPoweredBy %}
+            <p>
+                Payments and Reporting powered By
+            </p>
+            <img width="auto" src="http://{{ serverName }}/bundles/rjpublic/images/logo_rj.png"/>
+        {% else %}
+            <a style="color: #1985ea;" href="http://renttrack.uservoice.com/">
+                {{ 'email.help' | trans }}
+            </a>
+            &nbsp;|&nbsp;
+            <a style="color: #1985ea;" href="http://www.renttrack.com/">
+                {{ 'email.company' | trans }}
+            </a>
+            &nbsp;|&nbsp;
+            <a style="color: #1985ea;" href="http://www.renttrack.com/blog">
+                {{ 'email.blog' | trans }}
+            </a>
+        {% endif %}
     </div>
     <div style="
         text-align: center;
@@ -19,7 +37,7 @@
         margin-top: 10px;
         color: #707070;
         ">
-        You received this email because you are a member of RentTrack, or were invited by a member.
+        You received this email because you are a member of {{ partnerName }}, or were invited by a member.
     </div>
     <div style="
         text-align: center;
@@ -27,7 +45,8 @@
         margin-top: 5px;
         color: #707070;
         ">
-        To manage your alert settings or change your email address, please visit the <a style="text-decoration: none; color: #1985ea;" href="http://my.renttrack.com/email">My Account page</a>.
+        To manage your alert settings or change your email address, please visit the <a
+                style="text-decoration: none; color: #1985ea;" href="http://my.renttrack.com/email">My Account page</a>.
     </div>
     <div style="
         text-align: center;
@@ -50,13 +69,14 @@
         font-size: 12px;
         color: #707070;
         ">
-        13911 Ridgedale Drive, Suite 401C, Minnetonka, MN 55305
+        {{ partnerAddress }}
     </div>
     <div style="
         text-align: center;
         font-size: 12px;
         ">
-        <a style="color: #1985ea;" href="http://www.renttrack.com/privacy-policy">Privacy Policy </a>&nbsp;|&nbsp;<a style="color: #1985ea;" href="http://www.renttrack.com/terms-of-service">Terms of Service</a>
+        <a style="color: #1985ea;" href="http://www.renttrack.com/privacy-policy">Privacy Policy </a>&nbsp;|&nbsp;<a
+                style="color: #1985ea;" href="http://www.renttrack.com/terms-of-service">Terms of Service</a>
     </div>
     <div style="
         text-align: center;
@@ -64,7 +84,7 @@
         margin-top: 10px;
         padding: 10px;
         ">
-        <a style="color: #1985ea;" href="http://my.renttrack.com/email">Update your email subscription preferences to unsubscribe.</a>
+        <a style="color: #1985ea;" href="http://my.renttrack.com/email">Update your email subscription preferences to
+            unsubscribe.</a>
     </div>
-
 </div>

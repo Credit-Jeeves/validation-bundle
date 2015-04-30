@@ -14,11 +14,16 @@ function Payments() {
   this.searchText = ko.observable("");
   this.searchCollum = ko.observable("status");
   this.notHaveResult = ko.observable(false);
+  this.showCashPayments = ko.observable(false);
 
   this.searchCollum.subscribe(function(newValue) {
       if (newValue == 'deposit') {
           self.filterDeposits();
       }
+  });
+
+  this.showCashPayments.subscribe(function(newValue) {
+      self.filterPayments();
   });
 
   this.ajaxAction = function() {
@@ -43,7 +48,8 @@ function Payments() {
                   'sortColumn': self.sortColumn(),
                   'isSortAsc': self.isSortAsc(),
                   'searchCollum': self.searchCollum(),
-                  'searchText': self.searchText()
+                  'searchText': self.searchText(),
+                  'showCashPayments': self.showCashPayments()
               }
           },
           success: function(response) {
@@ -208,6 +214,14 @@ function Payments() {
   this.depositTitle = function(deposit) {
       var amount = deposit.orders.length;
       return Translator.transChoice('payments.batched_amount', amount, {"count": amount});
+  };
+
+  this.orderStatusTitle = function(order) {
+      if (this.isSuccessfulStatus(order.status)) {
+          return Translator.trans('landlord_dashboard.payment.title', {"created": order.start, "sent": order.depositDate});
+      }
+
+      return order.errorMessage;
   };
 
   this.getOrderStatusText = function(isDeposit, order) {

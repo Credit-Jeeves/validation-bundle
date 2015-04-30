@@ -12,6 +12,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 class ContractAdmin extends Admin
 {
@@ -136,6 +137,7 @@ class ContractAdmin extends Admin
             ->add('unit', null, array('route' => array('name' => 'show')))
             ->add('search')
             ->add('status')
+            ->add('payment_accepted')
             ->add('paidTo')
             ->add('reportToExperian')
             ->add('experianStartAt')
@@ -155,28 +157,28 @@ class ContractAdmin extends Admin
         $request = $container->get('request');
         $uniqueId = $request->query->get('uniqid');
         $params = $request->request->all();
-        $em = $container->get('doctrine.orm.default_entity_manager');
+        /** @var $contract Contract */
+        $contract = $this->getSubject();
+        $holding = $contract->getHolding(); // disabled for edit
+        $tenant = $contract->getTenant(); // disabled for edit
+        $group = $contract->getGroup();
+        $property = $contract->getProperty();
 
-        if (isset($params[$uniqueId]['holding'])) {
-            $holding = $em->getRepository('DataBundle:Holding')->find($params[$uniqueId]['holding']);
+        if (isset($params[$uniqueId])) {
             $group = $params[$uniqueId]['group'];
             $property = $params[$uniqueId]['property'];
-        } elseif ($id = $request->get('id')) {
-            /**
-             * @var $contract Contract
-             */
-            $contract = $em->getRepository('RjDataBundle:Contract')->find($id);
-            $holding = $contract->getHolding();
-            $group = $contract->getGroup();
-            $property = $contract->getProperty();
-        }
-
-        if (empty($holding) || empty($group) || empty($property)) {
-            throw new \Exception("Can't find contract by ID.");
         }
 
         $formMapper
-            ->add('tenant')
+            ->add(
+                'tenant',
+                'entity',
+                array(
+                    'disabled' => true,
+                    'class' => 'RjDataBundle:Tenant',
+                    'choices' => [$tenant],
+                )
+            )
             ->add(
                 'holding',
                 'entity',
@@ -234,6 +236,11 @@ class ContractAdmin extends Admin
                 'status',
                 'choice',
                 ['choices' => ContractStatus::getStatuses($this->getSubject()->getStatus())]
+            )
+            ->add(
+                'payment_accepted',
+                'choice',
+                ['choices' => PaymentAccepted::getValues($this->getSubject()->getPaymentAccepted())]
             )
             ->add('paidTo')
             ->add('reportToExperian')

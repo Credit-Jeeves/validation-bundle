@@ -69,7 +69,7 @@ abstract class BaseTestCase extends Base
     }
 
     /**
-     * (@inheritdoc}
+     * {@inheritdoc}
      */
     public function setUp()
     {
@@ -125,7 +125,6 @@ abstract class BaseTestCase extends Base
      *
      * @param \Behat\Mink\Element\NodeElement $form
      * @param array $fields
-     * @param string $locator
      */
     protected function fillForm(\Behat\Mink\Element\NodeElement $form, array $fields)
     {
@@ -192,12 +191,12 @@ abstract class BaseTestCase extends Base
     }
 
     /**
-     * Retrieve absolute url
+     * Retrieve absolute url or false
      *
      * @param string $text
      * @param string $postfix
      *
-     * @retrun string
+     * @return boolean|string
      */
     protected function retrieveAbsoluteUrl($text, $postfix = '')
     {
@@ -276,5 +275,20 @@ abstract class BaseTestCase extends Base
             $driver = static::getMink()->getSession()->getDriver();
             $driver->getWebDriverSession()->accept_alert();
         }
+    }
+
+    /**
+     * @param string $selectId
+     * @param string $value
+     */
+    protected function chooseLinkSelect($selectId, $value)
+    {
+        $link = $this->page->find('css', sprintf('#%s_link', $selectId));
+        $this->assertNotNull($link, sprintf('Link-select for select with id "%s" not found', $selectId));
+        $link->click();
+
+        $li = $this->page->find('css', sprintf('[id^=%s_li][data-value=%s]', $selectId, $value));
+        $this->assertNotNull($li, sprintf('Option with value "%s" not found', $value));
+        $li->click();
     }
 }

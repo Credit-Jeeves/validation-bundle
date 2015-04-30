@@ -256,8 +256,7 @@
                                 options: $root.propertiesList,
                                 optionsText: 'address',
                                 optionsValue: 'id',
-                                value: $root.currentPropertyId,
-                                event:{ change: $parent.onPropertyChange}
+                                value: $root.currentPropertyId
                                 "
                                 class="original" name="property_id">
                         </select>
@@ -781,14 +780,14 @@
                       <div class="clarification">
                         <i class="csm-icon" data-bind="visible: credit_track_enabled"></i>
                         <i class="alert" title="{{ 'yardi.landlord.property.manager_disabled_payment'|trans }}"
-                           data-bind="visible: isIntegrated && isYardiPaymentDenied"></i>
+                           data-bind="visible: isIntegrated && isDeniedOnExternalApi"></i>
                       </div>
                   </div>
                   <div data-bind="if: !credit_track_enabled">
                     <div class="tenantName" data-bind="text: tenant"></div>
                       <div class="clarification">
                         <i class="alert one" title="{{ 'yardi.landlord.property.manager_disabled_payment'|trans }}"
-                           data-bind="visible: isIntegrated && isYardiPaymentDenied"></i>
+                           data-bind="visible: isIntegrated && isDeniedOnExternalApi"></i>
                       </div>
                   </div>
                 </td>

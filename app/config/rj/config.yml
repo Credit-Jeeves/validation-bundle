@@ -14,6 +14,7 @@ imports:
     - { resource: ../rj/twig.yml }
     - { resource: ../base/apy_js_form_validation.yml }
     - { resource: ../base/fos_oauth_server.yml }
+    - { resource: ../base/aci.yml }
 
 parameters:
     server_name: '%server_name_rj%'
@@ -28,7 +29,7 @@ parameters:
     property_management:
         name: 'RENTTRACK'
         address: '13911 RIDGEDALE DR # 401C MINNETONKA MN 55305'
-        phone: '8618419090'
+        phone: '8668419090'
 
     external_urls:
         main_site: 'www.renttrack.com'
@@ -52,8 +53,8 @@ parameters:
     credittrack_payment_per_month: %credittrack_payment_per_month_dollars%.%credittrack_payment_per_month_cents%
     landlord_monthly_minimum: $9.95
     landlord_per_screen: $14.95
-    landlord_payment_per_month_dollars: 1
-    landlord_payment_per_month_cents: 95
+    landlord_payment_per_month_dollars: 2
+    landlord_payment_per_month_cents: 49
 framework:
     session:
         name: rj
@@ -92,6 +93,7 @@ sonata_admin:
                 - sonata.admin.contract_waiting
                 - sonata.admin.resident_mapping
                 - sonata.admin.property_mapping
+                - sonata.admin.unit_mapping
                 - sonata.admin.partners
 
 twig:
@@ -112,30 +114,24 @@ twig:
         landlord_payment_per_month_dollars: %landlord_payment_per_month_dollars%
         landlord_payment_per_month_cents: %landlord_payment_per_month_cents%
         
-
-doctrine:
-    orm:
-        mappings:
-            heartland:
-                is_bundle: false
-                type: xml
-                dir: %kernel.root_dir%/../vendor/payum/heartland/src/Payum/Heartland/Bridge/Doctrine/Resources/mapping
-                prefix: Payum\Heartland\Bridge\Doctrine\Entity
-
 stof_doctrine_extensions:
     class:
         loggable: RentJeeves\DataBundle\EventListener\LoggableListener
 
 payum:
+    security:
+        token_storage:
+            RentJeeves\DataBundle\Entity\PaymentToken: { doctrine: orm }
+    payments:
+        aci_collect_pay:
+            aci_collect_pay: %aci_collect_pay%
+
+payum2:
     contexts:
         heartland:
             heartland:
                 api:
                     options: %heartland%
-        simple_purchase_authorize_net:
-            authorize_net_aim:
-                api:
-                    options: %authorize_net%
 
 services:
     pdo:
@@ -164,6 +160,10 @@ bazinga_geocoder:
 
 be_simple_soap:
     clients:
+        amsi_leasing:
+            wsdl: ExternalApiBundle:AMSI:leasing.html.twig
+        amsi_ledger:
+            wsdl: ExternalApiBundle:AMSI:ledger.html.twig
         yardi_resident_transactions:
             wsdl: ExternalApiBundle:Yardi:ItfResidentTransactions20.html.twig
         yardi_resident_data:

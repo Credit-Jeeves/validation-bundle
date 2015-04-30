@@ -13,7 +13,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -86,16 +86,35 @@ class ResidentBalanceSynchronizer
         /** @var $residentClient ResidentTransactionsClient */
         $residentClient = $this->clientFactory->getClient(
             $holding->getYardiSettings(),
-            YardiClientEnum::RESIDENT_TRANSACTIONS
+            SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS
         );
         $propertySets = ceil($repo->countContractPropertiesByHolding($holding) / self::COUNT_PROPERTIES_PER_SET);
         for ($offset = 1; $offset <= $propertySets; $offset++) {
             $properties = $repo->findContractPropertiesByHolding($holding, $offset, self::COUNT_PROPERTIES_PER_SET);
             /** @var $property Property */
             foreach ($properties as $property) {
-                $mapping = $property->getPropertyMapping()->first();
-                $residentTransactions = $residentClient->getResidentTransactions($mapping->getExternalPropertyId());
-                $this->processResidentTransactions($residentTransactions, $holding, $property);
+                $propertyMapping = $property->getPropertyMappingByHolding($holding);
+                if (empty($propertyMapping)) {
+                    throw new \Exception(
+                        sprintf(
+                            "PropertyID '%s', don't have external ID",
+                            $property->getId()
+                        )
+                    );
+                }
+                $residentTransactions = $residentClient->getResidentTransactions(
+                    $propertyMapping->getExternalPropertyId()
+                );
+                if ($residentTransactions) {
+                    $this->processResidentTransactions($residentTransactions, $holding, $property);
+                } else {
+                    $this->logMessage(sprintf(
+                        'ERROR: Could not load resident transactions for property %s of holding %s: %s',
+                        $propertyMapping->getExternalPropertyId(),
+                        $holding->getName(),
+                        $residentClient->getErrorMessage()
+                    ));
+                }
             }
             $this->em->flush();
             $this->em->clear();
@@ -122,10 +141,19 @@ class ResidentBalanceSynchronizer
         );
 
         if (count($contracts) > 1) {
+            $propertyMapping = $property->getPropertyMappingByHolding($holding);
+            if (empty($propertyMapping)) {
+                throw new \Exception(
+                    sprintf(
+                        "PropertyID '%s', don't have external ID",
+                        $property->getId()
+                    )
+                );
+            }
             $this->logMessage(
                 sprintf(
                     "Found more than one contract with property %s, unit %s, resident %s",
-                    $property->getPropertyMapping()->first()->getExternalPropertyId(),
+                    $propertyMapping->getExternalPropertyId(),
                     $unitName,
                     $residentId
                 )
@@ -138,7 +166,7 @@ class ResidentBalanceSynchronizer
              * @var $contract Contract
              */
             $contract = reset($contracts);
-            $contract->setYardiPaymentAccepted($paymentAccepted);
+            $contract->setPaymentAccepted($paymentAccepted);
             $this->em->flush($contract);
             $this->logMessage(
                 sprintf(
@@ -156,10 +184,21 @@ class ResidentBalanceSynchronizer
             return $contractWaiting;
         }
 
+        $propertyMapping = $property->getPropertyMappingByHolding($holding);
+
+        if (empty($propertyMapping)) {
+            throw new \Exception(
+                sprintf(
+                    "PropertyID '%s', don't have external ID",
+                    $property->getId()
+                )
+            );
+        }
+
         $this->logMessage(
             sprintf(
                 "Could not find contract with property %s, unit %s, resident %s",
-                $property->getPropertyMapping()->first()->getExternalPropertyId(),
+                $propertyMapping->getExternalPropertyId(),
                 $unitName,
                 $residentId
             )

@@ -6,38 +6,52 @@ use CreditJeeves\DataBundle\Entity\Group as EntityGroup;
 use RentJeeves\DataBundle\Entity\Contract as EntityContract;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract as Handler;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
-use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\LandlordBundle\Model\Import;
 
 /**
  * @property EntityGroup group
+ * @property Import currentImportModel
+ * @property Handler storage
  * @method EntityProperty getProperty
  * @method EntityUnit getUnit
  */
 trait Contract
 {
-    protected function setYardiPaymentAccepted(EntityContract $contract, $row)
+    /**
+     * @param array $row
+     */
+    protected function setLeaseId(array $row)
+    {
+        if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
+            $this->currentImportModel->getContract()->setExternalLeaseId($row[Mapping::KEY_EXTERNAL_LEASE_ID]);
+        }
+    }
+
+    /**
+     * @param array $row
+     */
+    protected function setPaymentAccepted(array $row)
     {
         if (isset($row[Mapping::KEY_PAYMENT_ACCEPTED])) {
-            $contract->setYardiPaymentAccepted($row[Mapping::KEY_PAYMENT_ACCEPTED]);
+            $this->currentImportModel->getContract()->setPaymentAccepted($row[Mapping::KEY_PAYMENT_ACCEPTED]);
         }
     }
 
     /**
      * @param $row
-     * @param $tenant
-     *
-     * @return EntityContract
+     * @param $tenan
      */
-    protected function createContract(array $row, Tenant $tenant, Import $import)
+    protected function setNewContract(array $row)
     {
+        $tenant = $this->currentImportModel->getTenant();
         $contract = new EntityContract();
+        $this->currentImportModel->setContract($contract);
+
         if ($tenant->getId()) {
             $contract->setStatus(ContractStatus::APPROVED);
         } else {
@@ -45,10 +59,11 @@ trait Contract
         }
 
         $property = $this->getProperty($row);
-        if ($property) {
+        if (!empty($property)) {
             $contract->setProperty($property);
         }
-        if ($this->group) {
+        if ($this->group && $property) {
+            $property->addPropertyGroup($this->group);
             $contract->setGroup($this->group);
             $contract->setHolding($this->group->getHolding());
         }
@@ -60,29 +75,18 @@ trait Contract
         if ($this->group) {
             $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
         }
-        $moveIn = $this->getDateByField($import, $row[Mapping::KEY_MOVE_IN]);
+        $moveIn = $this->getDateByField($row[Mapping::KEY_MOVE_IN]);
         $contract->setStartAt($moveIn);
 
-        /**
-         * If we don't have unit and property don't have flag is_single set it to single by default
-         */
-        if (empty($row[Mapping::KEY_UNIT]) && $property && is_null($property->getIsSingle())) {
-            $property->setIsSingle(true);
-        }
-
         $tenant->addContract($contract);
-
-        return $contract;
     }
 
     /**
-     * @param EntityContract $contract
      * @param $dueDate
-     * @param $isNeedCreateCashOperation
      */
-    public function movePaidToOfContract(EntityContract $contract, $dueDate)
+    public function movePaidToOfContract($dueDate)
     {
-        if ($this->isNeedCreateCashOperation($contract)) {
+        if ($this->isNeedCreateCashOperation($this->currentImportModel->getContract())) {
             $paidTo = new DateTime();
             $paidTo->modify('+1 month');
             $paidTo->setDate(
@@ -91,21 +95,20 @@ trait Contract
                 $dueDate
             );
 
-            $contract->setPaidTo($paidTo);
+            $this->currentImportModel->getContract()->setPaidTo($paidTo);
         }
     }
 
     /**
-     * @param EntityContract $contract
      * @return bool
      */
-    public function isNeedCreateCashOperation(EntityContract $contract)
+    public function isNeedCreateCashOperation()
     {
         $isNeedCreateCashOperation = false;
         $paidTo = new DateTime();
-        $balance = $contract->getIntegratedBalance();
-        $currentPaidTo = $contract->getPaidTo();
-        if ($contract->getId() !== null) {
+        $balance = $this->currentImportModel->getContract()->getIntegratedBalance();
+        $currentPaidTo = $this->currentImportModel->getContract()->getPaidTo();
+        if ($this->currentImportModel->getContract()->getId() !== null) {
             // normally, we don't want to mess with paid_to for existing contracts unless
             // it is obvious someone paid outside of RentTrack:
             if ($balance <= 0 && $currentPaidTo <= $paidTo) {
@@ -127,16 +130,12 @@ trait Contract
     }
 
     /**
-     * @param Import $import
-     * @param array $row
      * @param $dueDate
      */
-    public function getOperationByImport(ModelImport $import, $dueDate)
+    public function getOperationByDueDate($dueDate)
     {
-        $contract = $import->getContract();
-        if ($contract->getStatus() === ContractStatus::CURRENT &&
-            !$import->isIsHasPaymentMapping()
-        ) {
+        $contract = $this->currentImportModel->getContract();
+        if ($contract->getStatus() === ContractStatus::CURRENT) {
             $paidFor = new DateTime();
             $paidFor->setDate(
                 $paidFor->format('Y'),
@@ -144,7 +143,7 @@ trait Contract
                 $dueDate
             );
 
-            $operation = $this->getOperationByContract($contract, $paidFor);
+            $operation = $this->getOperationByPaidFor($paidFor);
 
             return $operation;
         }
@@ -152,11 +151,12 @@ trait Contract
         return null;
     }
 
-    public static function getDueDateOfContract(EntityContract $contract)
+    public function getDueDateOfContract()
     {
+        $contract = $this->currentImportModel->getContract();
         if ($contract->getGroup()) {
             $groupSettings = $contract->getGroup()->getGroupSettings();
-            $dueDate = ($contract->getDueDate())? $contract->getDueDate() : $groupSettings->getDueDate();
+            $dueDate = $contract->getDueDate() ?: $groupSettings->getDueDate();
 
             return $dueDate;
         }
@@ -165,80 +165,133 @@ trait Contract
     }
 
     /**
-     * @param Import $import
-     * @param $row
-     *
-     * @return Contract
+     * @param  array               $row
+     * @param  EntityProperty      $property
+     * @return null|EntityContract
      */
-    protected function getContract(ModelImport $import, array $row)
+    protected function getContractFromDataBase(array $row, EntityProperty $property)
     {
-        $tenant = $import->getTenant();
-        $property = $this->getProperty($row);
+        $tenant = $this->currentImportModel->getTenant();
 
-        if (!$tenant->getId() || !$property) {
-            $contract = $this->createContract($row, $tenant, $import);
+        if ($this->storage->isMultipleGroup()) {
+            $holding = $this->group->getHolding();
+            $group = null;
         } else {
+            $holding = null;
+            $group = $this->group;
+        }
+
+        if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
+            $searchParams = [
+                'tenant' => $tenant,
+                'externalLeaseId' => $row[Mapping::KEY_EXTERNAL_LEASE_ID],
+            ];
+
+            if (!empty($group)) {
+                $searchParams['group'] = $group;
+            } else {
+                $searchParams['holding'] = $holding;
+            }
+
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy($searchParams);
+        }
+
+        if (empty($contract)) {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
                 ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
-                isset($row[Mapping::KEY_UNIT_ID])? $row[Mapping::KEY_UNIT_ID] : null,
-                $property->getId()
+                isset($row[Mapping::KEY_UNIT_ID]) ? $row[Mapping::KEY_UNIT_ID] : null,
+                $property->getId(),
+                $group,
+                $holding
             );
-
-            if (empty($contract)) {
-                $contract = $this->createContract($row, $tenant, $import);
-            }
-        }
-        $import->setContract($contract);
-        $this->setYardiPaymentAccepted($contract, $row);
-        //set data from csv file
-        $contract->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
-        $contract->setRent($row[Mapping::KEY_RENT]);
-        $dueDate = $this->getDueDateOfContract($contract);
-
-        $isNeedCreateCashOperation = $this->isNeedCreateCashOperation($contract);
-
-        if (!empty($row[Mapping::KEY_MOVE_OUT])) {
-            $import->setMoveOut($this->getDateByField($import, $row[Mapping::KEY_MOVE_OUT]));
-        }
-
-        $today = new DateTime();
-        $leaseEnd = $this->getDateByField($import, $row[Mapping::KEY_LEASE_END]);
-
-        if ($import->getMoveOut() !== null) {
-            $contract->setFinishAt($import->getMoveOut());
-            if ($import->getMoveOut() <= $today) { // only finish the contract if MoveOut is today or earlier
-                $this->isFinishedContract($contract);
-            }
-        } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
-            strtoupper($row[Mapping::KEY_MONTH_TO_MONTH] == 'Y')
-        ) {
-            $contract->setFinishAt(null);
-        } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
-            strtoupper($row[Mapping::KEY_MONTH_TO_MONTH]) == 'N' &&
-            $leaseEnd <= $today
-        ) {
-            $contract->setFinishAt($leaseEnd);
-            $this->isFinishedContract($contract);
-        } else {
-            $contract->setFinishAt($leaseEnd);
         }
 
         return $contract;
     }
 
-    protected function getContractWaiting(
-        Tenant $tenant,
-        EntityContract $contract,
-        ResidentMapping $residentMapping
-    ) {
+    /**
+     * @param $row
+     */
+    protected function setContract(array $row)
+    {
+        $tenant = $this->currentImportModel->getTenant();
+        $property = $this->getProperty($row);
+
+        if (empty($property)) {
+            $this->currentImportModel->setIsSkipped(true);
+            $this->currentImportModel->setSkippedMessage(
+                $this->translator->trans('import.skipped.by_property')
+            );
+        }
+
+        if (!$tenant->getId() || !$property) {
+            $this->setNewContract($row);
+        } else {
+            $this->currentImportModel->setContract($this->getContractFromDataBase($row, $property));
+        }
+
+        if (!$this->currentImportModel->getContract()) {
+            $this->setNewContract($row);
+        }
+
+        $this->setLeaseId($row);
+        $this->setPaymentAccepted($row);
+        //set data from csv file
+
+        if (!empty($row[Mapping::KEY_CREDITS])) {
+            $integratedBalance = $row[Mapping::KEY_BALANCE] - $row[Mapping::KEY_CREDITS];
+        } else {
+            $integratedBalance = $row[Mapping::KEY_BALANCE];
+        }
+
+        $this->currentImportModel->getContract()->setIntegratedBalance($integratedBalance);
+        $this->currentImportModel->getContract()->setRent($row[Mapping::KEY_RENT]);
+
+        if (!empty($row[Mapping::KEY_MOVE_OUT])) {
+            $this->currentImportModel->setMoveOut(
+                $this->getDateByField(
+                    $row[Mapping::KEY_MOVE_OUT]
+                )
+            );
+        }
+
+        $today = new DateTime();
+        $leaseEnd = $this->getDateByField($row[Mapping::KEY_LEASE_END]);
+
+        if ($this->currentImportModel->getMoveOut() !== null) {
+            $this->currentImportModel->getContract()->setFinishAt($this->currentImportModel->getMoveOut());
+            // only finish the contract if MoveOut is today or earlier
+            if ($this->currentImportModel->getMoveOut() <= $today) {
+                $this->setFinishedContract();
+            }
+        } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
+            strtoupper($row[Mapping::KEY_MONTH_TO_MONTH] == 'Y')
+        ) {
+            $this->currentImportModel->getContract()->setFinishAt(null);
+        } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
+            strtoupper($row[Mapping::KEY_MONTH_TO_MONTH]) == 'N' &&
+            $leaseEnd <= $today
+        ) {
+            $this->currentImportModel->getContract()->setFinishAt($leaseEnd);
+            // Do not set the contract to finished for now. Promas customer data not perfect.
+            // $this->setFinishedContract();
+        } else {
+            $this->currentImportModel->getContract()->setFinishAt($leaseEnd);
+        }
+    }
+
+    protected function getContractWaiting()
+    {
         $contractWaiting = $this->mapping->createContractWaiting(
-            $tenant,
-            $contract,
-            $residentMapping
+            $this->currentImportModel->getTenant(),
+            $this->currentImportModel->getContract(),
+            $this->currentImportModel->getResidentMapping()
         );
 
-        $contractWaiting->setYardiPaymentAccepted($contract->getYardiPaymentAccepted());
+        $contractWaiting->setPaymentAccepted(
+            $this->currentImportModel->getContract()->getPaymentAccepted()
+        );
 
         if (!$contractWaiting->getProperty()) {
             return $contractWaiting;
@@ -256,33 +309,29 @@ trait Contract
             $contractWaitingInDb->setIntegratedBalance($contractWaiting->getIntegratedBalance());
             $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
             $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
-            $contractWaitingInDb->setYardiPaymentAccepted($contractWaiting->getYardiPaymentAccepted());
+            $contractWaitingInDb->setPaymentAccepted($contractWaiting->getPaymentAccepted());
+
             return $contractWaitingInDb;
         }
 
         return $contractWaiting;
     }
 
-    /**
-     * Modify contract status if needed
-     *
-     * @param EntityContract $contract
-     * @return bool
-     */
-    public function isFinishedContract(EntityContract $contract)
+    public function setFinishedContract()
     {
-        if ($this->contractInPast($contract)) {
-            $contract->setStatus(ContractStatus::FINISHED);
-
-            return true;
+        if ($this->isContractInPast()) {
+            $this->currentImportModel->getContract()->setStatus(ContractStatus::FINISHED);
         }
-
-        return false;
     }
 
-    public function contractInPast(EntityContract $contract)
+    /**
+     * @return bool
+     */
+    public function isContractInPast()
     {
         $today = new DateTime();
-        return ($contract->getFinishAt() && $contract->getFinishAt() < $today)? true : false;
+
+        return ($this->currentImportModel->getContract()->getFinishAt() &&
+                $this->currentImportModel->getContract()->getFinishAt() < $today) ? true : false;
     }
 }

@@ -4,3 +4,9 @@
 .isPidVerificationSkipped>li>.step>span{
     width: 155px;
 }
+.isPidVerificationSkipped>li.step4>.step>span{
+    width: 135px;
+}
+.isPidVerificationSkipped>li.step4{
+    left: 15px;
+}

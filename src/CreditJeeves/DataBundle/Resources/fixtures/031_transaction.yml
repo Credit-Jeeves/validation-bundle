@@ -1,0 +1,315 @@
+model: RentJeeves\DataBundle\Entity\Transaction
+fixtures:
+  rjCheckout_1_1:
+    order:  rjOrder_1
+    paymentAccount: PaymentAccount_14
+    amount: 1500
+    transaction_id: 123123
+    isSuccessful: true
+    status: complete
+    createdAt: '-50 days'
+    batchId: 125478
+    batchDate: '-49 days'
+    depositDate: '-49 days'
+  rjCheckout_2_1:
+    order:  rjOrder_2
+    amount: 1500
+    transaction_id: 456456
+    isSuccessful: true
+    status: complete
+    createdAt: '-40 days'
+    batchId: 325698
+    batchDate: '-41 days'
+    depositDate: '-41 days'
+  rjCheckout_3_1:
+    order: rjOrder_3
+    amount: 1500
+    transaction_id: 456123
+    isSuccessful: true
+    status: complete
+    createdAt: '-30 days'
+    batchId: 111555
+    batchDate: '-21 days'
+    depositDate: '-21 days'
+  rjCheckout_3_order_error:
+    order: rjOrder_3_error
+    amount: 3000
+    messages: Heartland Error
+    transaction_id: 456555
+    isSuccessful: false
+    status: complete
+    createdAt: '-30 days'
+  rjCheckout_3_order_cancel_1:
+    order: rjOrder_3_cancelled
+    amount: 1500
+    transaction_id: 147741
+    isSuccessful: true
+    status: complete
+    createdAt: '-30 days'
+    batchId: 147222
+    batchDate: '-21 days'
+  rjCheckout_3_order_cancel_2:
+    order: rjOrder_3_cancelled
+    amount: -1500
+    transaction_id: 147742
+    isSuccessful: true
+    status: reversed
+    createdAt: '-30 days'
+
+  rjCheckout_4_1:
+    order:  rjOrder_4
+    amount: 1500
+    transaction_id: 789789
+    isSuccessful: true
+    status: complete
+    createdAt: '-20 days'
+    batchId: 111555
+    batchDate: '-21 days'
+    depositDate: '-21 days'
+  rjCheckout_5_1:
+    order:  rjOrder_5
+    amount: 1500
+    transaction_id: 147147
+    isSuccessful: true
+    status: complete
+    createdAt: '-10 days'
+    batchId: 325698
+    batchDate: '-9 days'
+    depositDate: '-9 days'
+  rjCheckout_6_1:
+    order:  rjOrder_66
+    amount: 3700
+    transaction_id: 258258
+    isSuccessful: true
+    status: complete
+    createdAt: '-2 days'
+    batchId: 125477
+# finished contract
+  rjCheckout_7_1_1:
+    order:  rjOrder_3_1
+    paymentAccount: PaymentAccount_14
+    amount: 1500
+    transaction_id: 369369
+    isSuccessful: true
+    status: complete
+    createdAt: '-370 days'
+    batchId: 325696
+    batchDate: '-369 days'
+    depositDate: '-359 days'
+  rjCheckout_7_2_1:
+    order:  rjOrder_3_2_1
+    amount: 1500
+    transaction_id: 159159
+    status: complete
+    isSuccessful: true
+    createdAt: '-339 days'
+    batchId: 325114
+    batchDate: '-339 days'
+    depositDate: '-329 days'
+  rjCheckout_7_2_3:
+    order:  rjOrder_3_2_2
+    amount: 1500
+    transaction_id: 777888
+    isSuccessful: true
+    status: complete
+    createdAt: '-339 days'
+    batchId: 325698
+    batchDate: '-339 days'
+    depositDate: '-329 days'
+  rjCheckout_7_3_1:
+    order:  rjOrder_3_3
+    amount: 1500
+    transaction_id: 222333
+    isSuccessful: true
+    status: complete
+    createdAt: '-309 days'
+    batchId: 325698
+    batchDate: '-309 days'
+    depositDate: '-305 days'
+  rjCheckout_7_4_1:
+    order:  rjOrder_3_4
+    amount: 1500
+    transaction_id: 555666
+    isSuccessful: true
+    status: complete
+    createdAt: '-279 days'
+    batchId: 325691
+    batchDate: '-279 days'
+    depositDate: '-269 days'
+  rjCheckout_7_5_1:
+    order:  rjOrder_3_5
+    amount: 1500
+    transaction_id: 777555
+    isSuccessful: true
+    status: complete
+    createdAt: '-249 days'
+    batchId: 325691
+    batchDate: '-249 days'
+    depositDate: '-239 days'
+  rjCheckout_7_6_1:
+    order:  rjOrder_3_6
+    amount: 1500
+    transaction_id: 555999
+    isSuccessful: true
+    status: complete
+    createdAt: '-219 days'
+    batchId: 325692
+    batchDate: '-219 days'
+    depositDate: '-209 days'
+  rjCheckout_7_7_1:
+    order:  rjOrder_3_7
+    amount: 1500
+    transaction_id: 112233
+    isSuccessful: true
+    status: complete
+    createdAt: '-189 days'
+    batchId: 325693
+    batchDate: '-189 days'
+    depositDate: '-179 days'
+  rjCheckout_7_8_1:
+    order:  rjOrder_3_8
+    amount: 1500
+    transaction_id: 334455
+    isSuccessful: true
+    status: complete
+    createdAt: '-159 days'
+    batchId: 325693
+    batchDate: '-159 days'
+    depositDate: '-149 days'
+  rjCheckout_7_9_1:
+    order:  rjOrder_3_9
+    amount: 1500
+    transaction_id: 556667
+    isSuccessful: true
+    createdAt: '-129 days'
+    batchId: 325694
+    batchDate: '-129 days'
+    depositDate: '-119 days'
+  rjCheckout_7_10_1:
+    order:  rjOrder_3_10
+    amount: 1500
+    transaction_id: 778899
+    isSuccessful: true
+    createdAt: '-99 days'
+    batchId: 325696
+    batchDate: '-99 days'
+    depositDate: '-89 days'
+# amother finished contract
+  rjCheckout_8_1_1:
+    order:  rjOrder_4_1
+    amount: 1250
+    transaction_id: 446632
+    isSuccessful: true
+    createdAt: '-8 month'
+    batchId: 555000
+    batchDate: '-8 month'
+    depositDate: '-8 month'
+  rjCheckout_8_2_1:
+    order:  rjOrder_4_2
+    amount: 1250
+    transaction_id: 125368
+    isSuccessful: true
+    createdAt: '-7 month'
+    batchId: 555000
+    batchDate: '-7 month'
+    depositDate: '-7 month'
+  rjCheckout_8_3_1:
+    order:  rjOrder_4_3
+    amount: 1250
+    transaction_id: 1234571
+    isSuccessful: true
+    createdAt: '-6 month'
+    batchId: 555001
+    batchDate: '-6 month'
+    depositDate: '-6 month'
+  rjCheckout_8_4_1:
+    order:  rjOrder_4_4
+    amount: 1250
+    transaction_id: 475185615664
+    isSuccessful: true
+    createdAt: '-5 month'
+    batchId: 555001
+    batchDate: '-5 month'
+    depositDate: '-5 month'
+  rjCheckout_8_5_1:
+    order:  rjOrder_4_5
+    amount: 1250
+    transaction_id: 5654464
+    isSuccessful: true
+    createdAt: '-4 month'
+    batchId: 555002
+    batchDate: '-4 month'
+    depositDate: '-4 month'
+  rjCheckout_8_6_1:
+    order:  rjOrder_4_6
+    amount: 1250
+    transaction_id: 5465431
+    isSuccessful: true
+    createdAt: '-3 month'
+    batchId: 555002
+    batchDate: '-3 month'
+    depositDate: '-3 month'
+  rjCheckout_8_7_1:
+    order:  rjOrder_4_7
+    amount: 1250
+    transaction_id: 4554564
+    isSuccessful: true
+    createdAt: '-2 month'
+    batchId: 555003
+    batchDate: '-2 month'
+    depositDate: '-2 month'
+#Origin Transaction for rjOrder_3_refunded
+  rjCheckout_9_1_1:
+    order:  rjOrder_3_refunded
+    amount: 700
+    transaction_id: 55123260
+    batch_id: 2344665
+    batchDate: '-30 days'
+    isSuccessful: true
+    createdAt: '-30 days'
+    depositDate: '-28 days'
+#Refunded Transaction for rjOrder_3_refunded
+  rjCheckout_9_1_2:
+    order:  rjOrder_3_refunded
+    amount: -700
+    transaction_id: 65123261
+    messages: Payment was refunded
+    isSuccessful: true
+    status: reversed
+    createdAt: '-29 days'
+    depositDate: '-27 days'
+#Origin Transaction for rjOrder_3_returned
+  rjCheckout_9_2_1:
+    order:  rjOrder_3_returned
+    amount: 750
+    transaction_id: 561232653
+    batch_id: 2344665
+    batchDate: '-30 days'
+    isSuccessful: true
+    createdAt: '-30 days'
+    depositDate: '-28 days'
+#Returned Transaction for rjOrder_3_returned
+  rjCheckout_9_2_2:
+    order:  rjOrder_3_returned
+    amount: -750
+    transaction_id: 661232602
+    isSuccessful: true
+    status: reversed
+    createdAt: '-29 days'
+    depositDate: '-27 days'
+#Origin Transaction for rjOrder_3_returned_1
+  rjCheckout_9_3_1:
+    order:  rjOrder_3_returned_1
+    amount: 800
+    transaction_id: 571232603
+    batch_id: 2344665
+    isSuccessful: true
+    createdAt: '-30 days'
+#Returned Transaction for rjOrder_3_returned_1
+  rjCheckout_9_3_2:
+    order:  rjOrder_3_returned_1
+    amount: -800
+    transaction_id: 671232654
+    isSuccessful: true
+    status: reversed
+    createdAt: '-29 days'

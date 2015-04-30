@@ -78,9 +78,7 @@ class SerializationListener implements EventSubscriberInterface
         if ($format != 'csv' || !in_array('realPageReport', $groups[0])) {
             return;
         }
-        /**
-         * @var Order $order
-         */
+        /** @var Order $order */
         $order = $event->getObject();
         $order->setBuildingId($this->realPageReport->getBuildingId());
     }

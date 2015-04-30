@@ -3,13 +3,15 @@
 namespace RentJeeves\DataBundle\Tests\EventListener;
 
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\TestBundle\BaseTestCase as Base;
 
 class ContractListenerCase extends Base
@@ -75,6 +77,10 @@ class ContractListenerCase extends Base
             ->getRepository('RjDataBundle:Payment')
             ->find($paymentId);
         $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
+        $this->assertCount(2, $payment->getCloseDetails());
+        $this->assertContains(PaymentCloseReason::CONTRACT_CHANGED, $payment->getCloseDetails()[1]);
+        $today = new DateTime();
+        $this->assertEquals($today->format('Y-m-d'), $payment->getUpdatedAt()->format('Y-m-d'));
     }
 
     /**
@@ -141,19 +147,19 @@ class ContractListenerCase extends Base
          * @var $contract Contract
          */
         $contract = $tenant->getContracts()->first();
-        $this->assertEquals($contract->getYardiPaymentAccepted(), YardiPaymentAccepted::ANY);
+        $this->assertEquals($contract->getPaymentAccepted(), PaymentAccepted::ANY);
 
-        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::DO_NOT_ACCEPT);
+        $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
         $em->flush($contract);
         $this->assertCount(1, $message = $plugin->getPreSendMessages());
         $this->assertEquals('Online Payments Disabled', $message[0]->getSubject());
 
-        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::ANY);
+        $contract->setPaymentAccepted(PaymentAccepted::ANY);
         $em->flush($contract);
         $this->assertCount(2, $message = $plugin->getPreSendMessages());
         $this->assertEquals('Online Payments Enabled', $message[1]->getSubject());
 
-        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::CASH_EQUIVALENT);
+        $contract->setPaymentAccepted(PaymentAccepted::CASH_EQUIVALENT);
         $em->flush($contract);
         $this->assertCount(3, $message = $plugin->getPreSendMessages());
         $this->assertEquals('Online Payments Disabled', $message[2]->getSubject());
@@ -181,7 +187,7 @@ class ContractListenerCase extends Base
          * @var $contract Contract
          */
         $contract = $tenant->getContracts()[1];
-        $contract->setYardiPaymentAccepted(YardiPaymentAccepted::DO_NOT_ACCEPT);
+        $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
         $activePayment = $contract->getActivePayment();
         $this->assertNotNull($activePayment);
         $em->flush($contract);

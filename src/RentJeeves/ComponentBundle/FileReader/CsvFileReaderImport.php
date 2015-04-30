@@ -57,9 +57,9 @@ class CsvFileReaderImport extends Base
 
         $total = 0;
         // force to seek to last line, won't raise error
-        while ($row = $file->current()) {
+        while ($file->current()) {
             $file->next();
-            $total = $file->key();
+            $total++;
         }
 
         return $total;

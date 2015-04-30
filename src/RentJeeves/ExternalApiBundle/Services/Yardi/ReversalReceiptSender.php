@@ -15,7 +15,7 @@ use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum as SoapClient;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum as SoapClient;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -47,6 +47,9 @@ class ReversalReceiptSender
      */
     protected $serializer;
 
+    /**
+     * @var OutputInterface
+     */
     protected $logger;
 
     /**
@@ -69,6 +72,10 @@ class ReversalReceiptSender
         $this->serializer = $serializer;
     }
 
+    /**
+     * @param OutputInterface $logger
+     * @return $this
+     */
     public function usingOutput(OutputInterface $logger)
     {
         $this->logger = $logger;
@@ -76,6 +83,9 @@ class ReversalReceiptSender
         return $this;
     }
 
+    /**
+     * @param $message
+     */
     protected function logMessage($message)
     {
         if ($this->logger) {
@@ -83,6 +93,9 @@ class ReversalReceiptSender
         }
     }
 
+    /**
+     * @param DateTime $depositDate
+     */
     public function run(DateTime $depositDate)
     {
         $this->logMessage('Reversal payments for date:' . $depositDate->format('Y-m-d'));
@@ -119,6 +132,13 @@ class ReversalReceiptSender
         return $this->em->getRepository('DataBundle:Holding')->findHoldingsWithYardiSettings($offset, $limit);
     }
 
+    /**
+     * @param $holding
+     * @param $depositDate
+     * @param $offset
+     * @param $limit
+     * @return mixed
+     */
     protected function getReversedTransactions($holding, $depositDate, $offset, $limit)
     {
         return $this->em->getRepository('DataBundle:Order')->getReversedOrders(
@@ -129,15 +149,31 @@ class ReversalReceiptSender
         );
     }
 
+    /**
+     * @param YardiSettings $settings
+     * @param $transactions
+     * @throws Exception
+     */
     protected function pushReceipts(YardiSettings $settings, $transactions)
     {
         /** @var $residentClient ResidentTransactionsClient */
-        $residentClient = $this->clientFactory->getClient($settings, SoapClient::RESIDENT_TRANSACTIONS);
+        $residentClient = $this->clientFactory->getClient($settings, SoapClient::YARDI_RESIDENT_TRANSACTIONS);
 
         /** @var Order $transaction */
         foreach ($transactions as $transaction) {
             $this->logMessage('Original trans# ' . $transaction->getCompleteTransaction()->getTransactionId());
             $transactionXml = $this->getTransactionXml($settings, $transaction);
+            if ($transactionXml === false) {
+                $message = sprintf(
+                    "Order(ID:%s) will not send to Yardi, because his contract(ID:%s) does not have externalLeaseId.\n
+                    You can re-run initial import for setup externalLeaseId for active contract.
+                    ",
+                    $transaction->getId(),
+                    $transaction->getContract()->getId()
+                );
+                $this->logMessage($message);
+                continue;
+            }
             /** @var Messages $result */
             $result = $residentClient->importResidentTransactionsLogin($transactionXml);
             if ($result instanceof Messages) {
@@ -148,8 +184,19 @@ class ReversalReceiptSender
         }
     }
 
+    /**
+     * @param YardiSettings $settings
+     * @param Order $transaction
+     * @return boolean|string
+     */
     protected function getTransactionXml(YardiSettings $settings, Transaction $transaction)
     {
+        $externalLeaseId = $transaction->getContract()->getExternalLeaseId();
+
+        if (empty($externalLeaseId)) {
+            return false;
+        }
+
         $residentTransactions = new ResidentTransactions($settings, [$transaction]);
 
         $transactionXml = $this->serializer->serialize(

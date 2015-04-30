@@ -49,12 +49,53 @@ class AddPropertyCase extends BaseTestCase
         $this->assertEquals('select.rental', $errorMessage->getText());
         $this->session->visit($this->session->getCurrentUrl());
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $this->session->evaluateScript("$('.select-unit').linkselect('destroy');");
+        $this->assertNotNull($unit = $this->page->find('css', '.select-unit'));
+        $unit->setValue('2-U');
         $thisIsMyRental->click();
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>.static'));
         $this->assertCount(6, $tr, 'List of property');
+        $this->logout();
+    }
+
+    /**
+     * @test
+     * @depends addWithLandlord
+     */
+    public function checkDuplicateContractAddWithLandlord()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>.static'));
+        $this->assertCount(6, $tr, 'List of property');
+        $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
+        $addProperty->click();
+        $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
+        $this->fillGoogleAddress('770 Broadway, Manhattan, New York, NY 10003');
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
+        $this->page->pressButton('find.your.rental');
+        $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
+        $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
+        $this->assertNotNull($register = $this->page->find('css', '#register'));
+        $register->click();
+        $this->assertNotNull($errorMessage = $this->page->find('css', '#errorMessage'));
+        $this->assertEquals('select.rental', $errorMessage->getText());
+        $this->session->visit($this->session->getCurrentUrl());
+        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $this->session->evaluateScript("$('.select-unit').linkselect('destroy');");
+        $this->assertNotNull($unit = $this->page->find('css', '.select-unit'));
+        $unit->setValue('2-U');
+        $thisIsMyRental->click();
+        $this->assertNotNull($register = $this->page->find('css', '#register'));
+        $register->click();
+        $this->session->wait($this->timeout, "$('.properties-table').length > 0");
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>.static'));
+        $this->assertCount(6, $tr, 'List of property');
+        $this->assertNotNull($errorMessage = $this->page->find('css', '#current-payments .attention-box.pie-el li'));
+        $this->assertEquals('error.contract.duplicate', $errorMessage->getHtml());
         $this->logout();
     }
 
@@ -99,7 +140,7 @@ class AddPropertyCase extends BaseTestCase
         $this->fillGoogleAddress('960 Andante Rd, Santa Barbara, CA 93105, United States');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $propertySearch->click();
-        $this->session->wait($this->timeout+10000, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
+        $this->session->wait($this->timeout);
         $this->session->wait($this->timeout+15000, "typeof jQuery !== undefined");
         $this->session->wait($this->timeout, "$('#formSearch').length > 0");
 

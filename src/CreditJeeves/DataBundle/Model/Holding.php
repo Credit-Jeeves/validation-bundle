@@ -3,11 +3,14 @@ namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Entity\AccountingSettings;
+use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
-use RentJeeves\DataBundle\Model\YardiSettings;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Entity\MRISettings;
+use RentJeeves\DataBundle\Entity\YardiSettings;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
@@ -101,7 +104,6 @@ abstract class Holding
      */
     protected $contracts;
 
-
     /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\ResidentMapping",
@@ -119,7 +121,7 @@ abstract class Holding
     protected $residentsMapping;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\PropertyMapping",
      *     mappedBy="holding",
      *     cascade={
@@ -137,31 +139,44 @@ abstract class Holding
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\YardiSettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="EAGER"
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $yardiSettings;
 
     /**
      * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\MRISettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     * @var MRISettings
+     */
+    protected $mriSettings;
+
+    /**
+     * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\ResManSettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="EAGER"
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $resManSettings;
 
     /**
      * @ORM\OneToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\AccountingSettings",
+     *     targetEntity="RentJeeves\DataBundle\Entity\AMSISettings",
      *     mappedBy="holding",
-     *     cascade={"persist", "remove", "merge"},
-     *     fetch="EAGER"
+     *     cascade={"persist", "remove", "merge"}
      * )
+     * @var AMSISettings
      */
-    protected $accountingSettings;
+    protected $amsiSettings;
+
+    /**
+     * @ORM\Column(type="ApiIntegrationType", name="api_integration_type", options={"default"="none"})
+     */
+    protected $apiIntegrationType;
 
     public function __construct()
     {
@@ -171,26 +186,59 @@ abstract class Holding
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
+        $this->apiIntegrationType = ApiIntegrationType::NONE;
     }
 
     /**
-     * @return AccountingSettings
+     * @return AMSISettings
      */
-    public function getAccountingSettings()
+    public function getAmsiSettings()
     {
-        return $this->accountingSettings;
+        return $this->amsiSettings;
     }
 
     /**
-     * @param AccountingSettings $accountingSettings
+     * @param AMSISettings $amsiSettings
      */
-    public function setAccountingSettings(AccountingSettings $accountingSettings)
+    public function setAmsiSettings(AMSISettings $amsiSettings = null)
     {
-        $this->accountingSettings = $accountingSettings;
-        $accountingSetting = $this->getAccountingSettings();
-        $accountingSetting->setHolding($this);
+        $this->amsiSettings = $amsiSettings;
+    }
 
-        return $this;
+    /**
+     * @return MRISettings
+     */
+    public function getMriSettings()
+    {
+        return $this->mriSettings;
+    }
+
+    /**
+     * @param MRISetting $MRISettings
+     */
+    public function setMriSettings(MRISettings $MRISettings = null)
+    {
+        $this->mriSettings = $MRISettings;
+    }
+
+    /**
+     * @return null|SettingsInterface
+     */
+    public function getExternalSettings()
+    {
+        switch ($this->getApiIntegrationType()) {
+            case ApiIntegrationType::RESMAN:
+                return $this->getResManSettings();
+            case ApiIntegrationType::YARDI_VOYAGER:
+                return $this->getYardiSettings();
+            case ApiIntegrationType::MRI:
+                return $this->getMriSettings();
+            case ApiIntegrationType::AMSI:
+                return $this->getAmsiSettings();
+            case ApiIntegrationType::NONE:
+            default:
+                return null;
+        }
     }
 
     /**
@@ -260,7 +308,7 @@ abstract class Holding
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -270,19 +318,20 @@ abstract class Holding
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string  $name
      * @return Holding
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -292,19 +341,20 @@ abstract class Holding
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
+     * @param  \DateTime $createdAt
      * @return Holding
      */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -314,19 +364,20 @@ abstract class Holding
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param  \DateTime $updatedAt
      * @return Holding
      */
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -336,12 +387,13 @@ abstract class Holding
     /**
      * Add group
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @param  \CreditJeeves\DataBundle\Entity\Group $group
      * @return Holding
      */
     public function addGroup(\CreditJeeves\DataBundle\Entity\Group $group)
     {
         $this->groups[] = $group;
+
         return $this;
     }
 
@@ -368,12 +420,13 @@ abstract class Holding
     /**
      * Add dealer
      *
-     * @param \CreditJeeves\DataBundle\Entity\Dealer $dealer
+     * @param  \CreditJeeves\DataBundle\Entity\Dealer $dealer
      * @return Holding
      */
     public function addDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer)
     {
         $this->users[] = $dealer;
+
         return $this;
     }
 
@@ -400,12 +453,13 @@ abstract class Holding
     /**
      * Add unit
      *
-     * @param \RentJeeves\DataBundle\Entity\Unit $unit
+     * @param  \RentJeeves\DataBundle\Entity\Unit $unit
      * @return Holding
      */
     public function addUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
     {
         $this->units[] = $unit;
+
         return $this;
     }
 
@@ -433,18 +487,20 @@ abstract class Holding
      * Add Contract
      *
      * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     *
      * @return Holding
      */
     public function addContract(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
         $this->contracts[] = $contract;
+
         return $this;
     }
 
     /**
      * Remove Contract
      *
-     * @param Contract
+     * @param \RentJeeves\DataBundle\Entity\Contract
      */
     public function removeContract(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
@@ -459,5 +515,21 @@ abstract class Holding
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiIntegrationType()
+    {
+        return $this->apiIntegrationType;
+    }
+
+    /**
+     * @param string $apiIntegrationType
+     */
+    public function setApiIntegrationType($apiIntegrationType)
+    {
+        $this->apiIntegrationType = $apiIntegrationType;
     }
 }

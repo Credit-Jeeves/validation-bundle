@@ -8,8 +8,7 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\PaymentType;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\DataBundle\Model\Contract as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -20,6 +19,7 @@ use RentJeeves\CoreBundle\DateTime;
 use RuntimeException;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use RentJeeves\DataBundle\Validators\ContractDuplicate;
 
 /**
  * Contract
@@ -28,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="rj_contract")
  *
  * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"User", "Default"})
+ * @ContractDuplicate()
  *
  * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
  */
@@ -200,11 +201,11 @@ class Contract extends Base
         return null;
     }
 
-    public function isDeniedOnYardi()
+    public function isDeniedOnExternalApi()
     {
         if (in_array(
-            $this->getYardiPaymentAccepted(),
-            YardiPaymentAccepted::getDeniedValues()
+            $this->getPaymentAccepted(),
+            PaymentAccepted::getDeniedValues()
         )) {
             return true;
         }
@@ -232,8 +233,7 @@ class Contract extends Base
         $result['address'] = $this->getRentAddress($property, $unit);
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
         $result['property_id'] = $property->getId();
-
-        $result['isYardiPaymentDenied'] = $this->isDeniedOnYardi();
+        $result['isDeniedOnExternalApi'] = $this->isDeniedOnExternalApi();
         $result['unit_id'] = null;
         if ($unit) {
             $result['unit_id'] = $unit->getId();
@@ -243,7 +243,7 @@ class Contract extends Base
         $result['first_name'] = $tenant->getFirstName();
         $result['last_name'] = $tenant->getLastName();
         $result['email'] = $tenant->getEmail();
-        $result['phone'] = $tenant->getFomattedPhone();
+        $result['phone'] = $tenant->getFormattedPhone();
         $result['amount'] = '';
         if ($rent = $this->getRent()) {
             $result['amount'] = $this->getRent();
@@ -695,9 +695,9 @@ class Contract extends Base
             }
         }
 
-        $result['payment_next'] = 'N/A';
-        if ($paidTo = $this->getPaidTo()) {
-            $result['payment_next'] = $paidTo->format('m/d/Y');
+        $result['due_on'] = 'N/A';
+        if ($this->getDueDate()) {
+            $result['due_on'] = $this->getDueDate();
         }
         $result['start_at'] = $this->getStartAt();
         $result['finish_at'] = $this->getFinishAt();
@@ -707,7 +707,7 @@ class Contract extends Base
         $groupSettings = $this->getGroup()->getGroupSettings();
         $isIntegrated = $groupSettings->getIsIntegrated();
         $result['is_integrated'] = $isIntegrated;
-        $result['isYardiPaymentDenied'] = $this->isDeniedOnYardi();
+        $result['isDeniedOnExternalApi'] = $this->isDeniedOnExternalApi();
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
         // display only integrated balance

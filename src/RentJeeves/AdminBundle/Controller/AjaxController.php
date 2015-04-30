@@ -2,20 +2,19 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
-use CreditJeeves\DataBundle\Model\Group;
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -99,7 +98,7 @@ class AjaxController extends Controller
             /**
              * @var $singleUnit Unit
              */
-            $singleUnit = $property->getSingleUnit();
+            $singleUnit = $property->getExistingSingleUnit();
             $units = array($singleUnit);
         } else {
             $units = $em->getRepository('RjDataBundle:Unit')->findBy(
@@ -147,7 +146,7 @@ class AjaxController extends Controller
          */
         $resident = $clientFactory->getClient(
             $yardiSettings,
-            YardiClientEnum::RESIDENT_TRANSACTIONS
+            SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS
         );
 
         $result = $resident->getPropertyConfigurations();
@@ -205,14 +204,14 @@ class AjaxController extends Controller
         $billingAccount = $group->getActiveBillingAccount();
 
         if (!$billingAccount) {
-            return new JsonResponse(array('message' => 'Payment account not found'));
+            return new JsonResponse(array('message' => 'Billing account not found'));
         }
 
         $amount = $request->request->get('amount');
         $id4Field = $request->request->get('customData');
 
         try {
-            /** @var Heartland $result */
+            /** @var Transaction $result */
             $result = $this->get('payment_terminal')->pay($group, $amount, $id4Field);
         } catch (Exception $e) {
             return new JsonResponse(array('message' => 'Payment failed: ' . $e->getMessage()), 200);

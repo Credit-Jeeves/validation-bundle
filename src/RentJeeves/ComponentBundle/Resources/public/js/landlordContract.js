@@ -3,7 +3,6 @@ var DetailsViewModel = new Contract();
 
 $(document).ready(function () {
     var idProperty = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property';
-    var idUnit = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit';
 
     ko.applyBindings(ContractsViewModel, $('#contracts-block').get(0));
     ko.applyBindings(DetailsViewModel, $('#contract-actions').get(0));
@@ -12,14 +11,20 @@ $(document).ready(function () {
         autoOpen: false,
         resizable: false,
         modal: true,
-        width: '520px'
+        width: '520px',
+        close: function () {
+            ContractsViewModel.needRefresh().push(DetailsViewModel.contract().id);
+        }
     });
     $('#tenant-edit-property-popup').dialog({
         position: "center",
         autoOpen: false,
         resizable: false,
         modal: true,
-        width: '520px'
+        width: '520px',
+        close: function () {
+            ContractsViewModel.needRefresh().push(DetailsViewModel.contract().id);
+        }
     });
 
     $('#tenant-review-property-popup').dialog({
@@ -81,45 +86,15 @@ $(document).ready(function () {
         $('#tenant-add-property-popup').dialog('close');
         return false;
     });
-    function getUnits(propertyId) {
-        $(idUnit).linkselect('destroy');
-        $(idUnit).html(' ');
-        $(idUnit).linkselect();
-        $.ajax({
-            url: Routing.generate('landlord_units_list'),
-            type: 'POST',
-            dataType: 'json',
-            data: {'property_id': propertyId},
-            success: function (response) {
 
-                if (response.units.length == 0 || response.isSingle == true) {
-                    $('#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit_link').hide();
-                    return;
-                }
-
-                var html = '';
-                $.each(response.units, function (index, value) {
-                    var id = $(this).get(0).id;
-                    var name = $(this).get(0).name;
-                    var option = '<option value="' + id + '">' + name + '</option>';
-                    html += option;
-                });
-
-                $(idUnit).linkselect('destroy');
-                $(idUnit).html(html);
-                $(idUnit).linkselect();
-            }
-        });
-    }
 
     $(idProperty).linkselect('destroy');
     $(idProperty).linkselect({
         change: function (li, value, text) {
-            getUnits(value);
+            ContractsViewModel.getUnits(value);
         }
     });
 
-    getUnits($(idProperty).linkselect('val'));
     //@TODO make it by knokout
     $('#rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email').change(function () {
         $.ajax({
@@ -146,7 +121,7 @@ $(document).ready(function () {
                         $('#rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone').val(1234567890);
                     }
 
-                    if (response.isIntegrated) {
+                    if (response.isIntegrated && response.residentId) {
                         $('#rentjeeves_landlordbundle_invitetenantcontracttype_resident_residentId').val(response.residentId);
                     }
                 } else {

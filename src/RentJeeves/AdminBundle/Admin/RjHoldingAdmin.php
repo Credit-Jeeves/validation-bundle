@@ -3,10 +3,9 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\YardiSettings;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use CreditJeeves\DataBundle\Enum\GroupType;
@@ -29,31 +28,30 @@ class RjHoldingAdmin extends Admin
                 )
             )
         );
+
         return $query;
     }
 
     public function configureFormFields(FormMapper $formMapper)
     {
         parent::configureFormFields($formMapper);
-        $contrainer = $this->getConfigurationPool()->getContainer();
+        $container = $this->getConfigurationPool()->getContainer();
         $formMapper
             ->with('Accounting Settings')
             ->add(
-                'accountingSettings',
-                $contrainer->get('form.accounting_settings'),
-                array(
-                    'required'   => true
-                ),
-                array(
-                    'edit'      => 'inline',
-                    'inline'    => 'table',
-                    'sortable'  => 'position',
-                )
+                'apiIntegrationType',
+                'choice',
+                [
+                    'choices'           => array_map(
+                        'ucwords',
+                        ApiIntegrationType::cachedTitles()
+                    )
+                ]
             )
             ->with('Yardi Settings')
             ->add(
                 'yardiSettings',
-                $contrainer->get('form.yardi_settings'),
+                $container->get('form.yardi_settings'),
                 array(
                     'required' => false,
                 ),
@@ -66,7 +64,33 @@ class RjHoldingAdmin extends Admin
             ->with('ResMan Settings')
             ->add(
                 'resManSettings',
-                $contrainer->get('form.resman_settings'),
+                $container->get('form.resman_settings'),
+                array(
+                    'required' => false,
+                ),
+                array(
+                    'edit'      => 'inline',
+                    'inline'    => 'table',
+                    'sortable'  => 'position',
+                )
+            )
+            ->with('MRI Settings')
+            ->add(
+                'mriSettings',
+                $container->get('form.mri_settings'),
+                array(
+                    'required' => false,
+                ),
+                array(
+                    'edit'      => 'inline',
+                    'inline'    => 'table',
+                    'sortable'  => 'position',
+                )
+            )
+            ->with('AMSI Settings')
+            ->add(
+                'amsiSettings',
+                'amsiSettings',
                 array(
                     'required' => false,
                 ),
@@ -94,9 +118,6 @@ class RjHoldingAdmin extends Admin
      */
     protected function setHolding(Holding $holding)
     {
-        /**
-         * @var $yardi YardiSettings
-         */
         $yardi = $holding->getYardiSettings();
         if ($yardi && $yardi->getUrl()) {
             $yardi->setHolding($holding);
@@ -109,6 +130,20 @@ class RjHoldingAdmin extends Admin
             $resMan->setHolding($holding);
         } else {
             $holding->setResManSettings(null);
+        }
+
+        $mriSettings = $holding->getMriSettings();
+        if ($mriSettings && $mriSettings->getUser()) {
+            $mriSettings->setHolding($holding);
+        } else {
+            $holding->setMriSettings(null);
+        }
+
+        $amsiSettings = $holding->getAmsiSettings();
+        if ($amsiSettings && $amsiSettings->getUser()) {
+            $amsiSettings->setHolding($holding);
+        } else {
+            $holding->setAmsiSettings(null);
         }
     }
 

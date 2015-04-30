@@ -111,6 +111,17 @@ ec2-user@54.243.130.78 - SELENIUM ssh user alex
 ./screen.sh - run selenium for RT
 ./screen2.sh - run selenium for sf1 CJ
 
+PHP Coding Standards Fixer
+---
+The PHP Coding Standards Fixer tool fixes most issues in your code when you want to follow the PHP coding standards as defined in the PSR-1 and PSR-2 documents.
+
+We use Fixer with git pre-commit hook.
+For install hook - run:
+`php ./bin/pre-commit -i`
+
+For fix without hook:
+`php ./vendor/fabpot/php-cs-fixer/php-cs-fixer fix {$fileName} --level=all`
+
 _______________________________
 Yardi Soap, generate class from wsdl, example
 

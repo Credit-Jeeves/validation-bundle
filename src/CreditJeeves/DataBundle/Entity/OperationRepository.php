@@ -41,6 +41,7 @@ class OperationRepository extends EntityRepository
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :orderStatus');
         $query->where('c.id = :contractId');
         $query->andWhere('op.type = :operationType');
+        // TODO: Consider lease closures with no payments this month! RT-1299
         $query->andWhere('MONTH(op.paidFor) = :month');
         $query->andWhere('YEAR(op.paidFor) = :year');
         $query->groupBy('op.paidFor');
@@ -103,18 +104,18 @@ class OperationRepository extends EntityRepository
         $query->innerJoin("tenant.residentsMapping", "resident");
         $query->innerJoin('contract.property', 'prop');
         $query->innerJoin('contract.unit', 'unit');
-        $query->innerJoin('ord.heartlands', 'heartland');
+        $query->innerJoin('ord.transactions', 'transaction');
 
-        $query->where("heartland.depositDate BETWEEN :start AND :end");
-        $query->andWhere("heartland.depositDate IS NOT NULL");
-        $query->andWhere("heartland.batchId IS NOT NULL");
-        $query->andWhere('heartland.isSuccessful = 1');
+        $query->where("transaction.depositDate BETWEEN :start AND :end");
+        $query->andWhere("transaction.depositDate IS NOT NULL");
+        $query->andWhere("transaction.batchId IS NOT NULL");
+        $query->andWhere('transaction.isSuccessful = 1');
         $query->andWhere('contract.property = :property');
         $query->andWhere('resident.holding = :holding');
         $query->andWhere('ord.status IN (:statuses)');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
         $query->andWhere('operation.amount > 0');
-        $query->andWhere('heartland.status = :completeTransaction');
+        $query->andWhere('transaction.status = :completeTransaction');
         $query->orderBy('ord.id', 'ASC');
 
         $query->setParameter('end', $end);
@@ -127,6 +128,7 @@ class OperationRepository extends EntityRepository
         $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
 
         $query = $query->getQuery();
+
         return $query->execute();
     }
 }

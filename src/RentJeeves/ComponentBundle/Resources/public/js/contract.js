@@ -28,6 +28,8 @@ function Contract() {
     this.statusBeforeTriedSave = ko.observable();
     this.isSingleProperty = ko.observable(true);
 
+    this.debug = false;
+
     this.cancelEdit = function (data) {
         $('#tenant-edit-property-popup').dialog('close');
         if (self.approve()) {
@@ -53,12 +55,6 @@ function Contract() {
         });
     };
 
-    this.onPropertyChange = function (property, event) {
-        if (self.currentPropertyId() != undefined) {
-            self.getUnits(self.currentPropertyId());
-        }
-    };
-
     this.getProperties = function (propertyId) {
         self.propertiesList([]);
         $('#property-edit').parent().find('.loader').show();
@@ -69,9 +65,53 @@ function Contract() {
             success: function (response) {
                 $('#property-edit').parent().find('.loader').hide();
                 self.propertiesList(response);
+                self.enableCurrentPropertyIdSubscription(true);
+                self.currentPropertyId(propertyId);
             }
         });
     };
+
+    /*
+     * Enable loading list of units from server every time the currentPropertyId variable is set
+     *
+     * We wrap the "subscribe" call in this function so we can control when events can occur. It was added to
+     * avoid prematurely loading the units list when currentPropertyId is initially set in the twig template.
+     * It is intended to be chained inside the success callback for getProperties() are loaded and
+     * currentPropertyId is initially set.
+     *
+     * This is a stand-alone function so we can manage creation and deletion of the subscribe closure in one
+     * place.
+     *
+     * If enable is
+     *   true : then when currentPropertyId changes, unit list for that property will be loaded.
+     *   false : disable loading of unit list on change and dispose of subscription to avoid memory leaks.
+     */
+    this.enableCurrentPropertyIdSubscription = function(enable) {
+        if (enable) {
+            if (this.currentPropertyIdSubscription) {
+                // noop -- already subscribed.
+                this.debug && console.debug("CurrentPropertyIdSubscription Already Subscribed.");
+            } else {
+                this.debug && console.debug("CurrentPropertyIdSubscription Subscription enabled.");
+                this.currentPropertyIdSubscription =
+                    this.currentPropertyId.subscribe(function (newValue) {
+                        self.getUnits(newValue);
+                    });
+                /*
+                 * RT-1272 : When you edit an invite, the property ID is set, but does not change value
+                 * so set this to always notify, which will still load the units list in this situation.
+                 */
+                this.currentPropertyId.extend({ notify: 'always' }); // RT-1272 : always send event if set!
+            }
+        } else {
+            if (this.currentPropertyIdSubscription) {
+                this.debug && console.debug("CurrentPropertyIdSubscription Subscription disabled.");
+                this.currentPropertyIdSubscription.dispose();  // remove closure
+                this.currentPropertyIdSubscription = null;
+            }
+        }
+    };
+
 
     this.closeApprove = function (data) {
         $('#tenant-approve-property-popup').dialog('close');
@@ -97,10 +137,7 @@ function Contract() {
             self.optionsFinishAtEdit('monthToMonth');
         }
 
-        self.currentPropertyId(self.contract().property_id);
         self.getProperties(self.contract().property_id);
-        self.getUnits(self.contract().property_id);
-
 
         var flag = false;
         if (self.approve()) {
@@ -259,6 +296,7 @@ function Contract() {
         self.edit(false);
         self.review(false);
         self.approve(false);
+        self.enableCurrentPropertyIdSubscription(false);
     };
 
     this.saveContract = function (callback) {

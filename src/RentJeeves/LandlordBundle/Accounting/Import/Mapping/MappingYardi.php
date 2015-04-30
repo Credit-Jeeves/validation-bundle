@@ -6,9 +6,13 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReaderImport;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\OtherOccupant;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\OtherOccupants;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
+use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 
 class MappingYardi extends MappingCsv
 {
@@ -49,7 +53,7 @@ class MappingYardi extends MappingCsv
         );
 
         if (empty($propertyMapping)) {
-            throw new Exception(
+            throw new ImportMappingException(
                 sprintf(
                     "Don't have external property id for property: %s and holding: %s",
                     $property->getId(),
@@ -63,28 +67,60 @@ class MappingYardi extends MappingCsv
         $residentsTransaction = $transactionData->getProperty()->getCustomers();
 
         $residents = $this->residentData->getCurrentResidents($holding, $property);
-
-        /**
-         * @var $resident ResidentsResident
-         */
+        $roommates = [];
+        /** @var $resident ResidentsResident */
         foreach ($residents as $key => $resident) {
-            $tCode = $resident->getCode();
-            /**
-             * @var $residentTransaction ResidentTransactionPropertyCustomer
-             */
+            //Leas id the same as resident ID for general tenant
+            $leaseId = $resident->getCode();
+            /** @var ResidentTransactionPropertyCustomer $residentTransaction  */
             foreach ($residentsTransaction as $residentTransaction) {
-                if ($residentTransaction->getCustomerId() === $tCode) {
-                    $residents[$key]->setPaymentAccepted($residentTransaction->getPaymentAccepted());
+                if ($residentTransaction->getLeaseId() !== $leaseId) {
                     continue;
                 }
+
+                $residents[$key]->setPaymentAccepted($residentTransaction->getPaymentAccepted());
+                $residents[$key]->setLeaseId($leaseId);
+                //Process roommates
+                /** @var OtherOccupants $otherOccupants */
+                $otherOccupants = $resident->getOtherOccupants();
+                if (empty($otherOccupants)) {
+                    continue;
+                }
+
+                $otherOccupantArray = $otherOccupants->getOtherOccupants();
+                /** @var OtherOccupant $otherOccupant */
+                foreach ($otherOccupantArray as $otherOccupant) {
+                    $resident = new ResidentsResident();
+                    $resident->setCode($otherOccupant->getResidentId());
+                    $resident->setPaymentAccepted($residentTransaction->getPaymentAccepted());
+                    $resident->setLeaseId($leaseId);
+                    $resident->setFirstName($otherOccupant->getFirstName());
+                    $resident->setLastName($otherOccupant->getLastName());
+                    $resident->setEmail($otherOccupant->getEmail());
+                    $resident->setIsRoommate(true);
+                    $resident->setMoveOutDate($otherOccupant->getMoveOutDate());
+                    $resident->setMoveInDate($otherOccupant->getMoveInDate());
+                    $roommates[] = $resident;
+                }
+                // Don't need return this data to client,
+                // but serializer don't have option for disable only desiralization
+                // That's why need set to null
+                $residents[$key]->setOtherOccupants(null);
+
             }
         }
 
-        return $residents;
+        return array_merge($residents, $roommates);
     }
 
-    public function getContractData(Holding $holding, EntityProperty $property, $residentId)
+    public function getContractData(Holding $holding, EntityProperty $property, ResidentsResident $resident)
     {
+        if ($resident->isRoommate()) {
+            $residentId = $resident->getLeaseId();
+        } else {
+            $residentId = $resident->getResidentId();
+        }
+
         return $this->residentData->getResidentData($holding, $property, $residentId);
     }
 }

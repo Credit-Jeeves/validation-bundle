@@ -145,26 +145,30 @@ abstract class AppKernel extends Kernel
         $this->chainNodeManager->addProvider('default', new SessionProvider());
         $this->chainNodeManager->addProvider('default', new EnvironmentProvider());
 
-        // prod env
-        if ('dev' != $this->getEnvironment()) {
-            $recipients = array(
-                'systems@creditjeeves.com' .
-                ', cary@renttrack.com'
-            );
+        /*
+         * This is the mailing list for prod environments
+         * The dev environments will only send to %mailer_delivery_address%
+         */
+        $recipients = [ 'cary@renttrack.com' ];
+        if ('prod' == $this->getEnvironment()) {
+            array_merge($recipients, [ 'systems@renttrack.com' ]);
+        }
+        else {
+            array_merge($recipients, [ 'staging@renttrack.com' ]);
+        }
 
-            $filter = new ExceptionClassFilter();
-            $filter->allow('Exception');
-            $filter->deny('SuppressedErrorException');
-            $filter->deny('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
-            $filter->deny('Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException');
+        $filter = new ExceptionClassFilter();
+        $filter->allow('Exception');
+        $filter->deny('SuppressedErrorException');
+        $filter->deny('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+        $filter->deny('Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException');
 
+        $this->chainNodeManager->addFilter('default', $filter);
 
-            $this->chainNodeManager->addFilter('default', $filter);
-
-            $serializer = new Serializer(
-                array(/*new DataHolderNormalizer()*/),
-                array(new HtmlEncoder())
-            );
+        $serializer = new Serializer(
+            array(/*new DataHolderNormalizer()*/),
+            array(new HtmlEncoder())
+        );
 
 //            touch($logFile = $this->getRootDir().'/logs/'.$this->getEnvironment().'-exceptions.log');
 //            $this->chainNodeManager->addSender(
@@ -180,28 +184,23 @@ abstract class AppKernel extends Kernel
 //                )
 //            );
 
-            $domain = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'my.creditjeeves.com';
-            $this->chainNodeManager->addSender(
-                'default',
-                new MailSender(
-                    new NativeMailerAdapter,
-                    $serializer,
-                    new DataHolder(array(
-                        'sender' => 'noreply@'.$domain,
-                        'recipients' => $recipients,
-                        'subject' => 'Whoops, looks like something went wrong.',
-                        'format' => 'html',
-                        'headers' => array(
-                            'Content-type' => 'text/html; charset=utf-8',
-                        )
-                    ))
-                )
-            );
-        } else {
-            $this->chainNodeManager->addSender(
-                'default',
-                new SymfonyExceptionHandlerChainNode(true)
-            );
-        }
+        $domain = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'my.creditjeeves.com';
+        $this->chainNodeManager->addSender(
+            'default',
+            new MailSender(
+                new NativeMailerAdapter,
+                $serializer,
+                new DataHolder(array(
+                    'sender' => 'noreply@'.$domain,
+                    'recipients' => $recipients,
+                    'subject' => 'Whoops, looks like something went wrong.',
+                    'format' => 'html',
+                    'headers' => array(
+                        'Content-type' => 'text/html; charset=utf-8',
+                    )
+                ))
+            )
+        );
+
     }
 }

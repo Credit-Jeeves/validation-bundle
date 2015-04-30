@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -18,6 +19,12 @@ class Import
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $isSkipped;
+
+    /**
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $uniqueKeyException;
 
     /**
      * @Serializer\Type("string")
@@ -48,6 +55,11 @@ class Import
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $tenant;
+
+    /**
+     * @var Order
+     */
+    protected $order;
 
     /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\Contract")
@@ -113,14 +125,25 @@ class Import
     protected $contractWaiting;
 
     /**
-     * @var boolean
-     */
-    protected $isHasPaymentMapping = false;
-
-    /**
      * @var HandlerAbstract
      */
     protected $handler;
+
+    /**
+     * @return Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function setOrder(Order $order)
+    {
+        $this->order = $order;
+    }
 
     /**
      * @param \RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract $handler
@@ -139,19 +162,19 @@ class Import
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function isIsHasPaymentMapping()
+    public function getUniqueKeyException()
     {
-        return $this->isHasPaymentMapping;
+        return $this->uniqueKeyException;
     }
 
     /**
-     * @param boolean $hasPaymentMapping
+     * @param string $uniqueKeyException
      */
-    public function setIsHasPaymentMapping($hasPaymentMapping)
+    public function setUniqueKeyException($uniqueKeyException)
     {
-        $this->isHasPaymentMapping = $hasPaymentMapping;
+        $this->uniqueKeyException = $uniqueKeyException;
     }
 
     /**
@@ -217,7 +240,6 @@ class Import
     {
         return $this->hasContractWaiting;
     }
-
 
     /**
      * @param string $address
@@ -315,7 +337,6 @@ class Import
         $this->form = $form;
     }
 
-
     /**
      * @return mixed
      */
@@ -345,9 +366,8 @@ class Import
      */
     public function setNumber($number)
     {
-        $this->number = (int)$number;
+        $this->number = (int) $number;
     }
-
 
     /**
      * @return string

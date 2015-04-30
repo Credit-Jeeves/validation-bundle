@@ -36,12 +36,14 @@ security:
                 failure_handler: user.service.login_failure_handler
                 failure_path:  null
                 failure_forward: false
+                use_forward: true
             logout:       true
             anonymous:    true
-            remember_me:
-                key: HKSHDY2PWUSGBNP88YTAT262Y2
-                secure: true
-                httponly: true
+#            Commented due to this ticket https://credit.atlassian.net/browse/RT-1013
+#            remember_me:
+#                key: HKSHDY2PWUSGBNP88YTAT262Y2
+#                secure: true
+#                httponly: true
 
     access_control:
         - { path: ^/oauth/v2/auth_login,            role: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -74,7 +76,6 @@ security:
         - { path: ^/user/new,                       role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/check/*,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/translations,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login/defence/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login/defence/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/new/send/*,                     role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/,                      role: ROLE_LANDLORD }

@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Session\Landlord;
-use RentJeeves\DataBundle\Entity\HeartlandRepository;
+use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface as ExportSerializer;
 use JMS\DiExtraBundle\Annotation\Inject;
@@ -27,7 +27,7 @@ class RentTrackReport extends ExportReport
      *     "serializer" = @Inject("export.serializer.renttrack"),
      *     "softDeleteableControl" = @Inject("soft.deleteable.control")
      * })
-     * @param EntityManager $em
+     * @param EntityManager    $em
      * @param ExportSerializer $serializer
      * @param $softDeleteableControl
      */
@@ -55,16 +55,17 @@ class RentTrackReport extends ExportReport
         } else {
             $groups = [$landlord->getGroup()];
         }
-        /** @var HeartlandRepository $repo */
-        $repo = $this->em->getRepository('RjDataBundle:Heartland');
+        /** @var TransactionRepository $repo */
+        $repo = $this->em->getRepository('RjDataBundle:Transaction');
+        $exportBy = $settings['export_by'];
 
-        return $repo->getTransactionsForRentTrackReport($groups, $beginDate, $endDate);
+        return $repo->getTransactionsForRentTrackReport($groups, $beginDate, $endDate, $exportBy);
     }
 
     protected function validateSettings($settings)
     {
         if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
-            !isset($settings['begin']) || !isset($settings['end'])) {
+            !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
             throw new ExportException('Not enough parameters for RentTrack report');
         }
     }

@@ -20,14 +20,10 @@ class YardiVersionNumberCommandCase extends BaseTestCase
 
         $command = $application->find('api:yardi:version');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            [
-                'command' => $command->getName(),
-            ]
-        );
+        $commandTester->execute(['command' => $command->getName()]);
 
-        $this->assertEquals(
-            'Current version for holding Rent Holding is 7Sv3.2_1.3',
+        $this->assertRegExp(
+            '/Current version for holding Rent Holding is 7Sv.*/',
             trim($commandTester->getDisplay())
         );
     }

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\AdminBundle\Tests\Functional;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class ContractWaitingCase extends BaseTestCase
@@ -16,28 +17,18 @@ class ContractWaitingCase extends BaseTestCase
          */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertCount(1, $contractWaiting);
+        $this->assertCount(1, $contractWaiting, 'Should be only one item on the list');
 
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_contract_waiting'));
 
         $tableBlock->clickLink('link_list');
-        $this->assertNotNull($create = $this->page->find('css', '.sonata-action-element'));
-        $create->click();
-        $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $this->session->wait(
-            10000,
-            "$('.overlay-trigger').length > 0"
-        );
-
-        $this->session->wait(
-            15000,
-            "$('.overlay-trigger').length <= 0"
-        );
+        $this->assertNotNull($edit = $this->page->find('css', '.edit_link'), 'Cannot find edit link');
+        $edit->click();
 
         $this->assertNotNull($input = $this->page->findAll('css', 'input'));
-        $this->assertEquals(10, count($input));
+        $this->assertEquals(9, count($input), 'Unexpected amount of input fields');
         $input[0]->setValue("200");
         $input[1]->setValue("615");
         $input[2]->setValue("test@mail.com");
@@ -45,14 +36,13 @@ class ContractWaitingCase extends BaseTestCase
         $input[4]->setValue("LastName");
         $input[5]->setValue("100");
 
-        $this->assertNotNull($btn = $this->page->findAll('css', '.form-actions .btn'));
+        $this->assertNotNull($btn = $this->page->findAll('css', '.form-actions .btn'), 'Cannot find update button');
         $this->assertEquals(3, count($btn));
 
         $btn[1]->click();
-        $this->session->wait(5000, "typeof jQuery != 'undefined'");
 
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertCount(1, $contractWaiting);
+        $this->assertCount(0, $contractWaiting, 'Count of waiting contracts should be 0 after update');
 
         $this->setDefaultSession('goutte');
         $emails = $this->getEmails();

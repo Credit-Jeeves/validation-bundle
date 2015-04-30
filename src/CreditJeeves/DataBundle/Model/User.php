@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\CoreBundle\Type\Encrypt;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Entity\User as BaseUser;
@@ -11,6 +12,7 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
@@ -80,6 +82,13 @@ abstract class User extends BaseUser
      *         "import"
      *     }
      * )
+     * @Assert\Regex(
+     *     pattern = "/^([a-zA-Z]{1,32}){1}$/",
+     *     message="error.user.first_name.authentication",
+     *     groups = {
+     *         "authentication"
+     *     }
+     * )
      * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("string")
      *
@@ -146,6 +155,13 @@ abstract class User extends BaseUser
      *     message="regexp.error.name",
      *     groups = {
      *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^([a-zA-Z]{1,32}){1}$/",
+     *     message="error.user.last_name.authentication",
+     *     groups = {
+     *         "authentication"
      *     }
      * )
      * @Serializer\Groups({"RentJeevesImport"})
@@ -300,7 +316,7 @@ abstract class User extends BaseUser
      * @ORM\Column(type="string", nullable=true)
      * @Serializer\Type("string")
      * @Assert\Regex(
-     *     pattern = "/^(\(\d{3}\) ?\d{3}-|\d{3}\.\d{3}\.|\d{3}-?\d{3}-?)\d{4}$/",
+     *     pattern = "/^\d{10}$/",
      *     message="error.user.phone.format",
      *     groups={
      *         "user_admin",
@@ -310,7 +326,7 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "invitationApi",
      *         "api",
-     *         "import"
+     *         "import_phone"
      *     }
      * )
      */
@@ -476,7 +492,7 @@ abstract class User extends BaseUser
      * )
      */
     protected $tradelines;
-    
+
     /**
      * @var ArrayCollection
      *
@@ -604,7 +620,6 @@ abstract class User extends BaseUser
      */
     protected $group_affilate;
 
-
     /**
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\AccessToken",
@@ -632,7 +647,6 @@ abstract class User extends BaseUser
      */
     protected $refreshTokens;
 
-
     /**
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\ApiUpdate",
@@ -652,6 +666,18 @@ abstract class User extends BaseUser
      * )
      */
     protected $settings;
+
+    /**
+     * @var AciCollectPayUserProfile
+     *
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayUserProfile",
+     *      mappedBy="user",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $aciCollectPayProfile;
 
     /**
      * @ORM\OneToOne(
@@ -704,7 +730,6 @@ abstract class User extends BaseUser
         $this->created_at = new DateTime();
     }
 
-
     /**
      * @param mixed $settings
      */
@@ -742,8 +767,6 @@ abstract class User extends BaseUser
         return $this->apiUpdate;
     }
 
-
-
     public function getRoles()
     {
 
@@ -778,12 +801,13 @@ abstract class User extends BaseUser
     /**
      * Get id
      *
-     * @param int $id
+     * @param  int  $id
      * @return User
      */
     public function setId($id)
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -800,7 +824,7 @@ abstract class User extends BaseUser
     /**
      * Set first_name
      *
-     * @param string $firstName
+     * @param  string $firstName
      * @return User
      */
     public function setFirstName($firstName)
@@ -823,7 +847,7 @@ abstract class User extends BaseUser
     /**
      * Set middle_initial
      *
-     * @param string $middleInitial
+     * @param  string $middleInitial
      * @return User
      */
     public function setMiddleInitial($middleInitial)
@@ -846,7 +870,7 @@ abstract class User extends BaseUser
     /**
      * Set last_name
      *
-     * @param string $lastName
+     * @param  string $lastName
      * @return User
      */
     public function setLastName($lastName)
@@ -1037,7 +1061,7 @@ abstract class User extends BaseUser
     /**
      * Set phone_type
      *
-     * @param integer $phoneType
+     * @param  integer $phoneType
      * @return User
      */
     public function setPhoneType($phoneType)
@@ -1060,16 +1084,16 @@ abstract class User extends BaseUser
     /**
      * Set phone
      *
-     * @param string $phone
+     * @param  string $phone
      * @return User
      */
     public function setPhone($phone)
     {
         $this->phone = $phone;
-    
+
         return $this;
     }
-    
+
     /**
      * Get phone
      *
@@ -1083,12 +1107,13 @@ abstract class User extends BaseUser
     /**
      * Set date_of_birth
      *
-     * @param \DateTime $dateOfBirth
+     * @param  \DateTime $dateOfBirth
      * @return User
      */
     public function setDateOfBirth($dateOfBirth)
     {
         $this->date_of_birth = $dateOfBirth;
+
         return $this;
     }
 
@@ -1105,7 +1130,7 @@ abstract class User extends BaseUser
     /**
      * Set ssn
      *
-     * @param encrypt $ssn
+     * @param  encrypt $ssn
      * @return User
      */
     public function setSsn($ssn)
@@ -1128,7 +1153,7 @@ abstract class User extends BaseUser
     /**
      * Set is_active
      *
-     * @param boolean $isActive
+     * @param  boolean $isActive
      * @return User
      */
     public function setIsActive($isActive)
@@ -1151,7 +1176,7 @@ abstract class User extends BaseUser
     /**
      * Set invite_code
      *
-     * @param string $inviteCode
+     * @param  string $inviteCode
      * @return User
      */
     public function setInviteCode($inviteCode)
@@ -1174,7 +1199,7 @@ abstract class User extends BaseUser
     /**
      * Set score_changed_notification
      *
-     * @param boolean $scoreChangedNotification
+     * @param  boolean $scoreChangedNotification
      * @return User
      */
     public function setScoreChangedNotification($scoreChangedNotification)
@@ -1197,7 +1222,7 @@ abstract class User extends BaseUser
     /**
      * Set offer_notification
      *
-     * @param boolean $offerNotification
+     * @param  boolean $offerNotification
      * @return User
      */
     public function setOfferNotification($offerNotification)
@@ -1220,7 +1245,7 @@ abstract class User extends BaseUser
     /**
      * Set culture
      *
-     * @param UserCulture $culture
+     * @param  UserCulture $culture
      * @return User
      */
     public function setCulture($culture)
@@ -1243,7 +1268,7 @@ abstract class User extends BaseUser
     /**
      * Set has_data
      *
-     * @param boolean $hasData
+     * @param  boolean $hasData
      * @return User
      */
     public function setHasData($hasData)
@@ -1266,7 +1291,7 @@ abstract class User extends BaseUser
     /**
      * Set is_verified
      *
-     * @param UserIsVerified $isVerified
+     * @param  UserIsVerified $isVerified
      * @return User
      */
     public function setIsVerified($isVerified)
@@ -1289,12 +1314,13 @@ abstract class User extends BaseUser
     /**
      * Set has_report
      *
-     * @param boolean $hasReport
+     * @param  boolean $hasReport
      * @return User
      */
     public function setHasReport($hasReport)
     {
         $this->has_report = $hasReport;
+
         return $this;
     }
 
@@ -1311,7 +1337,7 @@ abstract class User extends BaseUser
     /**
      * Set type
      *
-     * @param UserType $type
+     * @param  UserType $type
      * @return User
      */
     public function setType($type)
@@ -1334,7 +1360,7 @@ abstract class User extends BaseUser
     /**
      * Set holding_id
      *
-     * @param integer $holdingId
+     * @param  integer $holdingId
      * @return User
      */
     public function setHoldingId($holdingId)
@@ -1357,7 +1383,7 @@ abstract class User extends BaseUser
     /**
      * Set is_holding_admin
      *
-     * @param boolean $isHoldingAdmin
+     * @param  boolean $isHoldingAdmin
      * @return User
      */
     public function setIsHoldingAdmin($isHoldingAdmin)
@@ -1380,7 +1406,7 @@ abstract class User extends BaseUser
     /**
      * Set is_super_admin
      *
-     * @param boolean $isSuperAdmin
+     * @param  boolean $isSuperAdmin
      * @return User
      */
     public function setIsSuperAdmin($isSuperAdmin)
@@ -1403,7 +1429,7 @@ abstract class User extends BaseUser
     /**
      * Set created_at
      *
-     * @param \DateTime $createdAt
+     * @param  \DateTime $createdAt
      * @return User
      */
     public function setCreatedAt($createdAt)
@@ -1426,7 +1452,7 @@ abstract class User extends BaseUser
     /**
      * Set updated_at
      *
-     * @param \DateTime $updatedAt
+     * @param  \DateTime $updatedAt
      * @return User
      */
     public function setUpdatedAt($updatedAt)
@@ -1449,7 +1475,7 @@ abstract class User extends BaseUser
     /**
      * Add report
      *
-     * @param Report $report
+     * @param  Report $report
      * @return User
      */
     public function addReport(Report $report)
@@ -1482,7 +1508,7 @@ abstract class User extends BaseUser
     /**
      * Add reportsPrequal
      *
-     * @param \CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal
+     * @param  \CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal
      * @return User
      */
     public function addReportsPrequal(\CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal)
@@ -1514,6 +1540,7 @@ abstract class User extends BaseUser
                 if ($report instanceof ReportPrequal) {
                     return true;
                 }
+
                 return false;
             }
         );
@@ -1522,7 +1549,7 @@ abstract class User extends BaseUser
     /**
      * Add reportsD2c
      *
-     * @param \CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c
+     * @param  \CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c
      * @return User
      */
     public function addReportsD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c)
@@ -1554,6 +1581,25 @@ abstract class User extends BaseUser
                 if ($report instanceof ReportD2c) {
                     return true;
                 }
+
+                return false;
+            }
+        );
+    }
+
+    /**
+     * Get reportsD2c
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReportsTUSnapshot()
+    {
+        return $this->reports->filter(
+            function (Report $report) {
+                if ($report instanceof ReportTransunionSnapshot) {
+                    return true;
+                }
+
                 return false;
             }
         );
@@ -1562,7 +1608,7 @@ abstract class User extends BaseUser
     /**
      * Add scores
      *
-     * @param \CreditJeeves\DataBundle\Entity\Score $scores
+     * @param  \CreditJeeves\DataBundle\Entity\Score $scores
      * @return User
      */
     public function addScore(\CreditJeeves\DataBundle\Entity\Score $scores)
@@ -1595,7 +1641,7 @@ abstract class User extends BaseUser
     /**
      * Add orders
      *
-     * @param \CreditJeeves\DataBundle\Entity\Order $orders
+     * @param  \CreditJeeves\DataBundle\Entity\Order $orders
      * @return User
      */
     public function addOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
@@ -1628,7 +1674,7 @@ abstract class User extends BaseUser
     /**
      * Add user_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
+     * @param  \CreditJeeves\DataBundle\Entity\Lead $userLeads
      * @return User
      */
     public function addUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
@@ -1661,7 +1707,7 @@ abstract class User extends BaseUser
     /**
      * Add dealer_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
+     * @param  \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
      * @return User
      */
     public function addDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
@@ -1694,7 +1740,7 @@ abstract class User extends BaseUser
     /**
      * Add dealer_groups
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group $dealerGroups
+     * @param  \CreditJeeves\DataBundle\Entity\Group $dealerGroups
      * @return User
      */
     public function addDealerGroup(\CreditJeeves\DataBundle\Entity\Group $dealerGroups)
@@ -1727,7 +1773,7 @@ abstract class User extends BaseUser
     /**
      * Set vehicle
      *
-     * @param \CreditJeeves\DataBundle\Entity\Vehicle $vehicle
+     * @param  \CreditJeeves\DataBundle\Entity\Vehicle $vehicle
      * @return User
      */
     public function setVehicle(\CreditJeeves\DataBundle\Entity\Vehicle $vehicle = null)
@@ -1750,16 +1796,16 @@ abstract class User extends BaseUser
     /**
      * Set defense
      *
-     * @param \CreditJeeves\DataBundle\Entity\LoginDefense $defense
+     * @param  \CreditJeeves\DataBundle\Entity\LoginDefense $defense
      * @return User
      */
     public function setDefense(\CreditJeeves\DataBundle\Entity\LoginDefense $defense = null)
     {
         $this->defense = $defense;
-    
+
         return $this;
     }
-    
+
     /**
      * Get defense
      *
@@ -1769,11 +1815,11 @@ abstract class User extends BaseUser
     {
         return $this->defense;
     }
-    
+
     /**
      * Add pidkiqs
      *
-     * @param \CreditJeeves\DataBundle\Entity\Pidkiq $pidkiqs
+     * @param  \CreditJeeves\DataBundle\Entity\Pidkiq $pidkiqs
      * @return User
      */
     public function addPidkiq(\CreditJeeves\DataBundle\Entity\Pidkiq $pidkiqs)
@@ -1806,6 +1852,7 @@ abstract class User extends BaseUser
     public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding = null)
     {
         $this->holding = $holding;
+
         return $this;
     }
 
@@ -1820,7 +1867,7 @@ abstract class User extends BaseUser
     /**
      * Add address
      *
-     * @param \CreditJeeves\DataBundle\Entity\Address $pidkiqs
+     * @param  \CreditJeeves\DataBundle\Entity\Address $pidkiqs
      * @return User
      */
     public function addAddress(\CreditJeeves\DataBundle\Entity\Address $address)
@@ -1867,19 +1914,20 @@ abstract class User extends BaseUser
     public function setSalt($salt)
     {
         $this->salt = $salt;
+
         return $this;
     }
 
     /**
      * Add group_affilate
      *
-     * @param \CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate
+     * @param  \CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate
      * @return User
      */
     public function addGroupAffilate(\CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate)
     {
         $this->group_affilate[] = $groupAffilate;
-    
+
         return $this;
     }
 
@@ -1896,7 +1944,7 @@ abstract class User extends BaseUser
     /**
      * Get group_affilate
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGroupAffilate()
     {
@@ -1904,12 +1952,13 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Entity\AccessToken $accessToken
+     * @param  \CreditJeeves\DataBundle\Entity\AccessToken $accessToken
      * @return User
      */
     public function addAccessToken(\CreditJeeves\DataBundle\Entity\AccessToken $accessToken)
     {
         $this->accessTokens[] = $accessToken;
+
         return $this;
     }
 
@@ -1934,12 +1983,13 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken
+     * @param  \CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken
      * @return User
      */
     public function addRefreshToken(\CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken)
     {
         $this->resfreshTokens[] = $refreshToken;
+
         return $this;
     }
 
@@ -1960,12 +2010,13 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Entity\AuthToken $authToken
+     * @param  \CreditJeeves\DataBundle\Entity\AuthToken $authToken
      * @return User
      */
     public function addAuthCode(\CreditJeeves\DataBundle\Entity\AuthCode $authCode)
     {
         $this->authCodes[] = $authCode;
+
         return $this;
     }
 
@@ -1983,6 +2034,22 @@ abstract class User extends BaseUser
     public function getAuthCodes()
     {
         return $this->authCodes;
+    }
+
+    /**
+     * @param AciCollectPayUserProfile $aciCollectPayProfile
+     */
+    public function setAciCollectPayProfile(AciCollectPayUserProfile $aciCollectPayProfile)
+    {
+        $this->aciCollectPayProfile = $aciCollectPayProfile;
+    }
+
+    /**
+     * @return AciCollectPayUserProfile
+     */
+    public function getAciCollectPayProfile()
+    {
+        return $this->aciCollectPayProfile;
     }
 
     /**

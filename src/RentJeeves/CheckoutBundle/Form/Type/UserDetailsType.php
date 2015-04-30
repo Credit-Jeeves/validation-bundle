@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class UserDetailsType extends AbstractType
 {
@@ -26,6 +27,22 @@ class UserDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
+            'first_name',
+            'text',
+            array(
+                'error_bubbling' => true,
+                'label' => 'First Name'
+            )
+        );
+        $builder->add(
+            'last_name',
+            'text',
+            array(
+                'error_bubbling' => true,
+                'label' => 'Last Name'
+            )
+        );
+        $builder->add(
             'date_of_birth',
             'date',
             array(
@@ -41,9 +58,9 @@ class UserDetailsType extends AbstractType
                     'class' => 'original',
                     'html' => '<div class="tooltip-box type3 pie-el">' .
                         '<p class="verify" data-bind="i18n: {}">checkout.date_of_birth.tooltip.line1</p>' .
-                    '</div>'
+                        '</div>'
                 ),
-                'invalid_message' => 'checkout.error.date_of_birth.invalid',
+                'invalid_message' => 'checkout.error.date_of_birth.invalid'
             )
         );
         $builder->add(
@@ -131,7 +148,7 @@ class UserDetailsType extends AbstractType
                 'cascade_validation' => true,
                 'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
                 'validation_groups' => function (FormInterface $form) {
-                    $groups = array('birth_and_ssn');
+                    $groups = array('birth_and_ssn','authentication');
                     if ('false' == $form->get('is_new_address')->getData()) {
                         $groups[] = 'address_choice';
                     }

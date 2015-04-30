@@ -30,7 +30,7 @@ function Pay(parent, contractId) {
         'pay': 'rentjeeves_checkoutbundle_paymenttype'
     };
 
-    var steps = ['details', 'source', 'user', 'questions', 'pay'];
+    var steps = ['details', 'source', 'user', 'questions', 'pay', 'finish'];
 
     this.passedSteps = ko.observableArray([]);
 
@@ -250,6 +250,7 @@ function Pay(parent, contractId) {
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
     this.paymentSource.groupId(contract.groupId);
+    this.paymentSource.contractId(contract.id);
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
     this.questions = ko.observable(parent.questions);
@@ -333,6 +334,22 @@ function Pay(parent, contractId) {
         return Format.money(parseFloat(this.total()) + fee);
     };
 
+    this.showInfoMessage = function() {
+        if ('finish' == self.step() && 'one_time' == self.payment.type() && self.payment.startDate()) {
+            var now = new Date();
+            var startOn = Date.parseExact(self.payment.startDate(),  "M/d/yyyy");
+            if (startOn &&
+                now.getDate() == startOn.getDate() &&
+                now.getMonth() == startOn.getMonth() &&
+                now.getFullYear()== startOn.getFullYear()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
     this.isForceSave = ko.computed(function() {
         var result = 'immediate' != this.payment.type();
         this.paymentSource.save(result);
@@ -399,6 +416,8 @@ function Pay(parent, contractId) {
                 current -= 2;
                 break;
             case 'pay':
+                break;
+            case 'finish':
                 jQuery('#pay-popup').dialog('close');
                 jQuery('body').showOverlay();
                 window.location.reload();
@@ -503,6 +522,9 @@ function Pay(parent, contractId) {
                     onSuccessStep([]);
                     break;
                 }
+                if (self.checkFillAllQuestions() === false) {
+                    break;
+                }
                 //User is valid and we have question so we can try process it
                 if (self.isValidUser() && !self.isProcessQuestion) {
                     sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
@@ -523,6 +545,9 @@ function Pay(parent, contractId) {
                 } else {
                     sendData(Routing.generate('checkout_pay_exec'), forms[currentStep]);
                 }
+                break;
+            case 'finish':
+                onSuccessStep([]);
                 break;
         }
 
@@ -569,4 +594,37 @@ function Pay(parent, contractId) {
     });
 
     window.formProcess.removeAllErrors('#pay-popup ');
+
+    /**
+     * Checks whether there are unanswered questions.
+     * If such questions exist - show message with their numbers and return FALSE
+     * else
+     * return TRUE
+     *
+     * @return boolean
+     */
+    this.checkFillAllQuestions = function () {
+        window.formProcess.removeAllErrors('#pay-popup ');
+
+        var questionsDiv = $('div#questions>div').has('input:radio');
+        var countQuestionsWithoutAnswer = 0;
+
+        questionsDiv.each(function () {
+            if ($(this).find('input:radio:checked').length === 0) {
+                countQuestionsWithoutAnswer++;
+            }
+        });
+
+        if (countQuestionsWithoutAnswer > 0) {
+            var message = Translator.trans('pidkiq.error.unanswered_questions', { COUNT: countQuestionsWithoutAnswer });
+            window.formProcess.addFormError(
+                '#' + forms[self.getCurrentStep()],
+                message
+            );
+
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -3,7 +3,8 @@
 namespace RentJeeves\CheckoutBundle\Tests\Payment;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Payum\Request\BinaryMaskStatusRequest;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class PayCreditTrackCase extends BaseTestCase
@@ -21,11 +22,11 @@ class PayCreditTrackCase extends BaseTestCase
             ->getRepository('DataBundle:Group')
             ->findOneByCode($this->getContainer()->getParameter('rt_merchant_name'));
 
-        /** @var BinaryMaskStatusRequest $statusRequest */
-        $statusRequest = $this->getContainer()
+        /** @var Order $order */
+        $order = $this->getContainer()
             ->get('payment.pay_credit_track')
             ->executePaymentAccount($group->getDepositAccount()->getPaymentAccounts()->first());
 
-        $this->assertTrue($statusRequest->isSuccess(), $statusRequest->getModel()->getMessages());
+        $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
     }
 }

@@ -11,7 +11,7 @@ use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine_Expression;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Enum\YardiPaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 /**
  * @author Alex Emelyanov
@@ -61,7 +61,7 @@ class PaymentRepository extends EntityRepository
         );
         $query->andWhere('j.id IS NULL');
         $query->andWhere('p.status = :status');
-        $query->andWhere('c.yardiPaymentAccepted = :yardiPaymentAccepted');
+        $query->andWhere('c.paymentAccepted = :paymentAccepted');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere(
             self::getStartDateDQLString('p') . ' <= :startDate'
@@ -82,7 +82,7 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
         $query->setParameter('startDate', $date->format('Y-m-d'));
-        $query->setParameter('yardiPaymentAccepted', (string) YardiPaymentAccepted::ANY);
+        $query->setParameter('paymentAccepted', (string) PaymentAccepted::ANY);
 
         $query = $query->getQuery();
         return $query->execute();
@@ -105,7 +105,9 @@ class PaymentRepository extends EntityRepository
         foreach ($payments as $payment) {
             $em->persist($jobs[] = $payment->createJob());
         }
-        $em->flush();
+        if ($jobs) {
+            $em->flush();
+        }
         return $jobs;
     }
 

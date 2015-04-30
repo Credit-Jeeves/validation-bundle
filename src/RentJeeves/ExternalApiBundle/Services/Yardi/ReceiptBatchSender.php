@@ -4,28 +4,26 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\HoldingRepository;
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\Serializer\SerializationContext;
 use \DateTime;
-use RentJeeves\ExternalApiBundle\Services\Yardi\YardiBatchReceiptMailer;
-use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\ExternalApi;
 use RentJeeves\ExternalApiBundle\Model\Payment;
 use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\YardiClientEnum;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use JMS\Serializer\Serializer;
 use \Exception;
 use Symfony\Component\Console\Output\OutputInterface;
-use DOMDocument;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 /**
@@ -36,11 +34,8 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 class ReceiptBatchSender
 {
     const LIMIT_ORDERS = 500;
-
     const LIMIT_HOLDING = 50;
-
     const REQUEST_SUCCESSFUL = 'Success';
-
     const REQUEST_FAILED = 'Failed';
 
     /**
@@ -99,6 +94,11 @@ class ReceiptBatchSender
     protected $isCleanDBAlreadySentOut = true;
 
     /**
+     * @var bool
+     */
+    protected $debug = false;
+
+    /**
      * @InjectParams({
      *     "em"                 = @Inject("doctrine.orm.default_entity_manager"),
      *     "clientFactory"      = @Inject("soap.client.factory"),
@@ -121,13 +121,21 @@ class ReceiptBatchSender
         $this->mailer = $mailer;
     }
 
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+
+        return $this;
+    }
+
     /**
-     * @param OutputInterface $logger
+     * @param  OutputInterface $logger
      * @return $this
      */
     public function usingOutput(OutputInterface $logger)
     {
         $this->logger = $logger;
+
         return $this;
     }
 
@@ -138,6 +146,7 @@ class ReceiptBatchSender
     public function isCleanDBAlreadySentOut($isCleanDBAlreadySentOut)
     {
         $this->isCleanDBAlreadySentOut = $isCleanDBAlreadySentOut;
+
         return $this;
     }
 
@@ -173,13 +182,19 @@ class ReceiptBatchSender
         }
     }
 
-    protected function cancelBatch($batchId)
+    protected function cancelBatch($yardiBatchId)
     {
         try {
-            $this->paymentClient->cancelReceiptBatch($batchId);
-            $this->logMessage(sprintf("Cancel batch \n%s", $batchId));
+            $this->paymentClient->cancelReceiptBatch($yardiBatchId);
+            $this->logMessage(sprintf("Cancel batch \n%s", $yardiBatchId));
+
             if ($this->paymentClient->isError()) {
-                throw new Exception(sprintf("Can't cancel batch with id: %s", $batchId));
+                throw new Exception(sprintf("Can't cancel batch with id: %s", $yardiBatchId));
+            }
+
+            $key = array_search($yardiBatchId, $this->batchIds);
+            if (!empty($key)) {
+                unset($this->batchIds[$yardiBatchId]);
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
@@ -249,7 +264,7 @@ class ReceiptBatchSender
     }
 
     /**
-     * @param Holding $holding
+     * @param  Holding    $holding
      * @param $batchId
      * @param $remotePropertyId
      * @throws \Exception
@@ -266,10 +281,13 @@ class ReceiptBatchSender
         )
         ) {
             try {
+                $this->removeOrderWhichDoNotHaveLeaseId($ordersReceiptBatch);
+                if (empty($ordersReceiptBatch)) {
+                    throw new Exception("Nothing to send.");
+                }
+
                 if (!isset($remotePropertyId)) {
-                    /**
-                     * @var $order Order
-                     */
+                    /** @var $order Order */
                     $order = $ordersReceiptBatch[0];
                     $propertyMapping = $order->getContract()->getProperty()->getPropertyMapping();
                     $remotePropertyId = $propertyMapping->first()->getExternalPropertyId();
@@ -301,7 +319,31 @@ class ReceiptBatchSender
     }
 
     /**
-     * @param array $orders
+     * @param $ordersReceiptBatch
+     */
+    protected function removeOrderWhichDoNotHaveLeaseId(&$ordersReceiptBatch)
+    {
+        /** @var Order $order */
+        foreach ($ordersReceiptBatch as $key => $order) {
+            $leaseId = $order->getContract()->getExternalLeaseId();
+            if (!empty($leaseId)) {
+                continue;
+            }
+
+            unset($ordersReceiptBatch[$key]);
+            $message = sprintf(
+                "Order(ID:%s) will not send to Yardi, because his contract(ID:%s) does not have externalLeaseId.\n
+                 You can re-run initial import for setup externalLeaseId for active contract.
+                ",
+                $order->getId(),
+                $order->getContract()->getId()
+            );
+            $this->logMessage($message);
+        }
+    }
+
+    /**
+     * @param array  $orders
      * @param string $batchId
      */
     protected function sendReceiptsBatchToApi($orders, $batchId)
@@ -312,6 +354,7 @@ class ReceiptBatchSender
                 count($orders)
             )
         );
+
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('soapYardiRequest');
@@ -325,9 +368,17 @@ class ReceiptBatchSender
             $context
         );
         $xml = YardiXmlCleaner::prepareXml($xml);
-        $this->paymentClient->addReceiptsToBatch(
+        $result = $this->paymentClient->addReceiptsToBatch(
             $batchId,
             $xml
+        );
+
+        $this->logMessage(
+            sprintf(
+                "Add receipts to batchId(%s), result: %s",
+                $batchId,
+                print_r($result, true)
+            )
         );
 
         if ($this->paymentClient->isError()) {
@@ -339,7 +390,11 @@ class ReceiptBatchSender
             );
         }
 
-        return true;
+        if ($result instanceof Messages && $result->getMessage()->getMessageType() === 'FYI') {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -414,12 +469,13 @@ class ReceiptBatchSender
     {
         $this->paymentClient = $this->clientFactory->getClient(
             $yardiSettings,
-            YardiClientEnum::PAYMENT
+            SoapClientEnum::YARDI_PAYMENT
         );
+        $this->paymentClient->setDebug($this->debug);
     }
 
     /**
-     * @return \Doctrine\ORM\EntityRepository
+     * @return HoldingRepository
      */
     protected function getHoldingRepository()
     {

@@ -20,10 +20,10 @@ class HandlerYardi extends HandlerAbstract
 {
     /**
      * @InjectParams({
-     *     "translator"       = @Inject("translator"),
-     *     "sessionUser"      = @Inject("core.session.landlord"),
-     *     "storage"          = @Inject("accounting.import.storage.yardi"),
-     *     "mapping"          = @Inject("accounting.import.mapping.yardi")
+     *     "translator" = @Inject("translator"),
+     *     "sessionUser" = @Inject("core.session.landlord"),
+     *     "storage" = @Inject("accounting.import.storage.yardi"),
+     *     "mapping" = @Inject("accounting.import.mapping.yardi")
      * })
      */
     public function __construct(
@@ -37,14 +37,17 @@ class HandlerYardi extends HandlerAbstract
         $this->storage = $storage;
         $this->mapping = $mapping;
         $this->translator = $translator;
+        parent::__construct();
     }
 
     public function updateMatchedContracts()
     {
         $self = $this;
+        $filePath = $this->storage->getFilePath();
+
         $this->updateMatchedContractsWithCallback(
-            function () use ($self) {
-                $self->removeLastLineInFile();
+            function () use ($self, $filePath) {
+                $self->removeLastLineInFile($filePath);
             },
             function () {
             }

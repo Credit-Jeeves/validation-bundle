@@ -27,6 +27,26 @@ abstract class Partner
     protected $name;
 
     /**
+     * @ORM\Column(name="logo_name", type="string", nullable=true)
+     */
+    protected $logoName;
+
+    /**
+     * @ORM\Column(name="login_url", type="string", nullable=true)
+     */
+    protected $loginUrl;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $address;
+
+    /**
+     * @ORM\Column(name="is_powered_by", type="boolean")
+     */
+    protected $poweredBy;
+
+    /**
      * @ORM\Column(
      *     name="request_name",
      *     type="string",
@@ -58,6 +78,11 @@ abstract class Partner
      * )
      */
     protected $client;
+
+    public function __construct()
+    {
+        $this->poweredBy = false;
+    }
 
     /**
      * @return int
@@ -126,5 +151,69 @@ abstract class Partner
     public function __toString()
     {
         return $this->getName() ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogoName()
+    {
+        return $this->logoName;
+    }
+
+    /**
+     * @param string $logoName
+     */
+    public function setLogoName($logoName)
+    {
+        $this->logoName = $logoName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginUrl()
+    {
+        return $this->loginUrl;
+    }
+
+    /**
+     * @param string $loginUrl
+     */
+    public function setLoginUrl($loginUrl)
+    {
+        $this->loginUrl = $loginUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPoweredBy()
+    {
+        return $this->poweredBy;
+    }
+
+    /**
+     * @param boolean $poweredBy
+     */
+    public function setPoweredBy($poweredBy)
+    {
+        $this->poweredBy = $poweredBy;
     }
 }

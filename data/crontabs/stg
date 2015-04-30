@@ -1,5 +1,4 @@
-15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize deposit --archive=true >> /var/log/renttrack.log 2>&1
-15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj Payment:synchronize reversal --archive=true >> /var/log/renttrack.log 2>&1
+15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:report:synchronize >> /var/log/renttrack.log 2>&1
 0 2 * * * /var/www/stg.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
 0 23 * * * /var/www/stg.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
 0 8 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:tenant >> /var/log/renttrack.log 2>&1

@@ -2,6 +2,8 @@
 
 namespace RentJeeves\ExternalApiBundle\Traits;
 
+use Monolog\Logger;
+
 trait DebuggableTrait
 {
     /**
@@ -15,6 +17,7 @@ trait DebuggableTrait
     public function setDebug($debug)
     {
         $this->debug = $debug;
+        return $this;
     }
 
     public function isDebugEnabled()
@@ -27,11 +30,16 @@ trait DebuggableTrait
      */
     public function debugMessage($var)
     {
+        if (property_exists(get_class($this), 'logger') && $this->logger instanceof Logger) {
+            $var = (is_object($var))? print_r($var, true) : $var;
+            $this->logger->debug($var);
+        }
+
         if (!$this->isDebugEnabled()) {
             return;
         }
         echo "\n";
-        var_dump($var);
+        print_r($var);
         echo "\n";
     }
 }

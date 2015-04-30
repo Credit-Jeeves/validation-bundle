@@ -1,6 +1,9 @@
 parameters:
+    import.mapping.amsi.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAMSI
     import.mapping.csv.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingCsv
     import.mapping.yardi.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi
+    import.mapping.resman.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingResman
+    import.mapping.mri.class: RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingMRI
     accounting.export.yardi_genesis_v2.class: RentJeeves\LandlordBundle\Accounting\Export\Report\YardiGenesisV2Report
     accounting.export.yardi_genesis_v2_archive.class: RentJeeves\LandlordBundle\Accounting\Export\Report\YardiGenesisV2Archive
     export.serializer.yardi_genesis_v2.class: RentJeeves\LandlordBundle\Accounting\Export\Serializer\YardiGenesisV2CsvSerializer
@@ -10,13 +13,45 @@ services:
         class: "%import.mapping.csv.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setPropertyProcess, ["@property.process"]]
         arguments:
             - "@accounting.import.storage.csv"
             - "@import.reader.csv"
+    accounting.import.mapping.resman:
+        class: "%import.mapping.resman.class%"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setPropertyProcess, ["@property.process"]]
+        arguments:
+            - "@accounting.import.storage.resman"
+            - "@import.reader.csv"
+            - "@resman.resident_data"
+            - "@security.context"
+    accounting.import.mapping.amsi:
+        class: "%import.mapping.amsi.class%"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setPropertyProcess, ["@property.process"]]
+        arguments:
+            - "@accounting.import.storage.amsi"
+            - "@import.reader.csv"
+            - "@amsi.resident_data"
+            - "@security.context"
+    accounting.import.mapping.mri:
+        class: "%import.mapping.mri.class%"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setPropertyProcess, ["@property.process"]]
+        arguments:
+            - "@accounting.import.storage.mri"
+            - "@import.reader.csv"
+            - "@mri.resident_data"
+            - "@security.context"
     accounting.import.mapping.yardi:
         class: "%import.mapping.yardi.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setPropertyProcess, ["@property.process"]]
         arguments:
             - "@accounting.import.storage.yardi"
             - "@import.reader.csv"

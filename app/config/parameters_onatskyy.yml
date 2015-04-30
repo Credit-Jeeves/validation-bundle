@@ -1,0 +1,13 @@
+imports:
+    - { resource: parameters_dev_base.yml }
+
+parameters:
+    database_name: credit_jeeves2
+    database_user: root
+    database_password: 123456
+
+    experian.logging: false
+
+    server: local
+    server_name_cj: renttrack.local
+    server_name_rj: renttrack.local

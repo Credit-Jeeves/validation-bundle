@@ -3,6 +3,14 @@
         <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')', visible: payments().length > 0"></h2>
         <h2 data-bind="text: '{{'payments.batch_deposits'|trans}} (' + $root.total() + ')', visible: deposits().length > 0"></h2>
         <div class="fiter-box">
+            {% if group.groupSettings.isIntegrated %}
+                <div class="externalPaymentsBlock" data-bind="visible: searchCollum() != 'deposit'">
+                    <input type="checkbox"
+                           data-bind="checked: showCashPayments"
+                    />
+                    <span>{{ 'landlord.payments_list.show_external_payments'|trans }}</span>
+                </div>
+            {% endif %}
             <select id="searchPayments" data-bind="value: searchCollum" class="select custom-select blue-arrow selectBox">
                 <option value="status">{{ 'payments.filter.status'|trans }}</option>
                 <option value="property">{{ 'payments.filter.property'|trans }}</option>
@@ -80,7 +88,7 @@
               <tbody id="payments-block-tbody" data-bind="foreach: payments" class="zebra-grid">
                 <tr>
                     <td data-bind="attr: {'class': 'actions-status '+style}">
-                        <span data-bind="text: status, i18n:{}, attr: {'title' : errorMessage}"></span>
+                        <span data-bind="text: status, i18n:{}, attr: {'title' : $root.orderStatusTitle($data)}"></span>
                         <span
                             class="status-text-helper"
                             data-bind="visible: !$root.isSuccessfulStatus(status)"

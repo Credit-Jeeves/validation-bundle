@@ -1,18 +1,9 @@
 parameters:
-    data.event_listener.order.class: CreditJeeves\DataBundle\EventListener\OrderListener
     data.event_listener.doctrine.class: CreditJeeves\DataBundle\EventListener\DoctrineListener
 
 services:
-    data.event_listener.order:
-        class: "%data.event_listener.order.class%"
-        tags:
-#            - { name: doctrine.event_listener, event: prePersist, method: prePersist }
-#            - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
-            - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
-        arguments: ["@service_container"]
     data.event_listener.doctrine:
         class: "%data.event_listener.doctrine.class%"
         tags:
-            - { name: doctrine.event_listener, event: prePersist, method: prePersist }
             - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
 

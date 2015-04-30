@@ -2,23 +2,12 @@
 
 namespace RentJeeves\AdminBundle\Admin;
 
-use CreditJeeves\DataBundle\Enum\GroupType;
-use CreditJeeves\DataBundle\Enum\UserType;
-use Doctrine\ORM\EntityRepository;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\HttpFoundation\Request;
 
 class PartnerAdmin extends Admin
 {
-
     const TYPE = 'partner';
 
     /**
@@ -26,7 +15,7 @@ class PartnerAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_'.self::TYPE;
+        return 'admin_' . self::TYPE;
     }
 
     /**
@@ -34,37 +23,55 @@ class PartnerAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/'.self::TYPE;
+        return '/' . self::TYPE;
     }
+
+    /**
+     * {@inheritdoc}
+     */
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
             ->add('name')
             ->add('requestName')
             ->add('client.name')
+            ->add('poweredBy')
+            ->add('logoName')
+            ->add('loginUrl')
+            ->add('address')
             ->add(
                 '_action',
                 'actions',
-                array(
-                    'actions' => array(
-                        'edit' => array(),
-                        'delete' => array(),
-                        'partner_users' => array(
+                [
+                    'actions' => [
+                        'edit' => [],
+                        'delete' => [],
+                        'partner_users' => [
                             'template' => 'AdminBundle:CRUD:list__action_partner_users.html.twig'
-                        ),
-                    )
-                )
+                        ],
+                    ]
+                ]
             );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
             ->add('name')
             ->add('requestName', null, ['required' => false])
-            ->add('client');
+            ->add('client')
+            ->add('poweredBy', 'checkbox', ['required' => false])
+            ->add('logoName')
+            ->add('loginUrl')
+            ->add('address');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getClassnameLabel()
     {
         return 'partner';

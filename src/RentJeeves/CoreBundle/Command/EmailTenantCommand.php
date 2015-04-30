@@ -38,6 +38,16 @@ class EmailTenantCommand extends ContainerAwareCommand
     /**
      * @var string
      */
+    const OPTION_DRY_RUN = 'dry-run';
+
+    /**
+     * @var string
+     */
+    const OPTION_START_AT_EMAIL = 'start-at';
+
+    /**
+     * @var string
+     */
     const OPTION_TYPE_DEFAULT = 'due';
 
     /**
@@ -75,6 +85,18 @@ class EmailTenantCommand extends ContainerAwareCommand
      */
     const OPTION_AUTO_DEFAULT = true;
 
+    /**
+     * @var InputInterface
+     */
+    protected $input;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    protected $startAtEmailSeen = false;
+
     protected function configure()
     {
         $this
@@ -99,11 +121,27 @@ class EmailTenantCommand extends ContainerAwareCommand
                 null,
                 InputOption::VALUE_NONE,
                 'Autopay true/false'
-            );
+            )
+            ->addOption(
+                self::OPTION_DRY_RUN,
+                null,
+                InputOption::VALUE_NONE,
+                'Dont send emails, just list addresses. (not supported with --late option)'
+            )
+            ->addOption(
+                self::OPTION_START_AT_EMAIL,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Skip sending emails until you match this email address, then send all that follow.'
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->input = $input;
+        $this->output = $output;
+
         //@TODO find best way for this implementation
         //For this functional need show unit which was removed
         $this->getContainer()->get('soft.deleteable.control')->disable();
@@ -126,11 +164,12 @@ class EmailTenantCommand extends ContainerAwareCommand
                     foreach ($payments as $payment) {
                         $contract = $payment->getContract();
                         $tenant = $contract->getTenant();
-                        $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract, $payment->getType());
+                        $this->sendPaymentDueEmail($mailer, $tenant, $contract, $payment->getType());
+                        $doctrine->getManager()->detach($contract);
+                        $doctrine->getManager()->detach($tenant);
                         $doctrine->getManager()->detach($payment);
-                        $output->write('.');
                     }
-                    $output->write('Finished command "Email:tenant --auto"');
+                    $output->write("\nFinished command \"Email:tenant --auto\"");
                 } else {//Email:tenant
                     // Story-1542
                     $contractRepository = $doctrine->getRepository('RjDataBundle:Contract');
@@ -139,11 +178,11 @@ class EmailTenantCommand extends ContainerAwareCommand
                     /** @var $contract Contract */
                     foreach ($contracts as $contract) {
                         $tenant = $contract->getTenant();
-                        $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract);
+                        $this->sendPaymentDueEmail($mailer, $tenant, $contract);
+                        $doctrine->getManager()->detach($tenant);
                         $doctrine->getManager()->detach($contract);
-                        $output->write('.');
                     }
-                    $output->writeln('OK');
+                    $output->writeln("\nOK");
                 }
                 break;
             case self::OPTION_TYPE_LATE:
@@ -161,5 +200,49 @@ class EmailTenantCommand extends ContainerAwareCommand
                 $output->writeln('OK');
                 break;
         }
+    }
+
+    protected function sendPaymentDueEmail($mailer, $tenant, $contract, $paymentType = null)
+    {
+        if ($this->shouldSendEmail($tenant)) {
+            $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract, $paymentType);
+            $this->output->write(
+                "\n" . $tenant->getId() . " : " . $tenant->getEmail() ." - sent",
+                OutputInterface::VERBOSITY_VERBOSE
+            );
+            $this->output->write('.');
+        }
+    }
+
+    protected function shouldSendEmail($tenant)
+    {
+        // if a start-at email specified, skip all tenants until we see it
+        $startAtEmail = $this->input->getOption(self::OPTION_START_AT_EMAIL);
+        if ($startAtEmail) {
+            if ($startAtEmail === $tenant->getEmail()) {
+                $this->startAtEmailSeen = true;
+            }
+
+            if (!$this->startAtEmailSeen) {
+                $this->outputSkipMessage($tenant, "SKIP");
+
+                return false;
+            }
+        }
+
+        // don't send if we are in "Dry Run" mode
+        if ($this->input->getOption(self::OPTION_DRY_RUN)) {
+            $this->outputSkipMessage($tenant, "DRYRUN MODE -- Will Send");
+
+            return false;
+        }
+
+        // send!!
+        return true;
+    }
+
+    protected function outputSkipMessage($tenant, $reason)
+    {
+        $this->output->write("\n" . $tenant->getId() . " : " . $tenant->getEmail() . " <" . $reason .">");
     }
 }

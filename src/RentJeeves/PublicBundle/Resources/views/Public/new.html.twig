@@ -3,67 +3,70 @@
 {% form_theme form ':Form:form_errors.html.twig' %}
 
 {% block content %}
-{{ include('RjComponentBundle:Invite:_popupTenant.html.twig') }}
-<section class="form-content">
-    <div class="box type1">
-      <h3 class="clearfix">
-        <span>{{ 'property.info'|trans }}</span>
-        <small><b>*</b>{{ 'required'|trans }}</small>
-      </h3>
-      <div class="col-box clearfix">
-        <div class="col all">
-          <h4>{{ 'property.add'|trans }}</h4>
-            <div
-                {% if app.request.cookies.get("affiliateSource") %}
-                    class="{{ app.request.cookies.get("affiliateSource")|lower ~ '-logo' }}"
-                {% endif %}>
-                {{ include(
-                    'RjComponentBundle:Google:formSearch.html.twig',
-                        { 'property': property }
-                ) }}
-            </div>
-          <div class="errorsGoogleSearch"></div>
-            {{ include(
-             'RjComponentBundle:Google:searchResultBox.html.twig',
-             { 'property': property, 'countPropery':countPropery, 'propertyList': propertyList }
-             ) }}
-            <form id="formNewUser" action="{{ path('iframe_new', {"id": id, 'type': type }) }}"
-                  method="post" {{ form_enctype(form) }}>
-                {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
-                {{ form_rest(form) }}
-                <div class="buttons-box clearfix">
-                  <div class="buttons left">
-                    <button type="submit" class="button greyButton" id="register"><span>{{ 'continue'|trans }}</span></button>
-                  </div>
-                </div>
-           </form>
-        </div>
-      </div>
-    </div>
-</section>
 
-<input type="hidden" value="{{property.jb }}" id="lat">
-<input type="hidden" value="{{property.kb }}" id="lng">
+    {{ include('RjComponentBundle:Invite:_popupTenant.html.twig') }}
+
+    <section class="form-content">
+        <div class="box type1">
+            <h3 class="clearfix">
+                <span>{{ 'property.info'|trans }}</span>
+                <small><b>*</b>{{ 'required'|trans }}</small>
+            </h3>
+            <div class="col-box clearfix">
+                <div class="col all">
+                    <h4>{{ 'property.add'|trans }}</h4>
+
+                    <div
+                        {% if app.request.cookies.get("affiliateSource") %}
+                            class="{{ app.request.cookies.get("affiliateSource")|lower ~ '-logo' }}"
+                        {% endif %}>
+                        {{ include('RjComponentBundle:Google:formSearch.html.twig') }}
+                    </div>
+
+                    <div class="errorsGoogleSearch"></div>
+
+                    {{ include('RjComponentBundle:Google:searchResultBox.html.twig') }}
+
+                    <form id="formNewUser" action="{{ path('iframe_new', {"id": id, 'type': type }) }}"
+                        method="post" {{ form_enctype(form) }}>
+
+                        {{ include('RjPublicBundle:Public:_formTenant.html.twig') }}
+
+                        {{ form_rest(form) }}
+
+                        <div class="buttons-box clearfix">
+                            <div class="buttons left">
+                                <button type="submit" class="button greyButton" id="register">
+                                    <span>{{ 'continue'|trans }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <input type="hidden" value="{{ property.jb }}" id="lat">
+    <input type="hidden" value="{{ property.kb }}" id="lng">
 {% endblock %}
 
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  'bundles/bazingajstranslation/js/translator.min.js'
-                    '@RjCoreBundle/Resources/public/js/jquery.tmpl.js'
-                    '@RjCoreBundle/Resources/public/js/jquery.google.js'
-                    '@RjPublicBundle/Resources/public/js/new.js'
-                    '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
 
-    %}
+    {% javascripts  'bundles/bazingajstranslation/js/translator.min.js'
+        '@RjCoreBundle/Resources/public/js/jquery.tmpl.js'
+        '@RjCoreBundle/Resources/public/js/jquery.google.js'
+        '@RjPublicBundle/Resources/public/js/new.js'
+        '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 {% endblock %}
 
-
 {% block stylesheets %}
-    {% stylesheets '@RjPublicBundle/Resources/public/css/new.css'
-    %}
-      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% stylesheets '@RjPublicBundle/Resources/public/css/new.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
     {% endstylesheets %}
 {% endblock %}

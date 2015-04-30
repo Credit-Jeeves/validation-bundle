@@ -30,7 +30,7 @@ class InviteTenantContractType extends AbstractType
         );
         $builder->add(
             'contract',
-            new ContractType($this->user, $this->group)
+            new ContractType($this->group)
         );
         if ($this->group && $this->group->getGroupSettings()->getIsIntegrated()) {
             $builder->add(

@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\Controller;
 
+use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -64,19 +65,6 @@ class AlertController extends Controller
             if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_SUCCESS) {
                 $alerts[] = $translator->trans('landlord.hps.processing_message');
             }
-            if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_ERROR) {
-                $alerts[] = $translator->trans(
-                    'landlord.hps.complete_application',
-                    array('%complete_url%' => $this->generateUrl('landlord_complete_account'))
-                );
-            }
-            /** Overloading error above so Admin can set to show merchant account link after phone contact.
-            if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_ERROR) {
-                $alerts[] = $translator->trans(
-                    'landlord.hps.error_message',
-                    array('%heartland_msg%' => $deposit->getMessage())
-                );
-            } */
 
             if (empty($billing)) {
                 $alerts[] = $translator->trans(
@@ -119,11 +107,19 @@ class AlertController extends Controller
             $payments = $contract->getPayments();
             if (count($payments) > 0) {
                 $hasPayment = true;
+                break;
             }
         }
         if (!$hasPayment) {
             $alerts[] = $this->get('translator.default')->trans('alert.tenant.first_payment');
         }
+
+        /** @var ContractRepository $contractRepo */
+        $contractRepo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
+        if (!$contractRepo->isTurnedOnBureauReporting($user)) {
+            $alerts[] = $this->get('translator.default')->trans('alert.tenant.bureau_reporting');
+        }
+
         return array(
             'alerts' => $alerts
         );

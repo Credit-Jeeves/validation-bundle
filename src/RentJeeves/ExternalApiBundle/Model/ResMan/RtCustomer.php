@@ -7,6 +7,8 @@ use JMS\Serializer\Annotation as Serializer;
 class RtCustomer
 {
     /**
+     * it's lease id of contract
+     *
      * @Serializer\SerializedName("CustomerID")
      * @Serializer\Type("string")
      * @Serializer\Groups({"ResMan"})
@@ -33,6 +35,29 @@ class RtCustomer
      * @Serializer\Groups({"ResMan"})
      */
     protected $rtServiceTransactions;
+
+    /**
+     * @Serializer\SerializedName("PaymentAccepted")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"ResMan"})
+     */
+    protected $paymentAccepted;
+
+    /**
+     * @return string
+     */
+    public function getPaymentAccepted()
+    {
+        return $this->paymentAccepted;
+    }
+
+    /**
+     * @param string $paymentAccepted
+     */
+    public function setPaymentAccepted($paymentAccepted)
+    {
+        $this->paymentAccepted = $paymentAccepted;
+    }
 
     /**
      * @return RtServiceTransactions

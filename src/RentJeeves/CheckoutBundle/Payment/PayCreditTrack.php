@@ -3,128 +3,161 @@ namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
+use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
-use Payum\Heartland\Soap\Base\BillTransaction;
-use Payum\Heartland\Soap\Base\MakePaymentRequest;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Job;
-use RentJeeves\DataBundle\Entity\JobRelatedReport;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 /**
  * @DI\Service("payment.pay_credit_track")
  */
-class PayCreditTrack extends Pay
+class PayCreditTrack
 {
     /**
-     * @var double
+     * @var OrderManager
      */
-    protected $amount;
+    protected $orderManager;
 
     /**
-     * @var string
+     * @var PaymentProcessorFactory
      */
-    protected $rjGroupCode;
+    protected $paymentProcessorFactory;
 
     /**
-     * @DI\InjectParams({"rjGroupCode" = @DI\Inject("%rt_merchant_name%")})
-     *
-     * @param string $rjGroupCode
-     *
-     * @return $this
+     * @var EntityManager
      */
-    public function setRjGroupCode($rjGroupCode)
+    protected $em;
+
+    /**
+     * @DI\InjectParams({
+     *     "orderManager" = @DI\Inject("payment_processor.order_manager"),
+     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager")
+     * })
+     */
+    public function __construct(OrderManager $orderManager, EntityManager $em)
     {
-        $this->rjGroupCode = $rjGroupCode;
-        return $this;
+        $this->orderManager = $orderManager;
+        $this->em = $em;
     }
 
     /**
-     * @DI\InjectParams({"amount" = @DI\Inject("%credittrack_payment_per_month%")})
+     * Setter injection is used b/c PaymentProcessorFactory doesn't exist when __construct is called.
      *
-     * @param string $amount
-     *
-     * @return $this
+     * @DI\InjectParams({"factory" = @DI\Inject("payment_processor.factory")})
      */
-    public function setAmount($amount)
+    public function setFactory(PaymentProcessorFactory $factory)
     {
-        $this->amount = (double)$amount;
-        return $this;
+        $this->paymentProcessorFactory = $factory;
     }
 
+    /**
+     * Runs CreditTrack payment using paymentAccount.
+     *
+     * @param  PaymentAccount $paymentAccount
+     * @return Order
+     */
     public function executePaymentAccount(PaymentAccount $paymentAccount)
     {
-        $order = $this->getOrder();
-        $order->setUser($paymentAccount->getUser());
-        $order->setSum($this->amount);
-        $order->setStatus(OrderStatus::NEWONE);
-
-        /** @var DepositAccount $depositAccount */
-        $depositAccount = $this->em
-            ->getRepository('DataBundle:Group')
-            ->findOneByCode($this->rjGroupCode)
-            ->getDepositAccount();
-
-        if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($depositAccount->getFeeCC() / 100), 2));
-            $order->setType(OrderType::HEARTLAND_CARD);
-        } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $order->setFee($depositAccount->getFeeACH());
-            $order->setType(OrderType::HEARTLAND_BANK);
-        }
-
-        $paymentDetails = $this->getPaymentDetails();
-        $paymentDetails->setMerchantName($depositAccount->getMerchantName());
+        $order = $this->orderManager->createCreditTrackOrder($paymentAccount);
 
         $this->em->persist($order);
         $this->em->flush();
 
-        $this->addToken($paymentAccount->getToken());
-
-        /** @var MakePaymentRequest $request */
-        $request = $paymentDetails->getRequest();
-
-        /** @var BillTransaction $billTransaction */
-        $billTransaction = $request->getBillTransactions()->getBillTransaction()[0];
-
-        $billTransaction->setID1("report");
-
-        $statusRequest = $this->execute();
-
-        if ($statusRequest->isSuccess()) {
-            $order->setStatus(OrderStatus::COMPLETE);
-            $report = new ReportD2c();
-            $report->setUser($paymentAccount->getUser());
-            $report->setRawData('');
-            $operation = new Operation();
-            $operation->setReportD2c($report);
-            $operation->setPaidFor(new DateTime());
-            $operation->setAmount($this->amount);
-            $operation->setType(OperationType::REPORT);
-            $order->addOperation($operation);
-            $this->em->persist($operation);
-            $this->em->persist($report);
-            $job = new Job('experian-credit_profile:get', array('--app=rj'));
-            $job->addRelatedEntity($report);
-            $execute = new DateTime();
-            $execute->modify("+5 minutes");
-            $job->setExecuteAfter($execute);
-            $this->em->persist($job);
-        } else {
+        try {
+            $orderStatus = $this->getPaymentProcessor($paymentAccount)->executeOrder(
+                $order,
+                $paymentAccount,
+                PaymentGroundType::REPORT
+            );
+            $order->setStatus($orderStatus);
+        } catch (\Exception $e) {
             $order->setStatus(OrderStatus::ERROR);
         }
 
+        if (OrderStatus::ERROR != $order->getStatus()) {
+            $report = $this->createReport($paymentAccount->getUser());
+            $operation = $this->createOperation($order);
+            $operation->setReportD2c($report);
+            $job = $this->scheduleReportJob($report);
 
-        $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
-        $this->em->persist($paymentDetails);
+            $this->em->persist($operation);
+            $this->em->persist($report);
+            $this->em->persist($job);
+        }
+
         $this->em->persist($order);
         $this->em->flush();
-        return $statusRequest;
+
+        return $order;
+    }
+
+    /**
+     * Finds payment processor for a given payment account.
+     *
+     * @param  PaymentAccount                                                        $paymentAccount
+     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface
+     */
+    protected function getPaymentProcessor(PaymentAccount $paymentAccount)
+    {
+        $group = $paymentAccount->getDepositAccounts()->first()->getGroup();
+
+        return $this->paymentProcessorFactory->getPaymentProcessor($group);
+    }
+
+    /**
+     * Creates a new D2C report.
+     *
+     * @param  User      $user
+     * @return ReportD2c
+     */
+    protected function createReport(User $user)
+    {
+        $report = new ReportD2c();
+        $report->setUser($user);
+        $report->setRawData('');
+
+        return $report;
+    }
+
+    /**
+     * Creates a new REPORT type operation for a given order.
+     *
+     * @param  Order     $order
+     * @return Operation
+     */
+    protected function createOperation(Order $order)
+    {
+        $operation = new Operation();
+        $operation->setPaidFor(new DateTime());
+        $operation->setAmount($order->getSum());
+        $operation->setType(OperationType::REPORT);
+        $order->addOperation($operation);
+
+        return $operation;
+    }
+
+    /**
+     * Creates a job to load report.
+     * TODO: change job command to be dependent on the credit_summary_vendor config setting
+     *
+     * @param Report $report
+     */
+    protected function scheduleReportJob(Report $report)
+    {
+        $job = new Job('experian-credit_profile:get', array('--app=rj'));
+        $job->addRelatedEntity($report);
+        $execute = new DateTime();
+        $execute->modify("+5 minutes");
+        $job->setExecuteAfter($execute);
+
+        return $job;
     }
 }

@@ -66,7 +66,10 @@
                 <source>login.create_user</source>
                 <target>Create Account</target>
             </trans-unit>
-
+            <trans-unit id="contact.information.update">
+                <source>contact.information.update</source>
+                <target>Information has been updated</target>
+            </trans-unit>
             <trans-unit id="resetting.title">
                 <source>resetting.title</source>
                 <target>Forgot your password?</target>
@@ -410,13 +413,21 @@
                 <source>inquiries.regular.comment</source>
                 <target>Companies listed here obtained information from your credit file for the purposes of a business transaction. They will remain on your file for 2 years</target>
             </trans-unit>
-            <trans-unit id="inquiries.hard.header">
-                <source>inquiries.hard.header</source>
+            <trans-unit id="inquiries.hard.header.6months">
+                <source>inquiries.hard.header.6months</source>
                 <target>Inquiries During Last 6 Months</target>
             </trans-unit>
-            <trans-unit id="inquiries.hard.comment">
-                <source>inquiries.hard.comment</source>
+            <trans-unit id="inquiries.hard.comment.6months">
+                <source>inquiries.hard.comment.6months</source>
                 <target>If lenders see more than a few inquiries in the last 6 months, they think you're planning to open many lines of credit and will be wary of extending you a new one.</target>
+            </trans-unit>
+            <trans-unit id="inquiries.hard.header.2years">
+                <source>inquiries.hard.header.2years</source>
+                <target>Inquiries During Last 2 Years</target>
+            </trans-unit>
+            <trans-unit id="inquiries.hard.comment.2years">
+                <source>inquiries.hard.comment.2years</source>
+                <target>If lenders see more than a few inquiries in the last 2 years, they think you're planning to open many lines of credit and will be wary of extending you a new one.</target>
             </trans-unit>
 
             <trans-unit id="credit.age.average.title">
@@ -773,6 +784,18 @@
                 <source>settings.address.head.edit</source>
                 <target>Edit address</target>
             </trans-unit>
+            <trans-unit id="settings.address.delete.error.default">
+                <source>settings.address.delete.error.default</source>
+                <target>You can not delete the default address. Set up another address as default.</target>
+            </trans-unit>
+            <trans-unit id="settings.address.delete.error.has_active_pa">
+                <source>settings.address.delete.error.has_active_pa</source>
+                <target>Sorry, this address is used by the %PAYMENT% payment source. You must delete the payment source first.</target>
+            </trans-unit>
+            <trans-unit id="settings.address.delete.success">
+                <source>settings.address.delete.success</source>
+                <target>The address was deleted successfully.</target>
+            </trans-unit>
 
             <trans-unit id="settings.address.form.street">
                 <source>settings.address.form.street</source>
@@ -1012,6 +1035,10 @@
                 <source>error.user.first_name.long</source>
                 <target>First name is too long.</target>
             </trans-unit>
+            <trans-unit id="error.user.first_name.authentication">
+                <source>error.user.first_name.authentication</source>
+                <target>Please provide a single first name for verification. For example, use Mary instead of Mary Beth.</target>
+            </trans-unit>
             <trans-unit id="error.user.middleInitial.short">
                 <source>error.user.middleInitial.short</source>
                 <target>Middle initial is too short.</target>
@@ -1027,6 +1054,10 @@
             <trans-unit id="error.user.last_name.short">
                 <source>error.user.last_name.short</source>
                 <target>Last name is too short.</target>
+            </trans-unit>
+            <trans-unit id="error.user.last_name.authentication">
+                <source>error.user.last_name.authentication</source>
+                <target>Please provide a single last name for verification. For example, use Lopez instead of Lopez-Castro.</target>
             </trans-unit>
             <trans-unit id="error.user.last_name.long">
                 <source>error.user.last_name.long</source>
@@ -1082,7 +1113,7 @@
             </trans-unit>
             <trans-unit id="error.user.phone.format">
                 <source>error.user.phone.format</source>
-                <target>Please use format for phone number like (NNN)NNN-NNNN or NNN-NNN-NNNN or NNN.NNN.NNNN or NNNNNNNNNN.</target>
+                <target>Phone number should contain 10 digits.</target>
             </trans-unit>
             <trans-unit id="error.user.email.error">
                 <source>error.user.email.error</source>

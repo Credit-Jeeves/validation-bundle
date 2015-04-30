@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -137,21 +138,47 @@ class ExportType extends AbstractType
             )
         );
 
+        $builder->add(
+            'export_by',
+            'choice',
+            [
+                'attr'        => [
+                    'force_row' => true,
+                    'class'     => 'original',
+                    "helps_" . ExportReport::EXPORT_BY_PAYMENTS =>
+                        'landlord_export.export_by_payments.description_help',
+                    "helps_" . ExportReport::EXPORT_BY_DEPOSITS =>
+                        'landlord_export.export_by_deposits.description_help',
+                    'data-bind' => 'checked: exportBy',
+                    'row_attr' => [
+                        'data-bind' => "visible: selectedType() != 'yardi'",
+                    ]
+                ],
+                'required'    => true,
+                'choices'     => [
+                    ExportReport::EXPORT_BY_PAYMENTS  => 'Payments',
+                    ExportReport::EXPORT_BY_DEPOSITS  => 'Deposits'
+                ],
+                'data'       => 'deposits',
+                'multiple'  => false,
+                'expanded'  => true
+            ]
+        );
 
         $builder->add(
             'type',
             'choice',
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     'yardi'             => 'order.report.type.yardi',
                     'real_page'         => 'order.report.type.realpage',
                     'promas'            => 'order.report.type.promas',
                     'renttrack'         => 'order.report.type.renttrack',
                     'yardi_genesis'     => 'order.report.type.yardi_genesis',
                     'yardi_genesis_v2'  => 'order.report.type.yardi_genesis_v2',
-                ),
+                ],
                 'required'    => true,
-                'attr'        => array(
+                'attr'        => [
                     'force_row' => true,
                     'class' => 'original widthSelect',
                     'data-bind' => '
@@ -159,22 +186,22 @@ class ExportType extends AbstractType
                         optionsText: "typeName",
                         optionsValue: "type",
                         value: selectedType'
-                ),
-                'constraints' => array(
+                ],
+                'constraints' => [
                     new NotBlank(
-                        array(
-                            'groups' => array(
+                        [
+                            'groups' => [
                                 'yardi',
                                 'promas',
                                 'renttrack',
                                 'yardi_genesis',
                                 'yardi_genesis_v2',
                                 'real_page'
-                            )
-                        )
+                            ]
+                        ]
                     )
-                ),
-            )
+                ],
+            ]
         );
 
         $builder->add(
@@ -291,13 +318,16 @@ class ExportType extends AbstractType
         $builder->add(
             'makeZip',
             'checkbox',
-            array(
+            [
                 'label' => 'export.promas.make_zip',
                 'required' => false,
-                'attr' => array(
+                'attr' => [
                     'data-bind' => 'checked: makeZip'
-                ),
-            )
+                ],
+                'label_attr' => [
+                    'data-bind' => "visible: (exportBy() == 'deposits')",
+                ]
+            ]
         );
 
         $builder->add(

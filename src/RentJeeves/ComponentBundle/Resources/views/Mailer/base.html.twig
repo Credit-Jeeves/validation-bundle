@@ -52,17 +52,21 @@
     <div id="email-body" style="
             margin-bottom: 10px;
             ">
-            {% block email %}{% endblock %}
+        {% block email %}{% endblock %}
     </div>
     <div style="
             margin-bottom: 10px;
             ">
-            {% block button %}{% endblock %}
-   </div>
+        {% block button %}{% endblock %}
+    </div>
     <div style="border-bottom: 1px solid #c8c8c8;"></div>
     <div style="clear: both;"></div>
     <div style="color: #000000;">
         <p>{{ 'email.glad.help' | trans }}</p>
-        <p><b>{{ 'email_rj.creditjeeves.team' | trans }}</b></p>
+        <p>
+            <b>
+                {{ 'email_rj.creditjeeves.team' | trans({'%partnerName%': partnerName}) }}
+            </b>
+        </p>
     </div>
 {% endblock %}

@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="ProcessData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ProcessDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProcessDataResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetGuestCardData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetGuestCardDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetGuestCardDataResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentsByStatusChange">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentsByStatusChangeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentsByStatusChangeResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentsByStatusChangeOrTransactionDate">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentsByStatusChangeOrTransactionDateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentsByStatusChangeOrTransactionDateResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPropertyResidents">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPropertyResidentsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPropertyResidentsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdatePropertyResidents">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="preliminary" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdatePropertyResidentsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdatePropertyResidentsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSingleResident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSingleResidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSingleResidentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLRORents">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLRORentsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetLRORentsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRentableItems">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRentableItemsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRentableItemsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateCreditScore">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateCreditScoreResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateCreditScoreResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPropertyUnits">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPropertyUnitsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPropertyUnitsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPropertyList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPropertyListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPropertyListResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddDocument">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddDocumentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddDocumentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentsContactInfo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResidentsContactInfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResidentsContactInfoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateOccupants">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateOccupantsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateOccupantsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateLeases">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PortfolioName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XMLData" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateLeasesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateLeasesResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ProcessDataSoapIn">
+    <wsdl:part name="parameters" element="tns:ProcessData" />
+  </wsdl:message>
+  <wsdl:message name="ProcessDataSoapOut">
+    <wsdl:part name="parameters" element="tns:ProcessDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetGuestCardDataSoapIn">
+    <wsdl:part name="parameters" element="tns:GetGuestCardData" />
+  </wsdl:message>
+  <wsdl:message name="GetGuestCardDataSoapOut">
+    <wsdl:part name="parameters" element="tns:GetGuestCardDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentsByStatusChangeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentsByStatusChange" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentsByStatusChangeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentsByStatusChangeResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentsByStatusChangeOrTransactionDateSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentsByStatusChangeOrTransactionDate" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentsByStatusChangeOrTransactionDateSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentsByStatusChangeOrTransactionDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertyResidentsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPropertyResidents" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertyResidentsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPropertyResidentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePropertyResidentsSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdatePropertyResidents" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePropertyResidentsSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdatePropertyResidentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSingleResidentSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSingleResident" />
+  </wsdl:message>
+  <wsdl:message name="GetSingleResidentSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSingleResidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetLRORentsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetLRORents" />
+  </wsdl:message>
+  <wsdl:message name="GetLRORentsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetLRORentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRentableItemsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRentableItems" />
+  </wsdl:message>
+  <wsdl:message name="GetRentableItemsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRentableItemsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateCreditScoreSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateCreditScore" />
+  </wsdl:message>
+  <wsdl:message name="UpdateCreditScoreSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateCreditScoreResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertyUnitsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPropertyUnits" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertyUnitsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPropertyUnitsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertyListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPropertyList" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertyListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPropertyListResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddDocumentSoapIn">
+    <wsdl:part name="parameters" element="tns:AddDocument" />
+  </wsdl:message>
+  <wsdl:message name="AddDocumentSoapOut">
+    <wsdl:part name="parameters" element="tns:AddDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentsContactInfoSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResidentsContactInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetResidentsContactInfoSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResidentsContactInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateOccupantsSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateOccupants" />
+  </wsdl:message>
+  <wsdl:message name="UpdateOccupantsSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateOccupantsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateLeasesSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateLeases" />
+  </wsdl:message>
+  <wsdl:message name="UpdateLeasesSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateLeasesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="LeasingSoap">
+    <wsdl:operation name="ProcessData">
+      <wsdl:input message="tns:ProcessDataSoapIn" />
+      <wsdl:output message="tns:ProcessDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetGuestCardData">
+      <wsdl:input message="tns:GetGuestCardDataSoapIn" />
+      <wsdl:output message="tns:GetGuestCardDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsByStatusChange">
+      <wsdl:input message="tns:GetResidentsByStatusChangeSoapIn" />
+      <wsdl:output message="tns:GetResidentsByStatusChangeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsByStatusChangeOrTransactionDate">
+      <wsdl:input message="tns:GetResidentsByStatusChangeOrTransactionDateSoapIn" />
+      <wsdl:output message="tns:GetResidentsByStatusChangeOrTransactionDateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyResidents">
+      <wsdl:input message="tns:GetPropertyResidentsSoapIn" />
+      <wsdl:output message="tns:GetPropertyResidentsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePropertyResidents">
+      <wsdl:input message="tns:UpdatePropertyResidentsSoapIn" />
+      <wsdl:output message="tns:UpdatePropertyResidentsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleResident">
+      <wsdl:input message="tns:GetSingleResidentSoapIn" />
+      <wsdl:output message="tns:GetSingleResidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLRORents">
+      <wsdl:input message="tns:GetLRORentsSoapIn" />
+      <wsdl:output message="tns:GetLRORentsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRentableItems">
+      <wsdl:input message="tns:GetRentableItemsSoapIn" />
+      <wsdl:output message="tns:GetRentableItemsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCreditScore">
+      <wsdl:input message="tns:UpdateCreditScoreSoapIn" />
+      <wsdl:output message="tns:UpdateCreditScoreSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyUnits">
+      <wsdl:input message="tns:GetPropertyUnitsSoapIn" />
+      <wsdl:output message="tns:GetPropertyUnitsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyList">
+      <wsdl:input message="tns:GetPropertyListSoapIn" />
+      <wsdl:output message="tns:GetPropertyListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDocument">
+      <wsdl:input message="tns:AddDocumentSoapIn" />
+      <wsdl:output message="tns:AddDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsContactInfo">
+      <wsdl:input message="tns:GetResidentsContactInfoSoapIn" />
+      <wsdl:output message="tns:GetResidentsContactInfoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateOccupants">
+      <wsdl:input message="tns:UpdateOccupantsSoapIn" />
+      <wsdl:output message="tns:UpdateOccupantsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateLeases">
+      <wsdl:input message="tns:UpdateLeasesSoapIn" />
+      <wsdl:output message="tns:UpdateLeasesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LeasingSoap" type="tns:LeasingSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ProcessData">
+      <soap:operation soapAction="http://tempuri.org/ProcessData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetGuestCardData">
+      <soap:operation soapAction="http://tempuri.org/GetGuestCardData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsByStatusChange">
+      <soap:operation soapAction="http://tempuri.org/GetResidentsByStatusChange" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsByStatusChangeOrTransactionDate">
+      <soap:operation soapAction="http://tempuri.org/GetResidentsByStatusChangeOrTransactionDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyResidents">
+      <soap:operation soapAction="http://tempuri.org/GetPropertyResidents" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePropertyResidents">
+      <soap:operation soapAction="http://tempuri.org/UpdatePropertyResidents" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleResident">
+      <soap:operation soapAction="http://tempuri.org/GetSingleResident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLRORents">
+      <soap:operation soapAction="http://tempuri.org/GetLRORents" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRentableItems">
+      <soap:operation soapAction="http://tempuri.org/GetRentableItems" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCreditScore">
+      <soap:operation soapAction="http://tempuri.org/UpdateCreditScore" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyUnits">
+      <soap:operation soapAction="http://tempuri.org/GetPropertyUnits" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyList">
+      <soap:operation soapAction="http://tempuri.org/GetPropertyList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddDocument">
+      <soap:operation soapAction="http://tempuri.org/AddDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsContactInfo">
+      <soap:operation soapAction="http://tempuri.org/GetResidentsContactInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateOccupants">
+      <soap:operation soapAction="http://tempuri.org/UpdateOccupants" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateLeases">
+      <soap:operation soapAction="http://tempuri.org/UpdateLeases" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="LeasingSoap12" type="tns:LeasingSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ProcessData">
+      <soap12:operation soapAction="http://tempuri.org/ProcessData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetGuestCardData">
+      <soap12:operation soapAction="http://tempuri.org/GetGuestCardData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsByStatusChange">
+      <soap12:operation soapAction="http://tempuri.org/GetResidentsByStatusChange" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsByStatusChangeOrTransactionDate">
+      <soap12:operation soapAction="http://tempuri.org/GetResidentsByStatusChangeOrTransactionDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyResidents">
+      <soap12:operation soapAction="http://tempuri.org/GetPropertyResidents" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePropertyResidents">
+      <soap12:operation soapAction="http://tempuri.org/UpdatePropertyResidents" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleResident">
+      <soap12:operation soapAction="http://tempuri.org/GetSingleResident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLRORents">
+      <soap12:operation soapAction="http://tempuri.org/GetLRORents" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRentableItems">
+      <soap12:operation soapAction="http://tempuri.org/GetRentableItems" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCreditScore">
+      <soap12:operation soapAction="http://tempuri.org/UpdateCreditScore" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyUnits">
+      <soap12:operation soapAction="http://tempuri.org/GetPropertyUnits" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPropertyList">
+      <soap12:operation soapAction="http://tempuri.org/GetPropertyList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddDocument">
+      <soap12:operation soapAction="http://tempuri.org/AddDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResidentsContactInfo">
+      <soap12:operation soapAction="http://tempuri.org/GetResidentsContactInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateOccupants">
+      <soap12:operation soapAction="http://tempuri.org/UpdateOccupants" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateLeases">
+      <soap12:operation soapAction="http://tempuri.org/UpdateLeases" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Leasing">
+    <wsdl:port name="LeasingSoap" binding="tns:LeasingSoap">
+      <soap:address location="{{ url }}/leasing.asmx" />
+    </wsdl:port>
+    <wsdl:port name="LeasingSoap12" binding="tns:LeasingSoap12">
+      <soap12:address location="{{ url }}/leasing.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -2,20 +2,20 @@
 
 namespace RentJeeves\ExternalApiBundle\Model\ResMan;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
 
 class Customers
 {
     /**
-     * @Serializer\SerializedName("Customer")
-     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\Customer")
+     * @Serializer\Type("ArrayCollection<RentJeeves\ExternalApiBundle\Model\ResMan\Customer>")
      * @Serializer\Groups({"ResMan"})
-     * @Serializer\XmlElement(namespace="http://www.w3.org/2005/Atom")
+     * @Serializer\XmlList(inline = true, entry="Customer")
      */
-    protected $customer;
+    protected $customer = [];
 
     /**
-     * @return Customer
+     * @return ArrayCollection
      */
     public function getCustomer()
     {
@@ -25,8 +25,8 @@ class Customers
     /**
      * @param Customer $customer
      */
-    public function setCustomer(Customer $customer)
+    public function addCustomer(Customer $customer)
     {
-        $this->customer = $customer;
+        $this->customer[] = $customer;
     }
 }

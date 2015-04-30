@@ -2,13 +2,14 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
-
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 
 abstract class MappingAbstract implements MappingInterface
 {
@@ -81,7 +82,18 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
-    protected $requiredKeysDefault = array(
+    const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
+
+    const KEY_USER_PHONE = 'user_phone';
+
+    const KEY_CREDITS = 'credits';
+
+    const KEY_IGNORE_ROW = 'ignore_row';
+
+    /**
+     * @var array
+     */
+    protected $requiredKeysDefault = [
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
         self::KEY_BALANCE,
@@ -91,11 +103,16 @@ abstract class MappingAbstract implements MappingInterface
         self::KEY_RENT,
         self::KEY_TENANT_NAME,
         self::KEY_UNIT,
-    );
+    ];
 
+    /**
+     * @var StorageAbstract
+     */
     protected $storage;
 
-    /** @var EntityManager $em */
+    /**
+     * @var EntityManager $em
+     */
     protected $em;
 
     public function setEntityManager(EntityManager $em)
@@ -103,10 +120,18 @@ abstract class MappingAbstract implements MappingInterface
         $this->em = $em;
     }
 
+    /** @var  PropertyProcess $propertyProcess */
+    protected $propertyProcess;
+
+    public function setPropertyProcess(PropertyProcess $propertyProcess)
+    {
+        $this->propertyProcess = $propertyProcess;
+    }
+
     /**
      * @param integer $offset
      * @param integer $rowCount
-     * @param bool $useMapping
+     * @param bool    $useMapping
      *
      * @return array
      */
@@ -130,8 +155,8 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
-     * @param Tenant $tenant
-     * @param Contract $contract
+     * @param Tenant          $tenant
+     * @param Contract        $contract
      * @param ResidentMapping $residentMapping
      *
      * @return ContractWaiting
@@ -146,6 +171,7 @@ abstract class MappingAbstract implements MappingInterface
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
         $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
+        $waitingRoom->setExternalLeaseId($contract->getExternalLeaseId());
         /**
          * Property can be null because it can be not valid
          */
@@ -175,9 +201,7 @@ abstract class MappingAbstract implements MappingInterface
         $property->setStreet($row[self::KEY_STREET]);
         $property->setZip($row[self::KEY_ZIP]);
         $property->setArea($row[self::KEY_STATE]);
-        if (empty($row[self::KEY_UNIT])) {
-            $property->setIsSingle(true);
-        }
+
         return $property;
     }
 
@@ -284,7 +308,7 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
-     * @param array $mappedData
+     * @param  array $mappedData
      * @return array
      */
     protected function makeSureAllKeysExist(array $mappedData)
@@ -300,19 +324,5 @@ abstract class MappingAbstract implements MappingInterface
         }
 
         return $mappedData;
-    }
-
-    /**
-     * @param array $row
-     *
-     * @return bool
-     */
-    public function hasPaymentMapping(array $row)
-    {
-        if (!isset($row[self::KEY_PAYMENT_AMOUNT]) || !isset($row[self::KEY_PAYMENT_DATE])) {
-            return false;
-        }
-
-        return true;
     }
 }

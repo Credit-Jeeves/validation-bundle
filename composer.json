@@ -83,6 +83,10 @@
             }
         },
         {
+            "type": "vcs",
+            "url": "https://github.com/goetas/serializer.git"
+        },
+        {
             "type": "git",
             "url": "git@github.com:Credit-Jeeves/CoreBundle.git"
         },
@@ -109,6 +113,14 @@
         {
             "type": "git",
             "url": "git@github.com:Credit-Jeeves/Heartland.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/ACIClient.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git"
         },
         {
             "type": "git",
@@ -168,6 +180,10 @@
         },
         {
             "type": "git",
+            "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git"
+        },
+        {
+            "type": "git",
             "url": "git@github.com:Credit-Jeeves/doctrine2.git"
         },
         {
@@ -197,7 +213,6 @@
         "credit-jeeves/arf-bundle": "dev-master",
         "credit-jeeves/simulation-bundle": "dev-master",
         "credit-jeeves/api-bundle": "dev-master",
-        "formapro/xmlseclibs": "dev-master",
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
         "friendsofsymfony/oauth-server-bundle": "dev-master",
@@ -220,10 +235,10 @@
         "jms/di-extra-bundle": "1.4.*",
         "friendsofsymfony/user-bundle": "v1.3.2",
         "friendsofsymfony/jsrouting-bundle": "~1.1",
-        "payum/payum": "dev-master as 0.5.x-dev",
-        "payum/payum-bundle": "dev-heartland",
-        "payum/authorize-net-aim": "0.5.*",
-        "payum/heartland": "dev-master",
+        "payum/aci" : "dev-master",
+        "payum2/payum": "dev-master as 0.5.x-dev",
+        "payum2/payum-bundle": "dev-heartland",
+        "payum2/heartland": "dev-master",
         "ass/xmlsecurity": "dev-master",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",
@@ -247,14 +262,20 @@
         "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
         "pagerfanta/pagerfanta": "dev-master",
         "fp/jsformvalidator-bundle": "dev-master",
-        "besimple/soap": "dev-master",
+        "besimple/soap-bundle": "dev-master",
+        "besimple/soap-common": "dev-master",
+        "besimple/soap-wsdl": "dev-master",
+        "besimple/soap-client": "dev-master",
+        "besimple/soap-server": "dev-master",
         "besimple/wsdl2php": "dev-master",
+        "renttrack/transunion-bundle": "dev-master",
         "proberts/skip32": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",
         "envjs": "v1",
         "sinon": "1.5.0",
+        "phpunit/phpunit": "~4",
         "behat/mink": "dev-master as 1.5.0",
         "behat/mink-bundle": "1.4.*",
         "behat/mink-selenium2-driver": "1.1.*",
@@ -265,7 +286,8 @@
         "sensio/generator-bundle": "dev-master",
         "khepin/yaml-fixtures-bundle": "dev-master",
         "comfortablynumb/backup-restore-bundle": "dev-master",
-        "ton/email-bundle": "1.0.*"
+        "ton/email-bundle": "1.0.*",
+        "fabpot/php-cs-fixer": "@stable"
     },
     "scripts": {
         "post-install-cmd": [

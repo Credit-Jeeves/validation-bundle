@@ -4,8 +4,28 @@ namespace RentJeeves\ExternalApiBundle\Model\ResMan;
 
 use JMS\Serializer\Annotation as Serializer;
 
+/**
+ * @Serializer\XmlRoot("Customer")
+ */
 class Customer
 {
+    /**
+     * It's residentId of User
+     *
+     * @Serializer\SerializedName("CustomerID")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"ResMan"})
+     */
+    protected $customerId;
+
+    /**
+     * @Serializer\SerializedName("Type")
+     * @Serializer\XmlAttribute
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"ResMan"})
+     */
+    protected $type;
+
     /**
      * @Serializer\SerializedName("Name")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\UserName")
@@ -31,6 +51,22 @@ class Customer
     protected $lease;
 
     /**
+     * @return string
+     */
+    public function getCustomerId()
+    {
+        return $this->customerId;
+    }
+
+    /**
+     * @param string $customerId
+     */
+    public function setCustomerId($customerId)
+    {
+        $this->customerId = $customerId;
+    }
+
+    /**
      * @return UserName
      */
     public function getUserName()
@@ -44,5 +80,53 @@ class Customer
     public function setUserName($name)
     {
         $this->userName = $name;
+    }
+
+    /**
+     * @return Lease
+     */
+    public function getLease()
+    {
+        return $this->lease;
+    }
+
+    /**
+     * @param Lease $lease
+     */
+    public function setLease($lease)
+    {
+        $this->lease = $lease;
+    }
+
+    /**
+     * @return Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function setAddress(Address $address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

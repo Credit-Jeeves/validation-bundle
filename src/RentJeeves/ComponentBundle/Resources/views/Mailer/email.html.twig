@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{# @TODO move style to css file #}
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -14,9 +15,9 @@
                 font-size: 14px;
                 color: #000000;
                 ">
-            {% include "RjComponentBundle:Mailer:header.html.twig" only %}
+            {% include "RjComponentBundle:Mailer:header.html.twig" %}
             {% block body %}{% endblock %}
-            {% include "RjComponentBundle:Mailer:footer.html.twig" only %}
+            {% include "RjComponentBundle:Mailer:footer.html.twig"  %}
         </div>
     </body>
 </html>

@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
@@ -26,6 +27,19 @@ abstract class GroupSettings
      * @var string
      */
     protected $id;
+
+    /**
+     * @ORM\Column(
+     *     type="PaymentProcessor",
+     *     options={
+     *         "default"="heartland"
+     *     },
+     *     name="payment_processor",
+     *     nullable=false
+     * )
+     * @var string
+     */
+    protected $paymentProcessor = PaymentProcessor::HEARTLAND;
 
     /**
      * @ORM\Column(
@@ -156,6 +170,22 @@ abstract class GroupSettings
     public function getPayBalanceOnly()
     {
         return $this->payBalanceOnly;
+    }
+
+    /**
+     * @param $paymentProcessor
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
     }
 
     /**

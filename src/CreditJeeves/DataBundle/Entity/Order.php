@@ -7,14 +7,12 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Transaction;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
-use RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -25,6 +23,18 @@ class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
+    /**
+     * use for ResMan addPaymentToBatch
+     *
+     * @var string
+     */
+    protected $batchId = null;
+
+    /**
+     * Use for export on preSerialize event
+     *
+     * @var null
+     */
     protected $buildingId = null;
 
     public function setBuildingId($buildingId)
@@ -220,7 +230,6 @@ class Order extends BaseOrder
         return $this->getCreatedAt()->format('m/d/Y');
     }
 
-
     /**
      * Date time of actual payment transaction with Heartland
      *
@@ -293,7 +302,8 @@ class Order extends BaseOrder
      */
     public function getTenantExternalId()
     {
-        if ($residentMapping = $this->getContract()->getTenant()->getResidentsMapping()->first()) {
+        $holding = $this->getContract()->getHolding();
+        if ($residentMapping = $this->getContract()->getTenant()->getResidentForHolding($holding)) {
             return $residentMapping->getResidentId();
         }
 
@@ -430,6 +440,7 @@ class Order extends BaseOrder
                     if (OperationType::RENT == $operation->getType()) {
                         return true;
                     }
+
                     return false;
                 }
             );
@@ -446,6 +457,7 @@ class Order extends BaseOrder
                     if (OperationType::OTHER == $operation->getType()) {
                         return true;
                     }
+
                     return false;
                 }
             );
@@ -477,14 +489,13 @@ class Order extends BaseOrder
         return number_format($result, 2, '.', '');
     }
 
-
-
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
         $return = parent::addOperation($operation);
         if (!$operation->getOrder()) {
             $operation->setOrder($this);
         }
+
         return $return;
     }
 
@@ -510,9 +521,11 @@ class Order extends BaseOrder
         /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
         $result['amount'] = $this->getSum(); //TODO check. May be it must be operation getAmount()
-        $result['tenant'] = $contract? $contract->getTenant()->getFullName() : '';
-        $result['address'] = $contract? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
+        $result['tenant'] = $contract ? $contract->getTenant()->getFullName() : '';
+        $result['address'] = $contract ? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
+        $depositDate = $this->getDepositDate();
+        $result['depositDate'] = $depositDate ? $depositDate->format('m/d/Y') : 'N/A';
         $result['finish'] = '--';
         $result['style'] = $this->getOrderStatusStyle();
         $result['icon'] = $this->getOrderTypes();
@@ -533,6 +546,7 @@ class Order extends BaseOrder
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
         }
+
         return $result;
     }
 
@@ -586,7 +600,7 @@ class Order extends BaseOrder
         $result['errorMessage'] = $this->getHeartlandMessage();
         $result['style'] = $this->getOrderStatusStyle();
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
-        $result['property'] = $this->getContract()? $this->getContract()->getRentAddress() : 'N/A';
+        $result['property'] = $this->getContract() ? $this->getContract()->getRentAddress() : 'N/A';
 
         $result['rent'] = $this->getRentAmount();
         $result['other'] = $this->getOtherAmount();
@@ -623,16 +637,17 @@ class Order extends BaseOrder
     }
 
     /**
-     * @return boolean|Heartland
+     * @return boolean|Transaction
      */
     public function getCompleteTransaction()
     {
-        return $this->getHeartlands()
+        return $this->getTransactions()
             ->filter(
-                function (Heartland $transaction) {
+                function (Transaction $transaction) {
                     if (TransactionStatus::COMPLETE == $transaction->getStatus() && $transaction->getIsSuccessful()) {
                         return true;
                     }
+
                     return false;
                 }
             )->first();
@@ -640,12 +655,13 @@ class Order extends BaseOrder
 
     public function getReversedTransaction()
     {
-        return $this->getHeartlands()
+        return $this->getTransactions()
             ->filter(
-                function (Heartland $transaction) {
+                function (Transaction $transaction) {
                     if (TransactionStatus::REVERSED == $transaction->getStatus() && $transaction->getIsSuccessful()) {
                         return true;
                     }
+
                     return false;
                 }
             )->first();
@@ -653,7 +669,7 @@ class Order extends BaseOrder
 
     public function getHeartlandBatchId()
     {
-        /** @var Heartland $transaction */
+        /** @var Transaction $transaction */
         if ($transaction = $this->getHeartlandTransaction()) {
             return $transaction->getBatchId();
         }
@@ -662,13 +678,13 @@ class Order extends BaseOrder
     }
 
     /**
-     * @param bool $onlyReversal
+     * @param  bool   $onlyReversal
      * @return string
      */
     public function getHeartlandMessage($onlyReversal = true)
     {
         if (OrderStatus::ERROR == $this->getStatus()) {
-            return $this->getHeartlandErrorMessage();
+            return $this->getErrorMessage();
         }
 
         if ($onlyReversal) {
@@ -687,19 +703,19 @@ class Order extends BaseOrder
      *
      * @return string
      */
-    public function getHeartlandErrorMessage()
+    public function getErrorMessage()
     {
-        /** @var Heartland $transaction */
-        $transaction = $this->getHeartlands()
+        /** @var Transaction $transaction */
+        $transaction = $this->getTransactions()
             ->filter(
-                function (Heartland $transaction) {
+                function (Transaction $transaction) {
                     if (TransactionStatus::COMPLETE == $transaction->getStatus() && !$transaction->getIsSuccessful()) {
                         return true;
                     }
+
                     return false;
                 }
             )->last();
-
 
         if ($transaction) {
             return $transaction->getMessages();
@@ -710,7 +726,7 @@ class Order extends BaseOrder
 
     public function getReversalDescription()
     {
-        /** @var Heartland $transaction */
+        /** @var Transaction $transaction */
         if ($transaction = $this->getReversedTransaction()) {
             return $transaction->getMessages();
         }
@@ -719,17 +735,17 @@ class Order extends BaseOrder
     }
 
     /**
-     * @param bool $asString Defines whether to return a string or an array
-     * @param string $glue A glue for string result
+     * @param bool   $asString Defines whether to return a string or an array
+     * @param string $glue     A glue for string result
      *
      * @return array|string
      */
     public function getHeartlandTransactionIds($asString = true, $glue = ', ')
     {
         $result = array();
-        /** @var Heartland $heartland */
-        foreach ($this->getHeartlands() as $heartland) {
-            $result[] = $heartland->getTransactionId();
+        /** @var Transaction $transaction */
+        foreach ($this->getTransactions() as $transaction) {
+            $result[] = $transaction->getTransactionId();
         }
 
         if ($asString) {
@@ -771,9 +787,8 @@ class Order extends BaseOrder
 
     public function __toString()
     {
-        return (string)$this->getId();
+        return (string) $this->getId();
     }
-
 
     /**
      * @Serializer\VirtualProperty
@@ -790,7 +805,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("DocumentNumber")
-     * @Serializer\Groups({"soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
@@ -803,7 +818,7 @@ class Order extends BaseOrder
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Reversal")
      * @Serializer\Groups({"soapYardiReversed"})
-     * @Serializer\Type("RentJeeves\DataBundle\Entity\Heartland")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\Transaction")
      * @Serializer\XmlElement(cdata=false)
      *
      * @return string
@@ -816,7 +831,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TransactionDate")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
@@ -827,20 +842,64 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("BatchID")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getResManBatchId()
+    {
+        return $this->batchId;
+    }
+
+    /**
+     * @param string $batchId
+     */
+    public function setBatchId($batchId)
+    {
+        $this->batchId = $batchId;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UnitID")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getResManUnitId()
+    {
+        return $this->getContract()->getUnit()->getName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("CustomerID")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
     public function getCustomerID()
     {
-        return $this->getTenantExternalId();
+        return strtolower($this->getContract()->getExternalLeaseId());
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaidBy")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getPaidBy()
+    {
+        return $this->getContract()->getTenant()->getFullName();
     }
 
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Amount")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("double")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -854,7 +913,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Comment")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -867,17 +926,194 @@ class Order extends BaseOrder
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("PropertyPrimaryID")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\SerializedName("Description")
+     * @Serializer\Groups({"ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
      * @return string
      */
-    public function getPropertyPrimaryID()
+    public function getResManDescription()
     {
-        $mapping = $this->getContract()->getProperty()->getPropertyMapping();
+        return $this->getComment();
+    }
 
-        return $mapping->first()->getExternalPropertyId();
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PropertyPrimaryID")
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string|null
+     */
+    public function getPropertyPrimaryId()
+    {
+        /** @var PropertyMapping $propertyMapping */
+        $propertyMapping = $this->getContract()->getProperty()->getPropertyMappingByHolding(
+            $this->getContract()->getGroup()->getHolding()
+        );
+        if (null === $propertyMapping) {
+            return null;
+        }
+
+        return strtolower($propertyMapping->getExternalPropertyId());
+    }
+
+    public function getDepositDate()
+    {
+        if ($transaction = $this->getCompleteTransaction()) {
+            return $transaction->getDepositDate();
+        }
+
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("SiteID")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriSiteId()
+    {
+        return $this->getContract()->getHolding()->getMriSettings()->getSiteId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaymentType")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string|null
+     */
+    public function getMriPaymentType()
+    {
+        if ($this->getType() === OrderType::HEARTLAND_CARD) {
+            return 'C';
+        }
+
+        if ($this->getType() === OrderType::HEARTLAND_BANK) {
+            return 'K';
+        }
+
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaymentAmount")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriPaymentAmount()
+    {
+        return $this->getTotalAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("CheckNumber")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriCheckNumber()
+    {
+        return $this->getCompleteTransaction()->getTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ExternalTransactionNumber")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriExternalTransactionNumber()
+    {
+        return $this->getCompleteTransaction()->getTransactionId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaymentInitiationDatetime")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriPaymentInitiationDatetime()
+    {
+        return $this->getCreatedAt()->format('Y-m-d\TH:i:s');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ResidentNameID")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriResidentNameID()
+    {
+        return $this->getTenantExternalId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PropertyID")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getMriPropertyID()
+    {
+        return $this->getPropertyPrimaryId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PartnerName")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getPartnerName()
+    {
+        return 'RentTrack';
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ExternalBatchId")
+     * @Serializer\Groups({"MRI"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getExternalBatchId()
+    {
+        return $this->getCompleteTransaction()->getBatchId();
     }
 }

@@ -17,14 +17,11 @@ parameters:
     server: live
     server_name_cj: my.creditjeeves.com
     server_name_rj: my.renttrack.com
-    google_maps_key: AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24
-    session.lifetime: 900 #in seconds
-    payment_report_path: /home/heartland
-    authorize_net:
-        login_id: '29fDg7sU24G'
-        transaction_key: '474v43G35wJ6Gm2d'
-        sandbox: false
 
+    google_maps_key: 'AIzaSyBWwRKgFPdWQYzzwGKaDL83ojLxGGFvGV4' # API account with systems@renttrack.com
+
+    session.lifetime: 900 #in seconds
+    payment_processor.hps.report_path: /home/heartland
     heartland:
         application_id: 1
         username: RTAPI
@@ -45,6 +42,9 @@ parameters:
 
     validator.translation_domain: messages
 
+    # parameter was added for task RT-362, we can fast allow and disallow feature that disallow duplicate contract
+    allow_duplicate_contracts: false
+
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
     resman.api_url: https://api.myresman.com/MITS/
@@ -54,3 +54,12 @@ parameters:
         db_id_col:       session_id
         db_data_col:     session_value
         db_time_col:     session_time
+
+    transunion.account_name: 'CC2RentTrack'
+    # transunion.password: 'donotcheckin' # this is set locally on server
+    transunion.environment: prod
+    transunion.ssl_key: /var/www/my.renttrack.com/app/config/secrets/transunion/my.renttrack.com.key
+    transunion.ca_certificate:  /var/www/my.renttrack.com/app/config/secrets/transunion/TUIExternalCA.pem
+    transunion.ssl_certificate:  /var/www/my.renttrack.com/app/config/secrets/transunion/my.renttrack_20150114.crt
+    transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
+    transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'

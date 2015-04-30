@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -10,6 +11,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 /**
@@ -111,7 +113,7 @@ class PaymentListener
             ($payment = $entity->getActivePayment()) &&
             PaymentStatus::CLOSE != $payment->getStatus()
         ) {
-            $payment->setStatus(PaymentStatus::CLOSE);
+            $payment->setClosed($this, PaymentCloseReason::CONTRACT_DELETED);
             $em->persist($payment);
             $em->flush($payment);
         }
@@ -127,11 +129,19 @@ class PaymentListener
 
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
             if ($entity instanceof Payment) {
-                $oldValue = $entity->getStatus();
-                $entity->setStatus(PaymentStatus::CLOSE);
+                $paramUpdate = [];
+                if (PaymentStatus::CLOSE != $entity->getStatus()) {
+                    $oldStatus = $entity->getStatus();
+                    $entity->setClosed($this, PaymentCloseReason::DELETED);
+                    $paramUpdate = [
+                        'status' => [$oldStatus, PaymentStatus::CLOSE],
+                        'closeDetails' => [null, $entity->getCloseDetails()],
+                        'updatedAt' => [$entity->getUpdatedAt(), new DateTime()]
+                    ];
+                }
+                // To avoid Payment entity deletion, we persist the entity (Entity becomes managed again)
                 $em->persist($entity);
-                $uow->propertyChanged($entity, 'status', $oldValue, PaymentStatus::CLOSE);
-                $uow->scheduleExtraUpdate($entity, array('status' => array($oldValue, PaymentStatus::CLOSE)));
+                $uow->scheduleExtraUpdate($entity, $paramUpdate);
             }
         }
     }

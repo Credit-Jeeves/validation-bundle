@@ -98,7 +98,7 @@ class CsvFileReader
 
     protected function getFile($filename)
     {
-        if (!file_exists($filename)) {
+        if (!file_exists($filename) || !is_file($filename)) {
             throw new RuntimeException(sprintf('File "%s" not found.', $filename));
         }
 

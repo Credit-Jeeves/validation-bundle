@@ -8,6 +8,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class RegularInquiriesController extends Controller
 {
     /**
+     *
+     * This component currently only supports Experian prequal reports
+     *
      * @Template()
      * @param \Report $Report
      */

@@ -6,15 +6,17 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\CoreBundle\Traits\ValidateEntities;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\Invite;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\Grouptype;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Validator\Validator;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -23,6 +25,8 @@ use Doctrine\ORM\EntityManager;
  */
 class InviteLandlord
 {
+    use ValidateEntities;
+
     protected $em;
 
     /**
@@ -33,17 +37,26 @@ class InviteLandlord
     protected $locale;
 
     /**
+     * @var PropertyProcess
+     */
+    protected $propertyProcess;
+
+    /**
      * @InjectParams({
-     *     "em"     = @Inject("doctrine.orm.entity_manager"),
-     *     "mailer" = @Inject("project.mailer"),
-     *     "locale" = @Inject("%kernel.default_locale%"),
+     *     "em"        = @Inject("doctrine.orm.entity_manager"),
+     *     "mailer"    = @Inject("project.mailer"),
+     *     "locale"    = @Inject("%kernel.default_locale%"),
+     *     "validator" = @Inject("validator"),
+     *     "propertyProcess" = @Inject("property.process")
      * })
      */
-    public function __construct(EntityManager $em, $mailer, $locale)
+    public function __construct(EntityManager $em, $mailer, $locale, $validator, $propertyProcess)
     {
         $this->em = $em;
         $this->mailer = $mailer;
         $this->locale = $locale;
+        $this->validator = $validator;
+        $this->propertyProcess = $propertyProcess;
     }
 
     public function invite(Invite $invite, $tenant)
@@ -85,9 +98,9 @@ class InviteLandlord
         }
 
         $property = $invite->getProperty();
+        $property->addPropertyGroup($group);
         if ($invite->getIsSingle()) {
-            $property->setIsSingle(true);
-            $em->flush($property);
+            $this->propertyProcess->setupSingleProperty($property);
         } else {
             $contract->setSearch($invite->getUnitName());
         }
@@ -97,6 +110,13 @@ class InviteLandlord
         $contract->setHolding($holding);
         $contract->setGroup($group);
 
+        $this->validate($contract);
+
+        if ($this->hasErrors()) {
+            return false;
+        }
+
+        $em->persist($property);
         $em->persist($group);
         $em->persist($contract);
         $em->persist($landlord);
