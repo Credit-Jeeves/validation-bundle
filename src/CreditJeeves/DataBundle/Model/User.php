@@ -326,7 +326,7 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "invitationApi",
      *         "api",
-     *         "import"
+     *         "import_phone"
      *     }
      * )
      */

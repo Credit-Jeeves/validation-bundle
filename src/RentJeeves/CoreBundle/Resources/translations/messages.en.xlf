@@ -3110,10 +3110,25 @@
                 <source>landlord_export.export_by_deposits.description_help</source>
                 <target>This will export all the payments by their estimated deposit date. Payments will have a "batch ID," or will be grouped by the batch that was deposited to your account, so that you can sum them up and reconcile against your bank </target>
             </trans-unit>
-
             <trans-unit id="new.user.error.without_invite_code">
                 <source>new.user.error.without_invite_code</source>
                 <target>It looks like you already have an account. Please login or click "Get a new one" if you forgot your password.</target>
+            </trans-unit>
+            <trans-unit id="common.tenant.cell">
+                <source>common.tenant.cell</source>
+                <target>Tenant cell</target>
+            </trans-unit>
+            <trans-unit id="common.open_credits">
+                <source>common.open_credits</source>
+                <target>Open Credits</target>
+            </trans-unit>
+            <trans-unit id="common.tenant.past">
+                <source>common.tenant.past</source>
+                <target>Past Tenant</target>
+            </trans-unit>
+            <trans-unit id="common.payment_accepted">
+                <source>common.payment_accepted</source>
+                <target>Payment Accepted</target>
             </trans-unit>
         </body>
     </file>
