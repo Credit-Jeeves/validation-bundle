@@ -19,8 +19,14 @@ class ContractType extends AbstractType
 {
     const NAME = '';
 
+    /**
+     * @var bool
+     */
     public $submit = false;
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add('unit_url', 'entity', [
@@ -54,7 +60,6 @@ class ContractType extends AbstractType
             ],
         ]);
 
-
         $builder->add('experian_reporting', new ReportingType(), [
             'property_path' => 'reportToExperian'
         ]);
@@ -76,7 +81,9 @@ class ContractType extends AbstractType
         });
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -105,6 +112,10 @@ class ContractType extends AbstractType
         ]);
     }
 
+    /**
+     * @param array                     $data
+     * @param ExecutionContextInterface $context
+     */
     public function isSubmitted($data, ExecutionContextInterface $context)
     {
         if ($this->submit) {
@@ -120,9 +131,7 @@ class ContractType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

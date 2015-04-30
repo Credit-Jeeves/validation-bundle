@@ -17,6 +17,7 @@ use RentJeeves\ApiBundle\Response\Payment as ResponseEntity;
 use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -41,7 +42,7 @@ class PaymentsController extends Controller
      * @Rest\Get("/payments")
      * @Rest\View(serializerGroups={"Base", "PaymentDetails"})
      *
-     * @return ResponseCollection
+     * @return ResponseCollection|null
      */
     public function getPaymentsAction()
     {
@@ -57,6 +58,8 @@ class PaymentsController extends Controller
         if ($response->count() > 0) {
             return $response;
         }
+
+        return null;
     }
 
     /**
@@ -105,7 +108,7 @@ class PaymentsController extends Controller
      *     section="Payments",
      *     description="Create a payment.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
      *     }
@@ -165,7 +168,7 @@ class PaymentsController extends Controller
      * )
      *
      * @throws BadRequestHttpException
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function createPaymentAction(Request $request)
     {
@@ -181,7 +184,7 @@ class PaymentsController extends Controller
      *     section="Payment",
      *     description="Update a payment.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         204="Returned when successful",
      *         404="Payment not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
@@ -196,6 +199,8 @@ class PaymentsController extends Controller
      * @RequestParam(
      *     name="payment_account_url",
      *     encoder="api.default_url_encoder",
+     *     strict=false,
+     *     nullable=true,
      *     description="Resource url for PaymentAccount."
      * )
      * @RequestParam(
@@ -241,7 +246,7 @@ class PaymentsController extends Controller
      * )
      *
      * @throws NotFoundHttpException
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function editPaymentAction($id, Request $request)
     {
@@ -277,7 +282,7 @@ class PaymentsController extends Controller
      * )
      *
      * @throws NotFoundHttpException
-     * @return bool
+     * @return array
      */
     public function deletePaymentAction($id)
     {
@@ -303,10 +308,10 @@ class PaymentsController extends Controller
     }
 
     /**
-     * @param  Request                      $request
-     * @param  PaymentEntity                $entity
-     * @param  string                       $method
-     * @return \Symfony\Component\Form\Form
+     * @param  Request       $request
+     * @param  PaymentEntity $entity
+     * @param  string        $method
+     * @return Form
      */
     protected function processForm(Request $request, PaymentEntity $entity, $method = 'POST')
     {

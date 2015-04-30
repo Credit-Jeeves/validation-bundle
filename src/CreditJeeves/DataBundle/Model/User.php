@@ -338,6 +338,7 @@ abstract class User extends BaseUser
      *     message="error.user.date",
      *     groups={
      *         "user_profile",
+     *         "api",
      *         "invite_short"
      *     }
      * )

@@ -9,6 +9,7 @@ use RentJeeves\ApiBundle\Response\Contract as ResponseEntity;
 use RentJeeves\ApiBundle\Services\ContractProcessor;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
 use RentJeeves\DataBundle\Entity\ContractRepository;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -61,7 +62,7 @@ class ContractsController extends Controller
      *     section="Contract",
      *     description="Create new contract.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
      *     }
@@ -87,7 +88,7 @@ class ContractsController extends Controller
      *     description="Option for enable reporting to Experian."
      * )
      *
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function createContractAction(Request $request)
     {
@@ -95,10 +96,10 @@ class ContractsController extends Controller
     }
 
     /**
-     * @param  Request                      $request
-     * @param  ContractEntity               $entity
-     * @param  string                       $method
-     * @return \Symfony\Component\Form\Form
+     * @param  Request             $request
+     * @param  ContractEntity      $entity
+     * @param  string              $method
+     * @return Form|ResponseEntity
      * @throws \Exception
      */
     protected function processForm(Request $request, ContractEntity $entity, $method = 'POST')
@@ -140,7 +141,7 @@ class ContractsController extends Controller
      *     section="Contract",
      *     description="Create new contract.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         204="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         404="Contract not found",
      *         500="Internal Server Error"
@@ -165,7 +166,8 @@ class ContractsController extends Controller
      *     description="Option for enable reporting to Experian."
      * )
      *
-     * @return ResponseEntity
+     * @throws NotFoundHttpException
+     * @return ResponseEntity|Form
      */
     public function editContractAction($id, Request $request)
     {

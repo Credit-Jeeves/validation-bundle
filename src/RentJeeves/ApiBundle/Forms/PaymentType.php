@@ -4,24 +4,32 @@ namespace RentJeeves\ApiBundle\Forms;
 
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\PaymentAccountRepository;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolver;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PaymentType extends AbstractType
 {
     const NAME = '';
 
+    /**
+     * @var Tenant
+     */
     protected $tenant;
 
-    public function __construct($tenant)
+    /**
+     * @param Tenant $tenant
+     */
+    public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         if ($options['method'] != 'PUT') {
@@ -89,9 +97,11 @@ class PaymentType extends AbstractType
         $builder->add('paid_for', 'text', [
             'property_path' => 'paidForApi'
         ]);
-
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -102,9 +112,7 @@ class PaymentType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

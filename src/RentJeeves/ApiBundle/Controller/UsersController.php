@@ -89,7 +89,7 @@ class UsersController extends Controller
     public function createUserAction(Request $request)
     {
         $form = $this->createForm(
-            new TenantType($this->getUser()),
+            new TenantType(),
             new Tenant(),
             ['method' => 'POST']
         );

@@ -27,7 +27,7 @@ class AddressesController extends Controller
      * @Rest\Get("/addresses")
      * @Rest\View(serializerGroups={"Base", "AddressDetails"})
      *
-     * @return ResponseCollection
+     * @return ResponseCollection|null
      */
     public function getAddressesAction()
     {
@@ -39,6 +39,8 @@ class AddressesController extends Controller
         if ($response->count() > 0) {
             return $response;
         }
+
+        return null;
     }
 
     /**
