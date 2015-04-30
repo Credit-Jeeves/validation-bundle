@@ -21,7 +21,7 @@ class StorageMRI extends ExternalApiStorage
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function initializeParameters()
     {
