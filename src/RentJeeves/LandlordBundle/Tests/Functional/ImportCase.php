@@ -1886,6 +1886,7 @@ class ImportCase extends ImportBaseAbstract
      */
     public function mriBaseImport()
     {
+        $this->markTestSkipped('Temporarily skip this test due to: need actual contract with filled address field');
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
