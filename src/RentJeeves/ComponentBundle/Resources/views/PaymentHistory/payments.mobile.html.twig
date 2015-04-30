@@ -1,0 +1,105 @@
+{% for contract in contracts %}
+
+<div data-role="page" id="paymentHistory{{ contract.id }}">
+
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a href="#contract{{ contract.id }}" class="headerButton ui-btn-left" data-transition="slide" data-direction="reverse" data-role="none" role="none" style="background: transparent; color: white;">Back</a>
+        <h1 class="ui-title" role="heading" aria-level="1">Payment History</h1>
+    </div>
+    <div class="ui-content" role="main" style="background: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png);">
+
+        <table data-role="none" class="paymentHistoryTable">
+            <tr>
+                <td colspan="3" class="headingAddress">
+                    <i class="fa fa-home"></i> <b>{{contract.getRentAddress }}</b>
+                </td>
+            </tr>
+            <tbody>
+
+            {% for i,a in contract.histories %}
+
+
+<tr>
+    <td>{{ a.paidFor|date("m/d/Y") }}</td>
+    <td>{{ a.status }}</td>
+    <td>{{ a.total }}</td>
+
+
+</tr>
+
+
+
+
+            {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endfor %}
+
+
+<div data-role="page" id="paymentHistory">
+
+    <div data-role="panel" id="panelH" style="background: black;">
+        <ul data-role="listview">
+            <li><a href="#main" class="menuOptions">Current Payments</a></li>
+            <li><a href="#paymentHistory" class="menuOptions"  style="color: #666 !important;">Payment History</a></li>
+            {#<li><a href="bmw.html" class="menuOptions">Payment Sources</a></li>#}
+            <li><a href="logout" class="menuOptions">Logout</a></li>
+        </ul>
+
+    </div>
+
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a href="#panelH" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
+        <h1 class="ui-title" role="heading" aria-level="1"><img style="width: 100%;" src="/bundles/rjcore/Images/mobile/home-logo.png"></h1>
+    </div>
+    <div class="ui-content" role="main" style="background-image: url(/bundles/rjcore/Images/mobile/darkblur-bgnd.png);">
+
+        <div style="font-size: 14pt; color: white; text-shadow: none;">Payment History</div>
+        <br>
+
+
+{% for contract in contracts %}
+
+            <table data-role="none" class="paymentHistoryTable">
+                <tr>
+                    <td colspan="3" class="headingAddress">
+                        <i class="fa fa-home"></i> <b>{{contract.getRentAddress }}</b>
+                    </td>
+                </tr>
+                <tbody>
+
+                {% for i,a in contract.payments %}
+
+
+                    <tr>
+                        <td>{{ a.createdAt|date("m/d/Y") }}</td>
+                        <td>{{ a.status }}</td>
+                        <td>{{ a.total }}</td>
+
+
+                    </tr>
+
+
+
+
+                {% endfor %}
+
+
+                </tbody>
+
+            </table>
+<br>
+
+{% endfor %}
+
+
+        </div>
+    </div>
+

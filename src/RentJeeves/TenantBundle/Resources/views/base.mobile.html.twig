@@ -1,27 +1,12 @@
 {% extends "RjCoreBundle::rj_base.mobile.html.twig" %}
 
+
 {% block stylesheets %}
     {% stylesheets
-
-                    '@ComponentBundle/Resources/public/css/*'
-                    '@RjComponentBundle/Resources/public/css/*'
-                    '@RjPublicBundle/Resources/public/css/footer.css'
-                    '@CoreBundle/Resources/public/css/rj-logos.css'
-                    '@CoreBundle/Resources/public/css/tabs.css'
-                    '@UserBundle/Resources/public/css/login.css'
-                    '@CoreBundle/Resources/public/css/check.css'
-                    '@CoreBundle/Resources/public/css/rent-menu.css'
-                    '@CheckoutBundle/Resources/public/css/checkout.css'
-                    '@TenantBundle/Resources/public/css/alert.css'
-                    '@TenantBundle/Resources/public/css/home.page.css'
-                    '@RjPublicBundle/Resources/public/css/base-font.css'
-
-
-
-    '@TenantBundle/Resources/public/css/rt01.css'
-    '@TenantBundle/Resources/public/css/jquery.mobile.icons.min.css'
+        '@TenantBundle/Resources/public/css/rt01.css'
+        '@TenantBundle/Resources/public/css/jquery.mobile.icons.min.css'
     %}
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans+Caption' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans+Caption' rel='stylesheet' type='text/css'>
     <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
 
     {#
@@ -40,31 +25,19 @@
 
     <link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog.min.css" />
     <script type="text/javascript" src="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog2.min.js"></script>
+        {% endstylesheets %}
 
 
-    {% endstylesheets %}
 
 {% endblock %}
+
 {# delete ability is commented out @RjComponentBundle/Resources/public/js/tenant-contracts.js. #}
 {% block head_javascripts %}
-{% javascripts '@RjCoreBundle/Resources/public/js/jquery.slimscroll.js'
-    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
-    '@RjCoreBundle/Resources/public/js/formProcess.js'
-    '@RjCoreBundle/Resources/public/js/user-voice.js'
-    '@TenantBundle/Resources/public/js/CurrentPayments.js'
-    '@RjCheckoutBundle/Resources/public/js/Pay.js'
-    '@RjCheckoutBundle/Resources/public/js/Payment.js'
-    '@RjCheckoutBundle/Resources/public/js/PaymentSource.js'
-    '@RjCheckoutBundle/Resources/public/js/Cancel.js'
-    '@CoreBundle/Resources/public/js/Address.js'
-    '@TenantBundle/Resources/public/js/PaymentSources.js'
-    '@RjComponentBundle/Resources/public/js/Payments/TenantPayment.js'
-    '@RjComponentBundle/Resources/public/js/Payments/TenantPaymentMapping.js'
-    '@RjComponentBundle/Resources/public/js/Payments/TenantPaymentsViewModel.js'
-%}
+{% javascripts '@TenantBundle/Resources/public/js/mobile.js'
+    %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
-{% endblock %}
+    {% endjavascripts %}
+    {% endblock %}
 
 {% block google_api %}
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>

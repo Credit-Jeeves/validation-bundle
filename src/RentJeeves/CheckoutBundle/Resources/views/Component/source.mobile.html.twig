@@ -1,29 +1,6 @@
-{#
-{% form_theme paymentAccountType 'RjCoreBundle::form.html.twig' %}
-#}
-{#
-<div class="form-row clearfix" data-bind="visible: !$root.notEmptyPaymentAccount">
-    <div class="fields-box">
-        <small><b>*</b>{{ 'required' | trans  }}</small>
-    </div>
-</div>
-<form {{ form_enctype(paymentAccountType) }} novalidate method="post">
-    {{ form_widget(paymentAccountType) }}
-    {{ JSFV(paymentAccountType) }}
-</form>
-#}
-
 <script type="text/javascript">
 
     window.addressesViewModels = [];
-/*
-    jQuery.each({{ addressesJson | raw }}, function(key, val) {
-        var address = new Address(null);
-        ko.mapping.fromJS(val, {}, address);
-        window.addressesViewModels.push(address);
-    });
-
-*/
     window.paymentAccounts = [];
     var payAccounts = JSON.parse('{{ payAccountsJson|escape('js') }}');
 
@@ -31,6 +8,4 @@
         $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").append("<option value='"+val.id+"'>"+val.name+"</option>");
         window.paymentAccounts.push(val);
     });
-
-
 </script>

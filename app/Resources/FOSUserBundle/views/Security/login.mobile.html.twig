@@ -29,7 +29,7 @@
                 </div>
             {% endif %}
             {% for flashMessage in app.session.flashbag.get('error') %}
-                <div class="login-error"><i class="fa fa-warning" style="font-family: PT Sans Caption; color: white;font-size: 21pt;"></i>
+                <div class="login-error" style="font-family: PT Sans Caption;"><i class="fa fa-warning" style="font-family: PT Sans Caption; color: white;font-size: 21pt;"></i>
                     {{ flashMessage|trans }}
                 </div>
             {% endfor %}
