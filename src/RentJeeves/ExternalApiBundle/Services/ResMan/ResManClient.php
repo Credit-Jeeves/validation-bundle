@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
+use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions as PaymentTransaction;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
@@ -330,7 +331,7 @@ class ResManClient implements ClientInterface
      */
     protected function getResidentTransactionXml(Order $order)
     {
-        $residentTransaction = new ResidentTransactions([$order]);
+        $residentTransaction = new PaymentTransaction([$order]);
 
         $context = SerializerXmlHelper::getSerializerContext(['ResMan'], true);
 
