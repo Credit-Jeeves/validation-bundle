@@ -207,9 +207,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     public static function createPaymentAccountDataProvider()
     {
         return [
-            [
-                self::paymentAccountsDataProvider()[0],
-            ],
+//            [
+//                self::paymentAccountsDataProvider()[0],
+//            ],
             [
                 self::paymentAccountsDataProvider()[3]
             ]
