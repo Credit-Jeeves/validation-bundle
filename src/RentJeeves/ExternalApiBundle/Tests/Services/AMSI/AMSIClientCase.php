@@ -6,6 +6,7 @@ use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use RentJeeves\ExternalApiBundle\Model\AMSI\OpenItem;
+use RentJeeves\ExternalApiBundle\Model\AMSI\RecurringCharge;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
@@ -84,6 +85,18 @@ class AMSIClientCase extends Base
             $openItem
         );
         $this->assertNotEmpty($openItem->getOccuLastName());
+
+        $recurringCharges = $lease->getRecurringCharges();
+        $this->assertCount(2, $recurringCharges);
+        /** @var RecurringCharge $recurringCharge */
+        $recurringCharge = $recurringCharges[1];
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\AMSI\RecurringCharge',
+            $recurringCharge
+        );
+        $this->assertEquals(RecurringCharge::RENT_INCOME_CODE_ID, $recurringCharge->getIncCode());
+        $this->assertEquals(RecurringCharge::FREQUENCY_MONTH, $recurringCharge->getFreqCode());
+        $this->assertEquals(1700, $recurringCharge->getAmount());
     }
 
     /**

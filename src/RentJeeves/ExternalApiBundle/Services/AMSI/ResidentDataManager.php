@@ -61,8 +61,8 @@ class ResidentDataManager
     {
         $this->logger->debug(sprintf("Get AMSI Residents by external property ID:%s", $externalPropertyId));
         $client = $this->getApiClient(SoapClientEnum::AMSI_LEASING);
-        $currentResidents = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'C'); // (C)urrent
-        $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, $leaseStatus = 'N'); //(N)otice
+        $currentResidents = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_CURRENT);
+        $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_NOTICE);
 
         $leases = array_merge($currentResidents->getLease(), $residentsOnNotice->getLease());
 
