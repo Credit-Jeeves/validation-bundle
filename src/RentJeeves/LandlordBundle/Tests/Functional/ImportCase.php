@@ -14,7 +14,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\DataBundle\Model\Unit;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
-use RentJeeves\LandlordBundle\Form\Enum\ImportType;
+use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\CoreBundle\DateTime;
 
 class ImportCase extends ImportBaseAbstract

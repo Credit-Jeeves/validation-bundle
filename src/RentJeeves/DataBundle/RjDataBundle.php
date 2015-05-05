@@ -38,6 +38,7 @@ class RjDataBundle extends Bundle
             Type::addType('ApiIntegrationType', 'RentJeeves\DataBundle\Enum\ApiIntegrationType');
             Type::addType('PaymentBatchStatus', 'RentJeeves\DataBundle\Enum\PaymentBatchStatus');
             Type::addType('PaymentProcessor', 'RentJeeves\DataBundle\Enum\PaymentProcessor');
+            Type::addType('ImportType', 'RentJeeves\DataBundle\Enum\ImportType');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()

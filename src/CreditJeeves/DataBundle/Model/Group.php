@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Entity\ImportSummary;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -312,6 +313,20 @@ abstract class Group
     protected $contracts;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ImportSummary",
+     *     mappedBy="group",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $imports;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="\RentJeeves\DataBundle\Entity\DepositAccount",
      *     mappedBy="group",
@@ -414,6 +429,31 @@ abstract class Group
         $this->groupPhones = new ArrayCollection();
         $this->billingAccounts = new ArrayCollection();
         $this->waitingContracts = new ArrayCollection();
+        $this->imports = new ArrayCollection();
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getImports()
+    {
+        return $this->imports;
+    }
+
+    /**
+     * @param ImportSummary $import
+     */
+    public function addImport(ImportSummary $import)
+    {
+        $this->imports->add($import);
+    }
+
+    /**
+     * @param ImportSummary $import
+     */
+    public function removeImport(ImportSummary $import)
+    {
+        $this->imports->remove($import);
     }
 
     /**
