@@ -300,7 +300,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals('0', $contract->getIntegratedBalance());
         // startAt should be the first day of next month b/c this contract has no payments yet
         $this->assertEquals('11/09/2013', $contract->getStartAt()->format('m/d/Y'));
-        $this->assertEquals('11/08/2015', $contract->getFinishAt()->format('m/d/Y'));
+        $this->assertEquals('11/08/2025', $contract->getFinishAt()->format('m/d/Y'));
 
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
@@ -320,7 +320,7 @@ class ImportCase extends ImportBaseAbstract
         //For match contract we don't need check startAt because it's not updated
         $this->assertEquals('1190', $contractMatch->getRent());
         $this->assertEquals('0', $contractMatch->getIntegratedBalance());
-        $this->assertEquals('10/21/2016', $contractMatch->getFinishAt()->format('m/d/Y'));
+        $this->assertEquals('10/21/2025', $contractMatch->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractMatch->getStatus());
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array(
@@ -340,7 +340,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals('950', $contractNew->getRent());
         $this->assertEquals('0', $contractNew->getIntegratedBalance());
         $this->assertEquals('03/18/2011', $contractNew->getStartAt()->format('m/d/Y'));
-        $this->assertEquals('03/31/2016', $contractNew->getFinishAt()->format('m/d/Y'));
+        $this->assertEquals('03/31/2025', $contractNew->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
     }
 
