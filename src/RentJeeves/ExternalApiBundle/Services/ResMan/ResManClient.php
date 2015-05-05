@@ -150,7 +150,7 @@ class ResManClient implements ClientInterface
             $uri = $this->apiUrl . $method;
 
             $postBody = array_merge($baseParams, $params, $this->settings->getParameters());
-            $this->logger->debug(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
+            $this->debugMessage(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
             $request = $this->httpClient->post($uri, $headers = null, $postBody);
 
             return $this->manageResponse($this->httpClient->send($request));

@@ -5,10 +5,8 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
-use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Batch;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
@@ -16,7 +14,6 @@ use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions as PaymentTransaction;
 
 class ResManClientCase extends Base
 {
@@ -28,6 +25,8 @@ class ResManClientCase extends Base
     const RESIDENT_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
 
     const EXTERNAL_LEASE_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
+
+    const EXTERNAL_UNIT_ID = '2';
 
     /**
      * @test
@@ -113,7 +112,8 @@ class ResManClientCase extends Base
             ApiIntegrationType::RESMAN,
             self::RESIDENT_ID,
             self::EXTERNAL_PROPERTY_ID,
-            self::EXTERNAL_LEASE_ID
+            self::EXTERNAL_LEASE_ID,
+            self::EXTERNAL_UNIT_ID
         );
 
         $order = $transaction->getOrder();
@@ -143,18 +143,16 @@ class ResManClientCase extends Base
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'tenant11@example.com',
-            )
+            ['email' => 'tenant11@example.com']
         );
 
         $this->assertNotNull($tenant);
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(
-            array(
+            [
                 'user'  => $tenant->getId(),
                 'type'  => OrderType::HEARTLAND_CARD
-            )
+            ]
         );
 
         $this->assertNotNull($order);

@@ -26,12 +26,14 @@ class PaymentPushCommandCase extends BaseTestCase
                 ApiIntegrationType::RESMAN,
                 ResManClientCase::RESIDENT_ID,
                 ResManClientCase::EXTERNAL_PROPERTY_ID,
-                ResManClientCase::EXTERNAL_LEASE_ID
+                ResManClientCase::EXTERNAL_LEASE_ID,
+                ResManClientCase::EXTERNAL_UNIT_ID
             ],
             [
                 ApiIntegrationType::MRI,
                 MRIClientCase::RESIDENT_ID,
                 MRIClientCase::PROPERTY_ID,
+                null,
                 null
             ]
         ];
@@ -50,7 +52,8 @@ class PaymentPushCommandCase extends BaseTestCase
         $apiIntegrationType,
         $residentId,
         $externalPropertyId,
-        $externalLeaseId
+        $externalLeaseId,
+        $externalUnitId
     ) {
         $this->load(true);
         /** @var $em EntityManager */
@@ -60,7 +63,8 @@ class PaymentPushCommandCase extends BaseTestCase
             $apiIntegrationType,
             $residentId,
             $externalPropertyId,
-            $externalLeaseId
+            $externalLeaseId,
+            $externalUnitId
         );
 
         /** @var PaymentBatchMappingRepository $repo */
