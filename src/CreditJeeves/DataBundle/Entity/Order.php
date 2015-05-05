@@ -867,10 +867,18 @@ class Order extends BaseOrder
      * @Serializer\Groups({"ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
+     *
+     * @return null|string
      */
     public function getResManUnitId()
     {
-        return $this->getContract()->getUnit()->getName();
+        $unitMapping = $this->getContract()->getUnit()->getUnitMapping();
+
+        if ($unitMapping) {
+            return $unitMapping->getExternalUnitId();
+        }
+
+        return null;
     }
 
     /**
