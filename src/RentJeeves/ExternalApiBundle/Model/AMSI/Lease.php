@@ -645,7 +645,7 @@ class Lease
     public function getLeaseBeginDateObject()
     {
         if (!empty($this->leaseBeginDate)) {
-            return \DateTime::createFromFormat('d/m/Y', $this->leaseBeginDate);
+            return \DateTime::createFromFormat('m/d/Y', $this->leaseBeginDate);
         }
 
         return $this->leaseBeginDate;
@@ -682,7 +682,7 @@ class Lease
     public function getLeaseEndDateObject()
     {
         if (!empty($this->leaseEndDate)) {
-            return \DateTime::createFromFormat('d/m/Y', $this->leaseEndDate);
+            return \DateTime::createFromFormat('m/d/Y', $this->leaseEndDate);
         }
 
         return $this->leaseEndDate;

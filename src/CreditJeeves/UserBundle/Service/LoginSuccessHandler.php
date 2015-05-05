@@ -112,6 +112,17 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     {
         $url = $request->headers->get('referer');
 
+        if ($this->getRouter()->getRouteCollection()->get('fos_user_resetting_reset') != null) {
+            $loginUrlReset = $this->getRouter()->generate(
+                'fos_user_resetting_reset',
+                array('token' => ''),
+                true
+            );
+            if (false !== strstr($url, $loginUrlReset)) {
+                $url = null;
+            }
+        }
+
         if ($this->getRouter()->getRouteCollection()->get('fos_user_security_login') != null) {
             $loginUrl = $this->getRouter()->generate('fos_user_security_login');
             if (false !== strstr($url, $loginUrl)) {
