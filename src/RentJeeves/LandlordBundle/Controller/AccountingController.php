@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Controller;
 
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
@@ -192,9 +193,9 @@ class AccountingController extends Controller
         } catch (ImportStorageException $e) {
             return $this->redirect($this->generateUrl('accounting_import_file'));
         } catch (ImportMappingException $e) {
-            return array(
+            return [
                 'error' => $e->getMessage()
-            );
+            ];
         }
 
         $group = $this->get('core.session.landlord')->getGroup();
@@ -221,12 +222,38 @@ class AccountingController extends Controller
 
         $form = $form->createView();
 
-        return array(
+        return [
             'error'        => false,
             'data'         => $dataView,
             'form'         => $form
-        );
+        ];
     }
+
+    /**
+     * @Route(
+     *     "/import/summary/report/{importSummaryPublicId}",
+     *     name="accounting_summary_report"
+     * )
+     * @Template()
+     */
+    public function summaryReportAction($importSummaryPublicId)
+    {
+        $em = $this->getEntityManager();
+        $importSummary = $em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
+            ['publicId' => $importSummaryPublicId]
+        );
+
+        if (empty($importSummary)) {
+            throw $this->createNotFoundException(
+                sprintf('Summary report does not exist with public ID: %s', $importSummaryPublicId)
+            );
+        }
+
+        return [
+            'report' => $importSummary
+        ];
+    }
+
     /**
      * @Route(
      *     "/import",

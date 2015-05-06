@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Enum\ImportType;
 
 /**
  * @ORM\MappedSuperclass
@@ -28,7 +29,7 @@ abstract class ImportSummary
      *      nullable=true
      * )
      */
-    protected $publicId;
+    protected $publicId = 0;
 
     /**
      * @var string
@@ -39,7 +40,7 @@ abstract class ImportSummary
      *     nullable=false
      * )
      */
-    protected $type;
+    protected $type = ImportType::SINGLE_PROPERTY;
 
     /**
      * @var Group
@@ -74,35 +75,35 @@ abstract class ImportSummary
      *
      * @ORM\Column(name="count_total", type="integer")
      */
-    protected $countTotal;
+    protected $countTotal = 0;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="count_new", type="integer")
      */
-    protected $countNew;
+    protected $countNew = 0;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="count_matched", type="integer")
      */
-    protected $countMatched;
+    protected $countMatched = 0;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="count_invited", type="integer")
      */
-    protected $countInvited;
+    protected $countInvited = 0;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="count_skipped", type="integer")
      */
-    protected $countSkipped;
+    protected $countSkipped = 0;
 
     /**
      * @var \DateTime

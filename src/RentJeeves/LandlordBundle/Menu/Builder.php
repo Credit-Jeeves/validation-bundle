@@ -2,7 +2,6 @@
 namespace RentJeeves\LandlordBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\LandlordBundle\Accounting\AccountingPermission as Permission;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
@@ -65,13 +64,14 @@ class Builder extends ContainerAware
             case 'accounting_import':
             case 'accounting_match_file':
             case 'accounting_import_file':
+            case 'accounting_summary_report':
             case 'accounting_export':
                 $menu['tab.accounting']->setAttribute('class', 'active');
                 break;
             default:
                 break;
         }
-        
+
         return $menu;
     }
 
@@ -81,7 +81,6 @@ class Builder extends ContainerAware
         $menu->addChild('account.information', array('route' => 'landlord_edit_profile'));
         $menu->addChild('settings.password', array('route' => 'landlord_password'));
         $menu->addChild('settings.deposit', array('route' => 'settings_payment_accounts'));
-
 
         $sRoute = $this->container->get('request')->get('_route');
         switch ($sRoute) {
@@ -95,6 +94,7 @@ class Builder extends ContainerAware
                 $menu['settings.deposit']->setUri('');
                 break;
         }
+
         return $menu;
     }
 

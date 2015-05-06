@@ -11,4 +11,19 @@ use RentJeeves\DataBundle\Model\ImportSummary as Base;
  */
 class ImportSummary extends Base
 {
+    /**
+     * @TODO implement
+     */
+    public function countExceptions()
+    {
+
+    }
+
+    /**
+     * @TODO implement
+     */
+    public function countErrors()
+    {
+
+    }
 }
