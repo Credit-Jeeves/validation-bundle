@@ -2,11 +2,11 @@
 
 namespace RentJeeves\ApiBundle\Tests;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use FOS\OAuthServerBundle\Entity\Client;
 use OAuth2\IOAuth2Storage;
 use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
-use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
@@ -34,7 +34,14 @@ class BaseApiTestCase extends BaseTestCase
     /** @var  AttributeEncoderInterface */
     private $urlEncoder;
 
-    private $tenantEmail= 'tenant11@example.com';
+    /** @var string */
+    protected $userEmail= 'tenant11@example.com';
+
+    /** @var  User */
+    protected $user;
+
+    /** @var \Symfony\Bundle\FrameworkBundle\Client */
+    protected static $client;
 
     protected function assertResponse(Response $response, $statusCode = 200, $format = 'json')
     {
@@ -44,15 +51,20 @@ class BaseApiTestCase extends BaseTestCase
             $response->getContent()
         );
 
-        $contentType = $response->headers->get('Content-Type');
+        // Added because
+        //  - no necessary check it for no-content response
+        //  - Symfony 2.4.10 doesn't return content-type for no-content response
+        if ($statusCode != 204) {
+            $contentType = $response->headers->get('Content-Type');
 
-        $this->assertTrue(isset(static::$formats[$format]), "Content Type \"$contentType\" is not available.");
+            $this->assertTrue(isset(static::$formats[$format]), "Content Type \"$contentType\" is not available.");
 
-        $this->assertContains(
-            $contentType,
-            static::$formats[$format],
-            $response->headers
-        );
+            $this->assertContains(
+                $contentType,
+                static::$formats[$format],
+                $response->headers
+            );
+        }
     }
 
     protected function assertResponseContent($content, $result, $format = 'json')
@@ -74,9 +86,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param  string $content
-     * @param  string $format
-     * @return mixed
+     * @param  string       $content
+     * @param  string       $format
+     * @return array|string
      */
     protected function parseContent($content, $format = 'json')
     {
@@ -103,18 +115,9 @@ class BaseApiTestCase extends BaseTestCase
             $oauthStorage->createAccessToken(
                 static::USER_ACCESS_TOKEN,
                 $oauthClient,
-                $this->getTenant(),
+                $this->getUser(),
                 0
             );
-        }
-    }
-
-    protected function prepareClient()
-    {
-        if (static::$instance != true) {
-            $this->load(true);
-            $this->prepareOAuthAuthorization();
-            static::$instance = true;
         }
     }
 
@@ -125,7 +128,17 @@ class BaseApiTestCase extends BaseTestCase
     {
         $this->prepareClient();
 
-        return parent::createClient();
+        return self::$client;
+    }
+
+    protected function prepareClient()
+    {
+        if (!static::$instance  || !self::$client) {
+            $this->load(true);
+            self::$client = parent::createClient();
+            $this->prepareOAuthAuthorization();
+            static::$instance = true;
+        }
     }
 
     /**
@@ -152,28 +165,31 @@ class BaseApiTestCase extends BaseTestCase
     /**
      * @param string $email
      */
-    protected function setTenantEmail($email)
+    protected function setUserEmail($email)
     {
-        $this->tenantEmail = $email;
+        $this->userEmail = $email;
+        /* Reload client */
+        $this->user = null;
         static::$instance = false;
+        $this->prepareClient();
     }
 
     /**
      * @return string
      */
-    protected function getTenantEmail()
+    protected function getUserEmail()
     {
-        return $this->tenantEmail;
+        return $this->userEmail;
     }
 
     /**
-     * @return null|Tenant
+     * @return null|User
      */
-    protected function getTenant()
+    protected function getUser()
     {
-        return $this
+        return $this->user ?: $this->user = $this
             ->getEntityRepository('RjDataBundle:Tenant')
-            ->findOneBy(['email' => $this->getTenantEmail()]);
+            ->findOneBy(['email' => $this->getUserEmail()]);
     }
 
     /**
@@ -226,7 +242,7 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param  null|string   $attributes
+     * @param  null          $attributes
      * @param  array         $requestParams
      * @param  string        $format
      * @return null|Response
