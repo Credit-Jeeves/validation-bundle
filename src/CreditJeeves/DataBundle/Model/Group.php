@@ -324,7 +324,7 @@ abstract class Group
      *     orphanRemoval=true
      * )
      */
-    protected $imports;
+    protected $importSummaries;
 
     /**
      * @ORM\OneToOne(
@@ -429,31 +429,31 @@ abstract class Group
         $this->groupPhones = new ArrayCollection();
         $this->billingAccounts = new ArrayCollection();
         $this->waitingContracts = new ArrayCollection();
-        $this->imports = new ArrayCollection();
+        $this->importSummaries = new ArrayCollection();
     }
 
     /**
      * @return ArrayCollection
      */
-    public function getImports()
+    public function getImportSummaries()
     {
-        return $this->imports;
+        return $this->importSummaries;
     }
 
     /**
      * @param ImportSummary $import
      */
-    public function addImport(ImportSummary $import)
+    public function addImportSummaries(ImportSummary $import)
     {
-        $this->imports->add($import);
+        $this->importSummaries->add($import);
     }
 
     /**
      * @param ImportSummary $import
      */
-    public function removeImport(ImportSummary $import)
+    public function removeImportSummaries(ImportSummary $import)
     {
-        $this->imports->remove($import);
+        $this->importSummaries->remove($import);
     }
 
     /**

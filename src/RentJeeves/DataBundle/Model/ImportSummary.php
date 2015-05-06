@@ -7,7 +7,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
- * @ORM\HasLifecycleCallbacks()
  */
 abstract class ImportSummary
 {
@@ -47,7 +46,7 @@ abstract class ImportSummary
      *
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="imports"
+     *     inversedBy="importSummaries"
      * )
      * @ORM\JoinColumn(
      *     name="group_id",
@@ -87,16 +86,16 @@ abstract class ImportSummary
     /**
      * @var integer
      *
-     * @ORM\Column(name="count_match", type="integer")
+     * @ORM\Column(name="count_matched", type="integer")
      */
-    protected $countMatch;
+    protected $countMatched;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="count_invite", type="integer")
+     * @ORM\Column(name="count_invited", type="integer")
      */
-    protected $countInvite;
+    protected $countInvited;
 
     /**
      * @var integer
@@ -139,33 +138,33 @@ abstract class ImportSummary
     /**
      * @return int
      */
-    public function getCountInvite()
+    public function getCountInvited()
     {
-        return $this->countInvite;
+        return $this->countInvited;
     }
 
     /**
-     * @param int $countInvite
+     * @param int $countInvited
      */
-    public function setCountInvite($countInvite)
+    public function setCountInvited($countInvited)
     {
-        $this->countInvite = $countInvite;
+        $this->countInvited = $countInvited;
     }
 
     /**
      * @return int
      */
-    public function getCountMatch()
+    public function getCountMatched()
     {
-        return $this->countMatch;
+        return $this->countMatched;
     }
 
     /**
-     * @param int $countMatch
+     * @param int $countMatched
      */
-    public function setCountMatch($countMatch)
+    public function setCountMatched($countMatched)
     {
-        $this->countMatch = $countMatch;
+        $this->countMatched = $countMatched;
     }
 
     /**
@@ -271,5 +270,4 @@ abstract class ImportSummary
     {
         $this->type = $type;
     }
-
 }
