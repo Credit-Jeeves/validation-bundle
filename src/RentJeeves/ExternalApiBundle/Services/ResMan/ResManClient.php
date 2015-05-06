@@ -16,7 +16,6 @@ use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\DeserializationContext;
-use DateTime;
 use Monolog\Logger;
 
 /**
@@ -253,12 +252,12 @@ class ResManClient implements ClientInterface
 
     /**
      * @param $externalPropertyId
-     * @param  DateTime $batchDate
-     * @param  string   $description
-     * @param  mixed    $accountId   Can be get from settings
+     * @param  \DateTime $batchDate
+     * @param  string    $description
+     * @param  mixed     $accountId   Can be get from settings
      * @return mixed
      */
-    public function openBatch($externalPropertyId, DateTime $batchDate, $description = null, $accountId = null)
+    public function openBatch($externalPropertyId, \DateTime $batchDate, $description = null, $accountId = null)
     {
         $method = 'OpenBatch';
         $this->debugMessage("Call ResMan method: {$method}");

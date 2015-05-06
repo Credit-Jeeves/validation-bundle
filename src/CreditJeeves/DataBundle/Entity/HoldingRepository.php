@@ -21,9 +21,8 @@ class HoldingRepository extends EntityRepository
     public function findHoldingsWithYardiSettings($start, $limit)
     {
         $query = $this->createQueryBuilder('holding');
-        $query->innerJoin('holding.accountingSettings', 'accountingSettings');
         $query->innerJoin('holding.yardiSettings', 'yardiSetting');
-        $query->where('accountingSettings.apiIntegration = :yardi');
+        $query->where('holding.apiIntegrationType = :yardi');
         $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
         $query->setFirstResult($start);
         $query->setMaxResults($limit);
@@ -44,8 +43,7 @@ class HoldingRepository extends EntityRepository
         }
 
         return $this->createQueryBuilder('holding')
-            ->innerJoin('holding.accountingSettings', 'accountingSettings')
-            ->where('accountingSettings.apiIntegration = :apiIntegrationType')
+            ->where('holding.apiIntegrationType = :apiIntegrationType')
             ->setParameter('apiIntegrationType', $apiIntegrationType)
             ->getQuery()
             ->execute();

@@ -8,7 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use \DateTime;
@@ -82,7 +82,7 @@ class ExportCase extends BaseTestCase
         $operation->setPaidFor(new DateTime('8/1/2014'));
         $operation->setContract($contract);
 
-        $transaction = new Heartland();
+        $transaction = new Transaction();
         $transaction->setIsSuccessful(false);
         $transaction->setOrder($order);
         $transaction->setTransactionId("1");
@@ -154,7 +154,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 123123', (string) $checkNumber);
         $this->assertEquals('t0013534', (string) $personId);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string) $notes);
     }
 
     /**
@@ -197,7 +197,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 456456', (string) $checkNumber);
         $this->assertEquals('t0013534', (string) $personId);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string) $notes);
     }
 
     public function exportByRealPageCsv()
@@ -414,7 +414,6 @@ class ExportCase extends BaseTestCase
         $beginD->modify('-1 year');
         $endD = new DateTime();
 
-
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
@@ -452,7 +451,7 @@ class ExportCase extends BaseTestCase
 
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('t0013534', (string) $personId);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string) $notes);
     }
 
     public function exportByRentTrackCsv()

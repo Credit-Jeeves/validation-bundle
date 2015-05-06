@@ -2,12 +2,12 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Payum\Heartland\Soap\Base\ACHDepositType;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class BillingAccountType extends AbstractType
@@ -140,9 +140,9 @@ class BillingAccountType extends AbstractType
                 ),
                 'expanded' => true,
                 'choices' => array(
-                    ACHDepositType::CHECKING => 'checkout.account_type.checking',
-                    ACHDepositType::SAVINGS => 'checkout.account_type.savings',
-                    ACHDepositType::UNASSIGNED => 'checkout.account_type.business_checking'
+                    ACHDepositTypeEnum::CHECKING => 'checkout.account_type.checking',
+                    ACHDepositTypeEnum::SAVINGS => 'checkout.account_type.savings',
+                    ACHDepositTypeEnum::BUSINESS_CHECKING => 'checkout.account_type.business_checking'
                 ),
                 'empty_value'  => false,
                 'invalid_message' => 'checkout.error.account_type.invalid',

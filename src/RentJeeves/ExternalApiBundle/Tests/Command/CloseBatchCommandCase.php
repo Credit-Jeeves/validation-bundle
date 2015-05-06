@@ -3,7 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Entity\HeartlandRepository;
+use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -48,19 +48,18 @@ class CloseBatchCommandCase extends BaseTestCase
         $this->batchMapping->setPaymentBatchId(self::BATCH_ID);
         $this->batchMapping->setAccountingBatchId($batchId);
 
-        /** @var HeartlandRepository $repo */
-        $repo = $this->em->getRepository('RjDataBundle:Heartland');
+        /** @var TransactionRepository $repo */
+        $repo = $this->em->getRepository('RjDataBundle:Transaction');
 
         $holding = $repo->getMerchantHoldingByBatchId(self::BATCH_ID);
 
-        $holding->getAccountingSettings()->setApiIntegration(ApiIntegrationType::RESMAN);
+        $holding->setApiIntegrationType(ApiIntegrationType::RESMAN);
 
         $this->em->persist($this->batchMapping);
         $this->em->persist($holding);
 
         $this->em->flush();
     }
-
 
     /**
      * @test

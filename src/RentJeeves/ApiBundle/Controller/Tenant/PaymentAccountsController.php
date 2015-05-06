@@ -8,7 +8,6 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Forms\PaymentAccountType;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
-use RentJeeves\ApiBundle\Request\ParamFetcher;
 use RentJeeves\ApiBundle\Response\PaymentAccount as ResponseEntity;
 use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
@@ -143,11 +142,11 @@ class PaymentAccountsController extends Controller
      */
     public function createPaymentAccountAction(Request $request)
     {
-        return $this->processForm($request, new PaymentAccountEntity);
+        return $this->processForm($request, new PaymentAccountEntity());
     }
 
     /**
-     * @param int $id
+     * @param int     $id
      * @param Request $request
      *
      * @ApiDoc(
@@ -229,7 +228,7 @@ class PaymentAccountsController extends Controller
             /** @var Contract $contract */
             $contract = $form->get('contract_url')->getData();
             try {
-                $this->savePaymentAccount($form, $this->getUser(), $contract->getGroup());
+                $this->savePaymentAccount($form, $contract);
 
                 return $this->get('response_resource.factory')->getResponse($paymentAccountEntity);
             } catch (RuntimeException $e) {

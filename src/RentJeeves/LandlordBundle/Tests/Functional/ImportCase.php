@@ -2,7 +2,6 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Entity\AccountingSettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -1755,6 +1754,76 @@ class ImportCase extends ImportBaseAbstract
     /**
      * @test
      */
+    public function resmanBaseImport()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var $landlord Landlord */
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
+        $holding = $landlord->getHolding();
+        $holding->setApiIntegrationType(ApiIntegrationType::RESMAN);
+        $em->flush($holding);
+        $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
+        // We must make sure the data saved into DB, so we count before import and after
+        $this->assertEquals(23, count($contract));
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertEquals(1, count($contractWaiting));
+
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
+        $this->setPropertySecond();
+        $this->assertNotNull($source = $this->page->findAll('css', '.radio'));
+        $source[1]->click();
+        $this->assertNotNull($propertyId = $this->page->find('css', '#import_file_type_propertyId'));
+        $propertyId->setValue('B342E58C-F5BA-4C63-B050-CF44439BB37D');
+        $submitImport->click();
+
+        $this->session->wait(
+            80000,
+            "$('table').is(':visible')"
+        );
+        $this->waitReviewAndPost();
+        for ($i = 0; $i <= 2; $i++) {
+            if ($i === 0) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(1, $errorFields);
+                $errorFields[0]->setValue('CorrrectName');
+            }
+            if ($i === 2) {
+                $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+                $this->assertCount(1, $errorFields);
+                $errorFields[0]->setValue('CorrrectName');
+            }
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+            $submitImportFile->click();
+            $this->waitReviewAndPost();
+        }
+
+        $this->logout();
+        // We must make sure the data saved into DB, so we count before import and after
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
+        $this->assertEquals(28, count($contracts));
+        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
+        $this->assertEquals(23, count($contractsWaiting));
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+            array(
+                'externalLeaseId' => 'a0668dcf-045d-4183-926c-b7d50a571506',
+            )
+        );
+        $this->assertNotEmpty($contract);
+    }
+
+    /**
+     * @test
+     */
     public function shouldGetException()
     {
         $this->load(true);
@@ -1830,6 +1899,105 @@ class ImportCase extends ImportBaseAbstract
     /**
      * @test
      */
+    public function shouldImportPromasExtraField()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('promas_extra_field.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
+        $importTypeSelected->selectOption(ImportType::SINGLE_PROPERTY);
+        $this->setPropertyFirst();
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        //Second Step
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $mapFile = [
+            '1' => ImportMapping::KEY_UNIT,
+            '2' => ImportMapping::KEY_RESIDENT_ID,
+            '3' => ImportMapping::KEY_TENANT_NAME,
+            '4' => ImportMapping::KEY_RENT,
+            '5' => ImportMapping::KEY_BALANCE,
+            '6' => ImportMapping::KEY_MOVE_IN,
+            '7' => ImportMapping::KEY_LEASE_END,
+            '8' => ImportMapping::KEY_MOVE_OUT,
+            '9' => ImportMapping::KEY_EMAIL,
+            '10'=> ImportMapping::KEY_USER_PHONE,
+            '11'=> ImportMapping::KEY_CREDITS,
+            '12'=> ImportMapping::KEY_IGNORE_ROW,
+            '13'=> ImportMapping::KEY_PAYMENT_ACCEPTED,
+        ];
+        for ($i = 1; $i <= 13; $i++) {
+            if (isset($mapFile[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $choice->selectOption($mapFile[$i]);
+            }
+        }
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount(2, $trs, "Count statuses is wrong");
+        $this->assertCount(3, $trs['import.status.new'], "Count of new contracts is wrong");
+        $this->assertCount(1, $trs['import.status.skip'], "Count of skipped contracts is wrong");
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $em = $this->getEntityManager();
+        /** @var Tenant $userWithPhone */
+        $userWithPhone = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('user_phone@mail.com');
+        /** @var Tenant $userWithOpenCredits */
+        $userWithOpenCredits = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('open_credits@mail.com');
+        /** @var Tenant $userWithPaymentAccepted */
+        $userWithPaymentAccepted = $em->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('payment_accepted@mail.com');
+
+        $this->assertNotNull($userWithPhone);
+        $this->assertNotNull($userWithOpenCredits);
+        $this->assertNotNull($userWithPaymentAccepted);
+
+        $this->assertEquals('0978822205', $userWithPhone->getPhone());
+
+        $contractPhoneUser = $userWithPhone->getContracts()->first();
+        $this->assertNotEmpty($contractPhoneUser);
+        $this->assertEquals(
+            PaymentAccepted::DO_NOT_ACCEPT,
+            $contractPhoneUser->getPaymentAccepted()
+        );
+        $contractOpenCredits = $userWithOpenCredits->getContracts()->first();
+        $this->assertNotEmpty($contractOpenCredits);
+        $this->assertEquals(
+            PaymentAccepted::DO_NOT_ACCEPT,
+            $contractOpenCredits->getPaymentAccepted()
+        );
+        $contractPaymentAccepted = $userWithPaymentAccepted->getContracts()->first();
+        $this->assertNotEmpty($contractPaymentAccepted);
+        $this->assertEquals(
+            PaymentAccepted::ANY,
+            $contractPaymentAccepted->getPaymentAccepted()
+        );
+
+        $this->assertEquals(
+            200,
+            $contractOpenCredits->getIntegratedBalance()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function shouldCreateContractFromWaitingOnOnlyNewAndException()
     {
         $this->load(true);
@@ -1893,10 +2061,9 @@ class ImportCase extends ImportBaseAbstract
         $em = $this->getEntityManager();
         /** @var $landlord Landlord */
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
-        /** @var AccountingSettings $accountingSettings */
-        $accountingSettings = $landlord->getHolding()->getAccountingSettings();
-        $accountingSettings->setApiIntegration(ApiIntegrationType::MRI);
-        $em->flush($accountingSettings);
+        $holding = $landlord->getHolding();
+        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $em->flush($holding);
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
         $this->assertCount(23, $contract);

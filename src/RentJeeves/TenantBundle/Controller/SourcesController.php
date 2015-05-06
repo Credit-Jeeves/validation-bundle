@@ -3,6 +3,7 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -32,6 +33,7 @@ class SourcesController extends Controller
     public function indexAction()
     {
         $paymentAccounts = $this->getUser()->getPaymentAccounts();
+
         return array(
             'paymentAccounts' => $paymentAccounts
         );
@@ -50,6 +52,7 @@ class SourcesController extends Controller
         }
         $em->remove($paymentAccount);
         $em->flush($paymentAccount);
+
         return $this->redirect($request->headers->get('referer'));
     }
 
@@ -81,11 +84,23 @@ class SourcesController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
-        // TODO: deal with multiple gruops
+        // TODO: deal with multiple groups
         $group = $paymentAccount->getDepositAccounts()->first()->getGroup();
 
         try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser(), $group);
+            // We can use any contract of this group
+            // because profile already created for aci_collect_pay
+            $contract = $this->getUser()->getContracts()->filter(
+                function (Contract $entry) use ($group) {
+                    return $entry->getGroup()->getId() === $group->getId();
+                }
+            )->first();
+
+            if (!$contract) {
+                throw new \RuntimeException('Contract for this Payment Source doesn\'t exist.');
+            }
+
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
         } catch (\Exception $e) {
             return new JsonResponse(
                 array(

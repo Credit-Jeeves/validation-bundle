@@ -7,8 +7,8 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
@@ -25,7 +25,6 @@ class TransactionListenerCase extends BaseTestCase
     public function shouldAddJobToDbIfCreateReversedTransaction()
     {
         $this->load(true);
-
         $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
         $this->assertCount(2, $jobs);
 
@@ -34,7 +33,7 @@ class TransactionListenerCase extends BaseTestCase
         $finishAt = new DateTime();
         $finishAt->modify('+24 month');
         $contract = $this->getContract($startAt, $finishAt);
-        $contract->getHolding()->getAccountingSettings()->setApiIntegration(ApiIntegrationType::AMSI);
+        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
 
         $order = new Order();
         $order->setUser($contract->getTenant());
@@ -55,7 +54,7 @@ class TransactionListenerCase extends BaseTestCase
         $this->getEntityManager()->persist($order);
         $this->getEntityManager()->flush($order);
 
-        $transaction = new Heartland();
+        $transaction = new Transaction();
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setIsSuccessful(true);
         $transaction->setAmount(123);

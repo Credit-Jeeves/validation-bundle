@@ -1,4 +1,4 @@
-model: RentJeeves\DataBundle\Entity\Heartland
+model: RentJeeves\DataBundle\Entity\Transaction
 fixtures:
   rjCheckout_1_1:
     order:  rjOrder_1

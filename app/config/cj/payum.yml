@@ -1,6 +1,0 @@
-payum:
-    contexts:
-        simple_purchase_authorize_net:
-            authorize_net_aim:
-                api:
-                    options: %authorize_net%

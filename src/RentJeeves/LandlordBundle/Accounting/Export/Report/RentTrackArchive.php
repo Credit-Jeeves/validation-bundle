@@ -2,14 +2,12 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 
-use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface;
-use DateTime;
 use RentJeeves\LandlordBundle\Accounting\Export\ZipArchiveReport;
 
 /**
@@ -63,7 +61,7 @@ class RentTrackArchive extends ExportReport
     {
         $result = array();
         $orders = $this->exportReport->getData($settings);
-        /** @var Heartland $transaction */
+        /** @var Transaction $transaction */
         foreach ($orders as $transaction) {
             $transactionBatchId = $transaction->getOrder()->getCompleteTransaction()->getHeartlandBatchId();
             $result[$transactionBatchId][] = $transaction;

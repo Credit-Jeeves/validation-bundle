@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -125,6 +126,19 @@ class Group extends BaseGroup
     }
 
     /**
+     * @return AciCollectPaySettings
+     */
+    public function getAciCollectPaySettings()
+    {
+        if (empty($this->aciCollectPaySettings)) {
+            $this->aciCollectPaySettings = new AciCollectPaySettings();
+            $this->aciCollectPaySettings->setGroup($this);
+        }
+
+        return $this->aciCollectPaySettings;
+    }
+
+    /**
      * @return DepositAccount
      */
     public function getDepositAccount()
@@ -176,15 +190,7 @@ class Group extends BaseGroup
     public function getIntegratedApiSettings()
     {
         $holding = $this->getHolding();
-        $accountingSettings = $holding->getAccountingSettings();
-
-        if (empty($accountingSettings)) {
-            return null;
-        }
-
-        $apiIntegration = $accountingSettings->getApiIntegration();
-
-        switch ($apiIntegration) {
+        switch ($holding->getApiIntegrationType()) {
             case ApiIntegrationType::AMSI:
                 return $holding->getAmsiSettings();
             case ApiIntegrationType::MRI:
@@ -193,8 +199,9 @@ class Group extends BaseGroup
                 return $holding->getResManSettings();
             case ApiIntegrationType::YARDI_VOYAGER:
                 return $holding->getYardiSettings();
+            case ApiIntegrationType::NONE:
+            default:
+                return null;
         }
-
-        return null;
     }
 }

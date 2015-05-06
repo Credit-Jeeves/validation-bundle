@@ -4,10 +4,10 @@ namespace RentJeeves\DataBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
-use RentJeeves\DataBundle\Model\DepositAccount;
 
 /**
  * @ORM\MappedSuperclass
@@ -37,6 +37,18 @@ abstract class PaymentAccount
      * @var \RentJeeves\DataBundle\Entity\Tenant
      */
     protected $user;
+
+    /**
+     * @ORM\Column(
+     *     type="PaymentProcessor",
+     *     options={
+     *         "default"="heartland"
+     *     },
+     *     name="payment_processor",
+     *     nullable=false
+     * )
+     */
+    protected $paymentProcessor = PaymentProcessor::HEARTLAND;
 
     /**
      * @ORM\ManyToOne(
@@ -190,14 +202,14 @@ abstract class PaymentAccount
      *     cascade={"persist", "merge"},
      *     orphanRemoval=true
      * )
-     * 
+     *
      * @var ArrayCollection
      */
     protected $creditTrackJobs;
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Heartland",
+     *     targetEntity="RentJeeves\DataBundle\Entity\Transaction",
      *     mappedBy="paymentAccount"
      * )
      *
@@ -216,7 +228,7 @@ abstract class PaymentAccount
     /**
      * Set Tenant
      *
-     * @param \RentJeeves\DataBundle\Entity\Tenant $user
+     * @param  \RentJeeves\DataBundle\Entity\Tenant $user
      * @return PaymentAccount
      */
     public function setUser(\RentJeeves\DataBundle\Entity\Tenant $user = null)
@@ -239,12 +251,13 @@ abstract class PaymentAccount
     /**
      * Add deposit account
      *
-     * @param DepositAccount $depositAccount
+     * @param  DepositAccount $depositAccount
      * @return PaymentAccount
      */
     public function addDepositAccount(DepositAccount $depositAccount)
     {
         $this->depositAccounts->add($depositAccount);
+
         return $this;
     }
 
@@ -272,7 +285,7 @@ abstract class PaymentAccount
     /**
      * Set address
      *
-     * @param \CreditJeeves\DataBundle\Entity\Address $address
+     * @param  \CreditJeeves\DataBundle\Entity\Address $address
      * @return PaymentAccount
      */
     public function setAddress(\CreditJeeves\DataBundle\Entity\Address $address = null)
@@ -315,7 +328,7 @@ abstract class PaymentAccount
     /**
      * Set type
      *
-     * @param PaymentAccountType $type
+     * @param  PaymentAccountType $type
      * @return PaymentAccount
      */
     public function setType($type)
@@ -338,7 +351,7 @@ abstract class PaymentAccount
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string         $name
      * @return PaymentAccount
      */
     public function setName($name)
@@ -361,7 +374,7 @@ abstract class PaymentAccount
     /**
      * Set token
      *
-     * @param string $token
+     * @param  string         $token
      * @return PaymentAccount
      */
     public function setToken($token)
@@ -384,7 +397,7 @@ abstract class PaymentAccount
     /**
      * Set ccExpiration
      *
-     * @param \DateTime $ccExpiration
+     * @param  \DateTime      $ccExpiration
      * @return PaymentAccount
      */
     public function setCcExpiration($ccExpiration)
@@ -407,7 +420,7 @@ abstract class PaymentAccount
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
+     * @param  \DateTime      $createdAt
      * @return PaymentAccount
      */
     public function setCreatedAt($createdAt)
@@ -430,7 +443,7 @@ abstract class PaymentAccount
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param  \DateTime      $updatedAt
      * @return PaymentAccount
      */
     public function setUpdatedAt($updatedAt)
@@ -463,12 +476,13 @@ abstract class PaymentAccount
     /**
      * Add Payment
      *
-     * @param \RentJeeves\DataBundle\Entity\Payment $payment
+     * @param  \RentJeeves\DataBundle\Entity\Payment $payment
      * @return PaymentAccount
      */
     public function addPayment(\RentJeeves\DataBundle\Entity\Payment $payment)
     {
         $this->payments[] = $payment;
+
         return $this;
     }
 
@@ -508,5 +522,21 @@ abstract class PaymentAccount
     public function getCreditTrackUserSetting()
     {
         return $this->creditTrackUserSetting;
+    }
+
+    /**
+     * @param string $paymentProcessor
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
     }
 }

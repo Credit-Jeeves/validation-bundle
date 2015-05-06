@@ -1,9 +1,6 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
@@ -15,10 +12,8 @@ use RentJeeves\DataBundle\Entity\Payment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use JMS\Serializer\SerializationContext;
 use Exception;
@@ -102,14 +97,14 @@ class PayController extends Controller
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
-        
+
         return new JsonResponse(
             array(
                 'success' => true
             )
         );
     }
-    
+
     /**
      * @Route("/source_existing", name="checkout_pay_existing_source", options={"expose"=true})
      * @Method({"POST"})
@@ -157,10 +152,13 @@ class PayController extends Controller
         }
 
         $em = $this->get('doctrine.orm.default_entity_manager');
-        $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
+        /** @var Contract $contract */
+        $contract = $em
+            ->getRepository('RjDataBundle:Contract')
+            ->find($paymentAccountType->get('contractId')->getData());
 
         try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser(), $group);
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
         } catch (Exception $e) {
             return new JsonResponse(
                 array(
@@ -187,7 +185,6 @@ class PayController extends Controller
             )
         );
     }
-
 
     /**
      * @Route("/user", name="checkout_pay_user", options={"expose"=true})
@@ -251,7 +248,7 @@ class PayController extends Controller
         if (!$payBalanceOnly && 'on' != $paymentType->get('ends')->getData()) {
             $recurring = true;
         }
-        
+
         $this->savePayment(
             $request,
             $paymentType,
@@ -286,6 +283,7 @@ class PayController extends Controller
         $payment->setClosed($this, PaymentCloseReason::USER_CANCELLED);
         $em->persist($payment);
         $em->flush($payment);
+
         return $this->redirect($request->headers->get('referer'));
     }
 }

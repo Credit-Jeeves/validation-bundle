@@ -11,11 +11,6 @@ class OrderType extends Enum
     /**
      * @var string
      */
-    const AUTHORIZE_CARD = 'authorize_card';
-
-    /**
-     * @var string
-     */
     const HEARTLAND_CARD = 'heartland_card';
 
     /**

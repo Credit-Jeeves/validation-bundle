@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\AMSI;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
@@ -53,7 +53,7 @@ class PaymentSynchronizerCase extends BaseTestCase
 
         $completedTransaction = $order->getCompleteTransaction();
 
-        $transaction = new Heartland();
+        $transaction = new Transaction();
         $transaction->setTransactionId(rand(9999, 9999999));
         $transaction->setAmount($completedTransaction->getAmount());
         $transaction->setIsSuccessful(true);
@@ -62,7 +62,7 @@ class PaymentSynchronizerCase extends BaseTestCase
         $transaction->setBatchId(rand(9999, 9999999));
         $transaction->setOrder($order);
 
-        $order->addHeartland($transaction);
+        $order->addTransaction($transaction);
 
         $this->getEntityManager()->flush();
 

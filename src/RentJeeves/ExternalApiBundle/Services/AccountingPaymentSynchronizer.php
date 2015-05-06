@@ -7,7 +7,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\HeartlandRepository;
+use RentJeeves\DataBundle\Entity\TransactionRepository;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
@@ -97,20 +97,13 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Holding $holding
+     * @param Holding $holding
+     *
      * @return bool
      */
     public function isAllowedToSend(Holding $holding)
     {
-        $accountingSettings = $holding->getAccountingSettings();
-
-        if (empty($accountingSettings)) {
-            return false;
-        }
-
-        $apiIntegration = $accountingSettings->getApiIntegration();
-
-        if (in_array($apiIntegration, $this->allowedIntegrationApi)) {
+        if (in_array($holding->getApiIntegrationType(), $this->allowedIntegrationApi)) {
             return true;
         }
 
@@ -118,8 +111,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Order $order
-     * @return bool
+     * @param Order $order
      */
     public function createJob(Order $order)
     {
@@ -166,15 +158,14 @@ class AccountingPaymentSynchronizer
             if (!($transaction = $order->getCompleteTransaction() and
                 $holding->getExternalSettings() and
                 $paymentBatchId = $transaction->getBatchId() and
-                $accountingType = $holding->getAccountingSettings()->getApiIntegration() and
-                $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings()) and
+                $apiClient = $this->getApiClient($holding->getApiIntegrationType(), $holding->getExternalSettings()) and
                 $this->existsExternalMapping($order, $apiClient)
             )) {
                 $this->logger->debug(
                     sprintf(
-                        "Order(%d) can not be sent to accounting system(%s)",
+                        'Order(%d) can not be sent to accounting system(%s)',
                         $order->getId(),
-                        $accountingType
+                        $holding->getApiIntegrationType()
                     )
                 );
 
@@ -183,9 +174,9 @@ class AccountingPaymentSynchronizer
 
             $this->logger->debug(
                 sprintf(
-                    "Trying to send order(%d) to accounting system(%s)...",
+                    'Trying to send order(%d) to accounting system(%s)...',
                     $order->getId(),
-                    $accountingType
+                    $holding->getApiIntegrationType()
                 )
             );
             if ($apiClient->supportsBatches()) {
@@ -195,7 +186,7 @@ class AccountingPaymentSynchronizer
             $message = sprintf(
                 "Order(%d) was sent to accounting system(%s) with result: %s",
                 $order->getId(),
-                $accountingType,
+                $holding->getApiIntegrationType(),
                 $result
             );
             $this->logger->debug($message);
@@ -261,8 +252,7 @@ class AccountingPaymentSynchronizer
     {
         $externalPropertyId = null;
         $holding = $order->getContract()->getHolding();
-        $settings = $holding->getAccountingSettings();
-        $accountingPackageType = $settings->getApiIntegration();
+        $accountingPackageType = $holding->getApiIntegrationType();
         $paymentBatchId = $order->getCompleteTransaction()->getBatchId();
         $apiClient = $this->getApiClientByOrder($order);
 
@@ -347,13 +337,13 @@ class AccountingPaymentSynchronizer
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
         $mappingBatches = $repo->getTodayBatches($accountingType);
 
-        /** @var HeartlandRepository $repo */
-        $repo = $this->em->getRepository('RjDataBundle:Heartland');
+        /** @var TransactionRepository $repo */
+        $repo = $this->em->getRepository('RjDataBundle:Transaction');
 
         foreach ($mappingBatches as $mappingBatch) {
             /** @var PaymentBatchMapping $mappingBatch */
             $holding = $repo->getMerchantHoldingByBatchId($mappingBatch->getPaymentBatchId());
-            if (!$holding || $holding->getAccountingSettings()->getApiIntegration() != $accountingType) {
+            if (!$holding || $holding->getApiIntegrationType() != $accountingType) {
                 continue;
             }
 
@@ -382,7 +372,7 @@ class AccountingPaymentSynchronizer
 
     /**
      * @param $accountingType
-     * @param  null                       $accountingSettings
+     * @param $accountingSettings
      * @return Interfaces\ClientInterface
      */
     protected function getApiClient($accountingType, $accountingSettings = null)
@@ -414,6 +404,6 @@ class AccountingPaymentSynchronizer
      */
     protected function getAccountingType(Order $order)
     {
-        return $order->getContract()->getHolding()->getAccountingSettings()->getApiIntegration();
+        return $order->getContract()->getHolding()->getApiIntegrationType();
     }
 }

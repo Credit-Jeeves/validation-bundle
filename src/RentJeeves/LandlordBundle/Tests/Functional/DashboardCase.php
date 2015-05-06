@@ -10,7 +10,7 @@ class DashboardCase extends BaseTestCase
     /**
      * @test
      */
-    public function sort()
+    public function shouldSortOrderByStatus()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);

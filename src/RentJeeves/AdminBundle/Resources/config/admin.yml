@@ -139,7 +139,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Heartland logs" }
         arguments:
             - ~
-            - RentJeeves\DataBundle\Entity\Heartland
+            - RentJeeves\DataBundle\Entity\Transaction
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]

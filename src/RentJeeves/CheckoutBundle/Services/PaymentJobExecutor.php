@@ -7,7 +7,6 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
-use Payum\Request\BinaryMaskStatusRequest;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
 use RentJeeves\CheckoutBundle\Payment\PayRent;
 use RentJeeves\CoreBundle\DateTime;
@@ -118,6 +117,7 @@ class PaymentJobExecutor
         if (OrderStatus::ERROR == $order->getStatus()) {
             $this->message = $order->getErrorMessage();
             $this->exitCode = 1;
+
             return false;
         }
 
@@ -145,12 +145,14 @@ class PaymentJobExecutor
             ) {
                 return true;
             }
+
             return false;
         };
         if ($contract->getOperations()->filter($filterClosure)->count()) {
             $this->message = 'Payment already executed.';
             $this->exitCode = 1;
             $this->logger->debug('Payment already executed. Payment ID ' . $payment->getId());
+
             return false;
         }
 

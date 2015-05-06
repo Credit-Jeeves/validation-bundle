@@ -55,7 +55,6 @@ class ReminderInvite
         return $this->error;
     }
 
-
     protected function isAlreadySend($contractId, $key)
     {
         $reminderList = $this->session->get($key);
@@ -66,6 +65,7 @@ class ReminderInvite
         }
         if (in_array($contractId, $reminderList)) {
             $this->setError('contract.reminder.error.already.send');
+
             return true;
         }
 
@@ -74,8 +74,6 @@ class ReminderInvite
 
         return false;
     }
-
-
 
     public function sendTenant($contractId, $user, $currentGroup = null)
     {
@@ -87,21 +85,21 @@ class ReminderInvite
 
         if (!$contract) {
             $this->setError('contract.not.found');
+
             return false;
         }
 
         if (!is_null($currentGroup)) {
             if ($contract->getGroupId() !== $currentGroup->getId()) {
                 $this->setError('contract.not.found');
+
                 return false;
             }
         }
 
         $tenant = $contract->getTenant();
 
-        if ($tenant->getIsActive()) {
-            $this->mailer->sendRjTenantInviteReminderPayment($tenant, $user, $contract);
-        } else {
+        if (false === $tenant->getIsActive()) {
             $this->mailer->sendRjTenantInviteReminder($tenant, $user, $contract);
         }
 
@@ -128,6 +126,7 @@ class ReminderInvite
 
         if (is_null($contract)) {
             $this->setError('contract.not.found');
+
             return false;
         }
 

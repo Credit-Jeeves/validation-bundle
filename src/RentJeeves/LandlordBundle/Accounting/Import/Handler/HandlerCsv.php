@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use CreditJeeves\CoreBundle\Translation\Translator;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingCsv;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 
@@ -17,6 +18,10 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
  */
 class HandlerCsv extends HandlerAbstract
 {
+    const YES = 'y';
+
+    const NO = 'n';
+
     /**
      * @InjectParams({
      *     "translator"       = @Inject("translator"),
@@ -37,5 +42,25 @@ class HandlerCsv extends HandlerAbstract
         $this->storage          = $storage;
         $this->mapping          = $mapping;
         parent::__construct();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setPaymentAccepted(array $row)
+    {
+        if (!isset($row[MappingCsv::KEY_PAYMENT_ACCEPTED])) {
+            return;
+        }
+
+        if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === self::YES) {
+            $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::ANY;
+        }
+
+        if (strtolower($row[MappingCsv::KEY_PAYMENT_ACCEPTED]) === self::NO) {
+            $row[MappingCsv::KEY_PAYMENT_ACCEPTED] = PaymentAccepted::DO_NOT_ACCEPT;
+        }
+
+        parent::setPaymentAccepted($row);
     }
 }
