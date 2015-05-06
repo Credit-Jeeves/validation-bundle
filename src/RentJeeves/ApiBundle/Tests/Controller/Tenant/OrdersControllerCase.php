@@ -24,9 +24,7 @@ class OrdersControllerCase extends BaseApiTestCase
      */
     public function getEmptyOrders($email, $format = 'json', $statusCode = 204)
     {
-        $this->setTenantEmail($email);
-
-        $this->prepareClient();
+        $this->setUserEmail($email);
 
         $response = $this->getRequest(null, [], $format);
 
@@ -46,12 +44,10 @@ class OrdersControllerCase extends BaseApiTestCase
      */
     public function getOrders($email, $format = 'json', $statusCode = 200)
     {
-        $this->setTenantEmail($email);
-
-        $this->prepareClient();
+        $this->setUserEmail($email);
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
         $result = $repo->getUserOrders($tenant);
 
         $response = $this->getRequest(null, [], $format);

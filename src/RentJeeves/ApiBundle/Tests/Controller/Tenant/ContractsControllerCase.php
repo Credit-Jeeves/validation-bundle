@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
-use JMS\Serializer\Serializer;
 use RentJeeves\ApiBundle\Forms\Enum\ReportingType;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\CoreBundle\DateTime;
@@ -38,7 +37,7 @@ class ContractsControllerCase extends BaseApiTestCase
         $answer = $this->parseContent($response->getContent(), $format);
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         /** @var Contract $result */
         $result = $repo->findOneBy(['tenant' => $tenant, 'id' => $id]);
@@ -245,7 +244,7 @@ class ContractsControllerCase extends BaseApiTestCase
 
         $answer = $this->parseContent($response->getContent(), $format);
 
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -279,7 +278,7 @@ class ContractsControllerCase extends BaseApiTestCase
      */
     public function editContract($requestParams, $format = 'json', $statusCode = 204)
     {
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -487,13 +486,13 @@ class ContractsControllerCase extends BaseApiTestCase
      */
     public function setExperianReportingStartAt($requestParameters, $reportingStatus, $reportingStartAt = null)
     {
-        $reportingStartAt = $reportingStartAt ? (new DateTime($reportingStartAt))->format('Y-m-d'): null;
+        $reportingStartAt = $reportingStartAt ? (new DateTime($reportingStartAt))->format('Y-m-d') : null;
 
         $this->createContract($requestParameters);
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
         /** @var Contract $last */
         $last = $repo->findOneBy([
             'tenant' => $tenant,
@@ -536,7 +535,7 @@ class ContractsControllerCase extends BaseApiTestCase
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
         /** @var Contract $last */
         $last = $repo->findOneBy([
             'tenant' => $tenant,

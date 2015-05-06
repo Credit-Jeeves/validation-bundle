@@ -32,9 +32,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      */
     public function getEmptyPaymentAccounts($email, $format = 'json', $statusCode = 204)
     {
-        $this->setTenantEmail($email);
-
-        $this->prepareClient();
+        $this->setUserEmail($email);
 
         $response = $this->getRequest(null, [], $format);
 
@@ -61,12 +59,10 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      */
     public function getPaymentAccounts($email, $format = 'json', $statusCode = 200)
     {
-        $this->setTenantEmail($email);
-
-        $this->prepareClient();
+        $this->setUserEmail($email);
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
         $result = $repo->findBy(['user' => $tenant]);
 
         $response = $this->getRequest(null, [], $format);
@@ -232,15 +228,13 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      */
     public function createPaymentAccount($requestParams, $format = 'json', $statusCode = 201)
     {
-        $this->prepareClient();
-
         $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
         $answer = $this->parseContent($response->getContent(), $format);
 
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -277,9 +271,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      */
     public function editPaymentAccount($requestParams, $format = 'json', $statusCode = 204)
     {
-        $this->prepareClient();
-
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -363,9 +355,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      */
     public function wrongEditPaymentAccount($requestParams, $result, $format = 'json', $statusCode = 400)
     {
-        $this->prepareClient();
-
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -393,8 +383,6 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      */
     public function wrongCreatePaymentAccount($requestParams, $result, $format = 'json', $statusCode = 400)
     {
-        $this->prepareClient();
-
         $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);

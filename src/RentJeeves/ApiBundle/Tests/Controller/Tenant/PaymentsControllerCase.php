@@ -26,13 +26,11 @@ class PaymentsControllerCase extends BaseApiTestCase
      */
     public function getPayments($email, $format = 'json', $statusCode = 200)
     {
-        $this->setTenantEmail($email);
-
-        $this->prepareClient();
+        $this->setUserEmail($email);
 
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
         $result = $repo->findByUser($tenant);
 
         $response = $this->getRequest(null, [], $format);
@@ -71,13 +69,12 @@ class PaymentsControllerCase extends BaseApiTestCase
     public function getPayment()
     {
         $id = 1;
-        $this->setTenantEmail('tenant11@example.com');
-        $this->prepareClient();
+        $this->setUserEmail('tenant11@example.com');
 
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository('RjDataBundle:Payment');
         /** @var PaymentEntity $result */
-        $result = $repo->findOneByIdForUser($id, $this->getTenant());
+        $result = $repo->findOneByIdForUser($id, $this->getUser());
 
         $response = $this->getRequest($this->getIdEncoder()->encode($id));
 
@@ -104,7 +101,6 @@ class PaymentsControllerCase extends BaseApiTestCase
             $this->getUrlEncoder()->decode($answer["payment_account_url"])
         );
     }
-
 
     public static function paymentDataProvider()
     {
@@ -202,7 +198,7 @@ class PaymentsControllerCase extends BaseApiTestCase
     {
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
         $result = $repo->findByUser($tenant);
         /** @var PaymentEntity $latest */
         $latest = $result[0];
@@ -343,13 +339,12 @@ class PaymentsControllerCase extends BaseApiTestCase
     public function deletePayment()
     {
         $id = 1;
-        $this->setTenantEmail('tenant11@example.com');
-        $this->prepareClient();
+        $this->setUserEmail('tenant11@example.com');
 
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         /** @var PaymentEntity $result */
-        $payment = $repo->findOneByIdForUser($id, $this->getTenant());
+        $payment = $repo->findOneByIdForUser($id, $this->getUser());
         $this->assertEquals(PaymentStatus::ACTIVE, $payment->getStatus());
 
         $response = $this->deleteRequest($this->getIdEncoder()->encode($id));

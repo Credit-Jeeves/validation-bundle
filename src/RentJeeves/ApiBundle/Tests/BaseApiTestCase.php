@@ -43,6 +43,11 @@ class BaseApiTestCase extends BaseTestCase
     /** @var \Symfony\Bundle\FrameworkBundle\Client */
     protected static $client;
 
+    public function setUp()
+    {
+        $this->prepareClient();
+    }
+
     protected function assertResponse(Response $response, $statusCode = 200, $format = 'json')
     {
         $this->assertEquals(
@@ -111,13 +116,21 @@ class BaseApiTestCase extends BaseTestCase
         /** @var Client $oauthClient */
         $oauthClient = $repo->find(1);
 
-        if (!$oauthStorage->getAccessToken(static::USER_ACCESS_TOKEN)) {
+        if (!$oauthStorage->getAccessToken(static::USER_ACCESS_TOKEN . $this->getUser()->getEmail())) {
             $oauthStorage->createAccessToken(
-                static::USER_ACCESS_TOKEN,
+                static::USER_ACCESS_TOKEN . $this->getUser()->getEmail(),
                 $oauthClient,
                 $this->getUser(),
                 0
             );
+        }
+    }
+
+    protected function prepareClient()
+    {
+        if (!static::$client) {
+            $this->load(true);
+            static::$client = static::$client ?: $this->createClient();
         }
     }
 
@@ -128,17 +141,9 @@ class BaseApiTestCase extends BaseTestCase
     {
         $this->prepareClient();
 
-        return self::$client;
-    }
+        $this->prepareOAuthAuthorization();
 
-    protected function prepareClient()
-    {
-        if (!static::$instance  || !self::$client) {
-            $this->load(true);
-            self::$client = parent::createClient();
-            $this->prepareOAuthAuthorization();
-            static::$instance = true;
-        }
+        return static::$client;
     }
 
     /**
@@ -170,8 +175,6 @@ class BaseApiTestCase extends BaseTestCase
         $this->userEmail = $email;
         /* Reload client */
         $this->user = null;
-        static::$instance = false;
-        $this->prepareClient();
     }
 
     /**
@@ -188,7 +191,7 @@ class BaseApiTestCase extends BaseTestCase
     protected function getUser()
     {
         return $this->user ?: $this->user = $this
-            ->getEntityRepository('RjDataBundle:Tenant')
+            ->getEntityRepository('DataBundle:User')
             ->findOneBy(['email' => $this->getUserEmail()]);
     }
 
@@ -292,7 +295,7 @@ class BaseApiTestCase extends BaseTestCase
             [],
             [
                 'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::USER_ACCESS_TOKEN,
+                'HTTP_AUTHORIZATION' => 'Bearer ' . static::USER_ACCESS_TOKEN . $this->getUser()->getEmail(),
             ],
             ($method != 'GET') ? $serializer->serialize($requestParams, $format) : null
         );
