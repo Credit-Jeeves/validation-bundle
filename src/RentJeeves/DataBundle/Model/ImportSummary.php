@@ -29,7 +29,7 @@ abstract class ImportSummary
      *      nullable=true
      * )
      */
-    protected $publicId = 0;
+    protected $publicId;
 
     /**
      * @var string

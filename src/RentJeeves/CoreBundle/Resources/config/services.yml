@@ -2,6 +2,7 @@
 
 parameters:
     data.event_listener.order.class: RentJeeves\DataBundle\EventListener\OrderListener
+    data.event_listener.import_summary.class: RentJeeves\DataBundle\EventListener\ImportSummaryListener
 
 services:
     data.event_listener.order:
@@ -13,3 +14,9 @@ services:
         arguments:
             - "@service_container"
             - "@logger"
+    data.event_listener.import_summary:
+        class: "%data.event_listener.import_summary.class%"
+        tags:
+            - { name: doctrine.event_listener, event: postPersist, method: postPersist }
+        arguments:
+            - "@skip32.id_encoder"

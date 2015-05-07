@@ -11,15 +11,12 @@ use RentJeeves\DataBundle\Entity\ImportError;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Enum\ImportType;
 use Monolog\Logger;
-use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait;
 
 /**
  * @Service("import_summary.manager")
  */
 class ImportSummaryManager
 {
-    use DebuggableTrait;
-
     /**
      * @var EntityManager
      */
@@ -37,14 +34,13 @@ class ImportSummaryManager
 
     /**
      * @InjectParams({
-     *     "em" = @Inject("doctrine.orm.entity_manager"),
-     *     "em" = @Inject("logger")
+     *     "em" = @Inject("doctrine.orm.entity_manager")
      * })
      */
-    public function __construct(EntityManager $em, Logger $logger)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->logger = $logger;
+        $this->logger = new Logger(get_class());
     }
 
     /**
@@ -54,7 +50,7 @@ class ImportSummaryManager
      */
     public function initialize(Group $group, $importType, $publicId = null)
     {
-        $this->debugMessage('Initialize import summary report');
+        $this->logger->debug('Initialize import summary report');
         $this->checkImportType($importType);
 
         if (!empty($publicId)) {
@@ -63,7 +59,7 @@ class ImportSummaryManager
             $this->importSummaryModel = $this->createNewReport($group, $importType);
         }
 
-        $this->debugMessage('Finish initialize import summary report');
+        $this->logger->debug('Finish initialize import summary report');
     }
 
     /**
@@ -81,9 +77,9 @@ class ImportSummaryManager
      */
     public function incrementNew()
     {
-        $this->debugMessage('Import summary report: increment new');
-        $countNew = $this->importSummaryModel->getCountNew()+1;
-        $this->importSummaryModel->setCountNew($countNew);
+        $this->logger->debug('Import summary report: increment new');
+        $countNew = $this->importSummaryModel->getCountNew();
+        $this->importSummaryModel->setCountNew($countNew++);
     }
 
     /**
@@ -91,9 +87,9 @@ class ImportSummaryManager
      */
     public function incrementInvited()
     {
-        $this->debugMessage('Import summary report: increment invited');
-        $countInvited = $this->importSummaryModel->getCountInvited()+1;
-        $this->importSummaryModel->setCountInvited($countInvited);
+        $this->logger->debug('Import summary report: increment invited');
+        $countInvited = $this->importSummaryModel->getCountInvited();
+        $this->importSummaryModel->setCountInvited($countInvited++);
     }
 
     /**
@@ -101,9 +97,9 @@ class ImportSummaryManager
      */
     public function incrementMatched()
     {
-        $this->debugMessage('Import summary report: increment matched');
-        $countMatched = $this->importSummaryModel->getCountMatched()+1;
-        $this->importSummaryModel->setCountMatched($countMatched);
+        $this->logger->debug('Import summary report: increment matched');
+        $countMatched = $this->importSummaryModel->getCountMatched();
+        $this->importSummaryModel->setCountMatched($countMatched++);
     }
 
     /**
@@ -152,7 +148,7 @@ class ImportSummaryManager
         if ($this->isExistEntityErrorInTheDB($importError)) {
             return;
         }
-        $this->debugMessage(
+        $this->logger->debug(
             sprintf('Add error to import summary report, row offset "%s"', $importError->getRowOffset())
         );
         $this->em->persist($importError);
@@ -167,7 +163,7 @@ class ImportSummaryManager
     {
         $searchParameters = [
             'rowOffser' => $importError->getRowOffset(),
-            'importSummart' => $importError->getImportSummary()->getId()
+            'importSummary' => $importError->getImportSummary()->getId()
         ];
 
         if ($importError->getExceptionUid()) {
@@ -194,7 +190,7 @@ class ImportSummaryManager
         $this->em->persist($importSummaryModel);
         $this->em->flush($importSummaryModel);
 
-        $this->debugMessage(sprintf('Create summary report, ID(%s)', $importSummaryModel->getId()));
+        $this->logger->debug(sprintf('New summary report created, ID(%s)', $importSummaryModel->getId()));
 
         return $importSummaryModel;
     }
@@ -204,14 +200,8 @@ class ImportSummaryManager
      */
     protected function checkImportType($importType)
     {
-        if (!in_array($importType, $importTypes = ImportType::values())) {
-            throw new \LogicException(
-                sprintf(
-                    'Import type must be one of "%s", but given "%s"',
-                    implode(',', $importTypes),
-                    $importType
-                )
-            );
+        if (!ImportType::isValid($importType)) {
+            ImportType::throwsInvalid($importType);
         }
     }
 
@@ -243,7 +233,7 @@ class ImportSummaryManager
             );
         }
 
-        $this->debugMessage(sprintf('Get summary report from DB, ID(%s)', $importSummaryModel->getId()));
+        $this->logger->debug(sprintf('Get summary report from DB, ID(%s)', $importSummaryModel->getId()));
 
         return $importSummaryModel;
     }

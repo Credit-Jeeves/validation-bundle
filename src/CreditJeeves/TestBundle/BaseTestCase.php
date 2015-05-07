@@ -40,6 +40,14 @@ abstract class BaseTestCase extends MinkTestCase
     }
 
     /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected static function getKernelClass()

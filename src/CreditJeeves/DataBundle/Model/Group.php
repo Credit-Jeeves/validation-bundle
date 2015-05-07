@@ -443,7 +443,7 @@ abstract class Group
     /**
      * @param ImportSummary $import
      */
-    public function addImportSummaries(ImportSummary $import)
+    public function addImportSummary(ImportSummary $import)
     {
         $this->importSummaries->add($import);
     }
@@ -451,7 +451,7 @@ abstract class Group
     /**
      * @param ImportSummary $import
      */
-    public function removeImportSummaries(ImportSummary $import)
+    public function removeImportSummary(ImportSummary $import)
     {
         $this->importSummaries->remove($import);
     }
