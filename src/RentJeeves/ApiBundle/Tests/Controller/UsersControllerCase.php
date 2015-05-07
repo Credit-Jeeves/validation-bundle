@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\ApiBundle\Tests\Controller;
 
-use JMS\Serializer\Serializer;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 
 class UsersControllerCase extends BaseApiTestCase
@@ -10,6 +9,8 @@ class UsersControllerCase extends BaseApiTestCase
     const WORK_ENTITY = 'RjDataBundle:Tenant';
     const URL_PREFIX = '/api/partner';
     const REQUEST_URL = 'users';
+
+    protected $userEmail = 'anna_lee@example.com';
 
     public function createTenantDataNegativeProvider()
     {
@@ -33,8 +34,6 @@ class UsersControllerCase extends BaseApiTestCase
      */
     public function errorWhenCreatingUser($requestParams, $errorMessage, $format = 'json', $statusCode = 400)
     {
-        $this->prepareClient();
-
         $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
@@ -74,8 +73,6 @@ class UsersControllerCase extends BaseApiTestCase
      */
     public function createUser($requestParams, $format = 'json', $statusCode = 201)
     {
-        $this->prepareClient();
-
         $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);

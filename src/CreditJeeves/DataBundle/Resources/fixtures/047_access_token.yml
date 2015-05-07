@@ -7,4 +7,4 @@ fixtures:
   access_token_2:
     user: partner_user_1
     client: client_3
-    token: test_partner
+    token: test_partneranna_lee@example.com

@@ -60,7 +60,7 @@ class OrdersController extends Controller
      * @Rest\View(serializerGroups={"Base", "OrderDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException

@@ -22,12 +22,52 @@ class PaymentAccount extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"PaymentAccountDetails"})
+     * @Serializer\Groups({"PaymentAccountShort", "PaymentAccountDetails"})
      *
      * @return string
      */
     public function getNickname()
     {
         return $this->entity->getName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"PaymentAccountDetails"})
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->entity->getType();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"PaymentAccountDetails"})
+     *
+     * @return string|null
+     */
+    public function getExpiration()
+    {
+        return $this->entity->getCcExpiration() ? $this->entity->getCcExpiration()->format('Y-m') : null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"PaymentAccountDetails"})
+     * @Serializer\Type("string")
+     *
+     * @return string
+     */
+    public function getBillingAddressUrl()
+    {
+        if ($this->entity->getAddress()) {
+            return $this
+                ->resourceFactory
+                ->getResponse($this->entity->getAddress());
+        }
+
+        return '';
     }
 }

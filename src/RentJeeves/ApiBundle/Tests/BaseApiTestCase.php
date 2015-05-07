@@ -2,19 +2,15 @@
 
 namespace RentJeeves\ApiBundle\Tests;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use FOS\OAuthServerBundle\Entity\Client;
 use OAuth2\IOAuth2Storage;
 use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
-use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
 
-/**
- * @method assertEquals
- * @method assertTrue
- */
 class BaseApiTestCase extends BaseTestCase
 {
     const URL_PREFIX = '/api/tenant';
@@ -38,7 +34,19 @@ class BaseApiTestCase extends BaseTestCase
     /** @var  AttributeEncoderInterface */
     private $urlEncoder;
 
-    private $tenantEmail= 'tenant11@example.com';
+    /** @var string */
+    protected $userEmail= 'tenant11@example.com';
+
+    /** @var  User */
+    protected $user;
+
+    /** @var \Symfony\Bundle\FrameworkBundle\Client */
+    protected static $client;
+
+    public function setUp()
+    {
+        $this->prepareClient();
+    }
 
     protected function assertResponse(Response $response, $statusCode = 200, $format = 'json')
     {
@@ -48,15 +56,20 @@ class BaseApiTestCase extends BaseTestCase
             $response->getContent()
         );
 
-        $contentType = $response->headers->get('Content-Type');
+        // Added because
+        //  - no necessary check it for no-content response
+        //  - Symfony 2.4.10 doesn't return content-type for no-content response
+        if ($statusCode != 204) {
+            $contentType = $response->headers->get('Content-Type');
 
-        $this->assertTrue(isset(static::$formats[$format]), "Content Type \"$contentType\" is not available.");
+            $this->assertTrue(isset(static::$formats[$format]), "Content Type \"$contentType\" is not available.");
 
-        $this->assertContains(
-            $contentType,
-            static::$formats[$format],
-            $response->headers
-        );
+            $this->assertContains(
+                $contentType,
+                static::$formats[$format],
+                $response->headers
+            );
+        }
     }
 
     protected function assertResponseContent($content, $result, $format = 'json')
@@ -77,6 +90,11 @@ class BaseApiTestCase extends BaseTestCase
         $this->assertTrue(isset($urlInfo['path']));
     }
 
+    /**
+     * @param  string       $content
+     * @param  string       $format
+     * @return array|string
+     */
     protected function parseContent($content, $format = 'json')
     {
         /** @var Serializer $serializer */
@@ -98,11 +116,11 @@ class BaseApiTestCase extends BaseTestCase
         /** @var Client $oauthClient */
         $oauthClient = $repo->find(1);
 
-        if (!$oauthStorage->getAccessToken(static::USER_ACCESS_TOKEN)) {
+        if (!$oauthStorage->getAccessToken(static::USER_ACCESS_TOKEN . $this->getUser()->getEmail())) {
             $oauthStorage->createAccessToken(
-                static::USER_ACCESS_TOKEN,
+                static::USER_ACCESS_TOKEN . $this->getUser()->getEmail(),
                 $oauthClient,
-                $this->getTenant(),
+                $this->getUser(),
                 0
             );
         }
@@ -110,20 +128,27 @@ class BaseApiTestCase extends BaseTestCase
 
     protected function prepareClient()
     {
-        if (static::$instance != true) {
+        if (!static::$client) {
             $this->load(true);
-            $this->prepareOAuthAuthorization();
-            static::$instance = true;
+            static::$client = static::$client ?: $this->createClient();
         }
     }
 
+    /**
+     * @return \Symfony\Bundle\FrameworkBundle\Client
+     */
     protected function getClient()
     {
         $this->prepareClient();
 
-        return parent::createClient();
+        $this->prepareOAuthAuthorization();
+
+        return static::$client;
     }
 
+    /**
+     * @return EntityManager
+     */
     protected function getEm()
     {
         if (!$this->em) {
@@ -133,35 +158,46 @@ class BaseApiTestCase extends BaseTestCase
         return $this->em;
     }
 
+    /**
+     * @param  string                                                                       $entityPath
+     * @return \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
     protected function getEntityRepository($entityPath)
     {
         return $this->getEm()->getRepository($entityPath);
     }
 
-    protected function setTenantEmail($email)
-    {
-        $this->tenantEmail = $email;
-        static::$instance = false;
-    }
-
-    protected function getTenantEmail()
-    {
-        return $this->tenantEmail;
-    }
-
     /**
-     * @return null|Tenant
+     * @param string $email
      */
-    protected function getTenant()
+    protected function setUserEmail($email)
     {
-        return $this
-            ->getEntityRepository('RjDataBundle:Tenant')
-            ->findOneBy(['email' => $this->getTenantEmail()]);
+        $this->userEmail = $email;
+        /* Reload client */
+        $this->user = null;
     }
 
     /**
-     * @param string $idEncoderServiceId
-     * @param bool $refresh
+     * @return string
+     */
+    protected function getUserEmail()
+    {
+        return $this->userEmail;
+    }
+
+    /**
+     * @return null|User
+     */
+    protected function getUser()
+    {
+        return $this->user ?: $this->user = $this
+            ->getEntityRepository('DataBundle:User')
+            ->findOneBy(['email' => $this->getUserEmail()]);
+    }
+
+    /**
+     * @param  string                    $idEncoderServiceId
+     * @param  bool                      $refresh
      * @return AttributeEncoderInterface
      */
     protected function getIdEncoder($idEncoderServiceId = 'api.default_id_encoder', $refresh = false)
@@ -174,8 +210,8 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param string $urlEncoderServiceId
-     * @param bool $refresh
+     * @param  string                    $urlEncoderServiceId
+     * @param  bool                      $refresh
      * @return AttributeEncoderInterface
      */
     protected function getUrlEncoder($urlEncoderServiceId = 'api.default_url_encoder', $refresh = false)
@@ -188,8 +224,8 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param array $requestParams
-     * @param string $format
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function postRequest(array $requestParams = [], $format = 'json')
@@ -198,9 +234,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param null $attributes
-     * @param array $requestParams
-     * @param string $format
+     * @param  null|string   $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function putRequest($attributes = null, array $requestParams = [], $format = 'json')
@@ -209,9 +245,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param null $attributes
-     * @param array $requestParams
-     * @param string $format
+     * @param  null          $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function getRequest($attributes = null, array $requestParams = [], $format = 'json')
@@ -220,9 +256,9 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param null|string $attributes
-     * @param array $requestParams
-     * @param string $format
+     * @param  null|string   $attributes
+     * @param  array         $requestParams
+     * @param  string        $format
      * @return null|Response
      */
     protected function deleteRequest($attributes = null, array $requestParams = [], $format = 'json')
@@ -231,11 +267,11 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param string|null $fullUrl
-     * @param string $method
-     * @param string $format
-     * @param string|null $attributes
-     * @param array $requestParams
+     * @param  string|null   $fullUrl
+     * @param  string        $method
+     * @param  string        $format
+     * @param  string|null   $attributes
+     * @param  array         $requestParams
      * @return null|Response
      */
     protected function request(
@@ -259,7 +295,7 @@ class BaseApiTestCase extends BaseTestCase
             [],
             [
                 'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::USER_ACCESS_TOKEN,
+                'HTTP_AUTHORIZATION' => 'Bearer ' . static::USER_ACCESS_TOKEN . $this->getUser()->getEmail(),
             ],
             ($method != 'GET') ? $serializer->serialize($requestParams, $format) : null
         );
@@ -267,10 +303,42 @@ class BaseApiTestCase extends BaseTestCase
         return $client->getResponse();
     }
 
-    protected function prepareUrl($id = null, $format = 'json', $requestUrl = '')
+    /**
+     * @param  null|int    $id
+     * @param  string|bool $format
+     * @param  string      $requestUrl
+     * @param  bool        $isAbsolutePath
+     * @return string
+     */
+    protected function prepareUrl($id = null, $format = 'json', $requestUrl = '', $isAbsolutePath = false)
     {
         $requestUrl = $requestUrl ?: static::REQUEST_URL;
 
-        return static::URL_PREFIX . '/' . $requestUrl . ( $id ? "/{$id}" : '') . ".{$format}" ;
+        $siteUrl = '';
+        if ($isAbsolutePath) {
+            $siteUrl = $this->getSiteUrl();
+        }
+
+        return sprintf(
+            '%s%s/%s%s%s',
+            $siteUrl,
+            static::URL_PREFIX,
+            $requestUrl,
+            $id ? '/' . $id : '',
+            $format ? '.' . $format : ''
+        );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSiteUrl()
+    {
+        $https = $this->getClient()->getServerParameter('HTTPS', 'off');
+        $port = $this->getClient()->getServerParameter('SERVER_PORT', 80);
+        $protocol = ($https !== 'off' || $port == 443) ? "https" : "http";
+        $domainName = $this->getClient()->getServerParameter('HTTP_HOST');
+
+        return sprintf('%s://%s', $protocol, $domainName);
     }
 }

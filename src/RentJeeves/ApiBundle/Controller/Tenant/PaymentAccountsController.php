@@ -8,7 +8,6 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Forms\PaymentAccountType;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
-use RentJeeves\ApiBundle\Request\ParamFetcher;
 use RentJeeves\ApiBundle\Response\PaymentAccount as ResponseEntity;
 use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
@@ -38,7 +37,7 @@ class PaymentAccountsController extends Controller
      *     }
      * )
      * @Rest\Get("/payment_accounts")
-     * @Rest\View(serializerGroups={"Base", "PaymentAccountDetails"})
+     * @Rest\View(serializerGroups={"Base", "PaymentAccountShort"})
      *
      * @return ResponseCollection
      */
@@ -72,7 +71,7 @@ class PaymentAccountsController extends Controller
      * @Rest\View(serializerGroups={"Base", "PaymentAccountDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
@@ -143,11 +142,11 @@ class PaymentAccountsController extends Controller
      */
     public function createPaymentAccountAction(Request $request)
     {
-        return $this->processForm($request, new PaymentAccountEntity);
+        return $this->processForm($request, new PaymentAccountEntity());
     }
 
     /**
-     * @param int $id
+     * @param int     $id
      * @param Request $request
      *
      * @ApiDoc(
@@ -165,7 +164,7 @@ class PaymentAccountsController extends Controller
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      * @RequestParam(
      *     name="contract_url",
@@ -214,6 +213,12 @@ class PaymentAccountsController extends Controller
         throw new NotFoundHttpException('Payment Account not found');
     }
 
+    /**
+     * @param  Request                      $request
+     * @param  PaymentAccountEntity         $entity
+     * @param  string                       $method
+     * @return \Symfony\Component\Form\Form
+     */
     protected function processForm(Request $request, PaymentAccountEntity $entity, $method = 'POST')
     {
         $form = $this->createForm(

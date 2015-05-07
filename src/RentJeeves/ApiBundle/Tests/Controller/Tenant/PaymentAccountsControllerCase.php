@@ -2,9 +2,9 @@
 
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
-use JMS\Serializer\Serializer;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 
 class PaymentAccountsControllerCase extends BaseApiTestCase
 {
@@ -12,6 +12,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
 
     const REQUEST_URL = 'payment_accounts';
 
+    /**
+     * @return array
+     */
     public static function getEmptyPaymentAccountsDataProvider()
     {
         return [
@@ -20,20 +23,25 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param string $email
+     * @param string $format
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider getEmptyPaymentAccountsDataProvider
      */
     public function getEmptyPaymentAccounts($email, $format = 'json', $statusCode = 204)
     {
-        $this->setTenantEmail($email);
-
-        $this->prepareClient();
+        $this->setUserEmail($email);
 
         $response = $this->getRequest(null, [], $format);
 
         $this->assertResponse($response, $statusCode, $format);
     }
 
+    /**
+     * @return array
+     */
     public static function getPaymentAccountsDataProvider()
     {
         return [
@@ -42,17 +50,19 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param string $email
+     * @param string $format
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider getPaymentAccountsDataProvider
      */
     public function getPaymentAccounts($email, $format = 'json', $statusCode = 200)
     {
-        $this->setTenantEmail($email);
-
-        $this->prepareClient();
+        $this->setUserEmail($email);
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
         $result = $repo->findBy(['user' => $tenant]);
 
         $response = $this->getRequest(null, [], $format);
@@ -85,6 +95,55 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
         );
     }
 
+    /**
+     * @return array
+     */
+    public function getPaymentAccountDataProvider()
+    {
+        return [
+            [
+                '656765400',
+                [
+                    'id' => '656765400',
+                    'url' => $this->prepareUrl(656765400, false, 'payment_accounts', true),
+                    'nickname' => 'Card',
+                    'type' => PaymentAccountType::CARD,
+                    'expiration' => (new \DateTime('+1 month'))->format('Y-m'),
+                    'billing_address_url' => $this->prepareUrl(2539807809, false, 'addresses', true),
+                ]
+            ],
+            [
+                '1758512013',
+                [
+                    'id' => '1758512013',
+                    'url' => $this->prepareUrl(1758512013, false, 'payment_accounts', true),
+                    'nickname' => 'Bank',
+                    'type' => PaymentAccountType::BANK,
+                    'billing_address_url' => '',
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @param $paymentAccountEncodedId
+     * @param $result
+     *
+     * @test
+     * @dataProvider getPaymentAccountDataProvider
+     */
+    public function getPaymentAccount($paymentAccountEncodedId, $result)
+    {
+        $response = $this->getRequest($paymentAccountEncodedId);
+
+        $this->assertResponse($response);
+
+        $this->assertResponseContent($response->getContent(), $result);
+    }
+
+    /**
+     * @return array
+     */
     public static function paymentAccountsDataProvider()
     {
         return [
@@ -144,6 +203,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function createPaymentAccountDataProvider()
     {
         return [
@@ -157,20 +219,22 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array  $requestParams
+     * @param string $format
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider createPaymentAccountDataProvider
      */
     public function createPaymentAccount($requestParams, $format = 'json', $statusCode = 201)
     {
-        $this->prepareClient();
-
         $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
 
         $answer = $this->parseContent($response->getContent(), $format);
 
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -182,6 +246,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
         );
     }
 
+    /**
+     * @return array
+     */
     public static function editPaymentAccountDataProvider()
     {
         return [
@@ -195,14 +262,16 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array  $requestParams
+     * @param string $format
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider editPaymentAccountDataProvider
      */
     public function editPaymentAccount($requestParams, $format = 'json', $statusCode = 204)
     {
-        $this->prepareClient();
-
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -224,6 +293,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
         $this->assertNotNull($last->getToken());
     }
 
+    /**
+     * @return array
+     */
     public static function wrongPaymentAccountDataProvider()
     {
         return [
@@ -273,14 +345,17 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array  $requestParams
+     * @param array  $result
+     * @param string $format
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider wrongPaymentAccountDataProvider
      */
     public function wrongEditPaymentAccount($requestParams, $result, $format = 'json', $statusCode = 400)
     {
-        $this->prepareClient();
-
-        $tenant = $this->getTenant();
+        $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
@@ -298,13 +373,16 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array  $requestParams
+     * @param array  $result
+     * @param string $format
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider wrongPaymentAccountDataProvider
      */
     public function wrongCreatePaymentAccount($requestParams, $result, $format = 'json', $statusCode = 400)
     {
-        $this->prepareClient();
-
         $response = $this->postRequest($requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);

@@ -52,8 +52,6 @@ class UnitsControllerCase extends BaseApiTestCase
      */
     public function getUnits($requestParams, $dbRequest, $format = 'json', $statusCode = 200)
     {
-        $this->prepareClient();
-
         $response = $this->getRequest(null, $requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
@@ -108,8 +106,6 @@ class UnitsControllerCase extends BaseApiTestCase
      */
     public function getEmptyUnits($requestParams, $format = 'json', $statusCode = 204)
     {
-        $this->prepareClient();
-
         $response = $this->getRequest(null, $requestParams, $format);
 
         $this->assertResponse($response, $statusCode, $format);
