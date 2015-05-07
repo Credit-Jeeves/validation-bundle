@@ -3,6 +3,8 @@
 parameters:
     data.event_listener.order.class: RentJeeves\DataBundle\EventListener\OrderListener
     data.event_listener.import_summary.class: RentJeeves\DataBundle\EventListener\ImportSummaryListener
+    kernel.listener.command_dispatch.exception.class: RentJeeves\CoreBundle\EventListener\ConsoleExceptionListener
+    kernel.listener.command_dispatch.terminate.class: RentJeeves\CoreBundle\EventListener\ConsoleErrorListener
 
 services:
     data.event_listener.order:
@@ -20,3 +22,15 @@ services:
             - { name: doctrine.event_listener, event: postPersist, method: postPersist }
         arguments:
             - "@skip32.id_encoder"
+    kernel.listener.command_dispatch.exception:
+        class: '%kernel.listener.command_dispatch.exception.class%'
+        arguments:
+            logger: "@logger"
+        tags:
+            - { name: kernel.event_listener, event: console.exception }
+    kernel.listener.command_dispatch.terminate:
+        class: '%kernel.listener.command_dispatch.terminate.class%'
+        arguments:
+            logger: "@logger"
+        tags:
+            - { name: kernel.event_listener, event: console.terminate }

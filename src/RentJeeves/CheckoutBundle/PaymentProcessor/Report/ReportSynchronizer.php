@@ -111,10 +111,14 @@ class ReportSynchronizer
      */
     protected function processDepositTransaction(DepositReportTransaction $reportTransaction)
     {
-        $this->logger->debug('Processing DEPOSITED transaction with ID ' . $reportTransaction->getTransactionId());
+        $this->logger->debug(sprintf('Deposit Transaction %s: Start sync...', $reportTransaction->getTransactionId()));
+
         /** @var HeartlandTransaction $transaction */
         if (!$transaction = $this->findTransaction($reportTransaction->getTransactionId())) {
-            $this->logger->alert('Deposit transaction ID ' . $reportTransaction->getTransactionId() . ' not found');
+            $this->logger->alert(sprintf(
+                'Deposit transaction ID %s not found',
+                $reportTransaction->getTransactionId()
+            ));
 
             return;
         }
@@ -132,6 +136,7 @@ class ReportSynchronizer
             }
         }
         $this->em->flush();
+        $this->logger->debug(sprintf('Transaction %s:  Sync successful.', $reportTransaction->getTransactionId()));
     }
 
     /**
@@ -141,23 +146,23 @@ class ReportSynchronizer
      */
     protected function processReturned(ReversalReportTransaction $reportTransaction)
     {
+        $this->logger->debug(sprintf('Returned transaction %s: Start sync...', $reportTransaction->getTransactionId()));
+
         if ($this->isAlreadyProcessedReversal($reportTransaction)) {
-            $this->logger->debug(
-                'Returned transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed'
-            );
+            $this->logger->debug(sprintf(
+                'Returned transaction ID %s is already processed',
+                $reportTransaction->getTransactionId()
+            ));
 
             return;
         }
 
-        $this->logger->debug(
-            'Processing RETURNED transaction with original transaction ID ' .
-            $reportTransaction->getOriginalTransactionId()
-        );
         /** @var HeartlandTransaction $originalTransaction */
         if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionId())) {
-            $this->logger->alert(
-                'Returned transaction ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
-            );
+            $this->logger->alert(sprintf(
+                'Returned transaction ID %s not found',
+                $reportTransaction->getOriginalTransactionId()
+            ));
 
             return;
         }
@@ -178,6 +183,11 @@ class ReportSynchronizer
 
         $this->em->persist($reversalTransaction);
         $this->em->flush();
+
+        $this->logger->debug(sprintf(
+            'Returned transaction %s: Sync successful.',
+            $reportTransaction->getTransactionId()
+        ));
     }
 
     /**
@@ -187,23 +197,23 @@ class ReportSynchronizer
      */
     protected function processRefunded(ReversalReportTransaction $reportTransaction)
     {
+        $this->logger->debug(sprintf('Refunded transaction %s: Start sync...', $reportTransaction->getTransactionId()));
+
         if ($this->isAlreadyProcessedReversal($reportTransaction)) {
-            $this->logger->debug(
-                'Refunded transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed'
-            );
+            $this->logger->debug(sprintf(
+                'Refunded transaction ID %s is already processed',
+                $reportTransaction->getTransactionId()
+            ));
 
             return;
         }
 
-        $this->logger->debug(
-            'Processing REFUNDED transaction with original transaction ID ' .
-            $reportTransaction->getOriginalTransactionId()
-        );
         /** @var HeartlandTransaction $originalTransaction */
         if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionId())) {
-            $this->logger->alert(
-                'Refunded transaction ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
-            );
+            $this->logger->alert(sprintf(
+                'Refunded transaction ID %s not found',
+                $reportTransaction->getOriginalTransactionId()
+            ));
 
             return;
         }
@@ -221,6 +231,11 @@ class ReportSynchronizer
 
         $this->em->persist($voidedTransaction);
         $this->em->flush();
+
+        $this->logger->debug(sprintf(
+            'Refunded transaction %s: Sync successful.',
+            $reportTransaction->getTransactionId()
+        ));
     }
 
     /**
@@ -230,23 +245,26 @@ class ReportSynchronizer
      */
     protected function processCancelled(ReversalReportTransaction $reportTransaction)
     {
+        $this->logger->debug(sprintf(
+            'Cancelled transaction %s: Start sync...',
+            $reportTransaction->getTransactionId()
+        ));
+
         if ($this->isAlreadyProcessedReversal($reportTransaction)) {
-            $this->logger->debug(
-                'Cancelled transaction ID ' . $reportTransaction->getTransactionId() . ' is already processed'
-            );
+            $this->logger->debug(sprintf(
+                'Cancelled transaction ID %s is already processed',
+                $reportTransaction->getTransactionId()
+            ));
 
             return;
         }
 
-        $this->logger->debug(
-            'Processing CANCELLED transaction with original transaction ID ' .
-            $reportTransaction->getOriginalTransactionId()
-        );
         /** @var HeartlandTransaction $originalTransaction */
         if (!$originalTransaction = $this->findTransaction($reportTransaction->getOriginalTransactionId())) {
-            $this->logger->alert(
-                'Cancelled transaction ID ' . $reportTransaction->getOriginalTransactionId() . ' not found'
-            );
+            $this->logger->alert(sprintf(
+                'Cancelled transaction ID %s not found',
+                $reportTransaction->getOriginalTransactionId()
+            ));
 
             return;
         }
@@ -258,6 +276,11 @@ class ReportSynchronizer
 
         $this->em->persist($voidedTransaction);
         $this->em->flush();
+
+        $this->logger->debug(sprintf(
+            'Cancelled transaction %s: Sync successful.',
+            $reportTransaction->getTransactionId()
+        ));
     }
 
     /**
@@ -276,10 +299,11 @@ class ReportSynchronizer
      */
     protected function createReversalTransaction(Order $order, ReversalReportTransaction $reportTransaction)
     {
-        $this->logger->debug(
-            'Creating REVERSED transaction for Order ID ' . $order->getId() .
-            ', transaction ID ' . $reportTransaction->getTransactionId()
-        );
+        $this->logger->debug(sprintf(
+            'Creating REVERSED transaction for Order ID %s, transaction ID %s',
+            $order->getId(),
+            $reportTransaction->getTransactionId()
+        ));
         $transaction = new HeartlandTransaction();
         $transaction->setTransactionId($reportTransaction->getTransactionId());
         $transaction->setOrder($order);
