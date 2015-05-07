@@ -75,7 +75,7 @@ function runPhpCsFixer()
     foreach (getStashedFiles($PHP_CS_FIXER_FILE_PATTERN) as $file) {
         $output = '';
         $returnCode = null;
-        exec(sprintf('%s fix %s', $PHPCSFIXER_BIN, $PROJECT_ROOT . $file), $output, $returnCode);
+        exec(sprintf('%s fix %s --fixers=-phpdoc_params', $PHPCSFIXER_BIN, $PROJECT_ROOT . $file), $output, $returnCode);
 
         if ($returnCode) {
             $changedFiles[] = $file;
