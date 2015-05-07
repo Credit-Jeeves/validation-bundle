@@ -50,8 +50,8 @@ class PaymentAccountManager
     }
 
     /**
-     * @param  PaymentAccountData $paymentAccountData
-     * @param  User $user
+     * @param  PaymentAccountData            $paymentAccountData
+     * @param  User                          $user
      * @return GetTokenRequest
      * @throws InvalidAttributeNameException
      */

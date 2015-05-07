@@ -5,49 +5,28 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
-use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Batch;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
+use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions as PaymentTransaction;
 
 class ResManClientCase extends Base
 {
+    use TransactionAvailableTrait;
+    use ContractAvailableTrait;
+
     const EXTERNAL_PROPERTY_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d';
 
     const RESIDENT_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
 
     const EXTERNAL_LEASE_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
 
-    /**
-     * @var string
-     */
-    protected static $batchId;
-
-    /**
-     * @var string
-     */
-    protected static $userName;
-
-    /**
-     * @var string
-     */
-    protected static $unitId;
-
-    /**
-     * @var string
-     */
-    protected static $customerId;
-
-    /**
-     * @var string
-     */
-    protected static $propertyId;
+    const EXTERNAL_UNIT_ID = '2';
 
     /**
      * @test
@@ -88,19 +67,13 @@ class ResManClientCase extends Base
             'RentJeeves\ExternalApiBundle\Model\ResMan\RtServiceTransactions',
             $rtCustomer->getRtServiceTransactions()
         );
-
-        /** @var Customer $customer */
-        $customer = $rtCustomer->getCustomers()->getCustomer()[0];
-
-        self::$customerId = $rtCustomer->getCustomerId();
-        self::$userName = $customer->getUserName()->getFirstName().' '.$customer->getUserName()->getLastName();
-        self::$unitId = $rtCustomer->getRtUnit()->getUnitId();
-        self::$propertyId = $rtCustomer->getRtUnit()->getUnit()->getPropertyPrimaryID();
     }
 
     /**
      * @test
      * @depends shouldReturnResidentTransactions
+     *
+     * @return string
      */
     public function shouldOpenNewBatch()
     {
@@ -112,86 +85,89 @@ class ResManClientCase extends Base
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
 
-        $batchId = $resManClient->openBatch(self::$propertyId, new \DateTime());
-        $this->assertNotEmpty(self::$batchId = $batchId);
+        $batchId = $resManClient->openBatch(self::EXTERNAL_PROPERTY_ID, new \DateTime());
+        $this->assertNotEmpty($batchId);
+
+        return $batchId;
     }
 
     /**
+     * @param $batchId
+     *
      * @test
      * @depends shouldOpenNewBatch
+     *
+     * @return string
      */
-    public function shouldAddPaymentToBatch()
+    public function shouldAddPaymentToBatch($batchId)
     {
-        $kernel = $this->getKernel();
-        $path = $kernel->locateResource(
-            '@ExternalApiBundle/Resources/fixtures/resmanAddPaymentToBatch.xml'
-        );
-        $xml = file_get_contents($path);
-        $residentTransactionXml = str_replace(
-            ['%batchId%', '%CustomerId%', '%userName%', '%unitName%', '%externalPropertyId%'],
-            [self::$batchId, self::$customerId, self::$userName, self::$unitId, self::$propertyId],
-            $xml
-        );
-
+        $this->load(true);
         $container = $this->getKernel()->getContainer();
         $resManClient = $container->get('resman.client');
 
         $settings = new ResManSettings();
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
-        $result = $resManClient->addPaymentToBatch($residentTransactionXml, self::$propertyId);
+        $transaction = $this->createTransaction(
+            ApiIntegrationType::RESMAN,
+            self::RESIDENT_ID,
+            self::EXTERNAL_PROPERTY_ID,
+            self::EXTERNAL_LEASE_ID,
+            self::EXTERNAL_UNIT_ID
+        );
+
+        $order = $transaction->getOrder();
+        $this->assertNotNull($order);
+        $order->setBatchId($batchId);
+        $result = $resManClient->addPaymentToBatch($order, self::EXTERNAL_PROPERTY_ID);
         $this->assertTrue($result);
+
+        return $batchId;
     }
 
     /**
+     *
+     * We typically don't want to test protected methods, but this serialization depends on many
+     * external classes which makes it fragile -- so it is probably warranted in this case.
+     *
+     * @param $batchId
+     *
      * @test
      * @depends shouldOpenNewBatch
+     *
+     * @return string
      */
-    public function shouldCloseBatch()
-    {
-        $container = $this->getKernel()->getContainer();
-        /** @var $resManClient ResManClient */
-        $resManClient = $container->get('resman.client');
-
-        $settings = new ResManSettings();
-        $settings->setAccountId('400');
-        $resManClient->setSettings($settings);
-
-        $result = $resManClient->closeBatch(self::EXTERNAL_PROPERTY_ID, self::$batchId);
-
-        $this->assertTrue($result);
-    }
-
-    /**
-     * @test
-     */
-    public function shouldCheckSerializeOrderWorksCorrect()
+    public function shouldCheckSerializeOrderWorksCorrect($batchId)
     {
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'tenant11@example.com',
-            )
+            ['email' => 'tenant11@example.com']
         );
 
         $this->assertNotNull($tenant);
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(
-            array(
+            [
                 'user'  => $tenant->getId(),
                 'type'  => OrderType::HEARTLAND_CARD
-            )
+            ]
         );
 
         $this->assertNotNull($order);
         $order->setBatchId('testBatchId');
-        $paymentTransaction = new PaymentTransaction([$order]);
-        $context = new SerializationContext();
-        $context->setGroups(['ResMan']);
-        $context->setSerializeNull(true);
-        $result = $this->getContainer()->get('serializer')->serialize($paymentTransaction, 'xml', $context);
+
+        $container = $this->getKernel()->getContainer();
+        /** @var $resManClient ResManClient */
+        $resManClient = $container->get('resman.client');
+        // using reflection to enable us to test a protected method
+        $r = new \ReflectionMethod(
+            'RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient',
+            'getResidentTransactionXml'
+        );
+        $r->setAccessible(true);
+        $result = $r->invoke($resManClient, $order);
 
         $kernel = $this->getKernel();
         $path = $kernel->locateResource(
@@ -201,5 +177,26 @@ class ResManClientCase extends Base
         $xml = str_replace('%date%', $order->getTransactionDate(), $xml);
 
         $this->assertEquals(trim($xml), trim($result));
+    }
+
+    /**
+     * @param $batchId
+     *
+     * @test
+     * @depends shouldAddPaymentToBatch
+     */
+    public function shouldCloseBatch($batchId)
+    {
+        $container = $this->getKernel()->getContainer();
+        /** @var $resManClient ResManClient */
+        $resManClient = $container->get('resman.client');
+
+        $settings = new ResManSettings();
+        $settings->setAccountId('400');
+        $resManClient->setSettings($settings);
+
+        $result = $resManClient->closeBatch(self::EXTERNAL_PROPERTY_ID, $batchId);
+
+        $this->assertTrue($result);
     }
 }

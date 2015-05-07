@@ -84,6 +84,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
 
+    const KEY_EXTERNAL_PROPERTY_ID = 'external_property_id';
+
     const KEY_USER_PHONE = 'user_phone';
 
     const KEY_CREDITS = 'credits';

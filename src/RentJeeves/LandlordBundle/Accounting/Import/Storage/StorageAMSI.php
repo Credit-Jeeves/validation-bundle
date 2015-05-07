@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
+use RentJeeves\ExternalApiBundle\Model\AMSI\RecurringCharge;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
 /**
@@ -81,7 +82,7 @@ class StorageAMSI extends ExternalApiStorage
 
             $moveOutDate = $lease->getActualMoveOutDateObject();
             $balance = $lease->getEndBalance();
-            $rent = $lease->getRentAmount();
+            $rent = $this->getLeaseRent($lease);
             $startAt = $lease->getLeaseBeginDateObject();
             $finishAt = $lease->getLeaseEndDateObject();
             $today = new \DateTime();
@@ -139,5 +140,27 @@ class StorageAMSI extends ExternalApiStorage
         }
 
         return true;
+    }
+
+    /**
+     * @param Lease $lease
+     * @return float
+     */
+    protected function getLeaseRent(Lease $lease)
+    {
+        $rent = $lease->getRentAmount();
+        if ($rent == 0) {
+            /** @var RecurringCharge $recurringCharge */
+            foreach ($lease->getRecurringCharges() as $recurringCharge) {
+                if (RecurringCharge::RENT_INCOME_CODE_ID == $recurringCharge->getIncCode() &&
+                    RecurringCharge::FREQUENCY_MONTH == $recurringCharge->getFreqCode() &&
+                    Lease::STATUS_CURRENT == $lease->getOccuStatusCode()
+                ) {
+                    return $recurringCharge->getAmount();
+                }
+            }
+        }
+
+        return $rent;
     }
 }

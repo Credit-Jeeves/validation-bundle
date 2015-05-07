@@ -38,6 +38,13 @@ class DashboardCase extends BaseTestCase
         $this->session->wait(5000, "$('#processPayment').is(':hidden')");
         $this->assertNotNull($span = $this->page->findAll('css', '#payments-block-tbody td>span'));
         $this->assertEquals('order.status.text.returned', $span[0]->getText(), 'Wrong text in field');
+
+        $this->assertNotNull($propertyA = $this->page->find('css', '#propertyA'));
+        $propertyA->click();
+
+        $this->session->wait(5000, "$('#processPayment').is(':visible')");
+        $this->session->wait(5000, "$('#processPayment').is(':hidden')");
+        $this->assertNotNull($td = $this->page->findAll('css', '#actions-block td'));
     }
 
     /**

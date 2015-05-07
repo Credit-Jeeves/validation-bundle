@@ -21,7 +21,7 @@ class ResettingCase extends BaseTestCase
         $form = $this->page->find('css', '#fos_user_resetting_request');
         $this->assertNotNull($form);
 
-        $this->fillForm($form, array('username' => 'emilio@example.com'));
+        $this->fillForm($form, array('username' => 'tenant11@example.com'));
         $form->pressButton('resetting.request.submit');
 
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
@@ -73,13 +73,13 @@ class ResettingCase extends BaseTestCase
         );
         $this->page->pressButton('resetting.reset.submit');
 
-        $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs .active.first a'));
+        $this->assertNotNull($title = $this->page->find('css', 'h1'));
 
-        $this->assertEquals('tabs.action_plan', $activeTab->getText());
+        $this->assertEquals('current_contracts.title', $title->getText());
 
         $this->logout();
 
-        $this->login('emilio@example.com', '123');
+        $this->login('tenant11@example.com', '123');
         $this->logout();
     }
 }

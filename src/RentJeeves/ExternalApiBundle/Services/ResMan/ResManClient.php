@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
+use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions as PaymentTransaction;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
@@ -148,7 +149,7 @@ class ResManClient implements ClientInterface
             $uri = $this->apiUrl . $method;
 
             $postBody = array_merge($baseParams, $params, $this->settings->getParameters());
-            $this->logger->debug(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
+            $this->debugMessage(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
             $request = $this->httpClient->post($uri, $headers = null, $postBody);
 
             return $this->manageResponse($this->httpClient->send($request));
@@ -242,8 +243,11 @@ class ResManClient implements ClientInterface
 
         $this->debugMessage("Call ResMan method: {$method}");
         $resMan = $this->sendRequest($method, $params);
+        if ($resMan instanceof ResMan) {
+            return $resMan->getResponse()->getResidentTransactions();
+        }
 
-        return $resMan->getResponse()->getResidentTransactions();
+        throw new Exception(sprintf('Can\'t get residents for ResMan by propertyID - %s', $externalPropertyId));
     }
 
     /**
@@ -326,7 +330,7 @@ class ResManClient implements ClientInterface
      */
     protected function getResidentTransactionXml(Order $order)
     {
-        $residentTransaction = new ResidentTransactions([$order]);
+        $residentTransaction = new PaymentTransaction([$order]);
 
         $context = SerializerXmlHelper::getSerializerContext(['ResMan'], true);
 
