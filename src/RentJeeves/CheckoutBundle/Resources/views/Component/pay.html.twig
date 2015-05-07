@@ -22,33 +22,34 @@
 </div>
 
 <div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup verify-min">
-<h1 data-bind="visible: !payment.id()">{{ 'pay_popup.title' | trans }}</h1>
-<h1 data-bind="visible: payment.id()">{{ 'pay_popup.title.edit' | trans }}</h1>
-<div class="clearfix col-box attention-container">
+    <h1 data-bind="visible: !payment.id()">{{ 'pay_popup.title' | trans }}</h1>
+    <h1 data-bind="visible: payment.id()">{{ 'pay_popup.title.edit' | trans }}</h1>
+    <div class="clearfix col-box attention-container">
 
-<ul class="steps clearfix"
-    data-bind="css: isPidVerificationSkipped() == false ? 'steps clearfix' : 'steps clearfix isPidVerificationSkipped'"
-        >
-    <li class="step1" data-bind="css: { 'active': 'details' == step(), check: isPassed('details') }">
-        <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
-    </li>
-    <li class="step2" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
-        <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
-    </li>
-    <li class="step3"
-        data-bind="
+        <ul class="steps clearfix"
+            data-bind="css: isPidVerificationSkipped() == false ? 'steps clearfix' : 'steps clearfix isPidVerificationSkipped'"
+                >
+            <li class="step1" data-bind="css: { 'active': 'details' == step(), check: isPassed('details') }">
+                <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
+            </li>
+            <li class="step2" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
+                <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
+            </li>
+            <li class="step3"
+                data-bind="
                 css: {
                     'active': 'user' == step() || 'questions' == step(),
                     check: isPassed('questions')
                 },
                 visible: isPidVerificationSkipped() == false
                 ">
-        <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
-    </li>
-    <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
-        <span class="step"><span>{{ 'pay_popup.step.4' | trans }}</span></span>
-    </li>
-</ul>
+                <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
+            </li>
+            <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
+                <span class="step"><span>{{ 'pay_popup.step.4' | trans }}</span></span>
+            </li>
+        </ul>
+
         <div class="attention-box pie-el" style="display: none">
             <h3>{{ 'pay_popup.errors.title' | trans }}</h3>
             <ul class="default">
@@ -61,73 +62,19 @@
         <div class="col" data-bind="visible: 'details' == step()">
             {% include 'RjCheckoutBundle:Component:_step-1-details.html.twig' %}
         </div>
-    </div>
-    <div class="form-row clearfix" data-bind="visible: contract.groupSetting.pay_balance_only">
-        <label>{{ 'checkout.total' | trans }}</label>
-        <div class="fields-box">
-            <span class="value big left" data-bind="text: '$'+contract.integrated_balance"></span>
-        </div>
-    </div>
-    <form data-bind="if: !contract.groupSetting.pay_balance_only" {{ form_enctype(paymentType) }} novalidate method="post">
-        {{ form_widget(paymentType) }}
-        {{ JSFV(paymentType) }}
-    </form>
-    <form data-bind="if: contract.groupSetting.pay_balance_only" {{ form_enctype(paymentBalanceOnlyType) }} novalidate method="post">
-        {{ form_widget(paymentBalanceOnlyType) }}
-        {{ JSFV(paymentBalanceOnlyType) }}
-    </form>
-    <script type="text/html" id="paidFor-html">
-        <div class="tooltip-box type3 pie-el">
-            <h4 data-bind="text: 'checkout.rent_start.title', i18n: {'MONTH': getPaidFor}">
-            </h4>
-            <p data-bind="text: 'checkout.rent_starting.text', i18n: {}">
-            </p>
-        </div>
-    </script>
-</div>
+
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
             {% include 'RjCheckoutBundle:Component:_step-2-source.html.twig' %}
         </div>
-    </div>
-    <div data-bind="visible: isNewPaymentAccount || $root.notEmptyPaymentAccount">
-        {{ render(controller('RjCheckoutBundle:Component:source')) }}
-        <p class="note" data-bind="visible: getFee">
-            <strong data-bind="text: getFeeNote, i18n: {'FEE': getFeeText}"></strong>
-            <i data-bind="attr: {'title': getFeeNoteHelp}" class="help after-checkbox pie-el tooltip-link">
-                ?
-            </i>
-        </p>
-    </div>
-</div>
 
         <div class="col" data-bind="visible: 'user' == step()">
             {% include 'RjCheckoutBundle:Component:_step-3-user.html.twig' %}
         </div>
-    </div>
-    <form {{ form_enctype(userDetailsType) }} method="post" novalidate>
-        {{ form_widget(userDetailsType) }}
-        {{ JSFV(userDetailsType) }}
-    </form>
-</div>
+
         <div class="col long-label" data-bind="visible: 'questions' == step()">
             {% include 'RjCheckoutBundle:Component:_step-4-questions.html.twig' %}
         </div>
-        <div class="tooltip-box type3 pie-el">
-            <p class="verify">
-                {{ 'checkout.questions.tooltip.line1' | trans }}
-            </p>
-            <p class="verify">
-                {{ 'checkout.questions.tooltip.line2' | trans }}
-            </p>
-            <p class="verify">
-                <a target="_blank" class="underline" href="{{ 'http://'~external_urls['user_voice']~'/knowledgebase/articles/269425-why-do-i-have-to-verify-my-identity-' }}">
-                    {{ 'checkout.questions.tooltip.question'|trans }}
-                </a>
-            </p>
-        </div>
-    </div>
-    {{ JSFV(questionsType) }}
-</div>
+
         <div data-bind="visible: 'pay' == step() || 'finish' == step()" class="pay-step">
             {% include 'RjCheckoutBundle:Component:_step-5-pay.html.twig' %}
         </div>
