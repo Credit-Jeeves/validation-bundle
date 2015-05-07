@@ -46,7 +46,7 @@ class ResidentManager
     }
 
     /**
-     * @param ResidentMapping $residentMapping
+     * @param  ResidentMapping $residentMapping
      * @return array
      */
     public function validate(Landlord $landlord, ResidentMapping $residentMapping = null)
@@ -56,7 +56,6 @@ class ResidentManager
         if (!$residentMapping) {
             return $errors;
         }
-
 
         $errorsResidentMapping = $this->validator->validate($residentMapping, ['add_or_edit_tenants']);
         foreach ($errorsResidentMapping as $error) {
@@ -112,8 +111,8 @@ class ResidentManager
     }
 
     /**
-     * @param Tenant $tenant
-     * @param Holding $landlordHolding
+     * @param  Tenant  $tenant
+     * @param  Holding $landlordHolding
      * @return bool
      */
     public function hasMultipleContracts(Tenant $tenant, Holding $landlordHolding)
@@ -137,7 +136,7 @@ class ResidentManager
     }
 
     /**
-     * @param Landlord $landlord
+     * @param Landlord        $landlord
      * @param ResidentMapping $residentMapping
      */
     protected function clearWaitingRoom(Landlord $landlord, ResidentMapping $residentMapping)
@@ -151,7 +150,7 @@ class ResidentManager
     }
 
     /**
-     * @param ResidentMapping $residentMapping
+     * @param  ResidentMapping $residentMapping
      * @return ResidentMapping
      */
     protected function getExistingMappingByTenant(ResidentMapping $residentMapping)
@@ -169,9 +168,8 @@ class ResidentManager
         return $residentMapping;
     }
 
-
     /**
-     * @param ResidentMapping $residentMapping
+     * @param  ResidentMapping $residentMapping
      * @return ResidentMapping
      */
     protected function getExistingMappingByResidentId(ResidentMapping $residentMapping)
@@ -189,4 +187,3 @@ class ResidentManager
         return $residentMapping;
     }
 }
-

@@ -2,44 +2,43 @@
 
 namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
+interface AttributeGeneratorInterface
+{
+    public function amountAttrs();
 
-interface AttributeGeneratorInterface {
+    public function paidForAttrs();
 
-    function amountAttrs();
+    public function amountOtherAttrs();
 
-    function paidForAttrs();
+    public function totalAttrs();
 
-    function amountOtherAttrs();
+    public function typeAttrs();
 
-    function totalAttrs();
+    public function frequencyAttrs();
 
-    function typeAttrs();
+    public function dueDateAttrs();
 
-    function frequencyAttrs();
+    public function startMonthAttrs();
 
-    function dueDateAttrs();
+    public function startYearAttrs();
 
-    function startMonthAttrs();
+    public function startDateAttrs();
 
-    function startYearAttrs();
+    public function endsAttrs();
 
-    function startDateAttrs();
+    public function endMonthAttrs();
 
-    function endsAttrs();
+    public function endYearAttrs();
 
-    function endMonthAttrs();
+    public function paymentAccountIdAttrs();
 
-    function endYearAttrs();
+    public function contractIdAttrs();
 
-    function paymentAccountIdAttrs();
+    public function idAttrs();
 
-    function contractIdAttrs();
+    public function submitAttrs();
 
-    function idAttrs();
-
-    function submitAttrs();
-
-    function paymentAccountAttrs();
+    public function paymentAccountAttrs();
 
     # add more here
 

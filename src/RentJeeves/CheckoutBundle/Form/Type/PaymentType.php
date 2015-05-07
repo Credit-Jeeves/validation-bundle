@@ -10,7 +10,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Type;
@@ -131,7 +130,7 @@ class PaymentType extends AbstractType
             )
         );
 
-        if($this->attributes->isMobile()){
+        if ($this->attributes->isMobile()) {
             $builder->add(
                 'paymentAccount',
                 'choice', array(
@@ -150,7 +149,6 @@ class PaymentType extends AbstractType
                 'attr' => $this->attributes->totalAttrs()
                 )
         );
-
 
         $builder->add(
             'type',
@@ -315,7 +313,7 @@ class PaymentType extends AbstractType
                 'invalid_message' => 'checkout.error.endYear.invalid',
             )
         );
-        $builder->add('next', 'submit', array('attr' => $this->attributes-> submitAttrs()));
+        $builder->add('next', 'submit', array('attr' => $this->attributes->submitAttrs()));
         $builder->add(
             'paymentAccountId',
             'hidden',
@@ -355,6 +353,7 @@ class PaymentType extends AbstractType
                     }
 
                     $groups[] = $data->getType();
+
                     return $groups;
                 }
             )

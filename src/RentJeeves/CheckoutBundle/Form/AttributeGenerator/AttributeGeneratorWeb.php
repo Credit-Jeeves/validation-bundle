@@ -2,13 +2,13 @@
 
 namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
-
-class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGeneratorInterface{
-
-    function isMobile(){
+class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGeneratorInterface
+{
+    public function isMobile()
+    {
         return false;
     }
-    function amountAttrs()
+    public function amountAttrs()
     {
         return array_merge(parent::amountAttrs(),
          array(
@@ -16,10 +16,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             'data-bind' => 'value: payment.amount',
         ));
 
-        
     }
 
-    function paidForAttrs()
+    public function paidForAttrs()
     {
         return array_merge(parent::paidForAttrs(),
          array(
@@ -30,11 +29,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             'template' => 'paidFor-html'
         ));
 
-        
-
     }
 
-    function amountOtherAttrs()
+    public function amountOtherAttrs()
     {
         return array_merge(parent::amountOtherAttrs(),
          array(
@@ -42,11 +39,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             'data-bind' => 'value: payment.amountOther'
         ));
 
-        
-
     }
 
-    function totalAttrs()
+    public function totalAttrs()
     {
         return array_merge(parent::totalAttrs(),
          array(
@@ -56,10 +51,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             )
         ));
 
-        
     }
 
-    function typeAttrs()
+    public function typeAttrs()
     {
         return array_merge(parent::typeAttrs(),
          array(
@@ -102,10 +96,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             )
         ));
 
-        
     }
 
-    function frequencyAttrs()
+    public function frequencyAttrs()
     {
         return array_merge(parent::frequencyAttrs(),
          array(
@@ -115,10 +108,10 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'data-bind' => 'visible: \'recurring\' == payment.type()'
             )
         ));
-        
+
     }
 
-    function dueDateAttrs()
+    public function dueDateAttrs()
     {
         return array_merge(parent::dueDateAttrs(),
          array(
@@ -130,10 +123,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             )
         ));
 
-        
     }
 
-    function startMonthAttrs()
+    public function startMonthAttrs()
     {
         return array_merge(parent::startMonthAttrs(),
          array(
@@ -150,10 +142,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             )
         ));
 
-        
     }
 
-    function startYearAttrs()
+    public function startYearAttrs()
     {
         return array_merge(parent::startYearAttrs(),
          array(
@@ -170,10 +161,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             )
         ));
 
-        
     }
 
-    function startDateAttrs()
+    public function startDateAttrs()
     {
         return array_merge(parent::startDateAttrs(),
          array(
@@ -186,10 +176,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',
         ));
 
-        
     }
 
-    function endsAttrs()
+    public function endsAttrs()
     {
         return array_merge(parent::endsAttrs(),
          array(
@@ -199,10 +188,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             )
         ));
 
-        
     }
 
-    function endMonthAttrs()
+    public function endMonthAttrs()
     {
         return array_merge(parent::endMonthAttrs(),
          array(
@@ -213,10 +201,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             )
         ));
 
-        
     }
 
-    function endYearAttrs()
+    public function endYearAttrs()
     {
         return array_merge(parent::endYearAttrs(),
          array(
@@ -227,50 +214,47 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             )
         ));
 
-        
     }
 
-    function paymentAccountIdAttrs()
+    public function paymentAccountIdAttrs()
     {
         return array_merge(parent::paymentAccountIdAttrs(),
          array(
             'data-bind' => 'value: payment.paymentAccountId',
         ));
 
-        
     }
 
-    function contractIdAttrs()
+    public function contractIdAttrs()
     {
         return array_merge(parent::contractIdAttrs(),
          array(
             'data-bind' => 'value: payment.contractId',
         ));
 
-        
     }
 
-    function idAttrs()
+    public function idAttrs()
     {
         return array_merge(parent::idAttrs(),
          array(
             'data-bind' => 'value: payment.id',
         ));
 
-        
     }
 
-    function submitAttrs(){
+    public function submitAttrs()
+    {
         return array_merge(parent::submitAttrs(),
          array('force_row' => true, 'class' => 'hide_submit'));
-        
+
     }
 
-    function paymentAccountAttrs(){
+    public function paymentAccountAttrs()
+    {
         return array_merge(parent::paymentAccountAttrs(),
          array('style'=>'display:none'));
-        
-    }
 
+    }
 
 }

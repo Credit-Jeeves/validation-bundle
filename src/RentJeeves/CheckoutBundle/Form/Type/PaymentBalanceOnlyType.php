@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
-use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -61,7 +60,6 @@ class PaymentBalanceOnlyType extends PaymentType
                 'invalid_message' => 'checkout.error.type.invalid',
             )
         );
-
 
         $builder->remove('amount');
         $builder->remove('paidFor');

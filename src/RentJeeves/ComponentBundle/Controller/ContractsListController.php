@@ -2,7 +2,6 @@
 namespace RentJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
@@ -28,10 +27,9 @@ class ContractsListController extends Controller
         $group = $user->getCurrentGroup();
         $canInvite = false;
 
-
         if (!empty($group)) {
             $merchantName = $group->getMerchantName();
-            $canInvite = (!empty($merchantName))? true : false;
+            $canInvite = (!empty($merchantName)) ? true : false;
         }
         $date = new DateTime();
         $start = $date->format('m/d/Y');
@@ -125,10 +123,9 @@ class ContractsListController extends Controller
             'isInPaymentWindow' => $isInPaymentWindow,
         );
 
-        if($mobile){
-
+        if ($mobile) {
             return $this->render('RjComponentBundle:ContractsList:tenant.mobile.html.twig', $pageVars); //mobile template override
-        }else{
+        } else {
             return $pageVars;
         }
     }

@@ -47,9 +47,9 @@ class TenantController extends BaseController
     public function isMobile()
     {
         $user_agent = strtolower ( $_SERVER['HTTP_USER_AGENT'] );
-        if(preg_match ( "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|windows ce|nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/", $user_agent )){
+        if (preg_match ( "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|windows ce|nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/", $user_agent )) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

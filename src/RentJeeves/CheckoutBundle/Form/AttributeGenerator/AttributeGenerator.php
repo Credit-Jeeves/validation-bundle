@@ -2,10 +2,9 @@
 
 namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
-
-abstract class AttributeGenerator implements AttributeGeneratorInterface {
-
-    function amountAttrs()
+abstract class AttributeGenerator implements AttributeGeneratorInterface
+{
+    public function amountAttrs()
     {
         return  array(
             'min' => 1,
@@ -13,7 +12,7 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface {
         );
     }
 
-    function paidForAttrs()
+    public function paidForAttrs()
     {
         return array(
 
@@ -21,7 +20,7 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface {
 
     }
 
-    function amountOtherAttrs()
+    public function amountOtherAttrs()
     {
         return array(
             'step' => '0.01'
@@ -29,14 +28,14 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface {
 
     }
 
-    function totalAttrs()
+    public function totalAttrs()
     {
         return array(
             'view' => array()
         );
     }
 
-    function typeAttrs()
+    public function typeAttrs()
     {
         return array(
 
@@ -44,89 +43,91 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface {
 
     }
 
-    function frequencyAttrs()
+    public function frequencyAttrs()
     {
         return array(
 
         );
     }
 
-    function dueDateAttrs()
+    public function dueDateAttrs()
     {
         return array(
 
         );
     }
 
-    function startMonthAttrs()
+    public function startMonthAttrs()
     {
         return array(
 
         );
     }
 
-    function startYearAttrs()
+    public function startYearAttrs()
     {
         return array(
 
         );
     }
 
-    function startDateAttrs()
+    public function startDateAttrs()
     {
         return array(
 
         );
     }
 
-    function endsAttrs()
+    public function endsAttrs()
     {
         return array(
 
         );
     }
 
-    function endMonthAttrs()
+    public function endMonthAttrs()
     {
         return array(
 
         );
     }
 
-    function endYearAttrs()
+    public function endYearAttrs()
     {
         return array(
 
         );
     }
 
-    function paymentAccountIdAttrs()
+    public function paymentAccountIdAttrs()
     {
         return array(
 
         );
     }
 
-    function contractIdAttrs()
+    public function contractIdAttrs()
     {
         return array(
 
         );
     }
 
-    function idAttrs(){
+    public function idAttrs()
+    {
         return array(
 
         );
     }
 
-    function submitAttrs(){
+    public function submitAttrs()
+    {
         return array();
     }
 
-    function paymentAccountAttrs(){
+    public function paymentAccountAttrs()
+    {
         return array();
     }
-
 
 }

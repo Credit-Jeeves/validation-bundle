@@ -60,9 +60,9 @@ class PayController extends Controller
             $contract = $paymentEntity->getContract();
         }
 
-        if($mobile){
+        if ($mobile) {
             $attributes =  new AttributeGeneratorMobile();
-        }else{
+        } else {
             $attributes =  new AttributeGeneratorWeb();
         }
 
@@ -239,7 +239,6 @@ class PayController extends Controller
             return $this->renderErrors($paymentType);
         }
 
-
         $em = $this->getDoctrine()->getManager();
 
         /**
@@ -249,7 +248,6 @@ class PayController extends Controller
         if (!$contract = $em->getRepository('RjDataBundle:Contract')->find($contractId)) {
             throw $this->createNotFoundException('Contract does not exist');
         }
-
 
         /**
          * @var PaymentAccount $paymentAccount

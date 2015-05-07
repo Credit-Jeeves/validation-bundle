@@ -23,9 +23,9 @@ class ComponentController extends Controller
      */
     public function payAction($mobile = false)
     {
-        if($mobile){
+        if ($mobile) {
             $attributes =  new AttributeGeneratorMobile();
-        }else{
+        } else {
             $attributes =  new AttributeGeneratorWeb();
         }
 
@@ -72,9 +72,9 @@ class ComponentController extends Controller
             'userDetailsType' => $userDetailsType->createView(),
             'questionsType' => $questionsType->createView(),
         );
-        if($mobile){
+        if ($mobile) {
             return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars); //mobile template override
-        }else{
+        } else {
             //return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars); //mobile template override
             //return $this->render('RjCheckoutBundle:Component:pay.html.twig', $pageVars); //mobile template override
             return $pageVars;
@@ -108,9 +108,9 @@ class ComponentController extends Controller
             'payAccountsJson' => $payAccountsJson,
         );
 
-        if($mobile){
+        if ($mobile) {
             return $this->render('RjCheckoutBundle:Component:source.mobile.html.twig', $pageVars); //mobile template override
-        }else{
+        } else {
             return $pageVars;
         }
     }
