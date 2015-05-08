@@ -10,8 +10,12 @@ class UsersControllerCase extends BaseApiTestCase
     const URL_PREFIX = '/api/partner';
     const REQUEST_URL = 'users';
 
+    /** @var string */
     protected $userEmail = 'anna_lee@example.com';
 
+    /**
+     * @return array
+     */
     public function createTenantDataNegativeProvider()
     {
         return [
@@ -29,20 +33,27 @@ class UsersControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array  $requestParams
+     * @param string $errorMessage
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider createTenantDataNegativeProvider
      */
-    public function errorWhenCreatingUser($requestParams, $errorMessage, $format = 'json', $statusCode = 400)
+    public function errorWhenCreatingUser($requestParams, $errorMessage, $statusCode = 400)
     {
-        $response = $this->postRequest($requestParams, $format);
+        $response = $this->postRequest($requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
 
-        $answer = $this->parseContent($response->getContent(), $format);
+        $answer = $this->parseContent($response->getContent());
 
         $this->assertEquals($errorMessage, $answer[0]['message']);
     }
 
+    /**
+     * @return array
+     */
     public function createTenantDataPositiveProvider()
     {
         return [
@@ -68,16 +79,19 @@ class UsersControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array $requestParams
+     * @param int   $statusCode
+     *
      * @test
      * @dataProvider createTenantDataPositiveProvider
      */
-    public function createUser($requestParams, $format = 'json', $statusCode = 201)
+    public function createUser($requestParams, $statusCode = 201)
     {
-        $response = $this->postRequest($requestParams, $format);
+        $response = $this->postRequest($requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
 
-        $answer = $this->parseContent($response->getContent(), $format);
+        $answer = $this->parseContent($response->getContent());
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
         $this->assertNotNull($tenant = $repo->findOneBy(['email' => $requestParams['email']]));

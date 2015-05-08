@@ -112,7 +112,7 @@ trait Property
                 $row[Mapping::KEY_UNIT_ID]
             );
 
-            $property = (!empty($mapping)) ? $mapping->getUnit()->getProperty() : null;
+            $property = !empty($mapping) ? $mapping->getUnit()->getProperty() : null;
         }
 
         if (!empty($property)) {

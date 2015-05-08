@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="email_rj.creditjeeves.team">
                 <source>email_rj.creditjeeves.team</source>
-                <target>The RentTrack Team</target>
+                <target>The %partnerName% Team</target>
             </trans-unit>
             <trans-unit id="rj.footer.title">
                 <source>rj.footer.title</source>
@@ -2754,19 +2754,19 @@
             </trans-unit>
             <trans-unit id="yardi.import.error.getResidents">
                 <source>yardi.import.error.getResidents</source>
-                <target>Can not get resident from yardi api.</target>
+                <target>Network interruption when connecting to Yardi server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="mri.import.error.getResidents">
                 <source>mri.import.error.getResidents</source>
-                <target>Can not get residents from MRI api.</target>
+                <target>Network interruption when connecting to MRI server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="amsi.import.error.getResidents">
                 <source>amsi.import.error.getResidents</source>
-                <target>Can not get residents from AMSI api.</target>
+                <target>Network interruption when connecting to AMSI server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="resman.import.error.getResidents">
                 <source>resman.import.error.getResidents</source>
-                <target>Can not get residents from resman api.</target>
+                <target>Network interruption when connecting to ResMan server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
             <trans-unit id="csv.import.error.update_matched_contracts">
                 <source>csv.import.error.update_matched_contracts</source>
@@ -3110,10 +3110,25 @@
                 <source>landlord_export.export_by_deposits.description_help</source>
                 <target>This will export all the payments by their estimated deposit date. Payments will have a "batch ID," or will be grouped by the batch that was deposited to your account, so that you can sum them up and reconcile against your bank </target>
             </trans-unit>
-
             <trans-unit id="new.user.error.without_invite_code">
                 <source>new.user.error.without_invite_code</source>
                 <target>It looks like you already have an account. Please login or click "Get a new one" if you forgot your password.</target>
+            </trans-unit>
+            <trans-unit id="common.tenant.cell">
+                <source>common.tenant.cell</source>
+                <target>Tenant cell</target>
+            </trans-unit>
+            <trans-unit id="common.open_credits">
+                <source>common.open_credits</source>
+                <target>Open Credits</target>
+            </trans-unit>
+            <trans-unit id="common.tenant.past">
+                <source>common.tenant.past</source>
+                <target>Past Tenant</target>
+            </trans-unit>
+            <trans-unit id="common.payment_accepted">
+                <source>common.payment_accepted</source>
+                <target>Payment Accepted</target>
             </trans-unit>
         </body>
     </file>

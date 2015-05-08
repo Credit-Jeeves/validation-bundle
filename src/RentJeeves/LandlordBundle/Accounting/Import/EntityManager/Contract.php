@@ -22,7 +22,9 @@ use RentJeeves\LandlordBundle\Model\Import;
  */
 trait Contract
 {
-
+    /**
+     * @param array $row
+     */
     protected function setLeaseId(array $row)
     {
         if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
@@ -30,6 +32,9 @@ trait Contract
         }
     }
 
+    /**
+     * @param array $row
+     */
     protected function setPaymentAccepted(array $row)
     {
         if (isset($row[Mapping::KEY_PAYMENT_ACCEPTED])) {
@@ -233,7 +238,14 @@ trait Contract
         $this->setLeaseId($row);
         $this->setPaymentAccepted($row);
         //set data from csv file
-        $this->currentImportModel->getContract()->setIntegratedBalance($row[Mapping::KEY_BALANCE]);
+
+        if (!empty($row[Mapping::KEY_CREDITS])) {
+            $integratedBalance = $row[Mapping::KEY_BALANCE] - $row[Mapping::KEY_CREDITS];
+        } else {
+            $integratedBalance = $row[Mapping::KEY_BALANCE];
+        }
+
+        $this->currentImportModel->getContract()->setIntegratedBalance($integratedBalance);
         $this->currentImportModel->getContract()->setRent($row[Mapping::KEY_RENT]);
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {

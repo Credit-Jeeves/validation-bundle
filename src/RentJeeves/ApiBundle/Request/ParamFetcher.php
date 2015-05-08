@@ -2,14 +2,13 @@
 
 namespace RentJeeves\ApiBundle\Request;
 
-use Doctrine\Common\Annotations\Reader;
 use FOS\RestBundle\Controller\Annotations\Param;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Request\ParamFetcher as Base;
 use FOS\RestBundle\Request\ParamReader;
 use FOS\RestBundle\Util\ViolationFormatterInterface as ViolationFormatter;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
+use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
+use RentJeeves\ApiBundle\Request\Annotation\QueryParam;
 use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
 use RentJeeves\ApiBundle\Services\Encoders\EncoderFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,21 +23,28 @@ use ReflectionClass;
  */
 class ParamFetcher extends Base
 {
+    /** @var ParamReader */
     protected $paramReader;
-
+    /** @var EncoderFactory */
     protected $encoderFactory;
-
+    /** @var Request */
     protected $request;
-
+    /** @var  array */
     protected $params;
-
+    /** @var  callable */
     protected $controller;
-
+    /** @var array */
     protected $paramsValue = [];
-
+    /** @var array */
     protected $processedAttributes = [];
 
     /**
+     * @param EncoderFactory     $encoderFactory
+     * @param ParamReader        $paramReader
+     * @param Request            $request
+     * @param ViolationFormatter $violationFormatter
+     * @param Validator          $validator
+     *
      * @DI\InjectParams({
      *     "encoderFactory"     = @DI\Inject("encoder_factory"),
      *     "paramReader"        = @DI\Inject("fos_rest.request.param_fetcher.reader"),
@@ -60,6 +66,9 @@ class ParamFetcher extends Base
         parent::__construct($paramReader, $request, $violationFormatter, $validator);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setController($controller)
     {
         $this->controller = $controller;
@@ -106,6 +115,10 @@ class ParamFetcher extends Base
             $value = $encoder->decode($value);
         }
 
+        if ($config->nullable && !$config->strict && $config->default === $value) {
+            return $value;
+        }
+
         if ($config instanceof RequestParam) {
             $this->request->request->set($config->getKey(), $value);
         } elseif ($config instanceof QueryParam) {
@@ -124,10 +137,16 @@ class ParamFetcher extends Base
             $this->initParams();
         }
 
-        $params = array();
+        $params = [];
         foreach ($this->params as $name => $config) {
+            /** @var Param $config */
             if ($config instanceof AttributeParam) {
                 $this->processAttributeParam($name);
+            } elseif (!$config->strict && $config->nullable) {
+                $value = $this->get($name, true);
+                if ($config->default !== $value) {
+                    $params[$name] = $value;
+                }
             } else {
                 $params[$name] = $this->get($name, $strict);
             }
@@ -136,6 +155,10 @@ class ParamFetcher extends Base
         return $params;
     }
 
+    /**
+     * @param  string $name
+     * @return bool
+     */
     protected function processAttributeParam($name)
     {
         if (isset($this->processedAttributes[$name])) {

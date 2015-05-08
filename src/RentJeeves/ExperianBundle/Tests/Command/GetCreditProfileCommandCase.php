@@ -3,16 +3,12 @@
 namespace RentJeeves\ExperianBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\ReportD2c;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\ExperianBundle\Command\GetCreditProfileCommand;
-use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use RentJeeves\CheckoutBundle\Command\PaymentReportCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
-use RentJeeves\DataBundle\Entity\Heartland;
 
 class GetCreditProfileCommandCase extends BaseTestCase
 {
@@ -34,7 +30,6 @@ class GetCreditProfileCommandCase extends BaseTestCase
         $em->persist($report);
         $em->persist($job);
         $em->flush();
-
 
         $scores = $em->getRepository('DataBundle:Score')->findByUser($user);
         $this->assertCount(1, $scores);

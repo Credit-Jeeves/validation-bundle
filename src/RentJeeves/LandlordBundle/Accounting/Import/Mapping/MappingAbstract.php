@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 
 abstract class MappingAbstract implements MappingInterface
 {
@@ -85,7 +86,16 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_EXTERNAL_PROPERTY_ID = 'external_property_id';
 
-    protected $requiredKeysDefault = array(
+    const KEY_USER_PHONE = 'user_phone';
+
+    const KEY_CREDITS = 'credits';
+
+    const KEY_IGNORE_ROW = 'ignore_row';
+
+    /**
+     * @var array
+     */
+    protected $requiredKeysDefault = [
         self::KEY_EMAIL,
         self::KEY_RESIDENT_ID,
         self::KEY_BALANCE,
@@ -95,11 +105,16 @@ abstract class MappingAbstract implements MappingInterface
         self::KEY_RENT,
         self::KEY_TENANT_NAME,
         self::KEY_UNIT,
-    );
+    ];
 
+    /**
+     * @var StorageAbstract
+     */
     protected $storage;
 
-    /** @var EntityManager $em */
+    /**
+     * @var EntityManager $em
+     */
     protected $em;
 
     public function setEntityManager(EntityManager $em)

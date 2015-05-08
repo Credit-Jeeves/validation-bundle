@@ -61,7 +61,7 @@ class PayCreditTrack
     /**
      * Runs CreditTrack payment using paymentAccount.
      *
-     * @param PaymentAccount $paymentAccount
+     * @param  PaymentAccount $paymentAccount
      * @return Order
      */
     public function executePaymentAccount(PaymentAccount $paymentAccount)
@@ -71,14 +71,18 @@ class PayCreditTrack
         $this->em->persist($order);
         $this->em->flush();
 
-        $orderStatus = $this->getPaymentProcessor($paymentAccount)->executeOrder(
-            $order,
-            $paymentAccount,
-            PaymentGroundType::REPORT
-        );
-        $order->setStatus($orderStatus);
+        try {
+            $orderStatus = $this->getPaymentProcessor($paymentAccount)->executeOrder(
+                $order,
+                $paymentAccount,
+                PaymentGroundType::REPORT
+            );
+            $order->setStatus($orderStatus);
+        } catch (\Exception $e) {
+            $order->setStatus(OrderStatus::ERROR);
+        }
 
-        if (OrderStatus::ERROR != $orderStatus) {
+        if (OrderStatus::ERROR != $order->getStatus()) {
             $report = $this->createReport($paymentAccount->getUser());
             $operation = $this->createOperation($order);
             $operation->setReportD2c($report);
@@ -98,7 +102,7 @@ class PayCreditTrack
     /**
      * Finds payment processor for a given payment account.
      *
-     * @param PaymentAccount $paymentAccount
+     * @param  PaymentAccount                                                        $paymentAccount
      * @return \RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface
      */
     protected function getPaymentProcessor(PaymentAccount $paymentAccount)
@@ -111,7 +115,7 @@ class PayCreditTrack
     /**
      * Creates a new D2C report.
      *
-     * @param User $user
+     * @param  User      $user
      * @return ReportD2c
      */
     protected function createReport(User $user)
@@ -126,7 +130,7 @@ class PayCreditTrack
     /**
      * Creates a new REPORT type operation for a given order.
      *
-     * @param Order $order
+     * @param  Order     $order
      * @return Operation
      */
     protected function createOperation(Order $order)

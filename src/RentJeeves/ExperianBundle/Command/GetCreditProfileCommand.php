@@ -5,15 +5,11 @@ use CreditJeeves\CoreBundle\Enum\ScoreModelType;
 use CreditJeeves\DataBundle\Entity\Score;
 use RentJeeves\DataBundle\Entity\Job;
 use Doctrine\ORM\EntityManager;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\JobRelatedReport;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Payum\Payment as Payum;
 use RuntimeException;
 
 class GetCreditProfileCommand extends ContainerAwareCommand
@@ -44,6 +40,7 @@ class GetCreditProfileCommand extends ContainerAwareCommand
                 $report = $relatedEntity->getReport();
                 if ('' != $report->getRawData()) {
                     $output->writeln('Report already received');
+
                     return 0;
                 }
                 $arf = $this->getContainer()->get('experian.net_connect.credit_profile')->initD2c()
@@ -63,12 +60,13 @@ class GetCreditProfileCommand extends ContainerAwareCommand
                 $em->flush();
 
                 $output->writeln('OK');
+
                 return 0;
             }
         }
 
-
         $output->writeln('Job does not have related report record');
+
         return 1;
     }
 }

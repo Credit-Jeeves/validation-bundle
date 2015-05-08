@@ -12,6 +12,9 @@ class CardPaymentAccountType extends AbstractType
 {
     const NAME = 'card';
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add('account');
@@ -30,7 +33,7 @@ class CardPaymentAccountType extends AbstractType
             if ($form->getParent() && $form->getParent()->getData()) {
                 if (!$form->getData()) {
                     $dataClass = $form->getConfig()->getDataClass();
-                    $form->setData(new $dataClass);
+                    $form->setData(new $dataClass());
                 }
 
                 $form->getData()->setParent($form->getParent()->getData());
@@ -44,6 +47,9 @@ class CardPaymentAccountType extends AbstractType
 
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -55,9 +61,7 @@ class CardPaymentAccountType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

@@ -2,11 +2,12 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
-
+use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Model\Import;
+use Symfony\Component\Validator\Validator;
 
 /**
  * @property Import currentImportModel
@@ -83,6 +84,10 @@ trait Tenant
             $tenant->setLastName($row[Mapping::LAST_NAME_TENANT]);
         }
 
+        if (!empty($row[Mapping::KEY_USER_PHONE])) {
+            $this->setUserPhone($tenant, $row[Mapping::KEY_USER_PHONE]);
+        }
+
         $tenant->setEmail($row[Mapping::KEY_EMAIL]);
         $tenant->setEmailCanonical($row[Mapping::KEY_EMAIL]);
         $tenant->setPassword(md5(md5(1)));
@@ -91,7 +96,29 @@ trait Tenant
         return $tenant;
     }
 
+    /**
+     * @param EntityTenant $tenant
+     * @param $phone
+     */
+    protected function setUserPhone(EntityTenant $tenant, $phone)
+    {
+        if ($tenant->getPhone()) {
+            return;
+        }
 
+        $phone = PhoneNumberFormatter::formatToDigitsOnly($phone);
+        $tenant->setPhone($phone);
+        $errors = $this->validator->validate($tenant, ['import_phone']);
+
+        if (count($errors) > 0) {
+            $tenant->setPhone(null);
+        }
+    }
+
+    /**
+     * @param EntityTenant $tenant
+     * @param $row
+     */
     protected function fillUsersEmailAndResident(EntityTenant $tenant, $row)
     {
         if ($this->mapping->isSkipped($row)) {

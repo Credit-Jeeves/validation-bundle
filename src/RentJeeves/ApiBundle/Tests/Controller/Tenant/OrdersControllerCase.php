@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
+use CreditJeeves\DataBundle\Entity\OrderRepository;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -11,6 +12,9 @@ class OrdersControllerCase extends BaseApiTestCase
 
     const REQUEST_URL = 'orders';
 
+    /**
+     * @return array
+     */
     public static function getEmptyOrdersDataProvider()
     {
         return [
@@ -19,16 +23,19 @@ class OrdersControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param string $email
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider getEmptyOrdersDataProvider
      */
-    public function getEmptyOrders($email, $format = 'json', $statusCode = 204)
+    public function getEmptyOrders($email, $statusCode = 204)
     {
         $this->setUserEmail($email);
 
-        $response = $this->getRequest(null, [], $format);
+        $response = $this->getRequest();
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
     }
 
     public static function getOrdersDataProvider()
@@ -39,22 +46,24 @@ class OrdersControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param string $email
+     *
      * @test
      * @dataProvider getOrdersDataProvider
      */
-    public function getOrders($email, $format = 'json', $statusCode = 200)
+    public function getOrders($email)
     {
         $this->setUserEmail($email);
-
+        /** @var OrderRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getUser();
         $result = $repo->getUserOrders($tenant);
 
-        $response = $this->getRequest(null, [], $format);
+        $response = $this->getRequest();
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response);
 
-        $answer = $this->parseContent($response->getContent(), $format);
+        $answer = $this->parseContent($response->getContent());
 
         $this->assertEquals(count($result), count($answer));
 
@@ -90,6 +99,9 @@ class OrdersControllerCase extends BaseApiTestCase
         );
     }
 
+    /**
+     * @return array
+     */
     public static function getOrderDataProvider()
     {
         return [
@@ -104,6 +116,15 @@ class OrdersControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param int    $orderId
+     * @param string $type
+     * @param string $transactionId
+     * @param string $depositedAt
+     * @param string $paymentAccountId
+     * @param string $paidFor
+     * @param string $message
+     * @param bool   $deletePaymentAccount
+     *
      * @test
      * @dataProvider getOrderDataProvider
      * @see https://credit.atlassian.net/browse/RT-830 test list
@@ -184,6 +205,9 @@ class OrdersControllerCase extends BaseApiTestCase
         $this->assertEquals($depositedAt, $answer['deposited_at']);
     }
 
+    /**
+     * @return array
+     */
     public static function getWrongOrderDataProvider()
     {
         return [
@@ -193,6 +217,9 @@ class OrdersControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param int $orderEncodedId
+     * @param int $statusCode
+     *
      * @test
      * @dataProvider getWrongOrderDataProvider
      */

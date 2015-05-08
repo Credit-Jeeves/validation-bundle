@@ -1,11 +1,11 @@
 <?php
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
@@ -15,21 +15,21 @@ interface PaymentProcessorInterface
      * Creates a new payment account for User and Group.
      * Returns payment account token.
      *
-     * @param PaymentAccountData $data
-     * @param User $user
-     * @param Group $group The group that will receive payments. Set to null for RentTrack account.
+     * @param  PaymentAccountData $data
+     * @param  Contract           $contract
      * @return string
      */
-    public function createPaymentAccount(PaymentAccountData $data, User $user, Group $group = null);
+    public function createPaymentAccount(PaymentAccountData $data, Contract $contract);
 
     /**
      * Executes order of a given payment type (rent or report).
      * Returns order status.
      *
-     * @param Order $order
-     * @param PaymentAccount $paymentAccount
-     * @param string $paymentType
+     * @param  Order                                               $order
+     * @param  PaymentAccount                                      $paymentAccount
+     * @param  string                                              $paymentType
      * @return string
+     * @throws PaymentProcessorInvalidArgumentException|\Exception
      */
     public function executeOrder(
         Order $order,

@@ -1,3 +1,4 @@
+{# @TODO move style to css file #}
 <div style="
         padding: 0 20px 0 0;
         border-left: 1px solid #c8c8c8;
@@ -7,37 +8,30 @@
         background-color: #ffffff;
         height: 95px;
         ">
-    <div style="
-            float: left;
-            ">
-            <img width="auto" src="http://{{serverName}}/bundles/rjpublic/images/logo_rj.png"/>
+    <div style="float: left;">
+            <img width="auto" src="http://{{ serverName }}/bundles/rjpublic/images/{{ logoName }}"/>
     </div>
-    <div style="
-            float: right;
-            margin-top: 40px;
-            ">
-                <a 
-                    href="my.renttrack.com"
-                    style="
-                        border: none;
-                        padding: 2px 7px;
-                        text-align: left;
-                        color: white;
-                        font-size: 14px;
-                        text-shadow: 1px 1px 3px #636363;
-                        filter: dropshadow(color=#636363, offx=1, offy=1);
-                        cursor: pointer;
-                        background-color: #669900;
-                        -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#00ffffff)';
-                        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff);
-                        zoom: 1;
-                        text-decoration: none;
-                        -moz-border-radius: 4px;
-                        -webkit-border-radius: 4px;
-                        border-radius: 4px;
-                ">{{ 'login.link' | trans }}</a>
+    <div style="float: right; margin-top: 40px;">
+        <a href="{{ loginUrl }}" style="
+            border: none;
+            padding: 2px 7px;
+            text-align: left;
+            color: white;
+            font-size: 14px;
+            text-shadow: 1px 1px 3px #636363;
+            filter: dropshadow(color=#636363, offx=1, offy=1);
+            cursor: pointer;
+            background-color: #669900;
+            -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#00ffffff)';
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff);
+            zoom: 1;
+            text-decoration: none;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+        ">
+            {{ 'login.link' | trans }}
+        </a>
     </div>
-    <div style="
-            clear: both;
-            "></div>
+    <div style="clear: both;"></div>
 </div>

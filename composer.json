@@ -83,6 +83,10 @@
             }
         },
         {
+            "type": "vcs",
+            "url": "https://github.com/goetas/serializer.git"
+        },
+        {
             "type": "git",
             "url": "git@github.com:Credit-Jeeves/CoreBundle.git"
         },
@@ -109,6 +113,10 @@
         {
             "type": "git",
             "url": "git@github.com:Credit-Jeeves/Heartland.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/ACIClient.git"
         },
         {
             "type": "git",
@@ -227,10 +235,10 @@
         "jms/di-extra-bundle": "1.4.*",
         "friendsofsymfony/user-bundle": "v1.3.2",
         "friendsofsymfony/jsrouting-bundle": "~1.1",
-        "payum/payum": "dev-master as 0.5.x-dev",
-        "payum/payum-bundle": "dev-heartland",
-        "payum/authorize-net-aim": "0.5.*",
-        "payum/heartland": "dev-master",
+        "payum/aci" : "dev-master",
+        "payum2/payum": "dev-master as 0.5.x-dev",
+        "payum2/payum-bundle": "dev-heartland",
+        "payum2/heartland": "dev-master",
         "ass/xmlsecurity": "dev-master",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",
@@ -267,6 +275,7 @@
         "qunit": "v1",
         "envjs": "v1",
         "sinon": "1.5.0",
+        "phpunit/phpunit": "~4",
         "behat/mink": "dev-master as 1.5.0",
         "behat/mink-bundle": "1.4.*",
         "behat/mink-selenium2-driver": "1.1.*",

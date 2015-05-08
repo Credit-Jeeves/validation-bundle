@@ -163,7 +163,6 @@ abstract class Contract
      */
     protected $rent = null;
 
-
     /**
      * @ORM\Column(
      *     type="decimal",
@@ -175,7 +174,6 @@ abstract class Contract
      * @Gedmo\Versioned
      */
     protected $uncollectedBalance;
-
 
     /**
      * @ORM\Column(
@@ -319,7 +317,6 @@ abstract class Contract
      * @Gedmo\Versioned
      */
     protected $finishAt = null;
-    
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -395,6 +392,19 @@ abstract class Contract
      */
     protected $externalLeaseId;
 
+    /**
+     * @var AciCollectPayContractBilling
+     *
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayContractBilling",
+     *      mappedBy="contract",
+     *      cascade={"all"},
+     *      orphanRemoval=true,
+     *      fetch="EAGER"
+     * )
+     */
+    protected $aciCollectPayContractBilling;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
@@ -447,12 +457,13 @@ abstract class Contract
     /**
      * Set Tenant
      *
-     * @param \RentJeeves\DataBundle\Entity\Tenant $tenant
+     * @param  \RentJeeves\DataBundle\Entity\Tenant $tenant
      * @return contract
      */
     public function setTenant(\RentJeeves\DataBundle\Entity\Tenant $tenant)
     {
         $this->tenant = $tenant;
+
         return $this;
     }
 
@@ -469,12 +480,13 @@ abstract class Contract
     /**
      * Set Holding
      *
-     * @param Holding $holding
+     * @param  Holding  $holding
      * @return Contract
      */
     public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding)
     {
         $this->holding = $holding;
+
         return $this;
     }
 
@@ -491,12 +503,13 @@ abstract class Contract
     /**
      * Set Group
      *
-     * @param Holding $holding
+     * @param  Holding  $holding
      * @return Contract
      */
     public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
     {
         $this->group = $group;
+
         return $this;
     }
 
@@ -513,12 +526,13 @@ abstract class Contract
     /**
      * Set Property
      *
-     * @param Property|null $property
+     * @param  Property|null $property
      * @return Contract
      */
     public function setProperty(Property $property = null)
     {
         $this->property = $property;
+
         return $this;
     }
 
@@ -535,12 +549,13 @@ abstract class Contract
     /**
      * Set Unit
      *
-     * @param Unit $unit
+     * @param  Unit     $unit
      * @return Contract
      */
     public function setUnit(Unit $unit = null)
     {
         $this->unit = $unit;
+
         return $this;
     }
 
@@ -557,12 +572,13 @@ abstract class Contract
     /**
      * Set search
      *
-     * @param string $search
+     * @param  string   $search
      * @return Contract
      */
     public function setSearch($search)
     {
         $this->search = $search;
+
         return $this;
     }
 
@@ -579,12 +595,13 @@ abstract class Contract
     /**
      * Set status
      *
-     * @param string $status
+     * @param  string $status
      * @return Unit
      */
     public function setStatus($status = ContractStatus::PENDING)
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -601,12 +618,13 @@ abstract class Contract
     /**
      * Set rent
      *
-     * @param double $rent
+     * @param  double $rent
      * @return Unit
      */
     public function setRent($rent)
     {
         $this->rent = $rent;
+
         return $this;
     }
 
@@ -652,7 +670,6 @@ abstract class Contract
         return $this->integratedBalance;
     }
 
-
     /**
      * @param float $uncollectedBalance
      */
@@ -672,12 +689,13 @@ abstract class Contract
     /**
      * Set Paid to
      *
-     * @param DateTime $paidTo
+     * @param  DateTime $paidTo
      * @return Contract
      */
     public function setPaidTo($paidTo)
     {
         $this->paidTo = $paidTo;
+
         return $this;
     }
 
@@ -694,13 +712,13 @@ abstract class Contract
     /**
      * Set dueDate
      *
-     * @param integer $dueDate
+     * @param  integer         $dueDate
      * @throws \LogicException
      * @return $this
      */
     public function setDueDate($dueDate)
     {
-        $dueDate = (int)$dueDate;
+        $dueDate = (int) $dueDate;
         if ($dueDate > 31 || $dueDate < 1) {
             throw new LogicException("Due date can't be more than 31 and less than 1");
         }
@@ -732,7 +750,7 @@ abstract class Contract
     /**
      * Set startAt
      *
-     * @param DateTime $startAt
+     * @param  DateTime $startAt
      * @return Contract
      */
     public function setStartAt($startAt)
@@ -741,6 +759,7 @@ abstract class Contract
         if ($this->getDueDate() == null && ($this->startAt instanceof \DateTime)) {
             $this->setDueDate($this->startAt->format('j'));
         }
+
         return $this;
     }
 
@@ -757,12 +776,13 @@ abstract class Contract
     /**
      * Set finishAt
      *
-     * @param DateTime $finishAt
+     * @param  DateTime $finishAt
      * @return Contract
      */
     public function setFinishAt($finishAt)
     {
         $this->finishAt = $finishAt;
+
         return $this;
     }
 
@@ -779,12 +799,13 @@ abstract class Contract
     /**
      * Set createdAt
      *
-     * @param DateTime $createdAt
+     * @param  DateTime $createdAt
      * @return Contract
      */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -801,12 +822,13 @@ abstract class Contract
     /**
      * Set updatedAt
      *
-     * @param DateTime $updatedAt
+     * @param  DateTime $updatedAt
      * @return Contract
      */
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -823,12 +845,13 @@ abstract class Contract
     /**
      * Add payment
      *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
+     * @param  \CreditJeeves\DataBundle\Entity\Operation $operation
      * @return Contract
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
         $this->operations[] = $operation;
+
         return $this;
     }
 
@@ -855,12 +878,13 @@ abstract class Contract
     /**
      * Add payment
      *
-     * @param \RentJeeves\DataBundle\Entity\Payment $payment
+     * @param  \RentJeeves\DataBundle\Entity\Payment $payment
      * @return Contract
      */
     public function addPayment(\RentJeeves\DataBundle\Entity\Payment $payment)
     {
         $this->payments[] = $payment;
+
         return $this;
     }
 
@@ -962,5 +986,21 @@ abstract class Contract
     public function getTransUnionStartAt()
     {
         return $this->transUnionStartAt;
+    }
+
+    /**
+     * @param AciCollectPayContractBilling $aciCollectPayContractBilling
+     */
+    public function setAciCollectPayContractBilling(AciCollectPayContractBilling $aciCollectPayContractBilling)
+    {
+        $this->aciCollectPayContractBilling = $aciCollectPayContractBilling;
+    }
+
+    /**
+     * @return AciCollectPayContractBilling
+     */
+    public function getAciCollectPayContractBilling()
+    {
+        return $this->aciCollectPayContractBilling;
     }
 }

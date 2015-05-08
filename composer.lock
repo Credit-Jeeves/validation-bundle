@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "349704aacb5b27f4e4e24134a7532709",
+    "hash": "ed39b3da337c5a165a9d8e0d37036ed3",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -71,39 +71,6 @@
                 "translation"
             ],
             "time": "2014-04-27 11:37:25"
-        },
-        {
-            "name": "ajbdev/authorizenet-php-api",
-            "version": "v1.1.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ajbdev/authorizenet-php-api",
-                "reference": "v1.1.8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ajbdev/authorizenet-php-api/zipball/v1.1.8",
-                "reference": "v1.1.8",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "lib/",
-                    "AuthorizeNet.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Authorize.NET PHP library with composer support",
-            "keywords": [
-                "authorize.net",
-                "ecommerce",
-                "payment"
-            ],
-            "time": "2013-02-11 21:09:06"
         },
         {
             "name": "apy/jsfv-bundle",
@@ -368,7 +335,7 @@
                 "soap",
                 "soap-client"
             ],
-            "time": "2014-12-17 11:57:23"
+            "time": "2014-12-24 11:28:42"
         },
         {
             "name": "besimple/soap-common",
@@ -742,7 +709,7 @@
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2014-08-07 19:11:44"
+            "time": "2015-03-31 14:00:42"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -3387,16 +3354,16 @@
         },
         {
             "name": "kriswallsmith/buzz",
-            "version": "v0.10",
+            "version": "v0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/Buzz.git",
-                "reference": "v0.10"
+                "reference": "487760b05d6269a4c2c374364325326cfa65b12c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/Buzz/zipball/v0.10",
-                "reference": "v0.10",
+                "url": "https://api.github.com/repos/kriswallsmith/Buzz/zipball/487760b05d6269a4c2c374364325326cfa65b12c",
+                "reference": "487760b05d6269a4c2c374364325326cfa65b12c",
                 "shasum": ""
             },
             "require": {
@@ -3431,7 +3398,61 @@
                 "curl",
                 "http client"
             ],
-            "time": "2013-05-19 03:41:15"
+            "time": "2014-09-15 12:42:36"
+        },
+        {
+            "name": "league/url",
+            "version": "3.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/url.git",
+                "reference": "a096be483bec9abcae34f4e21ec74696f7beed55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/url/zipball/a096be483bec9abcae34f4e21ec74696f7beed55",
+                "reference": "a096be483bec9abcae34f4e21ec74696f7beed55",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3.0",
+                "true/punycode": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Url\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ignace Nyamagana Butera",
+                    "email": "nyamsprod@gmail.com",
+                    "homepage": "https://github.com/nyamsprod/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "League/url is a lightweight PHP Url manipulating library",
+            "homepage": "http://url.thephpleague.com",
+            "keywords": [
+                "parse_url",
+                "php",
+                "url"
+            ],
+            "time": "2015-03-26 10:07:42"
         },
         {
             "name": "michelf/php-markdown",
@@ -3694,36 +3715,124 @@
             "time": "2014-05-12 09:06:10"
         },
         {
-            "name": "payum/authorize-net-aim",
-            "version": "0.5.0",
+            "name": "payum/aci",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Payum/AuthorizeNetAim.git",
-                "reference": "d001607b7fcadd0c2b50a561c89e34fc3eb50f44"
+                "url": "git@github.com:Credit-Jeeves/ACIClient.git",
+                "reference": "3c3bddd454229479a82957de7902df4884c67d69"
+            },
+            "require": {
+                "ext-curl": "*",
+                "guzzle/http": "v3.5.0",
+                "jms/serializer": "dev-master#9b82ea58425f86ea497fce7a592e1ff512be4aaf",
+                "lib-curl": "*",
+                "payum/core": "0.14.*",
+                "payum/payum-bundle": "0.14.*",
+                "php": ">=5.4.2",
+                "symfony/framework-bundle": "~2.4"
+            },
+            "require-dev": {
+                "goetas/xsd-reader": "2.*@dev",
+                "goetas/xsd2php": "2.*@dev",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": [
+                        "src/",
+                        "tests/"
+                    ]
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yuriy Borovchuk",
+                    "email": "yuriy@renttrack.com"
+                },
+                {
+                    "name": "Tatyana Stronina",
+                    "email": "tatyana@renttrack.com"
+                },
+                {
+                    "name": "Cary Penniman",
+                    "email": "cary@renttrack.com"
+                }
+            ],
+            "description": "ACI integration with Payum",
+            "homepage": "https://github.com/Credit-Jeeves/ACIClient",
+            "time": "2015-04-16 18:07:07"
+        },
+        {
+            "name": "payum/core",
+            "version": "0.14.5",
+            "target-dir": "Payum/Core",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Payum/Core.git",
+                "reference": "3241ede26bb9b07c32f50f01fb0270d5cec085a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Payum/AuthorizeNetAim/zipball/d001607b7fcadd0c2b50a561c89e34fc3eb50f44",
-                "reference": "d001607b7fcadd0c2b50a561c89e34fc3eb50f44",
+                "url": "https://api.github.com/repos/Payum/Core/zipball/3241ede26bb9b07c32f50f01fb0270d5cec085a5",
+                "reference": "3241ede26bb9b07c32f50f01fb0270d5cec085a5",
                 "shasum": ""
             },
             "require": {
-                "ajbdev/authorizenet-php-api": "1.1.*",
-                "payum/payum": "0.5.*",
-                "php": ">=5.3.2"
+                "kriswallsmith/buzz": "~0.13",
+                "league/url": "~3.0",
+                "php": ">=5.3.2",
+                "twig/twig": "~1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "3.7.*"
+                "doctrine/mongodb": "1.0.*@dev",
+                "doctrine/mongodb-odm": "1.0.*@dev",
+                "doctrine/orm": "2.*",
+                "ext-curl": "*",
+                "ext-pdo_sqlite": "*",
+                "phpunit/phpunit": "~4.0",
+                "propel/propel1": "~1.7",
+                "psr/log": "~1.0",
+                "symfony/form": "~2.3",
+                "symfony/http-foundation": "~2.3",
+                "symfony/http-kernel": "~2.3",
+                "symfony/routing": "~2.3",
+                "symfony/validator": "~2.6",
+                "zendframework/zend-db": "~2"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "If you want to store models to mongo doctrin2 ODM",
+                "doctrine/orm": "If you want to store models to database using doctrin2 ORM",
+                "monolog/monolog": "In case you want to use logger",
+                "payum/authorize-net-aim": "If you want to use Authorize.Net AIM payment gateway",
+                "payum/be2bill": "If you want to use be2bill payment gateway",
+                "payum/omnipay-bridge": "If you want to use omnipay's gateways",
+                "payum/payex": "If you want to use payex payment gateway",
+                "payum/paypal-express-checkout-nvp": "If you want to use paypal express checkout, digital goods or recurring payments",
+                "payum/paypal-ipn": "If you want to use paypal instant payment notifications(Paypal IPN)",
+                "payum/paypal-pro-checkout-nvp": "If you want to use paypal pro checkout",
+                "payum/paypal-rest": "If you want to use paypal rest gateway",
+                "propel/propel": "If you want to store models to Propel2 ORM",
+                "propel/propel1": "If you want to store models to Propel1 ORM",
+                "symfony/form": "If you want to use forms",
+                "symfony/http-foundation": "If you want to use HttpRequestVerifier or HttpResponse reply from symfony's bridge",
+                "symfony/http-kernel": "If you want to use HttpRequestVerifier from symfony's bridge",
+                "symfony/routing": "If you want to use TokenFactory from symfony's bridge",
+                "zendframework/zend-db": "If you want to store models to Zend Db ORM"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.5-dev"
+                    "dev-master": "0.14-dev"
                 }
             },
             "autoload": {
                 "psr-0": {
-                    "Payum\\AuthorizeNet\\Aim": "src/"
+                    "Payum\\Core\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3732,30 +3841,141 @@
             ],
             "authors": [
                 {
-                    "name": "Maksim Kotlyar",
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/Payum/Payum/contributors"
+                },
+                {
+                    "name": "Kotlyar Maksim",
                     "email": "kotlyar.maksim@gmail.com"
+                },
+                {
+                    "name": "Payum project",
+                    "homepage": "http://payum.org/"
                 }
             ],
-            "description": "Authorize.net advanced integration method (AIM).",
+            "description": "Domain friendly payment framework. Paypal, payex, authorize.net, be2bill, omnipay, recurring payments, instant notifications and many more",
+            "homepage": "http://payum.org",
             "keywords": [
                 "authorize.net",
-                "authorizenet",
-                "payment"
+                "be2bill",
+                "instant payment notification",
+                "ipn",
+                "jms payment",
+                "omnipay",
+                "payex",
+                "payment",
+                "paypal",
+                "paypal digital goods",
+                "paypal express",
+                "paypal pro",
+                "paypal rest",
+                "recurring payment"
             ],
-            "time": "2013-06-03 07:57:15"
+            "time": "2015-04-15 18:30:37"
         },
         {
-            "name": "payum/heartland",
+            "name": "payum/payum-bundle",
+            "version": "0.14.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Payum/PayumBundle.git",
+                "reference": "8be4ec0d2fe760e63e2c82a84a34ebc9a27b3e8a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Payum/PayumBundle/zipball/8be4ec0d2fe760e63e2c82a84a34ebc9a27b3e8a",
+                "reference": "8be4ec0d2fe760e63e2c82a84a34ebc9a27b3e8a",
+                "shasum": ""
+            },
+            "require": {
+                "payum/core": "0.14.*",
+                "php": ">=5.3.2",
+                "symfony/form": "~2.3",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/twig-bundle": "2.3.*,>=2.3.18|2.4.*,>=2.4.8|2.5.*,>=2.5.2|~2.6",
+                "symfony/validator": "~2.3"
+            },
+            "require-dev": {
+                "doctrine/orm": "*",
+                "omnipay/dummy": "~2.0",
+                "omnipay/paypal": "~2.0",
+                "omnipay/stripe": "~2.0",
+                "payum/jms-payment-bridge": "0.14.*",
+                "payum/omnipay-bridge": "0.14.*",
+                "payum/payum": "0.14.*",
+                "phpunit/phpunit": "~4.0",
+                "sonata-project/admin-bundle": "~2.0",
+                "symfony/browser-kit": "~2.3",
+                "symfony/class-loader": "~2.3",
+                "symfony/expression-language": "~2.3",
+                "twig/twig": "~1.16"
+            },
+            "suggest": {
+                "sonata-project/admin-bundle": "If you want to configure payments in the backend."
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.14-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Payum\\Bundle\\PayumBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/Payum/PayumBundle/contributors"
+                },
+                {
+                    "name": "Kotlyar Maksim",
+                    "email": "kotlyar.maksim@gmail.com"
+                },
+                {
+                    "name": "Payum project",
+                    "homepage": "http://payum.org/"
+                }
+            ],
+            "description": "Rich payment solutions for symfony2. Paypal, payex, authorize.net, be2bill, omnipay, recurring payments, instant notifications and many more",
+            "homepage": "http://payum.org",
+            "keywords": [
+                "authorize.net",
+                "be2bill",
+                "instant notifications",
+                "klarna",
+                "offline",
+                "omnipay",
+                "payex",
+                "payment",
+                "paypal",
+                "paypal express checkout",
+                "paypal pro checkout",
+                "recurring payment",
+                "stripe",
+                "stripe checkout",
+                "stripe.js",
+                "symfony"
+            ],
+            "time": "2015-04-17 12:36:52"
+        },
+        {
+            "name": "payum2/heartland",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Heartland.git",
-                "reference": "f620ade587328972eb37f990d2b1a49b4a962e6d"
+                "reference": "0f262adff4ac4de6eba935563111d8810605d9a1"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
                 "besimple/soap-common": "dev-master",
-                "payum/payum": "0.5.x-dev",
+                "payum2/payum": "0.6.x-dev",
                 "php": ">=5.3.3"
             },
             "require-dev": {
@@ -3771,7 +3991,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Payum\\Heartland": "src/"
+                    "Payum2\\Heartland": "src/"
                 }
             },
             "license": [
@@ -3792,15 +4012,15 @@
                 "payment",
                 "src"
             ],
-            "time": "2014-08-19 14:02:29"
+            "time": "2015-03-17 13:59:41"
         },
         {
-            "name": "payum/payum",
+            "name": "payum2/payum",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Payum.git",
-                "reference": "ebf48abb53a63889a17db62ec6fe61034c2e2c7b"
+                "reference": "78c991ff40cc5dad4308d702ffa35204d1ffc52a"
             },
             "require": {
                 "kriswallsmith/buzz": "*",
@@ -3830,7 +4050,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Payum": "src/"
+                    "Payum2": "src/"
                 }
             },
             "license": [
@@ -3843,6 +4063,7 @@
                 }
             ],
             "description": "Payment lib",
+            "homepage": "https://github.com/Credit-Jeeves/Payum",
             "keywords": [
                 "authorize.net",
                 "be2bill",
@@ -3853,31 +4074,25 @@
                 "paypal ipn",
                 "paypal recurring payments"
             ],
-            "time": "2013-08-07 17:19:07"
+            "time": "2015-03-17 08:46:25"
         },
         {
-            "name": "payum/payum-bundle",
+            "name": "payum2/payum-bundle",
             "version": "dev-heartland",
-            "target-dir": "Payum/Bundle/PayumBundle",
+            "target-dir": "Payum2/Bundle/PayumBundle",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/PayumBundle.git",
-                "reference": "248837181a7f961334f173cd52e1086a9802f64a"
+                "reference": "5f090973d72b26e3204e10d7f3ace4f7407daf29"
             },
             "require": {
-                "payum/payum": "0.6.x-dev",
+                "payum2/payum": "0.6.x-dev",
                 "php": ">=5.3.2",
                 "symfony/framework-bundle": "2.*"
             },
             "require-dev": {
                 "doctrine/orm": "*",
                 "fp/testo": "@dev",
-                "payum/authorize-net-aim": "0.6.x-dev",
-                "payum/be2bill": "0.6.x-dev",
-                "payum/omnipay-bridge": "0.6.x-dev",
-                "payum/payex": "0.6.x-dev",
-                "payum/paypal-express-checkout-nvp": "0.6.x-dev",
-                "payum/paypal-pro-checkout-nvp": "0.6.x-dev",
                 "phpunit/phpunit": "*"
             },
             "suggest": {
@@ -3896,7 +4111,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Payum\\Bundle\\PayumBundle": ""
+                    "Payum2\\Bundle\\PayumBundle": ""
                 }
             },
             "license": [
@@ -3913,7 +4128,7 @@
                 }
             ],
             "description": "The payment bundle integrates payum libs into symfony2 framework",
-            "homepage": "https://github.com/Payum/PayumBundle",
+            "homepage": "https://github.com/Credit-Jeeves/PayumBundle",
             "keywords": [
                 "authorize.net",
                 "be2bill",
@@ -3925,7 +4140,7 @@
                 "paypal pro checkout",
                 "paypal recurring payment"
             ],
-            "time": "2014-05-06 14:54:32"
+            "time": "2015-03-31 08:50:04"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -4129,7 +4344,7 @@
             "keywords": [
                 "trans union api"
             ],
-            "time": "2014-12-19 11:27:18"
+            "time": "2015-02-10 18:39:52"
         },
         {
             "name": "rj/email-bundle",
@@ -5100,16 +5315,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.4.4",
+            "version": "v2.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "4697c33cdfb520dcf83fd6e4f7864fa26ddaebea"
+                "reference": "daed178afd4700dd18f4fb0ea6b72dcfd9a4792a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/4697c33cdfb520dcf83fd6e4f7864fa26ddaebea",
-                "reference": "4697c33cdfb520dcf83fd6e4f7864fa26ddaebea",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/daed178afd4700dd18f4fb0ea6b72dcfd9a4792a",
+                "reference": "daed178afd4700dd18f4fb0ea6b72dcfd9a4792a",
                 "shasum": ""
             },
             "require": {
@@ -5117,7 +5332,7 @@
                 "php": ">=5.3.3",
                 "psr/log": "~1.0",
                 "symfony/icu": "~1.0",
-                "twig/twig": "~1.11"
+                "twig/twig": "~1.12"
             },
             "replace": {
                 "symfony/browser-kit": "self.version",
@@ -5196,14 +5411,12 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "The Symfony PHP framework",
@@ -5211,7 +5424,54 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-04-27 13:39:18"
+            "time": "2014-09-28 17:03:37"
+        },
+        {
+            "name": "true/punycode",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/true/php-punycode.git",
+                "reference": "21c0025130b4e2b2d0b7dbe5f86e9e1512507656"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/true/php-punycode/zipball/21c0025130b4e2b2d0b7dbe5f86e9e1512507656",
+                "reference": "21c0025130b4e2b2d0b7dbe5f86e9e1512507656",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.x",
+                "satooshi/php-coveralls": "dev-master",
+                "squizlabs/php_codesniffer": "~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "True\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Renan Gonçalves",
+                    "email": "renan.saddam@gmail.com"
+                }
+            ],
+            "description": "A Bootstring encoding of Unicode for Internationalized Domain Names in Applications (IDNA)",
+            "homepage": "https://github.com/true/php-punycode",
+            "keywords": [
+                "idna",
+                "punycode"
+            ],
+            "time": "2015-03-12 16:49:35"
         },
         {
             "name": "twig/extensions",
@@ -5669,6 +5929,39 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "ajbdev/authorizenet-php-api",
+            "version": "v1.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ajbdev/authorizenet-php-api",
+                "reference": "v1.1.8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ajbdev/authorizenet-php-api/zipball/v1.1.8",
+                "reference": "v1.1.8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/",
+                    "AuthorizeNet.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Authorize.NET PHP library with composer support",
+            "keywords": [
+                "authorize.net",
+                "ecommerce",
+                "payment"
+            ],
+            "time": "2013-02-11 21:09:06"
+        },
         {
             "name": "behat/mink",
             "version": "dev-master",
@@ -6157,6 +6450,60 @@
             "time": "2013-09-05 11:23:37"
         },
         {
+            "name": "doctrine/instantiator",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/instantiator.git",
+                "reference": "f976e5de371104877ebc89bd8fecb0019ed9c119"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/f976e5de371104877ebc89bd8fecb0019ed9c119",
+                "reference": "f976e5de371104877ebc89bd8fecb0019ed9c119",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3,<8.0-DEV"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1.8",
+                "ext-pdo": "*",
+                "ext-phar": "*",
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "2.0.*@ALPHA"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Instantiator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Pivetta",
+                    "email": "ocramius@gmail.com",
+                    "homepage": "http://ocramius.github.com/"
+                }
+            ],
+            "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
+            "homepage": "https://github.com/doctrine/instantiator",
+            "keywords": [
+                "constructor",
+                "instantiate"
+            ],
+            "time": "2014-10-13 12:58:55"
+        },
+        {
             "name": "envjs",
             "version": "v1",
             "source": {
@@ -6376,6 +6723,605 @@
             "time": "2014-05-30 17:11:24"
         },
         {
+            "name": "payum/authorize-net-aim",
+            "version": "0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Payum/AuthorizeNetAim.git",
+                "reference": "d001607b7fcadd0c2b50a561c89e34fc3eb50f44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Payum/AuthorizeNetAim/zipball/d001607b7fcadd0c2b50a561c89e34fc3eb50f44",
+                "reference": "d001607b7fcadd0c2b50a561c89e34fc3eb50f44",
+                "shasum": ""
+            },
+            "require": {
+                "ajbdev/authorizenet-php-api": "1.1.*",
+                "payum/payum": "0.5.*",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Payum\\AuthorizeNet\\Aim": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maksim Kotlyar",
+                    "email": "kotlyar.maksim@gmail.com"
+                }
+            ],
+            "description": "Authorize.net advanced integration method (AIM).",
+            "keywords": [
+                "authorize.net",
+                "authorizenet",
+                "payment"
+            ],
+            "time": "2013-06-03 07:57:15"
+        },
+        {
+            "name": "payum/payum",
+            "version": "0.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Payum/Payum.git",
+                "reference": "1f4f3bb4ad0d56d985f3dd1a88fb3bd5e47e55d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Payum/Payum/zipball/1f4f3bb4ad0d56d985f3dd1a88fb3bd5e47e55d4",
+                "reference": "1f4f3bb4ad0d56d985f3dd1a88fb3bd5e47e55d4",
+                "shasum": ""
+            },
+            "require": {
+                "kriswallsmith/buzz": "*",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "doctrine/orm": "2.*",
+                "ext-curl": "*",
+                "ext-pdo_sqlite": "*",
+                "fp/testo": "dev-master",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "suggest": {
+                "doctrine/orm": "If you want to store models to database using doctrin2 ORM",
+                "payum/authorize-net-aim": "If you want to use Authorize.Net AIM payment gateway",
+                "payum/be2bill": "If you want to use be2bill payment gateway",
+                "payum/omnipay-bridge": "If you want to use omnipay's gateways",
+                "payum/paypal-express-checkout-nvp": "If you want to use paypal express checkout, digital goods or recurring payments",
+                "payum/paypal-ipn": "If you want to use paypal instant payment notifications(Paypal IPN)",
+                "payum/paypal-pro-checkout-nvp": "If you want to use paypal pro checkout"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Payum": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maksim Kotlyar",
+                    "email": "kotlyar.maksim@gmail.com"
+                }
+            ],
+            "description": "Payment lib",
+            "keywords": [
+                "authorize.net",
+                "be2bill",
+                "omnipay gateways",
+                "payment",
+                "paypal",
+                "paypal digital goods",
+                "paypal ipn",
+                "paypal recurring payments"
+            ],
+            "time": "2013-07-15 14:00:18"
+        },
+        {
+            "name": "phpdocumentor/reflection-docblock",
+            "version": "2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
+                "reference": "d68dbdc53dc358a816f00b300704702b2eaff7b8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/d68dbdc53dc358a816f00b300704702b2eaff7b8",
+                "reference": "d68dbdc53dc358a816f00b300704702b2eaff7b8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "dflydev/markdown": "~1.0",
+                "erusev/parsedown": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "phpDocumentor": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike van Riel",
+                    "email": "mike.vanriel@naenius.com"
+                }
+            ],
+            "time": "2015-02-03 12:10:50"
+        },
+        {
+            "name": "phpspec/prophecy",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpspec/prophecy.git",
+                "reference": "8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5",
+                "reference": "8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/instantiator": "^1.0.2",
+                "phpdocumentor/reflection-docblock": "~2.0",
+                "sebastian/comparator": "~1.1"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Prophecy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                },
+                {
+                    "name": "Marcello Duarte",
+                    "email": "marcello.duarte@gmail.com"
+                }
+            ],
+            "description": "Highly opinionated mocking framework for PHP 5.3+",
+            "homepage": "https://github.com/phpspec/prophecy",
+            "keywords": [
+                "Double",
+                "Dummy",
+                "fake",
+                "mock",
+                "spy",
+                "stub"
+            ],
+            "time": "2015-03-27 19:31:25"
+        },
+        {
+            "name": "phpunit/php-code-coverage",
+            "version": "2.0.16",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
+                "reference": "934fd03eb6840508231a7f73eb8940cf32c3b66c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/934fd03eb6840508231a7f73eb8940cf32c3b66c",
+                "reference": "934fd03eb6840508231a7f73eb8940cf32c3b66c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "phpunit/php-file-iterator": "~1.3",
+                "phpunit/php-text-template": "~1.2",
+                "phpunit/php-token-stream": "~1.3",
+                "sebastian/environment": "~1.0",
+                "sebastian/version": "~1.0"
+            },
+            "require-dev": {
+                "ext-xdebug": ">=2.1.4",
+                "phpunit/phpunit": "~4"
+            },
+            "suggest": {
+                "ext-dom": "*",
+                "ext-xdebug": ">=2.2.1",
+                "ext-xmlwriter": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Library that provides collection, processing, and rendering functionality for PHP code coverage information.",
+            "homepage": "https://github.com/sebastianbergmann/php-code-coverage",
+            "keywords": [
+                "coverage",
+                "testing",
+                "xunit"
+            ],
+            "time": "2015-04-11 04:35:00"
+        },
+        {
+            "name": "phpunit/php-file-iterator",
+            "version": "1.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
+                "reference": "acd690379117b042d1c8af1fafd61bde001bf6bb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/acd690379117b042d1c8af1fafd61bde001bf6bb",
+                "reference": "acd690379117b042d1c8af1fafd61bde001bf6bb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "File/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                ""
+            ],
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "FilterIterator implementation that filters files based on a list of suffixes.",
+            "homepage": "https://github.com/sebastianbergmann/php-file-iterator/",
+            "keywords": [
+                "filesystem",
+                "iterator"
+            ],
+            "time": "2013-10-10 15:34:57"
+        },
+        {
+            "name": "phpunit/php-text-template",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-text-template.git",
+                "reference": "206dfefc0ffe9cebf65c413e3d0e809c82fbf00a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-text-template/zipball/206dfefc0ffe9cebf65c413e3d0e809c82fbf00a",
+                "reference": "206dfefc0ffe9cebf65c413e3d0e809c82fbf00a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "Text/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                ""
+            ],
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Simple template engine.",
+            "homepage": "https://github.com/sebastianbergmann/php-text-template/",
+            "keywords": [
+                "template"
+            ],
+            "time": "2014-01-30 17:20:04"
+        },
+        {
+            "name": "phpunit/php-timer",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-timer.git",
+                "reference": "19689d4354b295ee3d8c54b4f42c3efb69cbc17c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/19689d4354b295ee3d8c54b4f42c3efb69cbc17c",
+                "reference": "19689d4354b295ee3d8c54b4f42c3efb69cbc17c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "PHP/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                ""
+            ],
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Utility class for timing",
+            "homepage": "https://github.com/sebastianbergmann/php-timer/",
+            "keywords": [
+                "timer"
+            ],
+            "time": "2013-08-02 07:42:54"
+        },
+        {
+            "name": "phpunit/php-token-stream",
+            "version": "1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-token-stream.git",
+                "reference": "eab81d02569310739373308137284e0158424330"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/eab81d02569310739373308137284e0158424330",
+                "reference": "eab81d02569310739373308137284e0158424330",
+                "shasum": ""
+            },
+            "require": {
+                "ext-tokenizer": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
+                }
+            ],
+            "description": "Wrapper around PHP's tokenizer extension.",
+            "homepage": "https://github.com/sebastianbergmann/php-token-stream/",
+            "keywords": [
+                "tokenizer"
+            ],
+            "time": "2015-04-08 04:46:07"
+        },
+        {
+            "name": "phpunit/phpunit",
+            "version": "4.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpunit.git",
+                "reference": "d6429b0995b24a2d9dfe5587ee3a7071c1161af4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d6429b0995b24a2d9dfe5587ee3a7071c1161af4",
+                "reference": "d6429b0995b24a2d9dfe5587ee3a7071c1161af4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-json": "*",
+                "ext-pcre": "*",
+                "ext-reflection": "*",
+                "ext-spl": "*",
+                "php": ">=5.3.3",
+                "phpspec/prophecy": "~1.3,>=1.3.1",
+                "phpunit/php-code-coverage": "~2.0,>=2.0.11",
+                "phpunit/php-file-iterator": "~1.3.2",
+                "phpunit/php-text-template": "~1.2",
+                "phpunit/php-timer": "~1.0.2",
+                "phpunit/phpunit-mock-objects": "~2.3",
+                "sebastian/comparator": "~1.1",
+                "sebastian/diff": "~1.1",
+                "sebastian/environment": "~1.2",
+                "sebastian/exporter": "~1.2",
+                "sebastian/global-state": "~1.0",
+                "sebastian/version": "~1.0",
+                "symfony/yaml": "~2.0"
+            },
+            "suggest": {
+                "phpunit/php-invoker": "~1.1"
+            },
+            "bin": [
+                "phpunit"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.5.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "The PHP Unit Testing framework.",
+            "homepage": "https://phpunit.de/",
+            "keywords": [
+                "phpunit",
+                "testing",
+                "xunit"
+            ],
+            "time": "2015-03-29 09:24:05"
+        },
+        {
+            "name": "phpunit/phpunit-mock-objects",
+            "version": "2.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
+                "reference": "74ffb87f527f24616f72460e54b595f508dccb5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/74ffb87f527f24616f72460e54b595f508dccb5c",
+                "reference": "74ffb87f527f24616f72460e54b595f508dccb5c",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/instantiator": "~1.0,>=1.0.2",
+                "php": ">=5.3.3",
+                "phpunit/php-text-template": "~1.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4"
+            },
+            "suggest": {
+                "ext-soap": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Mock Object library for PHPUnit",
+            "homepage": "https://github.com/sebastianbergmann/phpunit-mock-objects/",
+            "keywords": [
+                "mock",
+                "xunit"
+            ],
+            "time": "2015-04-02 05:36:41"
+        },
+        {
             "name": "qunit",
             "version": "v1",
             "source": {
@@ -6385,6 +7331,70 @@
             },
             "type": "library",
             "description": "An easy-to-use JavaScript Unit Testing framework."
+        },
+        {
+            "name": "sebastian/comparator",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/comparator.git",
+                "reference": "c484a80f97573ab934e37826dba0135a3301b26a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/c484a80f97573ab934e37826dba0135a3301b26a",
+                "reference": "c484a80f97573ab934e37826dba0135a3301b26a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "sebastian/diff": "~1.1",
+                "sebastian/exporter": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jeff Welch",
+                    "email": "whatthejeff@gmail.com"
+                },
+                {
+                    "name": "Volker Dusch",
+                    "email": "github@wallbash.com"
+                },
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@2bepublished.at"
+                },
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
+                }
+            ],
+            "description": "Provides the functionality to compare PHP values for equality",
+            "homepage": "http://www.github.com/sebastianbergmann/comparator",
+            "keywords": [
+                "comparator",
+                "compare",
+                "equality"
+            ],
+            "time": "2014-11-16 21:32:38"
         },
         {
             "name": "sebastian/diff",
@@ -6435,6 +7445,261 @@
                 "diff"
             ],
             "time": "2013-08-03 16:46:33"
+        },
+        {
+            "name": "sebastian/environment",
+            "version": "1.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/environment.git",
+                "reference": "5a8c7d31914337b69923db26c4221b81ff5a196e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/5a8c7d31914337b69923db26c4221b81ff5a196e",
+                "reference": "5a8c7d31914337b69923db26c4221b81ff5a196e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
+                }
+            ],
+            "description": "Provides functionality to handle HHVM/PHP environments",
+            "homepage": "http://www.github.com/sebastianbergmann/environment",
+            "keywords": [
+                "Xdebug",
+                "environment",
+                "hhvm"
+            ],
+            "time": "2015-01-01 10:01:08"
+        },
+        {
+            "name": "sebastian/exporter",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/exporter.git",
+                "reference": "84839970d05254c73cde183a721c7af13aede943"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/84839970d05254c73cde183a721c7af13aede943",
+                "reference": "84839970d05254c73cde183a721c7af13aede943",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "sebastian/recursion-context": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jeff Welch",
+                    "email": "whatthejeff@gmail.com"
+                },
+                {
+                    "name": "Volker Dusch",
+                    "email": "github@wallbash.com"
+                },
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@2bepublished.at"
+                },
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
+                },
+                {
+                    "name": "Adam Harvey",
+                    "email": "aharvey@php.net"
+                }
+            ],
+            "description": "Provides the functionality to export PHP variables for visualization",
+            "homepage": "http://www.github.com/sebastianbergmann/exporter",
+            "keywords": [
+                "export",
+                "exporter"
+            ],
+            "time": "2015-01-27 07:23:06"
+        },
+        {
+            "name": "sebastian/global-state",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/global-state.git",
+                "reference": "c7428acdb62ece0a45e6306f1ae85e1c05b09c01"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/c7428acdb62ece0a45e6306f1ae85e1c05b09c01",
+                "reference": "c7428acdb62ece0a45e6306f1ae85e1c05b09c01",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.2"
+            },
+            "suggest": {
+                "ext-uopz": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
+                }
+            ],
+            "description": "Snapshotting of global state",
+            "homepage": "http://www.github.com/sebastianbergmann/global-state",
+            "keywords": [
+                "global state"
+            ],
+            "time": "2014-10-06 09:23:50"
+        },
+        {
+            "name": "sebastian/recursion-context",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/recursion-context.git",
+                "reference": "3989662bbb30a29d20d9faa04a846af79b276252"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/recursion-context/zipball/3989662bbb30a29d20d9faa04a846af79b276252",
+                "reference": "3989662bbb30a29d20d9faa04a846af79b276252",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jeff Welch",
+                    "email": "whatthejeff@gmail.com"
+                },
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
+                },
+                {
+                    "name": "Adam Harvey",
+                    "email": "aharvey@php.net"
+                }
+            ],
+            "description": "Provides functionality to recursively process PHP variables",
+            "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
+            "time": "2015-01-24 09:48:32"
+        },
+        {
+            "name": "sebastian/version",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/version.git",
+                "reference": "ab931d46cd0d3204a91e1b9a40c4bc13032b58e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/version/zipball/ab931d46cd0d3204a91e1b9a40c4bc13032b58e4",
+                "reference": "ab931d46cd0d3204a91e1b9a40c4bc13032b58e4",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Library that helps with managing the version number of Git-hosted PHP projects",
+            "homepage": "https://github.com/sebastianbergmann/version",
+            "time": "2015-02-24 06:35:25"
         },
         {
             "name": "sinon",
@@ -7045,7 +8310,7 @@
             "alias": "0.5.x-dev",
             "alias_normalized": "0.5.9999999.9999999-dev",
             "version": "9999999-dev",
-            "package": "payum/payum"
+            "package": "payum2/payum"
         },
         {
             "alias": "dev-not-approved",
@@ -7082,9 +8347,10 @@
         "doctrine/doctrine-cache-bundle": 20,
         "twig/twig": 20,
         "jms/security-extra-bundle": 20,
-        "payum/payum": 20,
-        "payum/payum-bundle": 20,
-        "payum/heartland": 20,
+        "payum/aci": 20,
+        "payum2/payum": 20,
+        "payum2/payum-bundle": 20,
+        "payum2/heartland": 20,
         "ass/xmlsecurity": 20,
         "hat/environment": 20,
         "knplabs/knp-menu-bundle": 20,
@@ -7123,6 +8389,7 @@
         "fabpot/php-cs-fixer": 0
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.4.12,<5.5.0",
         "ext-curl": "*",
@@ -7140,7 +8407,5 @@
         "lib-curl": "*",
         "lib-openssl": "*"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

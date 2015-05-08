@@ -14,13 +14,9 @@ class UserType extends AbstractType
 {
     const NAME = '';
 
-    protected $user;
-
-    public function __construct($user)
-    {
-        $this->user = $user;
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add(
@@ -38,29 +34,43 @@ class UserType extends AbstractType
 
         $builder->add('last_name');
 
-        $builder->add('email', null, [
-            'constraints' =>  [
-                new ApiTenantEmail(['groups' => 'tenant_type']),
-                new LandlordEmail(['groups' => 'landlord_type'])
-            ]
-        ]);
-
-        $builder->add(
-            'password',
-            'password',
-            [
-                'property_path' => 'plainPassword',
-                'constraints' => [
-                    new NotBlank(['message' => 'api.errors.user.password_required', 'groups' => 'api']),
-                    new Length([
-                        'min' => 11,
-                        'groups' => 'api'
-                    ])
+        if ($options['method'] != 'PUT') {
+            $builder->add('email', null, [
+                'constraints' =>  [
+                    new ApiTenantEmail(['groups' => 'api_tenant_type_new']),
+                    new LandlordEmail(['groups' => 'landlord_type'])
                 ]
-            ]
-        );
+            ]);
+        } else {
+            $builder->add('email', null, [
+                'mapped' => false,
+            ]);
+        }
+
+        if ($options['method'] != 'PUT') {
+            $builder->add(
+                'password',
+                'password',
+                [
+                    'property_path' => 'plainPassword',
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'api.errors.user.password_required',
+                            'groups' => 'api_new'
+                        ]),
+                        new Length([
+                            'min' => 11,
+                            'groups' => 'api'
+                        ])
+                    ]
+                ]
+            );
+        }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return static::NAME;

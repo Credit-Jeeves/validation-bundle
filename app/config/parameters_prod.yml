@@ -22,11 +22,6 @@ parameters:
 
     session.lifetime: 900 #in seconds
     payment_processor.hps.report_path: /home/heartland
-    authorize_net:
-        login_id: '29fDg7sU24G'
-        transaction_key: '474v43G35wJ6Gm2d'
-        sandbox: false
-
     heartland:
         application_id: 1
         username: RTAPI

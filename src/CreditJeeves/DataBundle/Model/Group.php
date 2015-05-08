@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -256,7 +257,6 @@ abstract class Group
      * )
      */
     protected $group_agents;
-    
 
     /**
      * @ORM\ManyToMany(
@@ -278,7 +278,7 @@ abstract class Group
     * )
     */
     protected $group_affilate;
-    
+
     /**
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Tradeline",
@@ -353,6 +353,18 @@ abstract class Group
     protected $groupSettings;
 
     /**
+     * @var AciCollectPaySettings
+     *
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPaySettings",
+     *      mappedBy="group",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $aciCollectPaySettings;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
      *     mappedBy="group",
@@ -421,6 +433,22 @@ abstract class Group
     }
 
     /**
+     * @param AciCollectPaySettings $aciCollectPaySettings
+     */
+    public function setAciCollectPaySettings(AciCollectPaySettings $aciCollectPaySettings)
+    {
+        $this->aciCollectPaySettings = $aciCollectPaySettings;
+    }
+
+    /**
+     * @return AciCollectPaySettings
+     */
+    public function getAciCollectPaySettings()
+    {
+        return $this->aciCollectPaySettings;
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -433,12 +461,13 @@ abstract class Group
     /**
      * Set type
      *
-     * @param string $type
+     * @param  string $type
      * @return Group
      */
     public function setType($type)
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -455,12 +484,13 @@ abstract class Group
     /**
      * Set name
      *
-     * @param string $type
+     * @param  string $name
      * @return Group
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -477,12 +507,13 @@ abstract class Group
     /**
      * Add lead
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $lead
+     * @param  \CreditJeeves\DataBundle\Entity\Lead $lead
      * @return Group
      */
     public function addLead(\CreditJeeves\DataBundle\Entity\Lead $lead)
     {
         $this->leads[] = $lead;
+
         return $this;
     }
 
@@ -509,12 +540,13 @@ abstract class Group
     /**
      * Add incentive
      *
-     * @param \CreditJeeves\DataBundle\Entity\GroupIncentive $incentive
+     * @param  \CreditJeeves\DataBundle\Entity\GroupIncentive $incentive
      * @return Group
      */
     public function addGroupIncentive(\CreditJeeves\DataBundle\Entity\GroupIncentive $incentive)
     {
         $this->incentives[] = $incentive;
+
         return $this;
     }
 
@@ -541,12 +573,13 @@ abstract class Group
     /**
      * Add dealer
      *
-     * @param \CreditJeeves\DataBundle\Entity\User $dealer
+     * @param  \CreditJeeves\DataBundle\Entity\User $dealer
      * @return Group
      */
     public function addGroupDealer(\CreditJeeves\DataBundle\Entity\User $dealer)
     {
         $this->group_dealers[] = $dealer;
+
         return $this;
     }
 
@@ -573,12 +606,13 @@ abstract class Group
     /**
      * Set website_url
      *
-     * @param string $websiteUrl
+     * @param  string $websiteUrl
      * @return Group
      */
     public function setWebsiteUrl($websiteUrl)
     {
         $this->website_url = $websiteUrl;
+
         return $this;
     }
 
@@ -595,19 +629,20 @@ abstract class Group
     /**
      * Set description
      *
-     * @param string $description
+     * @param  string $description
      * @return GroupP
      */
     public function setDescription($description)
     {
         $this->description = $description;
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -617,12 +652,13 @@ abstract class Group
     /**
      * Set phone
      *
-     * @param string $phone
+     * @param  string $phone
      * @return Group
      */
     public function setPhone($phone)
     {
         $this->phone = $phone;
+
         return $this;
     }
 
@@ -639,19 +675,20 @@ abstract class Group
     /**
      * Set logo_url
      *
-     * @param string $logoUrl
+     * @param  string $logoUrl
      * @return Group
      */
     public function setLogoUrl($logoUrl)
     {
         $this->logo_url = $logoUrl;
+
         return $this;
     }
 
     /**
      * Get logo_url
      *
-     * @return string 
+     * @return string
      */
     public function getLogoUrl()
     {
@@ -661,19 +698,20 @@ abstract class Group
     /**
      * Set fax
      *
-     * @param string $fax
+     * @param  string $fax
      * @return Group
      */
     public function setFax($fax)
     {
         $this->fax = $fax;
+
         return $this;
     }
 
     /**
      * Get fax
      *
-     * @return string 
+     * @return string
      */
     public function getFax()
     {
@@ -683,19 +721,20 @@ abstract class Group
     /**
      * Set street_address_1
      *
-     * @param string $streetAddress1
+     * @param  string $streetAddress1
      * @return Group
      */
     public function setStreetAddress1($streetAddress1)
     {
         $this->street_address_1 = $streetAddress1;
+
         return $this;
     }
 
     /**
      * Get street_address_1
      *
-     * @return string 
+     * @return string
      */
     public function getStreetAddress1()
     {
@@ -705,19 +744,20 @@ abstract class Group
     /**
      * Set street_address_2
      *
-     * @param string $streetAddress2
+     * @param  string $streetAddress2
      * @return Group
      */
     public function setStreetAddress2($streetAddress2)
     {
         $this->street_address_2 = $streetAddress2;
+
         return $this;
     }
 
     /**
      * Get street_address_2
      *
-     * @return string 
+     * @return string
      */
     public function getStreetAddress2()
     {
@@ -727,19 +767,20 @@ abstract class Group
     /**
      * Set city
      *
-     * @param string $city
+     * @param  string $city
      * @return Group
      */
     public function setCity($city)
     {
         $this->city = $city;
+
         return $this;
     }
 
     /**
      * Get city
      *
-     * @return string 
+     * @return string
      */
     public function getCity()
     {
@@ -749,19 +790,20 @@ abstract class Group
     /**
      * Set state
      *
-     * @param string $state
+     * @param  string $state
      * @return Group
      */
     public function setState($state)
     {
         $this->state = $state;
+
         return $this;
     }
 
     /**
      * Get state
      *
-     * @return string 
+     * @return string
      */
     public function getState()
     {
@@ -771,19 +813,20 @@ abstract class Group
     /**
      * Set zip
      *
-     * @param string $zip
+     * @param  string $zip
      * @return Group
      */
     public function setZip($zip)
     {
         $this->zip = $zip;
+
         return $this;
     }
 
     /**
      * Get zip
      *
-     * @return string 
+     * @return string
      */
     public function getZip()
     {
@@ -791,13 +834,14 @@ abstract class Group
     }
 
     /**
-     * 
-     * @param string $type
+     *
+     * @param  string $type
      * @return Group
      */
     public function setFeeType($type)
     {
         $this->fee_type = $type;
+
         return $this;
     }
 
@@ -809,19 +853,20 @@ abstract class Group
     /**
      * Set code
      *
-     * @param string $code
+     * @param  string $code
      * @return Group
      */
     public function setCode($code)
     {
         $this->code = $code;
+
         return $this;
     }
 
     /**
      * Get code
      *
-     * @return string 
+     * @return string
      */
     public function getCode()
     {
@@ -831,12 +876,13 @@ abstract class Group
     /**
      * Set target_score
      *
-     * @param integer $targetScore
+     * @param  integer $targetScore
      * @return Group
      */
     public function setTargetScore($targetScore)
     {
         $this->target_score = $targetScore;
+
         return $this;
     }
 
@@ -853,6 +899,7 @@ abstract class Group
     public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding = null)
     {
         $this->holding = $holding;
+
         return $this;
     }
 
@@ -867,12 +914,13 @@ abstract class Group
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
+     * @param  \DateTime $createdAt
      * @return Group
      */
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
+
         return $this;
     }
 
@@ -889,12 +937,13 @@ abstract class Group
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param  \DateTime $updatedAt
      * @return Group
      */
     public function setUpdatedAt($updatedAt)
     {
         $this->updated_at = $updatedAt;
+
         return $this;
     }
 
@@ -911,7 +960,7 @@ abstract class Group
     /**
      * Add property
      *
-     * @param \RentJeeves\DataBundle\Entity\Property $property
+     * @param  \RentJeeves\DataBundle\Entity\Property $property
      * @return Group
      */
     public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
@@ -953,19 +1002,20 @@ abstract class Group
     /**
      * Set affiliate
      *
-     * @param \CreditJeeves\DataBundle\Entity\Affiliate $affiliate
+     * @param  \CreditJeeves\DataBundle\Entity\Affiliate $affiliate
      * @return Group
      */
     public function setAffiliate(\CreditJeeves\DataBundle\Entity\Affiliate $affiliate = null)
     {
         $this->affiliate = $affiliate;
+
         return $this;
     }
 
     /**
      * Get affiliate
      *
-     * @return \CreditJeeves\DataBundle\Entity\Affiliate 
+     * @return \CreditJeeves\DataBundle\Entity\Affiliate
      */
     public function getAffiliate()
     {
@@ -975,19 +1025,20 @@ abstract class Group
     /**
      * Set contract_date
      *
-     * @param \DateTime $contractDate
+     * @param  \DateTime $contractDate
      * @return Group
      */
     public function setContractDate($contractDate)
     {
         $this->contract_date = $contractDate;
+
         return $this;
     }
 
     /**
      * Get contract_date
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getContractDate()
     {
@@ -997,19 +1048,20 @@ abstract class Group
     /**
      * Set contract
      *
-     * @param string $contract
+     * @param  string $contract
      * @return Group
      */
     public function setContract($contract)
     {
         $this->contract = $contract;
+
         return $this;
     }
 
     /**
      * Get contract
      *
-     * @return string 
+     * @return string
      */
     public function getContract()
     {
@@ -1019,12 +1071,13 @@ abstract class Group
     /**
      * Add unit
      *
-     * @param \RentJeeves\DataBundle\Entity\Unit $unit
+     * @param  \RentJeeves\DataBundle\Entity\Unit $unit
      * @return Group
      */
     public function addUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
     {
         $this->units[] = $unit;
+
         return $this;
     }
 
@@ -1051,12 +1104,13 @@ abstract class Group
     /**
      * Add Contract
      *
-     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * @param  \RentJeeves\DataBundle\Entity\Contract $contract
      * @return Group
      */
     public function addContract(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
         $this->contracts[] = $contract;
+
         return $this;
     }
 
@@ -1083,6 +1137,7 @@ abstract class Group
     public function setDepositAccount($account)
     {
         $this->depositAccount = $account;
+
         return $this;
     }
 
@@ -1097,7 +1152,7 @@ abstract class Group
     }
 
     /**
-     * @param BillingAccount $billingAccount
+     * @param  BillingAccount $billingAccount
      * @return $this
      */
     public function addBillingAccount(BillingAccount $billingAccount)
@@ -1124,18 +1179,19 @@ abstract class Group
     }
 
     /**
-     * 
-     * @param \CreditJeeves\DataBundle\Entity\Dealer $dealer
+     *
+     * @param  \CreditJeeves\DataBundle\Entity\Dealer $dealer
      * @return \CreditJeeves\DataBundle\Model\Group
      */
     public function setDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer = null)
     {
         $this->dealers = $dealer;
+
         return $this;
     }
 
     /**
-     * 
+     *
      */
     public function getDealer()
     {
@@ -1145,12 +1201,13 @@ abstract class Group
     /**
      * Add phone number for the group
      *
-     * @param \RentJeeves\DataBundle\Entity\GroupPhone $phone
+     * @param  \RentJeeves\DataBundle\Entity\GroupPhone $phone
      * @return Group
      */
     public function addGroupPhone(\RentJeeves\DataBundle\Entity\GroupPhone $phone)
     {
         $this->groupPhones[] = $phone;
+
         return $this;
     }
 

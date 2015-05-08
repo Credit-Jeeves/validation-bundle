@@ -82,7 +82,7 @@ class ImportFactory
     }
 
     /**
-     * @param null $importType
+     * @param  null      $importType
      * @throws Exception
      */
     public function getStorage($importType = null)
@@ -152,11 +152,10 @@ class ImportFactory
         $user = $this->container->get('security.context')->getToken()->getUser();
         /** @var $holding Holding */
         $holding = $user->getHolding();
-        $accountingSettings = $holding->getAccountingSettings();
-        if (empty($accountingSettings) || $accountingSettings->getApiIntegration() === ApiIntegrationType::NONE) {
+        if ($holding->getApiIntegrationType() === ApiIntegrationType::NONE) {
             return ApiIntegrationType::NONE;
         }
 
-        return ApiIntegrationType::$importMapping[$accountingSettings->getApiIntegration()];
+        return ApiIntegrationType::$importMapping[$holding->getApiIntegrationType()];
     }
 }

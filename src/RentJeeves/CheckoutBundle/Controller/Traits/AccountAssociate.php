@@ -2,12 +2,13 @@
 namespace RentJeeves\CheckoutBundle\Controller\Traits;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Payum\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
-use Payum\Payment;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
+use Payum2\Heartland\Model\PaymentDetails;
+use Payum2\Heartland\Soap\Base\GetTokenResponse;
+use Payum2\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
+use Payum2\Payment;
+use Payum2\Request\BinaryMaskStatusRequest;
+use Payum2\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
-use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
 use RuntimeException;
 
 /**
@@ -21,8 +22,8 @@ trait AccountAssociate
      * registerTokenToAdditionalMerchant from heartland, then creating a DB
      * association between the paymentAccount and the group's depositAccount.
      *
-     * @param PaymentAccount $paymentAccount
-     * @param Group $group
+     * @param  PaymentAccount $paymentAccount
+     * @param  Group          $group
      * @return Boolean
      */
     protected function ensureAccountAssociation(PaymentAccount $paymentAccount, Group $group)
@@ -84,11 +85,11 @@ trait AccountAssociate
         if (method_exists($this, 'getContainer')) {
             /** @var Payment $payment */
             $payment = $this->getContainer()
-                ->get('payum')
+                ->get('payum2')
                 ->getPayment('heartland');
         } else {
             /** @var Payment $payment */
-            $payment = $this->get('payum')
+            $payment = $this->get('payum2')
                 ->getPayment('heartland');
         }
 

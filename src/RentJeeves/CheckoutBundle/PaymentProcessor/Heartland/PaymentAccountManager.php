@@ -3,21 +3,22 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Payum\Heartland\Soap\Base\ACHAccountType;
-use Payum\Heartland\Soap\Base\ACHDepositType;
-use Payum\Heartland\Soap\Base\GetTokenRequest;
-use Payum\Heartland\Soap\Base\GetTokenResponse;
-use Payum\Payment;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
+use Payum2\Heartland\Model\PaymentDetails;
+use Payum2\Heartland\Soap\Base\ACHAccountType;
+use Payum2\Heartland\Soap\Base\ACHDepositType;
+use Payum2\Heartland\Soap\Base\GetTokenRequest;
+use Payum2\Heartland\Soap\Base\GetTokenResponse;
+use Payum2\Payment;
+use Payum2\Request\BinaryMaskStatusRequest;
+use Payum2\Request\CaptureRequest;
 use CreditJeeves\DataBundle\Entity\Address;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
-use Payum\Heartland\Soap\Base\TokenPaymentMethod;
-use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
+use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use RuntimeException;
@@ -49,10 +50,10 @@ class PaymentAccountManager
     }
 
     /**
-     * @param PaymentAccountData $paymentAccountData
-     * @param User $user
+     * @param  PaymentAccountData            $paymentAccountData
+     * @param  User                          $user
      * @return GetTokenRequest
-     * @throws \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException
+     * @throws InvalidAttributeNameException
      */
     protected function getTokenRequest(PaymentAccountData $paymentAccountData, User $user)
     {
@@ -149,9 +150,9 @@ class PaymentAccountManager
     /**
      * Requests a token for given payment account, user and group merchant name.
      *
-     * @param PaymentAccountData $paymentAccountData
-     * @param User $user
-     * @param Group $group if group is null use the default merchant account
+     * @param  PaymentAccountData $paymentAccountData
+     * @param  User $user
+     * @param  Group $group if group is null use the default merchant account
      * @return string
      * @throws PaymentProcessorConfigurationException
      */

@@ -26,7 +26,7 @@ class OrdersController extends Controller
      * @Rest\Get("/orders")
      * @Rest\View(serializerGroups={"Base", "OrderShort"})
      *
-     * @return ResponseCollection
+     * @return ResponseCollection|null
      */
     public function getOrdersAction()
     {
@@ -40,6 +40,8 @@ class OrdersController extends Controller
         if ($response->count() > 0) {
             return $response;
         }
+
+        return null;
     }
 
     /**

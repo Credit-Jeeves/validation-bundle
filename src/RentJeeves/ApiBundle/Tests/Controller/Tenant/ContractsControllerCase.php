@@ -13,6 +13,9 @@ class ContractsControllerCase extends BaseApiTestCase
 
     const REQUEST_URL = 'contracts';
 
+    /**
+     * @return array
+     */
     public static function getContractDataProvider()
     {
         return [
@@ -23,18 +26,21 @@ class ContractsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param int  $id
+     * @param bool $checkBalance
+     *
      * @test
      * @dataProvider getContractDataProvider
      */
-    public function getContract($id, $checkBalance, $format = 'json', $statusCode = 200)
+    public function getContract($id, $checkBalance)
     {
         $encodedId = $this->getIdEncoder()->encode($id);
 
-        $response = $this->getRequest($encodedId, [], $format);
+        $response = $this->getRequest($encodedId);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response);
 
-        $answer = $this->parseContent($response->getContent(), $format);
+        $answer = $this->parseContent($response->getContent());
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getUser();
@@ -105,6 +111,9 @@ class ContractsControllerCase extends BaseApiTestCase
         }
     }
 
+    /**
+     * @return array
+     */
     public static function contractsDataProvider()
     {
         return [
@@ -214,6 +223,9 @@ class ContractsControllerCase extends BaseApiTestCase
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function createContractDataProvider()
     {
         return [
@@ -233,16 +245,19 @@ class ContractsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array $requestParams
+     * @param int   $statusCode
+     *
      * @test
      * @dataProvider createContractDataProvider
      */
-    public function createContract($requestParams, $format = 'json', $statusCode = 201)
+    public function createContract($requestParams, $statusCode = 201)
     {
-        $response = $this->postRequest($requestParams, $format);
+        $response = $this->postRequest($requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
 
-        $answer = $this->parseContent($response->getContent(), $format);
+        $answer = $this->parseContent($response->getContent());
 
         $tenant = $this->getUser();
 
@@ -256,6 +271,9 @@ class ContractsControllerCase extends BaseApiTestCase
         );
     }
 
+    /**
+     * @return array
+     */
     public static function editContactDataProvider()
     {
         return [
@@ -273,10 +291,13 @@ class ContractsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array $requestParams
+     * @param int   $statusCode
+     *
      * @test
      * @dataProvider editContactDataProvider
      */
-    public function editContract($requestParams, $format = 'json', $statusCode = 204)
+    public function editContract($requestParams, $statusCode = 204)
     {
         $tenant = $this->getUser();
 
@@ -288,9 +309,9 @@ class ContractsControllerCase extends BaseApiTestCase
 
         $encodedId = $this->getIdEncoder()->encode($last->getId());
 
-        $response = $this->putRequest($encodedId, $requestParams, $format);
+        $response = $this->putRequest($encodedId, $requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
 
         $this->getEm()->refresh($last);
 
@@ -300,6 +321,9 @@ class ContractsControllerCase extends BaseApiTestCase
         );
     }
 
+    /**
+     * @return array
+     */
     public static function wrongContractDataProvider()
     {
         return [
@@ -414,16 +438,20 @@ class ContractsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array $requestParams
+     * @param array $result
+     * @param int   $statusCode
+     *
      * @test
      * @dataProvider wrongContractDataProvider
      */
-    public function wrongCreateContract($requestParams, $result, $format = 'json', $statusCode = 400)
+    public function wrongCreateContract($requestParams, $result, $statusCode = 400)
     {
-        $response = $this->postRequest($requestParams, $format);
+        $response = $this->postRequest($requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
 
-        $this->assertResponseContent($response->getContent(), $result, $format);
+        $this->assertResponseContent($response->getContent(), $result);
     }
 
     /**
@@ -437,7 +465,7 @@ class ContractsControllerCase extends BaseApiTestCase
             'experian_reporting' => 'enable',
         ];
 
-        $this->createContract($requestParams, 'json', '400');
+        $this->createContract($requestParams, '400');
     }
 
     /**
@@ -450,9 +478,12 @@ class ContractsControllerCase extends BaseApiTestCase
             'experian_reporting' => 'disable',
         ];
 
-        $this->editContract($requestParams, 'json', '400');
+        $this->editContract($requestParams, '400');
     }
 
+    /**
+     * @return array
+     */
     public static function setExperianReportingStartAtDataProvider()
     {
         return [
@@ -481,6 +512,10 @@ class ContractsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array       $requestParameters
+     * @param bool        $reportingStatus
+     * @param string|null $reportingStartAt
+     *
      * @test
      * @dataProvider setExperianReportingStartAtDataProvider
      */
@@ -506,6 +541,9 @@ class ContractsControllerCase extends BaseApiTestCase
         $this->assertEquals($reportingStartAt, $startAt);
     }
 
+    /**
+     * @return array
+     */
     public static function updateExperianReportingStartAtDataProvider()
     {
         return [
@@ -523,6 +561,10 @@ class ContractsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array  $requestParameters
+     * @param bool   $reportingStatus
+     * @param string $reportingStartAt
+     *
      * @test
      * @depends setExperianReportingStartAt
      * @dataProvider updateExperianReportingStartAtDataProvider

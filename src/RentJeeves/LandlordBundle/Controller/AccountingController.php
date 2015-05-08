@@ -142,11 +142,7 @@ class AccountingController extends Controller
         $importFactory = $this->get('accounting.import.factory');
         $importFactory->clearSessionAllImports();
 
-        if (($accounting = $this->getCurrentGroup()->getHolding()->getAccountingSettings())) {
-            $integrationType = $accounting->getApiIntegration();
-        } else {
-            $integrationType = null;
-        }
+        $integrationType = $this->getCurrentGroup()->getHolding()->getApiIntegrationType();
 
         if (!$form->isValid()) {
             return [

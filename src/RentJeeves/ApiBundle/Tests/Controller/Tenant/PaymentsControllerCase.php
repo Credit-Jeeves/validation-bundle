@@ -21,23 +21,26 @@ class PaymentsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param string $email
+     *
      * @test
      * @dataProvider getPaymentsDataProvider
      */
-    public function getPayments($email, $format = 'json', $statusCode = 200)
+    public function getPayments($email)
     {
         $this->setUserEmail($email);
 
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getUser();
+        /** @var PaymentEntity[] $result */
         $result = $repo->findByUser($tenant);
 
-        $response = $this->getRequest(null, [], $format);
+        $response = $this->getRequest();
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response);
 
-        $answer = $this->parseContent($response->getContent(), $format);
+        $answer = $this->parseContent($response->getContent());
 
         $this->assertCount(count($result), $answer);
 
@@ -102,6 +105,9 @@ class PaymentsControllerCase extends BaseApiTestCase
         );
     }
 
+    /**
+     * @return array
+     */
     public static function paymentDataProvider()
     {
 
@@ -133,6 +139,9 @@ class PaymentsControllerCase extends BaseApiTestCase
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function createPaymentDataProvider()
     {
         return [
@@ -146,16 +155,19 @@ class PaymentsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array $requestParams
+     * @param int   $statusCode
+     *
      * @test
      * @dataProvider createPaymentDataProvider
      */
-    public function createPayment($requestParams, $format = 'json', $statusCode = 201)
+    public function createPayment($requestParams, $statusCode = 201)
     {
-        $response = $this->postRequest($requestParams, $format);
+        $response = $this->postRequest($requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
 
-        $answer = $this->parseContent($response->getContent(), $format);
+        $answer = $this->parseContent($response->getContent());
 
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
@@ -172,6 +184,9 @@ class PaymentsControllerCase extends BaseApiTestCase
         $this->assertEquals($dueDay, $paidForDay);
     }
 
+    /**
+     * @return array
+     */
     public static function editPaymentDataProvider()
     {
         $paymentsData = self::paymentDataProvider();
@@ -191,23 +206,26 @@ class PaymentsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array $requestParams
+     * @param int   $statusCode
+     *
      * @test
      * @dataProvider editPaymentDataProvider
      */
-    public function editPayment($requestParams, $format = 'json', $statusCode = 204)
+    public function editPayment($requestParams, $statusCode = 204)
     {
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getUser();
+        /** @var PaymentEntity[] $result */
         $result = $repo->findByUser($tenant);
-        /** @var PaymentEntity $latest */
         $latest = $result[0];
 
         $encodedId = $this->getIdEncoder()->encode($latest->getId());
 
-        $response = $this->putRequest($encodedId, $requestParams, $format);
+        $response = $this->putRequest($encodedId, $requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
 
         $this->getEm()->refresh($latest);
 
@@ -215,7 +233,11 @@ class PaymentsControllerCase extends BaseApiTestCase
         $this->assertEquals($latest->getAmount(), $requestParams['rent']);
     }
 
-    // common data for negative result
+    /**
+     * common data for negative result
+     *
+     * @return array
+     */
     public static function paymentCommonData()
     {
         return[
@@ -227,7 +249,11 @@ class PaymentsControllerCase extends BaseApiTestCase
         ];
     }
 
-    // data for negative result
+    /**
+     * data for negative result
+     *
+     * @return array
+     */
     public static function paymentNegativeDataProvider()
     {
         return [
@@ -266,6 +292,9 @@ class PaymentsControllerCase extends BaseApiTestCase
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function createPaymentNegativeDataProvider()
     {
         return [
@@ -293,10 +322,14 @@ class PaymentsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array  $requestParams
+     * @param string $errorMessage
+     * @param int    $statusCode
+     *
      * @test
      * @dataProvider createPaymentNegativeDataProvider
      */
-    public function errorResponse($requestParams, $errorMessage, $format = 'json', $statusCode = 400)
+    public function errorResponse($requestParams, $errorMessage, $statusCode = 400)
     {
         $date = new \DateTime();
 
@@ -317,11 +350,11 @@ class PaymentsControllerCase extends BaseApiTestCase
             $requestParams['end_year'] = $date->modify("{$requestParams['end_year']}  year")->format('Y');
         }
 
-        $response = $this->postRequest($requestParams, $format);
+        $response = $this->postRequest($requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
 
-        $responseContent = $this->parseContent($response->getContent(), $format);
+        $responseContent = $this->parseContent($response->getContent());
 
         $this->assertCount(count($errorMessage), $responseContent, 'wrong count error');
 

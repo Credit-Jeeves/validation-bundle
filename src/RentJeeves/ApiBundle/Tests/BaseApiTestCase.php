@@ -186,13 +186,23 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @return null|User
+     * @return User
      */
     protected function getUser()
     {
-        return $this->user ?: $this->user = $this
-            ->getEntityRepository('DataBundle:User')
-            ->findOneBy(['email' => $this->getUserEmail()]);
+        if (!$this->user) {
+            $this->user = $this
+                ->getEntityRepository('DataBundle:User')
+                ->findOneBy(['email' => $this->getUserEmail()]);
+        }
+
+        $this->assertInstanceOf(
+            'CreditJeeves\DataBundle\Entity\User',
+            $this->user,
+            sprintf('Incorrect user email "%s"', $this->getUserEmail())
+        );
+
+        return $this->user;
     }
 
     /**

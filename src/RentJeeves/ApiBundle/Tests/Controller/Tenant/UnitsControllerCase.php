@@ -3,6 +3,8 @@
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
+use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitRepository;
 
 class UnitsControllerCase extends BaseApiTestCase
 {
@@ -10,6 +12,9 @@ class UnitsControllerCase extends BaseApiTestCase
 
     const REQUEST_URL = 'units';
 
+    /**
+     * @return array
+     */
     public static function getUnitsDataProvider()
     {
         return [
@@ -47,20 +52,24 @@ class UnitsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array $requestParams
+     * @param array $dbRequest
+     *
      * @test
      * @dataProvider getUnitsDataProvider
      */
-    public function getUnits($requestParams, $dbRequest, $format = 'json', $statusCode = 200)
+    public function getUnits($requestParams, $dbRequest)
     {
-        $response = $this->getRequest(null, $requestParams, $format);
+        $response = $this->getRequest(null, $requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response);
 
+        /** @var UnitRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-
+        /** @var Unit[] $result */
         $result = $repo->getUnitsByAddress($dbRequest);
 
-        $answer = $this->parseContent($response->getContent(), $format);
+        $answer = $this->parseContent($response->getContent());
 
         $this->assertEquals(count($result), count($answer));
 
@@ -86,6 +95,9 @@ class UnitsControllerCase extends BaseApiTestCase
         );
     }
 
+    /**
+     * @return array
+     */
     public static function getEmptyUnitsDataProvider()
     {
         return [
@@ -101,13 +113,16 @@ class UnitsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @param array $requestParams
+     * @param int   $statusCode
+     *
      * @test
      * @dataProvider getEmptyUnitsDataProvider
      */
-    public function getEmptyUnits($requestParams, $format = 'json', $statusCode = 204)
+    public function getEmptyUnits($requestParams, $statusCode = 204)
     {
-        $response = $this->getRequest(null, $requestParams, $format);
+        $response = $this->getRequest(null, $requestParams);
 
-        $this->assertResponse($response, $statusCode, $format);
+        $this->assertResponse($response, $statusCode);
     }
 }

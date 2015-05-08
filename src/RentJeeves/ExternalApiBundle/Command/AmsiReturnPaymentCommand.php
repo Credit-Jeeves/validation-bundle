@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Command;
 
-use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -53,22 +53,22 @@ class AmsiReturnPaymentCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param Heartland $reversedTransaction
+     * @param Transaction $reversedTransaction
      *
      * @return \DateTime
      */
-    protected function getSettlementDate(Heartland $reversedTransaction)
+    protected function getSettlementDate(Transaction $reversedTransaction)
     {
         return $this->getSettlementData()
             ->getSettlementDate($reversedTransaction->getBatchDate(), $reversedTransaction->getDepositDate());
     }
 
     /**
-     * @param Heartland $completeTransaction
+     * @param Transaction $completeTransaction
      *
      * @return double
      */
-    protected function getSettlementAmount(Heartland $completeTransaction)
+    protected function getSettlementAmount(Transaction $completeTransaction)
     {
         return $completeTransaction->getDepositDate() ? $completeTransaction->getOrder()->getSum() : 0;
     }

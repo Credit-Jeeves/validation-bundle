@@ -15,6 +15,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use RentJeeves\DataBundle\Entity\PaymentAccountRepository;
 use RentJeeves\DataBundle\Entity\Tenant;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -39,7 +40,7 @@ class PaymentAccountsController extends Controller
      * @Rest\Get("/payment_accounts")
      * @Rest\View(serializerGroups={"Base", "PaymentAccountShort"})
      *
-     * @return ResponseCollection
+     * @return ResponseCollection|null
      */
     public function getPaymentAccountsAction()
     {
@@ -51,6 +52,8 @@ class PaymentAccountsController extends Controller
         if ($response->count() > 0) {
             return $response;
         }
+
+        return null;
     }
 
     /**
@@ -99,7 +102,7 @@ class PaymentAccountsController extends Controller
      *     section="Tenant Payment Account",
      *     description="Create a payment account.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
      *     }
@@ -138,7 +141,7 @@ class PaymentAccountsController extends Controller
      * )
      *
      * @throws BadRequestHttpException
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function createPaymentAccountAction(Request $request)
     {
@@ -154,7 +157,7 @@ class PaymentAccountsController extends Controller
      *     section="Tenant Payment Account",
      *     description="Update a payment account.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         204="Returned when successful",
      *         404="Payment Account not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
@@ -198,7 +201,7 @@ class PaymentAccountsController extends Controller
      * )
      *
      * @throws NotFoundHttpException
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function editPaymentAccountAction($id, Request $request)
     {
@@ -214,10 +217,10 @@ class PaymentAccountsController extends Controller
     }
 
     /**
-     * @param  Request                      $request
-     * @param  PaymentAccountEntity         $entity
-     * @param  string                       $method
-     * @return \Symfony\Component\Form\Form
+     * @param  Request              $request
+     * @param  PaymentAccountEntity $entity
+     * @param  string               $method
+     * @return Form|ResponseEntity
      */
     protected function processForm(Request $request, PaymentAccountEntity $entity, $method = 'POST')
     {
@@ -234,7 +237,7 @@ class PaymentAccountsController extends Controller
             /** @var Contract $contract */
             $contract = $form->get('contract_url')->getData();
             try {
-                $this->savePaymentAccount($form, $this->getUser(), $contract->getGroup());
+                $this->savePaymentAccount($form, $contract);
 
                 return $this->get('response_resource.factory')->getResponse($paymentAccountEntity);
             } catch (RuntimeException $e) {

@@ -14,11 +14,9 @@ class HoldingCase extends BaseTestCase
         $this->load(true);
         $em = $this->getEntityManager();
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
-        $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
         $mriSettings = $em->getRepository('RjDataBundle:MRISettings')->findAll();
         $amsiSettings = $em->getRepository('RjDataBundle:AMSISettings')->findAll();
         $this->assertCount(1, $resManSettings);
-        $this->assertCount(1, $accountingSettings);
         $this->assertCount(1, $mriSettings);
         $this->assertCount(1, $amsiSettings);
 
@@ -113,13 +111,11 @@ class HoldingCase extends BaseTestCase
         $this->logout();
 
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
-        $accountingSettings = $em->getRepository('RjDataBundle:AccountingSettings')->findAll();
         $mriSettings = $em->getRepository('RjDataBundle:MRISettings')->findAll();
         $amsiSettings = $em->getRepository('RjDataBundle:AMSISettings')->findAll();
 
         $this->assertCount(2, $amsiSettings);
         $this->assertCount(2, $resManSettings);
-        $this->assertCount(2, $accountingSettings);
         $this->assertCount(2, $mriSettings);
     }
 }

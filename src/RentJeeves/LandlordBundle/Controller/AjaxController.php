@@ -14,7 +14,6 @@ use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -30,7 +29,6 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\DateTime;
@@ -45,7 +43,6 @@ use Symfony\Component\Validator\ConstraintViolation;
 class AjaxController extends Controller
 {
     /* Property */
-
 
     private function getContract($contractId)
     {
@@ -249,6 +246,7 @@ class AjaxController extends Controller
         }
         $data['properties'] = $items;
         $data['pagination'] = $this->datagridPagination($total, $page['limit']);
+
         return new JsonResponse($data);
     }
 
@@ -269,7 +267,7 @@ class AjaxController extends Controller
         $itsNewProperty = false;
         $data = $request->request->all('address');
         $data = json_decode($data['data'], true);
-        $addGroup = (isset($data['addGroup']) && $data['addGroup'] === 1)?  true : false;
+        $addGroup = (isset($data['addGroup']) && $data['addGroup'] === 1) ?  true : false;
 
         // validate google found a street number
         $property = new Property();
@@ -411,9 +409,9 @@ class AjaxController extends Controller
         $group->removeGroupProperty($property);
         $em->persist($group);
         $em->flush();
+
         return new JsonResponse(array());
     }
-
 
     /* Unit */
 
@@ -443,9 +441,9 @@ class AjaxController extends Controller
                 $property,
                 $group
             );
+
         return new JsonResponse($result);
     }
-
 
     //@TODO find best way for this implementation
     private function checkContractBeforeRemove($unit)
@@ -467,12 +465,14 @@ class AjaxController extends Controller
         if ($unit->getContracts()->count() <= 0) {
             //@TODO find best way for this implementation
             $this->get('soft.deleteable.control')->disable();
+
             return;
         }
 
         if ($unit->getContracts()->count() > 0) {
             //@TODO find best way for this implementation
             $this->get('soft.deleteable.control')->enable();
+
             return;
         }
     }
@@ -508,14 +508,14 @@ class AjaxController extends Controller
         }
 
         // get units from request
-        $units = (isset($data['units']))? $data['units'] : array();
+        $units = (isset($data['units'])) ? $data['units'] : array();
         $newUnits = array();
         foreach ($units as $key => $unit) {
-            $id = (!empty($unit['id']))? $unit['id'] : uniqid();  // should probably fail instead of uniqid()
+            $id = (!empty($unit['id'])) ? $unit['id'] : uniqid();  // should probably fail instead of uniqid()
             $newUnits[$id] = array(
                 'id'    => $unit['id'],
                 'name'  => $unit['name'],
-                'isNew' => (empty($unit['id']))? true : false,
+                'isNew' => (empty($unit['id'])) ? true : false,
             );
         }
 
@@ -559,6 +559,7 @@ class AjaxController extends Controller
 
         $em->flush();
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($property, $group);
+
         return new JsonResponse($data);
     }
 
@@ -596,6 +597,7 @@ class AjaxController extends Controller
         $data['tenants'] = $items;
         $data['total'] = $total;
         $data['pagination'] = $this->datagridPagination($total, $page['limit']);
+
         return new JsonResponse($data);
     }
 
@@ -624,7 +626,7 @@ class AjaxController extends Controller
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
         $total = $repo->countContracts($group, $dataRequest['searchCollum'], $dataRequest['searchText']);
         $total = count($total);
-        $order  = ($dataRequest['isSortAsc'] === 'true')? "ASC" : "DESC";
+        $order  = ($dataRequest['isSortAsc'] === 'true') ? "ASC" : "DESC";
         if ($total) {
             $contracts = $repo->getContractsPage(
                 $group,
@@ -653,7 +655,7 @@ class AjaxController extends Controller
                         $contract->getTenant(),
                         $this->getUser()->getHolding()
                     );
-                    $count = ($hasMultipleContracts)? 1 : 0;
+                    $count = ($hasMultipleContracts) ? 1 : 0;
                     $item['revoke_message'] = $translator->transChoice(
                         'notice.revoke.residentId.multiple_contracts',
                         $count
@@ -667,6 +669,7 @@ class AjaxController extends Controller
         $data['contracts'] = $items;
         $data['total'] = $total;
         $data['pagination'] = $this->datagridPagination($total, $dataRequest['limit']);
+
         return new JsonResponse($data);
     }
 
@@ -695,7 +698,7 @@ class AjaxController extends Controller
                 $contract->getTenant(),
                 $this->getUser()->getHolding()
             );
-            $count = ($hasMultipleContracts)? 1 : 0;
+            $count = ($hasMultipleContracts) ? 1 : 0;
             $item['revoke_message'] = $translator->transChoice(
                 'notice.revoke.residentId.multiple_contracts',
                 $count
@@ -731,7 +734,7 @@ class AjaxController extends Controller
         $searchField = $data['searchCollum'];
         $searchText = $data['searchText'];
 
-        $sortType = ($isSortAsc == 'true')? "ASC" : "DESC";
+        $sortType = ($isSortAsc == 'true') ? "ASC" : "DESC";
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
@@ -851,6 +854,7 @@ class AjaxController extends Controller
             $contract->setStatus(ContractStatus::DELETED);
             $em->persist($contract);
             $em->flush();
+
             return new JsonResponse($response);
         }
 
@@ -880,6 +884,7 @@ class AjaxController extends Controller
 
         if (!empty($errors)) {
             $response['errors'] = $errors;
+
             return new JsonResponse($response);
         }
 
@@ -916,6 +921,7 @@ class AjaxController extends Controller
             ->find($data['contract_id']);
         $tenant = $contract->getTenant();
         $action = $data['action'];
+
         switch ($action) {
             case Contract::RESOLVE_EMAIL:
                 $this->get('project.mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
@@ -1018,7 +1024,7 @@ class AjaxController extends Controller
         } else {
             $showCashPayments = true;
         }
-        $sortType = ($isSortAsc == 'true')? "ASC" : "DESC";
+        $sortType = ($isSortAsc == 'true') ? "ASC" : "DESC";
 
         $result = array();
         $group = $this->getCurrentGroup();
@@ -1075,7 +1081,7 @@ class AjaxController extends Controller
         $group = $this->getCurrentGroup();
         $em = $this->getDoctrine()->getManager();
         $orderRepo = $em->getRepository('DataBundle:Order');
-        $transactionRepo = $em->getRepository('RjDataBundle:Heartland');
+        $transactionRepo = $em->getRepository('RjDataBundle:Transaction');
 
         $total = $transactionRepo->getCountDeposits($group, $filter);
         $deposits = array();
@@ -1115,9 +1121,9 @@ class AjaxController extends Controller
         $request = $this->getRequest();
         $data = $request->request->all('group_id');
         $this->get("core.session.landlord")->setGroupId($data['group_id']);
+
         return new JsonResponse($data);
     }
-
 
     /**
      * @Route(
@@ -1145,15 +1151,14 @@ class AjaxController extends Controller
             $isIntegrated &&
             $residentMapping = $user->getResidentForHolding($this->getUser()->getHolding())
         ) {
-            $residentId = ($residentMapping)? $residentMapping->getResidentId() : null;
+            $residentId = ($residentMapping) ? $residentMapping->getResidentId() : null;
         } else {
             $residentId = null;
         }
 
-
         $data = array(
-            'userExist'     => (!empty($user))? true : false,
-            'isTenant'      => (!empty($user) && $user->getType() === UserType::TETNANT)? true : false,
+            'userExist'     => (!empty($user)) ? true : false,
+            'isTenant'      => (!empty($user) && $user->getType() === UserType::TETNANT) ? true : false,
             'residentId'    => $residentId,
             'isIntegrated'  => $isIntegrated
         );
@@ -1257,7 +1262,6 @@ class AjaxController extends Controller
         return new JsonResponse();
     }
 
-
     private function datagridPagination($total, $limit)
     {
         $result = array();
@@ -1270,6 +1274,7 @@ class AjaxController extends Controller
             $result[] = $i + 1;
         }
         $result[] = 'Last';
+
         return $result;
     }
 }

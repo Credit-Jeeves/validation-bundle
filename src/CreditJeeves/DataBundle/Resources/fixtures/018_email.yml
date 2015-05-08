@@ -1,88 +1,88 @@
 model: Rj\EmailBundle\Entity\EmailTemplate
 fixtures:
-  email_1:
-    name: invite.html
-  email_2:
-    name: welcome.html
-  email_3:
-    name: score.html
-  email_4:
-    name: target.html
-  email_5:
-    name: finished.html
-  email_6:
-    name: password.html
-  email_7:
-    name: example.html
-  email_8:
-    name: resetting.html
-  email_9:
-    name: check.html
-  email_10:
-    name: receipt.html
-  email_11:
-    name: rjCheck.html
-  email_12:
-    name: rjLandLordInvite.html
-  email_13:
-    name: rjTenantInvite.html
-  email_14:
-    name: rjTenantLatePayment.html
-  email_15:
-    name: rjLandlordComeFromInvite.html
-  email_16:
-    name: rjPendingContract.html
-  email_17:
-    name: exist_invite.html
-  email_18:
-    name: rjTodayPayments.html
-  email_19:
-    name: rjTodayNotPaid.html
-  email_20:
-    name: rjDailyReport.html
-  email_21:
-    name: rjTenantLateContract.html
-  email_22:
-    name: rjPaymentDue.html
-  email_23:
-    name: rjListLateContracts.html
-  email_24:
-    name: rjOrderReceipt.html
-  email_25:
-    name: rjOrderError.html
-  email_26:
-    name: rjTenantInviteReminder.html
-  email_27:
-    name: rjTenantInviteReminderPayment.html
-  email_28:
-    name: rjContractApproved.html
-  email_29:
-    name: rjContractRemovedFromDbByLandlord.html
-  email_30:
-    name: rjContractRemovedFromDbByTenant.html
-  email_31:
-    name: rjMerchantNameSetuped.html
-  email_32:
-    name: rj_resetting.html
-  email_33:
-    name: rjEndContract.html
-  email_34:
-      name: rjOrderCancel.html
-  email_35:
-      name: rjOrderCancelToLandlord.html
-  email_36:
-      name: rjPendingOrder.html
-  email_37:
-      name: rjContractAmountChanged.html
-  email_38:
-      name: rjBatchDepositReportLandlord.html
-  email_39:
-      name: rjBatchDepositReportHolding.html
-  email_40:
-      name: rjReceipt.html
-  email_41:
-      name: rjPushBatchReceiptsReport.html
-  email_42:
-      name: rjYardiPaymentAcceptedTurnOn.html
-  email_43:
-      name: rjYardiPaymentAcceptedTurnOff.html
+    email_1:
+        name: invite.html
+    email_2:
+        name: welcome.html
+    email_3:
+        name: score.html
+    email_4:
+        name: target.html
+    email_5:
+        name: finished.html
+    email_6:
+        name: password.html
+    email_7:
+        name: example.html
+    email_8:
+        name: resetting.html
+    email_9:
+        name: check.html
+    email_10:
+        name: receipt.html
+    email_11:
+        name: rjCheck.html
+    email_12:
+        name: rjLandLordInvite.html
+    email_13:
+        name: rjTenantInvite.html
+    email_14:
+        name: rjTenantLatePayment.html
+    email_15:
+        name: rjLandlordComeFromInvite.html
+    email_16:
+        name: rjPendingContract.html
+    email_17:
+        name: exist_invite.html
+    email_18:
+        name: rjTodayPayments.html
+    email_19:
+        name: rjTodayNotPaid.html
+    email_20:
+        name: rjDailyReport.html
+    email_21:
+        name: rjTenantLateContract.html
+    email_22:
+        name: rjPaymentDue.html
+    email_23:
+        name: rjListLateContracts.html
+    email_24:
+        name: rjOrderReceipt.html
+    email_25:
+        name: rjOrderError.html
+    email_26:
+        name: rjTenantInviteReminder.html
+    email_27:
+        name: rjTenantInviteReminderPayment.html
+    email_28:
+        name: rjContractApproved.html
+    email_29:
+        name: rjContractRemovedFromDbByLandlord.html
+    email_30:
+        name: rjContractRemovedFromDbByTenant.html
+    email_31:
+        name: rjMerchantNameSetuped.html
+    email_32:
+        name: rj_resetting.html
+    email_33:
+        name: rjEndContract.html
+    email_34:
+        name: rjOrderCancel.html
+    email_35:
+        name: rjOrderCancelToLandlord.html
+    email_36:
+        name: rjPendingOrder.html
+    email_37:
+        name: rjContractAmountChanged.html
+    email_38:
+        name: rjBatchDepositReportLandlord.html
+    email_39:
+        name: rjBatchDepositReportHolding.html
+    email_40:
+        name: rjReceipt.html
+    email_41:
+        name: rjPushBatchReceiptsReport.html
+    email_42:
+        name: rjYardiPaymentAcceptedTurnOn.html
+    email_43:
+        name: rjYardiPaymentAcceptedTurnOff.html
