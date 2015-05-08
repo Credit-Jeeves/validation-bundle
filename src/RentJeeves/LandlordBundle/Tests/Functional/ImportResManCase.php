@@ -68,7 +68,7 @@ class ImportResManCase extends ImportBaseAbstract
         $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
         $this->assertCount(28, $contracts);
         $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertCount(22, $contractsWaiting);
+        $this->assertCount(23, $contractsWaiting);
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 'a0668dcf-045d-4183-926c-b7d50a571506']
         );
