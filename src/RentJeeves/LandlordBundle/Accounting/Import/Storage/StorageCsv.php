@@ -225,6 +225,8 @@ class StorageCsv extends StorageAbstract
         $this->session->remove(self::IMPORT_OFFSET_START);
         $this->session->remove(self::IS_MULTIPLE_PROPERTY);
         $this->session->remove(self::IS_MULTIPLE_GROUP);
+        $this->session->remove(self::IMPORT_TYPE);
+        $this->session->remove(self::IMPORT_SUMMARY_REPORT_PUBLIC_ID);
     }
 
     public function clearDataBeforeReview()

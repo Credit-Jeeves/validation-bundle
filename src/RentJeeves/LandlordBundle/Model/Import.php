@@ -15,6 +15,16 @@ use Symfony\Component\Form\Form;
 class Import
 {
     /**
+     * @var array
+     */
+    protected $row = [];
+
+    /**
+     * @var integer
+     */
+    protected $offset;
+
+    /**
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -134,6 +144,38 @@ class Import
      * @var HandlerAbstract
      */
     protected $handler;
+
+    /**
+     * @return int
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
+
+    /**
+     * @param int $offset
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRow()
+    {
+        return $this->row;
+    }
+
+    /**
+     * @param array $row
+     */
+    public function setRow($row)
+    {
+        $this->row = $row;
+    }
 
     /**
      * @return integer

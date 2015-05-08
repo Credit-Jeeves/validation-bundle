@@ -350,7 +350,7 @@ class AccountingController extends Controller
         $importSummaryManager = $this->get('import_summary.manager');
 
         $importSummaryManager->initialize(
-            $this->get('core.session.landlord')->getUser()->getGroup(),
+            $this->getCurrentGroup(),
             $storage->getImportType(),
             $storage->getImportSummaryReportPublicId()
         );

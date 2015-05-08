@@ -50,17 +50,20 @@ class ImportSummaryManager
      */
     public function initialize(Group $group, $importType, $publicId = null)
     {
+        if (!empty($this->importSummaryModel)) {
+            return;
+        }
+
         $this->logger->debug('Initialize import summary report');
         $this->checkImportType($importType);
 
         if (!empty($publicId)) {
-            $this->importSummaryModel = $this->findImportSummary($group, $importType, $publicId);
-
+            $this->importSummaryModel = $this->findImportSummary($importType, $publicId);
         } else {
             $this->importSummaryModel = $this->createNewReport($group, $importType);
         }
 
-        if (empty($importSummaryModel)) {
+        if (empty($this->importSummaryModel)) {
             throw new \LogicException(
                 sprintf(
                     'Can\'t find/create import summary report by public ID "%s", group ID "%s" and importType "%s"',
@@ -71,7 +74,7 @@ class ImportSummaryManager
             );
         }
 
-        $this->logger->debug(sprintf('Get summary report from DB, ID(%s)', $importSummaryModel->getId()));
+        $this->logger->debug(sprintf('Get summary report from DB, ID(%s)', $this->importSummaryModel->getId()));
 
         $this->logger->debug('Finish initialize import summary report');
     }
@@ -234,17 +237,15 @@ class ImportSummaryManager
      *
      * @return ImportSummary
      */
-    protected function findImportSummary(Group $group, $importType, $publicId)
+    protected function findImportSummary($importType, $publicId)
     {
         $this->checkImportType($importType);
 
-        $importSummaryModel = $this->em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
+        return $this->em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
             [
                 'type'  => $importType,
                 'publicId' => $publicId
             ]
         );
-
-        return $importSummaryModel;
     }
 }

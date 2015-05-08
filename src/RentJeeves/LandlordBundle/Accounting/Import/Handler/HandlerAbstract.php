@@ -20,6 +20,7 @@ use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\CoreBundle\DateTime;
 use \Exception;
+use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use Symfony\Component\Validator\Validator;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
@@ -121,6 +122,11 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public $exceptionCatcher;
 
+    /**
+     * @Inject("import_summary.manager")
+     * @var ImportSummaryManager
+     */
+    public $reportSummaryManager;
     /**
      * @var SessionUser
      */
@@ -339,6 +345,7 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function createCurrentImportModel(array $row, $lineNumber)
     {
         $this->currentImportModel = new ModelImport();
+        $this->currentImportModel->setRow($row);
         $this->currentImportModel->setHandler($this);
         $this->currentImportModel->setNumber($lineNumber);
         $this->setTenant($row);
@@ -547,6 +554,7 @@ abstract class HandlerAbstract implements HandlerInterface
             try {
                 $this->createCurrentImportModel($values, $key);
                 $this->currentImportModel->setNumber($key);
+                $this->currentImportModel->setOffset($this->storage->getOffsetStart()+$key);
             } catch (Exception $e) {
                 $this->manageException($e);
             }
@@ -664,6 +672,12 @@ abstract class HandlerAbstract implements HandlerInterface
             }
 
             $contract = $this->currentImportModel->getContract();
+            $contractId = $contract->getId();
+            if (!empty($contractId)) {
+                $this->getReport()->incrementMatched();
+            } else {
+                $this->getReport()->incrementNew();
+            }
             $this->flushEntity($unit = $contract->getUnit());
             $unitMapping = $unit->getUnitMapping();
             if ($unitMapping instanceof UnitMapping) {
@@ -712,7 +726,15 @@ abstract class HandlerAbstract implements HandlerInterface
         if ($e instanceof \Doctrine\ORM\ORMException) {
             $this->reConnectDB();
         }
+
         $uniqueKeyException = uniqid();
+        $this->getReport()->addException(
+            $this->currentImportModel->getRow(),
+            $e->getMessage(),
+            $uniqueKeyException,
+            $this->currentImportModel->getOffset()
+        );
+
         $exception = new ImportHandlerException($e);
         $exception->setUniqueKey($uniqueKeyException);
         $this->currentImportModel->setUniqueKeyException($uniqueKeyException);
@@ -780,6 +802,8 @@ abstract class HandlerAbstract implements HandlerInterface
             $message = sprintf("Can't send invite email to user %s", $contract->getTenant()->getEmail());
             throw new ImportHandlerException($message);
         }
+
+        $this->getReport()->incrementInvited();
     }
 
     /**
@@ -809,5 +833,19 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         return;
+    }
+
+    /**
+     * @return ImportSummaryManager
+     */
+    protected function getReport()
+    {
+        $this->reportSummaryManager->initialize(
+            $this->group,
+            $this->storage->getImportType(),
+            $this->storage->getImportSummaryReportPublicId()
+        );
+
+        return $this->reportSummaryManager;
     }
 }

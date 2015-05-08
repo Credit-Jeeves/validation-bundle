@@ -74,6 +74,7 @@ function accountingImport(superclass) {
                             'import_summary_report',
                             {'importSummaryPublicId': response.importSummaryPublicId}
                         );
+                        console.info(url);
                         window.location.replace(url);
                     }
                 }
