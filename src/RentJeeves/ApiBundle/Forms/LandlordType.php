@@ -3,13 +3,15 @@
 namespace RentJeeves\ApiBundle\Forms;
 
 use RentJeeves\PublicBundle\Form\LandlordType as Base;
-use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolver;
 
 class LandlordType extends Base
 {
     const NAME = 'landlord';
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -23,6 +25,9 @@ class LandlordType extends Base
         ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return static::NAME;

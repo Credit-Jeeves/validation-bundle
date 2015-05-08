@@ -102,7 +102,7 @@ class UnitsController extends Controller
      * @Rest\View(serializerGroups={"Base", "UnitDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException

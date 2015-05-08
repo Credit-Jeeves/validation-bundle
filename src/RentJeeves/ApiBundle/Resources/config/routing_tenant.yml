@@ -22,3 +22,13 @@ orders:
   type:         rest
   resource:     "@RjApiBundle/Controller/Tenant/OrdersController.php"
   name_prefix:  api_
+
+addresses:
+  type:         rest
+  resource:     "@RjApiBundle/Controller/Tenant/AddressesController.php"
+  name_prefix:  api_
+
+tenant:
+  type:         rest
+  resource:     "@RjApiBundle/Controller/Tenant/TenantController.php"
+  name_prefix:  api_

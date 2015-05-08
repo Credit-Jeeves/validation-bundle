@@ -17,6 +17,9 @@ class PropertyType extends AbstractType
 {
     const NAME = '';
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add($builder->create('unit_name', 'text', [
@@ -89,6 +92,9 @@ class PropertyType extends AbstractType
         $builder->addEventSubscriber(new StreetTransformerListener());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -99,9 +105,7 @@ class PropertyType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

@@ -4,38 +4,37 @@ namespace RentJeeves\ApiBundle\Controller\Tenant;
 
 use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use RentJeeves\ApiBundle\Response\Order as ResponseEntity;
+use RentJeeves\ApiBundle\Response\Address as ResponseEntity;
 use RentJeeves\ApiBundle\Response\ResponseCollection;
+use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class OrdersController extends Controller
+class AddressesController extends Controller
 {
     /**
      * @ApiDoc(
      *     resource=true,
-     *     section="Order",
-     *     description="Get all orders for tenant.",
+     *     section="Tenant Address",
+     *     description="This call allows to get all addresses that belong to the tenant.",
      *     statusCodes={
      *         200="Returned when successful",
      *         204="No content with such parameters",
      *         500="Internal Server Error"
      *     }
      * )
-     * @Rest\Get("/orders")
-     * @Rest\View(serializerGroups={"Base", "OrderShort"})
+     * @Rest\Get("/addresses")
+     * @Rest\View(serializerGroups={"Base", "AddressDetails"})
      *
      * @return ResponseCollection|null
      */
-    public function getOrdersAction()
+    public function getAddressesAction()
     {
-        $orders = $this
-            ->getDoctrine()
-            ->getRepository('DataBundle:Order')
-            ->getUserOrders($this->getUser());
+        /** @var Tenant $user */
+        $user = $this->getUser();
 
-        $response = new ResponseCollection($orders);
+        $response = new ResponseCollection($user->getAddresses()->toArray());
 
         if ($response->count() > 0) {
             return $response;
@@ -49,17 +48,17 @@ class OrdersController extends Controller
      *
      * @ApiDoc(
      *     resource=true,
-     *     section="Order",
-     *     description="Get details for a specific order.",
+     *     section="Tenant Address",
+     *     description="This call allows the application to get detailed information about address by id.",
      *     statusCodes={
      *         200="Returned when successful",
-     *         404="Order not found",
+     *         404="Address not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
      *     }
      * )
-     * @Rest\Get("/orders/{id}")
-     * @Rest\View(serializerGroups={"Base", "OrderDetails"})
+     * @Rest\Get("/addresses/{id}")
+     * @Rest\View(serializerGroups={"Base", "AddressDetails"})
      * @AttributeParam(
      *     name="id",
      *     encoder="api.default_id_encoder"
@@ -68,20 +67,17 @@ class OrdersController extends Controller
      * @throws NotFoundHttpException
      * @return ResponseEntity
      */
-    public function getOrderAction($id)
+    public function getAddressAction($id)
     {
-        // disable for get payment_resource
-        $this->get('soft.deleteable.control')->disable();
-
-        $order = $this
+        $address = $this
             ->getDoctrine()
-            ->getRepository('DataBundle:Order')
-            ->findOneBy(['id' => $id, 'user' => $this->getUser()]);
+            ->getRepository('DataBundle:Address')
+            ->findOneBy(['user' => $this->getUser(), 'id' => $id]);
 
-        if ($order) {
-            return $this->get('response_resource.factory')->getResponse($order);
+        if ($address) {
+            return $this->get('response_resource.factory')->getResponse($address);
         }
 
-        throw new NotFoundHttpException('Order not found');
+        throw new NotFoundHttpException('Address not found');
     }
 }
