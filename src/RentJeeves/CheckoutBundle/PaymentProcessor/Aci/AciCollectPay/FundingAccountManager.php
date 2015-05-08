@@ -101,16 +101,18 @@ class FundingAccountManager extends AbstractManager
         $fundingAccount->setNickname($paymentAccount->getName());
         $fundingAccount->setHoldername($fundingAccountData->get('account_name'));
 
-        $address = $contract->getTenant()->getDefaultAddress();
+        /** @var Address $address */
+        if ($fundingAccountData->get('address_choice')) {
+            $address = $fundingAccountData->get('address_choice');
+            $address->setUser($contract->getTenant());
+        } else {
+            $address = $contract->getTenant()->getDefaultAddress();
+        }
 
         if (PaymentAccountTypeEnum::CARD == $paymentAccount->getType()) {
             $ccMonth = $fundingAccountData->get('expiration_month');
             $ccYear = $fundingAccountData->get('expiration_year');
             $paymentAccount->setCcExpiration(new \DateTime("last day of {$ccYear}-{$ccMonth}"));
-            /** @var Address $address */
-            if ($fundingAccountData->get('address_choice')) {
-                $address = $fundingAccountData->get('address_choice');
-            }
 
             $account = new RequestModel\SubModel\CCardAccount();
 

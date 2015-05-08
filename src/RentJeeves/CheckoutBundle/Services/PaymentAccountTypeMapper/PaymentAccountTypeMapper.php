@@ -83,7 +83,8 @@ class PaymentAccountTypeMapper
         $paymentAccountData->setEntity($paymentAccountType->getData());
 
         $paymentAccountData
-            ->set('account_name', $paymentAccountType->get('name')->getData());
+            ->set('account_name', $paymentAccountType->get('name')->getData())
+            ->set('address_choice', $paymentAccountType->get('billing_address_url')->getData());
 
         if (PaymentAccountTypeEnum::BANK == $paymentAccountType->get('type')->getData()) {
             $paymentAccountData
@@ -100,9 +101,6 @@ class PaymentAccountTypeMapper
             $paymentAccountData
                 ->set('expiration_month', $expirationDate->format('m'))
                 ->set('expiration_year', $expirationDate->format('Y'))
-                ->set('address_choice', null)
-                // TODO add to form billing_address_url for exists addresses
-                // $paymentAccountType->get('card')->get('billing_address_url')->getData()
                 ->set('card_number', $paymentAccountType->get('card')->get('account')->getData())
                 ->set('csc_code', $paymentAccountType->get('card')->get('cvv')->getData());
         }

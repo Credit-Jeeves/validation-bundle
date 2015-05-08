@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ApiBundle\Forms;
 
+use CreditJeeves\DataBundle\Entity\AddressRepository;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
@@ -81,6 +82,17 @@ class PaymentAccountType extends AbstractType
         $builder->add('card', new CardPaymentAccountType(), [
             'mapped' => false,
         ]);
+
+        $builder->add('billing_address_url', 'entity', [
+            'property_path' => 'address',
+            'required' => true,
+            'class' => 'CreditJeeves\DataBundle\Entity\Address',
+            'query_builder' => function (AddressRepository $er) {
+                return $er->createQueryBuilder('a')
+                    ->andWhere('a.user = :user')
+                    ->setParameter(':user', $this->tenant);
+            },
+        ]);
     }
 
     /**
@@ -96,10 +108,6 @@ class PaymentAccountType extends AbstractType
                     $data = $form->getData();
                     $type = $data->getType();
                     $groups[] = $type;
-
-                    if (PaymentAccountTypeEnum::CARD == $type) {
-                        $groups[] = 'user_address_new';
-                    }
 
                     return $groups;
                 }

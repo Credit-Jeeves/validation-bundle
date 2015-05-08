@@ -139,6 +139,11 @@ class PaymentAccountsController extends Controller
      *     strict=false,
      *     description="Required if type is card."
      * )
+     * @RequestParam(
+     *     name="billing_address_url",
+     *     encoder="api.default_url_encoder",
+     *     description="Resource url for Address."
+     * )
      *
      * @throws BadRequestHttpException
      * @return ResponseEntity|Form
@@ -198,6 +203,11 @@ class PaymentAccountsController extends Controller
      *     array=true,
      *     strict=false,
      *     description="Required if type is card."
+     * )
+     * @RequestParam(
+     *     name="billing_address_url",
+     *     encoder="api.default_url_encoder",
+     *     description="Resource url for Address."
      * )
      *
      * @throws NotFoundHttpException
