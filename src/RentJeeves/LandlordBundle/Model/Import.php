@@ -27,6 +27,12 @@ class Import
     protected $uniqueKeyException;
 
     /**
+     * @Serializer\Type("integer")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $importSummaryPublicId;
+
+    /**
      * @Serializer\Type("string")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -128,6 +134,22 @@ class Import
      * @var HandlerAbstract
      */
     protected $handler;
+
+    /**
+     * @return integer
+     */
+    public function getImportSummaryPublicId()
+    {
+        return $this->importSummaryPublicId;
+    }
+
+    /**
+     * @param integer $importSummaryPublicId
+     */
+    public function setImportSummaryPublicId($importSummaryPublicId)
+    {
+        $this->importSummaryPublicId = $importSummaryPublicId;
+    }
 
     /**
      * @return Order

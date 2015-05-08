@@ -12,6 +12,7 @@ use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
+use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
 use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -318,10 +319,9 @@ class AccountingController extends Controller
             return new JsonResponse($result);
         }
 
-        /**
-         * @var $importFactory ImportFactory
-         */
+        /**@var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
+        /** @var StorageAbstract $storage */
         $storage = $importFactory->getStorage();
         $mapping = $importFactory->getMapping();
 
@@ -346,9 +346,20 @@ class AccountingController extends Controller
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
+        /** @var ImportSummaryManager $importSummaryManager */
+        $importSummaryManager = $this->get('import_summary.manager');
+
+        $importSummaryManager->initialize(
+            $this->get('core.session.landlord')->getUser()->getGroup(),
+            $storage->getImportType(),
+            $storage->getImportSummaryReportPublicId()
+        );
+
+        $storage->setImportSummaryReportPublicId($importSummaryManager->getReportPublicId());
 
         $result['rows'] = $collection;
         $result['total'] = $total;
+        $result['importSummaryPublicId'] = $importSummaryManager->getReportPublicId();
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');

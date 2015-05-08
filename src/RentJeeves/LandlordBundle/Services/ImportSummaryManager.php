@@ -77,6 +77,14 @@ class ImportSummaryManager
     }
 
     /**
+     * @return int
+     */
+    public function getReportPublicId()
+    {
+        return $this->importSummaryModel->getPublicId();
+    }
+
+    /**
      * Total rows in the csv file
      *
      * @param $total
@@ -232,7 +240,6 @@ class ImportSummaryManager
 
         $importSummaryModel = $this->em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
             [
-                'group' => $group->getId(),
                 'type'  => $importType,
                 'publicId' => $publicId
             ]

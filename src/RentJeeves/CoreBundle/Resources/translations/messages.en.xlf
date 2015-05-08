@@ -2568,10 +2568,6 @@
               <source>import.review.and.post</source>
               <target>Import and Review Next Page</target>
             </trans-unit>
-            <trans-unit id="import.review.finish">
-              <source>import.review.finish</source>
-              <target>Data has been imported.</target>
-            </trans-unit>
             <trans-unit id="import.type">
               <source>import.type</source>
               <target>Import Type</target>

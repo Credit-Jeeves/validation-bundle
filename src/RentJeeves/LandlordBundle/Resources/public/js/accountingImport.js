@@ -22,7 +22,6 @@ function accountingImport(superclass) {
     this.loadDataMessage = ko.observable('');
     this.showSpinner = ko.observable(false);
     this.classLoadDataMessage = ko.observable('errorMessage');
-    this.isFinishReview =  ko.observable(false);
     this.rows = ko.observableArray([]);
     this.formErrors = ko.observableArray([]);
     this.hasException = ko.observable(false);
@@ -71,7 +70,11 @@ function accountingImport(superclass) {
                     self.rowsTotal(response.total);
 
                     if (self.rows().length == 0) {
-                        self.isFinishReview(true);
+                        url = Routing.generate(
+                            'import_summary_report',
+                            {'importSummaryPublicId': response.importSummaryPublicId}
+                        );
+                        window.location.replace(url);
                     }
                 }
             }
