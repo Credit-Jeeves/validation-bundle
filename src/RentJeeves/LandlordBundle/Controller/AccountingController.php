@@ -232,7 +232,7 @@ class AccountingController extends Controller
     /**
      * @Route(
      *     "/import/summary/report/{importSummaryPublicId}",
-     *     name="accounting_summary_report"
+     *     name="import_summary_report"
      * )
      * @Template()
      */

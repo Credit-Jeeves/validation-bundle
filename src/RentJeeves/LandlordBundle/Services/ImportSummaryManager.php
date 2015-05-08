@@ -55,9 +55,23 @@ class ImportSummaryManager
 
         if (!empty($publicId)) {
             $this->importSummaryModel = $this->findImportSummary($group, $importType, $publicId);
+
         } else {
             $this->importSummaryModel = $this->createNewReport($group, $importType);
         }
+
+        if (empty($importSummaryModel)) {
+            throw new \LogicException(
+                sprintf(
+                    'Can\'t find/create import summary report by public ID "%s", group ID "%s" and importType "%s"',
+                    $publicId,
+                    $group->getId(),
+                    $importType
+                )
+            );
+        }
+
+        $this->logger->debug(sprintf('Get summary report from DB, ID(%s)', $importSummaryModel->getId()));
 
         $this->logger->debug('Finish initialize import summary report');
     }
@@ -162,7 +176,7 @@ class ImportSummaryManager
     protected function isExistEntityErrorInTheDB(ImportError $importError)
     {
         $searchParameters = [
-            'rowOffser' => $importError->getRowOffset(),
+            'rowOffset' => $importError->getRowOffset(),
             'importSummary' => $importError->getImportSummary()->getId()
         ];
 
@@ -223,17 +237,6 @@ class ImportSummaryManager
                 'publicId' => $publicId
             ]
         );
-
-        if (empty($importSummaryModel)) {
-            throw new \LogicException(
-                sprintf(
-                    'Can\'t find import summary report by public ID "%s"',
-                    $publicId
-                )
-            );
-        }
-
-        $this->logger->debug(sprintf('Get summary report from DB, ID(%s)', $importSummaryModel->getId()));
 
         return $importSummaryModel;
     }

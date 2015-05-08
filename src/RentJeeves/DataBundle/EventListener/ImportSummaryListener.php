@@ -56,7 +56,5 @@ class ImportSummaryListener
 
         $publicId = $this->encoder->encode($importSummary->getId());
         $importSummary->setPublicId($publicId);
-        $eventArgs->getEntityManager()->persist($importSummary);
-        $eventArgs->getEntityManager()->flush($importSummary);
     }
 }
