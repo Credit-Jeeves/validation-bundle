@@ -3,7 +3,6 @@ namespace CreditJeeves\UserBundle\Service;
 
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\User;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -35,7 +34,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     }
 
     /**
-     * @param Request $request
+     * @param Request        $request
      * @param TokenInterface $token
      *
      * @return RedirectResponse
@@ -45,7 +44,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         $user = $token->getUser();
         $sType = $user->getType();
 
-        $url = $this->getRefererExceptLogin($request);
+        $url = $this->getReferenceLink($request);
 
         switch ($sType) {
             case UserType::APPLICANT:
@@ -108,36 +107,34 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
      *
      * @return string|null
      */
-    protected function getRefererExceptLogin(Request $request)
+    protected function getReferenceLink(Request $request)
     {
-        $url = $request->headers->get('referer');
-
-        if ($this->getRouter()->getRouteCollection()->get('fos_user_resetting_reset') != null) {
-            $loginUrlReset = $this->getRouter()->generate(
-                'fos_user_resetting_reset',
-                array('token' => ''),
-                true
-            );
-            if (false !== strstr($url, $loginUrlReset)) {
-                $url = null;
-            }
+        $fullRefer = $request->headers->get('referer');
+        if (empty($fullRefer)) {
+            return null;
         }
 
-        if ($this->getRouter()->getRouteCollection()->get('fos_user_security_login') != null) {
-            $loginUrl = $this->getRouter()->generate('fos_user_security_login');
-            if (false !== strstr($url, $loginUrl)) {
-                $url = null;
-            }
+        $referPath = str_replace(
+            ['rj_dev.php/', 'index.php/', 'rj_test.php/', '_dev.php/', '_test.php/'],
+            "",
+            parse_url(
+                $fullRefer,
+                PHP_URL_PATH
+            )
+        );
+
+        $route = $this->container->get('router')->match($referPath);
+        $routesSkipped = [
+            'fos_user_resetting_reset',
+            'fos_user_security_login',
+            'management_login'
+        ];
+
+        if (isset($route['_route']) && in_array($route['_route'], $routesSkipped)) {
+            return null;
         }
 
-        if ($this->getRouter()->getRouteCollection()->get('management_login') != null) {
-            $loginUrlIframe = $this->getRouter()->generate('management_login');
-            if (false !== strstr($url, $loginUrlIframe)) {
-                $url = null;
-            }
-        }
-
-        return $url;
+        return $fullRefer;
     }
 
     /**
