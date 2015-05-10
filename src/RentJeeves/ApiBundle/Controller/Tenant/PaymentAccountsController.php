@@ -15,6 +15,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use RentJeeves\DataBundle\Entity\PaymentAccountRepository;
 use RentJeeves\DataBundle\Entity\Tenant;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -37,9 +38,9 @@ class PaymentAccountsController extends Controller
      *     }
      * )
      * @Rest\Get("/payment_accounts")
-     * @Rest\View(serializerGroups={"Base", "PaymentAccountDetails"})
+     * @Rest\View(serializerGroups={"Base", "PaymentAccountShort"})
      *
-     * @return ResponseCollection
+     * @return ResponseCollection|null
      */
     public function getPaymentAccountsAction()
     {
@@ -51,6 +52,8 @@ class PaymentAccountsController extends Controller
         if ($response->count() > 0) {
             return $response;
         }
+
+        return null;
     }
 
     /**
@@ -71,7 +74,7 @@ class PaymentAccountsController extends Controller
      * @Rest\View(serializerGroups={"Base", "PaymentAccountDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
@@ -99,7 +102,7 @@ class PaymentAccountsController extends Controller
      *     section="Tenant Payment Account",
      *     description="Create a payment account.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
      *     }
@@ -138,7 +141,7 @@ class PaymentAccountsController extends Controller
      * )
      *
      * @throws BadRequestHttpException
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function createPaymentAccountAction(Request $request)
     {
@@ -154,7 +157,7 @@ class PaymentAccountsController extends Controller
      *     section="Tenant Payment Account",
      *     description="Update a payment account.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         204="Returned when successful",
      *         404="Payment Account not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
@@ -164,7 +167,7 @@ class PaymentAccountsController extends Controller
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      * @RequestParam(
      *     name="contract_url",
@@ -198,7 +201,7 @@ class PaymentAccountsController extends Controller
      * )
      *
      * @throws NotFoundHttpException
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function editPaymentAccountAction($id, Request $request)
     {
@@ -213,6 +216,12 @@ class PaymentAccountsController extends Controller
         throw new NotFoundHttpException('Payment Account not found');
     }
 
+    /**
+     * @param  Request              $request
+     * @param  PaymentAccountEntity $entity
+     * @param  string               $method
+     * @return Form|ResponseEntity
+     */
     protected function processForm(Request $request, PaymentAccountEntity $entity, $method = 'POST')
     {
         $form = $this->createForm(

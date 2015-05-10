@@ -9,6 +9,9 @@ class NewUnitType extends AbstractType
 {
     const NAME = 'new_unit';
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add('address', new PropertyType());
@@ -16,9 +19,7 @@ class NewUnitType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

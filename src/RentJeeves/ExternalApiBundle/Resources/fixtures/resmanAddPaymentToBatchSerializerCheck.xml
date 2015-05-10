@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ResidentTransactions>
   <Property>
     <RT_Customer>
@@ -9,13 +8,13 @@
               <DocumentNumber>123123</DocumentNumber>
               <TransactionDate>%date%</TransactionDate>
               <BatchID>testBatchId</BatchID>
-              <UnitID>2-a</UnitID>
+              <UnitID>AAABBB-7</UnitID>
               <CustomerID></CustomerID>
               <PaidBy>TIMOTHY APPLEGATE</PaidBy>
               <Amount>1500.00</Amount>
               <Comment>770 Broadway, Manhattan, New York, NY 10003</Comment>
               <Description>770 Broadway, Manhattan, New York, NY 10003</Description>
-              <PropertyPrimaryID>rnttrk01</PropertyPrimaryID>
+              <PropertyPrimaryID>b342e58c-f5ba-4c63-b050-cf44439bb37d</PropertyPrimaryID>
             </Detail>
           </Payment>
         </Transactions>

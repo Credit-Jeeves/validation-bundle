@@ -4,7 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\SerializationContext;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
@@ -60,8 +59,8 @@ class MRIClient implements ClientInterface
 
     /**
      * @param ExceptionCatcher $exceptionCatcher
-     * @param Serializer $serializer
-     * @param Logger $logger
+     * @param Serializer       $serializer
+     * @param Logger           $logger
      */
     public function __construct(
         ExceptionCatcher $exceptionCatcher,
@@ -99,7 +98,7 @@ class MRIClient implements ClientInterface
 
     /**
      * @param $method
-     * @param array $params
+     * @param  array       $params
      * @return MRIResponse
      */
     public function sendRequest($method, array $params)
@@ -213,7 +212,7 @@ class MRIClient implements ClientInterface
     }
 
     /**
-     * @param Order $order
+     * @param  Order $order
      * @param $externalPropertyId
      * @return bool
      */
@@ -248,7 +247,7 @@ class MRIClient implements ClientInterface
     }
 
     /**
-     * @param Payment $payment
+     * @param  Payment $payment
      * @return string
      */
     public function paymentToStringFormat(Payment $payment, $format)

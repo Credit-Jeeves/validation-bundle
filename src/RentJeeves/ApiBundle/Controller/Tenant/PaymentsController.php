@@ -17,6 +17,7 @@ use RentJeeves\ApiBundle\Response\Payment as ResponseEntity;
 use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -41,11 +42,10 @@ class PaymentsController extends Controller
      * @Rest\Get("/payments")
      * @Rest\View(serializerGroups={"Base", "PaymentDetails"})
      *
-     * @return ResponseCollection
+     * @return ResponseCollection|null
      */
     public function getPaymentsAction()
     {
-        /** @var Tenant $user */
         $user = $this->getUser();
 
         $payments = $this
@@ -58,6 +58,8 @@ class PaymentsController extends Controller
         if ($response->count() > 0) {
             return $response;
         }
+
+        return null;
     }
 
     /**
@@ -78,7 +80,7 @@ class PaymentsController extends Controller
      * @Rest\View(serializerGroups={"Base", "PaymentDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
@@ -106,7 +108,7 @@ class PaymentsController extends Controller
      *     section="Payments",
      *     description="Create a payment.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
      *     }
@@ -166,15 +168,15 @@ class PaymentsController extends Controller
      * )
      *
      * @throws BadRequestHttpException
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function createPaymentAction(Request $request)
     {
-        return $this->processForm($request, new PaymentEntity);
+        return $this->processForm($request, new PaymentEntity());
     }
 
     /**
-     * @param int $id
+     * @param int     $id
      * @param Request $request
      *
      * @ApiDoc(
@@ -182,7 +184,7 @@ class PaymentsController extends Controller
      *     section="Payment",
      *     description="Update a payment.",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         204="Returned when successful",
      *         404="Payment not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
@@ -192,11 +194,13 @@ class PaymentsController extends Controller
      * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      * @RequestParam(
      *     name="payment_account_url",
      *     encoder="api.default_url_encoder",
+     *     strict=false,
+     *     nullable=true,
      *     description="Resource url for PaymentAccount."
      * )
      * @RequestParam(
@@ -242,7 +246,7 @@ class PaymentsController extends Controller
      * )
      *
      * @throws NotFoundHttpException
-     * @return ResponseEntity
+     * @return ResponseEntity|Form
      */
     public function editPaymentAction($id, Request $request)
     {
@@ -274,11 +278,11 @@ class PaymentsController extends Controller
      * @Rest\View(serializerGroups={"Base", "PaymentDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException
-     * @return bool
+     * @return array
      */
     public function deletePaymentAction($id)
     {
@@ -296,12 +300,19 @@ class PaymentsController extends Controller
             $em = $this->getDoctrine()->getManager();
             $payment->setClosed($this, PaymentCloseReason::USER_CANCELLED);
             $em->flush($payment);
+
             return ['result' => true];
         } else {
             return ['result' => false, 'message' => 'Payment is already closed.'];
         }
     }
 
+    /**
+     * @param  Request       $request
+     * @param  PaymentEntity $entity
+     * @param  string        $method
+     * @return Form
+     */
     protected function processForm(Request $request, PaymentEntity $entity, $method = 'POST')
     {
         $form = $this->createForm(

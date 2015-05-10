@@ -3,6 +3,7 @@
 namespace RentJeeves\ApiBundle\Forms;
 
 use RentJeeves\DataBundle\Entity\ContractRepository;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\Form\FormInterface;
@@ -14,13 +15,22 @@ class PaymentAccountType extends AbstractType
 {
     const NAME = '';
 
+    /**
+     * @var Tenant
+     */
     protected $tenant;
 
-    public function __construct($tenant)
+    /**
+     * @param Tenant $tenant
+     */
+    public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add('contract_url', 'entity', [
@@ -68,12 +78,14 @@ class PaymentAccountType extends AbstractType
             'mapped' => false,
         ]);
 
-
         $builder->add('card', new CardPaymentAccountType(), [
             'mapped' => false,
         ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -95,9 +107,7 @@ class PaymentAccountType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {
