@@ -139,6 +139,12 @@ class AddressesController extends Controller
         return $this->processForm($request, $address);
     }
 
+    /**
+     * @param Request $request
+     * @param AddressEntity $entity
+     * @param string $method
+     * @return Form|ResponseEntity
+     */
     protected function processForm(Request $request, AddressEntity $entity, $method = 'POST')
     {
         $form = $this->createForm(

@@ -15,6 +15,7 @@ use CreditJeeves\DataBundle\Entity\Address;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
 use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
@@ -66,10 +67,12 @@ class PaymentAccountManager
         $request->getAccountHolderData()->setPhone($user->getPhone());
 
         /** @var Address $address */
-        if ($address = $paymentAccountData->get('address_choice')) {
+        if ($paymentAccountData->has('address_choice') && $address = $paymentAccountData->get('address_choice')) {
             // TODO: address is a Proxy, but should be Entity
             $paymentAccountEntity->setAddress($address);
             $paymentAccountEntity->getAddress()->setUser($user);
+        } elseif ($paymentAccountEntity instanceof UserAwareInterface) {
+            $paymentAccountEntity->setAddress(null);
         }
 
         if (PaymentAccountTypeEnum::CARD == $paymentAccountEntity->getType()) {

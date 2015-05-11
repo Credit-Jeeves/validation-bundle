@@ -102,12 +102,21 @@ class FundingAccountManager extends AbstractManager
         $fundingAccount->setHoldername($fundingAccountData->get('account_name'));
 
         /** @var Address $address */
-        if ($fundingAccountData->get('address_choice')) {
-            $address = $fundingAccountData->get('address_choice');
-            $address->setUser($contract->getTenant());
-        } else {
+        $address = $fundingAccountData->get('address_choice');
+
+        if (!$address) {
+            $address = $paymentAccount->getAddress();
+        }
+
+        if (!$address) {
             $address = $contract->getTenant()->getDefaultAddress();
         }
+
+        if (!$address) {
+            $address = new Address();
+        }
+
+        $address->setUser($contract->getTenant());
 
         if (PaymentAccountTypeEnum::CARD == $paymentAccount->getType()) {
             $ccMonth = $fundingAccountData->get('expiration_month');

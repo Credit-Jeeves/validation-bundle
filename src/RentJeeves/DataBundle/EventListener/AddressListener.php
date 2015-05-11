@@ -29,6 +29,9 @@ use JMS\DiExtraBundle\Annotation\Tag;
  */
 class AddressListener
 {
+    /**
+     * @param LifecycleEventArgs $eventArgs
+     */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
@@ -57,6 +60,9 @@ class AddressListener
         }
     }
 
+    /**
+     * @param PreUpdateEventArgs $eventArgs
+     */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
