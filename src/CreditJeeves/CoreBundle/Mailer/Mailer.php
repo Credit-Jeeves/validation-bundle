@@ -157,13 +157,16 @@ class Mailer extends BaseMailer implements MailerInterface
     public function sendBaseLetter($templateName, $params, $emailTo, $culture)
     {
         /** \Rj\EmailBundle\Entity\EmailTemplate $template */
-        if (false == $template = $this->manager->findTemplateByName($templateName . '.html')) {
+        if (null == $template = $this->manager->findTemplateByName($templateName . '.html')) {
             $this->handleException(
                 new \InvalidArgumentException(sprintf('Template with name "%s" not found', $templateName))
             );
+
+            return false;
         }
         try {
-            $params += $this->defaultValuesForEmail;
+            // $params is second for higher priority (for test email)
+            $params = array_merge($this->defaultValuesForEmail, $params);
             if (null !== $user = $this->getUserByEmail($emailTo)) {
                 if (false != $partner = $user->getPartner()) {
                     if (true === $partner->isPoweredBy()) {
