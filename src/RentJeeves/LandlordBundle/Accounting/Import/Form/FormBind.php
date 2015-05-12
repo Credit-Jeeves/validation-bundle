@@ -44,8 +44,8 @@ trait FormBind
 
         self::prepareSubmit($postData);
 
-        if ($this->currentImportModel->getIsSkipped() || $this->getIsSkip($postData) ||
-            !$this->isValidNotEditedFields($postData) || !$form || !isset($postData['_token'])
+        if (!$this->isValidNotEditedFields($postData) || $this->getIsSkip($postData) ||
+            $this->currentImportModel->getIsSkipped() || !$form || !isset($postData['_token'])
         ) {
             $this->collectionImportModel->removeElement($this->currentImportModel);
 

@@ -22,6 +22,7 @@ use RentJeeves\CoreBundle\DateTime;
 use \Exception;
 use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\FormBind;
@@ -294,28 +295,42 @@ abstract class HandlerAbstract implements HandlerInterface
     {
         $unit = $this->currentImportModel->getContract()->getUnit();
         if (!empty($unit) && !$isSingle = $this->getIsSingle($postData)) {
-            $errors = $this->validator->validate($unit, array("import"));
+            $errors = $this->validator->validate($unit, ["import"]);
             if (count($errors) > 0) {
+                $this->addErrorToSummary($errors);
+
                 return false;
             }
         }
 
         $residentMapping = $this->currentImportModel->getResidentMapping();
-        $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0 || $this->isUsedResidentId()) {
+        $errors = $this->validator->validate($residentMapping, ["import"]);
+        if (count($errors) > 0) {
+            $this->addErrorToSummary($errors);
+
+            return false;
+        }
+
+        if ($this->isUsedResidentId()) {
+            $this->addErrorToSummary(['Resident ID already used.']);
+
             return false;
         }
 
         if ($this->storage->isMultipleProperty()) {
             $unitMapping = $this->currentImportModel->getUnitMapping();
-            $errors = $this->validator->validate($unitMapping, array("import"));
+            $errors = $this->validator->validate($unitMapping, ["import"]);
             if (count($errors) > 0) {
+                $this->addErrorToSummary($errors);
+
                 return false;
             }
         }
 
         $property = $this->currentImportModel->getContract()->getProperty();
         if (empty($property) || !$property->getNumber()) {
+            $this->addErrorToSummary(["Property is invalid."]);
+
             return false;
         }
 
@@ -326,11 +341,26 @@ abstract class HandlerAbstract implements HandlerInterface
             }
 
             if (!$property->isAllowedToSetSingle($isSingle, $this->group->getId())) {
+                $this->addErrorToSummary(["Property is not allowed to be single."]);
+
                 return false;
             }
         }
 
         return true;
+    }
+
+    protected function addErrorToSummary($errors)
+    {
+        if ($errors instanceof ConstraintViolationList && $errors->has(0)) {
+            $errors = [$errors->get(0)->getMessage()];
+        }
+
+        $this->getReport()->addError(
+            $this->currentImportModel->getRow(),
+            $errors,
+            $this->currentImportModel->getOffset()
+        );
     }
 
     /**
@@ -547,7 +577,9 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public function initCollectionImportModel()
     {
-        $data       = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
+        $data = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
+
+        $this->getReport()->setTotal($this->mapping->getTotal());
         $this->collectionImportModel = new ArrayCollection([]);
 
         foreach ($data as $key => $values) {
@@ -600,6 +632,9 @@ abstract class HandlerAbstract implements HandlerInterface
                     $lineNumber = $postData['line'];
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
+                    if ($this->currentImportModel->getIsSkipped()) {
+                        $this->getReport()->incrementSkipped();
+                    }
                     // Validate data which get from client by post request
                     $resultBind = $this->bindForm($postData, $errors);
 
@@ -655,6 +690,7 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $this->isCreateCsrfToken = false;
+        $this->getReport()->save();
 
         return $errors + $errorsNotEditableFields;
     }

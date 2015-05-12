@@ -233,7 +233,8 @@ class AccountingController extends Controller
     /**
      * @Route(
      *     "/import/summary/report/{importSummaryPublicId}",
-     *     name="import_summary_report"
+     *     name="import_summary_report",
+     *     options={"expose"=true}
      * )
      * @Template()
      */
@@ -307,10 +308,10 @@ class AccountingController extends Controller
      */
     public function getRowsAction(Request $request)
     {
-        $result = array(
+        $result = [
             'error'   => false,
             'message' => '',
-        );
+        ];
 
         if (!$this->isAjaxRequestValid()) {
             $result['error'] = true;

@@ -11,19 +11,44 @@ use RentJeeves\DataBundle\Model\ImportSummary as Base;
  */
 class ImportSummary extends Base
 {
+
     /**
-     * @TODO implement
+     * @return int
      */
     public function countExceptions()
     {
+        if ($this->errors->count() == 0) {
+            return 0;
+        }
 
+        $errors = $this->errors->filter(
+            function (ImportError $importError) {
+                $exceptionUid = $importError->getExceptionUid();
+
+                return !empty($exceptionUid);
+            }
+        );
+
+        return $errors->count();
     }
 
     /**
-     * @TODO implement
+     * @return int
      */
     public function countErrors()
     {
+        if ($this->errors->count() == 0) {
+            return 0;
+        }
 
+        $errors = $this->errors->filter(
+            function (ImportError $importError) {
+                $exceptionUid = $importError->getExceptionUid();
+
+                return empty($exceptionUid);
+            }
+        );
+
+        return $errors->count();
     }
 }

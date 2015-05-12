@@ -70,11 +70,11 @@ function accountingImport(superclass) {
                     self.rowsTotal(response.total);
 
                     if (self.rows().length == 0) {
+                        self.setProcessing(true);
                         url = Routing.generate(
                             'import_summary_report',
                             {'importSummaryPublicId': response.importSummaryPublicId}
                         );
-                        console.info(url);
                         window.location.replace(url);
                     }
                 }

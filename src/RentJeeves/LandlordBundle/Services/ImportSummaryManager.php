@@ -55,7 +55,9 @@ class ImportSummaryManager
         }
 
         $this->logger->debug('Initialize import summary report');
-        $this->checkImportType($importType);
+        if (!ImportType::isValid($importType)) {
+            ImportType::throwsInvalid($importType);
+        }
 
         if (!empty($publicId)) {
             $this->importSummaryModel = $this->findImportSummary($importType, $publicId);
@@ -104,7 +106,8 @@ class ImportSummaryManager
     {
         $this->logger->debug('Import summary report: increment new');
         $countNew = $this->importSummaryModel->getCountNew();
-        $this->importSummaryModel->setCountNew($countNew++);
+        $countNew++;
+        $this->importSummaryModel->setCountNew($countNew);
     }
 
     /**
@@ -114,7 +117,19 @@ class ImportSummaryManager
     {
         $this->logger->debug('Import summary report: increment invited');
         $countInvited = $this->importSummaryModel->getCountInvited();
-        $this->importSummaryModel->setCountInvited($countInvited++);
+        $countInvited++;
+        $this->importSummaryModel->setCountInvited($countInvited);
+    }
+
+    /**
+     * Increment the number of skipped row
+     */
+    public function incrementSkipped()
+    {
+        $this->logger->debug('Import summary report: increment skipped');
+        $countSkipped = $this->importSummaryModel->getCountSkipped();
+        $countSkipped++;
+        $this->importSummaryModel->setCountSkipped($countSkipped);
     }
 
     /**
@@ -124,7 +139,8 @@ class ImportSummaryManager
     {
         $this->logger->debug('Import summary report: increment matched');
         $countMatched = $this->importSummaryModel->getCountMatched();
-        $this->importSummaryModel->setCountMatched($countMatched++);
+        $countMatched++;
+        $this->importSummaryModel->setCountMatched($countMatched);
     }
 
     /**
@@ -163,6 +179,17 @@ class ImportSummaryManager
         $importError->setImportSummary($this->importSummaryModel);
 
         $this->saveImportError($importError);
+    }
+
+    /**
+     * Save changes to DB
+     */
+    public function save()
+    {
+        if ($this->importSummaryModel instanceof ImportSummary) {
+            $this->em->persist($this->importSummaryModel);
+            $this->em->flush($this->importSummaryModel);
+        }
     }
 
     /**
@@ -221,16 +248,6 @@ class ImportSummaryManager
     }
 
     /**
-     * @param $importType
-     */
-    protected function checkImportType($importType)
-    {
-        if (!ImportType::isValid($importType)) {
-            ImportType::throwsInvalid($importType);
-        }
-    }
-
-    /**
      * @param Group   $group
      * @param string  $importType
      * @param integer $publicId
@@ -239,7 +256,9 @@ class ImportSummaryManager
      */
     protected function findImportSummary($importType, $publicId)
     {
-        $this->checkImportType($importType);
+        if (!ImportType::isValid($importType)) {
+            ImportType::throwsInvalid($importType);
+        }
 
         return $this->em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
             [

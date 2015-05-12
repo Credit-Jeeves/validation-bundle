@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\ImportType;
@@ -59,7 +60,7 @@ abstract class ImportSummary
     /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\ImportError",
-     *     mappedBy="import",
+     *     mappedBy="importSummary",
      *     cascade={
      *         "persist",
      *         "remove",
@@ -115,6 +116,11 @@ abstract class ImportSummary
      * )
      */
     protected $createdAt;
+
+    public function __construct()
+    {
+        $this->errors = new ArrayCollection();
+    }
 
     /**
      * Set createdAt
