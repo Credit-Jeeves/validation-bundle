@@ -48,10 +48,15 @@ class PaymentAccountTypeMapper
             $paymentAccountData->set('account_name', $paymentAccountType->get('CardAccountName')->getData());
         }
 
+        if ('true' === $paymentAccountType->get('is_new_address')->getData()) {
+            $paymentAccountData->getEntity()->setAddress($paymentAccountType->get('address')->getData());
+        } else {
+            $paymentAccountData->getEntity()->setAddress($paymentAccountType->get('address_choice')->getData());
+        }
+
         $paymentAccountData
             ->set('expiration_month', $paymentAccountType->get('ExpirationMonth')->getData())
             ->set('expiration_year', $paymentAccountType->get('ExpirationYear')->getData())
-            ->set('address_choice', $paymentAccountType->get('address_choice')->getData())
             ->set('card_number', $paymentAccountType->get('CardNumber')->getData())
             ->set('routing_number', $paymentAccountType->get('RoutingNumber')->getData())
             ->set('account_number', $paymentAccountType->get('AccountNumber')->getData())
@@ -83,8 +88,7 @@ class PaymentAccountTypeMapper
         $paymentAccountData->setEntity($paymentAccountType->getData());
 
         $paymentAccountData
-            ->set('account_name', $paymentAccountType->get('name')->getData())
-            ->set('address_choice', $paymentAccountType->get('billing_address_url')->getData());
+            ->set('account_name', $paymentAccountType->get('name')->getData());
 
         if (PaymentAccountTypeEnum::BANK == $paymentAccountType->get('type')->getData()) {
             $paymentAccountData
