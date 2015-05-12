@@ -40,12 +40,7 @@ class ImportResManCase extends ImportBaseAbstract
             80000,
             "$('table').is(':visible')"
         );
-        $this->waitReviewAndPost();
-        //First page
-        $this->assertNotNull(
-            $lastName = $this->page->find('css', '.errorField.import_new_user_with_contract_tenant_last_name')
-        );
-        $lastName->setValue('CorrrectName');
+        //First page -- seems doesn't have errors {@yuriy}
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();

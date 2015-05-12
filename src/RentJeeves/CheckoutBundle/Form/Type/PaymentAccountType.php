@@ -325,7 +325,8 @@ class PaymentAccountType extends AbstractType
             'entity',
             [
                 'class' => 'CreditJeeves\DataBundle\Entity\Address',
-                'mapped' => false,
+                'mapped' => true,
+                'property_path' => 'address',
                 'label' => 'checkout.billing_address',
                 'expanded' => true,
                 'choices' => clone $this->user->getAddresses(),
@@ -397,7 +398,7 @@ class PaymentAccountType extends AbstractType
             'address',
             new UserAddressType('paymentSource.'),
             [
-                'mapped' => true,
+                'mapped' => false,
                 'label' => 'checkout.billing_address.new',
                 'by_reference' => true,
                 'attr' => [
@@ -453,7 +454,6 @@ class PaymentAccountType extends AbstractType
                 ]
             ]
         );
-
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -153,14 +153,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
                 'card' => [
                     'account' => '4111111111111111',
                     'expiration' => '2025-01',
-                    'billing_address' => [
-                        'street' => '320 Test Street',
-                        'city' => 'Test City',
-                        'state' => 'NY',
-                        'zip' => '9001',
-                    ],
                     'cvv' => '123',
                 ],
+                'billing_address_url' => 'billing_address_url/2539807809'
             ],
             [
                 'contract_url' => 'contract_url/656765400',
@@ -170,13 +165,9 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
                 'card' => [
                     'account' => '4111111111111110',
                     'expiration' => '2014-01',
-                    'billing_address' => [
-                        'street' => '320 Test Street',
-                        'state' => 'NY',
-                        'zip' => '9001',
-                    ],
                     'cvv' => '123444',
                 ],
+                'billing_address_url' => 'billing_address_url/3574260707'
             ],
             [
                 'contract_url' => 'contract_url/656765400',
@@ -186,6 +177,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
                 'bank' => [
                     'type' => 'test'
                 ],
+                'billing_address_url' => 'billing_address_url/2539807809'
             ],
             [
                 'contract_url' => 'contract_url/656765400',
@@ -197,6 +189,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
                     'routing' => '062202574',
                     'account' => '123245678',
                 ],
+                'billing_address_url' => 'billing_address_url/3574260707'
             ],
         ];
     }
@@ -307,10 +300,6 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
                         'parameter' => 'card_expiration',
                         'value' => '2014-01',
                         'message' => 'api.errors.payment_accounts.card.expiration.invalid_expiration'
-                    ],
-                    [
-                        'parameter' => 'card_billing_address_city',
-                        'message' => 'error.user.city.empty'
                     ],
                     [
                         'parameter' => 'card_cvv',

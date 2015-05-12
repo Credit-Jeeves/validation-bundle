@@ -116,9 +116,9 @@ class BaseApiTestCase extends BaseTestCase
         /** @var Client $oauthClient */
         $oauthClient = $repo->find(1);
 
-        if (!$oauthStorage->getAccessToken(static::USER_ACCESS_TOKEN . $this->getUser()->getEmail())) {
+        if (!$oauthStorage->getAccessToken($this->generateAccessToken($this->getUser()))) {
             $oauthStorage->createAccessToken(
-                static::USER_ACCESS_TOKEN . $this->getUser()->getEmail(),
+                $this->generateAccessToken($this->getUser()),
                 $oauthClient,
                 $this->getUser(),
                 0
@@ -126,11 +126,20 @@ class BaseApiTestCase extends BaseTestCase
         }
     }
 
+    /**
+     * @param User $user
+     * @return string
+     */
+    protected function generateAccessToken(User $user)
+    {
+        return static::USER_ACCESS_TOKEN . $user->getEmail();
+    }
+
     protected function prepareClient()
     {
         if (!static::$client) {
             $this->load(true);
-            static::$client = static::$client ?: $this->createClient();
+            static::$client = $this->createClient();
         }
     }
 
@@ -305,7 +314,7 @@ class BaseApiTestCase extends BaseTestCase
             [],
             [
                 'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::USER_ACCESS_TOKEN . $this->getUser()->getEmail(),
+                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->generateAccessToken($this->getUser()),
             ],
             ($method != 'GET') ? $serializer->serialize($requestParams, $format) : null
         );
