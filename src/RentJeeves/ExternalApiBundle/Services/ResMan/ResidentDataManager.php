@@ -2,12 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
-use CreditJeeves\DataBundle\Entity\Holding;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customers;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
@@ -63,12 +60,14 @@ class ResidentDataManager
         $self = $this;
 
         /** @var $customer RtCustomer  */
+
         return array_filter($customers, function (RtCustomer $customer) use ($self) {
             $customers = $customer->getCustomers();
 
             if (($customers instanceof Customers) === false) {
                 $customer = print_r($customer, true);
-                $this->logger->addError(sprintf("Data from resman api is wrong: %s", $customer));
+                $this->logger->warning(sprintf("Skipping entry from resman with no tenants: %s", $customer));
+
                 return false;
             }
 
