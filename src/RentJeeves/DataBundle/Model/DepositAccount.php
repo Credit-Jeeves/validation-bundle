@@ -109,6 +109,9 @@ abstract class DepositAccount
      * @var boolean
      *
      * @ORM\Column(type="boolean", name="is_passed_ach")
+     *
+     * @Serializer\SerializedName("isPassedACH")
+     * @Serializer\Groups({"payRent"})
      */
     protected $passedAch;
 

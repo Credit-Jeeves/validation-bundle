@@ -277,7 +277,11 @@ function Pay(parent, contractId) {
                 fee += '%'
             }
         } else if ('bank' == self.paymentSource.type()) {
-            fee = parseFloat(contract.depositAccount.feeACH);
+            if (contract.depositAccount.isPassedACH) {
+                fee = parseFloat(contract.depositAccount.feeACH);
+            } else {
+                fee = 0;
+            }
             if (isText) {
                 fee = Format.money(fee);
             }
@@ -562,7 +566,7 @@ function Pay(parent, contractId) {
     if (contract.payment) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
     }
-    
+
     jQuery('#pay-popup').dialog({
         width: 650,
         modal: true,
