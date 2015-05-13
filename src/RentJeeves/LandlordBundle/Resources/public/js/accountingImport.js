@@ -73,7 +73,7 @@ function accountingImport(superclass) {
                         self.setProcessing(true);
                         url = Routing.generate(
                             'import_summary_report',
-                            {'importSummaryPublicId': response.importSummaryPublicId}
+                            {'publicId': response.importSummaryPublicId}
                         );
                         window.location.replace(url);
                     }

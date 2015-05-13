@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\Serializer\Serializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/accounting")
@@ -232,28 +233,21 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/summary/report/{importSummaryPublicId}",
+     *     "/import/summary/report/{publicId}",
      *     name="import_summary_report",
      *     options={"expose"=true}
      * )
-     * @Template()
+     * @ParamConverter(
+     *      "importSummary",
+     *      class="RjDataBundle:ImportSummary"
+     * )
      */
-    public function summaryReportAction($importSummaryPublicId)
+    public function summaryReportAction(ImportSummary $importSummary)
     {
-        $em = $this->getEntityManager();
-        $importSummary = $em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
-            ['publicId' => $importSummaryPublicId]
+        return $this->render(
+            'LandlordBundle:Accounting:summaryReport.html.twig',
+            ['report' => $importSummary]
         );
-
-        if (empty($importSummary)) {
-            throw $this->createNotFoundException(
-                sprintf('Summary report does not exist with public ID: %s', $importSummaryPublicId)
-            );
-        }
-
-        return [
-            'report' => $importSummary
-        ];
     }
 
     /**
@@ -320,7 +314,7 @@ class AccountingController extends Controller
             return new JsonResponse($result);
         }
 
-        /**@var ImportFactory $importFactory */
+        /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
         /** @var StorageAbstract $storage */
         $storage = $importFactory->getStorage();

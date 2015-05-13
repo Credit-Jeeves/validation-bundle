@@ -2,22 +2,22 @@
     <h3>{{ 'accounting.file.import'|trans }}</h3>
 </div>
 <ul class="steps clearfix">
-    <li class="step1 {% if step == 'step1' %}active{% endif %}">
+    <li class="step1 {{ step == 'step1' ? 'active' }}">
         <span class="step">
             <span>{{ 'import.file'|trans }}</span>
         </span>
     </li>
-    <li data-bind='visible: ($root.source() === "csv")? true : false' class="step2 {% if step == 'step2' %}active{% endif %}">
+    <li data-bind='visible: ($root.source() === "csv")? true : false' class="step2 {{ step == 'step2' ? 'active' }}">
         <span class="step">
             <span>{{ 'match.fields'|trans }}</span>
         </span>
     </li>
-    <li class="step3 {% if step == 'step3' %}active{% endif %}">
+    <li class="step3 {{ step == 'step3' ? 'active' }}">
         <span class="step">
             <span>{{ 'review.and.post'|trans }}</span>
         </span>
     </li>
-    <li class="step4 {% if step == 'step4' %}active{% endif %}">
+    <li class="step4 {{ step == 'step4' ? 'active' }}">
         <span class="step">
             <span>{{ 'import.summary.title'|trans }}</span>
         </span>
