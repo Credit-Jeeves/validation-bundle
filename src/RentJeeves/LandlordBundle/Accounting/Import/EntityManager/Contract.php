@@ -111,11 +111,7 @@ trait Contract
         if ($this->currentImportModel->getContract()->getId() !== null) {
             // normally, we don't want to mess with paid_to for existing contracts unless
             // it is obvious someone paid outside of RentTrack:
-            if ($balance <= 0 && $currentPaidTo <= $paidTo) {
-                // will be in future
-                //if (there is no order with paid_for for this month) {
-                // create new cash payment on $groupDueDate for this month
-                //}
+            if ($balance <= 0 && $currentPaidTo <= $paidTo && !$this->isDuplicate($paidTo)) {
                 $isNeedCreateCashOperation = true;
             }
         } else {

@@ -58,8 +58,7 @@ class OperationRepository extends EntityRepository
     public function getOperationForImport(
         Tenant $tenant,
         Contract $contract,
-        DateTime $paidFor,
-        $amount
+        DateTime $paidFor
     ) {
         $query = $this->createQueryBuilder("operation");
         $query->innerJoin("operation.order", "ord");
@@ -72,7 +71,7 @@ class OperationRepository extends EntityRepository
         $query->andWhere("MONTH(operation.paidFor) = :paidForMonth");
         $query->andWhere("YEAR(operation.paidFor) = :paidForYear");
 
-        $query->setParameter("amount", floatval($amount));
+        $query->setParameter("operation.type", OperationType::RENT);
         $query->setParameter("contract", $contract->getId());
         $query->setParameter("paidForMonth", $paidFor->format("n"));
         $query->setParameter("paidForYear", $paidFor->format("Y"));
