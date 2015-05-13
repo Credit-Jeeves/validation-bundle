@@ -311,12 +311,6 @@ abstract class HandlerAbstract implements HandlerInterface
             return false;
         }
 
-        if ($this->isUsedResidentId()) {
-            $this->addErrorToSummary(['Resident ID already used.']);
-
-            return false;
-        }
-
         if ($this->storage->isMultipleProperty()) {
             $unitMapping = $this->currentImportModel->getUnitMapping();
             $errors = $this->validator->validate($unitMapping, ["import"]);
@@ -327,19 +321,12 @@ abstract class HandlerAbstract implements HandlerInterface
             }
         }
 
-        $property = $this->currentImportModel->getContract()->getProperty();
-        if (empty($property) || !$property->getNumber()) {
-            $this->addErrorToSummary(["Property is invalid."]);
-
-            return false;
-        }
-
         if ($this->storage->isMultipleProperty()) {
             $isSingle = false;
             if (isset($postData['contract']['isSingle']) || isset($postData['isSingle'])) {
                 $isSingle = true;
             }
-
+            $property = $this->currentImportModel->getContract()->getProperty();
             if (!$property->isAllowedToSetSingle($isSingle, $this->group->getId())) {
                 $this->addErrorToSummary(["Property is not allowed to be single."]);
 
@@ -350,8 +337,15 @@ abstract class HandlerAbstract implements HandlerInterface
         return true;
     }
 
+    /**
+     * @param mixed $errors
+     */
     protected function addErrorToSummary($errors)
     {
+        if ($this->currentImportModel->isSkipped()) {
+            return;
+        }
+
         if ($errors instanceof ConstraintViolationList && $errors->has(0)) {
             $errors = [$errors->get(0)->getMessage()];
         }
@@ -375,6 +369,7 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function createCurrentImportModel(array $row, $lineNumber)
     {
         $this->currentImportModel = new ModelImport();
+        $this->currentImportModel->setOffset($this->storage->getOffsetStart()+$lineNumber);
         $this->currentImportModel->setRow($row);
         $this->currentImportModel->setHandler($this);
         $this->currentImportModel->setNumber($lineNumber);
@@ -435,7 +430,7 @@ abstract class HandlerAbstract implements HandlerInterface
             $this->currentImportModel->setHasContractWaiting(false);
         }
 
-        if (!$this->currentImportModel->getIsSkipped() &&
+        if (!$this->currentImportModel->isSkipped() &&
             is_null($this->currentImportModel->getContract()->getId()) &&
             $this->isContractInPast()
         ) {
@@ -445,13 +440,30 @@ abstract class HandlerAbstract implements HandlerInterface
             );
         }
 
-        if (!$this->currentImportModel->getIsSkipped() && $form = $this->getForm($this->currentImportModel)) {
+        if (!$this->currentImportModel->isSkipped() && $form = $this->getForm($this->currentImportModel)) {
             $this->currentImportModel->setForm($form);
         }
 
         $this->setErrors();
     }
 
+    /**
+     * @param integer $lineNumber
+     * @param string  $keyFieldInUI
+     * @param string  $message
+     * @param array   $errors
+     */
+    protected function setUnrecoverableError($lineNumber, $keyFieldInUI, $message, array &$errors)
+    {
+        $errors[$lineNumber][uniqid()][$keyFieldInUI] = $message;
+        $this->addErrorToSummary([$message]);
+        $this->currentImportModel->setIsSkipped(true);
+        $this->currentImportModel->setSkippedMessage($message);
+    }
+
+    /**
+     * Set errors to currentImportModel
+     */
     protected function setErrors()
     {
         $lineNumber = $this->currentImportModel->getNumber();
@@ -459,7 +471,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $errors[$lineNumber] = [];
         $form = $this->currentImportModel->getForm();
 
-        if (!$this->isCreateCsrfToken && !$this->currentImportModel->getIsSkipped()) {
+        if (!$this->isCreateCsrfToken && !$this->currentImportModel->isSkipped()) {
 
             $errors = $this->runFormValidation(
                 $form,
@@ -469,16 +481,18 @@ abstract class HandlerAbstract implements HandlerInterface
 
             if ($this->isUsedResidentId($this->currentImportModel->getResidentMapping())) {
                 $keyFieldInUI = ImportMapping::KEY_RESIDENT_ID;
-                $errors[$lineNumber][uniqid()][$keyFieldInUI] = $this->translator
+                $message = $this->translator
                     ->trans(
                         'error.residentId.already_use',
-                        array(
+                        [
                             '%email%'   => $this->getEmailByResident(
                                 $this->currentImportModel->getResidentMapping()->getResidentId()
                             ),
                             '%support_email%' => $this->supportEmail
-                        )
+                        ]
                     );
+
+                $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
             }
         }
 
@@ -486,11 +500,8 @@ abstract class HandlerAbstract implements HandlerInterface
             $this->userEmails[$this->currentImportModel->getTenant()->getEmail()] > 1
         ) {
             $keyFieldInUI = 'tenant_email';
-            $errors[$lineNumber][uniqid()][$keyFieldInUI] =
-                $this->translator->trans(
-                    'import.user.already_used'
-                );
-            $this->currentImportModel->setIsSkipped(true);
+            $message = $this->translator->trans('import.user.already_used');
+            $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
         }
 
         $unit = $this->currentImportModel->getContract()->getUnit();
@@ -502,13 +513,8 @@ abstract class HandlerAbstract implements HandlerInterface
             $existUnitMapping->getExternalUnitId() !== $unitMappingImported->getExternalUnitId()
         ) {
             $keyFieldInUI = 'import_new_user_with_contract_contract_unitMapping_externalUnitId';
-            $errors[$lineNumber]
-                [uniqid()]
-                [$keyFieldInUI] =
-                    $this->translator->trans(
-                        'import.unit_mapping.already_used'
-                    );
-            $this->currentImportModel->setIsSkipped(true);
+            $message = $this->translator->trans('import.unit_mapping.already_used');
+            $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
         }
 
         $property = $this->currentImportModel->getContract()->getProperty();
@@ -516,7 +522,8 @@ abstract class HandlerAbstract implements HandlerInterface
         if ((!$property || !$property->getNumber()) && !$this->storage->isMultipleProperty()) {
             $keyFieldInUI = 'import_new_user_with_contract_contract_unit_name';
             $this->currentImportModel->getContract()->setProperty(null);
-            $errors[$lineNumber][uniqid()][$keyFieldInUI] = $this->translator->trans('import.error.invalid_property');
+            $message = $this->translator->trans('import.error.invalid_property');
+            $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
         }
 
         $this->currentImportModel->setErrors($errors);
@@ -530,7 +537,7 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected function runFormValidation($form, $lineNumber, $token = null)
     {
-        if ($this->currentImportModel->getIsSkipped()) {
+        if ($this->currentImportModel->isSkipped()) {
             return [$lineNumber => []];
         }
 
@@ -578,15 +585,14 @@ abstract class HandlerAbstract implements HandlerInterface
     public function initCollectionImportModel()
     {
         $data = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
-
-        $this->getReport()->setTotal($this->mapping->getTotal());
+        //minus 1 -> because first line it's header
+        $this->getReport()->setTotal($this->mapping->getTotal()-1);
         $this->collectionImportModel = new ArrayCollection([]);
 
         foreach ($data as $key => $values) {
             try {
-                $this->createCurrentImportModel($values, $key);
                 $this->currentImportModel->setNumber($key);
-                $this->currentImportModel->setOffset($this->storage->getOffsetStart()+$key);
+                $this->createCurrentImportModel($values, $key);
             } catch (Exception $e) {
                 $this->manageException($e);
             }
@@ -632,8 +638,8 @@ abstract class HandlerAbstract implements HandlerInterface
                     $lineNumber = $postData['line'];
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
-                    if ($this->currentImportModel->getIsSkipped()) {
-                        $this->getReport()->incrementSkipped();
+                    if ($this->currentImportModel->isSkipped()) {
+                        $this->getReport()->incrementSkipped($this->currentImportModel->getOffset());
                     }
                     // Validate data which get from client by post request
                     $resultBind = $this->bindForm($postData, $errors);

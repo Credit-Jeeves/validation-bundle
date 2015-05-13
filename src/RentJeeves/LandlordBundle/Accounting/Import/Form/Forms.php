@@ -4,7 +4,6 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Form\ImportContractFinishType;
@@ -22,9 +21,9 @@ trait Forms
     /**
      * Creates and returns a Form instance from the type of the form.
      *
-     * @param string|FormTypeInterface $type The built type of the form
-     * @param mixed $data The initial data for the form
-     * @param array $options Options for the form
+     * @param string|FormTypeInterface $type    The built type of the form
+     * @param mixed                    $data    The initial data for the form
+     * @param array                    $options Options for the form
      *
      * @return Form
      */
@@ -88,11 +87,11 @@ trait Forms
         if (($tenantId &&
                 in_array(
                     $contract->getStatus(),
-                    array(
+                    [
                         ContractStatus::INVITE,
                         ContractStatus::APPROVED,
                         ContractStatus::CURRENT
-                    )
+                    ]
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
@@ -104,6 +103,7 @@ trait Forms
             if ($this->storage->isMultipleProperty()) {
                 $form->get('unitMapping')->setData($this->currentImportModel->getUnitMapping());
             }
+
             return $form;
         }
 
@@ -119,11 +119,12 @@ trait Forms
             if ($this->storage->isMultipleProperty()) {
                 $form->get('contract')->get('unitMapping')->setData($this->currentImportModel->getUnitMapping());
             }
+
             return $form;
         }
 
         //Finish exist contract form
-        if ($contract->getStatus() === ContractStatus::FINISHED && !$this->currentImportModel->getIsSkipped()) {
+        if ($contract->getStatus() === ContractStatus::FINISHED && !$this->currentImportModel->isSkipped()) {
             $form = $this->getContractFinishForm();
             $form->setData($contract);
 

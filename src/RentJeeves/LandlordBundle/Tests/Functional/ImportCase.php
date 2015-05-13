@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyRepository;
@@ -187,24 +188,29 @@ class ImportCase extends ImportBaseAbstract
             5000,
             "$('.errorField').length > 0"
         );
+
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
+        $this->assertCount(3, $errorFields);
+
         $this->assertEquals($errorFields[0]->getValue(), '2testmail.com');
-        $this->assertEquals($errorFields[1]->getHtml(), 'tenant11@example.com');
+        $this->assertEquals(
+            trim($errorFields[1]->getHtml()),
+            '<span data-bind="text:$root.getResidentId($data)">t0000020</span>'
+        );
+        $this->assertEquals($errorFields[2]->getHtml(), 'tenant11@example.com');
 
         $trs = $this->getParsedTrsByStatus();
-
         $this->assertCount(4, $trs, "Count statuses is wrong");
         $this->assertCount(1, $trs['import.status.error'], "Count contract with status 'error' wrong");
         $this->assertCount(3, $trs['import.status.new'], "Count contract with status 'new' wrong");
         $this->assertCount(4, $trs['import.status.skip'], "Count contract with status 'skip' wrong");
         $this->assertCount(1, $trs['import.status.match'], "Count contract with status 'match' wrong");
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
+
         $this->waitReviewAndPost();
+
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
         $this->assertCount(1, $errorFields);
 
@@ -249,19 +255,10 @@ class ImportCase extends ImportBaseAbstract
         $this->fillSecondPageWrongValue($trs);
 
         $submitImportFile->click();
-
-        $this->session->wait(
-            6000,
-            "$('.finishedTitle').length > 0"
-        );
+        $this->waitReviewAndPost();
         $submitImportFile->click();
 
-        $this->session->wait(
-            12000,
-            "$('.finishedTitle').length > 0"
-        );
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
 
         //Check notify tenant invite for new user or update his contract rent
         $this->assertCount(9, $this->getEmails(), 'Wrong number of emails');
@@ -341,6 +338,17 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals('03/18/2011', $contractNew->getStartAt()->format('m/d/Y'));
         $this->assertEquals('03/31/2016', $contractNew->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
+        /** @var ImportSummary $importSummary */
+        $importSummary = $em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
+            ['countTotal' => '19']
+        );
+        $this->assertNotEmpty($importSummary);
+        $this->assertEquals(1, $importSummary->getCountMatched());
+        $this->assertEquals(8, $importSummary->getCountSkipped());
+        $this->assertEquals(9, $importSummary->getCountNew());
+        $this->assertEquals(1, $importSummary->countErrors());
+        $this->assertEquals(0, $importSummary->countExceptions());
+        $this->assertEquals(8, $importSummary->getCountInvited());
     }
 
     protected function getWaitingRoom()
@@ -418,13 +426,7 @@ class ImportCase extends ImportBaseAbstract
 
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
-            $this->session->wait(
-                9000,
-                "$('.finishedTitle').length > 0"
-            );
-
-            $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-            $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+            $this->waitRedirectToSummaryPage();
             $this->logout();
         }
 
@@ -594,13 +596,7 @@ class ImportCase extends ImportBaseAbstract
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->session->wait(
-            11000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
         $this->logout();
     }
 
@@ -783,12 +779,7 @@ class ImportCase extends ImportBaseAbstract
         $submitImportFile->click();
 
         $this->waitReviewAndPost(false);
-        $this->session->wait(
-            5000,
-            "$('.finishedTitle').is(':visible')"
-        );
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
 
         //Check notify tenant invite for new user
         $this->assertCount(0, $this->getEmails(), 'Wrong number of emails');
@@ -936,8 +927,7 @@ class ImportCase extends ImportBaseAbstract
 
         $this->waitReviewAndPost(false);
 
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
         $this->logout();
         //Check notify tenant invite for new user
         $this->setDefaultSession('goutte');
@@ -1065,13 +1055,7 @@ class ImportCase extends ImportBaseAbstract
         $lastName1->setValue('Cooper');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->session->wait(
-            10000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
         //after that check mathced status
         $this->page->clickLink('tab.accounting');
         //First Step
@@ -1102,13 +1086,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->session->wait(
-            11000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
     }
 
     /**
@@ -1160,13 +1138,7 @@ class ImportCase extends ImportBaseAbstract
         $email->setValue('');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->session->wait(
-            11000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
         //after that check mathced status
         $this->page->clickLink('tab.accounting');
 
@@ -1208,13 +1180,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->session->wait(
-            11000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
 
         $em = $this->getEntityManager();
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
@@ -1266,13 +1232,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals($errorFields[0]->getHtml(), '15test@mail.com');
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->session->wait(
-            11000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
         $em = $this->getEntityManager();
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
             array(
@@ -1332,8 +1292,7 @@ class ImportCase extends ImportBaseAbstract
             $this->waitReviewAndPost($i<4);
         }
 
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
         $this->logout();
 
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
@@ -1385,13 +1344,7 @@ class ImportCase extends ImportBaseAbstract
 
         $submitImport->click();
 
-        $this->session->wait(
-            250000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
     }
 
     /**
@@ -1571,16 +1524,8 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
-        $this->session->wait(
-            6000,
-            "$('.finishedTitle').length > 0"
-        );
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $this->waitRedirectToSummaryPage();
+        $em = $this->getEntityManager();
         /**
          * @var $tenant Tenant
          */
@@ -1665,14 +1610,8 @@ class ImportCase extends ImportBaseAbstract
         $submitImportFile->click();
 
         $this->waitReviewAndPost(false);
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
-
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine')->getManager();
+        $this->waitRedirectToSummaryPage();
+        $em = $this->getEntityManager();
 
         $unitMapping = $em
             ->getRepository('RjDataBundle:UnitMapping')
@@ -1742,13 +1681,7 @@ class ImportCase extends ImportBaseAbstract
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
-        $this->session->wait(
-            6000,
-            "$('.finishedTitle').length > 0"
-        );
-
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
     }
 
     /**
@@ -1892,8 +1825,7 @@ class ImportCase extends ImportBaseAbstract
         $skipException->click();
         $this->waitReviewAndPost(false);
 
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
     }
 
     /**
@@ -2039,8 +1971,7 @@ class ImportCase extends ImportBaseAbstract
         $submitImportFile->click();
         $this->waitReviewAndPost(false);
 
-        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
-        $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->waitRedirectToSummaryPage();
 
         $afterWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
         $afterContracts = $em->getRepository('RjDataBundle:Contract')->findAll();

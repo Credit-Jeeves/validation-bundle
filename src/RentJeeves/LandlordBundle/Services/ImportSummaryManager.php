@@ -124,8 +124,15 @@ class ImportSummaryManager
     /**
      * Increment the number of skipped row
      */
-    public function incrementSkipped()
+    public function incrementSkipped($offset)
     {
+        $importError = new ImportError();
+        $importError->setRowOffset($offset);
+        $importError->setImportSummary($this->importSummaryModel);
+
+        if ($this->isExistEntityErrorInTheDB($importError)) {
+            return;
+        }
         $this->logger->debug('Import summary report: increment skipped');
         $countSkipped = $this->importSummaryModel->getCountSkipped();
         $countSkipped++;
