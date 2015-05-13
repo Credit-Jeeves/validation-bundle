@@ -11,11 +11,10 @@ use Payum2\Heartland\Soap\Base\GetTokenResponse;
 use Payum2\Payment;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
-use CreditJeeves\DataBundle\Entity\Address;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
-use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
@@ -50,8 +49,8 @@ class PaymentAccountManager
     }
 
     /**
-     * @param  PaymentAccountData $paymentAccountData
-     * @param  User $user
+     * @param  PaymentAccountData            $paymentAccountData
+     * @param  User                          $user
      * @return GetTokenRequest
      * @throws InvalidAttributeNameException
      */
@@ -66,17 +65,14 @@ class PaymentAccountManager
         $request->getAccountHolderData()->setLastName($user->getLastName());
         $request->getAccountHolderData()->setPhone($user->getPhone());
 
+        if ($paymentAccountEntity instanceof UserAwareInterface && $paymentAccountEntity->getAddress()) {
+            $paymentAccountEntity->getAddress()->setUser($user);
+        }
+
         if (PaymentAccountTypeEnum::CARD == $paymentAccountEntity->getType()) {
             $ccMonth = $paymentAccountData->get('expiration_month');
             $ccYear = $paymentAccountData->get('expiration_year');
             $paymentAccountEntity->setCcExpiration(new DateTime("last day of {$ccYear}-{$ccMonth}"));
-
-            /** @var Address $address */
-            if ($address = $paymentAccountData->get('address_choice')) {
-                // TODO: address is a Proxy, but should be Entity
-                $paymentAccountEntity->setAddress($address);
-            }
-            $paymentAccountEntity->getAddress()->setUser($user);
 
             $request->getAccountHolderData()->setNameOnCard($paymentAccountData->get('account_name'));
             $request->getAccountHolderData()->setAddress($paymentAccountEntity->getAddress()->getAddress());
@@ -89,11 +85,6 @@ class PaymentAccountManager
             $request->setExpirationYear($ccYear);
             $request->setPaymentMethod(TokenPaymentMethod::CREDIT);
         } elseif (PaymentAccountTypeEnum::BANK == $paymentAccountEntity->getType()) {
-
-            if ($paymentAccountEntity instanceof UserAwareInterface) {
-                $paymentAccountEntity->setAddress(null);
-            }
-
             $fullName = trim($paymentAccountData->get('account_name'));
             $lastSpacePosition = strrpos($fullName, ' ');
             $firstName = substr($fullName, 0, $lastSpacePosition);

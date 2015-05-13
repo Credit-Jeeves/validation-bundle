@@ -26,7 +26,7 @@ class OrdersController extends Controller
      * @Rest\Get("/orders")
      * @Rest\View(serializerGroups={"Base", "OrderShort"})
      *
-     * @return ResponseCollection
+     * @return ResponseCollection|null
      */
     public function getOrdersAction()
     {
@@ -40,6 +40,8 @@ class OrdersController extends Controller
         if ($response->count() > 0) {
             return $response;
         }
+
+        return null;
     }
 
     /**
@@ -60,7 +62,7 @@ class OrdersController extends Controller
      * @Rest\View(serializerGroups={"Base", "OrderDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws NotFoundHttpException

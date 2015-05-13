@@ -204,7 +204,7 @@ class PublicController extends Controller
     public function newAction($id, $type, Request $request)
     {
         if (false === in_array($type, [self::TYPE_HOLDING, self::TYPE_PROPERTY])) {
-            return $this->createNotFoundException(sprintf('Undefined type "%s"'), $type);
+            return $this->createNotFoundException(sprintf('Undefined type "%s"', $type));
         }
         /** @var Session $session */
         $session = $request->getSession();

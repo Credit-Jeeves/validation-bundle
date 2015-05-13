@@ -2,11 +2,11 @@
 
 namespace RentJeeves\ApiBundle\Tests;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use FOS\OAuthServerBundle\Entity\Client;
 use OAuth2\IOAuth2Storage;
 use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
-use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
@@ -34,7 +34,19 @@ class BaseApiTestCase extends BaseTestCase
     /** @var  AttributeEncoderInterface */
     private $urlEncoder;
 
-    private $tenantEmail= 'tenant11@example.com';
+    /** @var string */
+    protected $userEmail= 'tenant11@example.com';
+
+    /** @var  User */
+    protected $user;
+
+    /** @var \Symfony\Bundle\FrameworkBundle\Client */
+    protected static $client;
+
+    public function setUp()
+    {
+        $this->prepareClient();
+    }
 
     protected function assertResponse(Response $response, $statusCode = 200, $format = 'json')
     {
@@ -78,6 +90,11 @@ class BaseApiTestCase extends BaseTestCase
         $this->assertTrue(isset($urlInfo['path']));
     }
 
+    /**
+     * @param  string       $content
+     * @param  string       $format
+     * @return array|string
+     */
     protected function parseContent($content, $format = 'json')
     {
         /** @var Serializer $serializer */
@@ -99,32 +116,48 @@ class BaseApiTestCase extends BaseTestCase
         /** @var Client $oauthClient */
         $oauthClient = $repo->find(1);
 
-        if (!$oauthStorage->getAccessToken(static::USER_ACCESS_TOKEN)) {
+        if (!$oauthStorage->getAccessToken($this->generateAccessToken($this->getUser()))) {
             $oauthStorage->createAccessToken(
-                static::USER_ACCESS_TOKEN,
+                $this->generateAccessToken($this->getUser()),
                 $oauthClient,
-                $this->getTenant(),
+                $this->getUser(),
                 0
             );
         }
     }
 
+    /**
+     * @param User $user
+     * @return string
+     */
+    protected function generateAccessToken(User $user)
+    {
+        return static::USER_ACCESS_TOKEN . $user->getEmail();
+    }
+
     protected function prepareClient()
     {
-        if (static::$instance != true) {
+        if (!static::$client) {
             $this->load(true);
-            $this->prepareOAuthAuthorization();
-            static::$instance = true;
+            static::$client = $this->createClient();
         }
     }
 
+    /**
+     * @return \Symfony\Bundle\FrameworkBundle\Client
+     */
     protected function getClient()
     {
         $this->prepareClient();
 
-        return parent::createClient();
+        $this->prepareOAuthAuthorization();
+
+        return static::$client;
     }
 
+    /**
+     * @return EntityManager
+     */
     protected function getEm()
     {
         if (!$this->em) {
@@ -134,30 +167,51 @@ class BaseApiTestCase extends BaseTestCase
         return $this->em;
     }
 
+    /**
+     * @param  string                                                                       $entityPath
+     * @return \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
     protected function getEntityRepository($entityPath)
     {
         return $this->getEm()->getRepository($entityPath);
     }
 
-    protected function setTenantEmail($email)
+    /**
+     * @param string $email
+     */
+    protected function setUserEmail($email)
     {
-        $this->tenantEmail = $email;
-        static::$instance = false;
-    }
-
-    protected function getTenantEmail()
-    {
-        return $this->tenantEmail;
+        $this->userEmail = $email;
+        /* Reload client */
+        $this->user = null;
     }
 
     /**
-     * @return null|Tenant
+     * @return string
      */
-    protected function getTenant()
+    protected function getUserEmail()
     {
-        return $this
-            ->getEntityRepository('RjDataBundle:Tenant')
-            ->findOneBy(['email' => $this->getTenantEmail()]);
+        return $this->userEmail;
+    }
+
+    /**
+     * @return User
+     */
+    protected function getUser()
+    {
+        if (!$this->user) {
+            $this->user = $this
+                ->getEntityRepository('DataBundle:User')
+                ->findOneBy(['email' => $this->getUserEmail()]);
+        }
+
+        $this->assertInstanceOf(
+            'CreditJeeves\DataBundle\Entity\User',
+            $this->user,
+            sprintf('Incorrect user email "%s"', $this->getUserEmail())
+        );
+
+        return $this->user;
     }
 
     /**
@@ -199,7 +253,7 @@ class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * @param  null          $attributes
+     * @param  null|string   $attributes
      * @param  array         $requestParams
      * @param  string        $format
      * @return null|Response
@@ -260,7 +314,7 @@ class BaseApiTestCase extends BaseTestCase
             [],
             [
                 'CONTENT_TYPE' => static::$formats[$format][0],
-                'HTTP_AUTHORIZATION' => 'Bearer ' . static::USER_ACCESS_TOKEN,
+                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->generateAccessToken($this->getUser()),
             ],
             ($method != 'GET') ? $serializer->serialize($requestParams, $format) : null
         );
@@ -268,10 +322,42 @@ class BaseApiTestCase extends BaseTestCase
         return $client->getResponse();
     }
 
-    protected function prepareUrl($id = null, $format = 'json', $requestUrl = '')
+    /**
+     * @param  null|int    $id
+     * @param  string|bool $format
+     * @param  string      $requestUrl
+     * @param  bool        $isAbsolutePath
+     * @return string
+     */
+    protected function prepareUrl($id = null, $format = 'json', $requestUrl = '', $isAbsolutePath = false)
     {
         $requestUrl = $requestUrl ?: static::REQUEST_URL;
 
-        return static::URL_PREFIX . '/' . $requestUrl . ( $id ? "/{$id}" : '') . ".{$format}" ;
+        $siteUrl = '';
+        if ($isAbsolutePath) {
+            $siteUrl = $this->getSiteUrl();
+        }
+
+        return sprintf(
+            '%s%s/%s%s%s',
+            $siteUrl,
+            static::URL_PREFIX,
+            $requestUrl,
+            $id ? '/' . $id : '',
+            $format ? '.' . $format : ''
+        );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSiteUrl()
+    {
+        $https = $this->getClient()->getServerParameter('HTTPS', 'off');
+        $port = $this->getClient()->getServerParameter('SERVER_PORT', 80);
+        $protocol = ($https !== 'off' || $port == 443) ? "https" : "http";
+        $domainName = $this->getClient()->getServerParameter('HTTP_HOST');
+
+        return sprintf('%s://%s', $protocol, $domainName);
     }
 }

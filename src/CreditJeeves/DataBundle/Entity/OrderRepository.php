@@ -512,9 +512,9 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param  User  $user
-     * @param  array $excludedStatuses
-     * @return mixed
+     * @param  User    $user
+     * @param  array   $excludedStatuses
+     * @return Order[]
      */
     public function getUserOrders(User $user, array $excludedStatuses = [OrderStatus::NEWONE])
     {

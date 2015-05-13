@@ -5,13 +5,14 @@ namespace RentJeeves\ApiBundle\Forms;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolver;
-use Symfony\Component\Validator\Constraints\Choice;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class BankPaymentAccountType extends AbstractType
 {
     const NAME = 'bank';
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add('routing');
@@ -19,6 +20,9 @@ class BankPaymentAccountType extends AbstractType
         $builder->add('type');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -29,9 +33,7 @@ class BankPaymentAccountType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

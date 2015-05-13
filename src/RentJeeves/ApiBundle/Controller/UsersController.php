@@ -11,12 +11,9 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
-use RentJeeves\ApiBundle\Request\ParamFetcher;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Router;
 use RuntimeException;
 
 class UsersController extends Controller
@@ -39,7 +36,7 @@ class UsersController extends Controller
      * @Rest\View(serializerGroups={"Base", "UserDetails"})
      * @AttributeParam(
      *     name="id",
-     *     encoder = "api.default_id_encoder"
+     *     encoder="api.default_id_encoder"
      * )
      *
      * @throws ResponseResourceException
@@ -92,7 +89,7 @@ class UsersController extends Controller
     public function createUserAction(Request $request)
     {
         $form = $this->createForm(
-            new TenantType($this->getUser()),
+            new TenantType(),
             new Tenant(),
             ['method' => 'POST']
         );

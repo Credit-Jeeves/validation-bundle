@@ -6,17 +6,25 @@ use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\Invali
 
 class PaymentAccount
 {
+    /**
+     * @var object
+     */
     protected $entity;
-
+    /**
+     * @var array
+     */
     protected $attrs = [];
 
+    /**
+     * @return object
+     */
     public function getEntity()
     {
         return $this->entity;
     }
 
     /**
-     * @param $entity
+     * @param object $entity
      * @return $this
      */
     public function setEntity($entity)
@@ -27,7 +35,7 @@ class PaymentAccount
     }
 
     /**
-     * @param $attributeName
+     * @param string $attributeName
      * @return mixed
      * @throws InvalidAttributeNameException
      */
@@ -41,8 +49,8 @@ class PaymentAccount
     }
 
     /**
-     * @param $attributeName
-     * @param $attributeValue
+     * @param string $attributeName
+     * @param mixed $attributeValue
      * @return $this
      */
     public function set($attributeName, $attributeValue)
@@ -50,5 +58,14 @@ class PaymentAccount
         $this->attrs[$attributeName] = $attributeValue;
 
         return $this;
+    }
+
+    /**
+     * @param string $attributeName
+     * @return bool
+     */
+    public function has($attributeName)
+    {
+        return array_key_exists($attributeName, $this->attrs);
     }
 }

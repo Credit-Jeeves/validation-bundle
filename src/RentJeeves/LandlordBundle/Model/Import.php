@@ -5,6 +5,7 @@ namespace RentJeeves\LandlordBundle\Model;
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
@@ -88,6 +89,11 @@ class Import
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $residentMapping = null;
+
+    /**
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\PropertyMapping")
+     */
+    protected $propertyMapping;
 
     /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\UnitMapping")
@@ -191,6 +197,22 @@ class Import
     public function setImportSummaryPublicId($importSummaryPublicId)
     {
         $this->importSummaryPublicId = $importSummaryPublicId;
+    }
+
+    /**
+     * @return PropertyMapping
+     */
+    public function getPropertyMapping()
+    {
+        return $this->propertyMapping;
+    }
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     */
+    public function setPropertyMapping(PropertyMapping $propertyMapping)
+    {
+        $this->propertyMapping = $propertyMapping;
     }
 
     /**
@@ -452,7 +474,7 @@ class Import
     /**
      * @return boolean
      */
-    public function isSkipped()
+    public function getIsSkipped()
     {
         return $this->isSkipped;
     }
