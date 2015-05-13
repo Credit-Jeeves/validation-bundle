@@ -10,7 +10,6 @@ use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use Exception;
 
@@ -58,6 +57,7 @@ class ContractListener
         $property = $contract->getProperty();
         if ($property->isSingle() && $unit = $property->getExistingSingleUnit()) {
             $contract->setUnit($unit);
+
             return;
         }
 
@@ -121,7 +121,8 @@ class ContractListener
             return;
         }
 
-        if ($payment->getAmount() === $contract->getRent()) {
+        $paymentAmount = floatval($payment->getAmount());
+        if ($paymentAmount === $newValue) {
             return;
         }
 
