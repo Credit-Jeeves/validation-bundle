@@ -17,7 +17,7 @@ class EmailTemplateAdmin extends BaseAdmin
     {
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-        $query->andWhere($alias.'.name LIKE :prefix');
+        $query->andWhere($alias . '.name LIKE :prefix');
         $query->setParameter('prefix', 'rj%');
 
         return $query;
@@ -76,5 +76,4 @@ class EmailTemplateAdmin extends BaseAdmin
     {
         return null;
     }
-
 }

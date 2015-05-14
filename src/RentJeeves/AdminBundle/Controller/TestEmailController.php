@@ -29,7 +29,7 @@ class TestEmailController extends BaseController
             );
         } else {
             $result = $this->getMailer()->sendBaseLetter(
-                current(explode('.',$emailTemplate->getName())),
+                current(explode('.', $emailTemplate->getName())),
                 $parameters,
                 $enTranslation->getTestEmailTo(),
                 self::TEST_CULTURE
