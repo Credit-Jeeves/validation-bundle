@@ -3126,6 +3126,14 @@
                 <source>common.tenant.past</source>
                 <target>Past Tenant</target>
             </trans-unit>
+            <trans-unit id="common.tenant.status">
+                <source>common.tenant.status</source>
+                <target>Tenant Status</target>
+            </trans-unit>
+            <trans-unit id="error.tenant.status">
+                <source>error.tenant.status</source>
+                <target>Tenant Status not equal C (Current)</target>
+            </trans-unit>
             <trans-unit id="common.payment_accepted">
                 <source>common.payment_accepted</source>
                 <target>Payment Accepted</target>

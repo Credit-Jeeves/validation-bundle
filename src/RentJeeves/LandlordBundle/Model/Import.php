@@ -19,7 +19,7 @@ class Import
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"RentJeevesImport"})
      */
-    protected $isSkipped;
+    protected $isSkipped = false;
 
     /**
      * @Serializer\Type("string")

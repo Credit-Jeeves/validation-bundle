@@ -14,6 +14,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\DataBundle\Model\Unit;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -174,10 +175,13 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
+        $mapFile = $this->mapFile;
+        $mapFile[15] = MappingAbstract::KEY_TENANT_STATUS;
+
+        for ($i = 1; $i <= 15; $i++) {
             $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
+            if (isset($mapFile[$i])) {
+                $choice->selectOption($mapFile[$i]);
             }
         }
 
@@ -249,13 +253,12 @@ class ImportCase extends ImportBaseAbstract
         $this->fillSecondPageWrongValue($trs);
 
         $submitImportFile->click();
-
-        $this->session->wait(
-            6000,
-            "$('.finishedTitle').length > 0"
-        );
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount(1, $trs, "Count contract wrong");
+        $this->assertCount(2, $trs['import.status.skip'], "Count contract with status 'skip' wrong");
         $submitImportFile->click();
-
+        $this->waitReviewAndPost();
         $this->session->wait(
             12000,
             "$('.finishedTitle').length > 0"

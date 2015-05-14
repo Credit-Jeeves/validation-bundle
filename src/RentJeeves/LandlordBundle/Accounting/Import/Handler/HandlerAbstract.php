@@ -344,7 +344,6 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->setTenant($row);
         $this->currentImportModel->setEmail($row[ImportMapping::KEY_EMAIL]);
         $this->group = $this->getGroup($row);
-        $this->currentImportModel->setIsSkipped(false);
 
         if (!$this->group) {
             $this->currentImportModel->setIsSkipped(true);
