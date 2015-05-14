@@ -66,12 +66,12 @@ class OperationRepository extends EntityRepository
         $query->innerJoin("contract.tenant", "tenant");
         $query->where("tenant.id = :tenant");
         $query->andWhere("ord.status = :complete");
-        $query->andWhere("operation.amount = :amount");
+        $query->andWhere("operation.type = :operationType");
         $query->andWhere("contract.id = :contract");
         $query->andWhere("MONTH(operation.paidFor) = :paidForMonth");
         $query->andWhere("YEAR(operation.paidFor) = :paidForYear");
 
-        $query->setParameter("operation.type", OperationType::RENT);
+        $query->setParameter("operationType", OperationType::RENT);
         $query->setParameter("contract", $contract->getId());
         $query->setParameter("paidForMonth", $paidFor->format("n"));
         $query->setParameter("paidForYear", $paidFor->format("Y"));
