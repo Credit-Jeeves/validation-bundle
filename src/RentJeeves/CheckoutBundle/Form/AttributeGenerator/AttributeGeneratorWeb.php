@@ -15,7 +15,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             array(
                 'class' => 'half-of-right',
                 'data-bind' => 'value: payment.amount',
-            ));
+            )
+        );
     }
 
     public function paidForAttrs()
@@ -28,7 +29,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                     "value: payment.paidFor",
                 'force_row' => false,
                 'template' => 'paidFor-html'
-            ));
+            )
+        );
     }
 
     public function amountOtherAttrs()
@@ -38,7 +40,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             array(
                 'class' => 'half-of-right',
                 'data-bind' => 'value: payment.amountOther'
-            ));
+            )
+        );
     }
 
     public function totalAttrs()
@@ -50,7 +53,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'view' => array(
                     'data-bind' => 'text: getTotal',
                 )
-            ));
+            )
+        );
     }
 
     public function typeAttrs()
@@ -95,7 +99,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'row_attr' => array(
                     'data-bind' => ''
                 )
-            ));
+            )
+        );
     }
 
     public function frequencyAttrs()
@@ -108,7 +113,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'row_attr' => array(
                     'data-bind' => 'visible: \'recurring\' == payment.type()'
                 )
-            ));
+            )
+        );
     }
 
     public function dueDateAttrs()
@@ -122,7 +128,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'box_attr' => array(
                     'data-bind' => 'visible: \'monthly\' == payment.frequency()'
                 )
-            ));
+            )
+        );
     }
 
     public function startMonthAttrs()
@@ -141,7 +148,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'row_attr' => array(
                     'data-bind' => 'visible: \'recurring\' == payment.type()'
                 )
-            ));
+            )
+        );
     }
 
     public function startYearAttrs()
@@ -160,7 +168,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'row_attr' => array(
                     'data-bind' => 'visible: \'recurring\' == payment.type()'
                 )
-            ));
+            )
+        );
     }
 
     public function startDateAttrs()
@@ -175,7 +184,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 ),
                 'data-bind' => 'datepicker: payment.startDate, ' .
                     'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',
-            ));
+            )
+        );
     }
 
     public function endsAttrs()
@@ -187,7 +197,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'row_attr' => array(
                     'data-bind' => 'visible: \'recurring\' == payment.type()'
                 )
-            ));
+            )
+        );
     }
 
     public function endMonthAttrs()
@@ -200,7 +211,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'box_attr' => array(
                     'data-bind' => 'visible: \'on\' == payment.ends()'
                 )
-            ));
+            )
+        );
     }
 
     public function endYearAttrs()
@@ -213,7 +225,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                 'box_attr' => array(
                     'data-bind' => 'visible: \'on\' == payment.ends()'
                 )
-            ));
+            )
+        );
     }
 
     public function paymentAccountIdAttrs()
@@ -222,7 +235,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             parent::paymentAccountIdAttrs(),
             array(
                 'data-bind' => 'value: payment.paymentAccountId',
-            ));
+            )
+        );
     }
 
     public function contractIdAttrs()
@@ -231,7 +245,8 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             parent::contractIdAttrs(),
             array(
                 'data-bind' => 'value: payment.contractId',
-            ));
+            )
+        );
     }
 
     public function idAttrs()
@@ -240,21 +255,28 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
             parent::idAttrs(),
             array(
                 'data-bind' => 'value: payment.id',
-            ));
+            )
+        );
     }
 
     public function submitAttrs()
     {
         return array_merge(
             parent::submitAttrs(),
-            array('force_row' => true, 'class' => 'hide_submit'));
+            array(
+                'force_row' => true, 'class' => 'hide_submit'
+            )
+        );
     }
 
     public function paymentAccountAttrs()
     {
         return array_merge(
             parent::paymentAccountAttrs(),
-            array('style'=>'display:none'));
+            array(
+                'style'=>'display:none'
+            )
+        );
     }
 
 }

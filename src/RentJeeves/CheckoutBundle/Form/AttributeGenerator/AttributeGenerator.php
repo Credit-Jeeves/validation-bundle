@@ -129,5 +129,4 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface
     {
         return array();
     }
-
 }

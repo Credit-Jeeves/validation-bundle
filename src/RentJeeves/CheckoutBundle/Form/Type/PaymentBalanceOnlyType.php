@@ -23,7 +23,6 @@ class PaymentBalanceOnlyType extends PaymentType
         $openDay,
         $closeDay,
         AttributeGeneratorInterface $attributes
-
     ) {
         parent::__construct(
             $oneTimeUntilValue,

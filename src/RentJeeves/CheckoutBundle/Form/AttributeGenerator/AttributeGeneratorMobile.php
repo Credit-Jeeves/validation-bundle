@@ -11,7 +11,8 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
 
     public function amountAttrs()
     {
-        return array_merge(parent::amountAttrs(),
+        return array_merge(
+            parent::amountAttrs(),
             array(
                 'onchange'=>'updateTotal()'
             )
@@ -20,7 +21,8 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
 
     public function amountOtherAttrs()
     {
-        return array_merge(parent::amountOtherAttrs(),
+        return array_merge(
+            parent::amountOtherAttrs(),
             array(
                 'onchange'=>'updateTotal()'
             )
@@ -29,7 +31,8 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
 
     public function typeAttrs()
     {
-        return array_merge(parent::typeAttrs(),
+        return array_merge(
+            parent::typeAttrs(),
             array(
                 'data-native-menu' => "false",
                 'onchange' => "if (this.value=='recurring') {formType(false)} else {formType(true)}"
@@ -50,17 +53,20 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
 
     public function submitAttrs()
     {
-        return array_merge(parent::submitAttrs(), array('style'=>'display:none'));
+        return array_merge(
+            parent::submitAttrs(), array('style'=>'display:none'));
     }
 
     public function paymentAccountAttrs()
     {
-        return array_merge(parent::paymentAccountAttrs(), array('id'=>'paymentDropdown'));
+        return array_merge(
+            parent::paymentAccountAttrs(), array('id'=>'paymentDropdown'));
     }
 
     public function idAttrs()
     {
-        return array_merge(parent::idAttrs(), array('id'=>'id'));
+        return array_merge(
+            parent::idAttrs(), array('id'=>'id'));
     }
 
     public function startDateAttrs()
@@ -73,16 +79,18 @@ class AttributeGeneratorMobile extends AttributeGenerator implements AttributeGe
 
     public function endsAttrs()
     {
-        return array_merge(parent::endsAttrs(),array(
-           'onchange'=>'if (this.value!="on") {whenCancelled(false)} else {whenCancelled(true)};'
-        ));
+        return array_merge(
+            parent::endsAttrs(),array(
+                'onchange'=>'if (this.value!="on") {whenCancelled(false)} else {whenCancelled(true)};'
+            ));
     }
 
     public function frequencyAttrs()
     {
-        return array_merge(parent::frequencyAttrs(),array(
-            'onchange'=>'if (this.value!="monthly") {freqHide(false)} else {freqHide(true)};'
-        ));
+        return array_merge(
+            parent::frequencyAttrs(),array(
+                'onchange'=>'if (this.value!="monthly") {freqHide(false)} else {freqHide(true)};'
+            ));
     }
 
 }

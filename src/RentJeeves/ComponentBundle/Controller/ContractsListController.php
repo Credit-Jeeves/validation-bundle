@@ -124,7 +124,7 @@ class ContractsListController extends Controller
         );
 
         if ($mobile) {
-            return $this->render('RjComponentBundle:ContractsList:tenant.mobile.html.twig', $pageVars); //mobile template override
+            return $this->render('RjComponentBundle:ContractsList:tenant.mobile.html.twig', $pageVars);
         } else {
             return $pageVars;
         }

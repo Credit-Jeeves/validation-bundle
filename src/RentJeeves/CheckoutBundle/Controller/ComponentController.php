@@ -37,7 +37,6 @@ class ComponentController extends Controller
                 0,
                 0,
                 $attributes
-
             )
         );
         $paymentBalanceOnlyType =  $this->createForm(
@@ -50,7 +49,6 @@ class ComponentController extends Controller
                 0,
                 $attributes,
                 $this->get('translator')
-
             )
         );
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
@@ -73,10 +71,8 @@ class ComponentController extends Controller
             'questionsType' => $questionsType->createView(),
         );
         if ($mobile) {
-            return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars); //mobile template override
+            return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars);
         } else {
-            //return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars); //mobile template override
-            //return $this->render('RjCheckoutBundle:Component:pay.html.twig', $pageVars); //mobile template override
             return $pageVars;
         }
     }
@@ -109,7 +105,7 @@ class ComponentController extends Controller
         );
 
         if ($mobile) {
-            return $this->render('RjCheckoutBundle:Component:source.mobile.html.twig', $pageVars); //mobile template override
+            return $this->render('RjCheckoutBundle:Component:source.mobile.html.twig', $pageVars);
         } else {
             return $pageVars;
         }

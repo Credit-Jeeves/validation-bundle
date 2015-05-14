@@ -28,7 +28,7 @@ class IndexController extends Controller
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         if ($this->isMobile()) {
-            return $this->render('TenantBundle:Index:index.mobile.html.twig', array('user' => $tenant)); //mobile template override
+            return $this->render('TenantBundle:Index:index.mobile.html.twig', array('user' => $tenant));
         } else {
             return array(
                 'user' => $tenant,

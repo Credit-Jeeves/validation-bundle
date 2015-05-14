@@ -39,7 +39,4 @@ interface AttributeGeneratorInterface
     public function submitAttrs();
 
     public function paymentAccountAttrs();
-
-    # add more here
-
 }

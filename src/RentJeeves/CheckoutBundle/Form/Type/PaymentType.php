@@ -133,11 +133,13 @@ class PaymentType extends AbstractType
         if ($this->attributes->isMobile()) {
             $builder->add(
                 'paymentAccount',
-                'choice', array(
-                'choices'   => array(),
-                'attr'        =>$this->attributes->paymentAccountAttrs(),
-                'required'  => false,
-            ));
+                'choice',
+                array(
+                    'choices'   => array(),
+                    'attr'        =>$this->attributes->paymentAccountAttrs(),
+                    'required'  => false,
+                )
+            );
         }
 
         $builder->add(

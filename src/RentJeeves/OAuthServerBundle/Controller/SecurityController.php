@@ -33,15 +33,18 @@ class SecurityController extends BaseController
     protected function renderLogin(array $data)
     {
 
-        if(isset($_SERVER["HTTP_USER_AGENT"])) {
+        if (isset($_SERVER["HTTP_USER_AGENT"])) {
             $user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
             $logger = $this->container->get('logger');
             $logger->debug("new controller user agent: " . $_SERVER['HTTP_USER_AGENT']);
-            if (preg_match("/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|windows ce|nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/", $user_agent)) {
+            $commonPhones="/phone|iphone|itouch|ipod|symbian|android|htc_|htc-";
+            $commonOrganizersAndBrowsers="|palmos|blackberry|opera mini|iemobile|windows ce|";
+            $uncommonDevices="nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/";
+            if (preg_match($commonPhones.$commonOrganizersAndBrowsers.$uncommonDevices, $user_agent)) {
                 $template = sprintf('FOSUserBundle:Security:login.mobile.html.%s', $this->container->getParameter('fos_user.template.engine'));
             }
         }
-        if(!isset($template)) {
+        if (!isset($template)) {
             $template = sprintf('FOSUserBundle:Security:login.html.%s', $this->container->getParameter('fos_user.template.engine'));
         }
         $request = $this->container->get('request');

@@ -93,7 +93,7 @@ class PaymentHistoryController extends Controller
             'aMonthes' => $aMonthes,
         );
         if ($mobile) {
-            return $this->render('RjComponentBundle:PaymentHistory:index.mobile.html.twig', $pageVars); //mobile template override
+            return $this->render('RjComponentBundle:PaymentHistory:index.mobile.html.twig', $pageVars);
         } else {
             return $pageVars;
         }
