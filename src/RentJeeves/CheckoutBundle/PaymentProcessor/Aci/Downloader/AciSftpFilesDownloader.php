@@ -6,7 +6,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDownloaderException;
 use RentJeeves\CoreBundle\Services\SftpClient;
-use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -52,12 +51,12 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
     protected $logger;
 
     /**
-     * @param string     $host
-     * @param string     $port
-     * @param string     $login
-     * @param string     $password
-     * @param string     $reportPath
-     * @param Logger     $logger
+     * @param string $host
+     * @param string $port
+     * @param string $login
+     * @param string $password
+     * @param string $reportPath
+     * @param Logger $logger
      * @param SftpClient $sftpClient
      *
      * @DI\InjectParams({
@@ -146,7 +145,7 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
             $remoteFileName = basename($remoteFile);
             $outputPath = sprintf('%s/%s', $this->reportPath, $remoteFileName);
             $this->downloadRemoteFile($remoteFile, $outputPath);
-            $this->archiveLocalFile($outputPath);
+            $this->archiveRemoteFile($remoteFile);
         }
     }
 
@@ -178,7 +177,7 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
     }
 
     /**
-     * @return array
+     * @return  array
      *
      * @throws AciDownloaderException
      */
@@ -211,32 +210,23 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
     }
 
     /**
-     * @param string $filePath
-     *
-     * @throws AciDownloaderException
+     * @param string $remoteFile
      */
-    protected function archiveLocalFile($filePath)
+    protected function archiveRemoteFile($remoteFile)
     {
-        $fileExtension = substr(strrchr($filePath, '.'), 1);
+        $remoteFileName = basename($remoteFile);
+        $archiveFilename = sprintf('%s/%s', $this->getSftpPathToRemoteDir('/archive'), $remoteFileName);
 
-        $now = new \DateTime();
-        $archiveDir = sprintf('%s/archive/%s/%s', $this->reportPath, $now->format('Y'), $now->format('m'));
-        $archiveFilename = sprintf('%s/%s.%s', $archiveDir, $now->format('d-H-i-s'), $fileExtension);
-
+        $this->logger->debug(sprintf('ACI: Trying to archive remote file "%s".', $archiveFilename));
         try {
-            $this->logger->debug(sprintf('ACI: Trying to archive report "%s".', $filePath));
             $filesystem = new Filesystem();
-            $filesystem->mkdir($archiveDir);
-            $filesystem->rename($filePath, $archiveFilename);
-        } catch (IOException $e) {
+            $filesystem->rename($remoteFile, $archiveFilename);
+        } catch (\Exception $e) {
             $this->logger->debug(
                 sprintf(
-                    'ACI: Archive ACI report - FAILED : %s',
+                    'ACI: Archive remote file - FAILED: %s',
                     $e->getMessage()
                 )
-            );
-            throw new AciDownloaderException(
-                sprintf('An error occurred while trying to archive ACI report: %s', $e->getMessage())
             );
         }
     }

@@ -16,21 +16,21 @@ class LockboxParserCase extends BaseTestCase
         $data = file_get_contents(__DIR__ . '/../../../../Fixtures/Aci/lockbox.csv');
 
         $parser = new LockboxParser($this->getContainer()->get('logger'));
-        $report = $parser->parse($data);
+        $decodedData = $parser->parse($data);
 
-        $this->assertInstanceOf('RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport', $report);
-        $this->assertCount(2, $report->getTransactions());
+        $this->assertTrue(is_array($decodedData));
+        $this->assertCount(2, $decodedData);
         $this->assertInstanceOf(
             'RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction',
-            $report->getTransactions()[0]
+            $decodedData[0]
         );
         $this->assertInstanceOf(
             'RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction',
-            $report->getTransactions()[1]
+            $decodedData[1]
         );
 
         /** @var DepositReportTransaction $transaction */
-        $transaction = $report->getTransactions()[0];
+        $transaction = $decodedData[0];
         $this->assertEquals('6979285', $transaction->getTransactionId());
         $this->assertEquals('10000.00', $transaction->getAmount());
         $this->assertEquals('03242015', $transaction->getDepositDate()->format('mdY'));

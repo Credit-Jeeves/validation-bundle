@@ -3,10 +3,9 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -15,7 +14,7 @@ use RentJeeves\CoreBundle\DateTime;
  *
  * @DI\Service("payment_processor.aci.lockbox_parser", public=false)
  */
-class LockboxParser
+class LockboxParser implements AciParserInterface
 {
     const RECORD_PAYMENT_DETAIL = '6';
 
@@ -32,32 +31,30 @@ class LockboxParser
     const KEY_RETURN_CODE = 20;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
 
     /**
-     * @var Logger $logger
+     * @var LoggerInterface $logger
      *
      * @DI\InjectParams({
      *     "logger" = @DI\Inject("logger"),
      * })
      */
-    public function __construct(Logger $logger)
+    public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
     /**
-     * Parses given data into PaymentProcessorReport.
+     * {@inheritdoc}
      *
-     * @param string $data Lockbox data
-     * @return PaymentProcessorReport
      * @throws AciReportException
      */
     public function parse($data)
     {
-        $paymentProcessorReport = new PaymentProcessorReport();
+        $transactions = [];
 
         $decodedLockboxData = $this->decodeCsv($data);
 
@@ -70,10 +67,10 @@ class LockboxParser
                 $paymentType = $this->getRecordField($reportRecord, self::KEY_CREDIT_DEBIT_MODE);
                 switch ($paymentType) {
                     case self::PAYMENT_CREDIT:
-                        $paymentProcessorReport->addTransaction($this->getCreditTransaction($reportRecord));
+                        $transactions[] = $this->getCreditTransaction($reportRecord);
                         break;
                     case self::PAYMENT_DEBIT:
-                        $paymentProcessorReport->addTransaction($this->getDebitTransaction($reportRecord));
+                        $transactions[] = $this->getDebitTransaction($reportRecord);
                         break;
                     default:
                         $this->logger->alert(sprintf('ACI: Unknown payment type %s in report', $paymentType));
@@ -83,15 +80,16 @@ class LockboxParser
             }
         }
 
-        if (count($paymentProcessorReport->getTransactions()) == 0) {
+        if (count($transactions) === 0) {
             $this->logger->alert('ACI: Lockbox parser found no transactions in the lockbox data');
         }
 
-        return $paymentProcessorReport;
+        return $transactions;
     }
 
     /**
-     * @param string $lockboxData
+     * @param  string $lockboxData
+     *
      * @return array
      */
     protected function decodeCsv($lockboxData)
@@ -102,8 +100,10 @@ class LockboxParser
     }
 
     /**
-     * @param array $record
+     * @param  array $record
+     *
      * @return bool
+     *
      * @throws AciReportException
      */
     protected function isPaymentDetailRecord(array $record)
@@ -112,9 +112,11 @@ class LockboxParser
     }
 
     /**
-     * @param array $record
-     * @param int $fieldKeyNumber
+     * @param  array $record
+     * @param  int $fieldKeyNumber
+     *
      * @return string
+     *
      * @throws AciReportException
      */
     protected function getRecordField(array $record, $fieldKeyNumber)
@@ -127,8 +129,10 @@ class LockboxParser
     }
 
     /**
-     * @param array $record
+     * @param  array $record
+     *
      * @return DepositReportTransaction
+     *
      * @throws AciReportException
      */
     protected function getCreditTransaction(array $record)
@@ -147,8 +151,10 @@ class LockboxParser
     }
 
     /**
-     * @param array $record
+     * @param  array $record
+     *
      * @return ReversalReportTransaction
+     *
      * @throws AciReportException
      */
     protected function getDebitTransaction(array $record)
