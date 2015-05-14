@@ -92,7 +92,7 @@ class ImportSummaryManager
     /**
      * Total rows in the csv file
      *
-     * @param $total
+     * @param integer $total
      */
     public function setTotal($total)
     {
@@ -102,7 +102,7 @@ class ImportSummaryManager
     /**
      * Increment the number of new contracts created.
      */
-    public function incrementNew()
+    public function incrementNewContract()
     {
         $this->logger->debug('Import summary report: increment new');
         $countNew = $this->importSummaryModel->getCountNew();
@@ -123,6 +123,8 @@ class ImportSummaryManager
 
     /**
      * Increment the number of skipped row
+     *
+     * @param integer $offset
      */
     public function incrementSkipped($offset)
     {

@@ -719,7 +719,7 @@ abstract class HandlerAbstract implements HandlerInterface
             if (!empty($contractId)) {
                 $this->getReport()->incrementMatched();
             } else {
-                $this->getReport()->incrementNew();
+                $this->getReport()->incrementNewContract();
             }
             $this->flushEntity($unit = $contract->getUnit());
             $unitMapping = $unit->getUnitMapping();
