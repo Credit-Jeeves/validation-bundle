@@ -22,7 +22,8 @@ class TestEmailController extends BaseController
     public function sendTestAction(EmailTemplate $emailTemplate)
     {
         $enTranslation = $emailTemplate->getEnTranslation();
-        if (null === $parameters = json_decode($enTranslation->getTestVariables(), true)) {
+        $parameters = json_decode($enTranslation->getTestVariables(), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
             $this->getSession()->getFlashBag()->add(
                 'sonata_flash_error',
                 $this->getTranslator()->trans('admin.email.actions.send_test.wrong_json')
@@ -30,7 +31,7 @@ class TestEmailController extends BaseController
         } else {
             $result = $this->getMailer()->sendBaseLetter(
                 current(explode('.', $emailTemplate->getName())),
-                $parameters,
+                $parameters ?: [],
                 $enTranslation->getTestEmailTo(),
                 self::TEST_CULTURE
             );
