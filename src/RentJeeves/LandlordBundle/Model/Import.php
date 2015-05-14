@@ -474,7 +474,7 @@ class Import
     /**
      * @return boolean
      */
-    public function getIsSkipped()
+    public function isSkipped()
     {
         return $this->isSkipped;
     }
