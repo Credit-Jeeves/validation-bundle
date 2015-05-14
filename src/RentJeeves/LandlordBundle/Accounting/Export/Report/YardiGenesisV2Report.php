@@ -4,7 +4,6 @@ namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 
 use Doctrine\ORM\EntityManager;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface as ExportSerializer;
-use DateTime;
 
 class YardiGenesisV2Report extends YardiGenesisReport
 {
@@ -23,11 +22,11 @@ class YardiGenesisV2Report extends YardiGenesisReport
 
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
-        $groupId = $settings['landlord']->getGroup()->getId();
+        $group = $settings['landlord']->getGroup();
         $exportBy = $settings['export_by'];
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groupId, $exportBy);
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, [$group], $exportBy);
     }
 
     protected function generateFilename($params)

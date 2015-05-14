@@ -255,15 +255,15 @@ class OrderRepository extends EntityRepository
     public function getOrdersForYardiGenesis(
         $start,
         $end,
-        $groupId,
+        $groups,
         $exportBy,
         $propertyId = null
     ) {
-        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end, $exportBy);
+        return $this->getOrdersForRealPageReport($groups, $propertyId, $start, $end, $exportBy);
     }
 
     public function getOrdersForRealPageReport(
-        $groupId,
+        $groups,
         $propertyId,
         $start,
         $end,
@@ -290,7 +290,7 @@ class OrderRepository extends EntityRepository
             $query->setParameter('status2', OrderStatus::PENDING);
         }
 
-        $query->andWhere('g.id = :groupId');
+        $query->andWhere('g.id in (:groups)');
 
         if (!is_null($propertyId)) {
             $query->andWhere('prop.id = :propId');
@@ -299,7 +299,13 @@ class OrderRepository extends EntityRepository
 
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('groupId', $groupId);
+
+        $groupsId = [];
+        foreach ($groups as $group) {
+            $groupsId[] = $group->getId();
+        }
+        $query->setParameter('groups', $groupsId);
+
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
 
