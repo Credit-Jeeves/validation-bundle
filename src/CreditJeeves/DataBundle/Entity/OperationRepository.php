@@ -58,7 +58,7 @@ class OperationRepository extends EntityRepository
     public function getOperationForImport(
         Tenant $tenant,
         Contract $contract,
-        DateTime $paidFor
+        \DateTime $paidFor
     ) {
         $query = $this->createQueryBuilder("operation");
         $query->innerJoin("operation.order", "ord");
