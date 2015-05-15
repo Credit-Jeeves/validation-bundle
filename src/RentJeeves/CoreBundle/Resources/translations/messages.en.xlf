@@ -3000,6 +3000,10 @@
                 <source>yardi.sync_balance.label</source>
                 <target>Sync balance?</target>
             </trans-unit>
+            <trans-unit id="yardi.post_payments.label">
+                <source>yardi.post_payments.label</source>
+                <target>Post Payments?</target>
+            </trans-unit>
             <trans-unit id="common.status">
                 <source>common.status</source>
                 <target>Status</target>

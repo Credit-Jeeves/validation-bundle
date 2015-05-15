@@ -26,16 +26,25 @@ class YardiSettingsType extends Base
         $builder->add(
             'syncBalance',
             'checkbox',
-            array(
+            [
                 'error_bubbling'    => true,
                 'label'             => 'yardi.sync_balance.label',
                 'required'          => false,
-            )
+            ]
+        );
+        $builder->add(
+            'postPayments',
+            'checkbox',
+            [
+                'error_bubbling'    => true,
+                'label'             => 'yardi.post_payments.label',
+                'required'          => false,
+            ]
         );
         $builder->add(
             'paymentTypeACH',
             'choice',
-            array(
+            [
                 'error_bubbling'    => true,
                 'choices'           => array_map(
                     'strtoupper',
@@ -45,7 +54,7 @@ class YardiSettingsType extends Base
                     )
                 ),
                 'label'             => 'common.payment_type_ach',
-            )
+            ]
         );
 
         $builder->add(
