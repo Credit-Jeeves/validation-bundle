@@ -333,7 +333,7 @@ class ExportType extends AbstractType
         );
 
         $checkBoxJs = "visible: selectedType() == 'renttrack' || selectedType() == 'yardi_genesis'";
-        $checkBoxJs .= "|| selectedType() == 'yardi_genesis_v2'";
+        $checkBoxJs .= "|| selectedType() == 'yardi_genesis_v2' || selectedType() == 'promas'";
 
         $builder->add(
             'includeAllGroups',

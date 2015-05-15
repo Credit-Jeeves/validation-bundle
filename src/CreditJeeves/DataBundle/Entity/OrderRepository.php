@@ -333,8 +333,19 @@ class OrderRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getOrdersForPromasReport(Group $group, $start, $end, $exportBy)
+    /**
+     * @param array $groups
+     * @param string $start
+     * @param string $end
+     * @param string $exportBy
+     * @return mixed
+     */
+    public function getOrdersForPromasReport(array $groups, $start, $end, $exportBy)
     {
+        if (empty($groups)) {
+            throw new \LogicException('Must have at least one group');
+        }
+
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
@@ -359,14 +370,18 @@ class OrderRepository extends EntityRepository
         }
 
         $query->andWhere('o.type in (:orderType)');
-        $query->andWhere('g.id = :groupId');
+        $query->andWhere('g.id in (:groups)');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('res.holding = :holding');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
 
-        $query->setParameter('orderType', array(OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK));
-        $query->setParameter('groupId', $group->getId());
+        $groupsId = [];
+        foreach ($groups as $group) {
+            $groupsId[] = $group->getId();
+        }
+        $query->setParameter('orderType', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->setParameter('groups', $groups);
         $query->setParameter('holding', $group->getHolding());
         $query->orderBy('res.residentId', 'ASC');
         $query->orderBy('transaction.batchId', 'ASC');

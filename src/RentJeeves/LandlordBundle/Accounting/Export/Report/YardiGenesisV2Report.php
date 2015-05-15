@@ -28,7 +28,7 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $landlord = $settings['landlord'];
 
         if (isset($settings['includeAllGroups']) && $settings['includeAllGroups']) {
-            $groups = $landlord->getGroups($landlord->getUser());
+            $groups = $landlord->getGroups($landlord->getUser())->toArray();
         } else {
             $groups = [$landlord->getGroup()];
         }

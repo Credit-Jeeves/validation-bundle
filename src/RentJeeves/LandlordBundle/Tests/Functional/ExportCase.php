@@ -312,8 +312,10 @@ class ExportCase extends BaseTestCase
     public function exportByPromasCsv()
     {
         return [
-            ['deposits', 5],
-            ['payments', 6],
+            ['deposits', 5, 'uncheck'],
+            ['payments', 6, 'uncheck'],
+            ['deposits', 5, 'check'],
+            ['payments', 6, 'check'],
         ];
     }
 
@@ -321,7 +323,7 @@ class ExportCase extends BaseTestCase
      * @test
      * @dataProvider exportByPromasCsv
      */
-    public function promasCsvFormat($exportBy, $countRows)
+    public function promasCsvFormat($exportBy, $countRows, $methodForAllGroups)
     {
         $this->load(true);
         $this->createPayment();
@@ -342,7 +344,8 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-
+        $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $forAllGroubs->$methodForAllGroups();
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
