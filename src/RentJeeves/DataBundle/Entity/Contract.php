@@ -150,6 +150,7 @@ class Contract extends Base
         if (empty($day) && ($this->getStartAt() instanceof DateTime)) {
             $day = $this->getStartAt()->format('j');
         }
+
         return $day;
     }
 
@@ -162,6 +163,7 @@ class Contract extends Base
         if (empty($date)) {
             $date = $this->getStartAt();
         }
+
         return $date;
     }
 
@@ -179,6 +181,7 @@ class Contract extends Base
         if ($holdingName != $groupName) {
             return $holdingName . ' ' . $groupName;
         }
+
         return $holdingName;
     }
 
@@ -198,6 +201,7 @@ class Contract extends Base
                 return $payment;
             }
         }
+
         return null;
     }
 
@@ -287,8 +291,8 @@ class Contract extends Base
         $payments = $this->getPayments();
         $payment = $payments->first();
 
-        $result['reminder_revoke'] = ($this->getStatus() === ContractStatus::INVITE)? true : false;
-        $result['payment_setup'] = ($payment)? true : false;
+        $result['reminder_revoke'] = ($this->getStatus() === ContractStatus::INVITE) ? true : false;
+        $result['payment_setup'] = ($payment) ? true : false;
         $result['search'] = $this->getSearch();
 
         if ($setting = $tenant->getSettings()) {
@@ -318,6 +322,7 @@ class Contract extends Base
                 $result = $interval->days.self::PAYMENT_LATE;
             }
         }
+
         return $result;
     }
 
@@ -337,6 +342,7 @@ class Contract extends Base
                 }
             }
             krsort($payments);
+
             return count($payments) ? current($payments) : $result;
         }
     }
@@ -358,11 +364,13 @@ class Contract extends Base
         }
         if (ContractStatus::PENDING == $this->getStatus()) {
             $result['class'] = 'contract-pending';
+
             return $result;
         }
         if (ContractStatus::FINISHED == $this->getStatus()) {
             $result['status'] = strtoupper(ContractStatus::FINISHED);
             $result['class'] = '';
+
             return $result;
         }
         if ($date = $this->getPaidTo()) {
@@ -400,6 +408,7 @@ class Contract extends Base
                 ];
                 $result['status_name'] = 'late';
                 $result['class'] = 'contract-late';
+
                 return $result;
             }
 
@@ -410,6 +419,7 @@ class Contract extends Base
             if ($result['status'] == strtoupper(ContractStatus::APPROVED) ||
                 $result['status'] == strtoupper(ContractStatus::INVITE)) {
                 $result['class'] = 'contract-late';
+
                 return $result;
             }
 
@@ -417,6 +427,7 @@ class Contract extends Base
         }
         $result['status'] = strtoupper($this->getStatus());
         $result['class'] = '';
+
         return $result;
     }
 
@@ -441,6 +452,7 @@ class Contract extends Base
         } else {
             $result = implode('', $result);
         }
+
         return $result;
     }
 
@@ -483,7 +495,7 @@ class Contract extends Base
                 $interval = $currentDate->diff($paidFor)->format('%r%a');
                 $status = $order->getStatus();
                 switch ($status) {
-                    case OrderStatus::NEWONE:
+                    case OrderStatus::NEWONE :
                         $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
                         $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
                         break;
@@ -513,6 +525,7 @@ class Contract extends Base
         }
         ksort($payments);
         $result['history'] = $payments;
+
         return $result;
     }
 
@@ -546,6 +559,7 @@ class Contract extends Base
                 'amount' => 0,
             );
         }*/
+
         return $result;
     }
 
@@ -569,6 +583,7 @@ class Contract extends Base
                 $newDate->setDate(null, null, $this->getDueDate());
             }
         }
+
         return $newDate;
     }
 
@@ -594,6 +609,7 @@ class Contract extends Base
         } else {
             $newDate->modify('+1 months');
         }
+
         return $this->setPaidTo($this->fixDay($newDate));
     }
 
@@ -610,7 +626,7 @@ class Contract extends Base
         $paidTo = $this->getPaidTo();
         $newDate = clone $paidTo;
         $rent = $this->getRent();
-        $amount = $amount?:$rent;
+        $amount = $amount ?: $rent;
         if ($amount > $rent) {
             $newDate->modify('-1 months');
             $diff = $amount - $rent;
@@ -636,6 +652,7 @@ class Contract extends Base
     private function countPaidDays($rent, $paid, $date)
     {
         $days = $date->format('t');
+
         return floor($paid * $days/ $rent);
     }
 
@@ -726,7 +743,7 @@ class Contract extends Base
     public function setStatusApproved()
     {
         $startAt = $this->getStartAt();
-        $dueDateFromStartAt = (int)$startAt->format('j');
+        $dueDateFromStartAt = (int) $startAt->format('j');
         $paidTo = new DateTime();
         $paidTo->setDate($startAt->format('Y'), $startAt->format('n'), null);
         if ($dueDateFromStartAt > $this->getDueDate()) {
@@ -735,6 +752,7 @@ class Contract extends Base
         $paidTo->setDate(null, null, $this->getDueDate());
         $this->setPaidTo($paidTo);
         $this->setStatus(ContractStatus::APPROVED);
+
         return $this;
     }
 
@@ -751,6 +769,7 @@ class Contract extends Base
         if ($interval < 0) {
             $result = true;
         }
+
         return $result;
     }
 
@@ -762,6 +781,7 @@ class Contract extends Base
             $paidTo = clone $startAt;
             $this->setPaidTo($paidTo);
         }
+
         return $this;
     }
 
@@ -786,7 +806,7 @@ class Contract extends Base
     public function __toString()
     {
         if ($this->getProperty()) {
-            return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
+            return $this->getProperty()->getAddress() . ($this->getUnit() ? ' #' . $this->getUnit()->getName() : '');
         }
 
         return '';
@@ -814,9 +834,9 @@ class Contract extends Base
         if (0 == $collection->count()) {
             return null;
         }
+
         return $collection[0];
     }
-
 
     /**
      * Have test by path: src/RentJeeves/DataBundle/Tests/Unit/ContractEntityCase.php
@@ -923,7 +943,6 @@ class Contract extends Base
     {
         return $this->getStartAt();
     }
-
 
     public function getCurrentBalance()
     {

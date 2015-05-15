@@ -35,18 +35,18 @@ class OrderRepository extends EntityRepository
     public function deleteUserOrders(\CreditJeeves\DataBundle\Entity\User $User)
     {
         $query = $this->createQueryBuilder('o')
-                      ->delete()
-                      ->where('o.cj_applicant_id = :id')
-                      ->setParameter('id', $User->getId())
-                      ->getQuery()
-                      ->execute();
+            ->delete()
+            ->where('o.cj_applicant_id = :id')
+            ->setParameter('id', $User->getId())
+            ->getQuery()
+            ->execute();
     }
 
     /**
-     * @param  Group  $group
+     * @param  Group $group
      * @param  string $searchBy
      * @param  string $search
-     * @param  bool   $showCashPayments
+     * @param  bool $showCashPayments
      * @return array
      */
     public function countOrders(
@@ -67,8 +67,8 @@ class OrderRepository extends EntityRepository
             $this->applySearchField($searchBy);
             $search = $this->prepareSearch($search);
             foreach ($search as $item) {
-                $query->andWhere($searchBy.' LIKE :search');
-                $query->setParameter('search', '%'.$item.'%');
+                $query->andWhere($searchBy . ' LIKE :search');
+                $query->setParameter('search', '%' . $item . '%');
             }
         }
 
@@ -84,14 +84,14 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param  Group  $group
-     * @param  int    $page
-     * @param  int    $limit
+     * @param  Group $group
+     * @param  int $page
+     * @param  int $limit
      * @param  string $sort
      * @param  string $order
      * @param  string $searchBy
      * @param  string $search
-     * @param  bool   $showCashPayments
+     * @param  bool $showCashPayments
      * @return mixed
      */
     public function getOrdersPage(
@@ -118,8 +118,8 @@ class OrderRepository extends EntityRepository
             $this->applySearchField($searchBy);
             $search = $this->prepareSearch($search);
             foreach ($search as $item) {
-                $query->andWhere($searchBy.' LIKE :search');
-                $query->setParameter('search', '%'.$item.'%');
+                $query->andWhere($searchBy . ' LIKE :search');
+                $query->setParameter('search', '%' . $item . '%');
             }
         }
         switch ($sort) {
@@ -139,7 +139,7 @@ class OrderRepository extends EntityRepository
                 $query->addOrderBy('unit.name', $order);
                 break;
             default:
-                $sort = 'o.'.$sort;
+                $sort = 'o.' . $sort;
                 $query->orderBy($sort, $order);
                 break;
         }
@@ -159,7 +159,7 @@ class OrderRepository extends EntityRepository
     {
         switch ($field) {
             case 'status':
-                $field = 'o.'.$field;
+                $field = 'o.' . $field;
                 break;
             case 'amount':
                 $field = 'o.sum';
@@ -180,7 +180,7 @@ class OrderRepository extends EntityRepository
     {
         switch ($field) {
             case 'status':
-                $field = 'o.'.$field;
+                $field = 'o.' . $field;
                 break;
             case 'amount':
                 $field = 'o.sum';
@@ -302,13 +302,21 @@ class OrderRepository extends EntityRepository
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
             $query->where('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
             $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
-            $query->andWhere('o.status = :status');
-            $query->setParameter('status', OrderStatus::COMPLETE);
+            $query->andWhere('o.status IN (:statuses)');
+            $query->setParameter('statuses', [
+                OrderStatus::COMPLETE,
+                OrderStatus::REFUNDED,
+                OrderStatus::RETURNED,
+            ]);
         } else {
             $query->where("STR_TO_DATE(o.created_at, '%Y-%c-%e') BETWEEN :start AND :end");
-            $query->andWhere('o.status = :status1 or o.status = :status2');
-            $query->setParameter('status1', OrderStatus::COMPLETE);
-            $query->setParameter('status2', OrderStatus::PENDING);
+            $query->andWhere('o.status IN (:statuses)');
+            $query->setParameter('statuses', [
+                OrderStatus::COMPLETE,
+                OrderStatus::REFUNDED,
+                OrderStatus::RETURNED,
+                OrderStatus::PENDING
+            ]);
         }
 
         $query->andWhere('g.id in (:groups)');
@@ -358,15 +366,19 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('g.groupSettings', 'gs');
 
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
-            $query->where('o.status = :status');
+            $query->where('o.status IN (:statuses)');
             $query->andWhere('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
             $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
-            $query->setParameter('status', OrderStatus::COMPLETE);
+            $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         } else {
-            $query->where('o.status = :status1 OR o.status = :status2');
+            $query->where('o.status IN (:statuses)');
             $query->andWhere("STR_TO_DATE(o.created_at, '%Y-%c-%e') BETWEEN :start AND :end");
-            $query->setParameter('status1', OrderStatus::COMPLETE);
-            $query->setParameter('status2', OrderStatus::PENDING);
+            $query->setParameter('statuses', [
+                OrderStatus::COMPLETE,
+                OrderStatus::REFUNDED,
+                OrderStatus::RETURNED,
+                OrderStatus::PENDING
+            ]);
         }
 
         $query->andWhere('o.type in (:orderType)');
@@ -554,8 +566,8 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param  User    $user
-     * @param  array   $excludedStatuses
+     * @param  User $user
+     * @param  array $excludedStatuses
      * @return Order[]
      */
     public function getUserOrders(User $user, array $excludedStatuses = [OrderStatus::NEWONE])
