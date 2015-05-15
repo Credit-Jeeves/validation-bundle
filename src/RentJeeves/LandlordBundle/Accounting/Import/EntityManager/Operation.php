@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use CreditJeeves\DataBundle\Entity\Operation as EntityOperation;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\LandlordBundle\Model\Import;
 
 /**
@@ -25,8 +26,10 @@ trait Operation
             $paidFor
         );
 
+        $payment = $this->currentImportModel->getContract()->getActivePayment();
+
         //We can't create double payment for current month
-        if ($operation) {
+        if ($operation || (!empty($payment) && $payment->getStatus() === PaymentStatus::ACTIVE)) {
             return true;
         }
 
