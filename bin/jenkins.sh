@@ -1,19 +1,31 @@
 #! /bin/sh
 
+set -x
+
 BUILD="dev"
+if [ $1 ]; then
+    BUILD=$1
+fi
+
 DIR="$(cd `dirname $0` ; pwd)"
-BUILDS_DIR="$WORKSPACE/../../jobs/$JOB_NAME/builds"
+BUILDS_DIR="${WORKSPACE}/../../jobs/${JOB_NAME}_${EXECUTOR_NUMBER}/builds"
 BUILD_DIR="$DIR/../app/logs/build"
 PHPUNIT_PATH=`which phpunit`
 PHPUNIT_PARAMS="--debug -v"
+
+export SYMFONY__DATABASE__NAME="renttrack_jenkins"
+export SYMFONY__SERVER__NAME="dev2"
+export SYMFONY__SELENIUM__HOST__URL="http://10.164.182.167:4444/wd/hub"
+if [ "jenkins" = $BUILD ]; then
+    export SYMFONY__DATABASE__NAME="renttrack_jenkins_pr${EXECUTOR_NUMBER}"
+    export SYMFONY__SERVER__NAME="pr${EXECUTOR_NUMBER}.test"
+    export SYMFONY__SELENIUM__HOST__URL="http://10.164.182.167:444${EXECUTOR_NUMBER}/wd/hub"
+fi
 
 rm -rf $BUILD_DIR/*
 mkdir $BUILD_DIR/coverage
 mkdir $BUILD_DIR/coverage/html
 
-if [ $1 ]; then
-    BUILD=$1
-fi
 
 if [ ! -f $DIR/vendor/autoload.php ]; then
      php bin/composer.phar install --no-scripts
