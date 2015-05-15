@@ -1,2 +1,68 @@
-{% extends "RjComponentBundle:Mailer:base.html.twig" %}
-{# @TODO: remove all templates in this folder #}
+{% extends "CoreBundle:Mailer:border.html.twig" %}
+
+{% block content %}
+    <h1 style="
+            color: #669900;
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+            ">{% block h1 %}{% endblock %}</h1>
+    <h2 style="
+            color: #669900;
+            display: block;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+            ">{% block h2 %}{% endblock %}</h2>
+    <h3 style="
+            color: #669900;
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+            ">{% block h3 %}{% endblock %}</h3>
+    <h4 style="
+            color: #202020;
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+            ">{% block h4 %}{% endblock %}</h4>
+    <div id="email-body" style="
+            margin-bottom: 10px;
+            ">
+        {% block email %}{% endblock %}
+    </div>
+    <div style="
+            margin-bottom: 10px;
+            ">
+        {% block button %}{% endblock %}
+    </div>
+    <div style="border-bottom: 1px solid #c8c8c8;"></div>
+    <div style="clear: both;"></div>
+    <div style="color: #000000;">
+        <p>{{ 'email.glad.help' | trans }}</p>
+        <p><b>{{ 'email.creditjeeves.team' | trans }}</b></p>
+    </div>
+{% endblock %}
