@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Entity\ImportError;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Enum\ImportType;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * @Service("import_summary.manager")
@@ -38,7 +38,7 @@ class ImportSummaryManager
      *     "logger" = @Inject("logger")
      * })
      */
-    public function __construct(EntityManager $em, Logger $logger = null)
+    public function __construct(EntityManager $em, LoggerInterface $logger = null)
     {
         $this->em = $em;
         $this->logger = $logger ? $logger : new Logger(get_class());
