@@ -39,6 +39,7 @@ services:
             - Rj\EmailBundle\Entity\EmailTemplate
             - 'SonataAdminBundle:CRUD'
         calls:
+            - [ setTemplate, [edit, AdminBundle:CRUD:form_email_template_edit.html.twig]]
             - [ setLocales, [%rj_email.locales%]]
 
     sonata.admin.rj_holding:
