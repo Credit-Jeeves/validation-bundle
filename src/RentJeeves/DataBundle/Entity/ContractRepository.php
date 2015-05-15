@@ -559,6 +559,49 @@ class ContractRepository extends EntityRepository
     }
 
     /**
+     * @param  Tenant                                 $tenant
+     * @param  Group                                  $group
+     * @param  Holding                                $holding
+     * @param  string                                 $externalLeaseId
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getImportContractByExtenalLeaseId(
+        Tenant $tenant,
+        Group $group,
+        Holding $holding = null,
+        $externalLeaseId
+    ) {
+        $query = $this->createQueryBuilder('contract');
+        $query->innerJoin('contract.unit', 'unit');
+        $query->innerJoin('contract.property', 'property');
+        $query->innerJoin('contract.tenant', 'tenant');
+        $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
+        $query->andWhere('tenant.id = :tenantId');
+        $query->andWhere('contract.externalLeaseId = :externalLeaseId');
+
+        if ($holding) {
+            $query->andWhere('contract.holding = :holding');
+            $query->setParameter('holding', $holding);
+        }
+
+        if ($group) {
+            $query->andWhere('contract.group = :group');
+            $query->setParameter('group', $group);
+        }
+
+        $query->setParameter('externalLeaseId', $externalLeaseId);
+        $query->setParameter('approved', ContractStatus::APPROVED);
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('invite', ContractStatus::INVITE);
+        $query->setParameter('tenantId', $tenant->getId());
+
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
+    /**
      * @param  integer                                $tenantId
      * @param  string                                 $unitName
      * @param  string                                 $externalUnitId
@@ -606,16 +649,11 @@ class ContractRepository extends EntityRepository
             $query->setParameter('group', $group);
         }
 
-        // if 2 or more contract get contract with status current in first priority
-        $query->addOrderBy('contract.status', "DESC");
-        //If 2 or more contract, get last updated
-        $query->addOrderBy('contract.updatedAt', "DESC");
         $query->setParameter('approved', ContractStatus::APPROVED);
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('invite', ContractStatus::INVITE);
         $query->setParameter('tenantId', $tenantId);
 
-        $query->setMaxResults(1);
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();
