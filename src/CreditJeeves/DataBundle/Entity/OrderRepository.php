@@ -252,23 +252,44 @@ class OrderRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param string $start
+     * @param string $end
+     * @param array $groups
+     * @param string $exportBy
+     * @param integer $propertyId
+     * @return mixed
+     */
     public function getOrdersForYardiGenesis(
         $start,
         $end,
-        $groups,
+        array $groups,
         $exportBy,
         $propertyId = null
     ) {
         return $this->getOrdersForRealPageReport($groups, $propertyId, $start, $end, $exportBy);
     }
 
+    /**
+     * @param array $groups
+     * @param integer $propertyId
+     * @param string $start
+     * @param string $end
+     * @param string $exportBy
+     * @return mixed
+     */
     public function getOrdersForRealPageReport(
-        $groups,
+        array $groups,
         $propertyId,
         $start,
         $end,
         $exportBy
     ) {
+
+        if (empty($groups)) {
+            throw new \LogicException('Must have at least one group');
+        }
+
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');

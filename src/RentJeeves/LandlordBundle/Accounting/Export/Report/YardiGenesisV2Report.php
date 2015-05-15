@@ -24,7 +24,7 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $endDate = $settings['end'];
         $exportBy = $settings['export_by'];
         $orderRepository = $this->em->getRepository('DataBundle:Order');
-        /** @var $landlord Landlord */
+        /** @var Landlord $landlord */
         $landlord = $settings['landlord'];
 
         if (isset($settings['includeAllGroups']) && $settings['includeAllGroups']) {
