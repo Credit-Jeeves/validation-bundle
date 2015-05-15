@@ -34,13 +34,14 @@ class ImportSummaryManager
 
     /**
      * @InjectParams({
-     *     "em" = @Inject("doctrine.orm.entity_manager")
+     *     "em" = @Inject("doctrine.orm.entity_manager"),
+     *     "logger" = @Inject("logger")
      * })
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, Logger $logger = null)
     {
         $this->em = $em;
-        $this->logger = new Logger(get_class());
+        $this->logger = $logger ? $logger : new Logger(get_class());
     }
 
     /**
