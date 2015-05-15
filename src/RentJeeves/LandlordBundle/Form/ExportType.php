@@ -332,19 +332,22 @@ class ExportType extends AbstractType
             ]
         );
 
+        $checkBoxJs = "visible: selectedType() == 'renttrack' || selectedType() == 'yardi_genesis'";
+        $checkBoxJs .= "|| selectedType() == 'yardi_genesis_v2'";
+
         $builder->add(
             'includeAllGroups',
             'checkbox',
-            array(
+            [
                 'label' => 'export.renttrack.include_all_groups',
                 'required' => false,
-                'attr' => array(
+                'attr' => [
                     'data-bind' => 'checked: includeAllGroups',
-                    'row_attr' => array(
-                        'data-bind' => "visible: selectedType() == 'renttrack' || selectedType() == 'yardi_genesis'",
-                    )
-                ),
-            )
+                    'row_attr' => [
+                        'data-bind' => $checkBoxJs,
+                    ]
+                ],
+            ]
         );
     }
 

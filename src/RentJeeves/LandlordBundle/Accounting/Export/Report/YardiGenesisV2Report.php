@@ -22,11 +22,18 @@ class YardiGenesisV2Report extends YardiGenesisReport
 
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
-        $group = $settings['landlord']->getGroup();
         $exportBy = $settings['export_by'];
         $orderRepository = $this->em->getRepository('DataBundle:Order');
+        /** @var $landlord Landlord */
+        $landlord = $settings['landlord'];
 
-        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, [$group], $exportBy);
+        if (isset($settings['includeAllGroups']) && $settings['includeAllGroups']) {
+            $groups = $landlord->getGroups($landlord->getUser());
+        } else {
+            $groups = [$landlord->getGroup()];
+        }
+
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groups, $exportBy);
     }
 
     protected function generateFilename($params)

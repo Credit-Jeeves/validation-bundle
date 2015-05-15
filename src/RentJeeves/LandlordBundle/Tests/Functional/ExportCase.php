@@ -612,8 +612,10 @@ class ExportCase extends BaseTestCase
     public function exportByYardiGenesisV2Csv()
     {
         return [
-            ['deposits', 12],
-            ['payments', 13],
+            ['deposits', 12, 'uncheck'],
+            ['payments', 13, 'uncheck'],
+            ['deposits', 23, 'check'],
+            ['payments', 23, 'check'],
         ];
     }
 
@@ -621,7 +623,7 @@ class ExportCase extends BaseTestCase
      * @test
      * @dataProvider exportByYardiGenesisV2Csv
      */
-    public function yardiGenesisV2CsvFormat($exportBy, $countRows)
+    public function yardiGenesisV2CsvFormat($exportBy, $countRows, $methodForAllGroups)
     {
         $this->load(true);
         $this->createPayment();
@@ -647,6 +649,8 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
         $this->selectExportBy($exportBy);
+        $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $forAllGroubs->$methodForAllGroups();
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
