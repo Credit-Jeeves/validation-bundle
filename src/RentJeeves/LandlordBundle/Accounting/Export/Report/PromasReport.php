@@ -2,7 +2,6 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -66,12 +65,18 @@ class PromasReport extends ExportReport
 
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
-        $group = $settings['landlord']->getGroup();
         $exportBy = $settings['export_by'];
+        /** @var Landlord $landlord */
+        $landlord = $settings['landlord'];
 
+        if (isset($settings['includeAllGroups']) && $settings['includeAllGroups']) {
+            $groups = $landlord->getGroups($landlord->getUser())->toArray();
+        } else {
+            $groups = [$landlord->getGroup()];
+        }
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForPromasReport($group, $beginDate, $endDate, $exportBy);
+        return $orderRepository->getOrdersForPromasReport($groups, $beginDate, $endDate, $exportBy);
     }
 
     protected function validateSettings($settings)

@@ -252,23 +252,44 @@ class OrderRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param string $start
+     * @param string $end
+     * @param array $groups
+     * @param string $exportBy
+     * @param integer $propertyId
+     * @return mixed
+     */
     public function getOrdersForYardiGenesis(
         $start,
         $end,
-        $groupId,
+        array $groups,
         $exportBy,
         $propertyId = null
     ) {
-        return $this->getOrdersForRealPageReport($groupId, $propertyId, $start, $end, $exportBy);
+        return $this->getOrdersForRealPageReport($groups, $propertyId, $start, $end, $exportBy);
     }
 
+    /**
+     * @param array $groups
+     * @param integer $propertyId
+     * @param string $start
+     * @param string $end
+     * @param string $exportBy
+     * @return mixed
+     */
     public function getOrdersForRealPageReport(
-        $groupId,
+        array $groups,
         $propertyId,
         $start,
         $end,
         $exportBy
     ) {
+
+        if (empty($groups)) {
+            throw new \LogicException('Must have at least one group');
+        }
+
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
@@ -290,7 +311,7 @@ class OrderRepository extends EntityRepository
             $query->setParameter('status2', OrderStatus::PENDING);
         }
 
-        $query->andWhere('g.id = :groupId');
+        $query->andWhere('g.id in (:groups)');
 
         if (!is_null($propertyId)) {
             $query->andWhere('prop.id = :propId');
@@ -299,15 +320,32 @@ class OrderRepository extends EntityRepository
 
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
-        $query->setParameter('groupId', $groupId);
+
+        $groupsId = [];
+        foreach ($groups as $group) {
+            $groupsId[] = $group->getId();
+        }
+        $query->setParameter('groups', $groupsId);
+
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
 
         return $query->execute();
     }
 
-    public function getOrdersForPromasReport(Group $group, $start, $end, $exportBy)
+    /**
+     * @param array $groups
+     * @param string $start
+     * @param string $end
+     * @param string $exportBy
+     * @return mixed
+     */
+    public function getOrdersForPromasReport(array $groups, $start, $end, $exportBy)
     {
+        if (empty($groups)) {
+            throw new \LogicException('Must have at least one group');
+        }
+
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
@@ -332,14 +370,18 @@ class OrderRepository extends EntityRepository
         }
 
         $query->andWhere('o.type in (:orderType)');
-        $query->andWhere('g.id = :groupId');
+        $query->andWhere('g.id in (:groups)');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('res.holding = :holding');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
 
-        $query->setParameter('orderType', array(OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK));
-        $query->setParameter('groupId', $group->getId());
+        $groupsId = [];
+        foreach ($groups as $group) {
+            $groupsId[] = $group->getId();
+        }
+        $query->setParameter('orderType', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->setParameter('groups', $groups);
         $query->setParameter('holding', $group->getHolding());
         $query->orderBy('res.residentId', 'ASC');
         $query->orderBy('transaction.batchId', 'ASC');
