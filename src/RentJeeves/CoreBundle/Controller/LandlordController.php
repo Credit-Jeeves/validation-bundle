@@ -1,11 +1,11 @@
 <?php
 namespace RentJeeves\CoreBundle\Controller;
 
+use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Landlord;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class LandlordController extends Controller
+class LandlordController extends BaseController
 {
     /**
      * @return Landlord
@@ -20,6 +20,7 @@ class LandlordController extends Controller
     public function getGroups()
     {
         $user = $this->getUser();
+
         return $user->getGroups();
     }
 

@@ -38,7 +38,6 @@ class ResettingCase extends BaseTestCase
         $emails = $this->getEmails();
         $this->assertCount(1, $emails);
 
-
         $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
         $this->assertEquals('Reset Password', $email->getSubject());
 

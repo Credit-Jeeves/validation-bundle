@@ -8,7 +8,7 @@ use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\LandlordBundle\Form\Enum\ImportType;
+use RentJeeves\DataBundle\Enum\ImportType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -86,9 +86,9 @@ class StorageCsv extends StorageAbstract
         if ($justFileName) {
             return $this->session->get(self::IMPORT_FILE_PATH, null);
         }
+
         return $this->getFileDirectory().$this->session->get(self::IMPORT_FILE_PATH, '');
     }
-
 
     public function setPropertyId($propertyId)
     {
@@ -100,6 +100,7 @@ class StorageCsv extends StorageAbstract
         if ($this->isMultipleProperty()) {
             return null;
         }
+
         return $this->session->get(self::IMPORT_PROPERTY_ID);
     }
 
@@ -123,7 +124,6 @@ class StorageCsv extends StorageAbstract
         $this->session->get(self::IMPORT_FIELD_DELIMITER);
     }
 
-
     /**
      * @param FormInterface $form
      */
@@ -146,6 +146,7 @@ class StorageCsv extends StorageAbstract
 
         $this->setIsMultipleGroup(false);
         $this->setIsMultipleProperty(true);
+        $this->setImportType($importType);
 
         if (ImportType::MULTI_GROUPS == $importType) {
             $this->setIsMultipleGroup(true);
@@ -224,6 +225,8 @@ class StorageCsv extends StorageAbstract
         $this->session->remove(self::IMPORT_OFFSET_START);
         $this->session->remove(self::IS_MULTIPLE_PROPERTY);
         $this->session->remove(self::IS_MULTIPLE_GROUP);
+        $this->session->remove(self::IMPORT_TYPE);
+        $this->session->remove(self::IMPORT_SUMMARY_REPORT_PUBLIC_ID);
     }
 
     public function clearDataBeforeReview()

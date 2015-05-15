@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Controller;
 
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
@@ -11,6 +12,7 @@ use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
+use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
 use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -31,6 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\Serializer\Serializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/accounting")
@@ -192,9 +195,9 @@ class AccountingController extends Controller
         } catch (ImportStorageException $e) {
             return $this->redirect($this->generateUrl('accounting_import_file'));
         } catch (ImportMappingException $e) {
-            return array(
+            return [
                 'error' => $e->getMessage()
-            );
+            ];
         }
 
         $group = $this->get('core.session.landlord')->getGroup();
@@ -221,12 +224,32 @@ class AccountingController extends Controller
 
         $form = $form->createView();
 
-        return array(
+        return [
             'error'        => false,
             'data'         => $dataView,
             'form'         => $form
+        ];
+    }
+
+    /**
+     * @Route(
+     *     "/import/summary/report/{publicId}",
+     *     name="import_summary_report",
+     *     options={"expose"=true}
+     * )
+     * @ParamConverter(
+     *      "importSummary",
+     *      class="RjDataBundle:ImportSummary"
+     * )
+     */
+    public function summaryReportAction(ImportSummary $importSummary)
+    {
+        return $this->render(
+            'LandlordBundle:Accounting:summaryReport.html.twig',
+            ['report' => $importSummary]
         );
     }
+
     /**
      * @Route(
      *     "/import",
@@ -279,10 +302,10 @@ class AccountingController extends Controller
      */
     public function getRowsAction(Request $request)
     {
-        $result = array(
+        $result = [
             'error'   => false,
             'message' => '',
-        );
+        ];
 
         if (!$this->isAjaxRequestValid()) {
             $result['error'] = true;
@@ -291,10 +314,9 @@ class AccountingController extends Controller
             return new JsonResponse($result);
         }
 
-        /**
-         * @var $importFactory ImportFactory
-         */
+        /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
+        /** @var StorageAbstract $storage */
         $storage = $importFactory->getStorage();
         $mapping = $importFactory->getMapping();
 
@@ -319,9 +341,20 @@ class AccountingController extends Controller
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
+        /** @var ImportSummaryManager $importSummaryManager */
+        $importSummaryManager = $this->get('import_summary.manager');
+
+        $importSummaryManager->initialize(
+            $this->getCurrentGroup(),
+            $storage->getImportType(),
+            $storage->getImportSummaryReportPublicId()
+        );
+
+        $storage->setImportSummaryReportPublicId($importSummaryManager->getReportPublicId());
 
         $result['rows'] = $collection;
         $result['total'] = $total;
+        $result['importSummaryPublicId'] = $importSummaryManager->getReportPublicId();
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');

@@ -2568,10 +2568,6 @@
               <source>import.review.and.post</source>
               <target>Import and Review Next Page</target>
             </trans-unit>
-            <trans-unit id="import.review.finish">
-              <source>import.review.finish</source>
-              <target>Data has been imported.</target>
-            </trans-unit>
             <trans-unit id="import.type">
               <source>import.type</source>
               <target>Import Type</target>
@@ -3129,6 +3125,58 @@
             <trans-unit id="common.payment_accepted">
                 <source>common.payment_accepted</source>
                 <target>Payment Accepted</target>
+            </trans-unit>
+            <trans-unit id="import.summary.title">
+                <source>import.summary.title</source>
+                <target>Import Summary</target>
+            </trans-unit>
+            <trans-unit id="import.summary.congratulations">
+                <source>import.summary.congratulations</source>
+                <target>Congratulations! You have completed the import process!!</target>
+            </trans-unit>
+            <trans-unit id="import.summary.results">
+                <source>import.summary.results</source>
+                <target>Result Summary:</target>
+            </trans-unit>
+            <trans-unit id="import.summary.description">
+                <source>import.summary.description</source>
+                <target>
+                    If you encounter any problems or have any questions please
+                    click on Help link in the top right of this screen. Be sure to include a copy of this summary.
+                    Thank you!
+                </target>
+            </trans-unit>
+            <trans-unit id="import.summary.new">
+                <source>import.summary.new</source>
+                <target>New Contracts:</target>
+            </trans-unit>
+            <trans-unit id="import.summary.invites_sent">
+                <source>import.summary.invites_sent</source>
+                <target>Invites sent:</target>
+            </trans-unit>
+            <trans-unit id="import.summary.balances_updated">
+                <source>import.summary.balances_updated</source>
+                <target>Balances updated:</target>
+            </trans-unit>
+            <trans-unit id="import.summary.records_not_updated">
+                <source>import.summary.records_not_updated</source>
+                <target>Records not updated:</target>
+            </trans-unit>
+            <trans-unit id="import.summary.errors">
+                <source>import.summary.errors</source>
+                <target>Errors:</target>
+            </trans-unit>
+            <trans-unit id="import.summary.exceptions">
+                <source>import.summary.exceptions</source>
+                <target>Exceptions:</target>
+            </trans-unit>
+            <trans-unit id="import.summary.reference">
+                <source>import.summary.reference</source>
+                <target>Import Reference #</target>
+            </trans-unit>
+            <trans-unit id="import.summary.total">
+                <source>import.summary.total</source>
+                <target>Total:</target>
             </trans-unit>
         </body>
     </file>
