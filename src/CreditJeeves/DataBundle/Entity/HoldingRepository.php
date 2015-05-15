@@ -23,6 +23,8 @@ class HoldingRepository extends EntityRepository
         $query = $this->createQueryBuilder('holding');
         $query->innerJoin('holding.yardiSettings', 'yardiSetting');
         $query->where('holding.apiIntegrationType = :yardi');
+        $query->andWhere('yardiSetting.postPayments = 1');
+
         $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
         $query->setFirstResult($start);
         $query->setMaxResults($limit);
