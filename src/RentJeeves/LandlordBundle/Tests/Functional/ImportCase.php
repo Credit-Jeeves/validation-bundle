@@ -176,7 +176,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         $mapFile = $this->mapFile;
-        $mapFile[15] = MappingAbstract::KEY_TENANT_STATUS;
+        $mapFile[15] = ImportMapping::KEY_TENANT_STATUS;
         // Fill all select choice on the page with correct data
         for ($i = 1; $i <= 15; $i++) {
             $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
@@ -210,7 +210,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertCount(4, $trs['import.status.skip'], "Count contract with status 'skip' wrong");
         $this->assertCount(1, $trs['import.status.match'], "Count contract with status 'match' wrong");
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
+        $this->assertCount(3, $errorFields);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
@@ -327,11 +327,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals('0', $contractMatch->getIntegratedBalance());
         $this->assertEquals('10/21/2025', $contractMatch->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractMatch->getStatus());
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'hugo@rentrack.com',
-            )
-        );
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => 'hugo@rentrack.com']);
 
         $contracts = $tenant->getContracts();
         $contractNew = null;
@@ -349,11 +345,11 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
         /** @var ImportSummary $importSummary */
         $importSummary = $em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
-            ['countTotal' => '19']
+            ['countTotal' => '20']
         );
         $this->assertNotEmpty($importSummary);
         $this->assertEquals(1, $importSummary->getCountMatched());
-        $this->assertEquals(8, $importSummary->getCountSkipped());
+        $this->assertEquals(9, $importSummary->getCountSkipped());
         $this->assertEquals(9, $importSummary->getCountNew());
         $this->assertEquals(1, $importSummary->countErrors());
         $this->assertEquals(0, $importSummary->countExceptions());
