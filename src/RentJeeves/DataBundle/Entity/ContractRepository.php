@@ -575,7 +575,6 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
-        $query->innerJoin('contract.tenant', 'tenant');
         $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
         $query->andWhere('contract.tenant = :tenantId');
         $query->andWhere('contract.externalLeaseId = :externalLeaseId');
