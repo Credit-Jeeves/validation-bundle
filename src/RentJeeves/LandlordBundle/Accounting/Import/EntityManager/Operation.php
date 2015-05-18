@@ -25,10 +25,8 @@ trait Operation
             $paidFor
         );
 
-        $payment = $this->currentImportModel->getContract()->getActivePayment();
-
         //We can't create double payment for current month
-        if ($operation || !empty($payment)) {
+        if ($operation) {
             return true;
         }
 
