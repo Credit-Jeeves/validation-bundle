@@ -263,12 +263,12 @@ class ImportCase extends ImportBaseAbstract
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
-        $this->assertCount(1, $trs, "Count contract wrong");
-        $this->assertCount(2, $trs['import.status.skip'], "Count contract with status 'skip' wrong");
+        $this->assertCount(1, $trs, 'Incorrect number of contracts');
+        $this->assertCount(2, $trs['import.status.skip'], 'Count contract with status \'skip\' wrong');
         $submitImportFile->click();
 
         $this->waitRedirectToSummaryPage();
-
+        $this->assertNotNull($publicId = $this->page->find('css', '#publicId'));
         //Check notify tenant invite for new user or update his contract rent
         $this->assertCount(9, $this->getEmails(), 'Wrong number of emails');
         $em = $this->getEntityManager();
@@ -345,9 +345,10 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
         /** @var ImportSummary $importSummary */
         $importSummary = $em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
-            ['countTotal' => '20']
+            ['publicId' => $publicId->getHtml()]
         );
         $this->assertNotEmpty($importSummary);
+        $this->assertEquals(20, $importSummary->getCountTotal());
         $this->assertEquals(1, $importSummary->getCountMatched());
         $this->assertEquals(9, $importSummary->getCountSkipped());
         $this->assertEquals(9, $importSummary->getCountNew());
