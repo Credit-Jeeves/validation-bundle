@@ -449,8 +449,8 @@ class ImportCase extends ImportBaseAbstract
          */
         $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
             array(
-                'jb' => '40.7307693',
-                'kb' => '-73.9913223',
+                'jb' => '40.7308364',
+                'kb' => '-73.991567',
             )
         );
 
