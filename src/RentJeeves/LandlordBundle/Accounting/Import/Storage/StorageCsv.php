@@ -11,7 +11,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\LandlordBundle\Form\Enum\ImportType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -40,7 +40,7 @@ class StorageCsv extends StorageAbstract
      *     "logger"  = @Inject("monolog.logger.import")
      * })
      */
-    public function __construct(Session $session, Logger $logger)
+    public function __construct(Session $session, LoggerInterface $logger)
     {
         $this->session = $session;
         $this->logger = $logger;
@@ -89,9 +89,9 @@ class StorageCsv extends StorageAbstract
         if ($justFileName) {
             return $this->session->get(self::IMPORT_FILE_PATH, null);
         }
+
         return $this->getFileDirectory().$this->session->get(self::IMPORT_FILE_PATH, '');
     }
-
 
     public function setPropertyId($propertyId)
     {
@@ -103,6 +103,7 @@ class StorageCsv extends StorageAbstract
         if ($this->isMultipleProperty()) {
             return null;
         }
+
         return $this->session->get(self::IMPORT_PROPERTY_ID);
     }
 
@@ -125,7 +126,6 @@ class StorageCsv extends StorageAbstract
     {
         $this->session->get(self::IMPORT_FIELD_DELIMITER);
     }
-
 
     /**
      * @param FormInterface $form

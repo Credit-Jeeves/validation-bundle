@@ -568,7 +568,7 @@ class ContractRepository extends EntityRepository
      */
     public function getImportContractByExtenalLeaseId(
         Tenant $tenant,
-        Group $group,
+        Group $group = null,
         Holding $holding = null,
         $externalLeaseId
     ) {
@@ -577,7 +577,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('contract.tenant', 'tenant');
         $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
-        $query->andWhere('tenant.id = :tenantId');
+        $query->andWhere('contract.tenant = :tenantId');
         $query->andWhere('contract.externalLeaseId = :externalLeaseId');
 
         if ($holding) {
