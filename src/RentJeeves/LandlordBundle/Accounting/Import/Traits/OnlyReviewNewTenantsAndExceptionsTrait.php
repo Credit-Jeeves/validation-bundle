@@ -131,7 +131,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
                 return;
             }
 
-            if ($this->currentImportModel->getIsSkipped()) {
+            if ($this->currentImportModel->isSkipped()) {
                 call_user_func($callbackSuccess);
 
                 return;

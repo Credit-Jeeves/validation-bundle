@@ -55,7 +55,6 @@ class EdexResidents
      */
     protected $includeRecurringCharges = 1;
 
-
     /**
      * @return string
      */

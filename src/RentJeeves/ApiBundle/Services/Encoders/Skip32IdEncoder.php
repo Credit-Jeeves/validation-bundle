@@ -16,7 +16,7 @@ class Skip32IdEncoder extends Encoder
 
     /**
      * @param string $key
-     * @param bool $skipNotValid
+     * @param bool   $skipNotValid
      */
     public function __construct($key = self::DEFAULT_KEY, $skipNotValid = false)
     {
@@ -24,6 +24,9 @@ class Skip32IdEncoder extends Encoder
         $this->skipNotValid = $skipNotValid;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function encode($integerId)
     {
         if ($this->isValidForEncryption($integerId)) {
@@ -37,6 +40,9 @@ class Skip32IdEncoder extends Encoder
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function decode($encodedId)
     {
         if ($this->isValidForDecryption($encodedId)) {

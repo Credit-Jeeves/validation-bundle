@@ -107,11 +107,11 @@ trait Forms
         if (($tenantId &&
                 in_array(
                     $contractStatus,
-                    array(
+                    [
                         ContractStatus::INVITE,
                         ContractStatus::APPROVED,
                         ContractStatus::CURRENT
-                    )
+                    ]
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
