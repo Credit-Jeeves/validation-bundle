@@ -15,6 +15,11 @@ use RentJeeves\LandlordBundle\Model\Import;
 trait Tenant
 {
     /**
+     * @var string
+     */
+    public static $tenantStatus = 'c';
+
+    /**
      * @var array
      */
     protected $userResidents = [];
@@ -155,7 +160,7 @@ trait Tenant
             return;
         }
 
-        if (trim(strtolower($row[MappingAbstract::KEY_TENANT_STATUS])) === 'c') {
+        if (trim(strtolower($row[MappingAbstract::KEY_TENANT_STATUS])) === self::$tenantStatus) {
             return;
         }
 

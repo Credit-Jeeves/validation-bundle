@@ -177,7 +177,7 @@ class ImportCase extends ImportBaseAbstract
 
         $mapFile = $this->mapFile;
         $mapFile[15] = MappingAbstract::KEY_TENANT_STATUS;
-
+        // Fill all select choice on the page with correct data
         for ($i = 1; $i <= 15; $i++) {
             $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
             if (isset($mapFile[$i])) {
