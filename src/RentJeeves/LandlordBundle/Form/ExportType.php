@@ -241,12 +241,14 @@ class ExportType extends AbstractType
                         $query->innerJoin('p.property_groups', 'g');
                         $query->where('g.id = :groupId');
                         $query->setParameter('groupId', $this->group->getId());
+
                         return $query;
                     }
 
                     if (!$groups) {
                         $query = $er->createQueryBuilder('p');
                         $query->where('p.id = 0');
+
                         return $query;
                     }
 
@@ -330,19 +332,22 @@ class ExportType extends AbstractType
             ]
         );
 
+        $checkBoxJs = "visible: selectedType() == 'renttrack' || selectedType() == 'yardi_genesis'";
+        $checkBoxJs .= "|| selectedType() == 'yardi_genesis_v2' || selectedType() == 'promas'";
+
         $builder->add(
             'includeAllGroups',
             'checkbox',
-            array(
+            [
                 'label' => 'export.renttrack.include_all_groups',
                 'required' => false,
-                'attr' => array(
+                'attr' => [
                     'data-bind' => 'checked: includeAllGroups',
-                    'row_attr' => array(
-                        'data-bind' => "visible: selectedType() == 'renttrack'",
-                    )
-                ),
-            )
+                    'row_attr' => [
+                        'data-bind' => $checkBoxJs,
+                    ]
+                ],
+            ]
         );
     }
 

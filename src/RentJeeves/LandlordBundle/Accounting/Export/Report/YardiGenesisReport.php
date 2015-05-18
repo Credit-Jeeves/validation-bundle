@@ -6,10 +6,10 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface as ExportSerializer;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
-use DateTime;
 
 /**
  * @Service("accounting.export.yardi_genesis")
@@ -63,11 +63,19 @@ class YardiGenesisReport extends ExportReport
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
         $propertyId = $settings['property']->getId();
-        $groupId = $settings['landlord']->getGroup()->getId();
         $orderRepository = $this->em->getRepository('DataBundle:Order');
         $exportBy = $settings['export_by'];
 
-        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groupId, $exportBy, $propertyId);
+        /** @var $landlord Landlord */
+        $landlord = $settings['landlord'];
+
+        if (isset($settings['includeAllGroups']) && $settings['includeAllGroups']) {
+            $groups = $landlord->getGroups($landlord->getUser())->toArray();
+        } else {
+            $groups = [$landlord->getGroup()];
+        }
+
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groups, $exportBy, $propertyId);
     }
 
     protected function validateSettings($settings)

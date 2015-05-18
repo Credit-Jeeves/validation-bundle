@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ed39b3da337c5a165a9d8e0d37036ed3",
+    "hash": "3b392a7dd5555b522cac2ed0920e1421",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -4352,8 +4352,8 @@
             "target-dir": "Rj/EmailBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:Remixjobs/RjEmailBundle.git",
-                "reference": "e5fd5527cb00eeeb38cda5a7b32ea5bb93bedd22"
+                "url": "git@github.com:Credit-Jeeves/RjEmailBundle.git",
+                "reference": "511a348cc665c81a6415ebad08f2c18cc017cf95"
             },
             "require": {
                 "a2lix/translation-form-bundle": "*",
@@ -4390,7 +4390,7 @@
             "keywords": [
                 "email"
             ],
-            "time": "2013-11-13 16:44:09"
+            "time": "2015-05-14 12:54:46"
         },
         {
             "name": "sensio/distribution-bundle",

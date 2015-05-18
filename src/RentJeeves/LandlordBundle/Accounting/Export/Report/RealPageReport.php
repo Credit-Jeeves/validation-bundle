@@ -66,12 +66,12 @@ class RealPageReport extends ExportReport
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
         $propertyId = $settings['property']->getId();
-        $groupId = $settings['landlord']->getGroup()->getId();
+        $group = $settings['landlord']->getGroup();
         $exportBy = $settings['export_by'];
 
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForRealPageReport($groupId, $propertyId, $beginDate, $endDate, $exportBy);
+        return $orderRepository->getOrdersForRealPageReport([$group], $propertyId, $beginDate, $endDate, $exportBy);
     }
 
     public function getBuildingId()

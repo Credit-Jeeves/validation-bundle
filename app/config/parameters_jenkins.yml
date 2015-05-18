@@ -1,0 +1,25 @@
+imports:
+    - { resource: parameters_dev_base.yml }
+
+# To use this parameters file, you must set the following environment variables:
+#
+#   $_ENV['SYMFONY__DATABASE__NAME'] sets %database.name%
+#   $_ENV['SYMFONY__SERVER__NAME' sets %server.name%
+#   $_ENV['SYMFONY__SELENIUM__HOST__URL' sets %selenium.host.url% (e.g. 'http://127.0.0.1:4444/wd/hub')
+#
+# These are meant to be set from the command line (see bin/jenkins.sh), but must also be
+# set in webserver environment.  Add here are example fastcgi variables that can be set in nginx
+# vhost file:
+#
+#   fastcgi_param SYMFONY__DATABASE__NAME      "renttrack_jenkins_pr0";
+#   fastcgi_param SYMFONY__SERVER__NAME        "pr0.test";
+#   fastcgi_param SYMFONY__SELENIUM__HOST__URL "http://10.164.182.167:4440/wd/hub";
+#
+parameters:
+    database_name: %database.name%
+    database_user: credit_jeeves2
+    database_password: 'passw0rd'
+
+    server_name_cj: %server.name%.creditjeeves.com
+    server_name_rj: %server.name%.renttrack.com
+    mink.selenium2.wd_host: %selenium.host.url%
