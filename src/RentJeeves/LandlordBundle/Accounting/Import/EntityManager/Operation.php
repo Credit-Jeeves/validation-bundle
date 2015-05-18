@@ -17,7 +17,7 @@ trait Operation
      * @param $amount
      * @return bool
      */
-    protected function isDuplicate($paidFor)
+    protected function isAlreadyPay($paidFor)
     {
         $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
             $this->currentImportModel->getTenant(),
@@ -37,7 +37,7 @@ trait Operation
 
     protected function getOperationByPaidFor($paidFor)
     {
-        if ($this->isDuplicate($paidFor)) {
+        if ($this->isAlreadyPay($paidFor)) {
             return null;
         }
 
