@@ -3132,7 +3132,7 @@
             </trans-unit>
             <trans-unit id="error.tenant.status">
                 <source>error.tenant.status</source>
-                <target>Tenant Status not equal C (Current)</target>
+                <target>Not a current tenant</target>
             </trans-unit>
             <trans-unit id="common.payment_accepted">
                 <source>common.payment_accepted</source>
