@@ -90,7 +90,7 @@ trait Forms
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
         $contractStatus = $contract->getStatus();
-        $isSkipped = $this->currentImportModel->getIsSkipped();
+        $isSkipped = $this->currentImportModel->isSkipped();
 
         $this->logger->debug(
             sprintf(

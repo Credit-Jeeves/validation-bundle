@@ -563,7 +563,7 @@ class ContractRepository extends EntityRepository
      * @param  Group                                  $group
      * @param  Holding                                $holding
      * @param  string                                 $externalLeaseId
-     * @return mixed
+     * @return null|Contract
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getImportContractByExtenalLeaseId(
