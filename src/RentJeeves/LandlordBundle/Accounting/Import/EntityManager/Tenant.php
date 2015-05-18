@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
+use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
@@ -39,14 +40,22 @@ trait Tenant
      */
     protected function setTenant(array $row)
     {
-        /**
-         * @var $tenant EntityTenant
-         */
-        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImportWithResident(
-            $row[Mapping::KEY_EMAIL],
-            $row[Mapping::KEY_RESIDENT_ID],
-            $this->user->getHolding()->getId()
-        );
+        try {
+            /** @var  EntityTenant $tenant */
+            $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImportWithResident(
+                $row[Mapping::KEY_EMAIL],
+                $row[Mapping::KEY_RESIDENT_ID],
+                $this->user->getHolding()->getId()
+            );
+        } catch (NonUniqueResultException $e) {
+            $this->currentImportModel->setTenant($this->createTenant($row));
+            $this->currentImportModel->setIsSkipped(true);
+            $this->currentImportModel->setSkippedMessage(
+                $this->translator->trans('import.error.none_unique_result')
+            );
+
+            return;
+        }
 
         if (!empty($tenant)) {
             /** @var $residentMapping ResidentMapping */
