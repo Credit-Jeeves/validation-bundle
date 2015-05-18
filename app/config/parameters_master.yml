@@ -8,4 +8,4 @@ parameters:
 
     server_name_cj: master.creditjeeves.com
     server_name_rj: master.renttrack.com
-    mink.selenium2.wd_host: 'http://10.164.182.167:4444/wd/hub'
+    mink.selenium2.wd_host: 'http://10.164.182.167:4445/wd/hub'
