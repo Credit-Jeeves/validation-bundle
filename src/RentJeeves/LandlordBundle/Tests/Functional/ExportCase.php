@@ -311,10 +311,10 @@ class ExportCase extends BaseTestCase
     public function exportByPromasCsv()
     {
         return [
-            ['deposits', 5, 'uncheck'],
-            ['payments', 6, 'uncheck'],
-            ['deposits', 5, 'check'],
-            ['payments', 6, 'check'],
+            ['deposits', 7, 'uncheck'],
+            ['payments', 9, 'uncheck'],
+            ['deposits', 7, 'check'],
+            ['payments', 9, 'check'],
         ];
     }
 
@@ -559,10 +559,10 @@ class ExportCase extends BaseTestCase
     public function exportByYardiGenesisCsv()
     {
         return [
-            ['deposits', 23, 'check'],
-            ['payments', 23, 'check'],
-            ['deposits', 12, 'uncheck'],
-            ['payments', 13, 'uncheck'],
+            ['deposits', 25, 'check'],
+            ['payments', 26, 'check'],
+            ['deposits', 14, 'uncheck'],
+            ['payments', 16, 'uncheck'],
         ];
     }
 
@@ -614,10 +614,10 @@ class ExportCase extends BaseTestCase
     public function exportByYardiGenesisV2Csv()
     {
         return [
-            ['deposits', 12, 'uncheck'],
-            ['payments', 13, 'uncheck'],
-            ['deposits', 23, 'check'],
-            ['payments', 23, 'check'],
+            ['deposits', 14, 'uncheck'],
+            ['payments', 16, 'uncheck'],
+            ['deposits', 25, 'check'],
+            ['payments', 26, 'check'],
         ];
     }
 
