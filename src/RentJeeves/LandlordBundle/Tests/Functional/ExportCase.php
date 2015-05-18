@@ -312,8 +312,10 @@ class ExportCase extends BaseTestCase
     public function exportByPromasCsv()
     {
         return [
-            ['deposits', 5],
-            ['payments', 6],
+            ['deposits', 5, 'uncheck'],
+            ['payments', 6, 'uncheck'],
+            ['deposits', 5, 'check'],
+            ['payments', 6, 'check'],
         ];
     }
 
@@ -321,7 +323,7 @@ class ExportCase extends BaseTestCase
      * @test
      * @dataProvider exportByPromasCsv
      */
-    public function promasCsvFormat($exportBy, $countRows)
+    public function promasCsvFormat($exportBy, $countRows, $methodForAllGroups)
     {
         $this->load(true);
         $this->createPayment();
@@ -342,7 +344,8 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-
+        $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $forAllGroubs->$methodForAllGroups();
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
@@ -557,8 +560,10 @@ class ExportCase extends BaseTestCase
     public function exportByYardiGenesisCsv()
     {
         return [
-            ['deposits', 12],
-            ['payments', 13],
+            ['deposits', 23, 'check'],
+            ['payments', 23, 'check'],
+            ['deposits', 12, 'uncheck'],
+            ['payments', 13, 'uncheck'],
         ];
     }
 
@@ -566,7 +571,7 @@ class ExportCase extends BaseTestCase
      * @test
      * @dataProvider exportByYardiGenesisCsv
      */
-    public function yardiGenesisCsvFormat($exportBy, $countRows)
+    public function yardiGenesisCsvFormat($exportBy, $countRows, $methodForAllGroups)
     {
         $this->load(true);
         $this->createPayment();
@@ -590,6 +595,8 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
         $this->selectExportBy($exportBy);
+        $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $forAllGroubs->$methodForAllGroups();
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
@@ -603,14 +610,15 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('1500', $csvArr[3]);
         // $this->assertEquals('08/14/2014', $csvArr[4]);   // The Date seems to change with each build each day
         $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
-
     }
 
     public function exportByYardiGenesisV2Csv()
     {
         return [
-            ['deposits', 12],
-            ['payments', 13],
+            ['deposits', 12, 'uncheck'],
+            ['payments', 13, 'uncheck'],
+            ['deposits', 23, 'check'],
+            ['payments', 23, 'check'],
         ];
     }
 
@@ -618,7 +626,7 @@ class ExportCase extends BaseTestCase
      * @test
      * @dataProvider exportByYardiGenesisV2Csv
      */
-    public function yardiGenesisV2CsvFormat($exportBy, $countRows)
+    public function yardiGenesisV2CsvFormat($exportBy, $countRows, $methodForAllGroups)
     {
         $this->load(true);
         $this->createPayment();
@@ -644,6 +652,8 @@ class ExportCase extends BaseTestCase
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
         $this->selectExportBy($exportBy);
+        $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $forAllGroubs->$methodForAllGroups();
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();

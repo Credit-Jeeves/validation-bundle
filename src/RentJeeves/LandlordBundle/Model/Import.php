@@ -16,6 +16,16 @@ use Symfony\Component\Form\Form;
 class Import
 {
     /**
+     * @var array
+     */
+    protected $row = [];
+
+    /**
+     * @var integer
+     */
+    protected $offset;
+
+    /**
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -26,6 +36,12 @@ class Import
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $uniqueKeyException;
+
+    /**
+     * @Serializer\Type("integer")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $importSummaryPublicId;
 
     /**
      * @Serializer\Type("string")
@@ -134,6 +150,54 @@ class Import
      * @var HandlerAbstract
      */
     protected $handler;
+
+    /**
+     * @return int
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
+
+    /**
+     * @param int $offset
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRow()
+    {
+        return $this->row;
+    }
+
+    /**
+     * @param array $row
+     */
+    public function setRow($row)
+    {
+        $this->row = $row;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getImportSummaryPublicId()
+    {
+        return $this->importSummaryPublicId;
+    }
+
+    /**
+     * @param integer $importSummaryPublicId
+     */
+    public function setImportSummaryPublicId($importSummaryPublicId)
+    {
+        $this->importSummaryPublicId = $importSummaryPublicId;
+    }
 
     /**
      * @return PropertyMapping
@@ -410,7 +474,7 @@ class Import
     /**
      * @return boolean
      */
-    public function getIsSkipped()
+    public function isSkipped()
     {
         return $this->isSkipped;
     }

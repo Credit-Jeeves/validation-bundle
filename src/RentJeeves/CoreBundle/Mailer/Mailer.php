@@ -483,6 +483,8 @@ class Mailer extends BaseMailer
             'tenantName' => $tenant->getFullName(),
             'rentAmount' => $contract->getRent(),
             'paymentAmount' => $payment->getAmount(),
+            'groupName' => $contract->getGroup()->getName(),
+            'holdingName' => $contract->getGroup()->getHolding()
         ];
 
         return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant->getEmail(), $tenant->getCulture());

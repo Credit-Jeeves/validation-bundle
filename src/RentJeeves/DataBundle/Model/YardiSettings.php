@@ -155,6 +155,33 @@ abstract class YardiSettings
     protected $syncBalance = false;
 
     /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="post_payment",
+     *      options={
+     *          "default":1
+     *      }
+     * )
+     */
+    protected $postPayments = true;
+
+    /**
+     * @return boolean
+     */
+    public function getPostPayments()
+    {
+        return $this->postPayments;
+    }
+
+    /**
+     * @param boolean $postPayments
+     */
+    public function setPostPayments($postPayments)
+    {
+        $this->postPayments = $postPayments;
+    }
+
+    /**
      * @param string $notesACH
      */
     public function setNotesACH($notesACH)
