@@ -108,7 +108,6 @@ class AccountingController extends Controller
 
         $formBaseOrder->handleRequest($this->get('request'));
         if ($formBaseOrder->isValid()) {
-
             $formData = $formBaseOrder->getData();
             $formData['landlord'] = $this->get('core.session.landlord');
             $accounting = $this->get('accounting.export');
@@ -351,7 +350,9 @@ class AccountingController extends Controller
         // convert from string to boolean
         $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
 
-        $this->getImportLogger()->debug("Import fetching " . ImportHandler::ROW_ON_PAGE . " rows at offset " . $storage->getOffsetStart());
+        $this->getImportLogger()->debug(
+            sprintf("Import fetching %s rows at offset %s", ImportHandler::ROW_ON_PAGE, $storage->getOffsetStart())
+        );
 
         if ($newRows) {
             $storage->setOffsetStart($storage->getOffsetStart() + ImportHandler::ROW_ON_PAGE);

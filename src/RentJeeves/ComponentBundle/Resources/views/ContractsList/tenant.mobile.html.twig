@@ -1,0 +1,141 @@
+<script>
+    var contractsJson={{ contractsJson | raw }};
+    var paidForArr={{ paidForArr | serialize('json') | raw }};
+    var isVerified='{{ user.getIsVerified }}';
+</script>
+        <div data-role="page" id="main">
+
+            <div data-role="panel" id="panel" style="background: black;">
+                <ul data-role="listview">
+                    <li><a href="#main" class="menuOptions" style="color: #666 !important;">Current Payments</a></li>
+                    <li><a href="#paymentHistory" class="menuOptions">Payment History</a></li>
+                    <li><a href="logout" class="menuOptions">Logout</a></li>
+                </ul>
+
+            </div>
+
+            <div data-role="header" role="banner" class="ui-header ui-bar-inherit">
+                <a href="#panel" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
+
+                <h1 class="ui-title" role="heading" aria-level="1" style="background: transparent;"><img style="width: 100%;" src="/bundles/rjcore/images/mobile/home-logo.png"></h1>
+            </div>
+
+            <div class="ui-content" role="main" style='background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png); background-size: cover;'>
+
+            <div style="color: white; font-size: 18pt; font-weight: normal; text-shadow: none;">Payment</div>
+                {% for contract in contracts %}
+                    {% if contract.status != 'deleted' and contract.status!='finished' %}
+                    <a href="#contract{{ contract.id }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
+            <div onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
+                <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
+                <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
+                            <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
+                        <br>
+                            <span style="font-size: 14;">{{ contract.rent }}</span>
+                    <br>
+                {% if contract.status == 'pending' %}
+                   <span style="color: red;">{{ 'contract.status.pending.text' | trans }}</span>
+                {% elseif contract.payment_status == 'processing' %}
+                    <span style="color: red;">{{ 'contract.status.processing.text' | trans }}</span>
+                {% elseif contract.payment_type == 'recurring' %}
+                    Scheduled: {{ contract.payment_due_date }}
+                {% elseif contract.payment_type == 'one_time' %}
+                    Scheduled: {{  contract.payment_due_date }}
+                {% elseif contract.status == 'approved' %}
+                    {{ 'contract.status.approved.text' | trans }}
+                {% elseif contract.status == 'current' %}
+                    Setup your first payment!
+                {% elseif contract.status == 'finished' %}
+                    {{ 'contract.status.finished.text' | trans }}
+                {% else %}
+                    {{ contract.status | upper }}
+                {% endif %}
+
+                    </div>
+                    </a>
+                    {% endif %}
+
+                {% endfor %}
+            </div>
+        </div>
+
+        {% for contract in contracts %}
+            <div data-role="page" id="contract{{ contract.id }}">
+
+                <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+                    <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
+                    <h1 class="ui-title" role="heading" aria-level="1">Current Payment</h1>
+                    {% if contract.status != 'pending' %}
+                        <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">
+                            {% if contract.payment_type != 'one_time' and contract.payment_type != 'recurring' %}
+                            Pay
+                            {% else %}
+                            Edit
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="ui-content" role="main" style="margin-left: 34px; padding-right: 33px;">
+                {% if contract.status != 'deleted' %}
+
+                    <div style="position: absolute;left: 20px;top: 61px;"><i class="fa fa-home fa-lg"></i></div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt; float: right;"><b>{{ contract.full_address }}</b></div>
+
+                    <br><br>
+
+
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">AMOUNT</div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt;">{{ contract.rent }}</div>
+
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAY TO</div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractPayTo{{ contract.id }}"></div>
+
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;" id="contractFromAccLabel{{ contract.id }}">FROM ACCOUNT</div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractFromAcc{{ contract.id }}"></div>
+
+                    <br>
+
+                    <div style="color: white; border-radius: 3px; background: #eb6024; padding: 10px; text-shadow: none; font-size: 10pt; font-family: PT Sans Caption;">
+                        {% if contract.status == 'pending' %}
+                            {{ 'contract.status.pending.text' | trans }}
+                        {% elseif contract.payment_status == 'processing' %}
+                            {{ 'contract.status.processing.text' | trans }}
+                        {% elseif contract.status == 'invite' %}
+                            {{ 'contract.status.invite.text' | trans }}
+                        {% elseif contract.payment_type == 'recurring' %}
+                            {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}. You can change this under "Edit".
+                        {% elseif contract.payment_type == 'one_time' %}
+                            {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}. You can change this under "Edit".
+                        {% elseif contract.status == 'approved' %}
+                            {{ 'contract.status.approved.text' | trans }}
+                        {% elseif contract.status == 'current' %}
+                            {{ 'contract.status.current.text' | trans }}
+                        {% elseif contract.status == 'finished' %}
+                            {{ 'contract.status.finished.text' | trans }}
+                        {% else %}
+                            {{ contract.status | upper }}
+                        {% endif %}
+                    </div>
+
+
+
+                    <br>
+                    <br>
+
+                    <div style="font-family: PT Sans Caption; font-size: 10pt; font-weight: bold;">
+                    Due Next: {{ contract.payment_next }} {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
+
+                {% endif %}
+                    <br>
+                    {% if contract.status!='pending' and (contract.payment_type=='recurring' or contract.payment_type=='one_time') %}
+                    <a id="opendialog" href="#cancel" data-ajax="false" style="text-decoration: none;"><button id='cancel{{ contract.id }}' style="color: white; background: rgb(232,65,65);text-shadow:none; border-radius: 7px;">Cancel Payment</button></a>
+                    {% endif %}
+
+                    <a href="#paymentHistory{{ contract.id }}" style="text-decoration: none;"><button{% if contract.status == 'pending' %} disabled{% endif %}>Payment History</button></a>
+                    </div>
+            </div>
+        {% endfor %}
+
+
+{{ render(controller('RjCheckoutBundle:Component:pay',{'mobile':'true'})) }}

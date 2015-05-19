@@ -2,7 +2,6 @@
 
 namespace RentJeeves\TenantBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractRepository;
@@ -28,10 +27,13 @@ class IndexController extends Controller
         $tenant = $this->getUser();
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
-
-        return array(
-            'user' => $tenant,
-        );
+        if ($this->isMobile()) {
+            return $this->render('TenantBundle:Index:index.mobile.html.twig', array('user' => $tenant));
+        } else {
+            return array(
+                'user' => $tenant,
+            );
+        }
     }
 
     /**

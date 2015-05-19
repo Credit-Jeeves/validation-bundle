@@ -6,6 +6,8 @@ use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorWeb;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorMobile;
 use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -28,8 +30,9 @@ class PayController extends Controller
     use Traits\PaymentProcess;
     use Traits\AccountAssociate;
 
-    protected function createPaymentForm(Request $request)
+    protected function createPaymentForm(Request $request, $mobile = false)
     {
+
         $contractId = $request->get('contract_id');
         $contract = $this->getDoctrine()
             ->getManager()
@@ -57,6 +60,12 @@ class PayController extends Controller
             $contract = $paymentEntity->getContract();
         }
 
+        if ($mobile) {
+            $attributes =  new AttributeGeneratorMobile();
+        } else {
+            $attributes =  new AttributeGeneratorWeb();
+        }
+
         if ($payBalanceOnly) {
             $formType = new PaymentBalanceOnlyType(
                 $this->container->getParameter('payment_one_time_until_value'),
@@ -65,6 +74,7 @@ class PayController extends Controller
                 $this->getDoctrine()->getManager(),
                 $contract->getGroup()->getGroupSettings()->getOpenDate(),
                 $contract->getGroup()->getGroupSettings()->getCloseDate(),
+                $attributes,
                 $this->get('translator')
             );
         } else {
@@ -74,9 +84,11 @@ class PayController extends Controller
                 $this->container->get('checkout.paid_for')->getArray($contract),
                 array_combine($dueDays, $dueDays),
                 $contract->getGroup()->getGroupSettings()->getOpenDate(),
-                $contract->getGroup()->getGroupSettings()->getCloseDate()
+                $contract->getGroup()->getGroupSettings()->getCloseDate(),
+                $attributes
             );
         }
+
         if (!empty($paymentEntity) &&
             $paymentEntity->getPaymentAccount()->getUser()->getId() != $this->getUser()->getId()
         ) {
@@ -90,9 +102,9 @@ class PayController extends Controller
      * @Route("/payment", name="checkout_pay_payment", options={"expose"=true})
      * @Method({"POST"})
      */
-    public function paymentAction(Request $request)
+    public function paymentAction(Request $request, $mobile = false)
     {
-        $paymentType = $this->createPaymentForm($request);
+        $paymentType = $this->createPaymentForm($request, $mobile);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
@@ -220,6 +232,7 @@ class PayController extends Controller
      */
     public function execAction(Request $request)
     {
+
         $paymentType = $this->createPaymentForm($request);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
@@ -235,6 +248,7 @@ class PayController extends Controller
         if (!$contract = $em->getRepository('RjDataBundle:Contract')->find($contractId)) {
             throw $this->createNotFoundException('Contract does not exist');
         }
+
         /**
          * @var PaymentAccount $paymentAccount
          */

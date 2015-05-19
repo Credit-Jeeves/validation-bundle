@@ -1,0 +1,127 @@
+{% form_theme paymentType 'RjCoreBundle::form.html.twig' %}
+{% form_theme paymentBalanceOnlyType 'RjCoreBundle::form.html.twig' %}
+{% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
+
+<div data-role="page" id="pay">
+
+    <div data-role="popup" id="dateConfirmed" data-overlay-theme="b" class="ui-content" style="font-family: PT Sans Caption;">
+        <p>Your landlord will be notified that your payment was sent on <span id="selectedDate"></span>.</p>
+        <a href="#pay" onclick="$('#dateConfirmed').popup('close')" data-role="button" data-theme="b" class="ui-link ui-btn ui-btn-b ui-shadow ui-corner-all" style="background: #eb6024; font-family: PT Sans Caption; font-size: 20pt;" role="button">OK</a>
+    </div>
+
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" data-role="none" role="button" class="headerButton" style="color: white;">Back</a>
+        <h1 class="ui-title" role="heading" aria-level="1">Edit Payment</h1>
+        <a href="#review" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px; text-shadow: none;">Next</a>
+    </div>
+
+    <div class="ui-content" role="main">
+
+        <div id='errorMsg' style='display: none;background: red; padding: 4px; width: 100%;color: white; text-shadow: none; border-radius: 2px;'>
+
+        </div><br/>
+
+        <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" style="line-height: 32px;" novalidate>
+            {{ form_widget(paymentType) }}
+            {{ JSFV(paymentType) }}
+
+            <input type="hidden" id="contract_id" name="contract_id">
+        </form>
+
+        {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
+
+        <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">NEXT</button></a>
+
+        <div style="height: 140px;">
+            <p style="color: grey;">
+                RentTrack is a registered payment processor. Your account is safe and secure.
+            </p>
+            <img src="/bundles/rjcore/images/mobile/footer-norton.png" style="float: left;">
+            <img src="/bundles/rjcore/images/mobile/footer-logo.png" style="float: right;">
+        </div>
+    </div>
+
+</div>
+
+<div data-role="page" id="review">
+
+
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a href="#pay" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
+        <h1 class="ui-title" role="heading" aria-level="1">Review</h1>
+    </div>
+
+    <div class="ui-content" role="main" style="background: url(/bundles/rjcore/images/mobile/lightblur-bgnd.png); min-height: 653px;">
+        <b><span id="revRecurring">Single</span> rent payment for <span id="contractAddress"></span></b>
+        <hr>
+        <h4>Who's getting paid:</h4>
+
+    <span id="payTo">
+
+    </span><br/><br/>
+
+        <b>
+            Rent Amount:
+        </b>
+
+        $<span id="revRentAmount"></span><br/>
+
+        <b>Other Amount:</b>
+
+        $<span id="revOtherAmount"></span><br/>
+
+        <div id="revTechFeeCont">
+            <b>Technology Fee: </b>
+
+            $<span id="revTechFee"></span>
+        </div>
+
+        <b>Total to pay:</b>
+
+        $<span id="revTotalAmount"></span><br/><br/>
+
+        <b>Send on: </b>
+
+        <span id="revSendOn"></span><br/>
+
+        <b id="revEndsLabel">Ends: </b>
+
+        <span id="revEnds"></span><br/>
+
+        <hr>
+
+        <h4>How You're Paying</h4>
+
+        <b>Source:</b> <span id="revMethod"></span>
+
+        <br/><br/>
+
+        <a href="javascript: void(0)" onclick="submitForm()" data-rel="popup" data-transition="pop" data-position-to="window" style="text-decoration: none;">
+            <button role="button" id="payRentBttn" data-role="none" style="background: #eb6024; color: white; font-weight: normal; text-shadow: none;" class=" ui-btn ui-shadow ui-corner-all">PAY RENT</button>
+        </a>
+
+        <div data-role="popup" id="popupBasic" data-overlay-theme="b" class="ui-popup ui-body-inherit ui-overlay-shadow ui-corner-all" style="background: #00a651;text-shadow: none;color: white;padding: 10px 20px 10px 20px;margin-left: -20px;">
+            <p><i class="fa fa-check-circle-o" style="margin-right: 3px;"></i> Payment Scheduled</p>
+        </div>
+
+    </div>
+
+</div>
+
+<div data-role="page" id="notVerified">
+
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a href="#main" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
+        <h1 class="ui-title" role="heading" aria-level="1">Verification</h1>
+    </div>
+
+    <div class="ui-content" role="main" style="background: url(/bundles/rjcore/images/mobile/lightblur-bgnd.png); min-height: 653px;">
+        <b>Identity Verification Required</b>
+        <br/><br/>
+        To keep things secure here at RentTrack, we'll need you to login from a laptop or desktop
+        to verify your identity.
+        <br/><br/>
+        Please set up your first payment on a computer. After that, you'll be able to use this mobile site to set up new payments.
+    </div>
+
+</div>

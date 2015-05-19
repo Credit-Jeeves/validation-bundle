@@ -10,6 +10,8 @@ use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorWeb;
+use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorMobile;
 
 /**
  * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
@@ -19,15 +21,22 @@ class ComponentController extends Controller
     /**
      * @Template()
      */
-    public function payAction()
+    public function payAction($mobile = false)
     {
+        if ($mobile) {
+            $attributes =  new AttributeGeneratorMobile();
+        } else {
+            $attributes =  new AttributeGeneratorWeb();
+        }
+
         $paymentType = $this->createForm(
             new PaymentType(
                 $this->container->getParameter('payment_one_time_until_value'),
                 array(),
                 array(),
                 0,
-                0
+                0,
+                $attributes
             )
         );
         $paymentBalanceOnlyType =  $this->createForm(
@@ -38,6 +47,7 @@ class ComponentController extends Controller
                 $this->getDoctrine()->getManager(),
                 0,
                 0,
+                $attributes,
                 $this->get('translator')
             )
         );
@@ -54,19 +64,23 @@ class ComponentController extends Controller
                 )
             )
         );
-
-        return array(
+        $pageVars = array(
             'paymentType' => $paymentType->createView(),
             'paymentBalanceOnlyType' => $paymentBalanceOnlyType->createView(),
             'userDetailsType' => $userDetailsType->createView(),
             'questionsType' => $questionsType->createView(),
         );
+        if ($mobile) {
+            return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars);
+        } else {
+            return $pageVars;
+        }
     }
 
     /**
      * @Template()
      */
-    public function sourceAction()
+    public function sourceAction($mobile = false)
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
 
@@ -84,10 +98,16 @@ class ComponentController extends Controller
             SerializationContext::create()->setGroups(array('paymentAccounts'))
         );
 
-        return array(
+        $pageVars = array(
             'paymentAccountType' => $paymentAccountType->createView(),
             'addressesJson' => $addressesJson,
             'payAccountsJson' => $payAccountsJson,
         );
+
+        if ($mobile) {
+            return $this->render('RjCheckoutBundle:Component:source.mobile.html.twig', $pageVars);
+        } else {
+            return $pageVars;
+        }
     }
 }

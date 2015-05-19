@@ -114,6 +114,7 @@ trait PaymentProcess
         $recurring,
         $pidkiqEnabled
     ) {
+
         $em = $this->getDoctrine()->getManager();
 
         /** @var Payment $paymentEntity */

@@ -35,9 +35,11 @@ class PaidFor
     {
         $return = [];
         $this->setDueDate($contract);
+
         if ($contract->getStatus() == ContractStatus::INVITE || $contract->getStatus() == ContractStatus::APPROVED) {
             return $this->returnDefaultValue($return);
         }
+
         if ($paidTo = $contract->getPaidToWithDueDate()) {
             $return = $this->makeDatesFromDate($paidTo);
         }
@@ -87,8 +89,8 @@ class PaidFor
      * @param Contract $contract
      *
      * @return array Payed for dates
-     *   key string Date in format 'Y-m-d'
-     *   val string Month in format 'M'
+     *               key string Date in format 'Y-m-d'
+     *               val string Month in format 'M'
      */
     public function getArray(Contract $contract)
     {
@@ -141,6 +143,7 @@ class PaidFor
         if (!count($value)) {
             $date = clone $this->getNow();
             $date->setDate(null, null, $this->dueDate);
+
             return $this->createItem($date) + $this->createItem($date->modify('+1 month'));
         }
 
@@ -149,12 +152,15 @@ class PaidFor
 
     protected function setDueDate(Contract $contract)
     {
+
         if ($contract->getDueDate()) {
             $this->dueDate = $contract->getDueDate();
+
             return;
         }
         if ($contract->getGroup() && $settings = $contract->getGroup()->getGroupSettings()) {
             $this->dueDate = $settings->getDueDate();
+
             return;
         }
 

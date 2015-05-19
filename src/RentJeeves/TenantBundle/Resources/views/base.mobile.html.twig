@@ -1,0 +1,55 @@
+{% extends "RjCoreBundle::rj_base.mobile.html.twig" %}
+
+{% block stylesheets %}
+    {% stylesheets
+        '@TenantBundle/Resources/public/css/rt01.css'
+        '@TenantBundle/Resources/public/css/jquery.mobile.icons.min.css'
+    %}
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans+Caption' rel='stylesheet' type='text/css'>
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="http://cdn.jtsage.com/datebox/latest/jqm-datebox.min.css">
+    <script type="text/javascript" src="http://cdn.jtsage.com/datebox/1.4.5/jqm-datebox-1.4.5.comp.calbox.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jtsage.com/datebox/i18n/jquery.mobile.datebox.i18n.en_US.utf8.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog.min.css" />
+    <script type="text/javascript" src="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog2.min.js"></script>
+    {% endstylesheets %}
+{% endblock %}
+
+{# delete ability is commented out @RjComponentBundle/Resources/public/js/tenant-contracts.js. #}
+{% block head_javascripts %}
+{% javascripts '@TenantBundle/Resources/public/js/mobile.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% endblock %}
+
+{% block google_api %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart", "gauge"]});
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
+{% endblock %}
+
+{% block alert %}
+    {{ render(controller('RjComponentBundle:Alert:tenant')) }}
+{% endblock %}
+
+{% block tabs %}
+    <div class="top-nav">
+    {{ knp_menu_render('TenantBundle:Builder:mainMenu', { 'template': '::menu.html.twig' }) }}
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {{ render(controller('RjComponentBundle:Footer:index')) }}
+{% endblock %}
+
+{% block partner_logo %}
+    {% if app.user.getPartnerCode() %}
+        <div class="base-creditcom-logo"></div>
+    {% endif %}
+{% endblock %}
