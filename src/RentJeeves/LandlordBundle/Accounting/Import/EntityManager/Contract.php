@@ -111,7 +111,7 @@ trait Contract
         if ($this->currentImportModel->getContract()->getId() !== null) {
             // normally, we don't want to mess with paid_to for existing contracts unless
             // it is obvious someone paid outside of RentTrack:
-            if ($balance <= 0 && $currentPaidTo <= $paidTo && !$this->isAlreadyPay($paidTo)) {
+            if ($balance <= 0 && $currentPaidTo <= $paidTo && !$this->isAlreadyPaid($paidTo)) {
                 $isNeedCreateCashOperation = true;
             }
         } else {

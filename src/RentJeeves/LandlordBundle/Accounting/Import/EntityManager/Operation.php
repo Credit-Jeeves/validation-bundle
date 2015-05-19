@@ -17,7 +17,7 @@ trait Operation
      * @param $amount
      * @return bool
      */
-    protected function isAlreadyPay($paidFor)
+    protected function isAlreadyPaid($paidFor)
     {
         $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
             $this->currentImportModel->getTenant(),
@@ -35,7 +35,7 @@ trait Operation
 
     protected function getOperationByPaidFor($paidFor)
     {
-        if ($this->isAlreadyPay($paidFor)) {
+        if ($this->isAlreadyPaid($paidFor)) {
             return null;
         }
 
