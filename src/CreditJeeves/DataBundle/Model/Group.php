@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Entity\ImportSummary;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -221,6 +222,13 @@ abstract class Group
     protected $created_at;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="disable_credit_card", type="boolean", options={"default"="0"})
+     */
+    protected $disableCreditCard;
+
+    /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
@@ -310,6 +318,20 @@ abstract class Group
      * )
      */
     protected $contracts;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ImportSummary",
+     *     mappedBy="group",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $importSummaries;
 
     /**
      * @ORM\OneToOne(
@@ -414,6 +436,32 @@ abstract class Group
         $this->groupPhones = new ArrayCollection();
         $this->billingAccounts = new ArrayCollection();
         $this->waitingContracts = new ArrayCollection();
+        $this->importSummaries = new ArrayCollection();
+        $this->disableCreditCard = false;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getImportSummaries()
+    {
+        return $this->importSummaries;
+    }
+
+    /**
+     * @param ImportSummary $import
+     */
+    public function addImportSummary(ImportSummary $import)
+    {
+        $this->importSummaries->add($import);
+    }
+
+    /**
+     * @param ImportSummary $import
+     */
+    public function removeImportSummary(ImportSummary $import)
+    {
+        $this->importSummaries->remove($import);
     }
 
     /**
@@ -1285,5 +1333,21 @@ abstract class Group
     public function setAccountNumberMapping(GroupAccountNumberMapping $accountNumberMapping)
     {
         $this->accountNumberMapping = $accountNumberMapping;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isDisableCreditCard()
+    {
+        return $this->disableCreditCard;
+    }
+
+    /**
+     * @param mixed $disableCreditCard
+     */
+    public function setDisableCreditCard($disableCreditCard)
+    {
+        $this->disableCreditCard = $disableCreditCard;
     }
 }

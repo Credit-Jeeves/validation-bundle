@@ -10,6 +10,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserAddressType extends Base
 {
+    const NAME = '';
+
     /**
      * {@inheritdoc}
      */
@@ -17,7 +19,6 @@ class UserAddressType extends Base
     {
         parent::buildForm($builder, $options);
 
-        $builder->remove('unit');
         $builder->remove('area');
         $builder->add('state', 'text', [
             'property_path' => 'area'
@@ -30,6 +31,9 @@ class UserAddressType extends Base
                 ]),
             ]
         ]);
+        $builder->add('is_current', 'checkbox', [
+            'property_path' => 'is_default'
+        ]);
 
         $builder->addEventSubscriber(new StreetTransformerListener());
     }
@@ -40,8 +44,18 @@ class UserAddressType extends Base
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
+            'csrf_protection' => false,
+            'data_class' => 'CreditJeeves\DataBundle\Entity\Address',
             'cascade_validation' => true,
-            'data_class' => 'CreditJeeves\DataBundle\Entity\Address'
+            'validation_groups' => ['user_address_new'],
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return self::NAME;
     }
 }

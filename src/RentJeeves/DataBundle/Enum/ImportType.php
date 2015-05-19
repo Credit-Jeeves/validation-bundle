@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Form\Enum;
+namespace RentJeeves\DataBundle\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
 

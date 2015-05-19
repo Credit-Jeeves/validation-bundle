@@ -47,7 +47,7 @@ trait Unit
         $unitId = (isset($row[Mapping::KEY_UNIT_ID])) ? $row[Mapping::KEY_UNIT_ID] : '';
         $unitName = $row[Mapping::KEY_UNIT];
         if ($this->isEmptyString($unitName) && !$this->isEmptyString($unitId)) {
-            $this->logger->debug("Unit name is empty, but has unit id (" . $unitId . ")");
+            $this->logger->debug(sprintf('Unit name is empty, but has unit id (%s)', $unitId));
             $property->addPropertyGroup($this->group);
             $this->propertyProcess->setupSingleProperty($property);
 
@@ -106,27 +106,34 @@ trait Unit
      */
     public function getUnitMapping(array $row, EntityUnit $unit)
     {
+        $this->logger->debug('Getting the unit mapping...');
         if (!$unit) {
             throw new InvalidArgumentException('The unit argument cannot be null.');
         }
 
         if (!array_key_exists(Mapping::KEY_UNIT_ID, $row)) {
+            $this->logger->debug(sprintf("Key for %s does not exist in row", Mapping::KEY_UNIT_ID));
+
             return new UnitMapping();
         }
 
         $externalUnitId = $row[Mapping::KEY_UNIT_ID];
 
         if (array_key_exists($externalUnitId, $this->externalUnitIdList)) {
+            $this->logger->debug('found unit mapping (cached)');
+
             return $this->externalUnitIdList[$externalUnitId];
         }
 
         if (!$this->storage->isMultipleProperty()) {
+            $this->logger->debug('unit mapping found for single property import');
             $unitMapping = new UnitMapping();
             $this->externalUnitIdList[$externalUnitId] = $unitMapping;
 
             return $unitMapping;
         }
 
+        $this->logger->debug('looking up unit mapping from DB...');
         $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
             array(
                 'externalUnitId' => $externalUnitId,
@@ -134,8 +141,11 @@ trait Unit
             )
         );
         if (empty($unitMapping)) {
+            $this->logger->debug('...no mapping found. create one!');
             $unitMapping = new UnitMapping();
             $unitMapping->setExternalUnitId($externalUnitId);
+        } else {
+            $this->logger->debug('Existing mapping found in DB!');
         }
 
         $this->externalUnitIdList[$externalUnitId] = $unitMapping;

@@ -87,14 +87,14 @@ class OrderRepositoryCase extends BaseTestCase
     {
         /** @var Landlord $landlord */
         $landlord = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(['email' => 'landlord1@example.com']);
-        $groupId = $landlord->getCurrentGroup()->getId();
+        $group = $landlord->getCurrentGroup();
 
         /** @var OrderRepository $orderRepo */
         $orderRepo = $this->em->getRepository('DataBundle:Order');
         $orders = $orderRepo->getOrdersForYardiGenesis(
             $startDate,
             $endDate,
-            $groupId,
+            [$group],
             ExportReport::EXPORT_BY_DEPOSITS
         );
 
@@ -102,7 +102,7 @@ class OrderRepositoryCase extends BaseTestCase
 
         foreach ($orders as $order) {
             $actualGroupId = $order->getContract()->getGroup()->getId();
-            $this->assertEquals($groupId, $actualGroupId, "Detected an Order the is not within Group.");
+            $this->assertEquals($group->getId(), $actualGroupId, "Detected an Order the is not within Group.");
         }
     }
 }

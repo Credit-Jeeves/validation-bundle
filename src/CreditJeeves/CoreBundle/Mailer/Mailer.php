@@ -14,7 +14,7 @@ class Mailer extends BaseMailer implements MailerInterface
     protected $defaultValuesForEmail = [
         'logoName' => 'logo_rj.png',
         'partnerName' => 'RentTrack',
-        'partnerAddress' => '13911 Ridgedale Drive, Suite 401C, Minnetonka, MN 55305',
+        'partnerAddress' => '4601 Excelsior Blvd Ste 403A, St. Louis Park, MN 55416',
         'loginUrl' => 'my.renttrack.com',
         'isPoweredBy' => false
     ];
@@ -157,13 +157,16 @@ class Mailer extends BaseMailer implements MailerInterface
     public function sendBaseLetter($templateName, $params, $emailTo, $culture)
     {
         /** \Rj\EmailBundle\Entity\EmailTemplate $template */
-        if (false == $template = $this->manager->findTemplateByName($templateName . '.html')) {
+        if (null == $template = $this->manager->findTemplateByName($templateName . '.html')) {
             $this->handleException(
                 new \InvalidArgumentException(sprintf('Template with name "%s" not found', $templateName))
             );
+
+            return false;
         }
         try {
-            $params += $this->defaultValuesForEmail;
+            // $params is second for higher priority (for test email)
+            $params = array_merge($this->defaultValuesForEmail, $params);
             if (null !== $user = $this->getUserByEmail($emailTo)) {
                 if (false != $partner = $user->getPartner()) {
                     if (true === $partner->isPoweredBy()) {

@@ -22,4 +22,12 @@ class ImportBaseAbstract extends BaseTestCase
             "$('.submitImportFile>span').is(':visible')"
         );
     }
+
+    protected function waitRedirectToSummaryPage()
+    {
+        $this->session->wait(
+            15000,
+            "$('#summaryList').length > 0"
+        );
+    }
 }

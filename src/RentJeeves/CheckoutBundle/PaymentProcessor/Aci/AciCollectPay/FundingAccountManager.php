@@ -13,6 +13,7 @@ use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount a
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
+use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 
 /**
@@ -101,16 +102,23 @@ class FundingAccountManager extends AbstractManager
         $fundingAccount->setNickname($paymentAccount->getName());
         $fundingAccount->setHoldername($fundingAccountData->get('account_name'));
 
-        $address = $contract->getTenant()->getDefaultAddress();
+        /** @var Address $address */
+        if ($paymentAccount instanceof UserAwareInterface && $address = $paymentAccount->getAddress()) {
+            $paymentAccount->getAddress()->setUser($contract->getTenant());
+        }
+
+        if (!$address) {
+            $address = $contract->getTenant()->getDefaultAddress();
+        }
+
+        if (!$address) {
+            $address = new Address();
+        }
 
         if (PaymentAccountTypeEnum::CARD == $paymentAccount->getType()) {
             $ccMonth = $fundingAccountData->get('expiration_month');
             $ccYear = $fundingAccountData->get('expiration_year');
             $paymentAccount->setCcExpiration(new \DateTime("last day of {$ccYear}-{$ccMonth}"));
-            /** @var Address $address */
-            if ($fundingAccountData->get('address_choice')) {
-                $address = $fundingAccountData->get('address_choice');
-            }
 
             $account = new RequestModel\SubModel\CCardAccount();
 
@@ -145,8 +153,6 @@ class FundingAccountManager extends AbstractManager
         } else {
             throw new PaymentProcessorInvalidArgumentException('Unsupported Payment Account Type');
         }
-
-        $paymentAccount->setAddress($address);
 
         $fundingAccountAddress = new RequestModel\SubModel\Address();
 

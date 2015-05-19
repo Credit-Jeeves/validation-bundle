@@ -106,6 +106,22 @@
                 <source>admin.list.order.jobs_action</source>
                 <target>Jobs</target>
             </trans-unit>
+            <trans-unit id="admin.email.actions.send_test">
+                <source>admin.email.actions.send_test</source>
+                <target>Send test email</target>
+            </trans-unit>
+            <trans-unit id="admin.email.actions.send_test.success">
+                <source>admin.email.actions.send_test.success</source>
+                <target>A letter has been sent successfully</target>
+            </trans-unit>
+            <trans-unit id="admin.email.actions.send_test.failure">
+                <source>admin.email.actions.send_test.failure</source>
+                <target>The letter has not been sent. Please check all variables and resend</target>
+            </trans-unit>
+            <trans-unit id="admin.email.actions.send_test.wrong_json">
+                <source>admin.email.actions.send_test.wrong_json</source>
+                <target>Test variables : JSON is not valid</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

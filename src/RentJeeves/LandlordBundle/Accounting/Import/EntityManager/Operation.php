@@ -4,11 +4,6 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use CreditJeeves\DataBundle\Entity\Operation as EntityOperation;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\Contract as EntityContract;
-use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
-use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
 
 /**
@@ -22,13 +17,12 @@ trait Operation
      * @param $amount
      * @return bool
      */
-    protected function isDuplicate($paidFor, $amount)
+    protected function isAlreadyPaid($paidFor)
     {
         $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
             $this->currentImportModel->getTenant(),
             $this->currentImportModel->getContract(),
-            $paidFor,
-            $amount
+            $paidFor
         );
 
         //We can't create double payment for current month
@@ -41,7 +35,7 @@ trait Operation
 
     protected function getOperationByPaidFor($paidFor)
     {
-        if ($this->isDuplicate($paidFor, $this->currentImportModel->getContract()->getRent())) {
+        if ($this->isAlreadyPaid($paidFor)) {
             return null;
         }
 

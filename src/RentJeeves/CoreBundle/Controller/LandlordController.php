@@ -1,11 +1,12 @@
 <?php
 namespace RentJeeves\CoreBundle\Controller;
 
+use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Landlord;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Monolog\Logger;
 
-class LandlordController extends Controller
+class LandlordController extends BaseController
 {
     /**
      * @return Landlord
@@ -20,6 +21,7 @@ class LandlordController extends Controller
     public function getGroups()
     {
         $user = $this->getUser();
+
         return $user->getGroups();
     }
 
@@ -29,5 +31,13 @@ class LandlordController extends Controller
     public function getCurrentGroup()
     {
         return $this->get('core.session.landlord')->getGroup();
+    }
+
+    /**
+     * @return Logger
+     */
+    public function getLogger()
+    {
+        return $this->get('logger');
     }
 }

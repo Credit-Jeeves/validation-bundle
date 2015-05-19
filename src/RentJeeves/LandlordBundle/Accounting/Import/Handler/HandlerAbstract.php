@@ -20,7 +20,9 @@ use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\CoreBundle\DateTime;
 use \Exception;
+use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\FormBind;
@@ -110,7 +112,7 @@ abstract class HandlerAbstract implements HandlerInterface
     public $contractProcess;
 
     /**
-     * @Inject("logger")
+     * @Inject("monolog.logger.import")
      * @var Logger
      */
     public $logger;
@@ -121,6 +123,11 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public $exceptionCatcher;
 
+    /**
+     * @Inject("import_summary.manager")
+     * @var ImportSummaryManager
+     */
+    public $reportSummaryManager;
     /**
      * @var SessionUser
      */
@@ -288,29 +295,30 @@ abstract class HandlerAbstract implements HandlerInterface
     {
         $unit = $this->currentImportModel->getContract()->getUnit();
         if (!empty($unit) && !$isSingle = $this->getIsSingle($postData)) {
-            $errors = $this->validator->validate($unit, array("import"));
+            $errors = $this->validator->validate($unit, ["import"]);
             if (count($errors) > 0) {
+                $this->addErrorToSummary($errors);
+
                 return false;
             }
         }
 
         $residentMapping = $this->currentImportModel->getResidentMapping();
-        $errors = $this->validator->validate($residentMapping, array("import"));
-        if (count($errors) > 0 || $this->isUsedResidentId()) {
+        $errors = $this->validator->validate($residentMapping, ["import"]);
+        if (count($errors) > 0) {
+            $this->addErrorToSummary($errors);
+
             return false;
         }
 
         if ($this->storage->isMultipleProperty()) {
             $unitMapping = $this->currentImportModel->getUnitMapping();
-            $errors = $this->validator->validate($unitMapping, array("import"));
+            $errors = $this->validator->validate($unitMapping, ["import"]);
             if (count($errors) > 0) {
+                $this->addErrorToSummary($errors);
+
                 return false;
             }
-        }
-
-        $property = $this->currentImportModel->getContract()->getProperty();
-        if (empty($property) || !$property->getNumber()) {
-            return false;
         }
 
         if ($this->storage->isMultipleProperty()) {
@@ -318,13 +326,35 @@ abstract class HandlerAbstract implements HandlerInterface
             if (isset($postData['contract']['isSingle']) || isset($postData['isSingle'])) {
                 $isSingle = true;
             }
-
+            $property = $this->currentImportModel->getContract()->getProperty();
             if (!$property->isAllowedToSetSingle($isSingle, $this->group->getId())) {
+                $this->addErrorToSummary(["Property is not allowed to be single."]);
+
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * @param mixed $errors
+     */
+    protected function addErrorToSummary($errors)
+    {
+        if ($this->currentImportModel->isSkipped()) {
+            return;
+        }
+
+        if ($errors instanceof ConstraintViolationList && $errors->has(0)) {
+            $errors = [$errors->get(0)->getMessage()];
+        }
+
+        $this->getReport()->addError(
+            $this->currentImportModel->getRow(),
+            $errors,
+            $this->currentImportModel->getOffset()
+        );
     }
 
     /**
@@ -338,13 +368,21 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected function createCurrentImportModel(array $row, $lineNumber)
     {
+        if (isset($row[ImportMapping::KEY_TENANT_NAME])) {
+            $tenantName = $row[ImportMapping::KEY_TENANT_NAME];
+        } else {
+            $tenantName = $row[ImportMapping::FIRST_NAME_TENANT] . " " . $row[ImportMapping::LAST_NAME_TENANT];
+        }
+        $this->logger->debug(sprintf("Creating import model for %s", $tenantName));
+
         $this->currentImportModel = new ModelImport();
+        $this->currentImportModel->setOffset($this->storage->getOffsetStart()+$lineNumber);
+        $this->currentImportModel->setRow($row);
         $this->currentImportModel->setHandler($this);
         $this->currentImportModel->setNumber($lineNumber);
         $this->setTenant($row);
         $this->currentImportModel->setEmail($row[ImportMapping::KEY_EMAIL]);
         $this->group = $this->getGroup($row);
-        $this->currentImportModel->setIsSkipped(false);
 
         if (!$this->group) {
             $this->currentImportModel->setIsSkipped(true);
@@ -399,7 +437,7 @@ abstract class HandlerAbstract implements HandlerInterface
             $this->currentImportModel->setHasContractWaiting(false);
         }
 
-        if (!$this->currentImportModel->getIsSkipped() &&
+        if (!$this->currentImportModel->isSkipped() &&
             is_null($this->currentImportModel->getContract()->getId()) &&
             $this->isContractInPast()
         ) {
@@ -409,21 +447,39 @@ abstract class HandlerAbstract implements HandlerInterface
             );
         }
 
-        if (!$this->currentImportModel->getIsSkipped() && $form = $this->getForm($this->currentImportModel)) {
+        if (!$this->currentImportModel->isSkipped() && $form = $this->getForm($this->currentImportModel)) {
             $this->currentImportModel->setForm($form);
         }
 
         $this->setErrors();
     }
 
+    /**
+     * @param integer $lineNumber
+     * @param string  $keyFieldInUI
+     * @param string  $message
+     * @param array   $errors
+     */
+    protected function setUnrecoverableError($lineNumber, $keyFieldInUI, $message, array &$errors)
+    {
+        $errors[$lineNumber][uniqid()][$keyFieldInUI] = $message;
+        $this->addErrorToSummary([$message]);
+        $this->currentImportModel->setIsSkipped(true);
+        $this->currentImportModel->setSkippedMessage($message);
+    }
+
+    /**
+     * Set errors to currentImportModel
+     */
     protected function setErrors()
     {
         $lineNumber = $this->currentImportModel->getNumber();
+        $this->logger->debug(sprintf('Checking row %s for errors...', $lineNumber));
 
         $errors[$lineNumber] = [];
         $form = $this->currentImportModel->getForm();
 
-        if (!$this->isCreateCsrfToken && !$this->currentImportModel->getIsSkipped()) {
+        if (!$this->isCreateCsrfToken && !$this->currentImportModel->isSkipped()) {
 
             $errors = $this->runFormValidation(
                 $form,
@@ -432,55 +488,59 @@ abstract class HandlerAbstract implements HandlerInterface
             );
 
             if ($this->isUsedResidentId($this->currentImportModel->getResidentMapping())) {
+                $this->logger->warning("ResidentID already in use");
                 $keyFieldInUI = ImportMapping::KEY_RESIDENT_ID;
-                $errors[$lineNumber][uniqid()][$keyFieldInUI] = $this->translator
+                $message = $this->translator
                     ->trans(
                         'error.residentId.already_use',
-                        array(
+                        [
                             '%email%'   => $this->getEmailByResident(
                                 $this->currentImportModel->getResidentMapping()->getResidentId()
                             ),
                             '%support_email%' => $this->supportEmail
-                        )
+                        ]
                     );
+
+                $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
             }
         }
 
         if (isset($this->userEmails[$this->currentImportModel->getTenant()->getEmail()]) &&
             $this->userEmails[$this->currentImportModel->getTenant()->getEmail()] > 1
         ) {
+            $this->logger->warning('Email already in use');
             $keyFieldInUI = 'tenant_email';
-            $errors[$lineNumber][uniqid()][$keyFieldInUI] =
-                $this->translator->trans(
-                    'import.user.already_used'
-                );
-            $this->currentImportModel->setIsSkipped(true);
+            $message = $this->translator->trans('import.user.already_used');
+            $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
         }
 
-        $unit = $this->currentImportModel->getContract()->getUnit();
-        $existUnitMapping = ($unit) ? $unit->getUnitMapping() : null;
         $unitMappingImported = $this->currentImportModel->getUnitMapping();
+        if (!is_null($unitMappingImported->getExternalUnitId())) {
+            $this->logger->debug('Validating external unit id...');
+            // don't try to getUnitMapping if there isn't one in DB -- it will throw EntityNotFoundException
+            $unit = $this->currentImportModel->getContract()->getUnit();
+            $existUnitMapping = ($unit) ? $unit->getUnitMapping() : null;
 
-        if ($existUnitMapping &&
-            !is_null($unitMappingImported->getExternalUnitId()) &&
-            $existUnitMapping->getExternalUnitId() !== $unitMappingImported->getExternalUnitId()
-        ) {
-            $keyFieldInUI = 'import_new_user_with_contract_contract_unitMapping_externalUnitId';
-            $errors[$lineNumber]
-                [uniqid()]
-                [$keyFieldInUI] =
-                    $this->translator->trans(
-                        'import.unit_mapping.already_used'
-                    );
-            $this->currentImportModel->setIsSkipped(true);
+            if ($existUnitMapping &&
+                $existUnitMapping->getExternalUnitId() !== $unitMappingImported->getExternalUnitId()
+            ) {
+                $this->logger->warning('...already in use!');
+                $keyFieldInUI = 'import_new_user_with_contract_contract_unitMapping_externalUnitId';
+                $message = $this->translator->trans('import.unit_mapping.already_used');
+                $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
+            } else {
+                $this->logger->debug('...all good!');
+            }
         }
 
         $property = $this->currentImportModel->getContract()->getProperty();
 
         if ((!$property || !$property->getNumber()) && !$this->storage->isMultipleProperty()) {
+            $this->logger->warning("Property ID already in use!");
             $keyFieldInUI = 'import_new_user_with_contract_contract_unit_name';
             $this->currentImportModel->getContract()->setProperty(null);
-            $errors[$lineNumber][uniqid()][$keyFieldInUI] = $this->translator->trans('import.error.invalid_property');
+            $message = $this->translator->trans('import.error.invalid_property');
+            $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
         }
 
         $this->currentImportModel->setErrors($errors);
@@ -494,7 +554,7 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected function runFormValidation($form, $lineNumber, $token = null)
     {
-        if ($this->currentImportModel->getIsSkipped()) {
+        if ($this->currentImportModel->isSkipped()) {
             return [$lineNumber => []];
         }
 
@@ -541,13 +601,15 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public function initCollectionImportModel()
     {
-        $data       = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
+        $data = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
+        //minus 1 -> because first line it's header
+        $this->getReport()->setTotal($this->mapping->getTotal()-1);
         $this->collectionImportModel = new ArrayCollection([]);
 
         foreach ($data as $key => $values) {
             try {
-                $this->createCurrentImportModel($values, $key);
                 $this->currentImportModel->setNumber($key);
+                $this->createCurrentImportModel($values, $key);
             } catch (Exception $e) {
                 $this->manageException($e);
             }
@@ -593,6 +655,9 @@ abstract class HandlerAbstract implements HandlerInterface
                     $lineNumber = $postData['line'];
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
+                    if ($this->currentImportModel->isSkipped()) {
+                        $this->getReport()->incrementSkipped($this->currentImportModel->getOffset());
+                    }
                     // Validate data which get from client by post request
                     $resultBind = $this->bindForm($postData, $errors);
 
@@ -648,6 +713,7 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $this->isCreateCsrfToken = false;
+        $this->getReport()->save();
 
         return $errors + $errorsNotEditableFields;
     }
@@ -665,6 +731,12 @@ abstract class HandlerAbstract implements HandlerInterface
             }
 
             $contract = $this->currentImportModel->getContract();
+            $contractId = $contract->getId();
+            if (!empty($contractId)) {
+                $this->getReport()->incrementMatched();
+            } else {
+                $this->getReport()->incrementNewContract();
+            }
             $this->flushEntity($unit = $contract->getUnit());
             $unitMapping = $unit->getUnitMapping();
             if ($unitMapping instanceof UnitMapping) {
@@ -683,6 +755,8 @@ abstract class HandlerAbstract implements HandlerInterface
                     $this->currentImportModel->getTenant(),
                     $this->currentImportModel->getContractWaiting()
                 );
+
+                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
                 $contract->setStatus(ContractStatus::INVITE);
                 $this->flushEntity($contract);
 
@@ -717,7 +791,15 @@ abstract class HandlerAbstract implements HandlerInterface
         if ($e instanceof \Doctrine\ORM\ORMException) {
             $this->reConnectDB();
         }
+
         $uniqueKeyException = uniqid();
+        $this->getReport()->addException(
+            $this->currentImportModel->getRow(),
+            $e->getMessage(),
+            $uniqueKeyException,
+            $this->currentImportModel->getOffset()
+        );
+
         $exception = new ImportHandlerException($e);
         $exception->setUniqueKey($uniqueKeyException);
         $this->currentImportModel->setUniqueKeyException($uniqueKeyException);
@@ -785,6 +867,8 @@ abstract class HandlerAbstract implements HandlerInterface
             $message = sprintf("Can't send invite email to user %s", $contract->getTenant()->getEmail());
             throw new ImportHandlerException($message);
         }
+
+        $this->getReport()->incrementInvited();
     }
 
     /**
@@ -814,5 +898,19 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         return;
+    }
+
+    /**
+     * @return ImportSummaryManager
+     */
+    protected function getReport()
+    {
+        $this->reportSummaryManager->initialize(
+            $this->group,
+            $this->storage->getImportType(),
+            $this->storage->getImportSummaryReportPublicId()
+        );
+
+        return $this->reportSummaryManager;
     }
 }

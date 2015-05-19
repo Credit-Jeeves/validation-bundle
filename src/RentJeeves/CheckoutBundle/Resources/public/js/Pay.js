@@ -193,7 +193,26 @@ function Pay(parent, contractId) {
             });
         }
     });
-    this.paymentAccounts = ko.observableArray(window.paymentAccounts);
+
+    /**
+     * Return all paymentAccounts or paymentAccounts without card
+     */
+    this.filteredPaymentAccounts = function () {
+        if (this.contract.disableCreditCard === false) {
+            return window.paymentAccounts;
+        }
+
+        var paymentAccounts = [];
+        $.each(window.paymentAccounts, function (index, paymentAccount) {
+            if (paymentAccount.type !== 'card') {
+                paymentAccounts.push(paymentAccount);
+            }
+        });
+
+        return paymentAccounts;
+    };
+
+    this.paymentAccounts = ko.observableArray(self.filteredPaymentAccounts());
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
 
     this.notEmptyPaymentAccount = ko.computed(function() {
@@ -277,7 +296,11 @@ function Pay(parent, contractId) {
                 fee += '%'
             }
         } else if ('bank' == self.paymentSource.type()) {
-            fee = parseFloat(contract.depositAccount.feeACH);
+            if (contract.depositAccount.isPassedACH) {
+                fee = parseFloat(contract.depositAccount.feeACH);
+            } else {
+                fee = 0;
+            }
             if (isText) {
                 fee = Format.money(fee);
             }
@@ -494,6 +517,9 @@ function Pay(parent, contractId) {
                 } else {
                     sendData(Routing.generate('checkout_pay_payment'), forms[currentStep]);
                 }
+
+                self.showOrHideCreditCard();
+
                 break;
             case 'source':
                 if (!self.payment.paymentAccountId() && !self.newPaymentAccount()) {
@@ -562,7 +588,7 @@ function Pay(parent, contractId) {
     if (contract.payment) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
     }
-    
+
     jQuery('#pay-popup').dialog({
         width: 650,
         modal: true,
@@ -626,5 +652,16 @@ function Pay(parent, contractId) {
         }
 
         return true;
-    }
+    };
+
+    /**
+     * Show or hide radioButton for credit card
+     */
+    this.showOrHideCreditCard = function () {
+        if (self.contract.disableCreditCard == true) {
+            $('input:radio[value="card"]').closest('label.radio').hide();
+        } else {
+            $('input:radio[value="card"]').closest('label.radio').show();
+        }
+    };
 }

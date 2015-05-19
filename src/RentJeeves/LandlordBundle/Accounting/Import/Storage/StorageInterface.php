@@ -4,10 +4,11 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Psr\Log\LoggerInterface;
 
 interface StorageInterface
 {
-    public function __construct(Session $session);
+    public function __construct(Session $session, LoggerInterface $logger);
     /**
      * @param FormInterface $form
      * @return void

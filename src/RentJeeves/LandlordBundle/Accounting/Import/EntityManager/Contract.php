@@ -111,11 +111,7 @@ trait Contract
         if ($this->currentImportModel->getContract()->getId() !== null) {
             // normally, we don't want to mess with paid_to for existing contracts unless
             // it is obvious someone paid outside of RentTrack:
-            if ($balance <= 0 && $currentPaidTo <= $paidTo) {
-                // will be in future
-                //if (there is no order with paid_for for this month) {
-                // create new cash payment on $groupDueDate for this month
-                //}
+            if ($balance <= 0 && $currentPaidTo <= $paidTo && !$this->isAlreadyPaid($paidTo)) {
                 $isNeedCreateCashOperation = true;
             }
         } else {
@@ -182,18 +178,12 @@ trait Contract
         }
 
         if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
-            $searchParams = [
-                'tenant' => $tenant,
-                'externalLeaseId' => $row[Mapping::KEY_EXTERNAL_LEASE_ID],
-            ];
-
-            if (!empty($group)) {
-                $searchParams['group'] = $group;
-            } else {
-                $searchParams['holding'] = $holding;
-            }
-
-            $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy($searchParams);
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContractByExtenalLeaseId(
+                $tenant,
+                $group,
+                $holding,
+                $row[Mapping::KEY_EXTERNAL_LEASE_ID]
+            );
         }
 
         if (empty($contract)) {

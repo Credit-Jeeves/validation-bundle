@@ -2,11 +2,8 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Entity\Property;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
+use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use Symfony\Component\Form\FormInterface;
@@ -64,13 +61,16 @@ class ExternalApiStorage extends StorageCsv
         if ($property instanceof Property) {
             $this->setImportPropertyId($property->getId());
             $this->setIsMultipleProperty(false);
+            $this->setImportType(ImportType::SINGLE_PROPERTY);
         } else {
             $this->setIsMultipleProperty(true);
+            $this->setImportType(ImportType::MULTI_PROPERTIES);
         }
         $this->setImportExternalPropertyId($form['propertyId']->getData());
         $this->setOnlyException($form['onlyException']->getData());
         $this->setImportLoaded(false);
         $this->setMapping($this->getImportData());
+
     }
 
     /**
@@ -189,7 +189,7 @@ class ExternalApiStorage extends StorageCsv
     }
 
     /**
-     * @param string|\DateTime $date
+     * @param  string|\DateTime $date
      * @return string
      */
     protected function getDateString($date)

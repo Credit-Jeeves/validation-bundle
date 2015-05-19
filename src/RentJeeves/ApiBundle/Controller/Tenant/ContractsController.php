@@ -139,7 +139,7 @@ class ContractsController extends Controller
      * @ApiDoc(
      *     resource=true,
      *     section="Contract",
-     *     description="Create new contract.",
+     *     description="Update a contract.",
      *     statusCodes={
      *         204="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",

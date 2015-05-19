@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
- * @Assert\Callback(groups={"card"}, methods={"isValid"})
+ * @Assert\Callback(groups={"card"}, methods={"validate"})
  */
 class Card
 {
@@ -38,9 +38,10 @@ class Card
      */
     protected $expiration;
 
-    protected $parent;
-
-    public function isValid(ExecutionContextInterface $context)
+    /**
+     * @param ExecutionContextInterface $context
+     */
+    public function validate(ExecutionContextInterface $context)
     {
         if (!$this->isChecksumCorrect()) {
             $context
@@ -62,7 +63,6 @@ class Card
      *
      * @return bool
      */
-
     public function isChecksumCorrect()
     {
         $cardnumber = $this->account;
@@ -142,18 +142,6 @@ class Card
     public function setExpiration($expiration)
     {
         $this->expiration = $expiration;
-
-        return $this;
-    }
-
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    public function setParent($parent)
-    {
-        $this->parent = $parent;
 
         return $this;
     }

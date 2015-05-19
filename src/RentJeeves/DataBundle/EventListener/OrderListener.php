@@ -169,8 +169,11 @@ class OrderListener
                         $save = true;
                         // if returned order is from recurring payment, close that payment!
                         $this->closeRecurringPayment($order, $eventArgs->getEntityManager());
-                        $this->container->get('project.mailer')->sendOrderCancelToTenant($order);
-                        $this->container->get('project.mailer')->sendOrderCancelToLandlord($order);
+                        // Do not send notifications if reversed order is CASH
+                        if ($order->getType() != OrderType::CASH) {
+                            $this->container->get('project.mailer')->sendOrderCancelToTenant($order);
+                            $this->container->get('project.mailer')->sendOrderCancelToLandlord($order);
+                        }
                         break;
                 }
                 break;

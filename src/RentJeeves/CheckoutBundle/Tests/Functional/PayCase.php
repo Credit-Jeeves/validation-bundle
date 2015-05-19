@@ -402,7 +402,6 @@ class PayCase extends BaseTestCase
             )
         );
 
-
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
@@ -557,7 +556,6 @@ class PayCase extends BaseTestCase
         $this->assertCount(2, $errors);
         $this->assertEquals('error.user.street.invalid', $errors[0]->getText());
         $this->assertEquals('error.user.city.invalid', $errors[1]->getText());
-
 
         $this->fillForm(
             $form,
@@ -809,5 +807,84 @@ class PayCase extends BaseTestCase
         );
         $this->assertEquals('770 Broadway, Manhattan, #2-a New York, NY 10003 *required', $propertyAddress->getText());
         $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowTypeCardForGroupWithActiveCardAndHideForGroupWithDisable()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
+        $this->assertFalse($group->isDisableCreditCard());
+
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton('contract-pay-2');
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        $dueDate = cal_days_in_month(CAL_GREGORIAN, 2, date('Y') + 1);
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "$('#id-source-step').is(':visible')");
+        $accounts = $this->page->findAll('css', 'div.payment-accounts label.radio');
+        $this->assertCount(3, $accounts);
+
+        $newPaymentLink = $this->page->find('css', 'a.checkout-plus');
+        $newPaymentLink->click();
+
+        $accountTypes = $this->page->findAll(
+            'css',
+            '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio'
+        );
+        $this->assertCount(2, $accountTypes);
+        $cardType = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymentaccounttype_type_1');
+        $this->assertNotNull($cardType);
+        // disable "show card"
+        $group->setDisableCreditCard(true);
+        $this->getEntityManager()->flush($group);
+
+        $this->session->reload();
+
+        $this->page->pressButton('contract-pay-2');
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
+            ]
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "$('#id-source-step').is(':visible')");
+
+        $accounts = $this->page->findAll('css', 'div.payment-accounts label.radio');
+        $this->assertCount(1, $accounts);
+
+        $newPaymentLink = $this->page->find('css', 'a.checkout-plus');
+        $newPaymentLink->click();
+
+        // Hack (count returns 2 , 2 - not correct)
+        $isHidden = $this->session->evaluateScript(
+            'return $("#rentjeeves_checkoutbundle_paymentaccounttype_type_1").is(":hidden");'
+        );
+
+        $this->assertTrue($isHidden);
     }
 }
