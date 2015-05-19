@@ -739,6 +739,8 @@ abstract class HandlerAbstract implements HandlerInterface
                     $this->currentImportModel->getTenant(),
                     $this->currentImportModel->getContractWaiting()
                 );
+
+                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
                 $contract->setStatus(ContractStatus::INVITE);
                 $this->flushEntity($contract);
 
