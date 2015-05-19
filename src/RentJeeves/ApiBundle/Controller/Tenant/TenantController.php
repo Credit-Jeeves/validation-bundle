@@ -78,6 +78,11 @@ class TenantController extends Controller
      *     requirements="\d{4}-\d{2}-\d{2}",
      *     description="Tenant date of birth."
      * )
+     * @RequestParam(
+     *     name="ssn",
+     *     requirements="\d{3}-\d{2}-\d{4}",
+     *     description="Tenant social security number."
+     * )
      *
      * @return ResponseEntity|Form
      */

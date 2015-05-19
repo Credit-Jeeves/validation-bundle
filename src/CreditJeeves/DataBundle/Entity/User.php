@@ -118,6 +118,17 @@ abstract class User extends BaseUser
         return $this;
     }
 
+    /**
+     * @param string $ssn
+     * @return User
+     */
+    public function setSsn($ssn)
+    {
+        $ssn = preg_replace('/[^\d]/', '', $ssn);
+
+        return parent::setSsn($ssn);
+    }
+
     public function getFormattedPhone()
     {
         return PhoneNumberFormatter::formatWithBracketsAndDash($this->phone);

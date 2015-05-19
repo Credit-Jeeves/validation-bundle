@@ -2,6 +2,16 @@ parameters:
     experian.net_connect.class: CreditJeeves\ExperianBundle\NetConnect
     experian.net_connect.credit_profile.class: CreditJeeves\ExperianBundle\NetConnect\CreditProfile
     experian.net_connect.precise_id.class: CreditJeeves\ExperianBundle\NetConnect\PreciseID
+    experian.base_api.class: RentJeeves\ComponentBundle\PidKiqProcessor\Experian\ExperianBaseApiClient
+    experian.pidkiq_api.class: RentJeeves\ComponentBundle\PidKiqProcessor\Experian\ExperianPidKiqApiClient
+    experian.pidkiq_processor.base.class: RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqProcessorBase
+    experian.pidkiq_processor.experian.class: RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqProcessorExperian
+    experian.pidkiq_processor.factory.class: RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqProcessorFactory
+    experian.pidkiq_api.config:
+        url: "%net_connect.precise_id.url%"
+        dbHost: "%net_connect.precise_id.dbhost%"
+        subCode: "%net_connect.precise_id.sub_code%"
+        rootPath: %kernel.root_dir%
 
 services:
     experian.net_connect:
@@ -23,3 +33,32 @@ services:
         class: "%experian.net_connect.precise_id.class%"
         calls:
             - [setConfigs, ["%net_connect.precise_id.url%", "%net_connect.precise_id.dbhost%", "%net_connect.precise_id.sub_code%"]]
+    experian.base_api:
+        abstract:  true
+        class: "%experian.base_api.class%"
+        arguments:
+            - "@logger"
+            - "@doctrine.orm.default_entity_manager"
+    experian.pidkiq_api:
+        parent: experian.base_api
+        class: "%experian.pidkiq_api.class%"
+        calls:
+            - [setConfig, ["%experian.pidkiq_api.config%"]]
+    experian.pidkiq_processor.base:
+        abstract:  true
+        class: "%experian.pidkiq_processor.base.class%"
+        arguments:
+            - "@security.context"
+            - "@doctrine.orm.default_entity_manager"
+            - "@translator"
+            - "%support_email%"
+            - "%external_urls%"
+    experian.pidkiq_processor.experian:
+        parent: experian.pidkiq_processor.base
+        class: "%experian.pidkiq_processor.experian.class%"
+        calls:
+            - [setPidKiqApiClient, ["@experian.pidkiq_api"]]
+    experian.pidkiq_processor.factory:
+        class: "%experian.pidkiq_processor.factory.class%"
+        calls:
+            - [setPidKiqProcessors, ["@experian.pidkiq_processor.experian"]]

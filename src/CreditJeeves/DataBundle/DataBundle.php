@@ -63,6 +63,10 @@ class DataBundle extends Bundle
                 'UserCulture',
                 'CreditJeeves\DataBundle\Enum\UserCulture'
             );
+            Type::addType(
+                'PidkiqStatus',
+                'CreditJeeves\DataBundle\Enum\PidkiqStatus'
+            );
         }
     }
 }

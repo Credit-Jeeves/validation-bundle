@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ApiBundle\Response;
 
-use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
@@ -14,7 +13,6 @@ use RentJeeves\DataBundle\Entity\Tenant as Entity;
  *      actionName = "get_user"
  * )
  */
-
 class Tenant extends ResponseResource
 {
     /**
@@ -104,10 +102,35 @@ class Tenant extends ResponseResource
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
      *
-     * @return bool
+     * @return string format '000-00-0000'
      */
-    public function getIsVerified()
+    public function getSsn()
     {
-        return $this->entity->getIsVerified() === UserIsVerified::PASSED;
+        $ssn =  preg_replace('/[^\d]/', '', $this->entity->getSsn());
+
+        return sprintf('%s-%s-%s', substr($ssn, 0, 3), substr($ssn, 3, 2), substr($ssn, 5));
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"TenantDetails"})
+     *
+     * @return string
+     */
+    public function getVerifyStatus()
+    {
+        return $this->entity->getIsVerified();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"TenantDetails"})
+     *
+     * @return string
+     */
+    public function getVerifyMessage()
+    {
+        // TODO Need add this info
+        return '';
     }
 }

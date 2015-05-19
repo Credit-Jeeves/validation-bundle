@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\PidkiqStatus;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,6 +48,11 @@ abstract class Pidkiq
     protected $check_summ;
 
     /**
+     * @ORM\Column(type="PidkiqStatus", nullable=false)
+     */
+    protected $status = PidkiqStatus::UNABLE;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $created_at;
@@ -76,7 +82,7 @@ abstract class Pidkiq
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -92,14 +98,14 @@ abstract class Pidkiq
     public function setCjApplicantId($cjApplicantId)
     {
         $this->cj_applicant_id = $cjApplicantId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_applicant_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjApplicantId()
     {
@@ -115,14 +121,14 @@ abstract class Pidkiq
     public function setQuestions($questions)
     {
         $this->questions = $questions;
-    
+
         return $this;
     }
 
     /**
      * Get questions
      *
-     * @return encrypt 
+     * @return encrypt
      */
     public function getQuestions()
     {
@@ -138,14 +144,14 @@ abstract class Pidkiq
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -161,14 +167,14 @@ abstract class Pidkiq
     public function setTryNum($tryNum)
     {
         $this->try_num = $tryNum;
-    
+
         return $this;
     }
 
     /**
      * Get try_num
      *
-     * @return integer 
+     * @return integer
      */
     public function getTryNum()
     {
@@ -184,14 +190,14 @@ abstract class Pidkiq
     public function setSessionId($sessionId)
     {
         $this->session_id = $sessionId;
-    
+
         return $this;
     }
 
     /**
      * Get session_id
      *
-     * @return string 
+     * @return string
      */
     public function getSessionId()
     {
@@ -207,14 +213,14 @@ abstract class Pidkiq
     public function setCheckSumm($checkSumm)
     {
         $this->check_summ = $checkSumm;
-    
+
         return $this;
     }
 
     /**
      * Get check_summ
      *
-     * @return string 
+     * @return string
      */
     public function getCheckSumm()
     {
@@ -230,14 +236,14 @@ abstract class Pidkiq
     public function setUpdatedAt($updatedAt)
     {
         $this->updated_at = $updatedAt;
-    
+
         return $this;
     }
 
     /**
      * Get updated_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -253,7 +259,7 @@ abstract class Pidkiq
     public function setUser(User $user = null)
     {
         $this->user = $user;
-    
+
         return $this;
     }
 
@@ -265,5 +271,23 @@ abstract class Pidkiq
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @param string $status
+     * @see PidkiqStatus
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     * @see PidkiqStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

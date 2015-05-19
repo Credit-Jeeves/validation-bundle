@@ -5,7 +5,7 @@ use CreditJeeves\DataBundle\Model\Pidkiq as BasePidkiq;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\PidkiqRepository")
  * @ORM\Table(name="cj_applicant_pidkiq")
  * @ORM\HasLifecycleCallbacks()
  */
