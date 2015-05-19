@@ -345,7 +345,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
         /** @var ImportSummary $importSummary */
         $importSummary = $em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
-            ['publicId' => $publicId->getHtml()]
+            ['publicId' => $publicId->getText()]
         );
         $this->assertNotEmpty($importSummary);
         $this->assertEquals(20, $importSummary->getCountTotal());
