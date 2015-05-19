@@ -845,8 +845,10 @@ class PayCase extends BaseTestCase
         $newPaymentLink = $this->page->find('css', 'a.checkout-plus');
         $newPaymentLink->click();
 
-        $accountTypes = $this->page->findAll('css',
-            '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio');
+        $accountTypes = $this->page->findAll(
+            'css',
+            '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio'
+        );
         $this->assertCount(2, $accountTypes);
         $cardType = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymentaccounttype_type_1');
         $this->assertNotNull($cardType);
