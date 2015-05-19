@@ -41,11 +41,19 @@ class SecurityController extends BaseController
             $commonOrganizersAndBrowsers="|palmos|blackberry|opera mini|iemobile|windows ce|";
             $uncommonDevices="nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/";
             if (preg_match($commonPhones.$commonOrganizersAndBrowsers.$uncommonDevices, $user_agent)) {
-                $template = sprintf('FOSUserBundle:Security:login.mobile.html.%s', $this->container->getParameter('fos_user.template.engine'));
+                $template =
+                    sprintf(
+                        'FOSUserBundle:Security:login.mobile.html.%s',
+                        $this->container->getParameter('fos_user.template.engine')
+                    );
             }
         }
         if (!isset($template)) {
-            $template = sprintf('FOSUserBundle:Security:login.html.%s', $this->container->getParameter('fos_user.template.engine'));
+            $template =
+                sprintf(
+                    'FOSUserBundle:Security:login.html.%s',
+                    $this->container->getParameter('fos_user.template.engine')
+                );
         }
         $request = $this->container->get('request');
         /* @var $request \Symfony\Component\HttpFoundation\Request */

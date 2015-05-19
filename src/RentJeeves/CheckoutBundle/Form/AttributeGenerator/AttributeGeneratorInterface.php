@@ -4,6 +4,8 @@ namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
 interface AttributeGeneratorInterface
 {
+    public function isMobile();
+
     public function amountAttrs();
 
     public function paidForAttrs();

@@ -2,20 +2,21 @@
 
 namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
-class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGeneratorInterface
+class AttributeGeneratorWeb extends AttributeGenerator
 {
     public function isMobile()
     {
         return false;
     }
+
     public function amountAttrs()
     {
         return array_merge(
             parent::amountAttrs(),
-            array(
+            [
                 'class' => 'half-of-right',
                 'data-bind' => 'value: payment.amount',
-            )
+            ]
         );
     }
 
@@ -23,13 +24,13 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::paidForAttrs(),
-            array(
+            [
                 'class' => 'original paid-for',
                 'data-bind' => "options: payment.paidForOptions, optionsText: 'text', optionsValue: 'value', ".
                     "value: payment.paidFor",
                 'force_row' => false,
                 'template' => 'paidFor-html'
-            )
+            ]
         );
     }
 
@@ -37,10 +38,10 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::amountOtherAttrs(),
-            array(
+            [
                 'class' => 'half-of-right',
                 'data-bind' => 'value: payment.amountOther'
-            )
+            ]
         );
     }
 
@@ -48,12 +49,12 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::totalAttrs(),
-            array(
+            [
                 'data-bind' => 'value: totalInput',
-                'view' => array(
+                'view' => [
                     'data-bind' => 'text: getTotal',
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -61,7 +62,7 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::typeAttrs(),
-            array(
+            [
                 'class' => 'original',
                 'html' =>
                 // green message box for recurring payment
@@ -96,10 +97,10 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                     'checkout.one_time.tooltip.text-%AMOUNT%-%START%' .
                     '</p></div>',
                 'data-bind' => 'value: payment.type',
-                'row_attr' => array(
+                'row_attr' => [
                     'data-bind' => ''
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -107,13 +108,13 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::frequencyAttrs(),
-            array(
+            [
                 'class' => 'original',
                 'data-bind' => 'value: payment.frequency',
-                'row_attr' => array(
+                'row_attr' => [
                     'data-bind' => 'visible: \'recurring\' == payment.type()'
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -136,7 +137,7 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::startMonthAttrs(),
-            array(
+            [
                 'class' => 'original',
                 'data-bind' => '
                             options: payment.startMonths,
@@ -145,10 +146,10 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                             optionsText: "name",
                             optionsValue: "number"
                             ',
-                'row_attr' => array(
+                'row_attr' => [
                     'data-bind' => 'visible: \'recurring\' == payment.type()'
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -156,7 +157,7 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::startYearAttrs(),
-            array(
+            [
                 'class' => 'original',
                 'data-bind' => '
                             options: payment.startYears,
@@ -165,10 +166,10 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
                             optionsText: "name",
                             optionsValue: "number"
                             ',
-                'row_attr' => array(
+                'row_attr' => [
                     'data-bind' => 'visible: \'recurring\' == payment.type()'
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -176,15 +177,15 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::startDateAttrs(),
-            array(
+            [
                 'class' => 'datepicker-field',
-                'row_attr'  => array(
+                'row_attr' => [
                     'data-bind' => 'visible: \'one_time\' == payment.type()
                                 || contract.groupSetting.pay_balance_only'
-                ),
+                ],
                 'data-bind' => 'datepicker: payment.startDate, ' .
                     'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',
-            )
+            ]
         );
     }
 
@@ -192,12 +193,12 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::endsAttrs(),
-            array(
+            [
                 'data-bind' => 'checked: payment.ends',
-                'row_attr' => array(
+                'row_attr' => [
                     'data-bind' => 'visible: \'recurring\' == payment.type()'
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -205,13 +206,13 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::endMonthAttrs(),
-            array(
+            [
                 'class' => 'original',
                 'data-bind' => 'value: payment.endMonth, enable: \'on\' == payment.ends()',
-                'box_attr' => array(
+                'box_attr' => [
                     'data-bind' => 'visible: \'on\' == payment.ends()'
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -219,13 +220,13 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::endYearAttrs(),
-            array(
+            [
                 'class' => 'original',
                 'data-bind' => 'value: payment.endYear, enable: \'on\' == payment.ends()',
-                'box_attr' => array(
+                'box_attr' => [
                     'data-bind' => 'visible: \'on\' == payment.ends()'
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -233,9 +234,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::paymentAccountIdAttrs(),
-            array(
+            [
                 'data-bind' => 'value: payment.paymentAccountId',
-            )
+            ]
         );
     }
 
@@ -243,9 +244,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::contractIdAttrs(),
-            array(
+            [
                 'data-bind' => 'value: payment.contractId',
-            )
+            ]
         );
     }
 
@@ -253,9 +254,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::idAttrs(),
-            array(
+            [
                 'data-bind' => 'value: payment.id',
-            )
+            ]
         );
     }
 
@@ -263,9 +264,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::submitAttrs(),
-            array(
+            [
                 'force_row' => true, 'class' => 'hide_submit'
-            )
+            ]
         );
     }
 
@@ -273,10 +274,9 @@ class AttributeGeneratorWeb extends AttributeGenerator implements AttributeGener
     {
         return array_merge(
             parent::paymentAccountAttrs(),
-            array(
-                'style'=>'display:none'
-            )
+            [
+                'style' => 'display:none'
+            ]
         );
     }
-
 }
