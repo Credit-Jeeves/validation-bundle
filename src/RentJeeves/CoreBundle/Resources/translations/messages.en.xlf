@@ -3063,6 +3063,10 @@
                     You can revoke their invitation first, or contact %support_email% for further assistance.
                 </target>
             </trans-unit>
+            <trans-unit id="import.error.none_unique_result">
+                <source>import.error.none_unique_result</source>
+                <target>Should be one user with such residentID, but found more than one.</target>
+            </trans-unit>
             <trans-unit id="notice.revoke.residentId.multiple_contracts">
                 <source>notice.revoke.residentId.multiple_contracts</source>
                 <target>{1} Are you sure you want to revoke this invitation? The Accounting ID mapping for this resident is in use by other contracts and will not be removed.|{0} Are you sure you want to revoke this invitation? The Accounting ID mapping for this resident will also be removed so you will be be able to use that ID for a different resident.</target>
