@@ -495,7 +495,7 @@ class Contract extends Base
                 $interval = $currentDate->diff($paidFor)->format('%r%a');
                 $status = $order->getStatus();
                 switch ($status) {
-                    case OrderStatus::NEWONE :
+                    case OrderStatus::NEWONE:
                         $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
                         $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
                         break;
