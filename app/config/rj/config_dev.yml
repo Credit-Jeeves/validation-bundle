@@ -13,6 +13,7 @@ web_profiler:
     intercept_redirects: false
 
 monolog:
+    channels: ["import"]
     handlers:
         main:
             type:  stream

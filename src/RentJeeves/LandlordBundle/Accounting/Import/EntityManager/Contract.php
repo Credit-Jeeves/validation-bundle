@@ -182,18 +182,12 @@ trait Contract
         }
 
         if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
-            $searchParams = [
-                'tenant' => $tenant,
-                'externalLeaseId' => $row[Mapping::KEY_EXTERNAL_LEASE_ID],
-            ];
-
-            if (!empty($group)) {
-                $searchParams['group'] = $group;
-            } else {
-                $searchParams['holding'] = $holding;
-            }
-
-            $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy($searchParams);
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContractByExtenalLeaseId(
+                $tenant,
+                $group,
+                $holding,
+                $row[Mapping::KEY_EXTERNAL_LEASE_ID]
+            );
         }
 
         if (empty($contract)) {

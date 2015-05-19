@@ -112,7 +112,7 @@ abstract class HandlerAbstract implements HandlerInterface
     public $contractProcess;
 
     /**
-     * @Inject("logger")
+     * @Inject("monolog.logger.import")
      * @var Logger
      */
     public $logger;
@@ -368,6 +368,13 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected function createCurrentImportModel(array $row, $lineNumber)
     {
+        if (isset($row[ImportMapping::KEY_TENANT_NAME])) {
+            $tenantName = $row[ImportMapping::KEY_TENANT_NAME];
+        } else {
+            $tenantName = $row[ImportMapping::FIRST_NAME_TENANT] . " " . $row[ImportMapping::LAST_NAME_TENANT];
+        }
+        $this->logger->debug(sprintf("Creating import model for %s", $tenantName));
+
         $this->currentImportModel = new ModelImport();
         $this->currentImportModel->setOffset($this->storage->getOffsetStart()+$lineNumber);
         $this->currentImportModel->setRow($row);
@@ -467,6 +474,7 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function setErrors()
     {
         $lineNumber = $this->currentImportModel->getNumber();
+        $this->logger->debug(sprintf('Checking row %s for errors...', $lineNumber));
 
         $errors[$lineNumber] = [];
         $form = $this->currentImportModel->getForm();
@@ -480,6 +488,7 @@ abstract class HandlerAbstract implements HandlerInterface
             );
 
             if ($this->isUsedResidentId($this->currentImportModel->getResidentMapping())) {
+                $this->logger->warning("ResidentID already in use");
                 $keyFieldInUI = ImportMapping::KEY_RESIDENT_ID;
                 $message = $this->translator
                     ->trans(
@@ -499,27 +508,35 @@ abstract class HandlerAbstract implements HandlerInterface
         if (isset($this->userEmails[$this->currentImportModel->getTenant()->getEmail()]) &&
             $this->userEmails[$this->currentImportModel->getTenant()->getEmail()] > 1
         ) {
+            $this->logger->warning('Email already in use');
             $keyFieldInUI = 'tenant_email';
             $message = $this->translator->trans('import.user.already_used');
             $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
         }
 
-        $unit = $this->currentImportModel->getContract()->getUnit();
-        $existUnitMapping = ($unit) ? $unit->getUnitMapping() : null;
         $unitMappingImported = $this->currentImportModel->getUnitMapping();
+        if (!is_null($unitMappingImported->getExternalUnitId())) {
+            $this->logger->debug('Validating external unit id...');
+            // don't try to getUnitMapping if there isn't one in DB -- it will throw EntityNotFoundException
+            $unit = $this->currentImportModel->getContract()->getUnit();
+            $existUnitMapping = ($unit) ? $unit->getUnitMapping() : null;
 
-        if ($existUnitMapping &&
-            !is_null($unitMappingImported->getExternalUnitId()) &&
-            $existUnitMapping->getExternalUnitId() !== $unitMappingImported->getExternalUnitId()
-        ) {
-            $keyFieldInUI = 'import_new_user_with_contract_contract_unitMapping_externalUnitId';
-            $message = $this->translator->trans('import.unit_mapping.already_used');
-            $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
+            if ($existUnitMapping &&
+                $existUnitMapping->getExternalUnitId() !== $unitMappingImported->getExternalUnitId()
+            ) {
+                $this->logger->warning('...already in use!');
+                $keyFieldInUI = 'import_new_user_with_contract_contract_unitMapping_externalUnitId';
+                $message = $this->translator->trans('import.unit_mapping.already_used');
+                $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
+            } else {
+                $this->logger->debug('...all good!');
+            }
         }
 
         $property = $this->currentImportModel->getContract()->getProperty();
 
         if ((!$property || !$property->getNumber()) && !$this->storage->isMultipleProperty()) {
+            $this->logger->warning("Property ID already in use!");
             $keyFieldInUI = 'import_new_user_with_contract_contract_unit_name';
             $this->currentImportModel->getContract()->setProperty(null);
             $message = $this->translator->trans('import.error.invalid_property');
