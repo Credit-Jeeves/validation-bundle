@@ -179,10 +179,10 @@ trait Contract
 
         if (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID]) && !empty($row[Mapping::KEY_EXTERNAL_LEASE_ID])) {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContractByExtenalLeaseId(
+                $row[Mapping::KEY_EXTERNAL_LEASE_ID],
                 $tenant,
                 $group,
-                $holding,
-                $row[Mapping::KEY_EXTERNAL_LEASE_ID]
+                $holding
             );
         }
 

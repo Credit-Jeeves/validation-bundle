@@ -1,0 +1,25 @@
+
+<table data-role="none" class="paymentHistoryTable">
+    <tr>
+        <td colspan="3" class="headingAddress">
+            <i class="fa fa-home"></i> <b>{{contract.address }}</b>
+        </td>
+    </tr>
+    {% for nYear, aData in contract.history | reverse(true) %}
+        {% if (date(nYear) <= date('-1month')) and ((aData|length)>0) %}
+            <tr>
+                <td colspan="3" class="headingYear">
+                    <div><b>{{ nYear }}</b></div>
+                </td>
+            </tr>
+            <tbody>
+            {% for nMonth, aStatus in aData | reverse(true) %}
+                {% if aStatus.status!='empty-month' %}
+                    <tr><td>{{ aMonthes[nMonth-1] }}</td><td>${{ aStatus.amount }}</td><td>PAID</td></tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        {% endif %}
+    {% endfor %}
+</table>
+<br><br>

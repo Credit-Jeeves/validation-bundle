@@ -2,7 +2,6 @@
 namespace RentJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
@@ -28,10 +27,9 @@ class ContractsListController extends Controller
         $group = $user->getCurrentGroup();
         $canInvite = false;
 
-
         if (!empty($group)) {
             $merchantName = $group->getMerchantName();
-            $canInvite = (!empty($merchantName))? true : false;
+            $canInvite = (!empty($merchantName)) ? true : false;
         }
         $date = new DateTime();
         $start = $date->format('m/d/Y');
@@ -73,7 +71,7 @@ class ContractsListController extends Controller
     /**
      * @Template()
      */
-    public function tenantAction()
+    public function tenantAction($mobile = false)
     {
         $tenant = $this->getUser();
         /** @var EntityManager $em */
@@ -115,7 +113,7 @@ class ContractsListController extends Controller
             SerializationContext::create()->setGroups(array('payRent'))
         );
 
-        return array(
+        $pageVars = array(
             'contractsJson' => $contractsJson,
             'contracts'     => $contractsArr,
             'paidForArr'    => $paidForArr,
@@ -124,5 +122,11 @@ class ContractsListController extends Controller
             'hasIntegratedBalance' => $hasIntegratedBalance,
             'isInPaymentWindow' => $isInPaymentWindow,
         );
+
+        if ($mobile) {
+            return $this->render('RjComponentBundle:ContractsList:tenant.mobile.html.twig', $pageVars);
+        } else {
+            return $pageVars;
+        }
     }
 }

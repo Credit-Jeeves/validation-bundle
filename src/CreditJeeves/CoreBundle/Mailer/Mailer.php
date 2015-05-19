@@ -14,7 +14,7 @@ class Mailer extends BaseMailer implements MailerInterface
     protected $defaultValuesForEmail = [
         'logoName' => 'logo_rj.png',
         'partnerName' => 'RentTrack',
-        'partnerAddress' => '13911 Ridgedale Drive, Suite 401C, Minnetonka, MN 55305',
+        'partnerAddress' => '4601 Excelsior Blvd Ste 403A, St. Louis Park, MN 55416',
         'loginUrl' => 'my.renttrack.com',
         'isPoweredBy' => false
     ];

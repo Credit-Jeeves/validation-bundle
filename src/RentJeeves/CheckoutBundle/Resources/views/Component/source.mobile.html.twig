@@ -1,0 +1,11 @@
+<script type="text/javascript">
+
+    window.addressesViewModels = [];
+    window.paymentAccounts = [];
+    var payAccounts = JSON.parse('{{ payAccountsJson|escape('js') }}');
+
+    jQuery.each(payAccounts, function(key, val){
+        $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").append("<option value='"+val.id+"'>"+val.name+"</option>");
+        window.paymentAccounts.push(val);
+    });
+</script>

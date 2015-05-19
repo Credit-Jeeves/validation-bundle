@@ -49,7 +49,7 @@ trait Tenant
         $email = $row[Mapping::KEY_EMAIL];
         $this->checkTenantStatus($row);
         $this->logger->debug(
-            sprintf('Looking up resident by external resident id: %s or email: %s', $residentId,  $email)
+            sprintf('Looking up resident by external resident id: %s or email: %s', $residentId, $email)
         );
         try {
             /** @var  EntityTenant $tenant */
@@ -82,7 +82,7 @@ trait Tenant
                 return;
             }
 
-            $this->logger->debug(sprintf('Tenant found: %s',$tenant->getFullName()));
+            $this->logger->debug(sprintf('Tenant found: %s', $tenant->getFullName()));
             $this->currentImportModel->setTenant($tenant);
             $this->fillUsersEmailAndResident($tenant, $row);
 

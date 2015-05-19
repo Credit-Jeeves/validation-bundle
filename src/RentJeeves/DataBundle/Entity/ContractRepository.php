@@ -567,10 +567,10 @@ class ContractRepository extends EntityRepository
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getImportContractByExtenalLeaseId(
+        $externalLeaseId,
         Tenant $tenant,
         Group $group = null,
-        Holding $holding = null,
-        $externalLeaseId
+        Holding $holding = null
     ) {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
