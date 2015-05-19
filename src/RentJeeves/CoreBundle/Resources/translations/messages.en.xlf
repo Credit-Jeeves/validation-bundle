@@ -3065,7 +3065,7 @@
             </trans-unit>
             <trans-unit id="import.error.none_unique_result">
                 <source>import.error.none_unique_result</source>
-                <target>Must be one user with such residentID, but find more then one.</target>
+                <target>Should be one user with such residentID, but found more than one.</target>
             </trans-unit>
             <trans-unit id="notice.revoke.residentId.multiple_contracts">
                 <source>notice.revoke.residentId.multiple_contracts</source>
