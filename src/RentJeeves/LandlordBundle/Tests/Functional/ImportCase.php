@@ -175,10 +175,13 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
+        $mapFile = $this->mapFile;
+        $mapFile[15] = ImportMapping::KEY_TENANT_STATUS;
+        // Fill all select choice on the page with correct data
+        for ($i = 1; $i <= 15; $i++) {
             $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
+            if (isset($mapFile[$i])) {
+                $choice->selectOption($mapFile[$i]);
             }
         }
 
@@ -200,11 +203,14 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals($errorFields[2]->getHtml(), 'tenant11@example.com');
 
         $trs = $this->getParsedTrsByStatus();
+
         $this->assertCount(4, $trs, "Count statuses is wrong");
         $this->assertCount(1, $trs['import.status.error'], "Count contract with status 'error' wrong");
         $this->assertCount(3, $trs['import.status.new'], "Count contract with status 'new' wrong");
         $this->assertCount(4, $trs['import.status.skip'], "Count contract with status 'skip' wrong");
         $this->assertCount(1, $trs['import.status.match'], "Count contract with status 'match' wrong");
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertCount(3, $errorFields);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
@@ -256,10 +262,13 @@ class ImportCase extends ImportBaseAbstract
 
         $submitImportFile->click();
         $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount(1, $trs, 'Incorrect number of contracts');
+        $this->assertCount(2, $trs['import.status.skip'], 'Count contract with status \'skip\' wrong');
         $submitImportFile->click();
 
         $this->waitRedirectToSummaryPage();
-
+        $this->assertNotNull($publicId = $this->page->find('css', '#publicId'));
         //Check notify tenant invite for new user or update his contract rent
         $this->assertCount(9, $this->getEmails(), 'Wrong number of emails');
         $em = $this->getEntityManager();
@@ -318,11 +327,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals('0', $contractMatch->getIntegratedBalance());
         $this->assertEquals('10/21/2025', $contractMatch->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractMatch->getStatus());
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'hugo@rentrack.com',
-            )
-        );
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => 'hugo@rentrack.com']);
 
         $contracts = $tenant->getContracts();
         $contractNew = null;
@@ -340,11 +345,12 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
         /** @var ImportSummary $importSummary */
         $importSummary = $em->getRepository('RjDataBundle:ImportSummary')->findOneBy(
-            ['countTotal' => '19']
+            ['publicId' => $publicId->getText()]
         );
         $this->assertNotEmpty($importSummary);
+        $this->assertEquals(20, $importSummary->getCountTotal());
         $this->assertEquals(1, $importSummary->getCountMatched());
-        $this->assertEquals(8, $importSummary->getCountSkipped());
+        $this->assertEquals(9, $importSummary->getCountSkipped());
         $this->assertEquals(9, $importSummary->getCountNew());
         $this->assertEquals(1, $importSummary->countErrors());
         $this->assertEquals(0, $importSummary->countExceptions());

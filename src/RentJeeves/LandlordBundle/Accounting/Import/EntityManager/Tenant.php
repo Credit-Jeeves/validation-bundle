@@ -6,14 +6,19 @@ use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use RentJeeves\LandlordBundle\Model\Import;
-use Symfony\Component\Validator\Validator;
 
 /**
  * @property Import currentImportModel
  */
 trait Tenant
 {
+    /**
+     * @var string
+     */
+    public static $tenantStatus = 'c';
+
     /**
      * @var array
      */
@@ -39,9 +44,8 @@ trait Tenant
      */
     protected function setTenant(array $row)
     {
-        /**
-         * @var $tenant EntityTenant
-         */
+        $this->checkTenantStatus($row);
+        /** @var EntityTenant $tenant */
         $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImportWithResident(
             $row[Mapping::KEY_EMAIL],
             $row[Mapping::KEY_RESIDENT_ID],
@@ -145,5 +149,24 @@ trait Tenant
         if ($this->userResidents[$email] !== $residentId || $countResidents[$residentId] > 1) {
             $this->userEmails[$email]++;
         }
+    }
+
+    /**
+     * @param array $row
+     */
+    protected function checkTenantStatus(array $row)
+    {
+        if (!isset($row[MappingAbstract::KEY_TENANT_STATUS])) {
+            return;
+        }
+
+        if (trim(strtolower($row[MappingAbstract::KEY_TENANT_STATUS])) === self::$tenantStatus) {
+            return;
+        }
+
+        $this->currentImportModel->setIsSkipped(true);
+        $this->currentImportModel->setSkippedMessage(
+            $this->translator->trans('error.tenant.status')
+        );
     }
 }
