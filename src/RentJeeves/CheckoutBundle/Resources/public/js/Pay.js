@@ -658,9 +658,9 @@ function Pay(parent, contractId) {
      * Show or hide radioButton for credit card
      */
     this.showOrHideCreditCard = function () {
-        if(self.contract.disableCreditCard == true){
+        if (self.contract.disableCreditCard == true) {
             $('input:radio[value="card"]').closest('label.radio').hide();
-        }else{
+        } else {
             $('input:radio[value="card"]').closest('label.radio').show();
         }
     };

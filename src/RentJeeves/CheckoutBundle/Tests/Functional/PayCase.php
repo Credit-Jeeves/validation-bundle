@@ -848,10 +848,9 @@ class PayCase extends BaseTestCase
         $accountTypes = $this->page->findAll('css',
             '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio');
         $this->assertCount(2, $accountTypes);
-        $a = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymentaccounttype_type_1');
-        $this->assertNotNull($a);
+        $cardType = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymentaccounttype_type_1');
+        $this->assertNotNull($cardType);
         // disable "show card"
-        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
         $group->setDisableCreditCard(true);
         $this->getEntityManager()->flush($group);
 
