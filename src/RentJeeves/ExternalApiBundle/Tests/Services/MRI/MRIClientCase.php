@@ -100,9 +100,9 @@ class MRIClientCase extends Base
         $mriClient = $this->getMriClient();
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
-        $this->assertGreaterThan(15, $mriResponse->getValues());
+        $this->assertGreaterThan(21, $mriResponse->getValues(), "MRI Dataset not the size expected - did it change?");
         /** @var Value $value */
-        $value = $mriResponse->getValues()[14];
+        $value = $mriResponse->getValues()[20];
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
         $this->assertNotEmpty($value->getResidentId());
         $this->assertNotEmpty($value->getUnitId());
