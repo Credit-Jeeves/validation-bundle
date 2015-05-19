@@ -222,6 +222,13 @@ abstract class Group
     protected $created_at;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="disable_credit_card", type="boolean", options={"default"="0"})
+     */
+    protected $disableCreditCard;
+
+    /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
@@ -430,6 +437,7 @@ abstract class Group
         $this->billingAccounts = new ArrayCollection();
         $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
+        $this->disableCreditCard = false;
     }
 
     /**
@@ -1325,5 +1333,21 @@ abstract class Group
     public function setAccountNumberMapping(GroupAccountNumberMapping $accountNumberMapping)
     {
         $this->accountNumberMapping = $accountNumberMapping;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isDisableCreditCard()
+    {
+        return $this->disableCreditCard;
+    }
+
+    /**
+     * @param mixed $disableCreditCard
+     */
+    public function setDisableCreditCard($disableCreditCard)
+    {
+        $this->disableCreditCard = $disableCreditCard;
     }
 }

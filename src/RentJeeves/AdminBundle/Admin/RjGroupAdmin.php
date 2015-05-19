@@ -93,6 +93,7 @@ class RjGroupAdmin extends Admin
                     'label' => 'Merchant status'
                 )
             )
+            ->add('disableCreditCard')
             ->add(
                 '_action',
                 'actions',
@@ -174,6 +175,7 @@ class RjGroupAdmin extends Admin
                     'checkbox',
                     ['label' => 'Is passed ach', 'required' => false]
                 )
+                ->add('disableCreditCard', 'checkbox', ['label' => 'Disable Credit Card?', 'required' => false])
             ->end()
             ->with('Group Phones')
                 ->add(
