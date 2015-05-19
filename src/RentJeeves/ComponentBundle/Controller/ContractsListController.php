@@ -113,7 +113,7 @@ class ContractsListController extends Controller
             SerializationContext::create()->setGroups(array('payRent'))
         );
 
-        $pageVars= array(
+        $pageVars = array(
             'contractsJson' => $contractsJson,
             'contracts'     => $contractsArr,
             'paidForArr'    => $paidForArr,

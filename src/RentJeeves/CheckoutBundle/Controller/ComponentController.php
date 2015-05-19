@@ -64,7 +64,7 @@ class ComponentController extends Controller
                 )
             )
         );
-        $pageVars= array(
+        $pageVars = array(
             'paymentType' => $paymentType->createView(),
             'paymentBalanceOnlyType' => $paymentBalanceOnlyType->createView(),
             'userDetailsType' => $userDetailsType->createView(),
@@ -98,7 +98,7 @@ class ComponentController extends Controller
             SerializationContext::create()->setGroups(array('paymentAccounts'))
         );
 
-        $pageVars= array(
+        $pageVars = array(
             'paymentAccountType' => $paymentAccountType->createView(),
             'addressesJson' => $addressesJson,
             'payAccountsJson' => $payAccountsJson,

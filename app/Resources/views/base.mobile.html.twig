@@ -14,46 +14,37 @@
 
         <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.js"></script>
         <script type="text/javascript" src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-        {#
-        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
-#}
-
 
         {% javascripts
-        '@CoreBundle/Resources/public/js/jquery-1.9.1.min.js'
-        '@CoreBundle/Resources/public/js/jquery.placeholder.min.js'
-        '@CoreBundle/Resources/public/js/jquery.linkselect.min.js'
-        '@CoreBundle/Resources/public/js/jquery.ssn.js'
-        '@CoreBundle/Resources/public/js/jquery.overlay.js'
-        '@CoreBundle/Resources/public/js/jquery.overlay-ext.js'
-        '@CoreBundle/Resources/public/js/zebra.js'
-        '@CoreBundle/Resources/public/js/lightbox.js'
-        '@CoreBundle/Resources/public/js/ReLoader.js'
-        '@CoreBundle/Resources/public/js/knockout-2.3.0.js'
-        '@CoreBundle/Resources/public/js/knockout.mapping-latest.js'
-        '@CoreBundle/Resources/public/js/knockout.handlers.js'
-        '@CoreBundle/Resources/public/js/knockout.helpers.js'
-        '@CoreBundle/Resources/public/js/knockout.datepicker.js'
-        '@CoreBundle/Resources/public/js/knockout.dialog.js'
-        '@CoreBundle/Resources/public/js/common.js'
-        '@CoreBundle/Resources/public/js/date.js'
-        '@FOSJsRoutingBundle/Resources/public/js/router.js'
-        '@CoreBundle/Resources/public/js/jquery.cookie.js'
-        '@CoreBundle/Resources/public/js/session.js'
-        '@CoreBundle/Resources/public/js/Format.js'
-        'bundles/bazingajstranslation/js/translator.min.js'
+            '@CoreBundle/Resources/public/js/jquery-1.9.1.min.js'
+            '@CoreBundle/Resources/public/js/jquery.placeholder.min.js'
+            '@CoreBundle/Resources/public/js/jquery.linkselect.min.js'
+            '@CoreBundle/Resources/public/js/jquery.ssn.js'
+            '@CoreBundle/Resources/public/js/jquery.overlay.js'
+            '@CoreBundle/Resources/public/js/jquery.overlay-ext.js'
+            '@CoreBundle/Resources/public/js/zebra.js'
+            '@CoreBundle/Resources/public/js/lightbox.js'
+            '@CoreBundle/Resources/public/js/ReLoader.js'
+            '@CoreBundle/Resources/public/js/knockout-2.3.0.js'
+            '@CoreBundle/Resources/public/js/knockout.mapping-latest.js'
+            '@CoreBundle/Resources/public/js/knockout.handlers.js'
+            '@CoreBundle/Resources/public/js/knockout.helpers.js'
+            '@CoreBundle/Resources/public/js/knockout.datepicker.js'
+            '@CoreBundle/Resources/public/js/knockout.dialog.js'
+            '@CoreBundle/Resources/public/js/common.js'
+            '@CoreBundle/Resources/public/js/date.js'
+            '@FOSJsRoutingBundle/Resources/public/js/router.js'
+            '@CoreBundle/Resources/public/js/jquery.cookie.js'
+            '@CoreBundle/Resources/public/js/session.js'
+            '@CoreBundle/Resources/public/js/Format.js'
+            'bundles/bazingajstranslation/js/translator.min.js'
         %}
         {#
         <script type="text/javascript" src="{{ asset_url }}"></script>
         #}
         {% endjavascripts %}
         {% block google_analytics %}
-            {% if application == 'rj' %}
-                {% include 'RjCoreBundle::google_analytics.html.twig' %}
-            {% else %}
-                {% include 'CoreBundle::google_analytics.html.twig' %}
-            {% endif %}
+            {% include 'RjCoreBundle::google_analytics.html.twig' %}
         {% endblock %}
         {% block head_javascripts %}{% endblock %}
 
@@ -76,21 +67,20 @@
             top: 25px;
         }
         </style>
-        
+
     </head>
 
-<body>
-<!--
-      {% block alert %}{% endblock %}
-      //-->
+    <body>
+        <!--
+        {% block alert %}{% endblock %}
+        //-->
 
-          {%block content %}{% endblock %}
+        {%block content %}{% endblock %}
 
-
-<!--
-    <div data-role="footer">
-    {% block footer %}{% endblock %}
-    </div>
-//-->
-</body>
+        <!--
+        <div data-role="footer">
+        {% block footer %}{% endblock %}
+        </div>
+        //-->
+    </body>
 </html>

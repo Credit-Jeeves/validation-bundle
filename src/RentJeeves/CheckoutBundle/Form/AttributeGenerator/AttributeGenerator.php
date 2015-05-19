@@ -6,127 +6,98 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface
 {
     public function amountAttrs()
     {
-        return  array(
+        return  [
             'min' => 1,
             'step' => '0.01'
-        );
+        ];
     }
 
     public function paidForAttrs()
     {
-        return array(
-
-        );
-
+        return [];
     }
 
     public function amountOtherAttrs()
     {
-        return array(
+        return [
             'step' => '0.01'
-        );
-
+        ];
     }
 
     public function totalAttrs()
     {
-        return array(
-            'view' => array()
-        );
+        return [
+            'view' => []
+        ];
     }
 
     public function typeAttrs()
     {
-        return array(
-
-        );
-
+        return [];
     }
 
     public function frequencyAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function dueDateAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function startMonthAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function startYearAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function startDateAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function endsAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function endMonthAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function endYearAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function paymentAccountIdAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function contractIdAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function idAttrs()
     {
-        return array(
-
-        );
+        return [];
     }
 
     public function submitAttrs()
     {
-        return array();
+        return [];
     }
 
     public function paymentAccountAttrs()
     {
-        return array();
+        return [];
     }
 }

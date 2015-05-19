@@ -45,13 +45,13 @@ class SecurityController extends BaseController
     protected function renderLogin(array $data)
     {
         if (isset($_SERVER["HTTP_USER_AGENT"])) {
-            $user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+            $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
             $logger = $this->container->get('logger');
-            $logger->debug("new controller user agent: " . $_SERVER['HTTP_USER_AGENT']);
+            $logger->debug("new controller user agent: " . $userAgent);
             $commonPhones="/phone|iphone|itouch|ipod|symbian|android|htc_|htc-";
             $commonOrganizersAndBrowsers="|palmos|blackberry|opera mini|iemobile|windows ce|";
             $uncommonDevices="nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/";
-            if (preg_match($commonPhones.$commonOrganizersAndBrowsers.$uncommonDevices, $user_agent)) {
+            if (preg_match($commonPhones.$commonOrganizersAndBrowsers.$uncommonDevices, $userAgent)) {
                 $template =
                     sprintf(
                         'FOSUserBundle:Security:login.mobile.html.%s',

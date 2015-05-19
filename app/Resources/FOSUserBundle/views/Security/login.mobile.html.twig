@@ -1,44 +1,39 @@
 {% extends "RjCoreBundle::layout.mobile.html.twig" %}
-{# extends 'RjCoreBundle::base.mobile.html.twig' #}
-
 
 {% block header %}
-  <div data-role="navbar" data-iconpos="left">
+    <div data-role="navbar" data-iconpos="left">
       <h1>RentTrack</h1>
     </div>
 
 {% endblock %}
 
 {% block fos_user_content %}
-    <div data-role="page" style="background-image: url(/bundles/rjcore/Images/mobile/home-bgnd.png); background-size: cover; text-align: center; font-family: PT Sans Caption;">
+    <div data-role="page" style="background-image: url(/bundles/rjcore/images/mobile/home-bgnd.png); background-size: cover; text-align: center; font-family: PT Sans Caption;">
 
-            <img src="/bundles/rjcore/Images/mobile/home-logo.png" style="margin-top: 30px;margin-bottom: 30px;">
+        <img src="/bundles/rjcore/images/mobile/home-logo.png" style="margin-top: 30px;margin-bottom: 30px;">
 
-            <font color="red">
-            {% for flashMessage in app.session.flashbag.get('notice') %}
-                <div class="flash-notice" style="font-family: PT Sans Caption;">
-                    {{ flashMessage }}
-                </div>
-            {% endfor %}
-            </font>
+        <span style="color:red">
+        {% for flashMessage in app.session.flashbag.get('notice') %}
+            <div class="flash-notice" style="font-family: PT Sans Caption;">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+        </span>
 
-
-            {% if app.request.attributes.get('defenseMessage') %}
-                <div class="login-error" style="font-family: PT Sans Caption;"><i class="fa fa-warning" style="color: white;font-size: 21pt;"></i>
-                    {{ app.request.attributes.get('defenseMessage') }}
-                </div>
-            {% endif %}
-            {% for flashMessage in app.session.flashbag.get('error') %}
-                <div class="login-error" style="font-family: PT Sans Caption;"><i class="fa fa-warning" style="font-family: PT Sans Caption; color: white;font-size: 21pt;"></i>
-                    {{ flashMessage|trans }}
-                </div>
-            {% endfor %}
-
-
+        {% if app.request.attributes.get('defenseMessage') %}
+            <div class="login-error" style="font-family: PT Sans Caption;"><i class="fa fa-warning" style="color: white;font-size: 21pt;"></i>
+                {{ app.request.attributes.get('defenseMessage') }}
+            </div>
+        {% endif %}
+        {% for flashMessage in app.session.flashbag.get('error') %}
+            <div class="login-error" style="font-family: PT Sans Caption;"><i class="fa fa-warning" style="font-family: PT Sans Caption; color: white;font-size: 21pt;"></i>
+                {{ flashMessage|trans }}
+            </div>
+        {% endfor %}
 
         <div style="width: 300px; position: relative; left: 50%; margin-left: -150px;" data-enhance="false">
             <form action="{{ path("fos_user_security_check") }}" method="post" id="login_form" data-ajax="false">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
                 {% if error %}
 
                     <div class="login-error" style="font-family: PT Sans Caption;"><i class="fa fa-warning" style="color: white;font-size: 21pt;"></i>
@@ -46,67 +41,61 @@
                     </div>
 
                 {% endif %}
-                    
-                        <input
-                                class="login-input"
-                               type="text"
-                               id="username"
-                               name="_username"
-                               {# value="{{ last_username }}" #}
-                               value="tenant11@example.com"
-                               required="required"
-                               autocomplete="off"
-                               style="height: 40px;font-family: PT Sans Caption;"
-                               placeholder="Email"
-                                />
 
-                    <input autocomplete="off" class="login-input" type="password" id="password" name="_password" required="required" value="P@ssW0rd" placeholder="Password" style="height: 40px; font-family: PT Sans Caption;"/>
-                    <br><br>
-                        <input
-                              {#  class="button large green"#}
-                        		data-ajax="false"
-                               type="submit"
-                               data-role="none"
-                               role="none"
-                               id="_submit"
-                               name="_submit"
-                               value="{#
-                               {{ 'login.submit' | trans }}
-                               #}LOG IN"
-                               style="height: 52px;background: #00aeef; color: white; font-family: PT Sans Caption !important; text-align: center; border-radius: 3px; width: 300px; border: 0; box-shadow: 0px; font-size: 14pt;font-weight: normal;-webkit-appearance: none; -webkit-border-radius: 0;"
-                                />
+                <input class="login-input"
+                       type="text"
+                       id="username"
+                       name="_username"
+                       value="{{ last_username }}"
+                       required="required"
+                       autocomplete="off"
+                       style="height: 40px;font-family: PT Sans Caption;"
+                       placeholder="Email" />
 
-        </form>
+                <input autocomplete="off"
+                       class="login-input"
+                       type="password"
+                       id="password"
+                       name="_password"
+                       required="required"
+                       value=""
+                       placeholder="Password" style="height: 40px; font-family: PT Sans Caption;"/>
+                <br/>
+                <br/>
+                <input {#  class="button large green"#}
+                       data-ajax="false"
+                       type="submit"
+                       data-role="none"
+                       role="none"
+                       id="_submit"
+                       name="_submit"
+                       value="{#
+                       {{ 'login.submit' | trans }}
+                       #}LOG IN"
+                       style="height: 52px;background: #00aeef; color: white; font-family: PT Sans Caption !important; text-align: center; border-radius: 3px; width: 300px; border: 0; box-shadow: 0px; font-size: 14pt;font-weight: normal;-webkit-appearance: none; -webkit-border-radius: 0;" />
+            </form>
 
             <div style="color: white; font-size: 11; margin-top: 100px;">
                 During our Mobile Web Beta, please create your first payment using a computer.
             </div>
 
-
         </div>
         <script>
             $(document).bind('mobileinit',function(){
                 $.mobile.keepNative = "select,input"; /* jQuery Mobile 1.4 and higher */
-                //$.mobile.page.prototype.options.keepNative = "select, input"; /* jQuery Mobile 1.4 and lower */
             });
         </script>
-    {#
-    {% if 'rj' == application %}
-    <div class="create-block-logins floatleft">
-        <h2>{{ 'login.new_user_question' | trans }}</h2>
-        <a id="create-user" href="{{ path('iframe_new') }}">»  </a>
-    </div>
-    {% endif %}
-    {% if 'cj' == application %}
-    <div class="business-logins floatleft">
-        <h2>Business Logins:</h2>
-        <a href="/dealer.php">» {{ 'login.dealership' | trans }} </a>
-    </div>
-    {% endif %}
-    #}
-    <div class="clearboth"></div>
-    <p class="login-pod-footer" style="position: absolute; bottom: 25px; left: 50%; margin-left: -92px;">
-        {#
+        {# TODO: Feature Comming Soon!
+        {% if 'rj' == application %}
+        <div class="create-block-logins floatleft">
+            <h2>{{ 'login.new_user_question' | trans }}</h2>
+            <a id="create-user" href="{{ path('iframe_new') }}">»  </a>
+        </div>
+        {% endif %}
+        #}
+        <div class="clearboth"></div>
+        <p class="login-pod-footer" style="position: absolute; bottom: 25px; left: 50%; margin-left: -92px;">
+        {# TODO: Feature Comming Soon!
         <a href="{{ path('fos_user_resetting_request') }}" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">{{ 'resetting.title' | trans }}</a>
         #}
         <a href="http://www.renttrack.com/terms-of-service/" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
@@ -115,14 +104,10 @@
         <a href="http://renttrack.uservoice.com/" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
             Help
             </a>
-
-    </p>
-    
-        </div>
+        </p>
+    </div>
     {% endblock %}
 
     {% block footer %}
 
     {% endblock %}
-  
- 

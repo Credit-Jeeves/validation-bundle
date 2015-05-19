@@ -1,14 +1,8 @@
 {% extends "TenantBundle::base.mobile.html.twig" %}
-    {% block content %}
-        {{ render(controller('RjComponentBundle:ContractsList:tenant', {'mobile':true})) }}
-
-
-        {{ render(controller('RjComponentBundle:PaymentHistory:index', {'mobile':true})) }}
-{#
-        {% include 'RjComponentBundle:PaymentHistory:payments.mobile.html.twig' with {'contracts': user.contracts} %}
-#}
-
-    {% endblock %}
+{% block content %}
+    {{ render(controller('RjComponentBundle:ContractsList:tenant', {'mobile':true})) }}
+    {{ render(controller('RjComponentBundle:PaymentHistory:index', {'mobile':true})) }}
+{% endblock %}
 
 
 

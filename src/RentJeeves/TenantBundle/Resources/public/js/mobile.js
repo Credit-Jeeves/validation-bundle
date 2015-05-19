@@ -9,11 +9,9 @@ $(document).ready(function(){
         ["paymentAccount_label","Payment Source"]
     ];
 
-    $.each(subs,function(i,k){
-        $("#"+prefix+k[0]).html(k[1])
-    })
-
-
+    $.each(subs, function(i, k) {
+        $("#" + prefix + k[0]).html(k[1])
+    });
 
     $(document).delegate('#opendialog', 'click', function() {
         $('<div>').simpledialog2({
@@ -27,9 +25,9 @@ $(document).ready(function(){
             "<button style='color: white; background: rgb(232,65,65);text-shadow:none; border-radius: 7px;'>Cancel Payment</button></a>" +
             "<a rel='close' href='#main' data-ajax='false' style='text-decoration: none;'><button style='text-shadow:none; border-radius: 7px;'>Back</button></a>"
         })
-    })
+    });
 
-    $( ".selector" ).loader({
+    $(".selector").loader({
         disabled: true
     });
 
@@ -37,7 +35,7 @@ $(document).ready(function(){
     h-=60;
     $(".ui-content").css('min-height',h+'px');
     for (i = 0; i < contractsJson.length;i++) {
-        contract = contractsJson[i]
+        var contract = contractsJson[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
         if (contract.payment) {
 

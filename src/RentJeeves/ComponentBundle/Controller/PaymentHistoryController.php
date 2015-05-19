@@ -87,7 +87,7 @@ class PaymentHistoryController extends Controller
                     break;
             }
         }
-        $pageVars=array(
+        $pageVars = array(
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,
             'aMonthes' => $aMonthes,

@@ -1,23 +1,13 @@
 {% extends "RjCoreBundle::rj_base.mobile.html.twig" %}
 
-
 {% block stylesheets %}
     {% stylesheets
         '@TenantBundle/Resources/public/css/rt01.css'
         '@TenantBundle/Resources/public/css/jquery.mobile.icons.min.css'
     %}
-        <link href='http://fonts.googleapis.com/css?family=PT+Sans+Caption' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans+Caption' rel='stylesheet' type='text/css'>
     <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
 
-    {#
-        <link rel="stylesheet" href="http://demos.jquerymobile.com/1.4.1/css/themes/default/jquery.mobile-1.4.1.min.css">
-        <link rel="stylesheet" href="https://raw.githubusercontent.com/arschmitz/jquery-mobile-datepicker-wrapper/master/jquery.mobile.datepicker.css" />
-        <link rel="stylesheet" href="https://raw.githubusercontent.com/arschmitz/jquery-mobile-datepicker-wrapper/master/jquery.mobile.datepicker.theme.css" />
-        #}
-{#
-    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-#}
     <link rel="stylesheet" type="text/css" href="http://cdn.jtsage.com/datebox/latest/jqm-datebox.min.css">
     <script type="text/javascript" src="http://cdn.jtsage.com/datebox/1.4.5/jqm-datebox-1.4.5.comp.calbox.min.js"></script>
     <script type="text/javascript" src="http://cdn.jtsage.com/datebox/i18n/jquery.mobile.datebox.i18n.en_US.utf8.js"></script>
@@ -25,10 +15,7 @@
 
     <link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog.min.css" />
     <script type="text/javascript" src="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog2.min.js"></script>
-        {% endstylesheets %}
-
-
-
+    {% endstylesheets %}
 {% endblock %}
 
 {# delete ability is commented out @RjComponentBundle/Resources/public/js/tenant-contracts.js. #}

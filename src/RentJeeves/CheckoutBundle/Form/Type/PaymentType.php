@@ -135,9 +135,9 @@ class PaymentType extends AbstractType
                 'paymentAccount',
                 'choice',
                 array(
-                    'choices'   => array(),
-                    'attr'        =>$this->attributes->paymentAccountAttrs(),
-                    'required'  => false,
+                    'choices' => array(),
+                    'attr' => $this->attributes->paymentAccountAttrs(),
+                    'required' => false,
                 )
             );
         }
