@@ -110,11 +110,10 @@ abstract class PidKiqProcessorBase implements PidKiqProcessorInterface, PidKiqSt
                     $this->setIsSuccessfull(false);
 
                     return $this->pidkiqModel = $model;
-                } elseif(
-                    PidkiqStatus::FAILURE !== $model->getStatus() &&
-                    (!$model->getCheckSumm() ||
-                        ($dateOfModel->modify('+60 minutes') >= $currentDate && $model->getCheckSumm() == $checkSum))
-                ) {
+                } elseif (PidkiqStatus::FAILURE !== $model->getStatus() &&
+                         (!$model->getCheckSumm() ||
+                             ($dateOfModel->modify('+60 minutes') >= $currentDate &&
+                             $model->getCheckSumm() == $checkSum))) {
                     return $this->pidkiqModel = $model;
                 }
             }
@@ -220,11 +219,9 @@ abstract class PidKiqProcessorBase implements PidKiqProcessorInterface, PidKiqSt
             return $this->user;
         }
 
-        if (
-            ($token = $this->securityContext->getToken()) &&
+        if (($token = $this->securityContext->getToken()) &&
             is_object($user = $token->getUser()) &&
-            $user instanceof User
-        ) {
+            $user instanceof User) {
             return $this->user = $user;
         }
 
