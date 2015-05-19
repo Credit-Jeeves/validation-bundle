@@ -102,10 +102,15 @@ trait Property
     protected function getProperty($row)
     {
         if (!$this->storage->isMultipleProperty()) {
-            return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
+            $propertyId = $this->storage->getPropertyId();
+            $this->logger->debug(sprintf('Looking up multi-property by id: %s', $propertyId));
+
+            return $this->em->getRepository('RjDataBundle:Property')->find($propertyId);
         }
 
         if (isset($row[Mapping::KEY_UNIT_ID]) && !empty($row[Mapping::KEY_UNIT_ID]) && $this->group) {
+            $this->logger->debug(sprintf('Looking up property by unit_id: %s', $row[Mapping::KEY_UNIT_ID]));
+
             /** @var UnitMapping $mapping */
             $mapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
                 $this->group,

@@ -2,12 +2,13 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
+use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
-use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use RentJeeves\LandlordBundle\Model\Import;
+use Symfony\Component\Validator\Validator;
 
 /**
  * @property Import currentImportModel
@@ -44,30 +45,51 @@ trait Tenant
      */
     protected function setTenant(array $row)
     {
+        $residentId = $row[Mapping::KEY_RESIDENT_ID];
+        $email = $row[Mapping::KEY_EMAIL];
         $this->checkTenantStatus($row);
-        /** @var EntityTenant $tenant */
-        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImportWithResident(
-            $row[Mapping::KEY_EMAIL],
-            $row[Mapping::KEY_RESIDENT_ID],
-            $this->user->getHolding()->getId()
+        $this->logger->debug(
+            sprintf('Looking up resident by external resident id: %s or email: %s', $residentId,  $email)
         );
+        try {
+            /** @var  EntityTenant $tenant */
+            $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImportWithResident(
+                $email,
+                $residentId,
+                $this->user->getHolding()->getId()
+            );
+        } catch (NonUniqueResultException $e) {
+            $this->currentImportModel->setTenant($this->createTenant($row));
+            $this->currentImportModel->setIsSkipped(true);
+            $this->currentImportModel->setSkippedMessage(
+                $this->translator->trans('import.error.none_unique_result')
+            );
+
+            return;
+        }
 
         if (!empty($tenant)) {
             /** @var $residentMapping ResidentMapping */
             $residentMapping = $tenant->getResidentsMapping()->first();
-            if ($residentMapping && $residentMapping->getResidentId() !== $row[Mapping::KEY_RESIDENT_ID]) {
+            if ($residentMapping && $residentMapping->getResidentId() !== $residentId) {
+                $this->logger->warn(
+                    "Imported resident id: " . $residentId . " doesn't match DB " . $residentMapping->getResidentId()
+                );
                 $tenant = $this->createTenant($row);
                 $this->currentImportModel->setTenant($tenant);
                 $this->userEmails[$tenant->getEmail()] = 2; //Make it error, because resident ID different
 
                 return;
             }
+
+            $this->logger->debug(sprintf('Tenant found: %s',$tenant->getFullName()));
             $this->currentImportModel->setTenant($tenant);
             $this->fillUsersEmailAndResident($tenant, $row);
 
             return;
         }
 
+        $this->logger->debug('Tenant not found. Create new record.');
         $this->currentImportModel->setTenant($tenant = $this->createTenant($row));
         $this->fillUsersEmailAndResident($tenant, $row);
     }
@@ -156,11 +178,11 @@ trait Tenant
      */
     protected function checkTenantStatus(array $row)
     {
-        if (!isset($row[MappingAbstract::KEY_TENANT_STATUS])) {
+        if (!isset($row[Mapping::KEY_TENANT_STATUS])) {
             return;
         }
 
-        if (trim(strtolower($row[MappingAbstract::KEY_TENANT_STATUS])) === self::$tenantStatus) {
+        if (trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) === self::$tenantStatus) {
             return;
         }
 

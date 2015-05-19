@@ -737,6 +737,8 @@ class ImportCase extends ImportBaseAbstract
             "$('.errorField').length > 0"
         );
         $this->waitReviewAndPost();
+
+        // first page: all contract waiting and 5 name errors.
         $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
         $this->assertEquals(5, count($errorFields));
 
@@ -748,11 +750,12 @@ class ImportCase extends ImportBaseAbstract
 
         $trs = $this->getParsedTrsByStatus();
 
-        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(1, count($trs), "Should only have 1 type of status");
         $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
+        // first page: fix errors and continue
         $this->assertNotNull($firstName1 = $this->page->find('css', 'input.1_first_name'));
         $firstName1->setValue('Logan');
         $this->assertNotNull($lastName1 = $this->page->find('css', 'input.1_last_name'));
@@ -771,6 +774,7 @@ class ImportCase extends ImportBaseAbstract
 
         $this->waitReviewAndPost();
 
+        // second page: all contract waiting and no errors.
         $trs = $this->getParsedTrsByStatus();
         $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
 
@@ -782,6 +786,7 @@ class ImportCase extends ImportBaseAbstract
 
         $this->waitReviewAndPost();
 
+        // third page: verify no errors and finish
         $submitImportFile->click();
 
         $this->waitReviewAndPost(false);

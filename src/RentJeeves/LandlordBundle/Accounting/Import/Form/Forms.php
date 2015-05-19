@@ -39,6 +39,8 @@ trait Forms
      */
     public function getContractForm($isUseToken = true)
     {
+        $this->logger->debug('Getting form to update or create contract with existing user');
+
         return $this->createForm(
             new ImportContractType(
                 $this->em,
@@ -55,6 +57,8 @@ trait Forms
      */
     public function getCreateUserAndCreateContractForm()
     {
+        $this->logger->debug('Getting form to create contract and user');
+
         return $this->createForm(
             new ImportNewUserWithContractType(
                 $this->em,
@@ -70,6 +74,8 @@ trait Forms
      */
     public function getContractFinishForm()
     {
+        $this->logger->debug('Getting form to finish existing contract');
+
         return $this->createForm(new ImportContractFinishType());
     }
 
@@ -80,13 +86,27 @@ trait Forms
     {
         $tenant   = $this->currentImportModel->getTenant();
         $contract = $this->currentImportModel->getContract();
+        $hasContractWaiting = $this->currentImportModel->getHasContractWaiting();
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
+        $contractStatus = $contract->getStatus();
+        $isSkipped = $this->currentImportModel->isSkipped();
+
+        $this->logger->debug(
+            sprintf(
+                "getForm: tId:'%s', cId:'%s', cStatus:'%s', waiting:%s, skip:%s",
+                $tenantId,
+                $contractId,
+                $contractStatus,
+                ($hasContractWaiting) ? "true" : "false",
+                ($isSkipped) ? "true" : "false"
+            )
+        );
 
         //Update contract or Create contract with exist User
         if (($tenantId &&
                 in_array(
-                    $contract->getStatus(),
+                    $contractStatus,
                     [
                         ContractStatus::INVITE,
                         ContractStatus::APPROVED,
@@ -95,7 +115,7 @@ trait Forms
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
-            || $hasContractWaiting = $this->currentImportModel->getHasContractWaiting()
+            || $hasContractWaiting
         ) {
             $form = $this->getContractForm($isUseToken = true);
             $form->setData($contract);
@@ -109,7 +129,7 @@ trait Forms
 
         //Create contract and create user
         if (empty($tenantId) &&
-            $contract->getStatus() === ContractStatus::INVITE &&
+            $contractStatus === ContractStatus::INVITE &&
             empty($contractId)
         ) {
             $form = $this->getCreateUserAndCreateContractForm();
@@ -124,7 +144,7 @@ trait Forms
         }
 
         //Finish exist contract form
-        if ($contract->getStatus() === ContractStatus::FINISHED && !$this->currentImportModel->isSkipped()) {
+        if ($contractStatus === ContractStatus::FINISHED && !$isSkipped) {
             $form = $this->getContractFinishForm();
             $form->setData($contract);
 
