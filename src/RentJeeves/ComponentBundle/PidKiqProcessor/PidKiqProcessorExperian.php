@@ -218,10 +218,8 @@ class PidKiqProcessorExperian extends PidKiqProcessorBase
     {
         $preciseIDServer = $response->getProducts()->getPreciseIDServer();
 
-        if (
-            'ACC' !== $preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode() ||
-            'REF' !== $preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode()
-        ) {
+        if ('ACC' !== $preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode() ||
+            'REF' !== $preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode()) {
             return false;
         }
 
