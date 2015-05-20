@@ -33,3 +33,7 @@ tenant:
   resource:     "@RjApiBundle/Controller/Tenant/TenantController.php"
   name_prefix:  api_
 
+indetity_verification:
+  type:         rest
+  resource:     "@RjApiBundle/Controller/Tenant/IdentityVerificationController.php"
+  name_prefix:  api_

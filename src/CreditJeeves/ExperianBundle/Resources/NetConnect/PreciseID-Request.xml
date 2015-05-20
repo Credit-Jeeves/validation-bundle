@@ -54,6 +54,7 @@
           <InquiryChannel>INTE</InquiryChannel>
           <AccessChannel>PPQ</AccessChannel>
         </Options>
+        <IPAddress/>
       </PreciseIDServer>
     </Products>
   </Request>

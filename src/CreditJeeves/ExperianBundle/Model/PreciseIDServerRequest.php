@@ -3,7 +3,6 @@
 namespace CreditJeeves\ExperianBundle\Model;
 
 use JMS\Serializer\Annotation as Serializer;
-use CreditJeeves\ExperianBundle\Model\Error;
 
 trait PreciseIDServerRequest
 {
@@ -44,6 +43,14 @@ trait PreciseIDServerRequest
     protected $options;
 
     /**
+     * @Serializer\SerializedName("IPAddress")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"PreciseID"})
+     * @var string
+     */
+    protected $ipAddress;
+
+    /**
      * @return Subscriber
      */
     public function getSubscriber()
@@ -51,6 +58,7 @@ trait PreciseIDServerRequest
         if (null == $this->subscriber) {
             $this->subscriber = new Subscriber();
         }
+
         return $this->subscriber;
     }
 
@@ -70,6 +78,7 @@ trait PreciseIDServerRequest
         if (null == $this->primaryApplicant) {
             $this->primaryApplicant = new PrimaryApplicant();
         }
+
         return $this->primaryApplicant;
     }
 
@@ -105,6 +114,7 @@ trait PreciseIDServerRequest
         if (null == $this->vendor) {
             $this->vendor = new Vendor();
         }
+
         return $this->vendor;
     }
 
@@ -124,6 +134,7 @@ trait PreciseIDServerRequest
         if (null == $this->options) {
             $this->options = new Options();
         }
+
         return $this->options;
     }
 
@@ -133,5 +144,21 @@ trait PreciseIDServerRequest
     public function setOptions($options)
     {
         $this->options = $options;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ipAddress;
+    }
+
+    /**
+     * @param string $ipAddress
+     */
+    public function setIpAddress($ipAddress)
+    {
+        $this->ipAddress = $ipAddress;
     }
 }

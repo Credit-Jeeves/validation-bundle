@@ -19,6 +19,15 @@ class GLBDetail
     protected $sharedApplication;
 
     /**
+     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\CheckpointSummary")
+     * @Serializer\SerializedName("CheckpointSummary")
+     * @Serializer\Groups({"CreditJeeves"})
+     *
+     * @var CheckpointSummary
+     */
+    protected $checkpointSummary;
+
+    /**
      * @param SharedApplication $sharedApplication
      */
     public function setSharedApplication($sharedApplication)
@@ -34,6 +43,27 @@ class GLBDetail
         if (empty($this->sharedApplication)) {
             $this->sharedApplication = new SharedApplication();
         }
+
         return $this->sharedApplication;
+    }
+
+    /**
+     * @param CheckpointSummary $checkpointSummary
+     */
+    public function setCheckpointSummary(CheckpointSummary $checkpointSummary)
+    {
+        $this->checkpointSummary = $checkpointSummary;
+    }
+
+    /**
+     * @return CheckpointSummary
+     */
+    public function getCheckpointSummary()
+    {
+        if (empty($this->checkpointSummary)) {
+            $this->checkpointSummary = new CheckpointSummary();
+        }
+
+        return $this->checkpointSummary;
     }
 }

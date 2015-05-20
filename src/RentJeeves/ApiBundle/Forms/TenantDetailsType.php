@@ -22,5 +22,7 @@ class TenantDetailsType extends TenantType
         $builder->add('date_of_birth', 'birthday', [
             'widget' => 'single_text',
         ]);
+
+        $builder->add('ssn');
     }
 }

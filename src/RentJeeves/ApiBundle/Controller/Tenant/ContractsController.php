@@ -19,6 +19,8 @@ use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
 class ContractsController extends Controller
 {
     /**
+     * @param int $id
+     *
      * @ApiDoc(
      *     resource=true,
      *     section="Contract",
