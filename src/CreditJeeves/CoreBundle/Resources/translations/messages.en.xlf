@@ -1549,7 +1549,7 @@
             </trans-unit>
             <trans-unit id="login.defence">
                 <source>login.defence</source>
-                <target>Please, try "%MINUTES_LEFT%" minutes later.</target>
+                <target>Too many failed logins. Try in %MINUTES_LEFT% minutes.</target>
             </trans-unit>
             <trans-unit id="password.error.old_not_match">
                 <source>password.error.old_not_match</source>
