@@ -20,8 +20,6 @@ services:
         class: "%data.event_listener.import_summary.class%"
         tags:
             - { name: doctrine.event_listener, event: postPersist, method: postPersist }
-        arguments:
-            - "@skip32.id_encoder"
     kernel.listener.command_dispatch.exception:
         class: '%kernel.listener.command_dispatch.exception.class%'
         arguments:

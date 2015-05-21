@@ -2,31 +2,10 @@
 namespace RentJeeves\DataBundle\EventListener;
 
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
-use Monolog\Logger;
-use RentJeeves\ApiBundle\Services\Encoders\Skip32IdEncoder;
 use RentJeeves\DataBundle\Model\ImportSummary;
 
 class ImportSummaryListener
 {
-    /**
-     * @var Logger
-     */
-    public $logger;
-
-    /**
-     * @var Skip32IdEncoder
-     */
-    public $encoder;
-
-    /**
-     * @param Skip32IdEncoder $encoder
-     */
-    public function __construct(Skip32IdEncoder $encoder)
-    {
-        $this->logger = new Logger(get_class());
-        $this->encoder = $encoder;
-    }
-
     /**
      * @param LifecycleEventArgs $eventArgs
      */
@@ -54,8 +33,7 @@ class ImportSummaryListener
             return;
         }
 
-        $publicId = $this->encoder->encode($importSummary->getId());
-        $importSummary->setPublicId($publicId);
+        $importSummary->setPublicId(uniqid());
         $eventArgs->getObjectManager()->flush($importSummary);
     }
 }
