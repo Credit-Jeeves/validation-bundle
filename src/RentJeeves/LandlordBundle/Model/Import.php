@@ -388,6 +388,12 @@ class Import
      */
     public function getErrors()
     {
+        if (isset($this->errors[$this->getNumber()])) {
+            return $this->errors;
+        }
+
+        $this->errors[$this->getNumber()] = [];
+
         return $this->errors;
     }
 
