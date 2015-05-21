@@ -65,7 +65,9 @@ class RentTrackReport extends ExportReport
     protected function validateSettings($settings)
     {
         if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
-            !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
+            !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by']) ||
+            !array_key_exists('property', $settings)
+        ) {
             throw new ExportException('Not enough parameters for RentTrack report');
         }
     }

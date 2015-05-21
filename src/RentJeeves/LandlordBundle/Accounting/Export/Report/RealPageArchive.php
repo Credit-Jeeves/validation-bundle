@@ -8,7 +8,6 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface;
-use DateTime;
 use RentJeeves\LandlordBundle\Accounting\Export\ZipArchiveReport;
 
 /**
@@ -78,7 +77,9 @@ class RealPageArchive extends ExportReport
 
     protected function validateSettings($settings)
     {
-        if (!isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
+        if (!isset($settings['begin']) || !isset($settings['end']) ||
+            !isset($settings['export_by']) || !array_key_exists('property', $settings)
+        ) {
             throw new ExportException('Not enough parameters for batch report');
         }
     }

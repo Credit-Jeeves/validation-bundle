@@ -207,11 +207,12 @@ class ExportType extends AbstractType
         $builder->add(
             'property',
             'entity',
-            array(
+            [
                 'class'          => 'RjDataBundle:Property',
                 'error_bubbling' => true,
                 'required'    => false,
-                'attr'           => array(
+                'empty_value' => 'export.all_properties',
+                'attr'           => [
                     'class' => 'original widthSelect',
                     'force_row' => true,
                     'data-bind' => '
@@ -219,21 +220,13 @@ class ExportType extends AbstractType
                         optionsText: "name",
                         optionsValue: "id",
                         value: selectedProperty',
-                    'row_attr' => array(
+                    'row_attr' => [
                         'data-bind' =>
                             "visible: (selectedType() != 'promas') &&
-                             (selectedType() != 'renttrack') &&
-                             (selectedType() != 'yardi_genesis_v2')
+                             (selectedType() != 'renttrack')
                              ",
-                    )
-                ),
-                'constraints'    => array(
-                    new NotBlank(
-                        array(
-                            'groups' => array('yardi', 'yardi_genesis', 'real_page')
-                        )
-                    ),
-                ),
+                    ]
+                ],
                 'query_builder'  => function (EntityRepository $er) use ($groups) {
 
                     if ($this->group) {
@@ -264,7 +257,7 @@ class ExportType extends AbstractType
 
                     return $query;
                 }
-            )
+            ]
         );
 
         $builder->add(

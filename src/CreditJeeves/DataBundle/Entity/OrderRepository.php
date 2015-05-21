@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ExternalApi;
 use Doctrine\ORM\Query\Expr;
@@ -257,7 +258,7 @@ class OrderRepository extends EntityRepository
      * @param string $end
      * @param array $groups
      * @param string $exportBy
-     * @param integer $propertyId
+     * @param Property $property
      * @return mixed
      */
     public function getOrdersForYardiGenesis(
@@ -265,14 +266,14 @@ class OrderRepository extends EntityRepository
         $end,
         array $groups,
         $exportBy,
-        $propertyId = null
+        Property $property = null
     ) {
-        return $this->getOrdersForRealPageReport($groups, $propertyId, $start, $end, $exportBy);
+        return $this->getOrdersForRealPageReport($groups, $property, $start, $end, $exportBy);
     }
 
     /**
      * @param array $groups
-     * @param integer $propertyId
+     * @param Property $property
      * @param string $start
      * @param string $end
      * @param string $exportBy
@@ -280,7 +281,7 @@ class OrderRepository extends EntityRepository
      */
     public function getOrdersForRealPageReport(
         array $groups,
-        $propertyId,
+        Property $property = null,
         $start,
         $end,
         $exportBy
@@ -294,7 +295,6 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
-        $query->innerJoin('t.property', 'prop');
         $query->innerJoin('t.unit', 'unit');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('o.transactions', 'transaction');
@@ -321,9 +321,10 @@ class OrderRepository extends EntityRepository
 
         $query->andWhere('g.id in (:groups)');
 
-        if (!is_null($propertyId)) {
+        if ($property instanceof Property) {
+            $query->innerJoin('t.property', 'prop');
             $query->andWhere('prop.id = :propId');
-            $query->setParameter('propId', $propertyId);
+            $query->setParameter('propId', $property->getId());
         }
 
         $query->setParameter('end', $end);

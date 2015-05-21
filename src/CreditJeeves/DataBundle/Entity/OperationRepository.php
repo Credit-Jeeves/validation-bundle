@@ -83,8 +83,15 @@ class OperationRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param Property $property
+     * @param Holding $holding
+     * @param $start
+     * @param $end
+     * @return mixed
+     */
     public function getOperationsForXmlReport(
-        Property $property,
+        Property $property = null,
         Holding $holding,
         $start,
         $end
@@ -109,7 +116,12 @@ class OperationRepository extends EntityRepository
         $query->andWhere("transaction.depositDate IS NOT NULL");
         $query->andWhere("transaction.batchId IS NOT NULL");
         $query->andWhere('transaction.isSuccessful = 1');
-        $query->andWhere('contract.property = :property');
+
+        if ($property instanceof Property) {
+            $query->andWhere('contract.property = :property');
+            $query->setParameter('property', $property);
+        }
+
         $query->andWhere('resident.holding = :holding');
         $query->andWhere('ord.status IN (:statuses)');
         $query->andWhere('operation.type = :type1 OR operation.type = :type2');
@@ -122,7 +134,6 @@ class OperationRepository extends EntityRepository
         $query->setParameter('type1', OperationType::RENT);
         $query->setParameter('type2', OperationType::OTHER);
         $query->setParameter('start', $start);
-        $query->setParameter('property', $property);
         $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         $query->setParameter('completeTransaction', TransactionStatus::COMPLETE);
 

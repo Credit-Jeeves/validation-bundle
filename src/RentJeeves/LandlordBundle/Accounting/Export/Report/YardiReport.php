@@ -92,7 +92,7 @@ class YardiReport extends ExportReport
 
     protected function validateSettings($settings)
     {
-        if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
+        if (!array_key_exists('property', $settings) ||
             !isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
             !isset($settings['propertyId']) ||
             !isset($settings['begin']) || !isset($settings['end'])) {

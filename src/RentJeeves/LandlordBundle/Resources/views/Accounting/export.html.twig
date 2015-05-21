@@ -61,6 +61,8 @@
                 var type = {'type': '{{ choice.value }}', 'typeName': '{{ choice.label|trans }}'};
                 viewModel.exportTypes.push(type);
             {% endfor %}
+            var property = {'id': '', 'name': '{{ 'export.all_properties'|trans }}'};
+            viewModel.properties.push(property);
             {% for choice in formBaseOrder.property.vars['choices'] %}
                 var property = {'id': '{{ choice.value }}', 'name': '{{ choice.label }}'};
                 viewModel.properties.push(property);

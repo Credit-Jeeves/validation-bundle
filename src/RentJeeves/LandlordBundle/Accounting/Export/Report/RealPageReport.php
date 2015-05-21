@@ -65,13 +65,13 @@ class RealPageReport extends ExportReport
 
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
-        $propertyId = $settings['property']->getId();
+        $property = $settings['property'];
         $group = $settings['landlord']->getGroup();
         $exportBy = $settings['export_by'];
 
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForRealPageReport([$group], $propertyId, $beginDate, $endDate, $exportBy);
+        return $orderRepository->getOrdersForRealPageReport([$group], $property, $beginDate, $endDate, $exportBy);
     }
 
     public function getBuildingId()
@@ -86,7 +86,7 @@ class RealPageReport extends ExportReport
 
     protected function validateSettings($settings)
     {
-        if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
+        if (!array_key_exists('property', $settings) ||
             !isset($settings['begin']) || !isset($settings['end']) ||
             !isset($settings['buildingId']) || !isset($settings['export_by'])
         ) {
