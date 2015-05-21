@@ -823,13 +823,14 @@ class Contract extends Base
     {
         $toString = '';
         if ($this->getProperty()) {
+            $toString = $this->getProperty()->getAddress();
             if ($this->getUnit()) {
                 try {
                     $unitName = ' #' . $this->getUnit()->getName();
                 } catch (EntityNotFoundException $e) { // hack for lazyload and soft delete
                     $unitName = '';
                 }
-                $toString = $this->getProperty()->getAddress() . $unitName;
+                $toString .= $unitName;
             }
         }
 
