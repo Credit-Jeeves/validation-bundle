@@ -14,7 +14,10 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $this->type = 'yardi_genesis_v2';
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $this->softDeleteableControl->disable();
 
@@ -42,7 +45,11 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $this->filename = 'PayProcV2.csv';
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
         if (!isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])
            || !array_key_exists('property', $settings)

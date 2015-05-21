@@ -29,7 +29,10 @@ class RealPageArchive extends ExportReport
         $this->useSerializer($serializer);
     }
 
-    public function getContent($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getContent(array $settings)
     {
         $this->validateSettings($settings);
         $this->generateFilename($settings);
@@ -57,7 +60,11 @@ class RealPageArchive extends ExportReport
         return 'application/zip';
     }
 
-    public function getData($settings)
+    /**
+     * @param array $settings
+     * @return array|\Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getData(array $settings)
     {
         $result = array();
         $orders = $this->exportReport->getData($settings);
@@ -75,6 +82,10 @@ class RealPageArchive extends ExportReport
         $this->filename = 'batch_report.zip';
     }
 
+    /**
+     * @param $settings
+     * @throws ExportException
+     */
     protected function validateSettings($settings)
     {
         if (!isset($settings['begin']) || !isset($settings['end']) ||

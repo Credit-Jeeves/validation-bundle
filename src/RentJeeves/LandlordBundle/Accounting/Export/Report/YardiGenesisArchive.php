@@ -29,7 +29,10 @@ class YardiGenesisArchive extends ExportReport
         $this->useSerializer($serializer);
     }
 
-    public function getContent($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getContent(array $settings)
     {
         $this->validateSettings($settings);
         $this->generateFilename($settings);
@@ -57,7 +60,10 @@ class YardiGenesisArchive extends ExportReport
         return 'application/zip';
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $result = array();
         $orders = $this->exportReport->getData($settings);
@@ -75,7 +81,11 @@ class YardiGenesisArchive extends ExportReport
         $this->filename = 'batch_report.zip';
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
         if (!isset($settings['begin']) || !isset($settings['end'])
             || !isset($settings['export_by']) || !array_key_exists('property', $settings)

@@ -28,7 +28,10 @@ class YardiArchive extends ExportReport
         $this->useSerializer($serializer);
     }
 
-    public function getContent($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getContent(array $settings)
     {
         $this->validateSettings($settings);
         $this->generateFilename($settings);
@@ -56,7 +59,10 @@ class YardiArchive extends ExportReport
         return 'application/zip';
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $result = array();
         $operations = $this->exportReport->getData($settings);
@@ -74,7 +80,11 @@ class YardiArchive extends ExportReport
         $this->filename = 'batch_report.zip';
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
         if (!isset($settings['begin']) || !isset($settings['end'])) {
             throw new ExportException('Not enough parameters for batch report');

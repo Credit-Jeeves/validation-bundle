@@ -694,7 +694,7 @@ class ExportCase extends BaseTestCase
         $type->selectOption('yardi_genesis');
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(3, count($errors));
+        $this->assertEquals(2, count($errors));
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));

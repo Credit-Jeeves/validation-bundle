@@ -8,7 +8,6 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInterface;
-use DateTime;
 use RentJeeves\LandlordBundle\Accounting\Export\ZipArchiveReport;
 use ZipArchive;
 
@@ -31,7 +30,10 @@ class PromasArchive extends ExportReport
         $this->useSerializer($serializer);
     }
 
-    public function getContent($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getContent(array $settings)
     {
         $this->validateSettings($settings);
         $this->generateFilename($settings);
@@ -59,7 +61,10 @@ class PromasArchive extends ExportReport
         return 'application/zip';
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $result = array();
         $orders = $this->exportReport->getData($settings);

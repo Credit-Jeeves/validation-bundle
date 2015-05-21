@@ -38,7 +38,10 @@ class RealPageReport extends ExportReport
         $this->fileType = 'csv';
     }
 
-    public function getContent($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getContent(array $settings)
     {
         $this->validateSettings($settings);
         $this->generateFilename($settings);
@@ -56,7 +59,10 @@ class RealPageReport extends ExportReport
         return $this->serializer->getContentType();
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $this->softDeleteableControl->disable();
 
@@ -84,7 +90,11 @@ class RealPageReport extends ExportReport
         $this->buildingId = $params['buildingId'];
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
         if (!array_key_exists('property', $settings) ||
             !isset($settings['begin']) || !isset($settings['end']) ||

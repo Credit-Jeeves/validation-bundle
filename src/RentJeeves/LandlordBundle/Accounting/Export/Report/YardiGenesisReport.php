@@ -36,7 +36,10 @@ class YardiGenesisReport extends ExportReport
         $this->fileType = 'csv';
     }
 
-    public function getContent($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getContent(array $settings)
     {
         $this->validateSettings($settings);
         $this->generateFilename($settings);
@@ -54,7 +57,10 @@ class YardiGenesisReport extends ExportReport
         return $this->serializer->getContentType();
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $this->softDeleteableControl->disable();
 
@@ -78,7 +84,11 @@ class YardiGenesisReport extends ExportReport
         return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groups, $exportBy, $property);
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
         if (!isset($settings['begin']) || !isset($settings['end']) ||
             !isset($settings['export_by']) || !array_key_exists('property', $settings)

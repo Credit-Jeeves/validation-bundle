@@ -40,7 +40,10 @@ class RentTrackReport extends ExportReport
         $this->fileType = 'csv';
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $this->softDeleteableControl->disable();
 
@@ -62,7 +65,11 @@ class RentTrackReport extends ExportReport
         return $repo->getTransactionsForRentTrackReport($groups, $beginDate, $endDate, $exportBy);
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
         if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
             !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by']) ||
@@ -72,7 +79,10 @@ class RentTrackReport extends ExportReport
         }
     }
 
-    public function getContent($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getContent(array $settings)
     {
         $this->validateSettings($settings);
         $this->generateFilename($settings);

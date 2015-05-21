@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Export\Report;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 
 abstract class ExportReport
@@ -14,9 +15,17 @@ abstract class ExportReport
     protected $type;
     protected $fileType;
 
-    abstract public function getData($settings);
+    /**
+     * @param array $settings
+     * @return ArrayCollection
+     */
+    abstract public function getData(array $settings);
 
-    abstract public function getContent($settings);
+    /**
+     * @param array $settings
+     * @return string
+     */
+    abstract public function getContent(array $settings);
 
     abstract public function getContentType();
 
