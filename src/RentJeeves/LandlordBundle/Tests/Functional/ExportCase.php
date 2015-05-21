@@ -31,6 +31,20 @@ class ExportCase extends BaseTestCase
             }
         }
     }
+
+    protected function selectFirstProperty()
+    {
+        $em = $this->getEntityManager();
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy([
+            'street' => 'Broadway',
+            'number' => '770',
+            'zip'    => '10003'
+        ]);
+        $this->assertNotNull($property);
+        $this->assertNotNull($propertyInputSelect = $this->page->find('css', '#base_order_report_type_property'));
+        $propertyInputSelect->selectOption($property->getId());
+    }
+
     protected function createPayment()
     {
         /** @var $em EntityManager */
@@ -95,9 +109,6 @@ class ExportCase extends BaseTestCase
         $em->flush();
     }
 
-    /**
-     * @test
-     */
     public function goToYardiReport()
     {
         $this->load(true);
@@ -112,7 +123,7 @@ class ExportCase extends BaseTestCase
 
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(4, count($errors));
+        $this->assertEquals(3, count($errors));
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
@@ -123,14 +134,15 @@ class ExportCase extends BaseTestCase
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
         $property->selectOption(1);
+        $this->selectFirstProperty();
     }
 
     /**
      * @test
-     * @depends goToYardiReport
      */
     public function baseXmlFormat()
     {
+        $this->goToYardiReport();
         $this->page->pressButton('order.report.download');
 
         $xml = $this->page->getContent();
@@ -163,7 +175,7 @@ class ExportCase extends BaseTestCase
     public function completeYardiXmlFormat()
     {
         $this->goToYardiReport();
-
+        $this->selectFirstProperty();
         $dateStart = new DateTime('-45 days');
         $dateEnd = new DateTime();
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
@@ -228,16 +240,14 @@ class ExportCase extends BaseTestCase
         $type->selectOption('real_page');
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(4, count($errors));
+        $this->assertEquals(3, count($errors));
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
-        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
         $this->assertNotNull($building = $this->page->find('css', '#base_order_report_type_buildingId'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-        $property->selectOption(1);
         $building->setValue(75);
-
+        $this->selectFirstProperty();
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
@@ -276,18 +286,16 @@ class ExportCase extends BaseTestCase
         $type->selectOption('real_page');
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(4, count($errors));
+        $this->assertEquals(3, count($errors));
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
-        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
         $this->assertNotNull($building = $this->page->find('css', '#base_order_report_type_buildingId'));
         $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-        $property->selectOption(1);
         $building->setValue(88);
         $makeZip->check();
-
+        $this->selectFirstProperty();
         $this->page->pressButton('order.report.download');
 
         $csvZip = $this->session->getDriver()->getContent();
@@ -418,7 +426,7 @@ class ExportCase extends BaseTestCase
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
-        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $this->selectFirstProperty();
 
         $this->assertNotNull($propertyId = $this->page->find('css', '#base_order_report_type_propertyId'));
         $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
@@ -426,7 +434,6 @@ class ExportCase extends BaseTestCase
         $propertyId->setValue(100);
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-        $property->selectOption(1);
         $makeZip->check();
 
         $this->page->pressButton('order.report.download');
@@ -486,7 +493,7 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-
+        $this->selectFirstProperty();
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
 
@@ -534,7 +541,7 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
-
+        $this->selectFirstProperty();
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
         $makeZip->check();
@@ -585,16 +592,16 @@ class ExportCase extends BaseTestCase
         $type->selectOption('yardi_genesis');
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(3, count($errors));
+        $this->assertEquals(2, count($errors));
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
-        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $this->selectFirstProperty();
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-        $property->selectOption(1);
         $this->selectExportBy($exportBy);
         $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $this->selectFirstProperty();
         $forAllGroubs->$methodForAllGroups();
         $this->page->pressButton('order.report.download');
 
@@ -646,10 +653,9 @@ class ExportCase extends BaseTestCase
         $this->exportByYardiGenesisV2Csv($exportBy);
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
-        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $this->selectFirstProperty();
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-        $property->selectOption(1);
         $this->selectExportBy($exportBy);
         $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
         $forAllGroubs->$methodForAllGroups();
@@ -692,10 +698,9 @@ class ExportCase extends BaseTestCase
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
-        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $this->selectFirstProperty();
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-        $property->selectOption(1);
         $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
         $makeZip->check();
 
@@ -742,10 +747,9 @@ class ExportCase extends BaseTestCase
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
-        $this->assertNotNull($property = $this->page->find('css', '#base_order_report_type_property'));
+        $this->selectFirstProperty();
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-        $property->selectOption(1);
         $this->assertNotNull($makeZip = $this->page->find('css', '#base_order_report_type_makeZip'));
         $makeZip->check();
 
