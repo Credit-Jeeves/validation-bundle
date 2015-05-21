@@ -83,7 +83,6 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_USER_PHONE           => $this->translator->trans('common.tenant.cell'),
             ImportMapping::KEY_CREDITS              => $this->translator->trans('common.open_credits'),
             ImportMapping::KEY_PAYMENT_ACCEPTED     => $this->translator->trans('common.payment_accepted'),
-            ImportMapping::KEY_IGNORE_ROW           => $this->translator->trans('common.tenant.past'),
             ImportMapping::KEY_TENANT_STATUS        => $this->translator->trans('common.tenant.status'),
         ];
 

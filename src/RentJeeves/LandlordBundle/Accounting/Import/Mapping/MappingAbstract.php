@@ -90,8 +90,6 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_CREDITS = 'credits';
 
-    const KEY_IGNORE_ROW = 'ignore_row';
-
     const KEY_TENANT_STATUS = 'tenant_status';
 
     /**
