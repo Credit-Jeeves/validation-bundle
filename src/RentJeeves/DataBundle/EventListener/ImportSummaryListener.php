@@ -18,7 +18,6 @@ class ImportSummaryListener
      * Setup public ID for summary import
      *
      * @param  LifecycleEventArgs                                                 $eventArgs
-     * @throws \RentJeeves\ApiBundle\Services\Encoders\ValidationEncoderException
      */
     public function setupPublicId(LifecycleEventArgs $eventArgs)
     {
