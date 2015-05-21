@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityNotFoundException;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -815,13 +816,24 @@ class Contract extends Base
         return DisputeCode::all();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
+        $toString = '';
         if ($this->getProperty()) {
-            return $this->getProperty()->getAddress() . ($this->getUnit() ? ' #' . $this->getUnit()->getName() : '');
+            if ($this->getUnit()) {
+                try {
+                    $unitName = ' #' . $this->getUnit()->getName();
+                } catch (EntityNotFoundException $e) { // hack for lazyload and soft delete
+                    $unitName = '';
+                }
+                $toString = $this->getProperty()->getAddress() . $unitName;
+            }
         }
 
-        return '';
+        return $toString;
     }
 
     /**
