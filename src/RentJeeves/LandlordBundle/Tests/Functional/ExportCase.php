@@ -776,4 +776,181 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('', $csvArr[7]);
         $this->assertEquals('', $csvArr[8]);
     }
+
+    /**
+     * @test
+     */
+    public function yardiGenesisV2CsvFormatForAllProperties()
+    {
+        $this->load(true);
+        $this->createPayment();
+        //$this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('yardi_genesis_v2');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(2, count($errors));
+
+        $this->exportByYardiGenesisV2Csv('payments');
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $this->selectExportBy('payments');
+        $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $forAllGroubs->check();
+        $this->page->pressButton('order.report.download');
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\r", trim($csv));
+        $this->assertCount(26, $csvArr);
+        $this->assertTrue(isset($csvArr[0]));
+
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
+        $this->assertEquals('R', $csvArr[0]);
+        $this->assertEquals('123123', $csvArr[1]);
+        $this->assertEquals('1500', $csvArr[3]);
+        $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
+        $this->assertEquals('', $csvArr[6]);
+        $this->assertEquals('', $csvArr[7]);
+        $this->assertEquals('', $csvArr[8]);
+    }
+
+    /**
+     * @test
+     */
+    public function yardiGenesisCsvFormatForAllProperties()
+    {
+        $this->load(true);
+        $this->createPayment();
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('yardi_genesis');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(2, count($errors));
+
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->selectFirstProperty();
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $this->selectExportBy('payments');
+        $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $forAllGroubs->check();
+        $this->page->pressButton('order.report.download');
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\n", trim($csv));
+        $this->assertCount(26, $csvArr);
+
+        $this->assertTrue(isset($csvArr[0]));
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
+        $this->assertEquals('R', $csvArr[0]);
+        $this->assertEquals('123123', $csvArr[1]);
+        $this->assertEquals('1500', $csvArr[3]);
+        $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
+    }
+
+    /**
+     * @test
+     */
+    public function realPageCsvFormatForAllProperties()
+    {
+        $this->load(true);
+        $this->createPayment();
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
+        $this->selectExportBy('deposits');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('real_page');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
+        $this->assertEquals(3, count($errors));
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($building = $this->page->find('css', '#base_order_report_type_buildingId'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $building->setValue(75);
+        $this->page->pressButton('order.report.download');
+
+        $csv = $this->page->getContent();
+        $this->assertFalse(strpos($csv, '"'));
+        $this->assertFalse(strpos($csv, '\''));
+        $csvArr = explode("\n", $csv);
+        $this->assertTrue(isset($csvArr[0]));
+
+        $this->assertCount(14, $csvArr);
+
+        $this->assertNotNull($csvArr = str_getcsv($csvArr[0]));
+        $this->assertEquals('75', $csvArr[0]);
+        $this->assertEquals('2-a', $csvArr[1]);
+        $this->assertEquals('1500.00', $csvArr[3]);
+        $this->assertEquals('TIMOTHY', $csvArr[4]);
+        $this->assertEquals('APPLEGATE', $csvArr[5]);
+        $this->assertEquals('PMTCRED', $csvArr[6]);
+        $this->assertEquals(123123, $csvArr[7]);
+        $this->assertEquals('770 Broadway Manhattan New York NY 10003 #2-a BATCH# 125478', $csvArr[8]);
+    }
+
+    /**
+     * @test
+     */
+    public function completeYardiXmlFormatForAllProperties()
+    {
+        $this->goToYardiReport();
+        $dateStart = new DateTime('-45 days');
+        $dateEnd = new DateTime();
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+
+        $begin->setValue($dateStart->format('m/d/Y'));
+        $end->setValue($dateEnd->format('m/d/Y'));
+
+        $this->page->pressButton('order.report.download');
+
+        $xml = $this->page->getContent();
+        $doc = new SimpleXMLElement($xml);
+
+        $this->assertNotNull($receipts = $doc->Receipts);
+        $this->assertNotNull($receipt = $receipts->Receipt);
+        $this->assertNotNull($date = $receipt->Date);
+        $this->assertNotNull($totalAmount = $receipt->TotalAmount);
+        $this->assertNotNull($isCash = $receipt->IsCash);
+        $this->assertNotNull($checkNumber = $receipt->CheckNumber);
+        $this->assertNotNull($notes = $receipt->Notes);
+        $this->assertNotNull($propertyId = $receipt->PropertyId);
+        $this->assertNotNull($payerName = $receipt->PayerName);
+        $this->assertNotNull($personId = $receipt->PersonId);
+        $this->assertNotNull($postMonth = $receipt->PostMonth);
+
+        $this->assertTrue(isset($receipt->BatchId));
+
+        $this->assertEquals(100, (int) $receipt->PropertyId);
+
+        $this->assertEquals('1500.00', (string) $totalAmount);
+        $this->assertEquals('false', (string) $isCash);
+        $this->assertEquals('PMTCRED 456456', (string) $checkNumber);
+        $this->assertEquals('t0013534', (string) $personId);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string) $notes);
+    }
 }
