@@ -3,6 +3,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use RentJeeves\CoreBundle\DateTime;
 
 class PidkiqRepository extends EntityRepository
 {
@@ -15,7 +16,7 @@ class PidkiqRepository extends EntityRepository
      */
     public function findNotExpiredByUserAndId($id, User $user, $lifeTime = '10 minutes')
     {
-        $datetime  = (new \DateTime())->modify('-' . $lifeTime)->format('Y-m-d H:i:s');
+        $datetime = (new DateTime())->modify('-' . $lifeTime)->format('Y-m-d H:i:s');
 
         return $this->createQueryBuilder("p")
             ->where("p.id = :id")

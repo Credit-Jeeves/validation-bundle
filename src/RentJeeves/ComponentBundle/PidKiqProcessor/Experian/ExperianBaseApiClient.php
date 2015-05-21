@@ -14,9 +14,9 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Monolog\Logger;
-use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\InvalidArgumentException;
-use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\InvalidResponseException;
-use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\InvalidXmlException;
+use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqInvalidArgumentException;
+use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqInvalidResponseException;
+use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqInvalidXmlException;
 
 abstract class ExperianBaseApiClient
 {
@@ -50,11 +50,6 @@ abstract class ExperianBaseApiClient
     protected $config;
 
     /**
-     * @var string
-     */
-    protected $lastResponse;
-
-    /**
      * For additional headers
      * @var array
      */
@@ -70,7 +65,6 @@ abstract class ExperianBaseApiClient
         'subCode',
         'preciseIDEai',
         'preciseIDUserPwd',
-        'rootPath',
     ];
 
     public function __construct(Logger $logger, EntityManager $em)
@@ -85,20 +79,13 @@ abstract class ExperianBaseApiClient
     }
 
     /**
-     * @return string
-     */
-    public function getLastResponse()
-    {
-        return $this->lastResponse;
-    }
-
-    /**
      * @return GuzzleClient
      */
     protected function getClient()
     {
         if (!$this->client) {
             $this->client = new GuzzleClient('', ['redirect.disable' => true]);
+            $this->client->setSslVerification();
         }
 
         return $this->client;
@@ -106,17 +93,18 @@ abstract class ExperianBaseApiClient
 
     /**
      * @param array $config
-     * @throws InvalidArgumentException
+     * @throws PidKiqInvalidArgumentException
      */
     public function setConfig($config)
     {
         // dirty hack
+        // TODO Fix this
         $config['preciseIDEai'] = $this->config['preciseIDEai'];
         $config['preciseIDUserPwd'] = $this->config['preciseIDUserPwd'];
 
         $presentKeys = array_intersect_key(array_flip($this->configRequired), $config);
         if (count($presentKeys) !== count($this->configRequired)) {
-            throw new InvalidArgumentException('Missing required elements for config');
+            throw new PidKiqInvalidArgumentException('Missing required parameters for experian config');
         }
 
         $this->config = $config;
@@ -126,19 +114,27 @@ abstract class ExperianBaseApiClient
      * @param NetConnectRequest $request
      * @param null|string|array $serializationGroup
      * @return NetConnectResponse
+     * @throws \Exception
      */
     protected function doRequest(NetConnectRequest $request, $serializationGroup = null)
     {
         $requestXml = $this->prepareRequest($request, $serializationGroup);
 
         $this->logger->debug(
-            sprintf('Send Request to Experian: %s%s', "\n", $requestXml)
+            sprintf('[Experian]Send Request: %s%s', "\n", $requestXml)
         );
 
-        $responseXml = $this->__send($requestXml);
+        try {
+            $responseXml = $this->__send($requestXml);
+        } catch (\Exception $e) {
+            $this->logger->alert(
+                sprintf('[Experian]Get error when try to send request: %s', $e->getMessage())
+            );
+            throw $e;
+        }
 
         $this->logger->debug(
-            sprintf('Retrieve Response from Experian: %s%s', "\n", $responseXml)
+            sprintf('[Experian]Retrieve Response: %s%s', "\n", $responseXml)
         );
 
         return $this->prepareResponse($responseXml);
@@ -152,9 +148,6 @@ abstract class ExperianBaseApiClient
     protected function __send($request, $method = 'POST')
     {
         // Prepare request
-        list($user, $pass) = explode(':', $this->config['preciseIDUserPwd']);
-        $this->getClient()->setSslVerification();
-
         $guzzleRequest = $this->getClient()->createRequest(
             $method,
             $this->config['url'],
@@ -162,6 +155,7 @@ abstract class ExperianBaseApiClient
             $request
         );
 
+        list($user, $pass) = explode(':', $this->config['preciseIDUserPwd']);
         $guzzleRequest->setAuth($user, $pass);
 
         $guzzleResponse = $guzzleRequest->send();
@@ -181,7 +175,7 @@ abstract class ExperianBaseApiClient
      * @param string $testXML
      * @param string $xmlSchema
      *
-     * @throws InvalidXmlException
+     * @throws PidKiqInvalidXmlException
      */
     protected function validateXml($testXML, $xmlSchema)
     {
@@ -189,14 +183,16 @@ abstract class ExperianBaseApiClient
         $testDom = new \DOMDocument();
         $testDom->loadXML($testXML);
 
-        $xmlSchema = $this->config['rootPath'] . "/../src/CreditJeeves/ExperianBundle/Resources/xsd/{$xmlSchema}.xsd";
+        $xmlSchema = __DIR__ . "/../../Resources/xsd/{$xmlSchema}.xsd";
 
         if (is_readable($xmlSchema) && !@$testDom->schemaValidate($xmlSchema)) {
-            $exception = new InvalidXmlException(
+            $exception = new PidKiqInvalidXmlException(
                 'Generated XML is invalid',
                 E_PARSE
             );
             $exception->setWsdlErrors(libxml_get_errors());
+
+            $this->logger->alert('[Experian]Get Validation Error on Request', $exception->getWsdlErrors());
 
             throw $exception;
         }
@@ -207,7 +203,7 @@ abstract class ExperianBaseApiClient
      * @param NetConnectRequest $request
      * @param null|string|array $serializationGroup
      * @return string xml
-     * @throws InvalidXmlException
+     * @throws PidKiqInvalidXmlException
      */
     protected function prepareRequest(NetConnectRequest $request, $serializationGroup = null)
     {
@@ -219,7 +215,11 @@ abstract class ExperianBaseApiClient
         $xmlRequest = $this->getSerializer()->serialize(
             $request,
             'xml',
-            $this->getSerializerContext($serializationGroup)
+            $this->getSerializationContext($serializationGroup)
+        );
+
+        $this->logger->debug(
+            sprintf('[Experian]Prepared request:%s%s', "\n", $xmlRequest)
         );
 
         $this->validateXml($xmlRequest, static::XML_SCHEMA);
@@ -229,7 +229,6 @@ abstract class ExperianBaseApiClient
 
     protected function prepareResponse($xmlResponse)
     {
-        $this->lastResponse = $xmlResponse;
         /**
          * @var NetConnectResponse $netConnectResponse
          */
@@ -249,7 +248,7 @@ abstract class ExperianBaseApiClient
      *
      * @return SerializationContext
      */
-    protected function getSerializerContext($group = null)
+    protected function getSerializationContext($group = null)
     {
         $context = new SerializationContext();
         $context->setSerializeNull(true);
@@ -284,7 +283,7 @@ abstract class ExperianBaseApiClient
 
     /**
      * @param NetConnectResponse $netConnectResponse
-     * @throws InvalidResponseException
+     * @throws PidKiqInvalidResponseException
      */
     abstract protected function validateResponse(NetConnectResponse $netConnectResponse);
 }

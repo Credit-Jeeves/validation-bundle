@@ -11,10 +11,15 @@ use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
 use RentJeeves\ApiBundle\Response\Pidkiq as ResponseEntity;
 use RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqProcessorInterface;
 use RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqStateAwareInterface;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class IdentityVerificationController
+ * @method Tenant getUser
+ */
 class IdentityVerificationController extends Controller
 {
     /**
@@ -23,7 +28,7 @@ class IdentityVerificationController extends Controller
      * @ApiDoc(
      *     resource=true,
      *     section="Tenant Identity Verification",
-     *     description="Create resource for start tenant identity verification.",
+     *     description="Create resource to start tenant identity verification.",
      *     statusCodes={
      *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
@@ -39,14 +44,27 @@ class IdentityVerificationController extends Controller
      */
     public function startIdentityVerificationAction(Request $request)
     {
+        if (!$this->getUser()->getSsn()) {
+            throw new BadRequestHttpException(
+                $this->get('translator')->trans('api.errors.verification.ssn.required')
+            );
+        } elseif (!$this->getUser()->getDBO()) {
+            throw new BadRequestHttpException(
+                $this->get('translator')->trans('api.errors.verification.ssn.required')
+            );
+        } elseif (!$this->getUser()->getPaymentAccounts()->count()) {
+            throw new BadRequestHttpException(
+                $this->get('translator')->trans('api.errors.verification.payment_account.required')
+            );
+        }
+
         /** @var PidKiqProcessorInterface|PidKiqStateAwareInterface $pidKiqProcessor */
-        $pidKiqProcessor = $this->get('experian.pidkiq_processor.factory')->getPidKiqProcessor();
+        $pidKiqProcessor = $this->get('pidkiq.processor_factory')->getPidKiqProcessor();
 
         $pidKiqProcessor->retrieveQuestions();
 
         return $this->get('response_resource.factory')
-            ->getResponse($pidKiqProcessor->getPidkiqModel())
-            ->setMessage($pidKiqProcessor->getMessage());
+            ->getResponse($pidKiqProcessor->getPidkiqModel());
     }
 
     /**
@@ -124,21 +142,20 @@ class IdentityVerificationController extends Controller
         /** @var Pidkiq $pidkiq */
         $pidkiq = $this->getDoctrine()
             ->getRepository('DataBundle:Pidkiq')
-            ->findNotExpiredByUserAndId($id, $this->getUser(), '60 minutes');
+            ->findNotExpiredByUserAndId($id, $this->getUser(), $this->container->getParameter('pidkiq.lifetime'));
 
         if (!$pidkiq) {
             throw new NotFoundHttpException('Resource has already expired or doesn\'t exist.');
         }
 
         /** @var PidKiqProcessorInterface|PidKiqStateAwareInterface $pidKiqProcessor */
-        $pidKiqProcessor = $this->get('experian.pidkiq_processor.factory')->getPidKiqProcessor();
+        $pidKiqProcessor = $this->get('pidkiq.processor_factory')->getPidKiqProcessor();
 
         if (!$pidKiqProcessor->processAnswers($request->get('answers'))) {
             throw new BadRequestHttpException($pidKiqProcessor->getMessage());
         }
 
         return $this->get('response_resource.factory')
-            ->getResponse($pidKiqProcessor->getPidkiqModel())
-            ->setMessage($pidKiqProcessor->getMessage());
+            ->getResponse($pidKiqProcessor->getPidkiqModel());
     }
 }

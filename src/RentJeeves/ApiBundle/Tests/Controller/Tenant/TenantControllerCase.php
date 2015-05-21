@@ -89,8 +89,6 @@ class TenantControllerCase extends BaseApiTestCase
      */
     public function updateFullDetails()
     {
-        $this->markTestSkipped("FIXME: Yuriy, this fails because dashes in SSN are missing");
-
         $oldUser = clone $this->getUser();
 
         $requestParams = [
@@ -115,6 +113,6 @@ class TenantControllerCase extends BaseApiTestCase
         $this->assertEquals($requestParams['phone'], $this->getUser()->getPhone());
         $this->assertEquals($oldUser->getEmail(), $this->getUser()->getEmail()); // should stay read only
         $this->assertEquals($requestParams['date_of_birth'], $this->getUser()->getDateOfBirth()->format('Y-m-d'));
-        $this->assertEquals($requestParams['ssn'], $this->getUser()->getSsn());
+        $this->assertEquals($requestParams['ssn'], $this->getUser()->getFormattedSsn());
     }
 }

@@ -8,7 +8,7 @@ use RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqProcessorInterface as PidKi
 class PidKiqProcessorFactory
 {
     /**
-     * @var PidKiqProcessorExperian
+     * @var PidKiqExperianProcessor
      */
     protected $experian;
 

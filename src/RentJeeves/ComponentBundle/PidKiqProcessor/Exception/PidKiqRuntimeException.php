@@ -2,6 +2,6 @@
 
 namespace RentJeeves\ComponentBundle\PidKiqProcessor\Exception;
 
-class InvalidResponseException extends \Exception
+class PidKiqRuntimeException extends \RuntimeException
 {
 }

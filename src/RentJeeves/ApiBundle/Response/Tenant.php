@@ -2,9 +2,11 @@
 
 namespace RentJeeves\ApiBundle\Response;
 
+use CreditJeeves\DataBundle\Entity\Pidkiq;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
+use RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqMessageGenerator;
 use RentJeeves\DataBundle\Entity\Tenant as Entity;
 
 /**
@@ -19,6 +21,13 @@ class Tenant extends ResponseResource
      * @var Entity
      */
     protected $entity;
+
+    /**
+     * @var PidKiqMessageGenerator
+     *
+     * @DI\Inject("pidkiq.message_generator")
+     */
+    public $pidKiqMessageGenerator;
 
     /**
      * @Serializer\VirtualProperty
@@ -106,18 +115,17 @@ class Tenant extends ResponseResource
      */
     public function getSsn()
     {
-        $ssn =  preg_replace('/[^\d]/', '', $this->entity->getSsn());
-
-        return sprintf('%s-%s-%s', substr($ssn, 0, 3), substr($ssn, 3, 2), substr($ssn, 5));
+        return $this->entity->getFormattedSsn();
     }
 
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
+     * @Serializer\SerializedName("verify_status")
      *
      * @return string
      */
-    public function getVerifyStatus()
+    public function getVerificationStatus()
     {
         return $this->entity->getIsVerified();
     }
@@ -125,12 +133,17 @@ class Tenant extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
+     * @Serializer\SerializedName("verify_message")
      *
      * @return string
      */
-    public function getVerifyMessage()
+    public function getVerificationMessage()
     {
-        // TODO Need add this info
+        /** @var Pidkiq $pidkiq */
+        if ($pidkiq = $this->entity->getPidkiqs()->first()) {
+            return $this->pidKiqMessageGenerator->generateMessage($pidkiq->getStatus());
+        }
+
         return '';
     }
 }

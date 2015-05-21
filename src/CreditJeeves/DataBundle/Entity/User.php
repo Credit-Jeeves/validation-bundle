@@ -7,9 +7,9 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
+use RentJeeves\CoreBundle\Services\SocialSecurityNumberFormatter;
 use RentJeeves\DataBundle\Entity\Partner;
 use RentJeeves\DataBundle\Entity\PartnerUserMapping;
-use Symfony\Component\Validator\Constraints\True;
 use RentJeeves\CoreBundle\DateTime;
 
 /**
@@ -124,9 +124,15 @@ abstract class User extends BaseUser
      */
     public function setSsn($ssn)
     {
-        $ssn = preg_replace('/[^\d]/', '', $ssn);
+        return parent::setSsn(SocialSecurityNumberFormatter::formatToDigitsOnly($ssn));
+    }
 
-        return parent::setSsn($ssn);
+    /**
+     * @return string
+     */
+    public function getFormattedSsn()
+    {
+       return SocialSecurityNumberFormatter::formatWithDashes($this->getSsn());
     }
 
     public function getFormattedPhone()
