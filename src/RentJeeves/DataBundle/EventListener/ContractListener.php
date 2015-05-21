@@ -44,8 +44,6 @@ class ContractListener
      */
     public $container;
 
-    public $hasToClosePayment = false;
-
     public function checkContract(Contract $contract)
     {
         // don't check finished and deleted contracts
@@ -126,7 +124,6 @@ class ContractListener
             return;
         }
 
-        $this->hasToClosePayment = true;
         $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
     }
 
@@ -234,14 +231,6 @@ class ContractListener
         $entity = $eventArgs->getEntity();
         if (!$entity instanceof Contract) {
             return;
-        }
-        if ($this->hasToClosePayment) {
-            $this->hasToClosePayment = false;
-            if ($payment = $entity->getActivePayment()) {
-                $payment->setClosed($this, PaymentCloseReason::CONTRACT_CHANGED);
-                $eventArgs->getEntityManager()->persist($payment);
-                $eventArgs->getEntityManager()->flush($payment);
-            }
         }
     }
 }

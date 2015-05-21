@@ -3,13 +3,11 @@
 namespace RentJeeves\DataBundle\Tests\EventListener;
 
 use Doctrine\ORM\EntityManager;
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\TestBundle\BaseTestCase as Base;
@@ -76,11 +74,9 @@ class ContractListenerCase extends Base
             ->get('doctrine.orm.default_entity_manager')
             ->getRepository('RjDataBundle:Payment')
             ->find($paymentId);
-        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
-        $this->assertCount(2, $payment->getCloseDetails());
-        $this->assertContains(PaymentCloseReason::CONTRACT_CHANGED, $payment->getCloseDetails()[1]);
-        $today = new DateTime();
-        $this->assertEquals($today->format('Y-m-d'), $payment->getUpdatedAt()->format('Y-m-d'));
+
+        // RT-908 we should no longer close payments if rent changes
+        $this->assertEquals(PaymentStatus::ACTIVE, $payment->getStatus());
     }
 
     /**
