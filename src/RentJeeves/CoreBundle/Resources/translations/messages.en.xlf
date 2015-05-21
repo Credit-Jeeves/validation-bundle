@@ -3126,10 +3126,6 @@
                 <source>common.open_credits</source>
                 <target>Open Credits</target>
             </trans-unit>
-            <trans-unit id="common.tenant.past">
-                <source>common.tenant.past</source>
-                <target>Past Tenant</target>
-            </trans-unit>
             <trans-unit id="common.tenant.status">
                 <source>common.tenant.status</source>
                 <target>Tenant Status</target>

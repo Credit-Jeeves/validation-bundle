@@ -475,8 +475,7 @@ abstract class HandlerAbstract implements HandlerInterface
     {
         $lineNumber = $this->currentImportModel->getNumber();
         $this->logger->debug(sprintf('Checking row %s for errors...', $lineNumber));
-
-        $errors[$lineNumber] = [];
+        $errors = $this->currentImportModel->getErrors();
         $form = $this->currentImportModel->getForm();
 
         if (!$this->isCreateCsrfToken && !$this->currentImportModel->isSkipped()) {

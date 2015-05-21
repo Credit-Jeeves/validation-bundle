@@ -20,10 +20,9 @@ class MappingCsv extends MappingAbstract
      *
      * @var array
      */
-    protected $skipValues = array(
-        MappingCsv::KEY_RESIDENT_ID => 'VACANT',
-        MappingCsv::KEY_IGNORE_ROW => 'Y'
-    );
+    protected $skipValues = [
+        MappingCsv::KEY_RESIDENT_ID => 'VACANT'
+    ];
 
     /**
      * @var CsvFileReaderImport

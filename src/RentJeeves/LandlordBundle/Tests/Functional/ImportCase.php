@@ -1805,7 +1805,6 @@ class ImportCase extends ImportBaseAbstract
             '9' => ImportMapping::KEY_EMAIL,
             '10'=> ImportMapping::KEY_USER_PHONE,
             '11'=> ImportMapping::KEY_CREDITS,
-            '12'=> ImportMapping::KEY_IGNORE_ROW,
             '13'=> ImportMapping::KEY_PAYMENT_ACCEPTED,
         ];
         for ($i = 1; $i <= 13; $i++) {
@@ -1820,9 +1819,8 @@ class ImportCase extends ImportBaseAbstract
         $this->waitReviewAndPost();
 
         $trs = $this->getParsedTrsByStatus();
-        $this->assertCount(2, $trs, "Count statuses is wrong");
+        $this->assertCount(1, $trs, "Count statuses is wrong");
         $this->assertCount(3, $trs['import.status.new'], "Count of new contracts is wrong");
-        $this->assertCount(1, $trs['import.status.skip'], "Count of skipped contracts is wrong");
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();

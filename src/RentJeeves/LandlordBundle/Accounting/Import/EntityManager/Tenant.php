@@ -60,10 +60,14 @@ trait Tenant
             );
         } catch (NonUniqueResultException $e) {
             $this->currentImportModel->setTenant($this->createTenant($row));
-            $this->currentImportModel->setIsSkipped(true);
-            $this->currentImportModel->setSkippedMessage(
-                $this->translator->trans('import.error.none_unique_result')
+            $errors = $this->currentImportModel->getErrors();
+            $this->setUnrecoverableError(
+                $this->currentImportModel->getNumber(),
+                'import_contract_residentMapping_residentId',
+                $this->translator->trans('import.error.none_unique_result'),
+                $errors
             );
+            $this->currentImportModel->setErrors($errors);
 
             return;
         }
