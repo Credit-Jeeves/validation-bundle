@@ -22,7 +22,7 @@ abstract class ImportError
      *
      * @ORM\Column(
      *      name="exception_uid",
-     *      type="integer",
+     *      type="string",
      *      nullable=true
      * )
      */
