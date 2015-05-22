@@ -84,17 +84,18 @@ class OperationRepository extends EntityRepository
     }
 
     /**
-     * @param Property $property
-     * @param Holding $holding
      * @param string $start
      * @param string $end
+     * @param Property $property
+     * @param Holding $holding
+     *
      * @return Operation[]
      */
     public function getOperationsForXmlReport(
-        Property $property = null,
-        Holding $holding,
         $start,
-        $end
+        $end,
+        Holding $holding,
+        Property $property = null
     ) {
         $query = $this->createQueryBuilder('operation')->select(
             'operation,

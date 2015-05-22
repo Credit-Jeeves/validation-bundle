@@ -77,7 +77,7 @@ class RealPageReport extends ExportReport
 
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForRealPageReport([$group], $property, $beginDate, $endDate, $exportBy);
+        return $orderRepository->getOrdersForRealPageReport([$group], $beginDate, $endDate, $exportBy, $property);
     }
 
     public function getBuildingId()

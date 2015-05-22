@@ -76,10 +76,10 @@ class YardiReport extends ExportReport
         $repository = $this->em->getRepository('DataBundle:Operation');
 
         return $repository->getOperationsForXmlReport(
-            $property,
-            $holding,
             $beginDate,
-            $endDate
+            $endDate,
+            $property,
+            $holding
         );
     }
 

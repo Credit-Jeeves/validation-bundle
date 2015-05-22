@@ -268,23 +268,23 @@ class OrderRepository extends EntityRepository
         $exportBy,
         Property $property = null
     ) {
-        return $this->getOrdersForRealPageReport($groups, $property, $start, $end, $exportBy);
+        return $this->getOrdersForRealPageReport($groups, $start, $end, $exportBy, $property);
     }
 
     /**
      * @param array $groups
-     * @param Property $property
      * @param string $start
      * @param string $end
      * @param string $exportBy
+     * @param Property $property
      * @return mixed
      */
     public function getOrdersForRealPageReport(
         array $groups,
-        Property $property = null,
         $start,
         $end,
-        $exportBy
+        $exportBy,
+        Property $property = null
     ) {
 
         if (empty($groups)) {
