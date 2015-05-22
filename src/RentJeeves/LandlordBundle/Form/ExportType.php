@@ -222,9 +222,8 @@ class ExportType extends AbstractType
                         value: selectedProperty',
                     'row_attr' => [
                         'data-bind' =>
-                            "visible: (selectedType() != 'promas') &&
-                             (selectedType() != 'renttrack')
-                             ",
+                            "visible: (selectedType() != 'promas' && selectedType() != 'renttrack'
+                            && includeAllGroups() == false)",
                     ]
                 ],
                 'query_builder'  => function (EntityRepository $er) use ($groups) {
