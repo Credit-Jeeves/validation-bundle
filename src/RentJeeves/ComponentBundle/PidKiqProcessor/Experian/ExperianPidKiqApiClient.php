@@ -4,7 +4,7 @@ namespace RentJeeves\ComponentBundle\PidKiqProcessor\Experian;
 
 use CreditJeeves\ExperianBundle\Model\NetConnectRequest;
 use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
-use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\InvalidResponseException;
+use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqInvalidResponseException;
 
 class ExperianPidKiqApiClient extends ExperianBaseApiClient
 {
@@ -31,17 +31,24 @@ class ExperianPidKiqApiClient extends ExperianBaseApiClient
      */
     protected function validateResponse(NetConnectResponse $netConnectResponse)
     {
-        $products = $netConnectResponse->getProducts();
-        if (!$products) {
-            throw new InvalidResponseException("Don't have 'Products' in response");
-        }
+        try {
+            $products = $netConnectResponse->getProducts();
+            if (!$products) {
+                throw new PidKiqInvalidResponseException("Don't have 'Products' in response");
+            }
 
-        $preciseIDServer = $products->getPreciseIDServer();
-        if ($preciseIDServer->getError()->getErrorCode()) {
-            throw new InvalidResponseException(
-                $preciseIDServer->getError()->getErrorDescription(),
-                $preciseIDServer->getError()->getErrorCode()
+            $preciseIDServer = $products->getPreciseIDServer();
+            if ($preciseIDServer->getError()->getErrorCode()) {
+                throw new PidKiqInvalidResponseException(
+                    $preciseIDServer->getError()->getErrorDescription(),
+                    $preciseIDServer->getError()->getErrorCode()
+                );
+            }
+        } catch (PidKiqInvalidResponseException $e) {
+            $this->logger->alert(
+                sprintf('[Experian]Invalid Response: %s:%s', $e->getCode(), $e->getMessage())
             );
+            throw $e;
         }
     }
 }

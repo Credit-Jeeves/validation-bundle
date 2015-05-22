@@ -74,6 +74,18 @@
                 <source>api.errors.user.password_required</source>
                 <target>Password is required</target>
             </trans-unit>
+            <trans-unit id="api.errors.verification.ssn.required">
+                <source>api.errors.verification.ssn.required</source>
+                <target>SSN is required</target>
+            </trans-unit>
+            <trans-unit id="api.errors.verification.dob.required">
+                <source>api.errors.verification.dob.required</source>
+                <target>DOB is required</target>
+            </trans-unit>
+            <trans-unit id="api.errors.verification.payment_account.required">
+                <source>api.errors.verification.payment_account.required</source>
+                <target>Should create payment account at first</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

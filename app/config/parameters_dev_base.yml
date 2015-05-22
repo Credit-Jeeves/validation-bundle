@@ -44,6 +44,8 @@ parameters:
     net_connect.credit_profile.sub_code: '2266580' #required!
     net_connect.credit_profile.d2c.sub_code: '2266580' #required!
 
+    pidkiq.lifetime.minutes: 10
+
     soap.api.yardi.entity: RentTrack
     soap.api.yardi.license: V100057742BP.lic
     soap.api.yardi.path_to_classes: RentJeeves\ExternalApiBundle\Services\Yardi\Soap\

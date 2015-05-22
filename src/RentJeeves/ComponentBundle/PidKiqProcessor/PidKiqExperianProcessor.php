@@ -7,16 +7,22 @@ use CreditJeeves\ExperianBundle\Model\NetConnectRequest;
 use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
 use CreditJeeves\ExperianBundle\Model\QuestionSet;
 
-use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\RuntimeException;
+use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqRuntimeException;
 use RentJeeves\ComponentBundle\PidKiqProcessor\Experian\ExperianPidKiqApiClient;
 
-class PidKiqProcessorExperian extends PidKiqProcessorBase
+class PidKiqExperianProcessor extends PidKiqBaseProcessor
 {
+    const ACCEPT = 'ACC';
+
+    const INPROGRESS ='REF';
     /**
      * @var ExperianPidKiqApiClient
      */
     protected $pidKiqApiClient;
 
+    /**
+     * @param ExperianPidKiqApiClient $pidKiqApiClient
+     */
     public function setPidKiqApiClient(ExperianPidKiqApiClient $pidKiqApiClient)
     {
         $this->pidKiqApiClient = $pidKiqApiClient;
@@ -53,25 +59,18 @@ class PidKiqProcessorExperian extends PidKiqProcessorBase
                     //    - First, OFAC result
                     if (1 != $preciseIDServer->getGLBDetail()->getCheckpointSummary()->getOFACValidationResult()) {
                         $this->getPidkiqModel()->setStatus(PidkiqStatus::UNABLE);
-                        $this->setIsSuccessfull(false);
-
                     //    - Then, see if there is a victim statement on file
                     // 9001 - Consumer reported as deceased
                     // 9012 - Consumer/Victim Statement on-file
                     // 9013 - Blocked or Frozen file
                     } elseif ($preciseIDServer->getSummary()->getPreciseIDScore() > 9000) {
                         $this->getPidkiqModel()->setStatus(PidkiqStatus::LOCKED);
-                        $this->setIsSuccessfull(false);
-
                     // Check KIQ processing successful by no questions returned
                     } elseif (1 == $preciseIDServer->getKbaScore()->getGeneral()->getKbaResultCode()) {
                         $this->getPidkiqModel()->setStatus(PidkiqStatus::UNABLE);
-                        $this->setIsSuccessfull(false);
-
                     // Check No questions returned due to excessive use
                     } elseif (2 == $preciseIDServer->getKbaScore()->getGeneral()->getKbaResultCode()) {
                         $this->getPidkiqModel()->setStatus(PidkiqStatus::BACKOFF);
-                        $this->setIsSuccessfull(false);
                     } else {
                         $questions = $this->parseRetrieveQuestionsResponse($response);
                     }
@@ -79,18 +78,13 @@ class PidKiqProcessorExperian extends PidKiqProcessorBase
                     $this->getPidkiqModel()->setSessionId($preciseIDServer->getSessionId());
                 }
             }
+        } catch (PidKiqRuntimeException $e) {
+            $this->getPidkiqModel()->setStatus(PidkiqStatus::UNABLE);
+            $questions = [];
         } catch (\Exception $e) {
             $this->getPidkiqModel()->setStatus(PidkiqStatus::BACKOFF);
-            $this->setIsSuccessfull(false);
             $questions = [];
         }
-
-        $this->getPidkiqModel()->setUser($this->getUser());
-        $this->getPidkiqModel()->setTryNum($this->getPidkiqModel()->getTryNum() + 1);
-        $this->getPidkiqModel()->setQuestions($questions);
-        $this->getPidkiqModel()->setCheckSumm($this->getPidkiqCheckSum());
-        $this->em->persist($this->getPidkiqModel());
-        $this->em->flush();
 
         return $questions;
     }
@@ -123,11 +117,12 @@ class PidKiqProcessorExperian extends PidKiqProcessorBase
             $primaryApplicant->getCurrentAddress()
                 ->setCity($defaultAddress->getCity())
                 ->setState($defaultAddress->getArea())
-                ->setStreet('PO BOX 445')//$defaultAddress->getAddress())
+                ->setStreet($defaultAddress->getAddress())
                 ->setZip($defaultAddress->getZip());
         }
 
-//        $primaryApplicant->setDob($this->getUser()->getDBO());
+        $primaryApplicant->setDob($this->getUser()->getDOB());
+
         return $request;
     }
 
@@ -143,14 +138,14 @@ class PidKiqProcessorExperian extends PidKiqProcessorBase
         $questions = [];
 
         if ($preciseIDServer->getError()->getErrorCode()) {
-            throw new RuntimeException(
+            throw new PidKiqRuntimeException(
                 $preciseIDServer->getError()->getErrorDescription(),
                 $preciseIDServer->getError()->getErrorCode()
             );
         }
 
         if (null == $preciseIDServer->getKba()) {
-            throw new RuntimeException(
+            throw new PidKiqRuntimeException(
                 $preciseIDServer->getMessages()->getMessage()->getText(),
                 E_USER_ERROR
             );
@@ -172,10 +167,6 @@ class PidKiqProcessorExperian extends PidKiqProcessorBase
      */
     protected function internalProcessAnswers(array $answers)
     {
-        if (PidkiqStatus::INPROGRESS !== $this->getPidkiqModel()->getStatus() || !$this->getIsSuccessfull()) {
-            return false;
-        }
-
         $request = $this->prepareProcessAnswersRequest($answers, $this->getPidkiqModel()->getSessionId());
 
         $response = $this->pidKiqApiClient->getResult($request);
@@ -218,28 +209,34 @@ class PidKiqProcessorExperian extends PidKiqProcessorBase
     {
         $preciseIDServer = $response->getProducts()->getPreciseIDServer();
 
-        if ('ACC' !== $preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode() ||
-            'REF' !== $preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode()) {
+        if (self::ACCEPT !== trim($preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode()) &&
+            self::INPROGRESS !== trim($preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode())) {
             return false;
         }
 
+        $strike = 0;
+
         if ('N' !== trim($preciseIDServer->getGLBDetail()->getCheckpointSummary()->getHighRiskAddrCode())) {
-            return false;
+            $strike++;
         }
 
         if (0 == $preciseIDServer->getGLBDetail()->getCheckpointSummary()->getAddrResMatches()) {
-            return false;
+            $strike++;
         }
 
         if (1 != $preciseIDServer->getGLBDetail()->getCheckpointSummary()->getDateOfBirthMatch()) {
-            return false;
+            $strike++;
         }
 
         if (0 == $preciseIDServer->getGLBDetail()->getCheckpointSummary()->getPhnResMatches()) {
-            return false;
+            $strike++;
         }
 
         if ($preciseIDServer->getSummary()->getPreciseIDScore() < 550) {
+            $strike++;
+        }
+
+        if ($strike > 1) {
             return false;
         }
 

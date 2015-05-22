@@ -1,0 +1,48 @@
+parameters:
+    pidkiq.message_generator.class: RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqMessageGenerator
+    pidkiq.experian.base_api.class: RentJeeves\ComponentBundle\PidKiqProcessor\Experian\ExperianBaseApiClient
+    pidkiq.experian.pidkiq_api.class: RentJeeves\ComponentBundle\PidKiqProcessor\Experian\ExperianPidKiqApiClient
+    pidkiq.base_processor.class: RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqBaseProcessor
+    pidkiq.experian_processor.class: RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqExperianProcessor
+    pidkiq.processor_factory.class: RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqProcessorFactory
+    pidkiq.experian_api.config:
+        url: "%net_connect.precise_id.url%"
+        dbHost: "%net_connect.precise_id.dbhost%"
+        subCode: "%net_connect.precise_id.sub_code%"
+
+services:
+    pidkiq.message_generator:
+        class: "%pidkiq.message_generator.class%"
+        arguments:
+            - "@translator"
+            - "%support_email%"
+            - "%external_urls%"
+    pidkiq.experian.base_api:
+        abstract:  true
+        class: "%pidkiq.experian.base_api.class%"
+        arguments:
+            - "@logger"
+            - "@kernel"
+            - "@doctrine.orm.default_entity_manager"
+    pidkiq.experian.pidkiq_api:
+        parent: pidkiq.experian.base_api
+        class: "%pidkiq.experian.pidkiq_api.class%"
+        calls:
+            - [setConfig, ["%pidkiq.experian_api.config%"]]
+    pidkiq.base_processor:
+        abstract:  true
+        class: "%pidkiq.base_processor.class%"
+        arguments:
+            - "@security.context"
+            - "@doctrine.orm.default_entity_manager"
+            - "@pidkiq.message_generator"
+    pidkiq.experian_processor:
+        parent: pidkiq.base_processor
+        class: "%pidkiq.experian_processor.class%"
+        calls:
+            - [setPidKiqApiClient, ["@pidkiq.experian.pidkiq_api"]]
+    pidkiq.processor_factory:
+        class: "%pidkiq.processor_factory.class%"
+        calls:
+            - [setPidKiqProcessors, ["@pidkiq.experian_processor"]]
+

@@ -78,6 +78,7 @@ class Tenant extends User
         parent::__construct();
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
+        $this->paymentAccounts = new ArrayCollection();
     }
 
     /**
@@ -105,13 +106,14 @@ class Tenant extends User
     public function setInvite(\RentJeeves\DataBundle\Entity\Invite $invite = null)
     {
         $this->invite = $invite;
+
         return $this;
     }
 
     /**
      * Get invite
      *
-     * @return \RentJeeves\DataBundle\Entity\Invite 
+     * @return \RentJeeves\DataBundle\Entity\Invite
      */
     public function getInvite()
     {
@@ -132,6 +134,7 @@ class Tenant extends User
     public function addContract(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
         $this->contracts[] = $contract;
+
         return $this;
     }
 
@@ -159,13 +162,14 @@ class Tenant extends User
     {
         $result = array();
         $contracts = $this->getContracts();
-         
+
         foreach ($contracts as $contract) {
             if (in_array($contract->getStatus(), array(ContractStatus::FINISHED, ContractStatus::DELETED))) {
                 continue;
             }
             $result[] = $contract;
         }
+
         return $result;
     }
 
@@ -180,6 +184,7 @@ class Tenant extends User
             }
             $result[] = $contract;
         }
+
         return $result;
     }
 
@@ -194,8 +199,6 @@ class Tenant extends User
         return $result;
     }
 
-
-
     /**
      * Add account
      *
@@ -205,6 +208,7 @@ class Tenant extends User
     public function addPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $account)
     {
         $this->paymentAccounts[] = $account;
+
         return $this;
     }
 
@@ -261,6 +265,7 @@ class Tenant extends User
                 return $residentMapping;
             }
         }
+
         return null;
     }
 }

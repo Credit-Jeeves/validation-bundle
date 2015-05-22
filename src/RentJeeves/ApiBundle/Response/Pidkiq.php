@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 use CreditJeeves\DataBundle\Entity\Pidkiq as Entity;
+use RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqMessageGenerator;
 
 /**
  * @DI\Service("response_resource.identity_verification")
@@ -21,12 +22,17 @@ class Pidkiq extends ResponseResource
     protected $entity;
 
     /**
-     * @Serializer\Accessor(getter="getMessage",setter="setMessage")
-     * @Serializer\Groups({"IdentityVerificationDetails"})
+     * @var PidKiqMessageGenerator
      *
-     * @var string
+     * @DI\Inject("pidkiq.message_generator")
      */
-    protected $message;
+    public $pidKiqMessageGenerator;
+
+    /**
+     * @var string
+     * @DI\Inject("%pidkiq.lifetime.minutes%")
+     */
+    public $lifetime;
 
     /**
      * @Serializer\VirtualProperty
@@ -40,22 +46,16 @@ class Pidkiq extends ResponseResource
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"IdentityVerificationDetails"})
+     *
      * @return string
      */
     public function getMessage()
     {
-        return $this->message;
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function setMessage($message)
-    {
-        $this->message = $message;
-
-        return $this;
+        return $this->pidKiqMessageGenerator->generateMessage(
+            $this->entity->getStatus()
+        );
     }
 
     /**
@@ -78,6 +78,6 @@ class Pidkiq extends ResponseResource
      */
     public function getExpires()
     {
-        return $this->entity->getCreatedAt()->modify('+10 minutes')->format('U');
+        return $this->entity->getCreatedAt()->modify('+' . (int) $this->lifetime . ' minutes')->format('U');
     }
 }

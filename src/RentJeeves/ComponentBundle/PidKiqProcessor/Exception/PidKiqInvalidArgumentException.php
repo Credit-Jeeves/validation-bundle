@@ -2,6 +2,6 @@
 
 namespace RentJeeves\ComponentBundle\PidKiqProcessor\Exception;
 
-class RuntimeException extends \RuntimeException
+class PidKiqInvalidArgumentException extends \InvalidArgumentException
 {
 }

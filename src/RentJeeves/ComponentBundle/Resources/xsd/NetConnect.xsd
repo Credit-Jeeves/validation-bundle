@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.experian.com/NetConnect" xmlns:req="http://www.experian.com/WebDelivery" xmlns="http://www.experian.com/NetConnect" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="2.701">
+	<xsd:import namespace="http://www.experian.com/WebDelivery" schemaLocation="WebDelivery.xsd"/>
+	<xsd:element name="NetConnectRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="EAI">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="8"/>
+							<xsd:minLength value="8"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="DBHost">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="CIS"/>
+							<xsd:enumeration value="BIS"/>
+							<xsd:enumeration value="STAR"/>
+							<xsd:enumeration value="ULTTEST"/>
+							<xsd:enumeration value="ULTPROD"/>
+							<xsd:enumeration value="CSTW"/>
+							<xsd:enumeration value="BISTEST"/>
+							<xsd:enumeration value="BISTESTP"/>
+							<xsd:enumeration value="BISPROD"/>
+							<xsd:enumeration value="CSTN"/>
+							<xsd:enumeration value="CST3"/>
+							<xsd:enumeration value="AUTHTEST"/>
+							<xsd:enumeration value="AUTHPROD"/>
+							<xsd:enumeration value="CSTF"/>
+							<xsd:enumeration value="PRECISE_ID"/>
+							<xsd:enumeration value="PRECISE_ID_TEST"/>
+							<xsd:enumeration value="CATEST"/>
+							<xsd:enumeration value="CAPROD"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="ReferenceId" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="90"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element ref="req:Request"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

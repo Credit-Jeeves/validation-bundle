@@ -222,7 +222,7 @@ abstract class Pidkiq
      *
      * @return string
      */
-    public function getCheckSumm()
+    public function getCheckSum()
     {
         return $this->check_summ;
     }

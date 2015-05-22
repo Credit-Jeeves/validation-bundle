@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NetConnectRequest>
+  <EAI>HRPCX4RA</EAI>
+  <DBHost>PRECISE_ID_TEST</DBHost>
+  <ReferenceId>123</ReferenceId>
+  <Request version="1.0">
+    <Products>
+      <PreciseIDServer>
+        <XMLVersion>5</XMLVersion>
+        <Subscriber>
+          <Preamble>TBD2</Preamble>
+          <OpInitials>DE</OpInitials>
+          <SubCode>2279720</SubCode>
+        </Subscriber>
+        <PrimaryApplicant>
+          <Name>
+            <Surname>APPLEGATE</Surname>
+            <First>TIMOTHY</First>
+            <Middle>A</Middle>
+            <Gen/>
+          </Name>
+          <SSN>666309041</SSN>
+          <CurrentAddress>
+            <Street>KINGSTON DR</Street>
+            <City>LAWRENCE</City>
+            <State>KS</State>
+            <Zip>660491614</Zip>
+          </CurrentAddress>
+          <PreviousAddress/>
+          <Phone>
+            <Number>7858655392</Number>
+            <Type/>
+          </Phone>
+          <Employment/>
+          <Age/>
+          <DOB>11101937</DOB>
+          <YOB/>
+          <MothersMaidenName/>
+          <EmailAddress/>
+        </PrimaryApplicant>
+        <Verbose>Y</Verbose>
+        <Vendor>
+          <VendorNumber>P94</VendorNumber>
+        </Vendor>
+        <Options>
+          <BrokerNumber/>
+          <EndUser/>
+          <FreezeKeyPIN/>
+          <ReferenceNumber/>
+          <OFAC>Y</OFAC>
+          <OFACMSG>Y</OFACMSG>
+          <PreciseIDType>11</PreciseIDType>
+          <DetailRequest>D</DetailRequest>
+          <InquiryChannel>INTE</InquiryChannel>
+          <AccessChannel>PPQ</AccessChannel>
+        </Options>
+        <IPAddress/>
+      </PreciseIDServer>
+    </Products>
+  </Request>
+</NetConnectRequest>

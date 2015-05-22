@@ -127,10 +127,11 @@ class PreciseIDQuestions
             $currentDate = new DateTime();
             $dateOfModel = $model->getUpdatedAt();
             $dateOfModel->modify('+5 minutes');
-            if (!$model->getCheckSumm() || ($dateOfModel >= $currentDate && $model->getCheckSumm() == $checkSum)) {
+            if (!$model->getCheckSum() || ($dateOfModel >= $currentDate && $model->getCheckSum() == $checkSum)) {
                 return $model;
             }
         }
+
         return new Pidkiq();
     }
 
@@ -149,6 +150,7 @@ class PreciseIDQuestions
                 $pidiqModel->setTryNum(0);
                 $this->em->persist($pidiqModel);
                 $this->em->flush();
+
                 return false;
             }
             $pidiqModel->setTryNum($try + 1);
@@ -165,6 +167,7 @@ class PreciseIDQuestions
         }
 
         $this->isValidUser = true;
+
         return $this->questionsData = $pidiqModel->getQuestions();
     }
 
@@ -240,6 +243,7 @@ class PreciseIDQuestions
             $this->catcher->handleException($e);
             $this->error = $e->getMessage();
         }
+
         return false;
     }
 
@@ -255,6 +259,7 @@ class PreciseIDQuestions
             $this->getUser()->setIsVerified(UserIsVerified::PASSED);
             $this->em->persist($this->getUser());
             $this->em->flush();
+
             return true;
         }
 
