@@ -31,14 +31,5 @@ class Version20150522085050 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-
-        $this->addSql(
-            "ALTER TABLE rj_import_error
-                CHANGE exception_uid exception_uid INT DEFAULT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE rj_import_summary
-                CHANGE public_id public_id INT DEFAULT NULL"
-        );
     }
 }
