@@ -65,11 +65,11 @@ abstract class AbstractManager
 
         $billingAccountAddress = new Address();
 
-        $billingAccountAddress->setAddress1($contract->getProperty()->getAddress());
-        $billingAccountAddress->setAddress2($contract->getUnit()->getName());
-        $billingAccountAddress->setCity($contract->getProperty()->getCity());
-        $billingAccountAddress->setPostalCode($contract->getProperty()->getZip());
-        $billingAccountAddress->setState($contract->getProperty()->getArea());
+        $billingAccountAddress->setAddress1((string) $contract->getProperty()->getAddress());
+        $billingAccountAddress->setAddress2((string) $contract->getUnit()->getName());
+        $billingAccountAddress->setCity((string) $contract->getProperty()->getCity());
+        $billingAccountAddress->setPostalCode((string) $contract->getProperty()->getZip());
+        $billingAccountAddress->setState((string) $contract->getProperty()->getArea());
         $billingAccountAddress->setCountryCode($contract->getProperty()->getCountry());
 
         $billingAccount->setAddress($billingAccountAddress);
