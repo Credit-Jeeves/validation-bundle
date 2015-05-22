@@ -156,10 +156,10 @@ class FundingAccountManager extends AbstractManager
 
         $fundingAccountAddress = new RequestModel\SubModel\Address();
 
-        $fundingAccountAddress->setAddress1($address->getAddress());
-        $fundingAccountAddress->setCity($address->getCity());
-        $fundingAccountAddress->setState($address->getArea());
-        $fundingAccountAddress->setPostalCode($address->getZip());
+        $fundingAccountAddress->setAddress1((string) $address->getAddress());
+        $fundingAccountAddress->setCity((string) $address->getCity());
+        $fundingAccountAddress->setState((string) $address->getArea());
+        $fundingAccountAddress->setPostalCode((string) $address->getZip());
         $fundingAccountAddress->setCountryCode($address->getCountry());
 
         $fundingAccount->setAddress($fundingAccountAddress);

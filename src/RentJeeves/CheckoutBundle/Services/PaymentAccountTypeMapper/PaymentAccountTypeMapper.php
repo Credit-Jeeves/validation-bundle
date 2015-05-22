@@ -36,6 +36,10 @@ class PaymentAccountTypeMapper
         return $paymentAccountData;
     }
 
+    /**
+     * @param Form $paymentAccountType
+     * @return PaymentAccount
+     */
     public function mapTenantAccountTypeForm(Form $paymentAccountType)
     {
         $paymentAccountData = new PaymentAccount();
@@ -48,7 +52,10 @@ class PaymentAccountTypeMapper
             $paymentAccountData->set('account_name', $paymentAccountType->get('CardAccountName')->getData());
         }
 
-        if ('true' === $paymentAccountType->get('is_new_address')->getData()) {
+        // TODO Need remove (PaymentAccountTypeEnum::BANK) after implementation RT-1324
+        if ('true' === $paymentAccountType->get('is_new_address')->getData()
+            && PaymentAccountTypeEnum::BANK != $paymentAccountType->get('type')->getData()
+        ) {
             $paymentAccountData->getEntity()->setAddress($paymentAccountType->get('address')->getData());
         } else {
             $paymentAccountData->getEntity()->setAddress($paymentAccountType->get('address_choice')->getData());
