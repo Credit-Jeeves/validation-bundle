@@ -26,7 +26,7 @@ abstract class ImportSummary
      *
      * @ORM\Column(
      *      name="public_id",
-     *      type="integer",
+     *      type="string",
      *      nullable=true
      * )
      */
