@@ -259,7 +259,7 @@ class OrderRepository extends EntityRepository
      * @param array $groups
      * @param string $exportBy
      * @param Property $property
-     * @return mixed
+     * @return Order[]
      */
     public function getOrdersForYardiGenesis(
         $start,
@@ -321,7 +321,7 @@ class OrderRepository extends EntityRepository
 
         $query->andWhere('g.id in (:groups)');
 
-        if ($property instanceof Property) {
+        if ($property !== null) {
             $query->innerJoin('t.property', 'prop');
             $query->andWhere('prop.id = :propId');
             $query->setParameter('propId', $property->getId());

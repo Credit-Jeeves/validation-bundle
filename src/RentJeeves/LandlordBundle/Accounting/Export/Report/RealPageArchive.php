@@ -62,7 +62,7 @@ class RealPageArchive extends ExportReport
 
     /**
      * @param array $settings
-     * @return array|\Doctrine\Common\Collections\ArrayCollection
+     * @return array
      */
     public function getData(array $settings)
     {
@@ -83,10 +83,10 @@ class RealPageArchive extends ExportReport
     }
 
     /**
-     * @param $settings
+     * @param array $settings
      * @throws ExportException
      */
-    protected function validateSettings($settings)
+    protected function validateSettings(array $settings)
     {
         if (!isset($settings['begin']) || !isset($settings['end']) ||
             !isset($settings['export_by']) || !array_key_exists('property', $settings)

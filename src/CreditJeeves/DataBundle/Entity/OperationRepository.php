@@ -86,9 +86,9 @@ class OperationRepository extends EntityRepository
     /**
      * @param Property $property
      * @param Holding $holding
-     * @param $start
-     * @param $end
-     * @return mixed
+     * @param string $start
+     * @param string $end
+     * @return Operation[]
      */
     public function getOperationsForXmlReport(
         Property $property = null,
@@ -117,7 +117,7 @@ class OperationRepository extends EntityRepository
         $query->andWhere("transaction.batchId IS NOT NULL");
         $query->andWhere('transaction.isSuccessful = 1');
 
-        if ($property instanceof Property) {
+        if ($property !== null) {
             $query->andWhere('contract.property = :property');
             $query->setParameter('property', $property);
         }

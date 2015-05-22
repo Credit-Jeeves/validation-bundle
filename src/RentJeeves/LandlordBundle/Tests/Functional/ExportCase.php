@@ -784,7 +784,6 @@ class ExportCase extends BaseTestCase
     {
         $this->load(true);
         $this->createPayment();
-        //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         $this->page->clickLink('export');
