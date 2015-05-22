@@ -38,7 +38,10 @@ class RealPageReport extends ExportReport
         $this->fileType = 'csv';
     }
 
-    public function getContent($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getContent(array $settings)
     {
         $this->validateSettings($settings);
         $this->generateFilename($settings);
@@ -56,7 +59,10 @@ class RealPageReport extends ExportReport
         return $this->serializer->getContentType();
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $this->softDeleteableControl->disable();
 
@@ -65,13 +71,13 @@ class RealPageReport extends ExportReport
 
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
-        $propertyId = $settings['property']->getId();
+        $property = $settings['property'];
         $group = $settings['landlord']->getGroup();
         $exportBy = $settings['export_by'];
 
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForRealPageReport([$group], $propertyId, $beginDate, $endDate, $exportBy);
+        return $orderRepository->getOrdersForRealPageReport([$group], $beginDate, $endDate, $exportBy, $property);
     }
 
     public function getBuildingId()
@@ -84,9 +90,13 @@ class RealPageReport extends ExportReport
         $this->buildingId = $params['buildingId'];
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
-        if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
+        if (!array_key_exists('property', $settings) ||
             !isset($settings['begin']) || !isset($settings['end']) ||
             !isset($settings['buildingId']) || !isset($settings['export_by'])
         ) {

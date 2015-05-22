@@ -94,9 +94,7 @@ class AccountingController extends Controller
         $this->checkAccessToAccounting(self::EXPORT);
         if ($request->getMethod() == 'POST') {
             $form = $request->request->get('base_order_report_type');
-            $validationRule = [
-                $form['type']
-            ];
+            $validationRule = [$form['type']];
         } else {
             $validationRule = ['yardi'];
         }

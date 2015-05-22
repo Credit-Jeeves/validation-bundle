@@ -14,7 +14,10 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $this->type = 'yardi_genesis_v2';
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $this->softDeleteableControl->disable();
 
@@ -23,17 +26,19 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $beginDate = $settings['begin'];
         $endDate = $settings['end'];
         $exportBy = $settings['export_by'];
+        $property = $settings['property'];
         $orderRepository = $this->em->getRepository('DataBundle:Order');
         /** @var Landlord $landlord */
         $landlord = $settings['landlord'];
 
         if (isset($settings['includeAllGroups']) && $settings['includeAllGroups']) {
             $groups = $landlord->getGroups($landlord->getUser())->toArray();
+            $property = null;
         } else {
             $groups = [$landlord->getGroup()];
         }
 
-        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groups, $exportBy);
+        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groups, $exportBy, $property);
     }
 
     protected function generateFilename($params)
@@ -41,9 +46,15 @@ class YardiGenesisV2Report extends YardiGenesisReport
         $this->filename = 'PayProcV2.csv';
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
-        if (!isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
+        if (!isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])
+           || !array_key_exists('property', $settings)
+        ) {
             throw new ExportException('Not enough parameters for Yardi Genesis V2 report');
         }
     }

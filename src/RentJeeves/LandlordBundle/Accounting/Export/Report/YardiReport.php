@@ -41,7 +41,7 @@ class YardiReport extends ExportReport
         $this->fileType = 'xml';
     }
 
-    public function getContent($settings)
+    public function getContent(array $settings)
     {
         $this->generateFilename($settings);
         $reportData = $this->getData($settings);
@@ -58,7 +58,10 @@ class YardiReport extends ExportReport
         return $this->serializer->getContentType();
     }
 
-    public function getData($settings)
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(array $settings)
     {
         $this->softDeleteableControl->disable();
 
@@ -73,10 +76,10 @@ class YardiReport extends ExportReport
         $repository = $this->em->getRepository('DataBundle:Operation');
 
         return $repository->getOperationsForXmlReport(
-            $property,
-            $holding,
             $beginDate,
-            $endDate
+            $endDate,
+            $holding,
+            $property
         );
     }
 
@@ -90,9 +93,13 @@ class YardiReport extends ExportReport
         $this->propertyId = $params['propertyId'];
     }
 
-    protected function validateSettings($settings)
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
     {
-        if (!isset($settings['property']) || !($settings['property'] instanceof Property) ||
+        if (!array_key_exists('property', $settings) ||
             !isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
             !isset($settings['propertyId']) ||
             !isset($settings['begin']) || !isset($settings['end'])) {

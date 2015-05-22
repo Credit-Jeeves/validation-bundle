@@ -3190,6 +3190,10 @@
                 <source>import.summary.total</source>
                 <target>Total:</target>
             </trans-unit>
+            <trans-unit id="export.all_properties">
+                <source>export.all_properties</source>
+                <target>(All Properties)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
