@@ -765,7 +765,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals(8, $archive->numFiles);
         $file = $archive->getFromIndex(1);
         $rows = explode("\r", trim($file));
-        $this->assertEquals(2, count($rows));
+        $this->assertCount(2, $rows);
         $csvArr = str_getcsv($rows[0]);
         $this->assertEquals('R', $csvArr[0]);
         $this->assertEquals('456456', $csvArr[1]);
@@ -795,7 +795,7 @@ class ExportCase extends BaseTestCase
         $type->selectOption('yardi_genesis_v2');
         $this->page->pressButton('order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(2, count($errors));
+        $this->assertCount(2, $errors);
 
         $this->exportByYardiGenesisV2Csv('payments');
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));

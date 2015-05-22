@@ -78,8 +78,8 @@ class YardiReport extends ExportReport
         return $repository->getOperationsForXmlReport(
             $beginDate,
             $endDate,
-            $property,
-            $holding
+            $holding,
+            $property
         );
     }
 
