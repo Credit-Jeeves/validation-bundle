@@ -140,7 +140,7 @@ class Tenant extends ResponseResource
     public function getVerificationMessage()
     {
         /** @var Pidkiq $pidkiq */
-        if ($pidkiq = $this->entity->getPidkiqs()->first()) {
+        if ($pidkiq = $this->entity->getPidkiqs()->last()) {
             return $this->pidKiqMessageGenerator->generateMessage($pidkiq->getStatus());
         }
 

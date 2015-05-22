@@ -15,7 +15,6 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Serializer;
 use Guzzle\Http\Client as GuzzleClient;
 use Guzzle\Http\Exception\CurlException;
-use Guzzle\Http\Exception\BadResponseException;
 use DOMDocument;
 
 /**
@@ -110,6 +109,7 @@ abstract class NetConnect
         if (null == $this->client) {
             $this->client = new GuzzleClient('', array('redirect.disable' => true));
         }
+
         return $this->client;
     }
 
@@ -130,6 +130,7 @@ abstract class NetConnect
         if (null == $this->netConnectRequest) {
             $this->netConnectRequest = new NetConnectRequest();
         }
+
         return $this->netConnectRequest;
     }
 
@@ -145,6 +146,7 @@ abstract class NetConnect
         if ($group) {
             $context->setGroups($group);
         }
+
         return $context;
     }
 
@@ -187,7 +189,7 @@ abstract class NetConnect
                 ->setStreet($defaultAddress->getStreet())
                 ->setZip($defaultAddress->getZip());
         }
-        $model->setDob($user->getDBO());
+        $model->setDob($user->getDOB());
 //        $model->setEmailAddress($user->getEmail()); //TODO do we need to sed it?
     }
 
@@ -226,7 +228,6 @@ abstract class NetConnect
         $guzzleRequest->getParams()->set('redirect.disable', true);
         $guzzleRequest->setAuth($usrPwdArr[0], $usrPwdArr[1]);
 
-
         // Let BrowserKit handle redirects
         try {
             $response = $guzzleRequest->send();
@@ -242,6 +243,7 @@ abstract class NetConnect
         }
         $responseString = $response->getBody(true);
         $this->log($responseString, $logPrefix . '-Response');
+
         return $responseString;
     }
 

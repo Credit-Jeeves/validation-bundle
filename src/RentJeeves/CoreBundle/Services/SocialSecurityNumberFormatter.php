@@ -22,11 +22,11 @@ class SocialSecurityNumberFormatter
     }
 
     /**
-     * @param $ssn
+     * @param string $ssn
      * @return number
      */
     public static function formatToDigitsOnly($ssn)
     {
-        return PhoneNumberFormatter::formatToDigitsOnly($ssn);
+        return preg_replace('/\D/', '', $ssn);
     }
 }

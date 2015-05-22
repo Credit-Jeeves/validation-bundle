@@ -81,7 +81,6 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
                     return $this->pidkiqModel = $model;
                 }
 
-                // if we have last status of trying verification FAILURE and try more then 2
                 if (PidkiqStatus::FAILURE === $model->getStatus() && 2 == $model->getTryNum()) {
                     $this->setIsSuccessfull(false);
                     $model->setStatus(PidkiqStatus::LOCKED);
@@ -94,7 +93,7 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
                 $currentDate = new \DateTime();
                 $createdAt = clone $model->getCreatedAt();
 
-                // if we have last status of trying verification FAILURE next trying must be after 1 hour
+                // If the last attemt of verification has status FAILURE, the next attempt should be in 1 hour.
                 if (PidkiqStatus::FAILURE === $model->getStatus() && $createdAt->modify('+1 hour') > $currentDate) {
                     $this->setIsSuccessfull(false);
 
@@ -104,8 +103,7 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
                 $updatedAt = clone $model->getUpdatedAt();
                 $checkSum = $this->getPidkiqCheckSum();
 
-                if (
-                    !$model->getCheckSum() ||
+                if (!$model->getCheckSum() ||
                     ($updatedAt->modify('+5 minutes') >= $currentDate && $model->getCheckSum() == $checkSum)
                 ) {
                     return $this->pidkiqModel = $model;

@@ -1,0 +1,24 @@
+'Which of the following is the highest level of education you completed?':
+    1: 'HIGH SCHOOL DIPLOMA'
+    2: 'SOME COLLEGE'
+    3: 'BACHELOR DEGREE'
+    4: 'GRADUATE DEGREE'
+    5: 'NONE OF THE ABOVE'
+'You may have opened a student loan in or around February 2006. To whom do you make your payments?':
+    1: 'FIRST MIDWEST BK'
+    2: 'VSAC LOAN SERVICES'
+    3: 'COMMERCE BANK'
+    4: 'US BANK'
+    5: 'NONE OF THE ABOVE/DOES NOT APPLY'
+'To which of the following professions do you currently or have previously belonged?':
+    1: ACCOUNTANT
+    2: NURSE
+    3: CHIROPRACTOR
+    4: 'PROFESSIONAL DRIVER'
+    5: 'NONE OF THE ABOVE'
+'Based on our records, you opened an auto loan/lease around June 2000. Please select the dollar range of your total monthly payment.':
+    1: '$50 - $99'
+    2: '$100 - $149'
+    3: '$150 - $199'
+    4: '$200 - $249'
+    5: 'NONE OF THE ABOVE/DOES NOT APPLY'

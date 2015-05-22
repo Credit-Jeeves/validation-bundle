@@ -78,9 +78,9 @@
                 <source>api.errors.verification.ssn.required</source>
                 <target>SSN is required</target>
             </trans-unit>
-            <trans-unit id="api.errors.verification.ssn.required">
-                <source>api.errors.verification.dbo.required</source>
-                <target>DBO is required</target>
+            <trans-unit id="api.errors.verification.dob.required">
+                <source>api.errors.verification.dob.required</source>
+                <target>DOB is required</target>
             </trans-unit>
             <trans-unit id="api.errors.verification.payment_account.required">
                 <source>api.errors.verification.payment_account.required</source>

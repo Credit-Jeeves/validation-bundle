@@ -30,9 +30,9 @@ class Pidkiq extends ResponseResource
 
     /**
      * @var string
-     * @DI\Inject("%pidkiq.lifetime%")
+     * @DI\Inject("%pidkiq.lifetime.minutes%")
      */
-    public $lifetime = '10 minutes';
+    public $lifetime;
 
     /**
      * @Serializer\VirtualProperty
@@ -78,6 +78,6 @@ class Pidkiq extends ResponseResource
      */
     public function getExpires()
     {
-        return $this->entity->getCreatedAt()->modify('+' . $this->lifetime)->format('U');
+        return $this->entity->getCreatedAt()->modify('+' . (int) $this->lifetime . ' minutes')->format('U');
     }
 }

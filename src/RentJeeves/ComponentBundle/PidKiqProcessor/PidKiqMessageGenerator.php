@@ -23,48 +23,54 @@ class PidKiqMessageGenerator
     protected $supportUrl;
 
     /**
-     * @param $translator
-     * @param $supportEmail
-     * @param $externalUrls
+     * @param Translator $translator
+     * @param string $supportEmail
+     * @param array $externalUrls
      */
     public function __construct(Translator $translator, $supportEmail, $externalUrls)
     {
         $this->translator = $translator;
         $this->supportEmail = $supportEmail;
-        $this->supportUrl = $externalUrls['user_voice'];
+        $this->supportUrl = isset($externalUrls['user_voice']) ? $externalUrls['user_voice'] : '';
     }
 
     /**
-     * @param $status
+     * @param string $status
      * @return string
      */
     public function generateMessage($status)
     {
-        if (PidkiqStatus::FAILURE === $status) {
-            return $this->translator->trans(
-                'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
-                [
-                    '%SUPPORT_EMAIL%' => $this->supportEmail,
-                    '%MAIN_LINK%'     => $this->supportUrl,
-                ]
-            );
-        } elseif (PidkiqStatus::LOCKED === $status) {
-             return $this->translator->trans(
-                'pidkiq.error.lock-%SUPPORT_EMAIL%',
-                ['%SUPPORT_EMAIL%' => $this->supportEmail]
-            );
-        } elseif (PidkiqStatus::BACKOFF === $status) {
-            return $this->translator->trans('pidkiq.error.attempts');
-        } elseif (PidkiqStatus::UNABLE === $status) {
-            return $this->translator->trans(
-                'pidkiq.error.questions-%SUPPORT_EMAIL%',
-                [
-                    '%SUPPORT_EMAIL%' => $this->supportEmail,
-                    '%MAIN_LINK%'     => $this->supportUrl,
-                ]
-            );
-        }
 
-        return '';
+        switch ($status) {
+            case PidkiqStatus::FAILURE:
+                return $this->translator->trans(
+                    'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
+                    [
+                        '%SUPPORT_EMAIL%' => $this->supportEmail,
+                        '%MAIN_LINK%' => $this->supportUrl,
+                    ]
+                );
+            case PidkiqStatus::LOCKED:
+                return $this->translator->trans(
+                    'pidkiq.error.lock-%SUPPORT_EMAIL%',
+                    [
+                        '%SUPPORT_EMAIL%' => $this->supportEmail
+                    ]
+                );
+            case PidkiqStatus::BACKOFF:
+                return $this->translator->trans(
+                    'pidkiq.error.attempts'
+                );
+            case PidkiqStatus::UNABLE:
+                return $this->translator->trans(
+                    'pidkiq.error.questions-%SUPPORT_EMAIL%',
+                    [
+                        '%SUPPORT_EMAIL%' => $this->supportEmail,
+                        '%MAIN_LINK%' => $this->supportUrl,
+                    ]
+                );
+            default:
+                return '';
+        }
     }
 }

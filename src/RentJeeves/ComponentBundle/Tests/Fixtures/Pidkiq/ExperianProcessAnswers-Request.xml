@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NetConnectRequest>
+  <EAI>HRPCX4RA</EAI>
+  <DBHost>PRECISE_ID_TEST</DBHost>
+  <ReferenceId>123</ReferenceId>
+  <Request version="1.0">
+    <Products>
+      <PreciseIDServer>
+        <XMLVersion>5</XMLVersion>
+        <KBAAnswers>
+          <OutWalletAnswerData>
+            <SessionID>1BF7168380E8DB40CA9BE5D14F32F347.pidd1v-1408261641330210446354688</SessionID>
+            <OutWalletAnswers>
+              <OutWalletAnswer1>2</OutWalletAnswer1>
+              <OutWalletAnswer2>3</OutWalletAnswer2>
+              <OutWalletAnswer3>3</OutWalletAnswer3>
+              <OutWalletAnswer4>5</OutWalletAnswer4>
+            </OutWalletAnswers>
+          </OutWalletAnswerData>
+        </KBAAnswers>
+      </PreciseIDServer>
+    </Products>
+  </Request>
+</NetConnectRequest>

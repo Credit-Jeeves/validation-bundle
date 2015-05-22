@@ -1,0 +1,456 @@
+<NetConnectResponse xmlns="http://www.experian.com/NetConnectResponse">
+  <CompletionCode>0000</CompletionCode>
+  <ReferenceId>123</ReferenceId>
+  <Products>
+    <PreciseIDServer>
+      <XMLVersion>5</XMLVersion>
+      <SessionID>1BF7168380E8DB40CA9BE5D14F32F347.pidd1v-1408261641330210446354688</SessionID>
+      <Header>
+        <ReportDate>08262014</ReportDate>
+        <ReportTime>164135</ReportTime>
+        <Preamble>TBD1</Preamble>
+        <ReferenceNumber/>
+      </Header>
+      <Messages>
+        <Message>
+          <Number>57</Number>
+          <Text>015000 0100</Text>
+          <AddrMismatch>Y</AddrMismatch>
+        </Message>
+      </Messages>
+      <Summary>
+        <ReviewReferenceID>7118428</ReviewReferenceID>
+        <PreciseIDType>11</PreciseIDType>
+        <PreciseIDScore>653</PreciseIDScore>
+        <PreciseIDScorecard>AC OPEN V2</PreciseIDScorecard>
+        <ValidationScore>000473</ValidationScore>
+        <ValidationScorecard>AC OPEN VAL V2</ValidationScorecard>
+        <VerificationScore>000176</VerificationScore>
+        <VerificationScorecard>AC OPEN ID THEFT V2</VerificationScorecard>
+        <ComplianceIndicator/>
+        <ComplianceDescription>No Compliance Code</ComplianceDescription>
+        <FPDScore>000306</FPDScore>
+        <FPDScorecard>AC OPEN FPD V2</FPDScorecard>
+        <UtilityFunction>00007030</UtilityFunction>
+        <InitialResults>
+          <AuthenticationIndex>0020</AuthenticationIndex>
+          <MostLikelyFraudType code="IMP">Impersonation Match</MostLikelyFraudType>
+          <Reasons>
+            <Reason1 code="B101">Low level of authentication indicative of ID fraud</Reason1>
+            <Reason2 code="B112">High ID fraud risk due to non-face-to-face application channel</Reason2>
+            <Reason3 code="B201">Low level of authentication indicative of First Party Fraud</Reason3>
+            <Reason4 code="B218">Too many trades with high revolving credit balance to limit ratio</Reason4>
+            <Reason5 code="B405">No adverse factor observed</Reason5>
+          </Reasons>
+          <InitialDecision>R10</InitialDecision>
+          <FinalDecision>R10</FinalDecision>
+          <ActionPath>000</ActionPath>
+        </InitialResults>
+        <Call2Results>
+          <AuthenticationIndex>0000</AuthenticationIndex>
+          <MostLikelyFraudType/>
+          <Reasons>
+            <Reason1 code="    ">Not Supplied</Reason1>
+            <Reason2 code="    ">Not Supplied</Reason2>
+            <Reason3 code="    ">Not Supplied</Reason3>
+            <Reason4 code="    ">Not Supplied</Reason4>
+          </Reasons>
+          <InitialDecision/>
+          <FinalDecision/>
+          <ActionPath/>
+        </Call2Results>
+      </Summary>
+      <FCRADetail>
+        <FraudShield>
+          <FS07>N</FS07>
+          <FS08>N</FS08>
+          <FS09>N</FS09>
+          <FS19>N</FS19>
+          <FS20>N</FS20>
+          <FS22>N</FS22>
+          <FS27>N</FS27>
+        </FraudShield>
+        <SharedApplication>
+          <FCRARule1 code="    "/>
+          <FCRARule2 code="    "/>
+          <FCRARule3 code="    "/>
+          <FCRARule4 code="    "/>
+          <FCRARule5 code="    "/>
+          <FCRARule6 code="    "/>
+          <FCRARule7 code="    "/>
+          <FCRARule8 code="    "/>
+          <FCRARule9 code="    "/>
+          <FCRARule10 code="    "/>
+          <FCRARule11 code="    "/>
+          <FCRARule12 code="    "/>
+          <FCRARule13 code="    "/>
+          <FCRARule14 code="    "/>
+          <FCRARule15 code="    "/>
+          <FCRARule16 code="    "/>
+          <FCRARule17 code="    "/>
+          <FCRARule18 code="    "/>
+          <FCRARule19 code="    "/>
+          <FCRARule20 code="    "/>
+          <AdverseActionCode1 code=" "/>
+          <AdverseActionCode2 code=" "/>
+          <AdverseActionCode3 code=" "/>
+          <AdverseActionCode4 code=" "/>
+        </SharedApplication>
+        <NFDSummary>
+          <RecordHits>0000</RecordHits>
+          <FraudFieldHits>0000</FraudFieldHits>
+          <VictimRecordHits>0000</VictimRecordHits>
+          <VictimFieldHits>0000</VictimFieldHits>
+          <FieldHitsByInputAddress>0000</FieldHitsByInputAddress>
+          <FieldHitsBySSN>0000</FieldHitsBySSN>
+          <FieldHitsByDriversLicense>0000</FieldHitsByDriversLicense>
+          <FieldHitsByPhone>0000</FieldHitsByPhone>
+        </NFDSummary>
+      </FCRADetail>
+      <GLBDetail>
+        <CheckpointSummary>
+          <PrimaryResultCode code="00">Data found for search request</PrimaryResultCode>
+          <BestPickAcceptDeny code="D">Deny</BestPickAcceptDeny>
+          <AddrCode>N</AddrCode>
+          <PhnCode>N</PhnCode>
+          <AddrTypeCode>S</AddrTypeCode>
+          <COACode>N</COACode>
+          <SSNCode>Y</SSNCode>
+          <AddrUnitMismatchCode/>
+          <PhnUnitMismatchCode/>
+          <DLResultCode>M</DLResultCode>
+          <DateOfBirthMatch>3</DateOfBirthMatch>
+          <HighRiskAddrCode>N</HighRiskAddrCode>
+          <HighRiskPhoneCode>N</HighRiskPhoneCode>
+          <OFACValidationResult>1</OFACValidationResult>
+          <AddrResMatches>0001</AddrResMatches>
+          <AddrBusMatches>0000</AddrBusMatches>
+          <PhnResMatches>0001</PhnResMatches>
+          <PhnBusMatches>0000</PhnBusMatches>
+        </CheckpointSummary>
+        <FraudShield>
+          <FS01>Y</FS01>
+          <FS02>N</FS02>
+          <FS03>Y</FS03>
+          <FS04>N</FS04>
+          <FS05>N</FS05>
+          <FS06>Y</FS06>
+          <FS10>N</FS10>
+          <FS11>N</FS11>
+          <FS13>N</FS13>
+          <FS14>N</FS14>
+          <FS15>N</FS15>
+          <FS16>N</FS16>
+          <FS17>N</FS17>
+          <FS18>N</FS18>
+          <FS21>Y</FS21>
+          <FS25>N</FS25>
+          <FS26>N</FS26>
+        </FraudShield>
+        <SharedApplication>
+          <GLBRule1 code="1003">Social Security Number Issued before Year of Birth</GLBRule1>
+          <GLBRule2 code="3004">Impersonation - Age</GLBRule2>
+          <GLBRule3 code="3203">No Trace of Address</GLBRule3>
+          <GLBRule4 code="3204">Best address on credit profile does not match the current address specified on
+            inquiry
+          </GLBRule4>
+          <GLBRule5 code="3201">Incoming Application Omits Best Address on File</GLBRule5>
+          <GLBRule6 code="    "/>
+          <GLBRule7 code="    "/>
+          <GLBRule8 code="    "/>
+          <GLBRule9 code="    "/>
+          <GLBRule10 code="    "/>
+          <GLBRule11 code="    "/>
+          <GLBRule12 code="    "/>
+          <GLBRule13 code="    "/>
+          <GLBRule14 code="    "/>
+          <GLBRule15 code="    "/>
+          <GLBRule16 code="    "/>
+          <GLBRule17 code="    "/>
+          <GLBRule18 code="    "/>
+          <GLBRule19 code="    "/>
+          <GLBRule20 code="    "/>
+        </SharedApplication>
+      </GLBDetail>
+      <Checkpoint>
+        <GeneralResults>
+          <ProfileID>MK169CD</ProfileID>
+          <AccountInformation/>
+          <Version>15</Version>
+          <PrimaryResult code="00">Data found for search request</PrimaryResult>
+          <BestPickAcceptDeny code="D">Deny</BestPickAcceptDeny>
+          <SourceFlag/>
+          <CheckpointTemplate>STDADD</CheckpointTemplate>
+          <NameFlipIndicator code=" ">Default</NameFlipIndicator>
+          <AddressVerificationResult code="N ">No match to name-residential address
+          </AddressVerificationResult>
+          <AddressUnitMismatchResult code="  "/>
+          <PhoneVerificationResult code="N ">No match to name or address-residential phone
+          </PhoneVerificationResult>
+          <PhoneUnitMismatchResult code="  "/>
+          <AddressTypeResult code="S ">Single family dwelling</AddressTypeResult>
+          <AddressVerificationResidentialMatches>0001</AddressVerificationResidentialMatches>
+          <AddressVerificationBusinessMatches>0000</AddressVerificationBusinessMatches>
+          <PhoneVerificationResidentialMatches>0001</PhoneVerificationResidentialMatches>
+          <PhoneVerificationBusinessMatches>0000</PhoneVerificationBusinessMatches>
+          <AddressHighRiskResult code="N ">No address high risk information found</AddressHighRiskResult>
+          <PhoneHighRiskResult code="N ">No phone high risk information found</PhoneHighRiskResult>
+          <COAResult code="N ">No change of address information found</COAResult>
+          <SSNResult code="Y ">Match to full name only</SSNResult>
+          <EDABestPickScore/>
+          <EDARecordsReturned/>
+          <AcceptDeclineFlag code=" "/>
+          <EDAResult code="NA"/>
+          <CheckpointScore>444</CheckpointScore>
+          <Result code="R">Residential</Result>
+          <AuditNumber>CP-CFPY-KQ4VNH23</AuditNumber>
+          <ShortAuditNumber>2KQ4VNH</ShortAuditNumber>
+          <DriverLicenseResult code="M">Driver License number is missing</DriverLicenseResult>
+          <MonthOfBirth>00</MonthOfBirth>
+          <DayOfBirth>00</DayOfBirth>
+          <YearOfBirth>1941</YearOfBirth>
+          <DateOfBirthMatch code="3">No match</DateOfBirthMatch>
+          <OFACResult code="1 ">No match</OFACResult>
+          <StandardizedAddresRecordsReturned>01</StandardizedAddresRecordsReturned>
+          <ResidentialAddressDetailRecordsReturned>01</ResidentialAddressDetailRecordsReturned>
+          <BusinessAddressDetailRecordsReturned>00</BusinessAddressDetailRecordsReturned>
+          <AddressHighRiskDetailRecordsReturned>00</AddressHighRiskDetailRecordsReturned>
+          <AddressHighRiskDescriptionRecordsReturned>01</AddressHighRiskDescriptionRecordsReturned>
+          <ResidentialPhoneDetailRecordsReturned>01</ResidentialPhoneDetailRecordsReturned>
+          <BusinessPhoneDetailRecordsReturned>00</BusinessPhoneDetailRecordsReturned>
+          <PhoneHighRiskDetailRecordsReturned>00</PhoneHighRiskDetailRecordsReturned>
+          <PhoneHighRiskDescriptionRecordsReturned>00</PhoneHighRiskDescriptionRecordsReturned>
+          <SSNAddressDetailRecordsReturned>01</SSNAddressDetailRecordsReturned>
+          <ValidationSegmentsReturned>01</ValidationSegmentsReturned>
+          <DriverLicenseSegmentsReturned>00</DriverLicenseSegmentsReturned>
+          <OFACRecordSegmentsReturned>00</OFACRecordSegmentsReturned>
+          <AuditRequestInformationRecordsReturned>00</AuditRequestInformationRecordsReturned>
+          <COARecordsReturned>00</COARecordsReturned>
+          <COADescriptionRecordsReturned>00</COADescriptionRecordsReturned>
+          <PreviousAddressesReturned>01</PreviousAddressesReturned>
+          <SSNFinderAddressesReturned>00</SSNFinderAddressesReturned>
+        </GeneralResults>
+        <StandardizedAddressDetail>
+          <Surname>BRIEN</Surname>
+          <FirstName>MARION</FirstName>
+          <Initial>R</Initial>
+          <Address>934 S INGLEWOOD AVE</Address>
+          <City>INGLEWOOD</City>
+          <State>CA</State>
+          <ZipCode>90301</ZipCode>
+          <ZipPlus4>3646</ZipPlus4>
+        </StandardizedAddressDetail>
+        <ConsumerIDVerification>
+          <Surname>BRIEN</Surname>
+          <FirstName>MARION</FirstName>
+          <Initial>R</Initial>
+          <Address>350 LEHIGH AVE</Address>
+          <City>PITTSBURGH</City>
+          <State>PA</State>
+          <ZipCode>15232</ZipCode>
+          <ZipPlus4>2008</ZipPlus4>
+          <AreaCode>412</AreaCode>
+          <Phone>4629823</Phone>
+          <MonthOfBirth>00</MonthOfBirth>
+          <DayOfBirth>00</DayOfBirth>
+          <YearOfBirth>1941</YearOfBirth>
+          <DateOfBirthMatchCode code="3">No match</DateOfBirthMatchCode>
+          <ReportedDate>19961119</ReportedDate>
+          <LastTouched>20060609</LastTouched>
+        </ConsumerIDVerification>
+        <ResidentialAddressDetail>
+          <Surname>RODRIGUEZ</Surname>
+          <FirstName>HUGO</FirstName>
+          <Initial/>
+          <Address>934 S INGLEWOOD AVE</Address>
+          <City>INGLEWOOD</City>
+          <State>CA</State>
+          <ZipCode>90301</ZipCode>
+          <ZipPlus4>3646</ZipPlus4>
+          <AreaCode>310</AreaCode>
+          <Phone>6742758</Phone>
+          <SpouseName/>
+          <OtherHouseholdMemberName1/>
+          <OtherHouseholdMemberName2/>
+          <OtherHouseholdMemberName3/>
+          <LastUpdatedDate>20060418</LastUpdatedDate>
+          <MonthsAtResidence>0007</MonthsAtResidence>
+        </ResidentialAddressDetail>
+        <AddressHighRiskDetail>
+          <BusinessName/>
+          <Address/>
+          <City/>
+          <State/>
+          <ZipCode/>
+          <ZipPlus4/>
+          <AreaCode/>
+          <Phone/>
+        </AddressHighRiskDetail>
+        <AddressHighRiskDescription>
+          <HighRiskDescription>No high risk business at address/phone</HighRiskDescription>
+        </AddressHighRiskDescription>
+        <ResidentialPhoneDetail>
+          <Surname>BREEN</Surname>
+          <FirstName>JOHN</FirstName>
+          <Initial/>
+          <Address>4528 W VALLEY CT</Address>
+          <City>ARCATA</City>
+          <State>CA</State>
+          <ZipCode/>
+          <ZipPlus4/>
+          <AreaCode>781</AreaCode>
+          <Phone>8945369</Phone>
+          <SpouseName/>
+          <OtherHouseholdMemberName1/>
+          <OtherHouseholdMemberName2/>
+          <OtherHouseholdMemberName3/>
+          <LastTouched>20060524</LastTouched>
+          <MonthsAtResidence>0005</MonthsAtResidence>
+        </ResidentialPhoneDetail>
+        <PhoneHighRiskDetail>
+          <BusinessName/>
+          <Address/>
+          <City/>
+          <State/>
+          <ZipCode/>
+          <ZipPlus4/>
+          <AreaCode/>
+          <Phone/>
+        </PhoneHighRiskDetail>
+        <PhoneHighRiskDescription>
+          <HighRiskDescription/>
+        </PhoneHighRiskDescription>
+        <ChangeOfAddressDetail>
+          <Name/>
+          <Address/>
+          <City/>
+          <State/>
+          <ZipCode/>
+          <ZipPlus4/>
+          <ReportedDate/>
+          <LastTouched/>
+        </ChangeOfAddressDetail>
+        <ValidationSegment>
+          <Surname>BRIEN</Surname>
+          <FirstName>MARION</FirstName>
+          <MiddleInitial>R</MiddleInitial>
+          <SSN>666-56-0093</SSN>
+          <SSNIssueState>NH</SSNIssueState>
+          <SSNDeceased code="N">No</SSNDeceased>
+          <SSNFormat code="V">Valid</SSNFormat>
+          <SSNIssueStartRange>1952</SSNIssueStartRange>
+          <SSNIssueEndRange>1954</SSNIssueEndRange>
+          <SSNIssueResultCode code="X">SSN issue date prior to input year of birth</SSNIssueResultCode>
+          <DriversLicenseFormatValidation code=" ">Driver's license not provided or validated
+          </DriversLicenseFormatValidation>
+          <OFACValidationResult code="1 ">No match</OFACValidationResult>
+        </ValidationSegment>
+        <OFACRecordSegment>
+          <OFACRecord/>
+        </OFACRecordSegment>
+        <PreviousAddressSegment>
+          <Address>5733 HOLDEN ST APT B</Address>
+          <City>PITTSBURGH</City>
+          <State>PA</State>
+          <ZipCode>15232</ZipCode>
+          <ZipPlus4>1979</ZipPlus4>
+          <ReportedDate>19930401</ReportedDate>
+          <LastUpdatedDate>20050412</LastUpdatedDate>
+        </PreviousAddressSegment>
+      </Checkpoint>
+      <CCNumerics/>
+      <CCStrings/>
+      <KBAScore>
+        <General>
+          <KBAResultCode>0</KBAResultCode>
+          <KBAResultCodeDescription>KBA processing successful questions returned</KBAResultCodeDescription>
+          <PriorUsage>
+            <ExceededUseLimitCode>N</ExceededUseLimitCode>
+            <ConsumerTotal/>
+            <ClientUseLimitPeriod>720</ClientUseLimitPeriod>
+            <ClientUseLimitCount>0</ClientUseLimitCount>
+            <TotalUseLimitPeriod>720</TotalUseLimitPeriod>
+            <TotalUseLimitCount>0</TotalUseLimitCount>
+            <ConsumerSSNTotal>0</ConsumerSSNTotal>
+            <ClientSSNUseLimitPeriod>0</ClientSSNUseLimitPeriod>
+            <ClientSSNUseLimitCount>0</ClientSSNUseLimitCount>
+            <TotalSSNUseLimitPeriod>0</TotalSSNUseLimitPeriod>
+            <TotalSSNUseLimitCount>0</TotalSSNUseLimitCount>
+            <ConcurrentPINTotal>0</ConcurrentPINTotal>
+            <ClientConcurrentPINLimitCount>1</ClientConcurrentPINLimitCount>
+            <CompanyConcurrentPINLimitCount>1</CompanyConcurrentPINLimitCount>
+            <GlobalConcurrentPINLimitCount>2</GlobalConcurrentPINLimitCount>
+          </PriorUsage>
+        </General>
+        <ScoreSummary>
+          <AcceptReferCode>ACC</AcceptReferCode>
+          <DecisionOverrideIndicator>N</DecisionOverrideIndicator>
+          <DecisionOverrideReason/>
+          <PreciseIDScore>653</PreciseIDScore>
+          <OutWalletScore>100</OutWalletScore>
+          <OutWalletFormula>(428/428)*100</OutWalletFormula>
+          <ProgressiveQuestionAchieved>N</ProgressiveQuestionAchieved>
+          <ChampionChallengerIndicator>N</ChampionChallengerIndicator>
+          <RiskStrategyNum>1</RiskStrategyNum>
+          <RiskStrategyDescription>Default Risk Strategy</RiskStrategyDescription>
+          <QuestionConfigNum>1</QuestionConfigNum>
+          <QuestionConfigDescription>Default Question Configuration</QuestionConfigDescription>
+          <DecisionMatrixNum>1</DecisionMatrixNum>
+          <DecisionMatrixDescription>Default Decision Matrix</DecisionMatrixDescription>
+          <UserDefinedParameters>
+            <UserDefinedTextName1/>
+            <UserDefinedTextValue1/>
+            <UserDefinedTextName2/>
+            <UserDefinedTextValue2/>
+            <UserDefinedTextName3/>
+            <UserDefinedTextValue3/>
+            <UserDefinedTextName4/>
+            <UserDefinedTextValue4/>
+            <UserDefinedNumName1/>
+            <UserDefinedNumValue1/>
+            <UserDefinedNumName2/>
+            <UserDefinedNumValue2/>
+            <UserDefinedNumName3/>
+            <UserDefinedNumValue3/>
+            <UserDefinedNumName4/>
+            <UserDefinedNumValue4/>
+            <UserDefinedDateName1/>
+            <UserDefinedDateValue1/>
+            <UserDefinedDateName2/>
+            <UserDefinedDateValue2/>
+          </UserDefinedParameters>
+        </ScoreSummary>
+        <GradedAnswer>
+          <AnswerSet>
+            <QuestionType>24</QuestionType>
+            <QuestionTypeDescription>PREVIOUS CURRENT PROFESSION</QuestionTypeDescription>
+            <CreditType>N</CreditType>
+            <AnswerResult>R</AnswerResult>
+            <QuestionWeight>106</QuestionWeight>
+          </AnswerSet>
+          <AnswerSet>
+            <QuestionType>26</QuestionType>
+            <QuestionTypeDescription>HIGHEST LEVEL OF EDUCATION</QuestionTypeDescription>
+            <CreditType>N</CreditType>
+            <AnswerResult>R</AnswerResult>
+            <QuestionWeight>134</QuestionWeight>
+          </AnswerSet>
+          <AnswerSet>
+            <QuestionType>5</QuestionType>
+            <QuestionTypeDescription>STUDENT LOAN LENDER</QuestionTypeDescription>
+            <CreditType>C</CreditType>
+            <AnswerResult>R</AnswerResult>
+            <QuestionWeight>107</QuestionWeight>
+          </AnswerSet>
+          <AnswerSet>
+            <QuestionType>39</QuestionType>
+            <QuestionTypeDescription>PREVIOUS PHONE NUMBER - DIV</QuestionTypeDescription>
+            <CreditType>N</CreditType>
+            <AnswerResult>R</AnswerResult>
+            <QuestionWeight>81</QuestionWeight>
+          </AnswerSet>
+        </GradedAnswer>
+      </KBAScore>
+    </PreciseIDServer>
+  </Products>
+</NetConnectResponse>

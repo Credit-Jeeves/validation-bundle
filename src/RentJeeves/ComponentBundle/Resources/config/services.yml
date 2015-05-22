@@ -22,6 +22,7 @@ services:
         class: "%pidkiq.experian.base_api.class%"
         arguments:
             - "@logger"
+            - "@kernel"
             - "@doctrine.orm.default_entity_manager"
     pidkiq.experian.pidkiq_api:
         parent: pidkiq.experian.base_api

@@ -12,6 +12,9 @@ use RentJeeves\ComponentBundle\PidKiqProcessor\Experian\ExperianPidKiqApiClient;
 
 class PidKiqExperianProcessor extends PidKiqBaseProcessor
 {
+    const ACCEPT = 'ACC';
+
+    const INPROGRESS ='REF';
     /**
      * @var ExperianPidKiqApiClient
      */
@@ -118,7 +121,7 @@ class PidKiqExperianProcessor extends PidKiqBaseProcessor
                 ->setZip($defaultAddress->getZip());
         }
 
-        $primaryApplicant->setDob($this->getUser()->getDBO());
+        $primaryApplicant->setDob($this->getUser()->getDOB());
 
         return $request;
     }
@@ -180,8 +183,6 @@ class PidKiqExperianProcessor extends PidKiqBaseProcessor
     {
         $request = new NetConnectRequest();
 
-        $sessionId = 'TEST';
-
         $outWalletAnswerData = $request
             ->getRequest()
             ->getProducts()
@@ -208,8 +209,8 @@ class PidKiqExperianProcessor extends PidKiqBaseProcessor
     {
         $preciseIDServer = $response->getProducts()->getPreciseIDServer();
 
-        if ('ACC' !== trim($preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode()) &&
-            'REF' !== trim($preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode())) {
+        if (self::ACCEPT !== trim($preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode()) &&
+            self::INPROGRESS !== trim($preciseIDServer->getKbaScore()->getScoreSummary()->getAcceptReferCode())) {
             return false;
         }
 

@@ -132,7 +132,7 @@ abstract class User extends BaseUser
      */
     public function getFormattedSsn()
     {
-       return SocialSecurityNumberFormatter::formatWithDashes($this->getSsn());
+        return SocialSecurityNumberFormatter::formatWithDashes($this->getSsn());
     }
 
     public function getFormattedPhone()
@@ -401,11 +401,11 @@ abstract class User extends BaseUser
     /**
      * @return string
      */
-    public function getDBO()
+    public function getDOB()
     {
-        $dbo = parent::getDateOfBirth();
+        $dob = parent::getDateOfBirth();
 
-        return $dbo ? $dbo->format('mdY') : '';
+        return $dob ? $dob->format('mdY') : '';
     }
 
     /**

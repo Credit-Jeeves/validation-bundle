@@ -48,9 +48,9 @@ class IdentityVerificationController extends Controller
             throw new BadRequestHttpException(
                 $this->get('translator')->trans('api.errors.verification.ssn.required')
             );
-        } elseif (!$this->getUser()->getDBO()) {
+        } elseif (!$this->getUser()->getDOB()) {
             throw new BadRequestHttpException(
-                $this->get('translator')->trans('api.errors.verification.ssn.required')
+                $this->get('translator')->trans('api.errors.verification.dob.required')
             );
         } elseif (!$this->getUser()->getPaymentAccounts()->count()) {
             throw new BadRequestHttpException(
@@ -96,7 +96,11 @@ class IdentityVerificationController extends Controller
         /** @var Pidkiq $pidkiq */
         $pidkiq = $this->getDoctrine()
             ->getRepository('DataBundle:Pidkiq')
-            ->findNotExpiredByUserAndId($id, $this->getUser());
+            ->findNotExpiredByUserAndId(
+                $id,
+                $this->getUser(),
+                $this->container->getParameter('pidkiq.lifetime.minutes')
+            );
 
         if ($pidkiq) {
             return $this->get('response_resource.factory')->getResponse($pidkiq);
@@ -142,7 +146,11 @@ class IdentityVerificationController extends Controller
         /** @var Pidkiq $pidkiq */
         $pidkiq = $this->getDoctrine()
             ->getRepository('DataBundle:Pidkiq')
-            ->findNotExpiredByUserAndId($id, $this->getUser(), $this->container->getParameter('pidkiq.lifetime'));
+            ->findNotExpiredByUserAndId(
+                $id,
+                $this->getUser(),
+                $this->container->getParameter('pidkiq.lifetime.minutes')
+            );
 
         if (!$pidkiq) {
             throw new NotFoundHttpException('Resource has already expired or doesn\'t exist.');

@@ -17,6 +17,7 @@ use Monolog\Logger;
 use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqInvalidArgumentException;
 use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqInvalidResponseException;
 use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqInvalidXmlException;
+use Symfony\Component\HttpKernel\Kernel;
 
 abstract class ExperianBaseApiClient
 {
@@ -36,6 +37,11 @@ abstract class ExperianBaseApiClient
      * @var Logger
      */
     protected $logger;
+
+    /**
+     * @var Kernel
+     */
+    protected $kernel;
 
     /**
      * @var array
@@ -67,9 +73,10 @@ abstract class ExperianBaseApiClient
         'preciseIDUserPwd',
     ];
 
-    public function __construct(Logger $logger, EntityManager $em)
+    public function __construct(Logger $logger, Kernel $kernel, EntityManager $em)
     {
         $this->logger = $logger;
+        $this->kernel = $kernel;
         // dirty hack
         // TODO need change settings store to config.yml
         /** @var \CreditJeeves\DataBundle\Entity\Settings $settings */
@@ -98,7 +105,7 @@ abstract class ExperianBaseApiClient
     public function setConfig($config)
     {
         // dirty hack
-        // TODO Fix this
+        // TODO Fix this need change settings store to config.yml
         $config['preciseIDEai'] = $this->config['preciseIDEai'];
         $config['preciseIDUserPwd'] = $this->config['preciseIDUserPwd'];
 
@@ -128,7 +135,7 @@ abstract class ExperianBaseApiClient
             $responseXml = $this->__send($requestXml);
         } catch (\Exception $e) {
             $this->logger->alert(
-                sprintf('[Experian]Get error when try to send request: %s', $e->getMessage())
+                sprintf('[Experian]An Error occurred while sending request: %s', $e->getMessage())
             );
             throw $e;
         }
@@ -183,7 +190,7 @@ abstract class ExperianBaseApiClient
         $testDom = new \DOMDocument();
         $testDom->loadXML($testXML);
 
-        $xmlSchema = __DIR__ . "/../../Resources/xsd/{$xmlSchema}.xsd";
+        $xmlSchema = $this->kernel->locateResource("@RjComponentBundle/Resources/xsd/{$xmlSchema}.xsd");
 
         if (is_readable($xmlSchema) && !@$testDom->schemaValidate($xmlSchema)) {
             $exception = new PidKiqInvalidXmlException(
