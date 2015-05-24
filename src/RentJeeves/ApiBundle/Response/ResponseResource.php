@@ -12,19 +12,19 @@ abstract class ResponseResource
 {
     /**
      * @var ResourceUrlGenerator
-     * @DI\Inject("api.resource_url_generator")
+     * @DI\Inject("api.resource_url_generator", required=true)
      */
     public $urlGenerator;
 
     /**
      * @var AttributeEncoderInterface
-     * @DI\Inject("api.default_id_encoder")
+     * @DI\Inject("api.default_id_encoder", required=true)
      */
     public $encoder;
 
     /**
      * @var ResponseFactory
-     * @DI\Inject("response_resource.factory")
+     * @DI\Inject("response_resource.factory", required=true)
      */
     public $resourceFactory;
 

@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ApiBundle\Response;
 
-use CreditJeeves\DataBundle\Entity\Pidkiq;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
@@ -139,7 +138,6 @@ class Tenant extends ResponseResource
      */
     public function getVerificationMessage()
     {
-        /** @var Pidkiq $pidkiq */
         if ($pidkiq = $this->entity->getPidkiqs()->last()) {
             return $this->pidKiqMessageGenerator->generateMessage($pidkiq->getStatus());
         }

@@ -4,6 +4,8 @@ namespace RentJeeves\ApiBundle\Response;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\ApiBundle\Response\Model\Choice;
+use RentJeeves\ApiBundle\Response\Model\Question;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 use CreditJeeves\DataBundle\Entity\Pidkiq as Entity;
 use RentJeeves\ComponentBundle\PidKiqProcessor\PidKiqMessageGenerator;
@@ -24,7 +26,7 @@ class Pidkiq extends ResponseResource
     /**
      * @var PidKiqMessageGenerator
      *
-     * @DI\Inject("pidkiq.message_generator")
+     * @DI\Inject("pidkiq.message_generator", required=true)
      */
     public $pidKiqMessageGenerator;
 
@@ -67,7 +69,39 @@ class Pidkiq extends ResponseResource
      */
     public function getQuestions()
     {
-        return $this->entity->getQuestions();
+        return $this->prepareQuestions(
+            $this->entity->getQuestions() ?: []
+        );
+    }
+
+    /**
+     * @param array $questions
+     * @return array
+     */
+    protected function prepareQuestions(array $questions)
+    {
+        $questionId = 1;
+        $preparedQuestions = [];
+        foreach ($questions as $question => $choices) {
+            $preparedQuestion = new Question();
+            $preparedQuestion->id = $questionId++;
+            $preparedQuestion->question = $question;
+
+            $choiceId = 1;
+            $preparedChoices = [];
+            foreach ($choices as $choice) {
+                $preparedChoice = new Choice();
+                $preparedChoice->id = $choiceId++;
+                $preparedChoice->choice = $choice;
+
+                $preparedChoices[] = $preparedChoice;
+            }
+            $preparedQuestion->choices = $preparedChoices;
+
+            $preparedQuestions[] = $preparedQuestion;
+        }
+
+        return $preparedQuestions;
     }
 
     /**
