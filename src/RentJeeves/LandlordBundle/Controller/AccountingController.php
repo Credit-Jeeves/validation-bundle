@@ -372,16 +372,8 @@ class AccountingController extends Controller
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
-        /** @var ImportSummaryManager $importSummaryManager */
-        $importSummaryManager = $this->get('import_summary.manager');
-
-        $importSummaryManager->initialize(
-            $this->getCurrentGroup(),
-            $storage->getImportType(),
-            $storage->getImportSummaryReportPublicId()
-        );
-
-        $storage->setImportSummaryReportPublicId($importSummaryManager->getReportPublicId());
+        $importSummaryManager = $handler->getReport();
+        $importSummaryManager->setTotal($total);
 
         $result['rows'] = $collection;
         $result['total'] = $total;
@@ -455,8 +447,10 @@ class AccountingController extends Controller
      */
     public function getResidentsYardi()
     {
+        /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
         $mapping = $importFactory->getMapping();
+
         /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
         /** @var $propertyMappingManager PropertyMappingManager */
@@ -472,9 +466,11 @@ class AccountingController extends Controller
             $residents = $mapping->getResidents($holding, $propertyMapping->getProperty());
             $residents = array_values($residents); //For start array from 0, but why don't remember
         } else {
-            $residents = array();
+            $residents = [];
         }
 
+        $handler = $importFactory->getHandler();
+        $handler->getReport()->setTotal(count($residents));
         $response = new Response($this->get('jms_serializer')->serialize($residents, 'json'));
         $response->headers->set('Content-Type', 'application/json');
 
@@ -629,15 +625,13 @@ class AccountingController extends Controller
      */
     public function updateMatchedContractsCsv()
     {
-        /**
-         * @var $importFactory ImportFactory
-         */
+        //exit;
+        /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
         $handler = $importFactory->getHandler();
         $result = $handler->updateMatchedContracts();
-
         $response = new JsonResponse(
-            array('success' => $result)
+            ['success' => $result]
         );
 
         $statusCode = ($result) ? 200 : 400;

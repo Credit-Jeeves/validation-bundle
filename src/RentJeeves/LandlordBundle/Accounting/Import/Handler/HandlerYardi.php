@@ -46,11 +46,14 @@ class HandlerYardi extends HandlerAbstract
         $filePath = $this->storage->getFilePath();
 
         $this->updateMatchedContractsWithCallback(
+            $this->getReport(),
             function () use ($self, $filePath) {
                 $self->removeLastLineInFile($filePath);
             },
             function () {
             }
         );
+
+        $this->getReport()->save();
     }
 }

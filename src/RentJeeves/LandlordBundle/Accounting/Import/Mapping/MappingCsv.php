@@ -45,7 +45,8 @@ class MappingCsv extends MappingAbstract
 
     public function getTotal()
     {
-        return $this->reader->countLines($this->storage->getFilePath());
+        //minus one because one line it's header
+        return $this->reader->countLines($this->storage->getFilePath())-1;
     }
 
     /**
