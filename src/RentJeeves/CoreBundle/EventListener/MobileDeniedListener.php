@@ -76,25 +76,24 @@ class MobileDeniedListener
      */
     protected function isMobile()
     {
-        //On task https://credit.atlassian.net/browse/RT-276
-        //was changed, currently we need allow ipad/mobile
-        return false;
-
-        $userAgent = (isset($_SERVER['HTTP_USER_AGENT']))? $_SERVER['HTTP_USER_AGENT'] : null;
-
-        if (!$userAgent) {
-            return false;
-        }
-
-        $preg = "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|";
-        $preg .= "windows ce|nokia|fennec|hiptop|kindle|mot |mot-|IEMobile|Android|";
-        $preg .= "webos\/|samsung|sonyericsson|^sie-|nintendo|";
-        $preg .= "mobile|pda;|avantgo|eudoraweb|minimo|netfront|brew|teleca|lg;|lge |wap;| wap /";
-
-        if (preg_match($preg, $userAgent)) {
-            return true;
-        }
-
+//        //On task https://credit.atlassian.net/browse/RT-276
+//        //was changed, currently we need allow ipad/mobile
+//        return false;
+//
+//        $userAgent = (isset($_SERVER['HTTP_USER_AGENT']))? $_SERVER['HTTP_USER_AGENT'] : null;
+//
+//        if (!$userAgent) {
+//            return false;
+//        }
+//
+//        $preg = "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|";
+//        $preg .= "windows ce|nokia|fennec|hiptop|kindle|mot |mot-|IEMobile|Android|";
+//        $preg .= "webos\/|samsung|sonyericsson|^sie-|nintendo|";
+//        $preg .= "mobile|pda;|avantgo|eudoraweb|minimo|netfront|brew|teleca|lg;|lge |wap;| wap /";
+//
+//        if (preg_match($preg, $userAgent)) {
+//            return true;
+//        }
         return false;
     }
 }
