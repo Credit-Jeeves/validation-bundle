@@ -125,7 +125,7 @@ class IdentityVerificationController extends Controller
      *     }
      * )
      * @Rest\Put("/identity_verification/{id}")
-     * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=204)
+     * @Rest\View(serializerGroups={"Base", "ApiErrors", "IdentityVerificationDetails"}, statusCode=200)
      * @AttributeParam(
      *     name="id",
      *     encoder="api.default_id_encoder"
@@ -159,11 +159,30 @@ class IdentityVerificationController extends Controller
         /** @var PidKiqProcessorInterface|PidKiqStateAwareInterface $pidKiqProcessor */
         $pidKiqProcessor = $this->get('pidkiq.processor_factory')->getPidKiqProcessor();
 
-        if (!$pidKiqProcessor->processAnswers($request->get('answers'))) {
+        if (!$pidKiqProcessor->processAnswers($this->prepareAnswer($request->get('answers')))) {
             throw new BadRequestHttpException($pidKiqProcessor->getMessage());
         }
 
         return $this->get('response_resource.factory')
             ->getResponse($pidKiqProcessor->getPidkiqModel());
+    }
+
+    /**
+     * @param array $answers
+     * @return array
+     */
+    protected function prepareAnswer(array $answers)
+    {
+        usort($answers, function($a, $b) {
+            return (int) key($a) - (int) key($b);
+        });
+
+        $onlyAnswer = [];
+
+        foreach ($answers as $answer) {
+            $onlyAnswer[] = reset($answer);
+        }
+
+        return $onlyAnswer;
     }
 }
