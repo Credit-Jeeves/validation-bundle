@@ -135,9 +135,9 @@ class BaseApiTestCase extends BaseTestCase
         return static::USER_ACCESS_TOKEN . $user->getEmail();
     }
 
-    protected function prepareClient()
+    protected function prepareClient($refresh = false)
     {
-        if (!static::$client) {
+        if (!static::$client || $refresh) {
             $this->load(true);
             static::$client = $this->createClient();
         }

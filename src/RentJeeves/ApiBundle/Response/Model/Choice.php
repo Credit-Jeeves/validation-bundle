@@ -10,11 +10,49 @@ class Choice
      * @var int
      * @Serializer\Groups({"IdentityVerificationDetails"})
      */
-    public $id;
+    protected $id;
 
     /**
      * @var string
      * @Serializer\Groups({"IdentityVerificationDetails"})
      */
-    public $choice;
+    protected $choice;
+
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $choice
+     * @return $this
+     */
+    public function setChoice($choice)
+    {
+        $this->choice = $choice;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChoice()
+    {
+        return $this->choice;
+    }
 }

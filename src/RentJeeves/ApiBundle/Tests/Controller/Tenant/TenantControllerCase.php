@@ -15,6 +15,8 @@ class TenantControllerCase extends BaseApiTestCase
      */
     public function getDetails()
     {
+        $this->prepareClient(true);
+
         $response = $this->getRequest();
 
         $this->assertResponse($response);
