@@ -27,3 +27,16 @@ monolog:
             type:  stream
             path:  %kernel.logs_dir%/%kernel.environment%.log
             level: debug
+        swift_emergency:
+            type:       swift_mailer
+            from_email: %email_from%
+            to_email:   %monolog.emergency.email_to%
+            subject:    Emergency log!
+            level:      emergency
+            bubble:     false # @link https://github.com/Seldaek/monolog#core-concepts
+        swift_alert:
+            type:       swift_mailer
+            from_email: %email_from%
+            to_email:   %monolog.alert.email_to%
+            subject:    Alert log!
+            level:      alert
