@@ -1003,11 +1003,11 @@ class Order extends BaseOrder
     public function getMriPaymentType()
     {
         if ($this->getType() === OrderType::HEARTLAND_CARD) {
-            return 'C';
+            return 'K';
         }
 
         if ($this->getType() === OrderType::HEARTLAND_BANK) {
-            return 'K';
+            return 'C';
         }
 
         return null;
@@ -1038,7 +1038,11 @@ class Order extends BaseOrder
      */
     public function getMriCheckNumber()
     {
-        return $this->getCompleteTransaction()->getTransactionId();
+        if ($this->getType() === OrderType::HEARTLAND_BANK) {
+            return $this->getCompleteTransaction()->getTransactionId();
+        }
+
+        return null;
     }
 
     /**
