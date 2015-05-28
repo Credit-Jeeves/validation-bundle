@@ -173,7 +173,7 @@ class IdentityVerificationController extends Controller
      */
     protected function prepareAnswer(array $answers)
     {
-        usort($answers, function($a, $b) {
+        usort($answers, function ($a, $b) {
             return (int) key($a) - (int) key($b);
         });
 
