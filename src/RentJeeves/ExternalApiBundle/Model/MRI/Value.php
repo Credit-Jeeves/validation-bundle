@@ -164,6 +164,64 @@ class Value
     protected $leaseBalance;
 
     /**
+     * @Serializer\SerializedName("IsCurrent")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $isCurrent;
+
+    /**
+     * @Serializer\SerializedName("OccupyDate")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $occupyDate;
+
+    /**
+     * @return string
+     */
+    public function getIsCurrent()
+    {
+        return $this->isCurrent;
+    }
+
+    /**
+     * @param string $isCurrent
+     */
+    public function setIsCurrent($isCurrent)
+    {
+        $this->isCurrent = $isCurrent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOccupyDate()
+    {
+        return $this->occupyDate;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getOccupyDateFormatted()
+    {
+        if (!empty($this->occupyDate)) {
+            return DateTime::createFromFormat(self::DATE_FORMAT, $this->occupyDate);
+        }
+
+        return $this->occupyDate;
+    }
+
+    /**
+     * @param string $occupyDate
+     */
+    public function setOccupyDate($occupyDate)
+    {
+        $this->occupyDate = $occupyDate;
+    }
+
+    /**
      * @return string
      */
     public function getAddress()
