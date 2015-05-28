@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ExternalApiBundle\Model\MRI;
 
-use \DateTime;
 use JMS\Serializer\Annotation as Serializer;
 
 class Value
@@ -202,12 +201,12 @@ class Value
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getOccupyDateFormatted()
     {
         if (!empty($this->occupyDate)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->occupyDate);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->occupyDate);
         }
 
         return $this->occupyDate;
@@ -355,7 +354,7 @@ class Value
     public function getLastUpdateDate()
     {
         if (!empty($this->lastUpdateDate)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->lastUpdateDate);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->lastUpdateDate);
         }
 
         return $this->lastUpdateDate;
@@ -386,12 +385,12 @@ class Value
     }
 
     /**
-     * @return null|DateTime
+     * @return null|\DateTime
      */
     public function getLeaseEnd()
     {
         if (!empty($this->leaseEnd)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseEnd);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseEnd);
         }
 
         return $this->leaseEnd;
@@ -454,12 +453,12 @@ class Value
     }
 
     /**
-     * @return null|DateTime
+     * @return null|\DateTime
      */
     public function getLeaseMoveOut()
     {
         if (!empty($this->leaseMoveOut)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseMoveOut);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseMoveOut);
         }
 
         return $this->leaseMoveOut;
@@ -474,12 +473,12 @@ class Value
     }
 
     /**
-     * @return null|DateTime
+     * @return null|\DateTime
      */
     public function getLeaseStart()
     {
         if (!empty($this->leaseStart)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseStart);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseStart);
         }
 
         return $this->leaseStart;
