@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ExternalApiBundle\Model\MRI;
 
-use \DateTime;
 use JMS\Serializer\Annotation as Serializer;
 
 class Value
@@ -164,6 +163,64 @@ class Value
     protected $leaseBalance;
 
     /**
+     * @Serializer\SerializedName("IsCurrent")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $isCurrent;
+
+    /**
+     * @Serializer\SerializedName("OccupyDate")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $occupyDate;
+
+    /**
+     * @return string
+     */
+    public function getIsCurrent()
+    {
+        return $this->isCurrent;
+    }
+
+    /**
+     * @param string $isCurrent
+     */
+    public function setIsCurrent($isCurrent)
+    {
+        $this->isCurrent = $isCurrent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOccupyDate()
+    {
+        return $this->occupyDate;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOccupyDateFormatted()
+    {
+        if (!empty($this->occupyDate)) {
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->occupyDate);
+        }
+
+        return $this->occupyDate;
+    }
+
+    /**
+     * @param string $occupyDate
+     */
+    public function setOccupyDate($occupyDate)
+    {
+        $this->occupyDate = $occupyDate;
+    }
+
+    /**
      * @return string
      */
     public function getAddress()
@@ -297,7 +354,7 @@ class Value
     public function getLastUpdateDate()
     {
         if (!empty($this->lastUpdateDate)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->lastUpdateDate);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->lastUpdateDate);
         }
 
         return $this->lastUpdateDate;
@@ -328,12 +385,12 @@ class Value
     }
 
     /**
-     * @return null|DateTime
+     * @return null|\DateTime
      */
     public function getLeaseEnd()
     {
         if (!empty($this->leaseEnd)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseEnd);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseEnd);
         }
 
         return $this->leaseEnd;
@@ -396,12 +453,12 @@ class Value
     }
 
     /**
-     * @return null|DateTime
+     * @return null|\DateTime
      */
     public function getLeaseMoveOut()
     {
         if (!empty($this->leaseMoveOut)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseMoveOut);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseMoveOut);
         }
 
         return $this->leaseMoveOut;
@@ -416,12 +473,12 @@ class Value
     }
 
     /**
-     * @return null|DateTime
+     * @return null|\DateTime
      */
     public function getLeaseStart()
     {
         if (!empty($this->leaseStart)) {
-            return DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseStart);
+            return \DateTime::createFromFormat(self::DATE_FORMAT, $this->leaseStart);
         }
 
         return $this->leaseStart;
