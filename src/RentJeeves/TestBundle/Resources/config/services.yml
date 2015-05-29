@@ -1,4 +1,5 @@
 parameters:
     experian.net_connect.credit_profile.class: RentJeeves\TestBundle\NetConnect\CreditProfileTest
     experian.net_connect.precise_id.class: RentJeeves\TestBundle\NetConnect\PreciseIDTest
+    pidkiq.experian.pidkiq_api.class: RentJeeves\TestBundle\PidKiqProcessor\Experian\ExperianPidKiqApiClientTest
     payment_account.heartland.class: RentJeeves\TestBundle\Heartland\PaymentAccountManagerTest

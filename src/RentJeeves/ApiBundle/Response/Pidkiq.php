@@ -83,22 +83,18 @@ class Pidkiq extends ResponseResource
         $questionId = 1;
         $preparedQuestions = [];
         foreach ($questions as $question => $choices) {
-            $preparedQuestion = new Question();
-            $preparedQuestion->id = $questionId++;
-            $preparedQuestion->question = $question;
-
             $choiceId = 1;
             $preparedChoices = [];
             foreach ($choices as $choice) {
-                $preparedChoice = new Choice();
-                $preparedChoice->id = $choiceId++;
-                $preparedChoice->choice = $choice;
-
-                $preparedChoices[] = $preparedChoice;
+                $preparedChoices[] = (new Choice())
+                    ->setId($choiceId++)
+                    ->setChoice($choice);
             }
-            $preparedQuestion->choices = $preparedChoices;
 
-            $preparedQuestions[] = $preparedQuestion;
+            $preparedQuestions[] = (new Question())
+                ->setId($questionId++)
+                ->setQuestion($question)
+                ->setChoices($preparedChoices);
         }
 
         return $preparedQuestions;
