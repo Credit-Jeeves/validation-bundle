@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\AMSI\Clients;
 
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\ExternalApiBundle\Model\AMSI\EdexResidents;
+use RentJeeves\ExternalApiBundle\Model\AMSI\InternetTrafficResponse;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyUnits;
 
@@ -51,7 +52,7 @@ class AMSILeasingClient extends AMSIBaseClient
         );
 
         $result = SerializerXmlHelper::replaceEscapeToCorrectSymbol($result);
-        /** @var PropertyResidents $propertyResidents */
+        /** @var $propertyResidents PropertyResidents */
         $propertyResidents = $this->serializer->deserialize(
             $result,
             'RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents',
@@ -62,8 +63,26 @@ class AMSILeasingClient extends AMSIBaseClient
         if ($propertyResidents instanceof PropertyResidents && count($propertyResidents->getLease()) > 0) {
             return $propertyResidents;
         }
+        /** @var $internetTrafficResponse InternetTrafficResponse*/
+        $internetTrafficResponse = $this->serializer->deserialize(
+            $result,
+            'RentJeeves\ExternalApiBundle\Model\AMSI\InternetTrafficResponse',
+            'xml',
+            $this->getDeserializationContext(['AMSI'])
+        );
 
-        throw new \Exception(sprintf("Don't have data, when deserialize AMSI response (%s)", $result));
+        if ($internetTrafficResponse instanceof InternetTrafficResponse) {
+            $this->logger->addCritical(
+                sprintf(
+                    'MRI response don\'t return residents by reason: %s',
+                    $internetTrafficResponse->getError()->getErrorDescription()
+                )
+            );
+
+            return new PropertyResidents();
+        }
+
+        throw new \Exception(sprintf("Don't accepted response from AMSI:%s", $result));
     }
 
     /**

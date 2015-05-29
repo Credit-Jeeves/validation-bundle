@@ -17,7 +17,7 @@ class PropertyResidents
      *
      * @var array
      */
-    protected $lease;
+    protected $lease = [];
 
     /**
      * @return array
