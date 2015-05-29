@@ -66,5 +66,7 @@ parameters:
     transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
     transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'
 
-    monolog.alert.email_to:     darryl@renttrack.com
-    monolog.emergency.email_to: cary@renttrack.com
+    monolog.email_from: systems@renttrack.com
+    monolog.alert.email_to: escalations@renttrack.com
+    monolog.emergency.email_to: emergency@renttrack.com
+
