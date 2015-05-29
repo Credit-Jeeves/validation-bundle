@@ -26,7 +26,7 @@ class PaymentReportCase extends BaseTestCase
 
         $this->hpsReportPath = __DIR__ . '/../Fixtures/hps/';
         $this->depositFile = $this->hpsReportPath . 'report_' . ReportLoader::DEPOSIT_REPORT_FILENAME_SUFFIX . '.csv';
-        $this->reversalFile = $this->hpsReportPath . 'report_' . ReportLoader::REVERSAL_REPORT_FILENAME_SUFFIX .'.csv';
+        $this->reversalFile = $this->hpsReportPath . 'report_' . ReportLoader::REVERSAL_REPORT_FILENAME_SUFFIX . '.csv';
         $this->hpsACHDepositReport = file_get_contents($this->depositFile);
         $this->hpsBillDataReport = file_get_contents($this->reversalFile);
     }
@@ -69,7 +69,7 @@ class PaymentReportCase extends BaseTestCase
         $result = $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(4, $count);
+        $this->assertCount(6, $count); // +2 for Monolog Message
         $this->assertContains('Amount of synchronized payments: 9', $result);
     }
 
@@ -84,7 +84,7 @@ class PaymentReportCase extends BaseTestCase
         $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(4, $count);
+        $this->assertCount(6, $count); // +2 for Monolog Message
 
         // get all report files back to dir
         $this->tearDown();
@@ -92,7 +92,7 @@ class PaymentReportCase extends BaseTestCase
         $plugin->clean();
         $this->executeCommand();
 
-        $this->assertCount(0, $plugin->getPreSendMessages());
+        $this->assertCount(2, $plugin->getPreSendMessages()); // 2 for Monolog Message
     }
 
     /**

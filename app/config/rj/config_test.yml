@@ -18,7 +18,8 @@ framework:
     session:
         storage_id: session.storage.mock_file
     profiler:
-        enabled: false
+        enabled: true
+        collect: false
 
 web_profiler:
     toolbar: false
@@ -42,3 +43,19 @@ mink:
     selenium2: ~
 
 backup_restore: ~
+
+monolog:
+    handlers:
+        swift_emergency:
+            type:       swift_mailer
+            from_email: %email_from%
+            to_email:   %monolog.emergency.email_to%
+            subject:    Emergency log!
+            level:      emergency
+            bubble:     false
+        swift_alert:
+            type:       swift_mailer
+            from_email: %email_from%
+            to_email:   %monolog.alert.email_to%
+            subject:    Alert log!
+            level:      alert
