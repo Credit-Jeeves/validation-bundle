@@ -20,7 +20,7 @@ class Choice
 
     /**
      * @param int $id
-     * @return $this
+     * @return self
      */
     public function setId($id)
     {
@@ -39,7 +39,7 @@ class Choice
 
     /**
      * @param string $choice
-     * @return $this
+     * @return self
      */
     public function setChoice($choice)
     {

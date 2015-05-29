@@ -27,7 +27,7 @@ class Question
 
     /**
      * @param int $id
-     * @return $this
+     * @return self
      */
     public function setId($id)
     {
@@ -46,7 +46,7 @@ class Question
 
     /**
      * @param string $question
-     * @return $this
+     * @return self
      */
     public function setQuestion($question)
     {
@@ -65,7 +65,7 @@ class Question
 
     /**
      * @param array<Choice> $choices
-     * @return $this
+     * @return self
      */
     public function setChoices(array $choices)
     {
