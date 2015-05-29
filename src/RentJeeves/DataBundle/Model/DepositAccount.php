@@ -99,9 +99,9 @@ abstract class DepositAccount
     protected $paymentAccounts;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(type="integer", length=11, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     protected $mid;
 
@@ -265,7 +265,7 @@ abstract class DepositAccount
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getMid()
     {
@@ -273,7 +273,7 @@ abstract class DepositAccount
     }
 
     /**
-     * @param int $mid
+     * @param string $mid
      */
     public function setMid($mid)
     {
