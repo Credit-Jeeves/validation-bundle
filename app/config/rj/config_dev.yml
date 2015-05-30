@@ -12,25 +12,6 @@ web_profiler:
     toolbar: true
     intercept_redirects: false
 
-monolog:
-    channels: ["import"]
-    handlers:
-        main:
-            type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
-            level: debug
-        firephp:
-            type:  firephp
-            level: info
-        chromephp:
-            type:  chromephp
-            level: info
-        doctrine:
-            type:  stream
-            action_level: info
-            path:  %kernel.logs_dir%/%kernel.environment%_doctrine.log
-            channels: doctrine
-
 khepin_yaml_fixtures:
     resources:
         - DataBundle

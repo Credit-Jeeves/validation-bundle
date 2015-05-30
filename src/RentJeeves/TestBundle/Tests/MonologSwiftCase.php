@@ -22,10 +22,10 @@ class MonologSwiftCase extends BaseTestCase
         /** @var Message $alertMessage */
         $alertMessage = $this->getEmailReader()->getEmail($emails[0]);
 
-        $emailFrom = $this->getContainer()->getParameter('email_from');
+        $emailFrom = $this->getContainer()->getParameter('monolog.email_from');
 
         $alertEmailTo = $this->getContainer()->getParameter('monolog.alert.email_to');
-        $this->assertEquals('Alert log!', $alertMessage->getHeaders()->get('Subject')->getFieldValue());
+        $this->assertEquals('SYSTEM ALERT', $alertMessage->getHeaders()->get('Subject')->getFieldValue());
         $this->assertEquals($emailFrom, $alertMessage->getHeaders()->get('From')->getFieldValue());
         $this->assertEquals($alertEmailTo, $alertMessage->getHeaders()->get('X-Swift-To')->getFieldValue());
         $this->assertContains('Alert Message', $alertMessage->getContent());
@@ -33,7 +33,7 @@ class MonologSwiftCase extends BaseTestCase
         $emergencyMessage = $this->getEmailReader()->getEmail($emails[1]);
 
         $emergencyEmailTo = $this->getContainer()->getParameter('monolog.emergency.email_to');
-        $this->assertEquals('Emergency log!', $emergencyMessage->getHeaders()->get('Subject')->getFieldValue());
+        $this->assertEquals('SYSTEM EMERGENCY', $emergencyMessage->getHeaders()->get('Subject')->getFieldValue());
         $this->assertEquals($emailFrom, $emergencyMessage->getHeaders()->get('From')->getFieldValue());
         $this->assertEquals(
             $emergencyEmailTo,
