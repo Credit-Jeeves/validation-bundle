@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
 use RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport;
+use RentJeeves\CoreBundle\Report\TransUnion\TransUnionPositiveReport;
 use RentJeeves\CoreBundle\Report\TransUnion\TransUnionRentalReport;
 
 class RentalReportFactory
@@ -42,6 +43,7 @@ class RentalReportFactory
     {
         switch ($type) {
             case RentalReportType::POSITIVE:
+                $report = new TransUnionPositiveReport($em, $propertyManagement);
                 break;
             case RentalReportType::NEGATIVE:
                 break;

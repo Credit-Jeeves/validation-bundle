@@ -686,21 +686,36 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getContractsForTransUnionRentalReport($monthNo, $yearNo)
+    public function getContractsForTransUnionPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
-        $firstDate = new DateTime("$yearNo-$monthNo-01");
-        $lastDate = new DateTime($firstDate->format('Y-m-t'));
+        $reportingStartDate = clone $startDate;
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
 
         $query = $this->createQueryBuilder('c');
-        $query->where(
-            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :startDate'
+        $query->select(
+            'c contract, sum(op.amount) total_amount, max(op.createdAt) last_payment_date, op.paidFor paid_for'
         );
-        // TODO This is a problem. We will lose 15-31st closures. RT-1299
-        $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
+        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
+        $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
+        $query->where(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
+        );
+        $query->andWhere('c.status = :current');
+        $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
+        $query->andWhere('MONTH(op.paidFor) = :month');
+        $query->andWhere('YEAR(op.paidFor) = :year');
+        $query->groupBy('op.paidFor');
         $query->setParameter('current', ContractStatus::CURRENT);
-        $query->setParameter('finished', ContractStatus::FINISHED);
-        $query->setParameter('startDate', $firstDate);
-        $query->setParameter('lastDate', $lastDate);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+        $query->setParameter('reportingStartAt', $reportingStartDate);
+        $query->setParameter('rent', OperationType::RENT);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+        $query->setParameter('month', $month->format('m'));
+        $query->setParameter('year', $month->format('Y'));
         $query = $query->getQuery();
 
         return $query->execute();
@@ -713,17 +728,20 @@ class ContractRepository extends EntityRepository
      */
     public function getFinishedTransUnionContracts(\DateTime $startDate, \DateTime $endDate)
     {
+        $reportingStartDate = clone $startDate;
+        $reportingStartDate->setTime(23, 59, 59);
         $startDate->setTime(0, 0, 0);
         $endDate->setTime(23, 59, 59);
 
         $query = $this->createQueryBuilder('c');
         $query->where(
-            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :startDate'
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
         );
         $query->andWhere('c.status = :finished and c.finishAt BETWEEN :startDate AND :endDate');
         $query->setParameter('finished', ContractStatus::FINISHED);
         $query->setParameter('startDate', $startDate);
         $query->setParameter('endDate', $endDate);
+        $query->setParameter('reportingStartAt', $reportingStartDate);
         $query = $query->getQuery();
 
         return $query->execute();

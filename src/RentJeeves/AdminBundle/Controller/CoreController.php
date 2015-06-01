@@ -59,7 +59,7 @@ class CoreController extends BaseController
                     'notice',
                     $this->get('translator')->trans(
                         'admin.report.notice',
-                        ['%m%' => $rentalReportData->getMonth()->format('%m/%Y')]
+                        ['%m%' => $rentalReportData->getMonth()->format('m/Y')]
                     )
                 );
             } else {
