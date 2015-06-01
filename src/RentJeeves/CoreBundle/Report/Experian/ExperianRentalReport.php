@@ -1,10 +1,10 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Report;
+namespace RentJeeves\CoreBundle\Report\Experian;
 
-use DateTime;
+use RentJeeves\CoreBundle\Report\RentalReport;
 
-class ExperianRentalReport extends RentalReport
+class ExperianRentalReport implements RentalReport
 {
     protected $records;
 
@@ -20,7 +20,7 @@ class ExperianRentalReport extends RentalReport
 
     public function getReportFilename()
     {
-        $today = new DateTime();
+        $today = new \DateTime();
 
         return sprintf('renttrack-raw-%s.csv', $today->format('Ymd'));
     }

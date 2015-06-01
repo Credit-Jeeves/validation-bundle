@@ -1,8 +1,7 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Report;
+namespace RentJeeves\CoreBundle\Report\TransUnion;
 
-use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -23,19 +22,18 @@ class TransUnionReportRecord
     const LEASE_STATUS_MORE_THAN_180_DAYS_LATE = 84;
 
     /**
+     * @var Contract
+     *
      * @Serializer\Exclude
      */
     protected $contract;
 
     /**
+     * @var DateTime
+     *
      * @Serializer\Exclude
      */
     protected $month;
-
-    /**
-     * @Serializer\Exclude
-     */
-    protected $year;
 
     /**
      * @Serializer\Exclude
@@ -134,15 +132,13 @@ class TransUnionReportRecord
 
     public function __construct(
         Contract $contract,
-        $month,
-        $year,
+        DateTime $month,
         $paidFor = null,
         $amount = null,
         DateTime $lastPaymentDate = null
     ) {
         $this->contract = $contract;
         $this->month = $month;
-        $this->year = $year;
         $this->paidFor = $paidFor;
         $this->totalOperationsAmount = $amount;
         $this->lastPaymentDate = $lastPaymentDate;
@@ -440,8 +436,7 @@ class TransUnionReportRecord
             // If we reach this point - contract is definitely late
             // paidTo is "zero point" for calculating days late
             $paidTo = $this->contract->getPaidTo();
-            $requiredMonth = new DateTime("{$this->year}-{$this->month}-1");
-            $lastDayOfRequiredMonth = new DateTime($requiredMonth->format('Y-m-t'));
+            $lastDayOfRequiredMonth = new DateTime($this->month->format('Y-m-t'));
             $interval = $paidTo->diff($lastDayOfRequiredMonth)->format('%r%a');
         }
 

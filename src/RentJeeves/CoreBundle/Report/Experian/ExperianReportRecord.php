@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Report;
+namespace RentJeeves\CoreBundle\Report\Experian;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;

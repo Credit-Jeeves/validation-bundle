@@ -33,7 +33,12 @@ class OperationRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getTransUnionRentOperationsForMonth($contractId, $monthNo, $yearNo)
+    /**
+     * @param int $contractId
+     * @param DateTime $month
+     * @return array
+     */
+    public function getTransUnionRentOperationsForMonth($contractId, \DateTime $month)
     {
         $query = $this->createQueryBuilder('op');
         $query->select('sum(op.amount) total_amount, max(op.createdAt) last_payment_date, op.paidFor paid_for');
@@ -48,8 +53,8 @@ class OperationRepository extends EntityRepository
         $query->setParameter('contractId', $contractId);
         $query->setParameter('operationType', OperationType::RENT);
         $query->setParameter('orderStatus', OrderStatus::COMPLETE);
-        $query->setParameter('month', $monthNo);
-        $query->setParameter('year', $yearNo);
+        $query->setParameter('month', $month->format('m'));
+        $query->setParameter('year', $month->format('Y'));
         $query = $query->getQuery();
 
         return $query->getScalarResult();

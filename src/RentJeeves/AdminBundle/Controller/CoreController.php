@@ -2,16 +2,16 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
-use RentJeeves\CoreBundle\Report\ExperianRentalReport;
-use RentJeeves\CoreBundle\Report\TransUnionRentalReport;
+use RentJeeves\AdminBundle\Form\RentalReportType;
+use RentJeeves\CoreBundle\Report\RentalReport;
+use RentJeeves\CoreBundle\Report\RentalReportData;
+use RentJeeves\CoreBundle\Report\RentalReportFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CoreController as BaseController;
-use DateTime;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class CoreController extends BaseController
@@ -42,29 +42,25 @@ class CoreController extends BaseController
      */
     public function reportAction(Request $request)
     {
-        if ($request->getMethod() == 'POST') {
-            $type = $request->request->get('type');
-            $month = $request->request->get('month');
-            $year = $request->request->get('year');
+        $rentalReportData = new RentalReportData();
+        $reportType = $this->createForm(new RentalReportType(), $rentalReportData);
+        $reportType->handleRequest($request);
 
+        if ($reportType->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $params = $this->container->getParameter('property_management');
+            $propertyManagement = $this->container->getParameter('property_management');
 
-            switch ($type) {
-                case 'trans_union':
-                    $report = new TransUnionRentalReport($em, $month, $year, $params);
-                    break;
-                case 'experian':
-                    $report = new ExperianRentalReport($em, $month, $year);
-                    break;
-                default:
-                    throw new RuntimeException(sprintf('Given report type "\'%s\'" does not exist', $type));
-            }
+            /** @var RentalReport $report */
+            $report = RentalReportFactory::getReport($rentalReportData, $em, $propertyManagement);
+            $report->build($rentalReportData);
 
             if ($report->isEmpty()) {
                 $this->get('session')->getFlashBag()->add(
                     'notice',
-                    $this->get('translator')->trans('admin.report.notice', array('%m%' => $month, '%y%' => $year))
+                    $this->get('translator')->trans(
+                        'admin.report.notice',
+                        ['%m%' => $rentalReportData->getMonth()->format('%m/%Y')]
+                    )
                 );
             } else {
                 $result = $this->get('jms_serializer')->serialize($report, $report->getSerializationType());
@@ -78,17 +74,8 @@ class CoreController extends BaseController
             }
         }
 
-        $months = array();
-        foreach (range(1, 12) as $month) {
-            $months[$month] = date('F', strtotime("2000-{$month}-1"));
-        }
-
-        $now = new DateTime();
-        $years = array($now->format('Y'), $now->modify('-1 year')->format('Y'));
-
-        return array(
-            'months' => $months,
-            'years' => $years,
-        );
+        return [
+            'rentalReport' => $reportType->createView(),
+        ];
     }
 }

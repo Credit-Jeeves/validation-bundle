@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Report;
+namespace RentJeeves\CoreBundle\Report\TransUnion;
 
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;

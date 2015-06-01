@@ -707,6 +707,29 @@ class ContractRepository extends EntityRepository
     }
 
     /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return ArrayCollection
+     */
+    public function getFinishedTransUnionContracts(\DateTime $startDate, \DateTime $endDate)
+    {
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        $query = $this->createQueryBuilder('c');
+        $query->where(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :startDate'
+        );
+        $query->andWhere('c.status = :finished and c.finishAt BETWEEN :startDate AND :endDate');
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
      * We have test for this query because query not so clear as I want
      * Test name ContractRepositoryCase
      *
