@@ -12,6 +12,8 @@ use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mappi
  */
 class StorageMRI extends ExternalApiStorage
 {
+    const IS_CURRENT = 'y';
+
     /**
      * @return bool
      */
@@ -74,7 +76,15 @@ class StorageMRI extends ExternalApiStorage
                 $this->initializeParameters();
             }
 
-            $startAt = $this->getDateString($customer->getLeaseStart());
+            if (strtolower($customer->getIsCurrent()) !== strtolower(self::IS_CURRENT)) {
+                continue;
+            }
+            $leaseStart = $customer->getLeaseStart();
+            if ($leaseStart) {
+                $startAt = $this->getDateString($leaseStart);
+            } else {
+                $startAt = $this->getDateString($customer->getOccupyDateFormatted());
+            }
             $finishAt = $this->getDateString($customer->getLeaseEnd());
             $moveOut = $this->getDateString($customer->getLeaseMoveOut());
             $unit = sprintf('%s_%s', $customer->getBuildingId(), $customer->getUnitId());

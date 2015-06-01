@@ -73,3 +73,7 @@ parameters:
     transunion.ssl_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/CC2RentTrack-Test.crt
     transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
     transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'
+
+    monolog.email_from:         developers@renttrack.com
+    monolog.alert.email_to:     staging@renttrack.com
+    monolog.emergency.email_to: staging@renttrack.com

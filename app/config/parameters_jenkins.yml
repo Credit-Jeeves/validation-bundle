@@ -23,3 +23,5 @@ parameters:
     server_name_cj: %server.name%.creditjeeves.com
     server_name_rj: %server.name%.renttrack.com
     mink.selenium2.wd_host: %selenium.host.url%
+
+    monolog.email_from: jenkins@renttrack.com
