@@ -28,7 +28,7 @@ class LockboxParser implements AciParserInterface
     const KEY_REMIT_DATE = 13;
     const KEY_CONFIRMATION_NUMBER = 14;
     const KEY_ORIGINAL_CONFIRMATION_NUMBER = 17; // OR 19 ???
-    const KEY_RETURN_CODE = 20;
+    const KEY_RETURN_CODE = 19;
 
     /**
      * @var LoggerInterface
@@ -144,14 +144,14 @@ class LockboxParser implements AciParserInterface
 
         $depositDate = $this->getRecordField($record, self::KEY_REMIT_DATE);
         if (!empty($depositDate)) {
-            $transaction->setDepositDate(DateTime::createFromFormat('mdY', $depositDate));
+            $transaction->setDepositDate(\DateTime::createFromFormat('mdY', $depositDate));
         }
 
         return $transaction;
     }
 
     /**
-     * @param  array $record
+     * @param array $record
      *
      * @return ReversalReportTransaction
      *
@@ -164,9 +164,13 @@ class LockboxParser implements AciParserInterface
             ->setTransactionId($this->getRecordField($record, self::KEY_CONFIRMATION_NUMBER))
             ->setAmount($this->getRecordField($record, self::KEY_TRANSACTION_AMOUNT))
             ->setOriginalTransactionId($this->getRecordField($record, self::KEY_ORIGINAL_CONFIRMATION_NUMBER))
-            ->setTransactionType(''); // TODO: figure out available options
+            ->setTransactionType($this->getDebitTransactionType($record));
 
-        $reversalDescription = ReturnCode::getCodeMessage($this->getRecordField($record, self::KEY_RETURN_CODE));
+        $reversalDescription = sprintf(
+            '%s : %s',
+            self::KEY_RETURN_CODE,
+            ReturnCode::getCodeMessage($this->getRecordField($record, self::KEY_RETURN_CODE))
+        );
         $transaction->setReversalDescription($reversalDescription);
 
         $depositDate = $this->getRecordField($record, self::KEY_REMIT_DATE);
@@ -175,5 +179,16 @@ class LockboxParser implements AciParserInterface
         }
 
         return $transaction;
+    }
+
+    /**
+     * @param array $record
+     *
+     * @return string
+     */
+    protected function getDebitTransactionType(array $record)
+    {
+        //@TODO: add logic in this place
+        return ReversalReportTransaction::TYPE_RETURN;
     }
 }
