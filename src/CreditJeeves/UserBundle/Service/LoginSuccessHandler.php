@@ -127,7 +127,8 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         $routesSkipped = [
             'fos_user_resetting_reset',
             'fos_user_security_login',
-            'management_login'
+            'management_login',
+            'fos_user_security_login_defence'
         ];
 
         if (isset($route['_route']) && in_array($route['_route'], $routesSkipped)) {
