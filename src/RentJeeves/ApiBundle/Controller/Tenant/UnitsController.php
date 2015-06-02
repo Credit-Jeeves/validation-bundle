@@ -53,7 +53,7 @@ class UnitsController extends Controller
      *     nullable=false
      * )
      *
-     * @return ResponseCollection
+     * @return ResponseCollection|null
      */
     public function getUnitsAction(Request $request)
     {
@@ -65,23 +65,22 @@ class UnitsController extends Controller
             /** @var Property $property */
             $property = $form->getData();
 
-            $result = $this
-                ->getDoctrine()
-                ->getRepository('RjDataBundle:Unit')
-                ->getUnitsByAddress([
-                    'street' => $property->getStreet(),
-                    'number' => $property->getNumber(),
-                    'state' => $property->getArea(),
-                    'city' => $property->getCity(),
-                    'zip' => $property->getZip(),
-                ]);
+            if ($property = $this->get('property.process')->findProperty($property)) {
 
-            if (count($result) > 0) {
-                return new ResponseCollection($result);
+                $result = $this
+                    ->getDoctrine()
+                    ->getRepository('RjDataBundle:Unit')
+                    ->getUnitsByPropertyWithLandlord($property);
+
+                if (count($result) > 0) {
+                    return new ResponseCollection($result);
+                }
             }
-        } else {
-            return $form;
+
+            return null;
         }
+
+        return $form;
     }
 
     /**

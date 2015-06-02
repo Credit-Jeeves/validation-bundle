@@ -226,6 +226,7 @@ class PropertyProcess
             $propertyInDB = $this->$method($property);
             if ($propertyInDB && $saveToGoogle) {
                 $this->saveToGoogle($propertyInDB);
+
                 return $propertyInDB;
             } elseif ($propertyInDB) {
                 return $propertyInDB;
@@ -292,6 +293,7 @@ class PropertyProcess
             $result = $this->geocoder->using('cache')->geocode($address);
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
+
             return false;
         }
         if (empty($result)) {
@@ -367,13 +369,33 @@ class PropertyProcess
             if ($propertyDB = $this->checkByMinimalArgs($property) or
                 $propertyDB = $this->checkByAllArgs($property)) {
                 /** Property */
+
                 return $propertyDB;
             }
             /** Empty Property */
+
             return $property;
         }
         /** Error Address not found */
+
         return null;
+    }
+
+    /**
+     * @param Property $property
+     * @return Property|false
+     */
+    public function findProperty(Property $property)
+    {
+        if ($propertyDB  = $this->checkByAllArgs($property)) {
+            return $propertyDB;
+        }
+
+        if (($propertyDB = $this->getPropertyByAddress($property->getFullAddress())) && $propertyDB->getId()) {
+            return $propertyDB;
+        }
+
+        return false;
     }
 
     private function getPropertyIdentifier(Property $property)

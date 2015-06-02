@@ -125,4 +125,54 @@ class UnitsControllerCase extends BaseApiTestCase
 
         $this->assertResponse($response, $statusCode);
     }
+
+    /**
+     * @return array
+     */
+    public static function getUnitsByNotNormalizedAddressDataProvider()
+    {
+        return [
+            [
+                [
+                    'street' => 'West 36th Place',
+                    'number' => '1156',
+                    'state' => 'CA',
+                    'city' => 'Los Angeles',
+                    'zip' => '90007'
+                ],
+                [
+                    'street' => 'West 36th Pl',
+                    'number' => '1156',
+                    'state' => 'CA',
+                    'city' => 'Los Angales',
+                    'zip' => '90007'
+                ],
+            ]
+
+        ];
+    }
+
+    /**
+     * @param $normalizedAddress
+     * @param $notNormalizedAddress
+     *
+     * @test
+     * @dataProvider getUnitsByNotNormalizedAddressDataProvider
+     */
+    public function getUnitsByNotNormalizedAddress($normalizedAddress, $notNormalizedAddress)
+    {
+        $responseForNormalizedAddress = $this->getRequest(null, $normalizedAddress);
+
+        $this->assertResponse($responseForNormalizedAddress);
+
+        $responseForNotNormalizedAddress = $this->getRequest(null, $notNormalizedAddress);
+
+        $this->assertResponse($responseForNotNormalizedAddress);
+
+        $responseForNormalizedAddress = $this->parseContent($responseForNormalizedAddress->getContent());
+
+        $responseForNotNormalizedAddress = $this->parseContent($responseForNotNormalizedAddress->getContent());
+
+        $this->assertEquals($responseForNormalizedAddress, $responseForNotNormalizedAddress);
+    }
 }
