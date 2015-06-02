@@ -65,7 +65,7 @@ class ResidentDataManager
         $currentResidents = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_CURRENT);
         $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_NOTICE);
 
-        $leases = array_merge($currentResidents->getLease(), $residentsOnNotice->getLease());
+        $leases = array_merge($currentResidents->getLeases(), $residentsOnNotice->getLeases());
 
         if (empty($leases)) {
             throw new \LogicException('AMSI client return empty resident\'s list. Can\'t process anymore.');
