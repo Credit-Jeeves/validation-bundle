@@ -5,6 +5,9 @@ namespace RentJeeves\CoreBundle\Report;
 use Doctrine\ORM\EntityManagerInterface;
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
+use RentJeeves\CoreBundle\Report\Experian\ExperianClosureReport;
+use RentJeeves\CoreBundle\Report\Experian\ExperianPositiveReport;
+use RentJeeves\CoreBundle\Report\Experian\ExperianRentalReport;
 use RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport;
 use RentJeeves\CoreBundle\Report\TransUnion\TransUnionNegativeReport;
 use RentJeeves\CoreBundle\Report\TransUnion\TransUnionPositiveReport;
@@ -25,7 +28,7 @@ class RentalReportFactory
                 $report = self::getTransUnionReport($data->getType(), $em, $propertyManagement);
                 break;
             case CreditBureau::EXPERIAN:
-                $report = new ExperianRentalReport($em, $type);
+                $report = self::getExperianReport($data->getType(), $em);
                 break;
             default:
                 throw new \RuntimeException(sprintf('Given report bureau "\'%s\'" does not exist', $data->getBureau()));
@@ -54,6 +57,27 @@ class RentalReportFactory
                 break;
             default:
                 throw new \RuntimeException(sprintf('TransUnion report type "\'%s\'" does not exist', $type));
+        }
+
+        return $report;
+    }
+
+    /**
+     * @param string $type
+     * @param EntityManagerInterface $em
+     * @return ExperianRentalReport
+     */
+    public static function getExperianReport($type, EntityManagerInterface $em)
+    {
+        switch ($type) {
+            case RentalReportType::POSITIVE:
+                $report = new ExperianPositiveReport($em);
+                break;
+            case RentalReportType::CLOSURE:
+                $report = new ExperianClosureReport($em);
+                break;
+            default:
+                throw new \RuntimeException(sprintf('Experian report type "\'%s\'" does not exist', $type));
         }
 
         return $report;

@@ -2,48 +2,60 @@
 
 namespace RentJeeves\CoreBundle\Report\Experian;
 
+use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\Report\RentalReport;
+use RentJeeves\CoreBundle\Report\RentalReportData;
 
-class ExperianRentalReport implements RentalReport
+abstract class ExperianRentalReport implements RentalReport
 {
-    protected $records;
+    /**
+     * @var array
+     */
+    protected $records = [];
 
+    /**
+     * @var EntityManagerInterface
+     *
+     * @Serializer\Exclude
+     */
+    protected $em;
+
+    /**
+     * @param EntityManagerInterface $em
+     */
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getSerializationType()
     {
         return 'csv';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isEmpty()
     {
         return count($this->records) == 0;
     }
 
-    public function getReportFilename()
+    /**
+     * {@inheritdoc}
+     */
+    public function build(RentalReportData $params)
     {
-        $today = new \DateTime();
-
-        return sprintf('renttrack-raw-%s.csv', $today->format('Ymd'));
+        $this->createRecords($params);
     }
 
-    public function createHeader($params)
-    {
-
-    }
-
-    public function createRecords($month, $year)
-    {
-        if (!$this->records) {
-            $this->records = array();
-            $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
-            $contracts = $contractRepo->getContractsForExperianRentalReport($month, $year);
-            $operationRepo = $this->em->getRepository('DataBundle:Operation');
-
-            foreach ($contracts as $contract) {
-                $rentOperations = $operationRepo->getExperianRentOperationsForMonth($contract->getId(), $month, $year);
-                foreach ($rentOperations as $rentOperation) {
-                    $this->records[] = new ExperianReportRecord($contract, $rentOperation);
-                }
-            }
-        }
-    }
+    /**
+     * @param RentalReportData $params
+     * @return void
+     */
+    abstract protected function createRecords(RentalReportData $params);
 }
