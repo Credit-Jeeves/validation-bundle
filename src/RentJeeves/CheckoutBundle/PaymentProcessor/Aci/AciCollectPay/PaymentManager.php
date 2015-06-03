@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
 
+use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -36,6 +37,18 @@ class PaymentManager extends AbstractManager
 
         if ($paymentAccount->getType() == PaymentAccountType::BANK) {
             $payment->setFundingAccountType(FundingAccountType::BANK);
+
+            switch ($paymentAccount->getBankAccountType()) {
+                case \RentJeeves\DataBundle\Enum\BankAccountType::CHECKING:
+                    $payment->setAchType(BankAccountType::PERSONAL_CHECKING);
+                    break;
+                case \RentJeeves\DataBundle\Enum\BankAccountType::SAVINGS:
+                    $payment->setAchType(BankAccountType::PERSONAL_SAVINGS);
+                    break;
+                default:
+                    $payment->setAchType(BankAccountType::BUSINESS_CHECKING);
+                    break;
+            }
         } else {
             $payment->setFundingAccountType(FundingAccountType::CCARD);
         }
