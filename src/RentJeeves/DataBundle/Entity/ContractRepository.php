@@ -686,6 +686,12 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
+    /**
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return ArrayCollection
+     */
     public function getContractsForTransUnionPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
         $reportingStartDate = clone $startDate;
@@ -708,6 +714,54 @@ class ContractRepository extends EntityRepository
         $query->andWhere('MONTH(op.paidFor) = :month');
         $query->andWhere('YEAR(op.paidFor) = :year');
         $query->groupBy('op.paidFor');
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+        $query->setParameter('reportingStartAt', $reportingStartDate);
+        $query->setParameter('rent', OperationType::RENT);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+        $query->setParameter('month', $month->format('m'));
+        $query->setParameter('year', $month->format('Y'));
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return ArrayCollection
+     */
+    public function getContractsForTransUnionNegativeReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
+    {
+        $reportingStartDate = clone $startDate;
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        $subquery = $this->createQueryBuilder('c2');
+        $subquery
+            ->select('c2.id')
+            ->distinct()
+            ->innerJoin('c2.operations', 'op', Expr\Join::WITH, 'op.type = :rent')
+            ->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder')
+            ->where('c2.reportToTransUnion = 1 AND c2.transUnionStartAt is not NULL')
+            ->andWhere('c2.transUnionStartAt <= :reportingStartAt')
+            ->andWhere('c2.status = :current')
+            ->andWhere('op.createdAt BETWEEN :startDate AND :endDate')
+            ->andWhere('MONTH(op.paidFor) = :month')
+            ->andWhere('YEAR(op.paidFor) = :year');
+
+
+        $query = $this->createQueryBuilder('c');
+        $query->where(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
+        );
+        $query->andWhere('c.status = :current');
+        $query->andWhere(sprintf('c.id not in (%s)', $subquery->getDQL()));
+
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('startDate', $startDate);
         $query->setParameter('endDate', $endDate);
