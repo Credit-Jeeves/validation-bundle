@@ -178,6 +178,22 @@ abstract class YardiSettings
     protected $synchronizationStrategy = SynchronizationStrategy::DEPOSITED;
 
     /**
+     * @return string
+     */
+    public function getSynchronizationStrategy()
+    {
+        return $this->synchronizationStrategy;
+    }
+
+    /**
+     * @param string $synchronizationStrategy
+     */
+    public function setSynchronizationStrategy($synchronizationStrategy)
+    {
+        $this->synchronizationStrategy = $synchronizationStrategy;
+    }
+
+    /**
      * @return boolean
      */
     public function getPostPayments()

@@ -16,7 +16,7 @@ class Version20150603104124 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE yardi_settings
-                ADD synchronization_strategy ENUM('real time','deposited')
+                ADD synchronization_strategy ENUM('real_time','deposited')
                     COMMENT '(DC2Type:SynchronizationStrategy)' DEFAULT 'deposited' NOT NULL"
         );
     }
