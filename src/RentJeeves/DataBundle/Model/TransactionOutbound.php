@@ -23,7 +23,7 @@ abstract class TransactionOutbound
     /**
      * @var Order
      *
-     * @ORM\ManyToOne(targetEntity="\CreditJeeves\DataBundle\Entity\Order",inversedBy="transactions")
+     * @ORM\ManyToOne(targetEntity="\CreditJeeves\DataBundle\Entity\Order", inversedBy="transactionsOutbound")
      * @ORM\JoinColumn(name="order_id",referencedColumnName="id", nullable=false)
      */
     protected $order;
