@@ -1318,6 +1318,7 @@ header ul li.login a {
 
 .form-row.type-checkbox label {
     margin-left:130px;
+    margin-top: 6px;
 }
 
 .form-row.full {

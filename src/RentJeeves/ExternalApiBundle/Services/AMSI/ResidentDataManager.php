@@ -59,7 +59,7 @@ class ResidentDataManager
      */
     public function getResidents($externalPropertyId)
     {
-        $this->logger->debug(sprintf("Get AMSI Residents by external property ID:%s", $externalPropertyId));
+        $this->logger->debug(sprintf('Get AMSI Residents by external property ID:%s', $externalPropertyId));
         $client = $this->getApiClient(SoapClientEnum::AMSI_LEASING);
         $currentResidents = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_CURRENT);
         $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_NOTICE);
@@ -67,15 +67,19 @@ class ResidentDataManager
         $leases = array_merge($currentResidents->getLease(), $residentsOnNotice->getLease());
 
         $units = $client->getPropertyUnits($externalPropertyId);
+        $unitsLookup = [];
         /** @var Unit $unit */
         foreach ($units as $key => $unit) {
-            unset($units[$key]);
-            $units[$unit->getUnitId()] = $unit;
+            $this->logger->debug(sprintf('Unit File ID: %s', $unit->getUnitId()));
+            $unitsLookup[$unit->getUnitId()] = $unit;
         }
+
         /** @var Lease $lease */
         foreach ($leases as $lease) {
-            $lease->setUnit($units[$lease->getUnitId()]);
+            $this->logger->debug(sprintf('Lease UnitId: %s', $lease->getUnitId()));
+            $lease->setUnit($unitsLookup[$lease->getUnitId()]);
         }
+        $this->logger->debug('Unit mapping complete.');
 
         return $leases;
     }
