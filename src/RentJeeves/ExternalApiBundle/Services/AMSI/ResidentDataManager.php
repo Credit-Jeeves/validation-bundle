@@ -68,7 +68,7 @@ class ResidentDataManager
         $leases = array_merge($currentResidents->getLeases(), $residentsOnNotice->getLeases());
 
         if (empty($leases)) {
-            throw new \LogicException('AMSI client return empty resident\'s list. Can\'t process anymore.');
+            throw new \LogicException('AMSI client returned empty resident\'s list. Aborting.');
         }
 
         $units = $client->getPropertyUnits($externalPropertyId);

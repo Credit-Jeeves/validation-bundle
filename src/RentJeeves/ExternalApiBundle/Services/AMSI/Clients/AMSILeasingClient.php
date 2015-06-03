@@ -72,7 +72,7 @@ class AMSILeasingClient extends AMSIBaseClient
         );
 
         if ($internetTrafficResponse instanceof InternetTrafficResponse) {
-            $this->logger->addCritical(
+            $this->logger->alert(
                 sprintf(
                     'AMSI can\'t return residents: %s',
                     $internetTrafficResponse->getError()->getErrorDescription()
