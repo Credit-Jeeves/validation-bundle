@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Unit\Aci\Downloader;
+namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\Downloader;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader;
 use RentJeeves\TestBundle\BaseTestCase;
@@ -52,7 +52,7 @@ class AciSftpFilesDownloaderCase extends BaseTestCase
         );
 
         $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\SftpFilesDownloaderInterface',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\SftpFilesDownloaderInterface',
             $downloader
         );
     }

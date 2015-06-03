@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci;
 
 interface FileDecoderInterface
 {

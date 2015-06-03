@@ -4,10 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\AciParserInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\SftpFilesDownloaderInterface;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\FileDecoderInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDecoderException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
@@ -61,7 +58,7 @@ class AciReportLoader implements ReportLoaderInterface
      *     "fileDecoder" = @DI\Inject("payment_processor.aci.pgp_decoder"),
      *     "fileArchiver" = @DI\Inject("payment_processor.aci.report_archiver"),
      *     "lockboxParser" = @DI\Inject("payment_processor.aci.lockbox_parser"),
-     *     "reportPath" = @DI\Inject("%aci.sftp.report_path%"),
+     *     "reportPath" = @DI\Inject("%aci.collect_pay.report_path%"),
      *     "logger" = @DI\Inject("logger")
      *  })
      */
@@ -97,7 +94,7 @@ class AciReportLoader implements ReportLoaderInterface
                 continue;
             }
 
-            $fileTransactions = $this->getTransactionsFromFile($filePath);
+            $fileTransactions = $this->getTransactionsFromReportFile($filePath);
             $this->archiver->archive($filePath);
 
             $transactions = array_merge($transactions, $fileTransactions);
@@ -109,21 +106,21 @@ class AciReportLoader implements ReportLoaderInterface
     }
 
     /**
-     * @param string $filePath
+     * @param string $reportFilePath
      *
      * @return PaymentProcessorReportTransaction[]
      */
-    protected function getTransactionsFromFile($filePath)
+    protected function getTransactionsFromReportFile($reportFilePath)
     {
         try {
-            $encodedData = $this->decoder->decode($filePath);
-            $fileTransactions = $this->parser->parse($encodedData);
+            $decodedData = $this->decoder->decode($reportFilePath);
+            $reportFileTransactions = $this->parser->parse($decodedData);
         } catch (AciDecoderException $e) {
             return [];
         } catch (AciReportException $e) {
             return [];
         }
 
-        return $fileTransactions;
+        return $reportFileTransactions;
     }
 }

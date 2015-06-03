@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciParserInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
@@ -27,7 +28,7 @@ class LockboxParser implements AciParserInterface
     const KEY_TRANSACTION_DATE = 12;
     const KEY_REMIT_DATE = 13;
     const KEY_CONFIRMATION_NUMBER = 14;
-    const KEY_ORIGINAL_CONFIRMATION_NUMBER = 17; // OR 19 ???
+    const KEY_ORIGINAL_CONFIRMATION_NUMBER = 17;
     const KEY_RETURN_CODE = 19;
 
     /**

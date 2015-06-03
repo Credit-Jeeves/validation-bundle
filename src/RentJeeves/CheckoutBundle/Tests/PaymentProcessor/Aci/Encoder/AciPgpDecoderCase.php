@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Unit\Aci\Encoder;
+namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\Encoder;
 
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder;
@@ -13,7 +13,7 @@ class AciPgpDecoderCase extends BaseTestCase
     public function shouldInstanceofRightInterface()
     {
         $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\FileDecoderInterface',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\FileDecoderInterface',
             $this->getAciPgpDecoder()
         );
     }

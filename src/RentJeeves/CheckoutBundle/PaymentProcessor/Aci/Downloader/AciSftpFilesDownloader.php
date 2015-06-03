@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Monolog\Logger;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\SftpFilesDownloaderInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDownloaderException;
 use RentJeeves\CoreBundle\Services\SftpClient;
 use Symfony\Component\Filesystem\Filesystem;
@@ -64,7 +65,7 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
      *      "port" = @DI\Inject("%aci.sftp.port%"),
      *      "login" = @DI\Inject("%aci.sftp.login%"),
      *      "password" = @DI\Inject("%aci.sftp.password%"),
-     *      "reportPath" = @DI\Inject("%aci.sftp.report_path%"),
+     *      "reportPath" = @DI\Inject("%aci.collect_pay.report_path%"),
      *      "logger" = @DI\Inject("logger"),
      *      "sftpClient" = @DI\Inject("sftp_client")
      * })

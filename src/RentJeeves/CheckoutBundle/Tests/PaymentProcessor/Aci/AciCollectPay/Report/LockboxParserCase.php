@@ -42,7 +42,7 @@ class LockboxParserCase extends BaseTestCase
      */
     public function shouldParseLockboxDataIntoArrayWithDebitTransactions()
     {
-        $data = file_get_contents(__DIR__ . '/../../../../Fixtures/Aci/depositLockbox.csv');
+        $data = file_get_contents(__DIR__ . '/../../../../Fixtures/Aci/debitsLockbox.csv');
 
         $parser = new LockboxParser($this->getContainer()->get('logger'));
         $decodedData = $parser->parse($data);
