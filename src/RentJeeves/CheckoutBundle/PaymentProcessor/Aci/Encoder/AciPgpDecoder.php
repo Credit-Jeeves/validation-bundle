@@ -2,15 +2,9 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\FileDecoderInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDecoderException;
 
-/**
- * @DI\Service("payment_processor.aci.pgp_decoder")
- */
 class AciPgpDecoder implements FileDecoderInterface
 {
     /**
@@ -20,8 +14,6 @@ class AciPgpDecoder implements FileDecoderInterface
 
     /**
      * @param string $pgpKeyPath
-     *
-     * @InjectParams({"pgpKeyPath" = @Inject("%aci.key_path%")})
      */
     public function __construct($pgpKeyPath)
     {

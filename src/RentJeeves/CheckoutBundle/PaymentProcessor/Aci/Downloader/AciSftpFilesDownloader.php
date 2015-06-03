@@ -2,16 +2,12 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\SftpFilesDownloaderInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDownloaderException;
 use RentJeeves\CoreBundle\Services\SftpClient;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * @DI\Service("payment_processor.aci.files_downloader", public=false)
- */
 class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
 {
     const NUMBER_OF_RETRY = 5;
@@ -59,16 +55,6 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
      * @param string $reportPath
      * @param Logger $logger
      * @param SftpClient $sftpClient
-     *
-     * @DI\InjectParams({
-     *      "host" = @DI\Inject("%aci.sftp.host%"),
-     *      "port" = @DI\Inject("%aci.sftp.port%"),
-     *      "login" = @DI\Inject("%aci.sftp.login%"),
-     *      "password" = @DI\Inject("%aci.sftp.password%"),
-     *      "reportPath" = @DI\Inject("%aci.collect_pay.report_path%"),
-     *      "logger" = @DI\Inject("logger"),
-     *      "sftpClient" = @DI\Inject("sftp_client")
-     * })
      */
     public function __construct($host, $port, $login, $password, $reportPath, Logger $logger, SftpClient $sftpClient)
     {

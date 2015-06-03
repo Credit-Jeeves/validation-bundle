@@ -1,7 +1,7 @@
 parameters:
-    aci.key_path: "%kernel.root_dir%/config/secrets/aci/pgp.key"
-    aci.sftp.host: transfer.princetonecom.com
-    aci.sftp.port: 10022
-    aci.sftp.login: 'rntrtest'
-    aci.sftp.password: 'r7QebTAa'
+    aci.collect_pay.key_path: "%kernel.root_dir%/config/secrets/aci/pgp.key"
+    aci.collect_pay.sftp.host: transfer.princetonecom.com
+    aci.collect_pay.sftp.port: 10022
+    aci.collect_pay.sftp.login: 'rntrtest'
+    aci.collect_pay.sftp.password: 'r7QebTAa'
     aci.collect_pay.report_path: '/tmp/'

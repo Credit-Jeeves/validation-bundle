@@ -7,3 +7,78 @@ services:
         calls:
             - [setPayum, ["@payum2"]]
             - [setDefaultMerchantName, ["%rt_merchant_name%"]]
+
+    # ACI collect pay
+    payment_processor.aci.collect_pay.report_loader:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader
+        arguments:
+            - @payment_processor.aci.collect_pay.files_downloader
+            - @payment_processor.aci.collect_pay.pgp_decoder
+            - @payment_processor.aci.collect_pay.report_archiver
+            - @payment_processor.aci.collect_pay.lockbox_parser
+            - %aci.collect_pay.report_path%
+            - @logger
+
+    payment_processor.aci.collect_pay.files_downloader:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader
+        public: false
+        arguments:
+            - %aci.collect_pay.sftp.host%
+            - %aci.collect_pay.sftp.port%
+            - %aci.collect_pay.sftp.login%
+            - %aci.collect_pay.sftp.password%
+            - %aci.collect_pay.report_path%
+            - @logger
+            - @sftp_client
+
+    payment_processor.aci.collect_pay.lockbox_parser:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser
+        public: false
+        arguments:
+            - @logger
+
+    payment_processor.aci.collect_pay.report_archiver:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportArchiver
+        public: false
+        arguments:
+            - %aci.collect_pay.report_path%
+            - @logger
+
+    payment_processor.aci.collect_pay.pgp_decoder:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder
+        public: false
+        arguments:
+            - %aci.collect_pay.key_path%
+
+    payment_processor.aci.collect_pay.billing_account_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\BillingAccountManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+
+    payment_processor.aci.collect_pay.enrollment_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\EnrollmentManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+
+    payment_processor.aci.collect_pay.funding_account_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\FundingAccountManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+
+    payment_processor.aci.collect_pay.payment_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\PaymentManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+
