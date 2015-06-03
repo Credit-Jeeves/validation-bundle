@@ -54,8 +54,9 @@ class ResidentDataManager
     }
 
     /**
-     * @param  string $externalPropertyId
+     * @param string $externalPropertyId
      * @return array
+     * @throws \LogicException
      */
     public function getResidents($externalPropertyId)
     {
@@ -64,7 +65,11 @@ class ResidentDataManager
         $currentResidents = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_CURRENT);
         $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_NOTICE);
 
-        $leases = array_merge($currentResidents->getLease(), $residentsOnNotice->getLease());
+        $leases = array_merge($currentResidents->getLeases(), $residentsOnNotice->getLeases());
+
+        if (empty($leases)) {
+            throw new \LogicException('AMSI client returned empty resident\'s list. Aborting.');
+        }
 
         $units = $client->getPropertyUnits($externalPropertyId);
         $unitsLookup = [];

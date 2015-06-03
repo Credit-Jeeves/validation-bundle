@@ -17,21 +17,21 @@ class PropertyResidents
      *
      * @var array
      */
-    protected $lease;
+    protected $leases = [];
 
     /**
      * @return array
      */
-    public function getLease()
+    public function getLeases()
     {
-        return $this->lease;
+        return $this->leases;
     }
 
     /**
      * @param array $lease
      */
-    public function setLease($lease)
+    public function setLeases($lease)
     {
-        $this->lease = $lease;
+        $this->leases = $lease;
     }
 }

@@ -6,7 +6,7 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClient;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientBuilder;
@@ -24,7 +24,7 @@ class AMSIBaseClient implements ClientInterface
     use SoapExceptionLog;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -54,13 +54,13 @@ class AMSIBaseClient implements ClientInterface
     protected $soapClient;
 
     /**
-     * @param Logger $logger
+     * @param LoggerInterface $logger
      * @param SoapWsdlTwigRenderer $wsdlRenderer
      * @param SoapClientBuilder $soapClientBuilder
      * @param Serializer $serializer
      */
     public function __construct(
-        Logger $logger,
+        LoggerInterface $logger,
         ExceptionCatcher $exceptionCatcher,
         SoapWsdlTwigRenderer $wsdlRenderer,
         SoapClientBuilder $soapClientBuilder,
@@ -103,7 +103,7 @@ class AMSIBaseClient implements ClientInterface
                 return $response->$methodResult;
             }
 
-            throw new \Exception(sprintf("AMSI: Response is wrong (%s)", print_r($response, true)));
+            throw new \Exception(sprintf('AMSI: Response is wrong (%s)', print_r($response, true)));
         } catch (\Exception $e) {
             $this->exceptionLog($e);
         }
