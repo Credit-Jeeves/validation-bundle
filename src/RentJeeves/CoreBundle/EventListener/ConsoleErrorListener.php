@@ -35,10 +35,25 @@ class ConsoleErrorListener
             $event->setExitCode($statusCode);
         }
 
-        $this->logger->alert(sprintf(
-            'Command `%s` exited with status code %d',
-            $command->getName(),
-            $statusCode
-        ));
+        $logMessage = sprintf('Command `%s` exited with status code %d', $command->getName(), $statusCode);
+        if ($this->shouldBeAlert($command))
+        {
+            // this sends an alert email to our escalations team
+            $this->logger->alert($logMessage);
+        } else {
+            // this just ends up in the log
+            $this->logger->warning($logMessage);
+        }
+    }
+
+    private function shouldBeAlert($command)
+    {
+        // squelch alerts from this command
+        if ($command->getName() == "payment:pay") {
+
+            return false;
+        }
+
+        return true;
     }
 }
