@@ -37,8 +37,10 @@ class AciReportLoaderCase extends BaseTestCase
      */
     public function shouldLoadReport()
     {
-        $reportPath = __DIR__ . '/../../Fixtures/Aci/AciReportLoader';
-        $fileName = 'testForLoaderAndDownloader.txt';
+        $pathToFile = $this->getFileLocator()->locate(
+            '@RjCheckoutBundle/Tests/Fixtures/Aci/AciReportLoader/testForLoaderAndDownloader.txt'
+        );
+        $reportPath = substr($pathToFile,0,strripos($pathToFile, '/'));
 
         $downloader = $this->getAciSftpFilesDownloaderMock();
         $downloader->expects($this->once())
@@ -47,7 +49,7 @@ class AciReportLoaderCase extends BaseTestCase
         $decoder = $this->getAciPgpDecoderMock();
         $decoder->expects($this->once())
             ->method('decode')
-            ->with($reportPath . '/' . $fileName)
+            ->with($pathToFile)
             ->will($this->returnValue($encodeData = 'TestData'));
 
         $transaction = new DepositReportTransaction();
@@ -61,7 +63,7 @@ class AciReportLoaderCase extends BaseTestCase
         $archiver = $this->getAciReportArchiverMock();
         $archiver->expects($this->once())
             ->method('archive')
-            ->with($reportPath . '/' . $fileName);
+            ->with($pathToFile);
 
         $logger = $this->getLoggerMock();
 
@@ -127,5 +129,13 @@ class AciReportLoaderCase extends BaseTestCase
             '',
             false
         );
+    }
+
+    /**
+     * @return \Symfony\Component\HttpKernel\Config\FileLocator
+     */
+    protected function getFileLocator()
+    {
+        return $this->getContainer()->get('file_locator');
     }
 }

@@ -9,6 +9,9 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDecoderException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReportTransaction;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ReportLoaderInterface;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * @DI\Service("payment_processor.aci.report_loader")
@@ -88,12 +91,10 @@ class AciReportLoader implements ReportLoaderInterface
         $report = new PaymentProcessorReport();
         $transactions = [];
 
-        foreach (scandir($this->reportPath) as $file) {
-            $filePath = sprintf('%s/%s', $this->reportPath, $file);
-            if (false === is_file($filePath)) {
-                continue;
-            }
-
+        $finder = new Finder();
+        /** @var SplFileInfo $file */
+        foreach ($finder->files()->in($this->reportPath) as $file) {
+            $filePath = $file->getRealPath();
             $fileTransactions = $this->getTransactionsFromReportFile($filePath);
             $this->archiver->archive($filePath);
 
