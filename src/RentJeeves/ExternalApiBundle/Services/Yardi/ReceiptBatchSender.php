@@ -12,6 +12,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\Serializer\SerializationContext;
 use \DateTime;
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
 use RentJeeves\DataBundle\Entity\YardiSettings;
@@ -169,7 +170,11 @@ class ReceiptBatchSender
 
         try {
             while ($holdings = $this->getHoldingRepository()
-                ->findHoldingsWithYardiSettings($startPagination, self::LIMIT_HOLDING)
+                ->findHoldingsWithYardiSettings(
+                    $startPagination,
+                    self::LIMIT_HOLDING,
+                    SynchronizationStrategy::DEPOSITED
+                )
             ) {
                 $this->pushHoldingReceipts($holdings, $depositDate);
                 $startPagination += self::LIMIT_HOLDING;
