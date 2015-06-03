@@ -10,5 +10,5 @@ interface MappingInterface
 
     public function isNeedManualMapping();
 
-    public function getTotal();
+    public function getTotalContent();
 }

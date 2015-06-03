@@ -129,7 +129,7 @@ class ImportSummaryManager
     /**
      * Increment the number of skipped row
      *
-     * @param integer $offset
+     * @param array $rowContent
      */
     public function incrementSkipped(array $rowContent)
     {

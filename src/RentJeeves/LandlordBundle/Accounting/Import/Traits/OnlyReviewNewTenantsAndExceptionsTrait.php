@@ -56,7 +56,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
      */
     protected function createLastModelFromFile()
     {
-        $data = $this->mapping->getData($this->mapping->getTotal()-1, $rowCount = 1);
+        $data = $this->mapping->getData($this->mapping->getTotalContent()-1, $rowCount = 1);
 
         if (count($data) > 1) {
             throw new ImportHandlerException('Must be just one csv row which mapped to array');
@@ -68,7 +68,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             return;
         }
 
-        $this->createCurrentImportModel(end($data), $this->mapping->getTotal());
+        $this->createCurrentImportModel(end($data), $this->mapping->getTotalContent());
     }
 
     /**

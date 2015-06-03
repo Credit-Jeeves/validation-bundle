@@ -142,6 +142,9 @@ abstract class ImportError
         $this->setMd5RowContent(md5(implode('"', $rowContent)));
     }
 
+    /**
+     * @return string
+     */
     public function getStringRow()
     {
         return implode('"', $this->getRowContent());

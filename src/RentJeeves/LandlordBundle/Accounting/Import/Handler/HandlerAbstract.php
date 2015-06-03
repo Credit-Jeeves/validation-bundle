@@ -188,7 +188,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $newFilePath = $this->getNewFilePath();
         $this->copyHeader($newFilePath);
         $self = $this;
-        $total = $this->mapping->getTotal();
+        $total = $this->mapping->getTotalContent();
 
         $callbackSuccess = function () use ($self, $filePath) {
             $self->removeLastLineInFile($filePath);
@@ -605,7 +605,7 @@ abstract class HandlerAbstract implements HandlerInterface
     public function initCollectionImportModel()
     {
         $data = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
-        $this->getReport()->setTotal($this->mapping->getTotal());
+        $this->getReport()->setTotal($this->mapping->getTotalContent());
         $this->collectionImportModel = new ArrayCollection([]);
 
         foreach ($data as $key => $values) {

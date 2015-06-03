@@ -359,7 +359,7 @@ class AccountingController extends Controller
         $collection = [];
 
         $handler = $importFactory->getHandler();
-        $total = $mapping->getTotal();
+        $total = $mapping->getTotalContent();
 
         $this->getImportLogger()->debug("Getting total of " . $total);
 
@@ -625,8 +625,7 @@ class AccountingController extends Controller
      */
     public function updateMatchedContractsCsv()
     {
-        //exit;
-        /** @var $importFactory ImportFactory */
+        /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
         $handler = $importFactory->getHandler();
         $result = $handler->updateMatchedContracts();

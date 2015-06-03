@@ -35,7 +35,7 @@ class MappingTest extends MappingAbstract
         // stub to implement interface
     }
 
-    public function getTotal()
+    public function getTotalContent()
     {
         // stub to implement interface
     }

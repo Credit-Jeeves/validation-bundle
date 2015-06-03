@@ -36,10 +36,12 @@ trait Resident
         if (!empty($email) && !isset($this->usedEmails[$email])) {
             $this->usedEmails[$email] = $residentId;
         }
-        $residentMapping = $this->currentImportModel->getTenant()->getResidentForHolding(
-            $this->currentImportModel->getContract()->getHolding()
-        );
-
+        $residentMapping = null;
+        $group = $this->getGroup($this->currentImportModel->getRow());
+        if ($group) {
+            $holding = $group->getHolding();
+            $residentMapping = $this->currentImportModel->getTenant()->getResidentForHolding($holding);
+        }
         // note that we have seen this residentId for more than one email and different resident ID
         if (!empty($email) && $residentId !== $this->usedEmails[$email]
             && (!empty($residentMapping) && $residentMapping->getId() === null)
@@ -57,7 +59,7 @@ trait Resident
     }
 
     /**
-     * @param $residentId
+     * @param string $residentId
      * @return mixed
      */
     protected function getEmailByResident($residentId)
