@@ -80,7 +80,7 @@ class OperationRepository extends EntityRepository
 
         $query = $query->getQuery();
 
-        return $query->getOneOrNullResult();
+        return $query->getResult();
     }
 
     /**
