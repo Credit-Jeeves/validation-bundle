@@ -15,7 +15,7 @@ class UnitsControllerCase extends BaseApiTestCase
     /**
      * @return array
      */
-    public static function getUnitsDataProvider()
+    public function getUnitsDataProvider()
     {
         return [
             [
@@ -98,7 +98,7 @@ class UnitsControllerCase extends BaseApiTestCase
     /**
      * @return array
      */
-    public static function getEmptyUnitsDataProvider()
+    public function getEmptyUnitsDataProvider()
     {
         return [
             [
@@ -129,7 +129,7 @@ class UnitsControllerCase extends BaseApiTestCase
     /**
      * @return array
      */
-    public static function getUnitsByNotNormalizedAddressDataProvider()
+    public function getUnitsByNotNormalizedAddressDataProvider()
     {
         return [
             [

@@ -103,10 +103,12 @@ class UnitRepository extends EntityRepository
     }
 
     /**
+     * Return Units belongs to this Property with mapped Groups
+     *
      * @param Property $property
      * @return array<Unit>
      */
-    public function getUnitsByPropertyWithLandlord(Property $property)
+    public function getUnitsByPropertyWithGroup(Property $property)
     {
         return $this
             ->createQueryBuilder('u')

@@ -382,10 +382,14 @@ class PropertyProcess
     }
 
     /**
+     * This method try to find Property in DB in 2 steps:
+     *   - First step try to find it in DB using address parameters
+     *   - Second step go to Geocode Service for normalized address and try to find it in DB again
+     *
      * @param Property $property
      * @return Property|false
      */
-    public function findProperty(Property $property)
+    public function getPropertyFromDBIn2steps(Property $property)
     {
         if ($propertyDB  = $this->checkByAllArgs($property)) {
             return $propertyDB;

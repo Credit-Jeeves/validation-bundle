@@ -65,12 +65,12 @@ class UnitsController extends Controller
             /** @var Property $property */
             $property = $form->getData();
 
-            if ($property = $this->get('property.process')->findProperty($property)) {
+            if ($property = $this->get('property.process')->getPropertyFromDBIn2steps($property)) {
 
                 $result = $this
                     ->getDoctrine()
                     ->getRepository('RjDataBundle:Unit')
-                    ->getUnitsByPropertyWithLandlord($property);
+                    ->getUnitsByPropertyWithGroup($property);
 
                 if (count($result) > 0) {
                     return new ResponseCollection($result);
