@@ -39,6 +39,7 @@ class RjDataBundle extends Bundle
             Type::addType('PaymentBatchStatus', 'RentJeeves\DataBundle\Enum\PaymentBatchStatus');
             Type::addType('PaymentProcessor', 'RentJeeves\DataBundle\Enum\PaymentProcessor');
             Type::addType('ImportType', 'RentJeeves\DataBundle\Enum\ImportType');
+            Type::addType('SynchronizationStrategy', 'RentJeeves\DataBundle\Enum\SynchronizationStrategy');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Enum\PaymentTypeACH;
 use RentJeeves\DataBundle\Enum\PaymentTypeCC;
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -164,6 +165,17 @@ abstract class YardiSettings
      * )
      */
     protected $postPayments = true;
+
+    /**
+     * @ORM\Column(
+     *      type="SynchronizationStrategy",
+     *      name="synchronization_strategy",
+     *      options={
+     *          "default":"deposited"
+     *      }
+     * )
+     */
+    protected $synchronizationStrategy = SynchronizationStrategy::DEPOSITED;
 
     /**
      * @return boolean
