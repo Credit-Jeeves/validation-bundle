@@ -12,5 +12,11 @@ class BankAccountType extends Enum
 
     const BUSINESS_CHECKING = 'business checking';
 
-    const DEFAULT_VALUE = null;
+    /**
+     * {@inheritdoc}
+     */
+    public static function isValid($value)
+    {
+        return (is_null($value)) || parent::isValid($value);
+    }
 }

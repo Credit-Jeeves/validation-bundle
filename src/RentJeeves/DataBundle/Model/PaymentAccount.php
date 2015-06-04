@@ -131,7 +131,7 @@ abstract class PaymentAccount
      *      nullable=true
      * )
      */
-    protected $bankAccountType = BankAccountType::DEFAULT_VALUE;
+    protected $bankAccountType;
 
     /**
      * @Gedmo\Timestampable(on="create")

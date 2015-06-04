@@ -62,7 +62,7 @@ abstract class BillingAccount
      *      nullable=false
      * )
      */
-    protected $bankAccountType = BankAccountType::DEFAULT_VALUE;
+    protected $bankAccountType;
 
     /**
      * @ORM\Column(
