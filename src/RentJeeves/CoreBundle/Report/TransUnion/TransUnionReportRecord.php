@@ -33,7 +33,7 @@ class TransUnionReportRecord
      *
      * @Serializer\Exclude
      */
-    protected $month;
+    protected $reportedMonth;
 
     /**
      * @Serializer\Exclude
@@ -41,6 +41,10 @@ class TransUnionReportRecord
     protected $reportLeaseStatus;
 
     /**
+     * PaidFor of the operation for the reported month.
+     *
+     * @var \DateTime
+     *
      * @Serializer\Exclude
      */
     protected $paidFor;
@@ -54,6 +58,15 @@ class TransUnionReportRecord
      * @Serializer\Exclude
      */
     protected $lastPaymentDate;
+
+    /**
+     * If operation for the reported month not found, use lastPaidFor to calculate unpaid interval.
+     *
+     * @var \DateTime
+     *
+     * @Serializer\Exclude
+     */
+    protected $lastPaidFor;
                                                                         // Field Length
     protected $recordLength = '0426';                                   // 4
     protected $processingIndicator = '1';                               // 1
@@ -133,15 +146,17 @@ class TransUnionReportRecord
     public function __construct(
         Contract $contract,
         DateTime $month,
+        DateTime $lastPaidFor,
         $paidFor = null,
         $amount = null,
         DateTime $lastPaymentDate = null
     ) {
         $this->contract = $contract;
-        $this->month = $month;
+        $this->reportedMonth = $month;
         $this->paidFor = $paidFor;
         $this->totalOperationsAmount = $amount;
         $this->lastPaymentDate = $lastPaymentDate;
+        $this->lastPaidFor = $lastPaidFor;
     }
 
     public function getAccountUpdateTimestamp()
@@ -428,17 +443,21 @@ class TransUnionReportRecord
         return str_pad($rent, 9, '0', STR_PAD_LEFT);
     }
 
-    private function getUnpaidInterval()
+    /**
+     * @return int
+     */
+    protected function getUnpaidInterval()
     {
-        if ($this->lastPaymentDate) {
-            $interval = $this->paidFor->diff($this->lastPaymentDate)->format('%r%a');
-        } else {
-            // If we reach this point - contract is definitely late
-            // paidTo is "zero point" for calculating days late
-            $paidTo = $this->contract->getPaidTo();
-            $lastDayOfRequiredMonth = new DateTime($this->month->format('Y-m-t'));
-            $interval = $paidTo->diff($lastDayOfRequiredMonth)->format('%r%a');
+        // If there is an existent operation paidFor for the reported month, then we count contract as paid
+        if ($this->paidFor) {
+            return 0;
         }
+
+        // Find target paidFor for the reported month
+        $requiredPaidFor = clone $this->reportedMonth;
+        $requiredPaidFor->setDate(null, null, $this->contract->getDueDate());
+
+        $interval = $requiredPaidFor->diff($this->lastPaidFor)->format('%r%a');
 
         return (int)$interval;
     }

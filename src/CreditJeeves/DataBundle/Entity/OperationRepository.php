@@ -138,4 +138,27 @@ class OperationRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @param Contract $contract
+     * @return DateTime|null
+     */
+    public function getLastContractPaidFor(Contract $contract)
+    {
+        $query = $this->createQueryBuilder('operation');
+        $query->select('operation.paidFor as paid_for');
+        $query->innerJoin("operation.order", "ord", Expr\Join::WITH, 'ord.status = :completeStatus');
+        $query->where("operation.contract = :contract");
+        $query->orderBy('operation.paidFor', 'DESC');
+        $query->setMaxResults(1);
+
+        $query->setParameter('completeStatus', OrderStatus::COMPLETE);
+        $query->setParameter('contract', $contract);
+        $result = $query->getQuery()->getResult();
+        if (isset($result[0]['paid_for'])) {
+            return $result[0]['paid_for'];
+        }
+
+        return null;
+    }
 }

@@ -806,6 +806,7 @@ class ContractRepository extends EntityRepository
 
 
         $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
         $query->where(
             'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
         );

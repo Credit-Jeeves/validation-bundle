@@ -25,9 +25,12 @@ class TransUnionClosureReport extends TransUnionRentalReport
         $contracts = $this->em->getRepository('RjDataBundle:Contract')
             ->getContractsForTransUnionClosureReport($params->getStartDate(), $params->getEndDate());
 
+        $operationRepo = $this->em->getRepository('DataBundle:Operation');
+
         foreach ($contracts as $contract) {
+            $lastPaidFor = $operationRepo->getLastContractPaidFor($contract);
             // Don't send any payment data, only finished contract data.
-            $this->records[] = new TransUnionReportRecord($contract, $params->getMonth());
+            $this->records[] = new TransUnionReportRecord($contract, $params->getMonth(), $lastPaidFor);
         }
     }
 }

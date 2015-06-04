@@ -28,11 +28,14 @@ class TransUnionPositiveReport extends TransUnionRentalReport
                 $params->getStartDate(),
                 $params->getEndDate()
             );
+        $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
         foreach ($contracts as $contractData) {
+            $lastPaidFor = $operationRepo->getLastContractPaidFor($contractData['contract']);
             $this->records[] = new TransUnionReportRecord(
                 $contractData['contract'],
                 $params->getMonth(),
+                $lastPaidFor,
                 $contractData['paid_for'],
                 $contractData['total_amount'],
                 new \DateTime($contractData['last_payment_date'])

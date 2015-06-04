@@ -28,9 +28,11 @@ class TransUnionNegativeReport extends TransUnionRentalReport
                 $params->getStartDate(),
                 $params->getEndDate()
             );
+        $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
         foreach ($contracts as $contract) {
-            $reportRecord = new TransUnionReportRecord($contract, $params->getMonth());
+            $lastPaidFor = $operationRepo->getLastContractPaidFor($contract);
+            $reportRecord = new TransUnionReportRecord($contract, $params->getMonth(), $lastPaidFor);
             if ($reportRecord->getLeaseStatus() != TransUnionReportRecord::LEASE_STATUS_CURRENT) {
                 $this->records[] = $reportRecord;
             }
