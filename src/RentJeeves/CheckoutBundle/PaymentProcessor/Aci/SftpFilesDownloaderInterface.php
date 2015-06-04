@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci;
 
 interface SftpFilesDownloaderInterface
 {

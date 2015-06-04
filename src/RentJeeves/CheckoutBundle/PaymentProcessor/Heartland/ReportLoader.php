@@ -9,12 +9,13 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer\HPSDepositReportDenormalizer;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Encoder\CsvFileDecoder;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer\HPSReversalReportDenormalizer;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ReportLoaderInterface;
 use Symfony\Component\Serializer\Serializer;
 
 /**
  * @DI\Service("payment_processor.heartland.report_loader")
  */
-class ReportLoader
+class ReportLoader implements ReportLoaderInterface
 {
     const DEPOSIT_REPORT_FILENAME_SUFFIX = 'ACHDepositsandChargesExport';
     const REVERSAL_REPORT_FILENAME_SUFFIX = 'BillDataExport';
@@ -78,6 +79,7 @@ class ReportLoader
     {
         if (!$reportFiles = $this->findReports(self::DEPOSIT_REPORT_FILENAME_SUFFIX)) {
             $this->logger->alert('HPS: deposit report not found');
+
             return [];
         }
 
@@ -109,6 +111,7 @@ class ReportLoader
     {
         if (!$reportFiles = $this->findReports(self::REVERSAL_REPORT_FILENAME_SUFFIX)) {
             $this->logger->alert('HPS: reversal report not found');
+
             return [];
         }
 

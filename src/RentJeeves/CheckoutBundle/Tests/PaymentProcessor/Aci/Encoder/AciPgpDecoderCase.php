@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Unit\Aci;
+namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\Encoder;
 
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder;
@@ -13,7 +13,7 @@ class AciPgpDecoderCase extends BaseTestCase
     public function shouldInstanceofRightInterface()
     {
         $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\FileDecoderInterface',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\FileDecoderInterface',
             $this->getAciPgpDecoder()
         );
     }
@@ -44,7 +44,7 @@ class AciPgpDecoderCase extends BaseTestCase
      */
     public function shouldThrowExceptionIfUseDecodeForNotDecodedFile()
     {
-        $this->getAciPgpDecoder()->decode(__DIR__ . '/../../Fixtures/Aci/justFile.txt');
+        $this->getAciPgpDecoder()->decode(__DIR__ . '/../../../Fixtures/Aci/justFile.txt');
     }
 
     /**
@@ -52,8 +52,8 @@ class AciPgpDecoderCase extends BaseTestCase
      */
     public function shouldDecodeFile()
     {
-        $decodedData = $this->getAciPgpDecoder()->decode(__DIR__ . '/../../Fixtures/Aci/encodedFile.pgp');
-        $this->assertEquals(file_get_contents(__DIR__ . '/../../Fixtures/Aci/decodedFile.csv'), $decodedData);
+        $decodedData = $this->getAciPgpDecoder()->decode(__DIR__ . '/../../../Fixtures/Aci/encodedFile.pgp');
+        $this->assertEquals(file_get_contents(__DIR__ . '/../../../Fixtures/Aci/decodedFile.csv'), $decodedData);
     }
 
     /**

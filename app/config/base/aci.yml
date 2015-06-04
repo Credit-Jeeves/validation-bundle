@@ -4,4 +4,4 @@ parameters:
     aci.sftp.port: 10022
     aci.sftp.login: 'rntrtest'
     aci.sftp.password: 'r7QebTAa'
-    aci.sftp.report_path: '/tmp/'
+    aci.collect_pay.report_path: '/tmp/'
