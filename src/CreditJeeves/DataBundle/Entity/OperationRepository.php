@@ -55,7 +55,7 @@ class OperationRepository extends EntityRepository
         return $query->getScalarResult();
     }
 
-    public function getOperationForImport(
+    public function getOperationsForImport(
         Tenant $tenant,
         Contract $contract,
         \DateTime $paidFor
