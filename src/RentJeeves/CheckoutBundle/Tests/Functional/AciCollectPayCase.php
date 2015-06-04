@@ -77,7 +77,7 @@ class AciCollectPayCase extends BaseTestCase
     public function createAccountDataProvider()
     {
         return [
-//            [PaymentAccountType::BANK],
+            [PaymentAccountType::BANK],
             [PaymentAccountType::CARD]
         ];
     }

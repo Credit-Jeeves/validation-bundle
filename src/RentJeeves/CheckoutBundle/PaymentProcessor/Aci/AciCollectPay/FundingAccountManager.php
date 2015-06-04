@@ -14,6 +14,7 @@ use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
+use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
 
 /**
  * @DI\Service("payment.aci_collect_pay.funding_account_manager", public=false)
@@ -139,10 +140,10 @@ class FundingAccountManager extends AbstractManager
             $account->setRoutingNumber($fundingAccountData->get('routing_number'));
 
             switch ($paymentAccount->getBankAccountType()) {
-                case \RentJeeves\DataBundle\Enum\BankAccountType::CHECKING:
+                case BankAccountTypeEnum::CHECKING:
                     $account->setBankAccountType(BankAccountType::PERSONAL_CHECKING);
                     break;
-                case \RentJeeves\DataBundle\Enum\BankAccountType::SAVINGS:
+                case BankAccountTypeEnum::SAVINGS:
                     $account->setBankAccountType(BankAccountType::PERSONAL_SAVINGS);
                     break;
                 default:

@@ -23,7 +23,7 @@ class Version20150603124354 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_billing_account
                 ADD bank_account_type ENUM('checking','savings','business checking')
-                    COMMENT '(DC2Type:BankAccountType)' DEFAULT NULL"
+                    COMMENT '(DC2Type:BankAccountType)' NOT NULL"
         );
     }
 

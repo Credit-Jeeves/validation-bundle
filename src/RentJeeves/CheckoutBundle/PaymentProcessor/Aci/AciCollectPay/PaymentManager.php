@@ -12,6 +12,7 @@ use Payum\AciCollectPay\Request\CaptureRequest\Capture;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
 
 /**
  * @DI\Service("payment.aci_collect_pay.payment_manager", public=false)
@@ -39,10 +40,10 @@ class PaymentManager extends AbstractManager
             $payment->setFundingAccountType(FundingAccountType::BANK);
 
             switch ($paymentAccount->getBankAccountType()) {
-                case \RentJeeves\DataBundle\Enum\BankAccountType::CHECKING:
+                case BankAccountTypeEnum::CHECKING:
                     $payment->setAchType(BankAccountType::PERSONAL_CHECKING);
                     break;
-                case \RentJeeves\DataBundle\Enum\BankAccountType::SAVINGS:
+                case BankAccountTypeEnum::SAVINGS:
                     $payment->setAchType(BankAccountType::PERSONAL_SAVINGS);
                     break;
                 default:
