@@ -15,7 +15,7 @@ class PaymentReportSynchronizeAciCollectV4Command extends ContainerAwareCommand
     {
         $this
             ->setName('payment:report:synchronize:aci:collectv4')
-            ->setDescription('Synchronizes payment process report w/ orders.');
+            ->setDescription('Synchronizes ACIPayCollectV4 report w/ orders');
     }
 
     /**
