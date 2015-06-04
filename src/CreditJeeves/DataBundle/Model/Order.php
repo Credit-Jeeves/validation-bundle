@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
-use RentJeeves\DataBundle\Entity\TransactionOutbound;
+use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
@@ -121,7 +121,7 @@ abstract class Order
      * )
      * @var ArrayCollection
      */
-    protected $transactionsOutbound;
+    protected $outboundTransactions;
 
     /**
      * @ORM\OneToMany(
@@ -168,7 +168,7 @@ abstract class Order
         $this->operations = new ArrayCollection();
         $this->sentOrder = new ArrayCollection();
         $this->created_at = new DateTime();
-        $this->transactionsOutbound = new ArrayCollection();
+        $this->outboundTransactions = new ArrayCollection();
     }
 
     /**
@@ -473,33 +473,33 @@ abstract class Order
     }
 
     /**
-     * Add TransactionOutbound
+     * Add OutboundTransaction
      *
-     * @param TransactionOutbound $transaction
+     * @param OutboundTransaction $transaction
      * @return Order
      */
-    public function addTransactionOutbound(TransactionOutbound $transaction)
+    public function addOutboundTransaction(OutboundTransaction $transaction)
     {
-        $this->transactionsOutbound[] = $transaction;
+        $this->outboundTransactions[] = $transaction;
     }
 
     /**
-     * Remove TransactionOutbound
+     * Remove OutboundTransaction
      *
-     * @param TransactionOutbound $transaction
+     * @param OutboundTransaction $transaction
      */
-    public function removeTransactionOutbound(TransactionOutbound $transaction)
+    public function removeOutboundTransaction(OutboundTransaction $transaction)
     {
-        $this->transactionsOutbound->removeElement($transaction);
+        $this->outboundTransactions->removeElement($transaction);
     }
 
     /**
-     * Get TransactionOutbound
+     * Get OutboundTransaction
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getTransactionOutbound()
+    public function getOutboundTransactions()
     {
-        return $this->transactionsOutbound;
+        return $this->outboundTransactions;
     }
 }

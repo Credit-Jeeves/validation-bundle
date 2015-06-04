@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class TransactionOutbound
+abstract class OutboundTransaction
 {
     /**
      * @var integer
@@ -23,7 +23,7 @@ abstract class TransactionOutbound
     /**
      * @var Order
      *
-     * @ORM\ManyToOne(targetEntity="\CreditJeeves\DataBundle\Entity\Order", inversedBy="transactionsOutbound")
+     * @ORM\ManyToOne(targetEntity="\CreditJeeves\DataBundle\Entity\Order", inversedBy="outboundTransactions")
      * @ORM\JoinColumn(name="order_id",referencedColumnName="id", nullable=false)
      */
     protected $order;
