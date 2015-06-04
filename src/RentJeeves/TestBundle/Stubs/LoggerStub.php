@@ -150,5 +150,4 @@ class LoggerStub implements LoggerInterface
             $this->totals[$counterName] = 1;
         }
     }
-
 }
