@@ -5,6 +5,10 @@ namespace RentJeeves\CoreBundle\EventListener;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class ConsoleErrorListener
+ * @package RentJeeves\CoreBundle\EventListener
+ */
 class ConsoleErrorListener
 {
     /** @var LoggerInterface */
@@ -19,6 +23,10 @@ class ConsoleErrorListener
     }
 
     /**
+     *
+     * Check the exit code of every console command and send a system alert
+     * See https://credit.atlassian.net/wiki/display/RT/System+Alerts
+     *
      * @param ConsoleTerminateEvent $event
      */
     public function onConsoleTerminate(ConsoleTerminateEvent $event)
@@ -36,8 +44,7 @@ class ConsoleErrorListener
         }
 
         $logMessage = sprintf('Command `%s` exited with status code %d', $command->getName(), $statusCode);
-        if ($this->shouldBeAlert($command))
-        {
+        if ($this->shouldBeAlert($command)) {
             // this sends an alert email to our escalations team
             $this->logger->alert($logMessage);
         } else {
@@ -46,11 +53,19 @@ class ConsoleErrorListener
         }
     }
 
+    /**
+     *
+     * If this command fails should we send an alert or not?
+     *
+     * This is intended as a sort of "blacklist" so we can squelch non-critical alerts.
+     *
+     * @param $command
+     * @return bool
+     */
     private function shouldBeAlert($command)
     {
         // squelch alerts from this command
         if ($command->getName() == "payment:pay") {
-
             return false;
         }
 

@@ -20,7 +20,7 @@ class LoggerStubCase extends \PHPUnit_Framework_TestCase
     public function shouldReturnZero()
     {
         $stub = new LoggerStub();
-        $this->assertEquals(0, $stub->getTotal("alert"), "fresh logger stub should return zero totals");
+        $this->assertEquals(0, $stub->getTotal('alert'), 'fresh logger stub should return zero totals');
     }
 
     /**
@@ -29,8 +29,8 @@ class LoggerStubCase extends \PHPUnit_Framework_TestCase
     public function shouldIncrementAlert()
     {
         $stub = new LoggerStub();
-        $stub->alert("I love stubs!");
-        $this->assertEquals(1, $stub->getTotal("alert"), "alert counter not incrementing");
+        $stub->alert('I love stubs!');
+        $this->assertEquals(1, $stub->getTotal('alert'), 'alert counter not incrementing');
     }
 
     /**
@@ -39,7 +39,7 @@ class LoggerStubCase extends \PHPUnit_Framework_TestCase
     public function shouldIncrementWarning()
     {
         $stub = new LoggerStub();
-        $stub->warning("I love stubs!");
-        $this->assertEquals(1, $stub->getTotal("warning"), "alert counter not incrementing");
+        $stub->warning('I love stubs!');
+        $this->assertEquals(1, $stub->getTotal('warning'), 'warning counter not incrementing');
     }
 }

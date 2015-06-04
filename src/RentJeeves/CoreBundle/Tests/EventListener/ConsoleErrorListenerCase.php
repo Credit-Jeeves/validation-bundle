@@ -32,7 +32,7 @@ class ConsoleErrorListenerCase extends \PHPUnit_Framework_TestCase
         $listener->onConsoleTerminate($event);
 
         $this->assertEquals(0, $loggerStub->getTotal('alert'), 'should not get alert if command exits with 0');
-        $this->assertEquals(0, $loggerStub->getTotal('warning'), 'should not get alert if command exits with 0');
+        $this->assertEquals(0, $loggerStub->getTotal('warning'), 'should not get warning if command exits with 0');
     }
 
     /**
@@ -52,7 +52,7 @@ class ConsoleErrorListenerCase extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldWarndOnConsoleNonZeroExitCodeForPaymentPay()
+    public function shouldWarnOnConsoleNonZeroExitCodeForPaymentPay()
     {
         $event = $this->createTestEvent('payment:pay', 1);
         $loggerStub = new LoggerStub();
