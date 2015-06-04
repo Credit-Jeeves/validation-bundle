@@ -47,7 +47,7 @@ class PaymentPushCommand extends ContainerAwareCommand
         } elseif ($orderId = $input->getOption('order-id')) {
             $order = $this->getOrderById($em, $orderId);
         } else {
-            throw new Exception("You must supply a Job ID or and Order ID");
+            throw new Exception('You must supply a Job ID or and Order ID');
         }
 
         /** @var AccountingPaymentSynchronizer $accountingPaymentSync */
