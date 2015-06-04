@@ -56,9 +56,13 @@ class PaymentPushCommand extends ContainerAwareCommand
         $result = $accountingPaymentSync->sendOrderToAccountingSystem($order);
         if ($result) {
             $output->writeln('Success');
+            $exitCode = 0;
         } else {
             $output->writeln('Failed');
+            $exitCode = 1;
         }
+
+        return $exitCode;
     }
 
     /**
