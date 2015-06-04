@@ -27,7 +27,7 @@ class AciReportLoaderCase extends BaseTestCase
         $aciLoader = new AciReportLoader($downloader, $decoder, $archiver, $parser, $reportPath, $logger);
 
         $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\ReportLoaderInterface',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\ReportLoaderInterface',
             $aciLoader
         );
     }
@@ -40,7 +40,7 @@ class AciReportLoaderCase extends BaseTestCase
         $pathToFile = $this->getFileLocator()->locate(
             '@RjCheckoutBundle/Tests/Fixtures/Aci/AciReportLoader/testForLoaderAndDownloader.txt'
         );
-        $reportPath = substr($pathToFile,0,strripos($pathToFile, '/'));
+        $reportPath = substr($pathToFile, 0, strripos($pathToFile, '/'));
 
         $downloader = $this->getAciSftpFilesDownloaderMock();
         $downloader->expects($this->once())
