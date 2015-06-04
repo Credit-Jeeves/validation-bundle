@@ -31,7 +31,7 @@ class RentalReportFactory
                 $report = self::getExperianReport($data->getType(), $em);
                 break;
             default:
-                throw new \RuntimeException(sprintf('Given report bureau "\'%s\'" does not exist', $data->getBureau()));
+                throw new \RuntimeException(sprintf('Given report bureau \'%s\' does not exist', $data->getBureau()));
         }
 
         return $report;
@@ -56,7 +56,7 @@ class RentalReportFactory
                 $report = new TransUnionClosureReport($em, $propertyManagement);
                 break;
             default:
-                throw new \RuntimeException(sprintf('TransUnion report type "\'%s\'" does not exist', $type));
+                throw new \RuntimeException(sprintf('TransUnion report type \'%s\' does not exist', $type));
         }
 
         return $report;
@@ -77,7 +77,7 @@ class RentalReportFactory
                 $report = new ExperianClosureReport($em);
                 break;
             default:
-                throw new \RuntimeException(sprintf('Experian report type "\'%s\'" does not exist', $type));
+                throw new \RuntimeException(sprintf('Experian report type \'%s\' does not exist', $type));
         }
 
         return $report;
