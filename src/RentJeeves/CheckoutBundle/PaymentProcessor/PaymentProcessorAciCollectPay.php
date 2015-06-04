@@ -25,42 +25,54 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
      * @var EnrollmentManager
      */
     protected $enrollmentManager;
+
     /**
      * @var BillingAccountManager
      */
     protected $billingAccountManager;
+
     /**
      * @var FundingAccountManager
      */
     protected $fundingAccountManager;
+
     /**
      * @var PaymentManager
      */
     protected $paymentManager;
 
     /**
-     * @param EnrollmentManager     $enrollmentManager
+     * @var ReportLoaderInterface
+     */
+    protected $reportLoader;
+
+    /**
+     * @param EnrollmentManager $enrollmentManager
      * @param BillingAccountManager $billingAccountManager
      * @param FundingAccountManager $fundingAccountManager
-     * @param PaymentManager        $paymentManager
+     * @param PaymentManager $paymentManager
+     * @param ReportLoaderInterface $reportLoader
      *
      * @DI\InjectParams({
      *     "enrollmentManager" = @DI\Inject("payment.aci_collect_pay.enrollment_manager"),
      *     "billingAccountManager" = @DI\Inject("payment.aci_collect_pay.billing_account_manager"),
      *     "fundingAccountManager" = @DI\Inject( "payment.aci_collect_pay.funding_account_manager"),
-     *     "paymentManager" = @DI\Inject("payment.aci_collect_pay.payment_manager")
+     *     "paymentManager" = @DI\Inject("payment.aci_collect_pay.payment_manager"),
+     *     "reportLoader" = @DI\Inject("payment_processor.aci.report_loader")
      * })
      */
     public function __construct(
         EnrollmentManager $enrollmentManager,
         BillingAccountManager $billingAccountManager,
         FundingAccountManager $fundingAccountManager,
-        PaymentManager $paymentManager
+        PaymentManager $paymentManager,
+        ReportLoaderInterface $reportLoader
     ) {
         $this->enrollmentManager = $enrollmentManager;
         $this->billingAccountManager = $billingAccountManager;
         $this->fundingAccountManager = $fundingAccountManager;
         $this->paymentManager = $paymentManager;
+        $this->reportLoader = $reportLoader;
     }
 
     /**
@@ -113,11 +125,11 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
      */
     public function loadReport()
     {
-        throw new \Exception('loadReport is not implement yet for aci_collect_pay.');
+        return $this->reportLoader->loadReport();
     }
 
     /**
-     * @param  Order          $order
+     * @param  Order $order
      * @param  PaymentAccount $paymentAccount
      * @return bool
      */
