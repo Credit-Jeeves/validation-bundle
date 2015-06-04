@@ -58,7 +58,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
      *     "billingAccountManager" = @DI\Inject("payment_processor.aci.collect_pay.billing_account_manager"),
      *     "fundingAccountManager" = @DI\Inject("payment_processor.aci.collect_pay.funding_account_manager"),
      *     "paymentManager" = @DI\Inject("payment_processor.aci.collect_pay.payment_manager"),
-     *     "reportLoader" = @DI\Inject("payment_processor.aci.report_loader")
+     *     "reportLoader" = @DI\Inject("payment_processor.aci.collect_pay.report_loader")
      * })
      */
     public function __construct(
