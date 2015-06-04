@@ -2,70 +2,65 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
-use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use RentJeeves\ExternalApiBundle\Command\CloseBatchCommand;
-use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
+use RentJeeves\ExternalApiBundle\Services\ExternalApiClientFactory;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\PaymentClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class CloseBatchCommandCase extends BaseTestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var PaymentBatchMapping
-     */
-    protected $batchMapping;
-
     const BATCH_ID = '111555';
 
-    public function setUp()
+    /**
+     * @return array
+     */
+    public function providerShouldCloseAllBatches()
     {
-        $this->load(true);
-        /** @var $resManClient ResManClient */
-        $resManClient = $this->getContainer()->get('resman.client');
-        $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
-
-        $settings = new ResManSettings();
-        $settings->setAccountId('400');
-        $resManClient->setSettings($settings);
-
-        $batchId = $resManClient->openBatch(ResManClientCase::EXTERNAL_PROPERTY_ID, new \DateTime());
-
-        $this->batchMapping = new PaymentBatchMapping();
-        $this->batchMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
-        $this->batchMapping->setAccountingPackageType(ApiIntegrationType::RESMAN);
-        $this->batchMapping->setPaymentBatchId(self::BATCH_ID);
-        $this->batchMapping->setAccountingBatchId($batchId);
-
-        /** @var TransactionRepository $repo */
-        $repo = $this->em->getRepository('RjDataBundle:Transaction');
-
-        $holding = $repo->getMerchantHoldingByBatchId(self::BATCH_ID);
-
-        $holding->setApiIntegrationType(ApiIntegrationType::RESMAN);
-
-        $this->em->persist($this->batchMapping);
-        $this->em->persist($holding);
-
-        $this->em->flush();
+        return [
+            [ApiIntegrationType::RESMAN, ResManClientCase::EXTERNAL_PROPERTY_ID],
+            [ApiIntegrationType::YARDI_VOYAGER, PaymentClientCase::PROPERTY_ID]
+        ];
     }
 
     /**
      * @test
+     * @dataProvider providerShouldCloseAllBatches
      */
-    public function shouldCloseAllResmanBatches()
+    public function shouldCloseAllBatches($accountType, $externalPropertyId)
     {
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var ExternalApiClientFactory $factoryClient */
+        $factoryClient = $this->getContainer()->get('accounting.api_client.factory');
+        $batchMapping = new PaymentBatchMapping();
+        $batchMapping->setExternalPropertyId($externalPropertyId);
+        $batchMapping->setAccountingPackageType($accountType);
+        $batchMapping->setPaymentBatchId(self::BATCH_ID);
+
+
+        /** @var TransactionRepository $repo */
+        $repo = $em->getRepository('RjDataBundle:Transaction');
+        $holding = $repo->getMerchantHoldingByBatchId(self::BATCH_ID);
+
+        $holding->setApiIntegrationType($accountType);
+
+        $em->persist($batchMapping);
+        $em->persist($holding);
+
+        $client = $factoryClient->createClient($accountType, $holding->getExternalSettings());
+        $batchId = $client->openBatch($externalPropertyId, new \DateTime(), 'Just are test');
+        $batchMapping->setAccountingBatchId($batchId);
+
+        $em->flush();
+
         $application = new Application($this->getKernel());
         $application->add(new CloseBatchCommand());
 
@@ -75,9 +70,9 @@ class CloseBatchCommandCase extends BaseTestCase
             'command' => $command->getName(),
         ]);
 
-        $this->em->refresh($this->batchMapping);
+        $em->refresh($batchMapping);
 
-        $this->assertNotEmpty($this->batchMapping->getClosedAt());
-        $this->assertEquals(PaymentBatchStatus::CLOSED, $this->batchMapping->getStatus());
+        $this->assertNotEmpty($batchMapping->getClosedAt());
+        $this->assertEquals(PaymentBatchStatus::CLOSED, $batchMapping->getStatus());
     }
 }

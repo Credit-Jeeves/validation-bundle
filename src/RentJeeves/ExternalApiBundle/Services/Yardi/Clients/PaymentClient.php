@@ -2,9 +2,14 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use \DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\SerializationContext;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
+use RentJeeves\ExternalApiBundle\Services\Yardi\YardiXmlCleaner;
 use SoapVar;
+use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
 
 class PaymentClient extends AbstractClient
 {
@@ -28,31 +33,29 @@ class PaymentClient extends AbstractClient
     );
 
     /**
-     * @param DateTime $depositDate
-     * @param string $yardiPropertyId
-     * @param null $batchId
-     * @param null $depositMemo
+     * @param string $externalPropertyId
+     * @param \DateTime $paymentBatchDate
+     * @param string $description
      *
      * @return integer|null
      */
-    public function openReceiptBatchDepositDate(
-        DateTime $depositDate,
+    public function openBatch(
         $yardiPropertyId,
-        $batchId = null,
-        $depositMemo = null
+        DateTime $depositDate,
+        $description
     ) {
         $this->debugMessage('Run OpenReceiptBatch_DepositDate');
-        $parameters = array(
+        $parameters = [
             'OpenReceiptBatch_DepositDate' => array_merge(
                 $this->getLoginCredentials(),
-                array(
+                [
                     'YardiPropertyId'   => $yardiPropertyId,
-                    'BatchDescription'  => 'RentTrack Batch #' . $batchId,
+                    'BatchDescription'  => $description,
                     'DepositDate'       => $depositDate,
-                    'DepositMemo'       => $depositMemo
-                )
-            ),
-        );
+                    'DepositMemo'       => null
+                ]
+            )
+        ];
 
         return $this->sendRequest(
             'OpenReceiptBatch_DepositDate',
@@ -61,11 +64,14 @@ class PaymentClient extends AbstractClient
     }
 
     /**
+     * Why strange method name, which can be confusing, described:
+     * https://credit.atlassian.net/browse/RT-813?jql=text%20~%20%22PostReceiptBatch%22
+     *
      * @param $batchId
      *
      * @return boolean
      */
-    public function closeReceiptBatch($batchId)
+    public function closeBatch($batchId)
     {
         $this->debugMessage('Run PostReceiptBatch');
         $parameters = array(
@@ -84,6 +90,36 @@ class PaymentClient extends AbstractClient
 
         if ($result instanceof Messages) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Order $order
+     * @param $externalPropertyId
+     */
+    public function addPaymentToBatch(Order $order, $externalPropertyId)
+    {
+        $orders = new ArrayCollection([$order]);
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('soapYardiRequest');
+        $residentTransactions = new ResidentTransactions(
+            $this->getSettings(),
+            $orders
+        );
+        $xml = $this->serializer->serialize(
+            $residentTransactions,
+            'xml',
+            $context
+        );
+        $xml = YardiXmlCleaner::prepareXml($xml);
+
+        $result = $this->addReceiptsToBatch($order->getBatchId(), $xml);
+
+        if ($result instanceof Messages) {
+            return $result->getMessage()->getMessage();
         }
 
         return false;

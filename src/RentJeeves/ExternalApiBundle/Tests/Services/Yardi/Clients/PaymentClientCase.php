@@ -10,6 +10,10 @@ use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\BaseClientCase as 
 
 class PaymentClientCase extends Base
 {
+    const PROPERTY_ID = 'rnttrk01';
+
+    const RESIDENT_ID = 't0012027';
+
     protected static $batchId;
 
     /**
@@ -26,10 +30,10 @@ class PaymentClientCase extends Base
             $this->getYardiSettings(),
             SoapClientEnum::YARDI_PAYMENT
         );
-        
+
         self::$batchId = self::$client->openReceiptBatchDepositDate(
             new DateTime(),
-            $yardiPropertyId = 'rnttrk01',
+            self::PROPERTY_ID,
             $description = 'Test open date'
         );
     }
@@ -61,18 +65,18 @@ class PaymentClientCase extends Base
             '@ExternalApiBundle/Resources/fixtures/receipt_push_sample.xml'
         );
         $xml = file_get_contents($path);
+        $xml = str_replace(['%residentId%', '%propertyId%'], [self::RESIDENT_ID, self::PROPERTY_ID], $xml);
         /**
          * @var $result Messages
          */
         $result = self::$client->addReceiptsToBatch(
             self::$batchId,
-            file_get_contents($path)
+            $xml
         );
 
         $this->checkError();
         $this->assertEquals('2 Receipts were added to Batch '.self::$batchId, $result->getMessage()->getMessage());
     }
-
 
     /**
      * @test

@@ -308,7 +308,7 @@ class ReceiptBatchSender
                 } else {
                     $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
                 }
-                $this->paymentClient->closeReceiptBatch($yardiBatchId);
+                $this->paymentClient->closeBatch($yardiBatchId);
             } catch (Exception $e) {
                 if (empty($yardiBatchId) || !isset($yardiBatchId)) {
                     $yardiBatchId = 'undefined';
@@ -414,10 +414,15 @@ class ReceiptBatchSender
             return $this->batchIds[$key];
         }
 
-        $yardiBatchId = $this->paymentClient->openReceiptBatchDepositDate(
-            $this->depositDate,
-            $remotePropertyId,
+        $description = sprintf(
+            'RentTrack Online Payments Batch #%s',
             $batchId
+        );
+
+        $yardiBatchId = $this->paymentClient->openBatch(
+            $remotePropertyId,
+            $this->depositDate,
+            $description
         );
 
         if ($this->paymentClient->isError()) {

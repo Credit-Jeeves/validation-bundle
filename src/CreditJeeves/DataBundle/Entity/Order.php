@@ -861,6 +861,14 @@ class Order extends BaseOrder
     }
 
     /**
+     * @return string
+     */
+    public function getBatchId()
+    {
+        return $this->batchId;
+    }
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("UnitID")
      * @Serializer\Groups({"ResMan"})

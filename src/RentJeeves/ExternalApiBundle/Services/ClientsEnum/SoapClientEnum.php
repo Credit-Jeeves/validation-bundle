@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\ClientsEnum;
 
 use CreditJeeves\CoreBundle\Enum;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 
 class SoapClientEnum extends Enum
 {
@@ -15,4 +16,9 @@ class SoapClientEnum extends Enum
     const AMSI_LEASING = 'soap.client.amsi.leasing';
 
     const AMSI_LEDGER = 'soap.client.amsi.ledger';
+
+    public static $realTimePaymentClientMapping = [
+        ApiIntegrationType::YARDI_VOYAGER => self::YARDI_PAYMENT,
+        ApiIntegrationType::AMSI => self::AMSI_LEASING
+    ];
 }
