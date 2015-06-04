@@ -114,7 +114,7 @@ abstract class Order
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="\RentJeeves\DataBundle\Entity\TransactionOutbound",
+     *     targetEntity="\RentJeeves\DataBundle\Entity\OutboundTransaction",
      *     mappedBy="order",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
