@@ -77,11 +77,28 @@ trait Tenant
             $residentMapping = $tenant->getResidentsMapping()->first();
             if ($residentMapping && $residentMapping->getResidentId() !== $residentId) {
                 $this->logger->warn(
-                    "Imported resident id: " . $residentId . " doesn't match DB " . $residentMapping->getResidentId()
+                    sprintf(
+                        'Imported resident id: %s doesn\'t match DB %s',
+                        $residentId,
+                        $residentMapping->getResidentId()
+                    )
                 );
                 $tenant = $this->createTenant($row);
                 $this->currentImportModel->setTenant($tenant);
-                $this->userEmails[$tenant->getEmail()] = 2; //Make it error, because resident ID different
+                $errors = $this->currentImportModel->getErrors();
+                $this->setUnrecoverableError(
+                    $this->currentImportModel->getNumber(),
+                    'import_contract_residentMapping_residentId',
+                    $this->translator->trans(
+                        'error.residentId.already_use',
+                        [
+                            '%email%'   => $residentMapping->getTenant()->getEmail(),
+                            '%support_email%' => $this->supportEmail
+                        ]
+                    ),
+                    $errors
+                );
+                $this->currentImportModel->setErrors($errors);
 
                 return;
             }

@@ -14,6 +14,10 @@
                 <source>email_rj.creditjeeves.team</source>
                 <target>The %partnerName% Team</target>
             </trans-unit>
+            <trans-unit id="error.summary_error.must_be_unique_md5RowContent">
+                <source>error.summary_error.must_be_unique_md5RowContent</source>
+                <target>The "md5RowContent" field should be unique per "importSummary" field.</target>
+            </trans-unit>
             <trans-unit id="rj.footer.title">
                 <source>rj.footer.title</source>
                 <target>RentTrack, at your service.</target>

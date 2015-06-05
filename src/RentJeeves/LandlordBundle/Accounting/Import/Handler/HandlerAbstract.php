@@ -188,7 +188,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $newFilePath = $this->getNewFilePath();
         $this->copyHeader($newFilePath);
         $self = $this;
-        $total = $this->mapping->getTotal();
+        $total = $this->mapping->getTotalContent();
 
         $callbackSuccess = function () use ($self, $filePath) {
             $self->removeLastLineInFile($filePath);
@@ -198,12 +198,17 @@ abstract class HandlerAbstract implements HandlerInterface
             $self->moveLine($filePath);
         };
 
-        for ($i = 1; $i <= $total; $i++) {
+        $this->getReport()->setTotal($total);
+
+        for ($i = $total; $i >= 1; $i--) {
             $this->updateMatchedContractsWithCallback(
+                $this->getReport(),
                 $callbackSuccess,
                 $callbackFailed
             );
         }
+
+        $this->getReport()->save();
 
         krsort($this->lineFromCsvFile);
         file_put_contents($newFilePath, implode('', $this->lineFromCsvFile), FILE_APPEND | LOCK_EX);
@@ -353,7 +358,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->getReport()->addError(
             $this->currentImportModel->getRow(),
             $errors,
-            $this->currentImportModel->getOffset()
+            $this->currentImportModel->getRow()
         );
     }
 
@@ -376,7 +381,6 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->logger->debug(sprintf("Creating import model for %s", $tenantName));
 
         $this->currentImportModel = new ModelImport();
-        $this->currentImportModel->setOffset($this->storage->getOffsetStart()+$lineNumber);
         $this->currentImportModel->setRow($row);
         $this->currentImportModel->setHandler($this);
         $this->currentImportModel->setNumber($lineNumber);
@@ -486,7 +490,7 @@ abstract class HandlerAbstract implements HandlerInterface
                 $this->currentImportModel->getCsrfToken()
             );
 
-            if ($this->isUsedResidentId($this->currentImportModel->getResidentMapping())) {
+            if ($this->isUsedResidentId()) {
                 $this->logger->warning("ResidentID already in use");
                 $keyFieldInUI = ImportMapping::KEY_RESIDENT_ID;
                 $message = $this->translator
@@ -601,8 +605,7 @@ abstract class HandlerAbstract implements HandlerInterface
     public function initCollectionImportModel()
     {
         $data = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
-        //minus 1 -> because first line it's header
-        $this->getReport()->setTotal($this->mapping->getTotal()-1);
+        $this->getReport()->setTotal($this->mapping->getTotalContent());
         $this->collectionImportModel = new ArrayCollection([]);
 
         foreach ($data as $key => $values) {
@@ -655,7 +658,7 @@ abstract class HandlerAbstract implements HandlerInterface
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
                     if ($this->currentImportModel->isSkipped()) {
-                        $this->getReport()->incrementSkipped($this->currentImportModel->getOffset());
+                        $this->getReport()->incrementSkipped($this->currentImportModel->getRow());
                     }
                     // Validate data which get from client by post request
                     $resultBind = $this->bindForm($postData, $errors);
@@ -795,8 +798,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->getReport()->addException(
             $this->currentImportModel->getRow(),
             $e->getMessage(),
-            $uniqueKeyException,
-            $this->currentImportModel->getOffset()
+            $uniqueKeyException
         );
 
         $exception = new ImportHandlerException($e);
@@ -902,12 +904,15 @@ abstract class HandlerAbstract implements HandlerInterface
     /**
      * @return ImportSummaryManager
      */
-    protected function getReport()
+    public function getReport()
     {
         $this->reportSummaryManager->initialize(
             $this->group,
             $this->storage->getImportType(),
             $this->storage->getImportSummaryReportPublicId()
+        );
+        $this->storage->setImportSummaryReportPublicId(
+            $this->reportSummaryManager->getReportPublicId()
         );
 
         return $this->reportSummaryManager;
