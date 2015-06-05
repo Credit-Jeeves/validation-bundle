@@ -309,9 +309,9 @@ function createReview(){
             var method=""
             var fee = 0.00;
 
-            $.each(payAccounts,function(i,localPaymentAccountId){
-                if(localPaymentAccountId.id==parseInt($("#"+prefix+"paymentAccount").val())){
-                    method= localPaymentAccountId.type;
+            $.each(payAccounts,function(i,localPaymentAccount){
+                if(localPaymentAccount.id==parseInt($("#"+prefix+"paymentAccount").val())){
+                    method = localPaymentAccount.type;
                 }})
 
             if ('card' == method) {
@@ -507,3 +507,23 @@ function submitForm(){
         }
     });
 }
+
+String.prototype.capitalizeFirstLetter = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+
+function getHistory(historyId) {
+    if(historyId) {
+        $.getJSON("/ajax/tenant_payments/1/" + historyId + "/99999", function (data) {
+            var htmlStr = '<tr><td colspan="3" class="headingAddress"> <i class="fa fa-home"></i> <b>' + data.tenantPayments[0].property + '</b> </td> </tr>';
+            $.each(data.tenantPayments, function (index, entry) {
+                htmlStr += "<tr><td>" + entry.date + "</td><td>$" + entry.total + "</td><td>" + entry.status.toString().capitalizeFirstLetter() + "</td></tr>";
+            })
+            $("#paymentHistoryTable" + historyId).append(htmlStr)
+            $("#paymentHistoryTableI" + historyId).append(htmlStr)
+        })
+    }
+}
+
+
