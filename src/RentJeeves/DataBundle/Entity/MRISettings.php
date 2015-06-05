@@ -11,6 +11,14 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
  */
 class MRISettings extends Base implements SettingsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function isAllowToSendRealTime()
+    {
+        return true;
+    }
+
     public function getParameters()
     {
         $data = sprintf(

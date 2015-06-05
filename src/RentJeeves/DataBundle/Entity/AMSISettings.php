@@ -14,6 +14,14 @@ class AMSISettings extends Base implements SettingsInterface
     /**
      * {@inheritdoc}
      */
+    public function isAllowToSendRealTime()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getParameters()
     {
         return ['url' => $this->getUrl()];

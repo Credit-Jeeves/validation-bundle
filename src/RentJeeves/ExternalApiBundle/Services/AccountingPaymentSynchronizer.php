@@ -104,7 +104,9 @@ class AccountingPaymentSynchronizer
      */
     public function isAllowedToSend(Holding $holding)
     {
-        if (in_array($holding->getApiIntegrationType(), $this->allowedIntegrationApi)) {
+        if (in_array($holding->getApiIntegrationType(), $this->allowedIntegrationApi) &&
+            $holding->isSettingsAllowToSendRealTime()
+        ) {
             return true;
         }
 

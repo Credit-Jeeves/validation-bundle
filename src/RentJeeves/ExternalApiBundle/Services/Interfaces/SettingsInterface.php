@@ -16,4 +16,9 @@ interface SettingsInterface
      * @return boolean
      */
     public function isMultiProperty();
+
+    /**
+     * @return boolean
+     */
+    public function isAllowToSendRealTime();
 }

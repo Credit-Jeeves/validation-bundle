@@ -3,13 +3,10 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use Doctrine\ORM\EntityManager;
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
-use RentJeeves\ExternalApiBundle\Command\CloseBatchCommand;
 use RentJeeves\ExternalApiBundle\Command\PaymentPushCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;

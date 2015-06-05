@@ -4,7 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
-use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use RentJeeves\ExternalApiBundle\Command\CloseBatchCommand;
@@ -44,7 +43,6 @@ class CloseBatchCommandCase extends BaseTestCase
         $batchMapping->setExternalPropertyId($externalPropertyId);
         $batchMapping->setAccountingPackageType($accountType);
         $batchMapping->setPaymentBatchId(self::BATCH_ID);
-
 
         /** @var TransactionRepository $repo */
         $repo = $em->getRepository('RjDataBundle:Transaction');
