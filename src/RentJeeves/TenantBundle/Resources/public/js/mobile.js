@@ -1,17 +1,28 @@
+//mobile page init
+
+prefix="rentjeeves_checkoutbundle_paymenttype_";
+
+debug=false;
+
 $(document).ready(function(){
 
-    $.mobile.changePage('#main')    //users should always start at #main
+    //check that we are at main page
 
-    prefix="rentjeeves_checkoutbundle_paymenttype_";
+    $.mobile.changePage('#main')
+
+    //fix labels (avoid backend hacks)
+
     subs=[
         ["amount_label","Rent Amount"], ["paidFor_label","for month of*"],
         ["amountOther_label","Other Amount (Late Fees, etc.)"],
         ["paymentAccount_label","Payment Source"]
     ];
 
-    $.each(subs, function(i, k) {
-        $("#" + prefix + k[0]).html(k[1])
+    $.each(subs, function(i, label) {
+        $("#" + prefix + label[0]).html(label[1])
     });
+
+    //create event listener for cancel payment box
 
     $(document).delegate('#opendialog', 'click', function() {
         $('<div>').simpledialog2({
@@ -31,6 +42,8 @@ $(document).ready(function(){
         disabled: true
     });
 
+    //contract individual pages info filled out from JSON
+
     h=$.mobile.getScreenHeight();
     h-=60;
     $(".ui-content").css('min-height',h+'px');
@@ -42,9 +55,9 @@ $(document).ready(function(){
             $("#cancel" + contract.id).attr("onclick", "setTimeout(function(){cancelPayment(" + contract.payment.id + "); $('.ui-dialog').hide()},50)")
             //settimeout hide dialog fixes weird bug with simpledialog
 
-            $.each(payAccounts, function (i, k) {
-                if (k.id == contract.payment.paymentAccountId) {
-                    $("#contractFromAcc" + contract.id).html(k.name)
+            $.each(payAccounts, function (index, localPaymentAccount) {
+                if (localPaymentAccount.id == contract.payment.paymentAccountId) {
+                    $("#contractFromAcc" + contract.id).html(localPaymentAccount.name)
                 }
             })
         } else {
@@ -56,28 +69,35 @@ $(document).ready(function(){
          */
     }
 
+    //Misc. HTML fixes
 
-    $("<span>Total to Pay: </span>$<span id='total'></span> ").insertAfter($("#rentjeeves_checkoutbundle_paymenttype_amountOther"))
-    $("#rentjeeves_checkoutbundle_paymenttype_total_row").hide()
-    $("#rentjeeves_checkoutbundle_paymenttype_amount").onchange=updateTotal;
-    $("#rentjeeves_checkoutbundle_paymenttype_amountOther").onchange=updateTotal
-    $("#rentjeeves_checkoutbundle_paymenttype_type_label").html("One-Time or Recurring<sup>*</sup>");
+
+    $("<span>Total to Pay: </span>$<span id='total'></span> ").insertAfter($("#"+prefix+"amountOther"))
+    $("#"+prefix+"total_row").hide()
+    $("#"+prefix+"amount").onchange=updateTotal;
+    $("#"+prefix+"amountOther").onchange=updateTotal
+    $("#"+prefix+"type_label").html("One-Time or Recurring<sup>*</sup>");
 
 
 })
+
+//cancel payment function for dialog
 
 function cancelPayment(i){
     $("#confirmCancel").attr("href","/checkout/cancel/"+i);
 }
 
-var gId=-1;
+//init pay form when user edits contract
+
+var globalContractId=-1; //hold current edited contract ID
 
 function setupPayForm(id) {
 
-    gId=id;
+    globalContractId=id;
 
-    $("#errorMsg").html("")
-    $("#errorMsg").hide()
+    //make sure error message is hidden/cleared, in case we try to pay multiple contracts
+
+    $("#errorMsg").html("").hide()
 
     $(".fields-box").css('padding-bottom','10px')
 
@@ -92,12 +112,16 @@ function setupPayForm(id) {
         mm='0'+mm
     }
 
-    $("#rentjeeves_checkoutbundle_paymenttype_amountOther").val("0.00")
+    //reset 'other' amount
+
+    $("#"+prefix+"amountOther").val("0.00")
 
     for (i = 0; i < contractsJson.length;i++) {
         if(contractsJson[i].id==id){
 
-            contract=contractsJson[i]
+            var contract=contractsJson[i]
+
+            //check that user is verified
 
             if(isVerified!='passed' && contract.isPidVerificationSkipped==false){
                 $.mobile.changePage('#notVerified')
@@ -106,16 +130,18 @@ function setupPayForm(id) {
                 $.mobile.changePage('#pay')
             }
 
+            //read days contract can be paid and setup calendar widget accordingly
 
-            a=[]
+
+            var payableDays=[]
             for(j=0;j<contract.groupSetting.dueDays.length;j++){
-                a.push([-1,-1,contract.groupSetting.dueDays[j]])
+                payableDays.push([-1,-1,contract.groupSetting.dueDays[j]])
             }
 
-            $('#rentjeeves_checkoutbundle_paymenttype_start_date').datebox({
+            $("#"+prefix+"start_date").datebox({
                 mode: "calbox",
                 afterToday: true,
-                blackDatesRec:[a],
+                blackDatesRec:[payableDays],
                 defaultValue: new Date(),
                 useFocus :true,
                 useButton:false
@@ -123,34 +149,47 @@ function setupPayForm(id) {
 
             })
 
-            $(document).on("click","#rentjeeves_checkoutbundle_paymenttype_start_date",function(){
+
+            //css fix for calednar widget positioning
+
+            $(document).on("click","#"+prefix+"start_date",function(){
                 var viewportwidth = $(window).width();
                 var datepickerwidth = $("#ui-datepicker-div").width();
                 var leftpos = (viewportwidth - datepickerwidth)/2; //Standard centering method
                 $("#ui-datepicker-div").css({left: leftpos,position:'absolute'});
             });
 
-            jQuery('#rentjeeves_checkoutbundle_paymenttype_contractId').val(id);
+            //input contract id into hidden field
 
-            console.log(contract)
-            paidFor=paidForArr[contract.id]
-            $("#rentjeeves_checkoutbundle_paymenttype_paidFor").html("");
+            jQuery("#"+prefix+"contractId").val(id);
+
+            if(debug) {
+                console.log(contract)
+            }
+
+            //get paid for array dates to setup select box
+
+            var paidFor=paidForArr[contract.id]
+            $("#"+prefix+"paidFor").html("");
             $.each(paidFor,function(index,value){
                 if(contract.payment) {
-                    a = ""
+                    var a = ""
                     if (index == contract.payment.paidFor) {
                         a = "selected"
                     }
                 }
-                $("#rentjeeves_checkoutbundle_paymenttype_paidFor").append("<option value='"+index+"'"+a+">"+value+"</option>")
+                $("#"+prefix+"paidFor").append("<option value='"+index+"'"+a+">"+value+"</option>")
             })
 
-            $("#rentjeeves_checkoutbundle_paymenttype_amount").val(contract.rent)
-            $('#rentjeeves_checkoutbundle_paymenttype_total').val(contract.rent)
+            //fill in payToName, rent amount, and address
+
+            $("#"+prefix+"amount").val(contract.rent)
             $("#payTo").html(contract.payToName);
             $("#contractAddress").html(contract.property.number+" "+contract.property.street+", "+contract.property.district+" "+contract.unit.name)
 
-            $("#rentjeeves_checkoutbundle_paymenttype_dueDate").html("")
+            //get due date
+
+            $("#"+prefix+"dueDate").html("")
             for (i = 1; i < 32; i++) {
                 a = "";
                 if(contract.payment){
@@ -160,45 +199,47 @@ function setupPayForm(id) {
                 }else if(i==(new Date()).getDate()){
                     a=" selected"
                 }
-                $("#rentjeeves_checkoutbundle_paymenttype_dueDate").append("<option value='"+i+"' " + a + ">" + i + "</option>")
+                $("#"+prefix+"dueDate").append("<option value='"+i+"' " + a + ">" + i + "</option>")
             }
 
 
             if(contract.payment) {
 
+                //different button text
+
                 $("#payRentBttn").html("SAVE CHANGES")
 
-                $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").val(contract.payment.paymentAccountId)
+                $("#"+prefix+"paymentAccount").val(contract.payment.paymentAccountId)
 
                 if (contract.payment.status == "active") {
                     if (contract.payment.type == "recurring") {
-                        $("#rentjeeves_checkoutbundle_paymenttype_type").val("recurring")
+                        $("#"+prefix+"type").val("recurring")
                         formType(false)
                     } else {
-                        $("#rentjeeves_checkoutbundle_paymenttype_type").val("one_time")
+                        $("#"+prefix+"type").val("one_time")
                         formType(true);
                     }
                 }
 
-                $("#rentjeeves_checkoutbundle_paymenttype_type").selectmenu("refresh")
+                $("#"+prefix+"type").selectmenu("refresh")
 
 
-                $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(contract.payment.startMonth);
-                $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(contract.payment.startYear);
+                $("#"+prefix+"startMonth").val(contract.payment.startMonth);
+                $("#"+prefix+"startYear").val(contract.payment.startYear);
                 if(contract.payment.endMonth){
-                    $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val(contract.payment.endMonth);
-                    $("#rentjeeves_checkoutbundle_paymenttype_endYear").val(contract.payment.endYear);
+                    $("#"+prefix+"endMonth").val(contract.payment.endMonth);
+                    $("#"+prefix+"endYear").val(contract.payment.endYear);
                     whenCancelled(true)
-                    $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",false)
-                    $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",true)
+                    $("#"+prefix+"ends_0").attr("checked",false)
+                    $("#"+prefix+"ends_1").attr("checked",true)
                 }else{
                     whenCancelled(false)
-                    $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",true)
-                    $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",false)
+                    $("#"+prefix+"ends_0").attr("checked",true)
+                    $("#"+prefix+"ends_1").attr("checked",false)
                 }
 
 
-                $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(mm+"/"+(contract.payment.dueDate)+"/"+yyyy)
+                $("#"+prefix+"start_date").val(mm+"/"+(contract.payment.dueDate)+"/"+yyyy)
 
 
             }else{
@@ -206,38 +247,40 @@ function setupPayForm(id) {
                 $("#payRentBttn").html("PAY RENT")
 
 
-                $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(mm+"/"+((new Date()).getDate())+"/"+yyyy)
+                $("#"+prefix+"start_date").val(mm+"/"+((new Date()).getDate())+"/"+yyyy)
 
                 formType(true)
-                $("#rentjeeves_checkoutbundle_paymenttype_type").val("one_time")
-                $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val((new Date()).getMonth()+1)
-                $("#rentjeeves_checkoutbundle_paymenttype_startYear").val((new Date()).getFullYear())
+                $("#"+prefix+"type").val("one_time")
+                $("#"+prefix+"startMonth").val((new Date()).getMonth()+1)
+                $("#"+prefix+"startYear").val((new Date()).getFullYear())
 
-                $("#rentjeeves_checkoutbundle_paymenttype_endMonth").val((new Date()).getMonth()+1)
-                $("#rentjeeves_checkoutbundle_paymenttype_endYear").val((new Date()).getFullYear())
+                $("#"+prefix+"endMonth").val((new Date()).getMonth()+1)
+                $("#"+prefix+"endYear").val((new Date()).getFullYear())
 
-                $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",true)
-                $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",false)
+                $("#"+prefix+"ends_0").attr("checked",true)
+                $("#"+prefix+"ends_1").attr("checked",false)
                 whenCancelled(false)
 
 
-                $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").val(payAccounts[0].id)
+                $("#"+prefix+"paymentAccount").val(payAccounts[0].id)
 
             }
 
-            $("#rentjeeves_checkoutbundle_paymenttype_type").selectmenu("refresh");
-            $("#rentjeeves_checkoutbundle_paymenttype_startYear").selectmenu("refresh");
-            $("#rentjeeves_checkoutbundle_paymenttype_startMonth").selectmenu("refresh");
-            $("#rentjeeves_checkoutbundle_paymenttype_paidFor").selectmenu("refresh")
-            $("#rentjeeves_checkoutbundle_paymenttype_endMonth").selectmenu("refresh");
-            $("#rentjeeves_checkoutbundle_paymenttype_endYear").selectmenu("refresh");
-            $("#rentjeeves_checkoutbundle_paymenttype_dueDate").selectmenu("refresh")
-            $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").selectmenu("refresh")
-            $("#rentjeeves_checkoutbundle_paymenttype_ends_0").checkboxradio("refresh");
-            $("#rentjeeves_checkoutbundle_paymenttype_ends_1").checkboxradio("refresh");
+            //refresh all form items since jQM doesn't do this automatically
+
+            $("#"+prefix+"type").selectmenu("refresh");
+            $("#"+prefix+"startYear").selectmenu("refresh");
+            $("#"+prefix+"startMonth").selectmenu("refresh");
+            $("#"+prefix+"paidFor").selectmenu("refresh")
+            $("#"+prefix+"endMonth").selectmenu("refresh");
+            $("#"+prefix+"endYear").selectmenu("refresh");
+            $("#"+prefix+"dueDate").selectmenu("refresh")
+            $("#"+prefix+"paymentAccount").selectmenu("refresh")
+            $("#"+prefix+"ends_0").checkboxradio("refresh");
+            $("#"+prefix+"ends_1").checkboxradio("refresh");
 
 
-            $("#rentjeeves_checkoutbundle_paymenttype_paidTo").val(contract.paidTo)
+            $("#"+prefix+"paidTo").val(contract.paidTo)
 
 
             $("#revEnds").html(contract.finishAt)
@@ -252,7 +295,7 @@ function setupPayForm(id) {
 
 
 
-
+//create review page
 
 
 function createReview(){
@@ -260,17 +303,17 @@ function createReview(){
     updateTotal();
 
     for (i = 0; i < contractsJson.length;i++) {
-        if (contractsJson[i].id == gId) {
+        if (contractsJson[i].id == globalContractId) {
 
-
-            contract = contractsJson[i]
-
-            method=""
-            $.each(payAccounts,function(i,k){
-                if(k.id==parseInt($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").val())){
-                    method= k.type;
-                }})
+            var contract = contractsJson[i]
+            var method=""
             var fee = 0.00;
+
+            $.each(payAccounts,function(i,localPaymentAccountId){
+                if(localPaymentAccountId.id==parseInt($("#"+prefix+"paymentAccount").val())){
+                    method= localPaymentAccountId.type;
+                }})
+
             if ('card' == method) {
                 fee = parseFloat(contract.depositAccount.feeCC) / 100 * total;
                 $("#revTechFeeCont").show()
@@ -284,73 +327,77 @@ function createReview(){
         }
     }
 
-    total=accounting.formatNumber((total+fee),2);
+    var total=accounting.formatNumber((total+fee),2);
 
 
-    $("#rentjeeves_checkoutbundle_paymenttype_paymentAccountId").val($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").val());
-    $("#contract_id").val($("#rentjeeves_checkoutbundle_paymenttype_contractId").val());
-    $("#revRentAmount").html(accounting.formatNumber($("#rentjeeves_checkoutbundle_paymenttype_amount").val(),2));
-    $("#revOtherAmount").html(accounting.formatNumber($("#rentjeeves_checkoutbundle_paymenttype_amountOther").val(),2));
+    $("#"+prefix+"paymentAccountId").val($("#"+prefix+"paymentAccount").val());
+    $("#contract_id").val($("#"+prefix+"contractId").val());
+    $("#revRentAmount").html(accounting.formatNumber($("#"+prefix+"amount").val(),2));
+    $("#revOtherAmount").html(accounting.formatNumber($("#"+prefix+"amountOther").val(),2));
     $("#revTotalAmount").html(total);
-    $("#revMethod").html($("#rentjeeves_checkoutbundle_paymenttype_paymentAccount option:selected").html());
+    $("#revMethod").html($("#"+prefix+"paymentAccount option:selected").html());
 
-    if($('#rentjeeves_checkoutbundle_paymenttype_type').val()=="one_time") {
-        a="One time"
+    if($("#"+prefix+"type").val()=="one_time") {
+        var a="One time"
         $('#revEndsLabel').hide()
         $('#revEnds').hide()
 
         //convert to readable date
-        $("#revSendOn").html(new Date($("#rentjeeves_checkoutbundle_paymenttype_start_date").val()).toDateString());
+        $("#revSendOn").html(new Date($("#"+prefix+"start_date").val()).toDateString());
 
         //fix some things-- if one time, change start month/day to match startdate
-        d=$("#rentjeeves_checkoutbundle_paymenttype_start_date").val().split("/")
-        $("#rentjeeves_checkoutbundle_paymenttype_frequency").val("monthly")
-        $("#rentjeeves_checkoutbundle_paymenttype_dueDate").val(parseInt(d[1].replace("0","")))
-        $("#rentjeeves_checkoutbundle_paymenttype_startMonth").val(parseInt(d[0].replace("0","")))
-        $("#rentjeeves_checkoutbundle_paymenttype_startYear").val(parseInt(d[2]));
-        $("#rentjeeves_checkoutbundle_paymenttype_startYear").selectmenu("refresh");
+        d=$("#"+prefix+"start_date").val().split("/")
+        $("#"+prefix+"frequency").val("monthly")
+        $("#"+prefix+"dueDate").val(parseInt(d[1].replace("0","")))
+        $("#"+prefix+"startMonth").val(parseInt(d[0].replace("0","")))
+        $("#"+prefix+"startYear").val(parseInt(d[2]));
+        $("#"+prefix+"startYear").selectmenu("refresh");
 
 
-        $("#rentjeeves_checkoutbundle_paymenttype_ends").val('cancelled');
+        $("#"+prefix+"ends").val('cancelled');
     }else{
 
 
-        if($("#rentjeeves_checkoutbundle_paymenttype_frequency").val()=="monthly"){
-            $("#revSendOn").html("Day "+$("#rentjeeves_checkoutbundle_paymenttype_dueDate").val()+" of each month");
+        if($("#"+prefix+"frequency").val()=="monthly"){
+            $("#revSendOn").html("Day "+$("#"+prefix+"dueDate").val()+" of each month");
         }else{
             $("#revSendOn").html("Last day of month");
-            $("#rentjeeves_checkoutbundle_paymenttype_dueDate").val(31)
+            $("#"+prefix+"dueDate").val(31)
         }
 
-        d=$("#rentjeeves_checkoutbundle_paymenttype_startMonth").val()+"/"+$("#rentjeeves_checkoutbundle_paymenttype_dueDate").val()+"/"+$("#rentjeeves_checkoutbundle_paymenttype_startYear").val();
-        $("#rentjeeves_checkoutbundle_paymenttype_start_date").val(d)
+        d=$("#"+prefix+"startMonth").val()+"/"+$("#"+prefix+"dueDate").val()+"/"+$("#"+prefix+"startYear").val();
+        $("#"+prefix+"start_date").val(d)
 
-        if($("#rentjeeves_checkoutbundle_paymenttype_ends_0").val()!="on"){
+        if($("#"+prefix+"ends_0").val()!="on"){
             $('#revEnds').html(" when cancelled")
         }else{
-            $('#revEnds').html($("#rentjeeves_checkoutbundle_paymenttype_endMonth").val()+"/"+$("#rentjeeves_checkoutbundle_paymenttype_endYear").val())
+            $('#revEnds').html($("#"+prefix+"endMonth").val()+"/"+$("#"+prefix+"endYear").val())
         }
         a="Recurring"
     }
 
     $("#revRecurring").html(a);
-    $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").prop('disabled',true);  //w/o submission will fail
+    $("#"+prefix+"paymentAccount").prop('disabled',true);  //w/o submission will fail
 
 }
+
+//when recurring, show additional fields. when one_time, hide appropriately
+
+
 recurringFormIds=[
-    "rentjeeves_checkoutbundle_paymenttype_frequency_row",
-    "rentjeeves_checkoutbundle_paymenttype_startMonth_row",
-    "rentjeeves_checkoutbundle_paymenttype_ends_row",
-    "rentjeeves_checkoutbundle_paymenttype_endMonth",
-    "rentjeeves_checkoutbundle_paymenttype_endYear"
+    ""+prefix+"frequency_row",
+    ""+prefix+"startMonth_row",
+    ""+prefix+"ends_row",
+    ""+prefix+"endMonth",
+    ""+prefix+"endYear"
 ]
 onetimeFormIds=[
-    "rentjeeves_checkoutbundle_paymenttype_start_date_row"
+    ""+prefix+"start_date_row"
 ]
 
-function formType(i){
+function formType(isRecurring){
     $.each(recurringFormIds,function(index,value){
-        if(i) {
+        if(isRecurring) {
             $('#' + value).hide();
             $('#' + value).prop( "disabled", true );
         }else{
@@ -359,7 +406,7 @@ function formType(i){
         }
     })
     $.each(onetimeFormIds,function(index,value){
-        if(!i) {
+        if(!isRecurring) {
             $('#' + value).hide();
             $('#' + value).prop( "disabled", true );
         }else{
@@ -368,21 +415,23 @@ function formType(i){
         }
     })
 
-    $("#rentjeeves_checkoutbundle_paymenttype_ends_0").attr("checked",true)
-    $("#rentjeeves_checkoutbundle_paymenttype_ends_1").attr("checked",false)
+    $("#"+prefix+"ends_0").attr("checked",true)
+    $("#"+prefix+"ends_1").attr("checked",false)
     whenCancelled(false)
 
-    $("#rentjeeves_checkoutbundle_paymenttype_ends_0").checkboxradio("refresh");
-    $("#rentjeeves_checkoutbundle_paymenttype_ends_1").checkboxradio("refresh");
+    $("#"+prefix+"ends_0").checkboxradio("refresh");
+    $("#"+prefix+"ends_1").checkboxradio("refresh");
 }
 
+//hide month/year selection if recurring payment set to complete when cancelled
+
 cancelled=[
-    "rentjeeves_checkoutbundle_paymenttype_endMonth",
-    "rentjeeves_checkoutbundle_paymenttype_endYear"
+    ""+prefix+"endMonth",
+    ""+prefix+"endYear"
 ]
-function whenCancelled(i){
+function whenCancelled(isCancelled){ //isCancelled is recurring event set to when cancelled
     $.each(cancelled,function(index,value){
-        if(i) {
+        if(isCancelled) {
             $('#' + value).selectmenu('enable');
         }else{
             $('#' + value).selectmenu('disable')
@@ -390,29 +439,34 @@ function whenCancelled(i){
     })
 }
 
-function freqHide(i){
-    if(!i){//hide
-        $('#rentjeeves_checkoutbundle_paymenttype_dueDate_box').hide()
+//hide dueDate box
+
+function freqHide(isOneTime){
+    if(!isOneTime){//hide
+        $("#"+prefix+"dueDate_box").hide()
     }else{
-        $('#rentjeeves_checkoutbundle_paymenttype_dueDate_box').show()
+        $("#"+prefix+"dueDate_box").show()
     }
 }
 
 
-total=0;
+//update rent/other total
 
+total=0;
 function updateTotal(){
-    a=parseFloat($("#rentjeeves_checkoutbundle_paymenttype_amount").val())
-    o=parseFloat($("#rentjeeves_checkoutbundle_paymenttype_amountOther").val())
-    t=0;
-    if(!isNaN(a))
-        t+=a;
-    if(!isNaN(o))
-        t+=o;
-    total=a+o
-    $("#total").html(accounting.formatNumber(t,2))
+    amount=parseFloat($("#"+prefix+"amount").val())
+    other=parseFloat($("#"+prefix+"amountOther").val())
+    total=0;
+    if(!isNaN(amount))
+        total+=amount;
+    if(!isNaN(other))
+        total+=other;
+    total=amount+other
+    $("#total").html(accounting.formatNumber(total,2))
+    $("#"+prefix+"total").val(total)
 }
 
+//submit form with ajax to display dialog when completed
 
 function submitForm(){
 
@@ -424,8 +478,10 @@ function submitForm(){
 
         success: function (result) {
             a=result
-            console.log(result)
-            if(result.success!=true){
+            if(debug){
+                console.log(result)
+            }
+            if(result.success!=true){   //handle error message and take user back to pay/edit page
                 $.mobile.changePage('#pay')
                 msg="";
                 $.each(result,function(i,k){
@@ -435,7 +491,7 @@ function submitForm(){
                 })
                 $("#errorMsg").html(msg)
                 $("#errorMsg").show()
-            }else{
+            }else{                      //we are successful! display dialog, refresh page to update information
                 $("#popupBasic").popup( "open" )
                 $("#errorMsg").hide()
                 setTimeout(function(){
@@ -443,7 +499,7 @@ function submitForm(){
                 },500)
             }
         },
-        error: function (request, error) {
+        error: function (request, error) {  //ajax error!
             $.mobile.changePage('#pay')
             msg="An error occurred. ("+error+")"
             $("#errorMsg").html(msg)
