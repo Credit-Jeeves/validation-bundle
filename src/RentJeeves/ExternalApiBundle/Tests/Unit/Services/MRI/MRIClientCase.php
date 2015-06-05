@@ -81,7 +81,9 @@ class MRIClientCase extends \PHPUnit_Framework_TestCase
      */
     public function getPaymentMock($errorMessage)
     {
-        $mockPayment = $this->getMock('\RentJeeves\ExternalApiBundle\Model\MRI\Payment', ["getEntryResponse"], [], '', false);
+        $mockPayment = $this->getMock(
+            '\RentJeeves\ExternalApiBundle\Model\MRI\Payment', ["getEntryResponse"], [], '', false
+        );
         $mockResponse = $this->getMock('\RentJeeves\ExternalApiBundle\Model\MRI\Response', ["getError"], [], '', false);
         $mockError = $this->getMock('\RentJeeves\ExternalApiBundle\Model\MRI\Error', ["getMessage"], [], '', false);
 
