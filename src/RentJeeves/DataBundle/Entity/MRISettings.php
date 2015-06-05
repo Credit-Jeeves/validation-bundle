@@ -11,6 +11,10 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
  */
 class MRISettings extends Base implements SettingsInterface
 {
+    public function setAllowToSendRealTime()
+    {
+    }
+
     /**
      * {@inheritdoc}
      */

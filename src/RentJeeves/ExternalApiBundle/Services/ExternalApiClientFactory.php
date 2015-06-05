@@ -4,7 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Services;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
@@ -20,6 +19,11 @@ class ExternalApiClientFactory
      * @var SoapClientFactory
      */
     protected $soapClientFactory;
+
+    protected $realTimePaymentClientMapping = [
+        ApiIntegrationType::YARDI_VOYAGER => self::YARDI_PAYMENT,
+        ApiIntegrationType::AMSI => self::AMSI_LEASING
+    ];
 
     /**
      * @DI\InjectParams({
@@ -42,10 +46,10 @@ class ExternalApiClientFactory
      */
     public function createClient($accountingType, SettingsInterface $accountingSettings)
     {
-        if (array_key_exists($accountingType, SoapClientEnum::$realTimePaymentClientMapping)
+        if (array_key_exists($accountingType, $this->realTimePaymentClientMapping)
             && empty($this->accountingServiceClientMap[$accountingType])
         ) {
-            $serviceName = SoapClientEnum::$realTimePaymentClientMapping[$accountingType];
+            $serviceName = $this->realTimePaymentClientMapping[$accountingType];
             $clientService = $this->soapClientFactory->getClient(
                 $accountingSettings,
                 $serviceName

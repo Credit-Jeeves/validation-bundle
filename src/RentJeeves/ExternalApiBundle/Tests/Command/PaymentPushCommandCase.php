@@ -72,7 +72,11 @@ class PaymentPushCommandCase extends BaseTestCase
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
             ['command' => 'external_api:payment:push']
         );
-
+        $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $holding->setAllowToSendRealTime();
+        $em->persist($holding->getExternalSettings());
+        $em->flush($holding->getExternalSettings());
         $numberJobs = count($jobs);
         $transaction = $this->createTransaction(
             $apiIntegrationType,
@@ -81,6 +85,7 @@ class PaymentPushCommandCase extends BaseTestCase
             $externalLeaseId,
             $externalUnitId
         );
+
         $numberJobs++;
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');

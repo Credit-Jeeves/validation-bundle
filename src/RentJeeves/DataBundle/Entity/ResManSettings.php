@@ -11,6 +11,10 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
  */
 class ResManSettings extends Base implements SettingsInterface
 {
+    public function setAllowToSendRealTime()
+    {
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -21,7 +21,7 @@ class PaymentClientCase extends Base
      */
     protected static $client;
 
-    protected function initOpenReceiptBatchDepositDate()
+    protected function initOpenBatch()
     {
         $container = $this->getKernel()->getContainer();
         $clientFactory = $container->get('soap.client.factory');
@@ -31,9 +31,9 @@ class PaymentClientCase extends Base
             SoapClientEnum::YARDI_PAYMENT
         );
 
-        self::$batchId = self::$client->openReceiptBatchDepositDate(
-            new DateTime(),
+        self::$batchId = self::$client->openBatch(
             self::PROPERTY_ID,
+            new DateTime(),
             $description = 'Test open date'
         );
     }
@@ -48,15 +48,15 @@ class PaymentClientCase extends Base
     /**
      * @test
      */
-    public function openReceiptBatchDepositDate()
+    public function openBatch()
     {
-        $this->initOpenReceiptBatchDepositDate();
+        $this->initOpenBatch();
         $this->checkError();
     }
 
     /**
      * @test
-     * @depends openReceiptBatchDepositDate
+     * @depends openBatch
      */
     public function addReceiptsToBatch()
     {
@@ -84,7 +84,7 @@ class PaymentClientCase extends Base
      */
     public function closeReceiptBatch()
     {
-        $result = self::$client->closeReceiptBatch(
+        $result = self::$client->closeBatch(
             self::$batchId
         );
         $this->checkError();
@@ -96,8 +96,8 @@ class PaymentClientCase extends Base
      */
     public function cancelReceiptBatch()
     {
-        $this->initOpenReceiptBatchDepositDate();
-        self::$client->closeReceiptBatch(
+        $this->initOpenBatch();
+        self::$client->closeBatch(
             self::$batchId
         );
         $this->checkError();

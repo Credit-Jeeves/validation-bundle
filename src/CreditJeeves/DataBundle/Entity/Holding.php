@@ -54,6 +54,19 @@ class Holding extends BaseHolding
      */
     public function isSettingsAllowToSendRealTime()
     {
+        if (!$this->getExternalSettings()) {
+            return false;
+        }
+
         return $this->getExternalSettings()->isAllowToSendRealTime();
+    }
+
+    public function setAllowToSendRealTime()
+    {
+        if (!$this->getExternalSettings()) {
+            return;
+        }
+
+        $this->getExternalSettings()->setAllowToSendRealTime();
     }
 }

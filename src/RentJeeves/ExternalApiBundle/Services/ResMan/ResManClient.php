@@ -279,8 +279,8 @@ class ResManClient implements ClientInterface
     }
 
     /**
-     * @param $accountingBatchId
-     * @param $externalPropertyId
+     * @param string $accountingBatchId
+     * @param string $externalPropertyId
      * @param  mixed $accountId Can be get from settings
      * @return bool
      */

@@ -21,4 +21,6 @@ interface SettingsInterface
      * @return boolean
      */
     public function isAllowToSendRealTime();
+
+    public function setAllowToSendRealTime();
 }
