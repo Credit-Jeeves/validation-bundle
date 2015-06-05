@@ -6,7 +6,7 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
-use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\BaseClientCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\ClientCaseBase as Base;
 
 class PaymentClientCase extends Base
 {
@@ -26,7 +26,7 @@ class PaymentClientCase extends Base
             $this->getYardiSettings(),
             SoapClientEnum::YARDI_PAYMENT
         );
-        
+
         self::$batchId = self::$client->openReceiptBatchDepositDate(
             new DateTime(),
             $yardiPropertyId = 'rnttrk01',
@@ -72,7 +72,6 @@ class PaymentClientCase extends Base
         $this->checkError();
         $this->assertEquals('2 Receipts were added to Batch '.self::$batchId, $result->getMessage()->getMessage());
     }
-
 
     /**
      * @test
