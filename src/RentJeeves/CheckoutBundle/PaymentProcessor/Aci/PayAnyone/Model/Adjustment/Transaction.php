@@ -6,7 +6,9 @@ use JMS\Serializer\Annotation as Serializer;
 class Transaction
 {
     /**
-     * @Serializer\Type("ArrayCollection<RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Payment>")
+     * @Serializer\Type(
+     *  "ArrayCollection<RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Payment>"
+     * )
      * @Serializer\XmlKeyValuePairs
      * @Serializer\XmlList(inline = true, entry="PAYMENT")
      */
