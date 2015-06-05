@@ -266,7 +266,13 @@ class MRIClient implements ClientInterface
             $error = $payment->getEntryResponse()->getError();
 
             if (!empty($error)) {
-                throw new Exception(sprintf("Api return error %s", $error->getMessage()));
+                $message = sprintf(
+                    'MRI: Failed posting order(ID#%d). Got error code %d, error description %s',
+                    $order->getId(),
+                    $error->getMessage()
+                );
+                $this->logger->alert($message); // TODO: replace alert with exception. See RT-1449
+                throw new Exception($message);
             }
 
             return true;
