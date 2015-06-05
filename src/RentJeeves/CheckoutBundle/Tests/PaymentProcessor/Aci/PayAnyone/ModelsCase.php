@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Unit\Aci;
+namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\PayAnyone;
 
 use RentJeeves\TestBundle\BaseTestCase;
 
