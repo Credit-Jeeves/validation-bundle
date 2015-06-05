@@ -8,6 +8,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\BillingAccountM
 use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\EnrollmentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\FundingAccountManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\PaymentManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -42,7 +43,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
     protected $paymentManager;
 
     /**
-     * @var ReportLoaderInterface
+     * @var AciReportLoader
      */
     protected $reportLoader;
 
@@ -51,7 +52,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
      * @param BillingAccountManager $billingAccountManager
      * @param FundingAccountManager $fundingAccountManager
      * @param PaymentManager $paymentManager
-     * @param ReportLoaderInterface $reportLoader
+     * @param AciReportLoader $reportLoader
      *
      * @DI\InjectParams({
      *     "enrollmentManager" = @DI\Inject("payment_processor.aci.collect_pay.enrollment_manager"),
@@ -66,7 +67,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
         BillingAccountManager $billingAccountManager,
         FundingAccountManager $fundingAccountManager,
         PaymentManager $paymentManager,
-        ReportLoaderInterface $reportLoader
+        AciReportLoader $reportLoader
     ) {
         $this->enrollmentManager = $enrollmentManager;
         $this->billingAccountManager = $billingAccountManager;

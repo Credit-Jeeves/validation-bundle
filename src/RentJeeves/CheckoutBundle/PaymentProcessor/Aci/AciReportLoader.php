@@ -8,11 +8,10 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDecoderException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReportTransaction;
-use RentJeeves\CheckoutBundle\PaymentProcessor\ReportLoaderInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class AciReportLoader implements ReportLoaderInterface
+class AciReportLoader
 {
     /**
      * @var SftpFilesDownloaderInterface

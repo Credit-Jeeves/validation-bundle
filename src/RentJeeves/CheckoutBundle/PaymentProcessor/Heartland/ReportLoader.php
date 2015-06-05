@@ -9,13 +9,12 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer\HPSDepositReportDenormalizer;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Encoder\CsvFileDecoder;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\Serializer\Normalizer\HPSReversalReportDenormalizer;
-use RentJeeves\CheckoutBundle\PaymentProcessor\ReportLoaderInterface;
 use Symfony\Component\Serializer\Serializer;
 
 /**
  * @DI\Service("payment_processor.heartland.report_loader")
  */
-class ReportLoader implements ReportLoaderInterface
+class ReportLoader
 {
     const DEPOSIT_REPORT_FILENAME_SUFFIX = 'ACHDepositsandChargesExport';
     const REVERSAL_REPORT_FILENAME_SUFFIX = 'BillDataExport';
