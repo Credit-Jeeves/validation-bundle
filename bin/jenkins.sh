@@ -11,7 +11,7 @@ DIR="$(cd `dirname $0` ; pwd)"
 BUILDS_DIR="${WORKSPACE}/../../jobs/${JOB_NAME}_${EXECUTOR_NUMBER}/builds"
 BUILD_DIR="$DIR/../app/logs/build"
 PHPUNIT_PATH=`which phpunit`
-PHPUNIT_PARAMS="--debug -v"
+PHPUNIT_PARAMS="--debug -v --testsuite 'Project Test Suite'"
 
 export SYMFONY__DATABASE__NAME="renttrack_jenkins"
 export SYMFONY__SERVER__NAME="dev2"
