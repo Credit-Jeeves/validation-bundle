@@ -6,7 +6,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClie
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
-use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\BaseClientCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\ClientCaseBase as Base;
 
 class ResidentTransactionsClientCase extends Base
 {
