@@ -5,7 +5,6 @@ namespace RentJeeves\CoreBundle\Report\TransUnion;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use DateTime;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 
 class TransUnionReportRecord
@@ -29,7 +28,7 @@ class TransUnionReportRecord
     protected $contract;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      *
      * @Serializer\Exclude
      */
@@ -145,11 +144,11 @@ class TransUnionReportRecord
 
     public function __construct(
         Contract $contract,
-        DateTime $month,
-        DateTime $lastPaidFor,
+        \DateTime $month,
+        \DateTime $lastPaidFor,
         $paidFor = null,
         $amount = null,
-        DateTime $lastPaymentDate = null
+        \DateTime $lastPaymentDate = null
     ) {
         $this->contract = $contract;
         $this->reportedMonth = $month;
@@ -457,6 +456,8 @@ class TransUnionReportRecord
         $requiredPaidFor = clone $this->reportedMonth;
         $requiredPaidFor->setDate(null, null, $this->contract->getDueDate());
 
+        // lastPaidFor always exists since contracts are selected with join operations of type rent
+        // if contract doesn't have any operations, we will not select it.
         $interval = $requiredPaidFor->diff($this->lastPaidFor)->format('%r%a');
 
         return (int)$interval;

@@ -97,6 +97,6 @@ class RentalReportType extends Base
      */
     public function getName()
     {
-        return 'rentjeeves_adminbundle_rental_report';
+        return 'rental_report';
     }
 }

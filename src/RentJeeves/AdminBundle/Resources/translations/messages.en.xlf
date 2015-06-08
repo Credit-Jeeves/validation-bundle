@@ -44,7 +44,7 @@
             </trans-unit>
             <trans-unit id="admin.report.choose_start_date">
                 <source>admin.report.choose_start_date</source>
-                <target>Start date:</target>
+                <target>Start date (created_at date of operation):</target>
             </trans-unit>
             <trans-unit id="admin.report.choose_end_date">
                 <source>admin.report.choose_end_date</source>

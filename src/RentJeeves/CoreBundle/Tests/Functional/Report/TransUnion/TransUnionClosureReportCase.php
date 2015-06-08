@@ -24,7 +24,6 @@ class TransUnionClosureReportCase extends BaseTestCase
             [
                 'status' => ContractStatus::FINISHED,
                 'rent' => 1500,
-                'dueDate' => 4,
             ]
         );
         $this->assertNotNull($contract, 'No finished contracts found');

@@ -673,7 +673,7 @@ class ContractRepository extends EntityRepository
      * @param \DateTime $month
      * @param \DateTime $startDate
      * @param \DateTime $endDate
-     * @return ArrayCollection
+     * @return Contract[]
      */
     public function getContractsForExperianPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
@@ -710,7 +710,7 @@ class ContractRepository extends EntityRepository
     /**
      * @param \DateTime $startDate
      * @param \DateTime $endDate
-     * @return ArrayCollection
+     * @return Contract[]
      */
     public function getContractsForExperianClosureReport(\DateTime $startDate, \DateTime $endDate)
     {
@@ -740,7 +740,7 @@ class ContractRepository extends EntityRepository
      * @param \DateTime $month
      * @param \DateTime $startDate
      * @param \DateTime $endDate
-     * @return ArrayCollection
+     * @return Contract[]
      */
     public function getContractsForTransUnionPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
@@ -781,7 +781,7 @@ class ContractRepository extends EntityRepository
      * @param \DateTime $month
      * @param \DateTime $startDate
      * @param \DateTime $endDate
-     * @return ArrayCollection
+     * @return Contract[]
      */
     public function getContractsForTransUnionNegativeReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
@@ -829,7 +829,7 @@ class ContractRepository extends EntityRepository
     /**
      * @param \DateTime $startDate
      * @param \DateTime $endDate
-     * @return ArrayCollection
+     * @return Contract[]
      */
     public function getContractsForTransUnionClosureReport(\DateTime $startDate, \DateTime $endDate)
     {

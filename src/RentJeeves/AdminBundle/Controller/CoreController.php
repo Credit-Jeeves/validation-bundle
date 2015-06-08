@@ -43,7 +43,7 @@ class CoreController extends BaseController
     public function reportAction(Request $request)
     {
         $rentalReportData = new RentalReportData();
-        $reportType = $this->createForm(new RentalReportType(), $rentalReportData);
+        $reportType = $this->createForm('rental_report', $rentalReportData);
         $reportType->handleRequest($request);
 
         if ($reportType->isValid()) {

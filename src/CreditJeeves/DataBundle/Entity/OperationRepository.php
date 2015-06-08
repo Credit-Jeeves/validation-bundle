@@ -10,17 +10,16 @@ use Doctrine\ORM\Query\Expr;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
-use \DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 class OperationRepository extends EntityRepository
 {
     /**
      * @param Contract $contract
-     * @param DateTime $month
-     * @param DateTime $startDate
-     * @param DateTime $endDate
-     * @return ArrayCollection
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Operation[]
      */
     public function getExperianRentOperationsForMonth(
         Contract $contract,
@@ -141,7 +140,7 @@ class OperationRepository extends EntityRepository
 
     /**
      * @param Contract $contract
-     * @return DateTime|null
+     * @return \DateTime|null
      */
     public function getLastContractPaidFor(Contract $contract)
     {
