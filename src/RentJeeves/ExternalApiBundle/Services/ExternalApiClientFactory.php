@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
@@ -21,8 +22,8 @@ class ExternalApiClientFactory
     protected $soapClientFactory;
 
     protected $realTimePaymentClientMapping = [
-        ApiIntegrationType::YARDI_VOYAGER => self::YARDI_PAYMENT,
-        ApiIntegrationType::AMSI => self::AMSI_LEASING
+        ApiIntegrationType::YARDI_VOYAGER => SoapClientEnum::YARDI_PAYMENT,
+        ApiIntegrationType::AMSI => SoapClientEnum::AMSI_LEASING
     ];
 
     /**

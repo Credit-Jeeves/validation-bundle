@@ -3,7 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use \DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
@@ -41,7 +40,7 @@ class PaymentClient extends AbstractClient
      */
     public function openBatch(
         $yardiPropertyId,
-        DateTime $depositDate,
+        \DateTime $depositDate,
         $description
     ) {
         $this->debugMessage('Run OpenReceiptBatch_DepositDate');
@@ -65,7 +64,7 @@ class PaymentClient extends AbstractClient
 
     /**
      * Why strange method name, which can be confusing, described:
-     * https://credit.atlassian.net/browse/RT-813?jql=text%20~%20%22PostReceiptBatch%22
+     * @link https://credit.atlassian.net/browse/RT-813?jql=text%20~%20%22PostReceiptBatch%22
      *
      * @param $batchId
      *
@@ -97,7 +96,7 @@ class PaymentClient extends AbstractClient
 
     /**
      * @param Order $order
-     * @param $externalPropertyId
+     * @param string $externalPropertyId
      */
     public function addPaymentToBatch(Order $order, $externalPropertyId)
     {

@@ -21,6 +21,9 @@ class YardiSettings extends Base implements SettingsInterface
     const PAYMENT_TYPE_CHECK = 'check';
     const PAYMENT_TYPE_OTHER = 'other';
 
+    /**
+     * {@inheritdoc}
+     */
     public function setAllowToSendRealTime()
     {
         $this->setSynchronizationStrategy(SynchronizationStrategy::REAL_TIME);

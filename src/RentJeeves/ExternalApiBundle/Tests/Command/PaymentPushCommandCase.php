@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
-use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -66,8 +65,7 @@ class PaymentPushCommandCase extends BaseTestCase
         $externalUnitId
     ) {
         $this->load(true);
-        /** @var $em EntityManager */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getEntityManager();
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
             ['command' => 'external_api:payment:push']

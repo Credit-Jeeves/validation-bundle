@@ -22,7 +22,7 @@ class HoldingRepository extends EntityRepository
      * @param integer $start
      * @param integer $limit
      * @param string $strategy
-     * @return mixed
+     * @return Holding[]
      */
     public function findHoldingsWithYardiSettings($start, $limit, $strategy = null)
     {
