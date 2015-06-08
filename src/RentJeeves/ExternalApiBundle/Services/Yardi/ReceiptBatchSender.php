@@ -311,7 +311,6 @@ class ReceiptBatchSender
                     $this->cancelBatch($yardiBatchId);
                 }
                 $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
-                throw $e;
             }
 
             $startPagination += self::LIMIT_ORDERS;
