@@ -78,7 +78,7 @@ class ResManClientCase extends \PHPUnit_Framework_TestCase
      */
     public function testAddPaymentToBatchApiFailShouldAlert()
     {
-        $alertRegex = "/ResMan: Can't add payment to batch for OrderID\(ID#8675309\)\. " +
+        $alertRegex = "/ResMan: Can't add payment to batch for OrderID\(ID#8675309\)\. " .
                       "Error message: Test Generated.*/";
         $stubClient = $this->getResManClientAlertMock($alertRegex);
 
