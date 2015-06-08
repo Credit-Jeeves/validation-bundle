@@ -20,10 +20,5 @@ interface SettingsInterface
     /**
      * @return boolean
      */
-    public function isAllowToSendRealTime();
-
-    /**
-     * Allow inside settings real time send payment to accounting system
-     */
-    public function setAllowToSendRealTime();
+    public function isAllowedToSendRealTimePayments();
 }

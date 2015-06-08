@@ -2,9 +2,11 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\ExternalApiBundle\Command\PaymentPushCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
@@ -36,13 +38,6 @@ class PaymentPushCommandCase extends BaseTestCase
                 MRIClientCase::PROPERTY_ID,
                 null,
                 null
-            ],
-            [
-                ApiIntegrationType::YARDI_VOYAGER,
-                PaymentClientCase::RESIDENT_ID,
-                PaymentClientCase::PROPERTY_ID,
-                PaymentClientCase::RESIDENT_ID,
-                null
             ]
         ];
     }
@@ -72,7 +67,6 @@ class PaymentPushCommandCase extends BaseTestCase
         );
         $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
         $this->assertNotEmpty($holding);
-        $holding->setAllowToSendRealTime();
         $em->persist($holding->getExternalSettings());
         $em->flush($holding->getExternalSettings());
         $numberJobs = count($jobs);
@@ -82,6 +76,71 @@ class PaymentPushCommandCase extends BaseTestCase
             $externalPropertyId,
             $externalLeaseId,
             $externalUnitId
+        );
+
+        $numberJobs++;
+        /** @var PaymentBatchMappingRepository $repo */
+        $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
+
+        $this->assertFalse($repo->isOpenedBatch(
+            $transaction->getBatchId(),
+            $apiIntegrationType,
+            $externalPropertyId
+        ));
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:payment:push']
+        );
+
+        $this->assertCount($numberJobs, $jobs);
+
+        $job = end($jobs);
+
+        $application = new Application($this->getKernel());
+        $application->add(new PaymentPushCommand());
+
+        $command = $application->find('external_api:payment:push');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            [
+                'command'       => $command->getName(),
+                '--jms-job-id'  => $job->getId(),
+            ]
+        );
+        $this->assertRegExp("/Start\nSuccess/", $commandTester->getDisplay());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendPaymentToYardiApi()
+    {
+        $apiIntegrationType = ApiIntegrationType::YARDI_VOYAGER;
+        $residentId = PaymentClientCase::RESIDENT_ID;
+        $externalPropertyId = PaymentClientCase::PROPERTY_ID;
+        $externalLeaseId = PaymentClientCase::RESIDENT_ID;
+        $externalUnitId = null;
+
+        $this->load(true);
+        $em = $this->getEntityManager();
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:payment:push']
+        );
+        /** @var Holding $holding */
+        $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $holding->getYardiSettings()->setSynchronizationStrategy(SynchronizationStrategy::REAL_TIME);
+        $em->flush($holding->getYardiSettings());
+        $this->assertNotEmpty($holding);
+        $em->persist($holding->getExternalSettings());
+        $em->flush($holding->getExternalSettings());
+        $numberJobs = count($jobs);
+        $transaction = $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId,
+            null
         );
 
         $numberJobs++;

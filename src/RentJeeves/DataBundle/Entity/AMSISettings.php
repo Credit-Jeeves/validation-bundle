@@ -11,14 +11,10 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
  */
 class AMSISettings extends Base implements SettingsInterface
 {
-    public function setAllowToSendRealTime()
-    {
-    }
-
     /**
      * {@inheritdoc}
      */
-    public function isAllowToSendRealTime()
+    public function isAllowedToSendRealTimePayments()
     {
         return true;
     }

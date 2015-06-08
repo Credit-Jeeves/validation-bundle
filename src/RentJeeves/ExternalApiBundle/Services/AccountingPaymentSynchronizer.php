@@ -12,7 +12,6 @@ use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use Exception;
@@ -64,13 +63,6 @@ class AccountingPaymentSynchronizer
      */
     protected $debug = false;
 
-    protected $allowedIntegrationApi = [
-        ApiIntegrationType::RESMAN,
-        ApiIntegrationType::MRI,
-        ApiIntegrationType::AMSI,
-        ApiIntegrationType::YARDI_VOYAGER
-    ];
-
     /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
@@ -104,13 +96,7 @@ class AccountingPaymentSynchronizer
      */
     public function isAllowedToSend(Holding $holding)
     {
-        if (in_array($holding->getApiIntegrationType(), $this->allowedIntegrationApi) &&
-            $holding->isSettingsAllowToSendRealTime()
-        ) {
-            return true;
-        }
-
-        return false;
+        return $holding->isAllowedToSendRealTimePayments();
     }
 
     /**

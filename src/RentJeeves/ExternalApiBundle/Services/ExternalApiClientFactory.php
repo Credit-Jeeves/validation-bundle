@@ -21,7 +21,10 @@ class ExternalApiClientFactory
      */
     protected $soapClientFactory;
 
-    protected $realTimePaymentClientMapping = [
+    /**
+     * @var array
+     */
+    protected $externalSoapClients = [
         ApiIntegrationType::YARDI_VOYAGER => SoapClientEnum::YARDI_PAYMENT,
         ApiIntegrationType::AMSI => SoapClientEnum::AMSI_LEDGER
     ];
@@ -47,10 +50,10 @@ class ExternalApiClientFactory
      */
     public function createClient($accountingType, SettingsInterface $accountingSettings)
     {
-        if (array_key_exists($accountingType, $this->realTimePaymentClientMapping)
+        if (array_key_exists($accountingType, $this->externalSoapClients)
             && empty($this->accountingServiceClientMap[$accountingType])
         ) {
-            $serviceName = $this->realTimePaymentClientMapping[$accountingType];
+            $serviceName = $this->externalSoapClients[$accountingType];
             $clientService = $this->soapClientFactory->getClient(
                 $accountingSettings,
                 $serviceName

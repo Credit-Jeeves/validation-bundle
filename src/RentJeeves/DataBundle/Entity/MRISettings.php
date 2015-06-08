@@ -14,14 +14,7 @@ class MRISettings extends Base implements SettingsInterface
     /**
      * {@inheritdoc}
      */
-    public function setAllowToSendRealTime()
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isAllowToSendRealTime()
+    public function isAllowedToSendRealTimePayments()
     {
         return true;
     }

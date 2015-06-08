@@ -24,15 +24,7 @@ class YardiSettings extends Base implements SettingsInterface
     /**
      * {@inheritdoc}
      */
-    public function setAllowToSendRealTime()
-    {
-        $this->setSynchronizationStrategy(SynchronizationStrategy::REAL_TIME);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isAllowToSendRealTime()
+    public function isAllowedToSendRealTimePayments()
     {
         return $this->getSynchronizationStrategy() === SynchronizationStrategy::REAL_TIME;
     }
