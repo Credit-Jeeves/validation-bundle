@@ -97,6 +97,10 @@ class ImportSummaryManager
      */
     public function setTotal($total)
     {
+        if ($this->importSummaryModel->getCountTotal() > 0) {
+            return;
+        }
+
         $this->importSummaryModel->setCountTotal($total);
     }
 
@@ -125,12 +129,12 @@ class ImportSummaryManager
     /**
      * Increment the number of skipped row
      *
-     * @param integer $offset
+     * @param array $rowContent
      */
-    public function incrementSkipped($offset)
+    public function incrementSkipped(array $rowContent)
     {
         $importError = new ImportError();
-        $importError->setRowOffset($offset);
+        $importError->setRowContent($rowContent);
         $importError->setImportSummary($this->importSummaryModel);
 
         if ($this->isExistEntityErrorInTheDB($importError)) {
@@ -158,13 +162,11 @@ class ImportSummaryManager
      *
      * @param array   $row
      * @param array   $errorMessages
-     * @param integer $offset
      */
-    public function addError(array $row, array $errorMessages, $offset)
+    public function addError(array $row, array $errorMessages)
     {
         $importError = new ImportError();
         $importError->setMessages($errorMessages);
-        $importError->setRowOffset($offset);
         $importError->setRowContent($row);
         $importError->setImportSummary($this->importSummaryModel);
 
@@ -179,11 +181,10 @@ class ImportSummaryManager
      * @param string  $exceptionId
      * @param integer $offset
      */
-    public function addException(array $row, $exceptionMessage, $exceptionId, $offset)
+    public function addException(array $row, $exceptionMessage, $exceptionId)
     {
         $importError = new ImportError();
         $importError->setMessages([$exceptionMessage]);
-        $importError->setRowOffset($offset);
         $importError->setRowContent($row);
         $importError->setExceptionUid($exceptionId);
         $importError->setImportSummary($this->importSummaryModel);
@@ -211,7 +212,7 @@ class ImportSummaryManager
             return;
         }
         $this->logger->debug(
-            sprintf('Add error to import summary report, row offset "%s"', $importError->getRowOffset())
+            sprintf('Add error to import summary report, row: "%s"', $importError->getStringRow())
         );
         $this->em->persist($importError);
         $this->em->flush($importError);
@@ -224,7 +225,7 @@ class ImportSummaryManager
     protected function isExistEntityErrorInTheDB(ImportError $importError)
     {
         $searchParameters = [
-            'rowOffset' => $importError->getRowOffset(),
+            'md5RowContent' => $importError->getMd5RowContent(),
             'importSummary' => $importError->getImportSummary()->getId()
         ];
 

@@ -11,7 +11,7 @@ DIR="$(cd `dirname $0` ; pwd)"
 BUILDS_DIR="${WORKSPACE}/../../jobs/${JOB_NAME}_${EXECUTOR_NUMBER}/builds"
 BUILD_DIR="$DIR/../app/logs/build"
 PHPUNIT_PATH=`which phpunit`
-PHPUNIT_PARAMS="--debug -v"
+PHPUNIT_PARAMS=(--debug -v --testsuite "Project Test Suite")
 
 export SYMFONY__DATABASE__NAME="renttrack_jenkins"
 export SYMFONY__SERVER__NAME="dev2"
@@ -40,7 +40,7 @@ php bin/environment.php --$BUILD || exit 1
 
 echo "##### RUN PHPUNIT ALL TESTS #####"
 nice -n 2 php -C -q -d memory_limit=6144M $PHPUNIT_PATH \
-  $PHPUNIT_PARAMS \
+  "${PHPUNIT_PARAMS[@]}" \
   --log-junit=$BUILD_DIR/allTests.xml
 
 echo "##### RUN MIGRATION TEST #####"

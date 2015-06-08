@@ -14,11 +14,14 @@
     bootstrap                   = "app/bootstrap.php.cache" >
 
     <testsuites>
+
+        <!--                                  -->
+        <!-- Default TestSuite run by Jenkins -->
+        <!--                                  -->
         <testsuite name="Project Test Suite">
             <directory suffix="Case.php">vendor/credit-jeeves/api-bundle/CreditJeeves/*/Tests/CreditJeeves</directory>
             <!-- Not pic up this test by reg link -->
-            <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/Services/MRI</directory>
-            <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/Services/ResMan</directory>
+            <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/Services/*</directory>
             <!-- end -->
             <directory suffix="Case.php">src/*/*Bundle/Tests</directory>
             <directory suffix="Case.php">src/*/*Bundle/Tests/*</directory>
@@ -29,6 +32,15 @@
             <directory suffix="Case.php">vendor/credit-jeeves/simulation-bundle/CreditJeeves/*/Tests</directory>
             <!--directory suffix="Case.php">vendor/credit-jeeves/*/CreditJeeves/*/Tests/Functional</directory-->
         </testsuite>
+
+        <!--                                  -->
+        <!-- Bundle-Specific TestSuites       -->
+        <!--                                  -->
+        <testsuite name="ExternalApiBundle">
+            <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/*</directory>
+            <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/Services/*</directory>
+        </testsuite>
+
     </testsuites>
 
     <php>

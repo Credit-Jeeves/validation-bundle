@@ -21,11 +21,6 @@ class Import
     protected $row = [];
 
     /**
-     * @var integer
-     */
-    protected $offset;
-
-    /**
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -150,22 +145,6 @@ class Import
      * @var HandlerAbstract
      */
     protected $handler;
-
-    /**
-     * @return int
-     */
-    public function getOffset()
-    {
-        return $this->offset;
-    }
-
-    /**
-     * @param int $offset
-     */
-    public function setOffset($offset)
-    {
-        $this->offset = $offset;
-    }
 
     /**
      * @return array

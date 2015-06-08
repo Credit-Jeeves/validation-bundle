@@ -19,14 +19,14 @@ trait Operation
      */
     protected function isAlreadyPaid($paidFor)
     {
-        $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
+        $operations = $this->em->getRepository('DataBundle:Operation')->getOperationsForImport(
             $this->currentImportModel->getTenant(),
             $this->currentImportModel->getContract(),
             $paidFor
         );
 
         //We can't create double payment for current month
-        if ($operation) {
+        if (!empty($operations)) {
             return true;
         }
 

@@ -38,14 +38,21 @@ class MappingCsv extends MappingAbstract
         $this->reader->setEnclosure($data[StorageCsv::IMPORT_TEXT_DELIMITER]);
     }
 
+    /**
+     * @return bool
+     */
     public function isNeedManualMapping()
     {
         return true;
     }
 
-    public function getTotal()
+    /**
+     * @return int
+     */
+    public function getTotalContent()
     {
-        return $this->reader->countLines($this->storage->getFilePath());
+        //minus one because one line it's header
+        return $this->reader->countLines($this->storage->getFilePath())-1;
     }
 
     /**

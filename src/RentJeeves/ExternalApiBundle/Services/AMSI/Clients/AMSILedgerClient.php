@@ -41,6 +41,7 @@ class AMSILedgerClient extends AMSIBaseClient
                 if (self::SUCCESSFUL_RESPONSE_CODE == $resultPayment->getErrorCode()) {
                     return true;
                 } else {
+                    // TODO: replace alert with exception. See RT-1449
                     $this->logger->alert(sprintf(
                         'AMSI: Failed posting order(ID#%d). Got error code %d, error description %s',
                         $order->getId(),
@@ -49,12 +50,14 @@ class AMSILedgerClient extends AMSIBaseClient
                     ));
                 }
             } else {
+                // TODO: replace alert with exception. See RT-1449
                 $this->logger->alert(sprintf(
                     'AMSI: Failed posting order(ID#%d). Cannot deserialize response.',
                     $order->getId()
                 ));
             }
         } catch (\Exception $e) {
+            // TODO: replace alert with exception. See RT-1449
             $this->logger->alert(sprintf(
                 'AMSI: Failed posting order(ID#%d). Got exception %s',
                 $order->getId(),
