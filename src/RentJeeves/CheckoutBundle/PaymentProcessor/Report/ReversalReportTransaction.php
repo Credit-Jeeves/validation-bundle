@@ -33,6 +33,8 @@ class ReversalReportTransaction extends PaymentProcessorReportTransaction
 
     /**
      * @param string $originalTransactionId
+     *
+     * @return self
      */
     public function setOriginalTransactionId($originalTransactionId)
     {
@@ -51,6 +53,8 @@ class ReversalReportTransaction extends PaymentProcessorReportTransaction
 
     /**
      * @param string $reversalDescription
+     *
+     * @return self
      */
     public function setReversalDescription($reversalDescription)
     {
@@ -69,6 +73,8 @@ class ReversalReportTransaction extends PaymentProcessorReportTransaction
 
     /**
      * @param DateTime $transactionDate
+     *
+     * @return self
      */
     public function setTransactionDate($transactionDate)
     {
@@ -87,6 +93,8 @@ class ReversalReportTransaction extends PaymentProcessorReportTransaction
 
     /**
      * @param string $transactionType
+     *
+     * @return self
      */
     public function setTransactionType($transactionType)
     {

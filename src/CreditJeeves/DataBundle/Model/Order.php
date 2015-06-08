@@ -9,6 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
+use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
@@ -113,6 +114,17 @@ abstract class Order
 
     /**
      * @ORM\OneToMany(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\OutboundTransaction",
+     *     mappedBy="order",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     * @var ArrayCollection
+     */
+    protected $outboundTransactions;
+
+    /**
+     * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
      *     mappedBy="order",
      *     cascade={"all"}
@@ -151,11 +163,12 @@ abstract class Order
 
     public function __construct()
     {
-        $this->operations   = new ArrayCollection();
+        $this->operations = new ArrayCollection();
         $this->transactions = new ArrayCollection();
-        $this->operations   = new ArrayCollection();
-        $this->sentOrder    = new ArrayCollection();
-        $this->created_at   = new DateTime();
+        $this->operations = new ArrayCollection();
+        $this->sentOrder = new ArrayCollection();
+        $this->created_at = new DateTime();
+        $this->outboundTransactions = new ArrayCollection();
     }
 
     /**
@@ -457,5 +470,36 @@ abstract class Order
     public function setPaymentProcessor($paymentProcessor)
     {
         $this->paymentProcessor = $paymentProcessor;
+    }
+
+    /**
+     * Add OutboundTransaction
+     *
+     * @param OutboundTransaction $transaction
+     * @return Order
+     */
+    public function addOutboundTransaction(OutboundTransaction $transaction)
+    {
+        $this->outboundTransactions[] = $transaction;
+    }
+
+    /**
+     * Remove OutboundTransaction
+     *
+     * @param OutboundTransaction $transaction
+     */
+    public function removeOutboundTransaction(OutboundTransaction $transaction)
+    {
+        $this->outboundTransactions->removeElement($transaction);
+    }
+
+    /**
+     * Get OutboundTransaction
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOutboundTransactions()
+    {
+        return $this->outboundTransactions;
     }
 }

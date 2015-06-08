@@ -1,3 +1,5 @@
 imports:
     - { resource: config.yml }
-    - { resource: ../base/config_cli.yml }
+
+assetic:
+    use_controller: true

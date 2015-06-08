@@ -200,13 +200,42 @@ class MRIClient implements ClientInterface
      */
     public function getResidentTransactions($externalPropertyId)
     {
+        $this->logger->addDebug(
+            sprintf('MRI api call getResidentTransactions for property ID: %s', $externalPropertyId)
+        );
         $method = 'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID';
         $params = [
             'RMPROPID' => $externalPropertyId
         ];
 
         $this->debugMessage("Call MRI method: {$method}");
-        $response = $this->sendRequest($method, $params);
+        $mriResponse = $this->sendRequest($method, $params);
+        $nextPageLink = $mriResponse->getNextPageLink();
+        $values = $mriResponse->getValues();
+
+        while (!empty($nextPageLink)) {
+            $this->logger->addDebug(sprintf('Go to the next page of MRI by link: %s', $nextPageLink));
+            $urlQuery = parse_url($nextPageLink, PHP_URL_QUERY);
+            $urlQuery = str_replace(['&amp;'], ['&'], $urlQuery);
+            parse_str($urlQuery, $nextPageParams);
+            $mriResponse = $this->sendRequest($method, $nextPageParams);
+
+            if ($mriResponse instanceof MRIResponse) {
+                $nextPageLink = $mriResponse->getNextPageLink();
+                $values = array_merge($values, $mriResponse->getValues());
+
+                continue;
+            }
+
+            $nextPageLink = null;
+        }
+
+        $this->logger->addDebug(
+            sprintf('MRI api call "getResidentTransactions" return %s number of Transactions', count($values))
+        );
+
+        $response = new MRIResponse();
+        $response->setValues($values);
 
         return $response;
     }

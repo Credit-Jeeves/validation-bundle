@@ -7,9 +7,9 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
-use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
@@ -60,8 +60,8 @@ class PaymentCommandsCase extends BaseTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command'       => $command->getName(),
-                '--jms-job-id'  => $jobId,
+                'command' => $command->getName(),
+                '--jms-job-id' => $jobId,
             )
         );
 
@@ -129,7 +129,6 @@ class PaymentCommandsCase extends BaseTestCase
 
         $amount = $rentAmount * 2 + 25;
         $contract->setIntegratedBalance($amount);
-        $groupId = $contract->getGroup()->getId();
         $groupSettings = $contract->getGroup()->getGroupSettings();
         $groupSettings->setPayBalanceOnly(true);
         $groupSettings->setIsIntegrated(true);
@@ -138,7 +137,13 @@ class PaymentCommandsCase extends BaseTestCase
         $em->persist($payment);
         $em->flush($payment);
 
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
         $this->executeCommand();
+
+        // "Your Rent is Processing" Email
+        $this->assertCount(2, $plugin->getPreSendMessages());
 
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
@@ -193,7 +198,13 @@ class PaymentCommandsCase extends BaseTestCase
         $em->persist($contract);
         $em->flush();
 
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
         $this->executeCommand();
+
+        // "Your Rent is Processing" Email
+        $this->assertCount(2, $plugin->getPreSendMessages());
 
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
@@ -249,7 +260,13 @@ class PaymentCommandsCase extends BaseTestCase
         $em->persist($payment);
         $em->flush();
 
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
         $this->executeCommand();
+
+        // "Your Rent is Processing" Email
+        $this->assertCount(2, $plugin->getPreSendMessages());
 
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $contract->getRent()));
@@ -286,7 +303,13 @@ class PaymentCommandsCase extends BaseTestCase
         $em->persist($payment);
         $em->flush();
 
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
         $this->executeCommand();
+
+        // "Your Rent is Processing" Email
+        $this->assertCount(2, $plugin->getPreSendMessages());
 
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => '-888'));
@@ -335,6 +358,7 @@ class PaymentCommandsCase extends BaseTestCase
         $paymentAccount1->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
         $paymentAccount1->setType(PaymentAccountTypeEnum::BANK);
         $paymentAccount1->setName('Test ACI Bank');
+        $paymentAccount1->setBankAccountType(BankAccountType::CHECKING);
 
         $paymentAccountData = new PaymentAccountData();
 
@@ -348,7 +372,6 @@ class PaymentCommandsCase extends BaseTestCase
             ->set('card_number', '5110200200001115')
             ->set('routing_number', '063113057')
             ->set('account_number', '123245678')
-            ->set('ach_deposit_type', ACHDepositTypeEnum::CHECKING)
             ->set('csc_code', '123');
 
         $paymentAccount2 = clone $paymentAccount1;
@@ -364,6 +387,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $paymentAccount2->setType(PaymentAccountTypeEnum::CARD);
         $paymentAccount2->setName('Test ACI Card');
+        $paymentAccount2->setBankAccountType(null);
 
         $paymentAccountData->setEntity($paymentAccount2);
 
@@ -403,7 +427,14 @@ class PaymentCommandsCase extends BaseTestCase
         $em->persist($bankPayment);
         $em->flush();
 
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
         $this->executeCommand();
+
+        // "Your Rent is Processing" Email
+        $this->assertCount(3, $plugin->getPreSendMessages()); // 2 for Order; 1 - Monolog Message
+
         $orders = $em->getRepository('DataBundle:Order')->findBy(
             ['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY],
             ['status' => 'ASC']
@@ -423,7 +454,7 @@ class PaymentCommandsCase extends BaseTestCase
     /**
      * @param  Contract $contract
      * @param $amount
-     * @param  string   $type
+     * @param  string $type
      * @return Payment
      */
     protected function createPayment(Contract $contract, $amount, $type = PaymentType::ONE_TIME)
@@ -456,9 +487,6 @@ class PaymentCommandsCase extends BaseTestCase
 
     protected function executeCommand()
     {
-        $plugin = $this->registerEmailListener();
-        $plugin->clean();
-
         $application = new Application($this->getKernel());
         $application->add(new PayCommand());
 
@@ -476,9 +504,6 @@ class PaymentCommandsCase extends BaseTestCase
                 )
             );
         }
-
-        // "Your Rent is Processing" Email
-        $this->assertCount(2, $plugin->getPreSendMessages());
 
         $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
         $this->assertCount(0, $jobs);

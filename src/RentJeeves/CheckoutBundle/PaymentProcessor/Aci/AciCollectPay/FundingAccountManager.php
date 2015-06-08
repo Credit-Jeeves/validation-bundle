@@ -6,7 +6,6 @@ use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Address;
 use JMS\DiExtraBundle\Annotation as DI;
 use Payum\AciCollectPay\Request\ProfileRequest\AddFunding;
-use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as FundingAccountData;
@@ -15,6 +14,7 @@ use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
+use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
 
 /**
  * @DI\Service("payment.aci_collect_pay.funding_account_manager", public=false)
@@ -139,11 +139,11 @@ class FundingAccountManager extends AbstractManager
             $account->setAccountNumber($fundingAccountData->get('account_number'));
             $account->setRoutingNumber($fundingAccountData->get('routing_number'));
 
-            switch ($fundingAccountData->get('ach_deposit_type')) {
-                case ACHDepositTypeEnum::CHECKING:
+            switch ($paymentAccount->getBankAccountType()) {
+                case BankAccountTypeEnum::CHECKING:
                     $account->setBankAccountType(BankAccountType::PERSONAL_CHECKING);
                     break;
-                case ACHDepositTypeEnum::SAVINGS:
+                case BankAccountTypeEnum::SAVINGS:
                     $account->setBankAccountType(BankAccountType::PERSONAL_SAVINGS);
                     break;
                 default:

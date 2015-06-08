@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
@@ -273,8 +274,7 @@ class IframeCase extends BaseTestCase
         );
         $form->pressButton('continue');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('table.properties-table').length");
 
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $contract, 'Wrong number of pending');
@@ -310,7 +310,7 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_tenanttype_tos'                       => true,
             )
         );
-        
+
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
     }
@@ -524,51 +524,37 @@ class IframeCase extends BaseTestCase
     public function checkHoldingSelectForNew()
     {
         $this->load(true);
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $doctrine = $this->getContainer()->get('doctrine');
         $em = $doctrine->getManager();
 
-        $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(
-            array(
-                'name' => 'Rent Holding'
-            )
-        );
+        /** @var Holding $holdingFirst */
+        $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(['name' => 'Rent Holding']);
 
-        $holdingSecond = $em->getRepository('DataBundle:Holding')->findOneBy(
-            array(
-                'name' => 'Estate Holding'
-            )
-        );
+        /** @var Holding $holdingSecond */
+        $holdingSecond = $em->getRepository('DataBundle:Holding')->findOneBy(['name' => 'Estate Holding']);
 
         $this->assertNotNull($holdingFirst);
         $this->assertNotNull($holdingSecond);
 
-        $link1 = $this->getContainer()->get('router')
-            ->generate(
-                'iframe_new',
-                array(
-                    'id'  => $holdingFirst->getId(),
-                    'type'=> 'holding'
-                )
-            );
-        $link2 = $this->getContainer()->get('router')
-            ->generate(
-                'iframe_new',
-                array(
-                    'id'  => $holdingSecond->getId(),
-                    'type'=> 'holding'
-                )
-            );
-        $link =  substr($this->getUrl(), 0, -1);
-        $link1 = $link.$link1;
-        $link2 = $link.$link2;
+        $link1 = sprintf(
+            '%suser/new/%d/holding',
+            $this->getUrl(),
+            $holdingFirst->getId()
+        );
+
+        $link2 = sprintf(
+            '%suser/new/%d/holding',
+            $this->getUrl(),
+            $holdingSecond->getId()
+        );
 
         $this->session->visit($link1);
         $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
-        $this->assertEquals(4, count($thisIsMyRental));
+        $this->assertEquals(5, count($thisIsMyRental), 'Wrong count of rental property for holding');
 
         $this->session->visit($link2);
         $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
-        $this->assertEquals(1, count($thisIsMyRental));
+        $this->assertEquals(1, count($thisIsMyRental), 'Wrong count of rental property for holding');
     }
 }

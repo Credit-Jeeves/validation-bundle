@@ -211,3 +211,18 @@ fixtures:
         name:      2-U
         createdAt: '-160 days'
         updatedAt: '-160 days'
+    Unit_for_Normalized_Property_1:
+        property:  Property_Normalized
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      101
+    Unit_for_Normalized_Property_2:
+        property:  Property_Normalized
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      201
+    Unit_for_Normalized_Property_3:
+        property:  Property_Normalized
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      301

@@ -9,12 +9,36 @@ class MRIResponse
 {
 
     /**
+     * @Serializer\SerializedName("NextPageLink")
+     * @Serializer\XmlAttribute
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $nextPageLink = null;
+
+    /**
      * @Serializer\SerializedName("entry")
      * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\MRI\Value>")
      * @Serializer\Groups({"MRI-Response"})
      * @Serializer\XmlList(inline = true, entry = "entry")
      */
     protected $values;
+
+    /**
+     * @return string
+     */
+    public function getNextPageLink()
+    {
+        return $this->nextPageLink;
+    }
+
+    /**
+     * @param string $nextPageLink
+     */
+    public function setNextPageLink($nextPageLink)
+    {
+        $this->nextPageLink = $nextPageLink;
+    }
 
     /**
      * @return string
@@ -43,7 +67,7 @@ class MRIResponse
     /**
      * @param array $values
      */
-    public function setValues($values)
+    public function setValues(array $values)
     {
         $this->values = $values;
     }
