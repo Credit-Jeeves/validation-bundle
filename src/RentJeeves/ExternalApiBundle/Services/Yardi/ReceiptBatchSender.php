@@ -311,6 +311,7 @@ class ReceiptBatchSender
                     $this->cancelBatch($yardiBatchId);
                 }
                 $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
+                throw $e;
             }
 
             $startPagination += self::LIMIT_ORDERS;
@@ -381,12 +382,15 @@ class ReceiptBatchSender
         );
 
         if ($this->paymentClient->isError()) {
-            $this->throwExceptionClient(
+            $this->logMessage(
                 sprintf(
                     "Failed add to batchId: %s.",
                     $batchId
                 )
             );
+            $this->logMessage($this->paymentClient->getErrorMessage());
+
+            return false;
         }
 
         if ($result instanceof Messages && $result->getMessage()->getMessageType() === 'FYI') {
