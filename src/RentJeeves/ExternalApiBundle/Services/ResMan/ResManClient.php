@@ -265,6 +265,7 @@ class ResManClient implements ClientInterface
             'Date' => $batchDate->format('Y-m-d')
         ];
 
+        $response = null;
         try {
             $response = $this->sendRequest($method, $params);
         } catch (Exception $e) {
@@ -299,6 +300,7 @@ class ResManClient implements ClientInterface
             'BatchID' => strtolower($accountingBatchId)
         ];
 
+        $resMan = null;
         try {
             $resMan = $this->sendRequest($method, $params);
         } catch (Exception $e) {
@@ -331,6 +333,7 @@ class ResManClient implements ClientInterface
             'xml'        => $residentTransactionsXml,
         ];
 
+        $result = null;
         try {
             $result = $this->sendRequest($method, $paramsToRequest);
         } catch (Exception $e) {
@@ -367,7 +370,7 @@ class ResManClient implements ClientInterface
 
     protected function createExceptionMessage($message, $e = null)
     {
-        $formattedMessage = sprintf('ResMan:%s.', $message);
+        $formattedMessage = sprintf('ResMan: %s.', $message);
         if ($e != null) {
             $formattedMessage = sprintf(
                 '%s Error message: %s In file: %s By line: %s',

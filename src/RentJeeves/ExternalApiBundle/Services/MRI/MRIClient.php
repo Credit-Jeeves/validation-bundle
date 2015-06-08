@@ -267,7 +267,7 @@ class MRIClient implements ClientInterface
 
             if (!empty($error)) {
                 $message = sprintf(
-                    'MRI: Failed posting order(ID#%d). Got error code %d, error description %s',
+                    'MRI: Failed posting order(ID#%d). Error message: %s',
                     $order->getId(),
                     $error->getMessage()
                 );
