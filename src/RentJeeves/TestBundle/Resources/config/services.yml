@@ -3,3 +3,4 @@ parameters:
     experian.net_connect.precise_id.class: RentJeeves\TestBundle\NetConnect\PreciseIDTest
     pidkiq.experian.pidkiq_api.class: RentJeeves\TestBundle\PidKiqProcessor\Experian\ExperianPidKiqApiClientTest
     payment_account.heartland.class: RentJeeves\TestBundle\Heartland\PaymentAccountManagerTest
+    payment_processor.aci.collect_pay.report_loader.class: RentJeeves\TestBundle\Aci\AciReportLoaderTest

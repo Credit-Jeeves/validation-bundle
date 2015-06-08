@@ -3,12 +3,11 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
 
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Monolog\Logger;
 use Payum\AciCollectPay\Model\SubModel\Address;
 use Payum\AciCollectPay\Model\SubModel\BillingAccount;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum\Core\Payment as PaymentProcessor;
+use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Contract;
 
 abstract class AbstractManager
@@ -24,22 +23,16 @@ abstract class AbstractManager
     protected $paymentProcessor;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
 
     /**
      * @param EntityManager      $em
      * @param PayumAwareRegistry $payum
-     * @param Logger             $logger
-     *
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "payum" = @DI\Inject("payum"),
-     *     "logger" = @DI\Inject("logger"),
-     * })
+     * @param LoggerInterface    $logger
      */
-    public function __construct(EntityManager $em, PayumAwareRegistry $payum, Logger $logger)
+    public function __construct(EntityManager $em, PayumAwareRegistry $payum, LoggerInterface $logger)
     {
         $this->em = $em;
 

@@ -61,6 +61,8 @@ class AciPgpDecoderCase extends BaseTestCase
      */
     protected function getAciPgpDecoder()
     {
-        return $this->getContainer()->get('payment_processor.aci.pgp_decoder');
+        $path = $this->getContainer()->getParameter('aci.collect_pay.key_path');
+
+        return new AciPgpDecoder($path);
     }
 }

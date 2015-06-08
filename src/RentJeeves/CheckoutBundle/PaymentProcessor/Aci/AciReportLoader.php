@@ -2,21 +2,16 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDecoderException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReportTransaction;
-use RentJeeves\CheckoutBundle\PaymentProcessor\ReportLoaderInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-/**
- * @DI\Service("payment_processor.aci.report_loader")
- */
-class AciReportLoader implements ReportLoaderInterface
+class AciReportLoader
 {
     /**
      * @var SftpFilesDownloaderInterface
@@ -55,15 +50,6 @@ class AciReportLoader implements ReportLoaderInterface
      * @param AciParserInterface $lockboxParser
      * @param string $reportPath
      * @param LoggerInterface $logger
-     *
-     * @DI\InjectParams({
-     *     "filesDownloader" = @DI\Inject("payment_processor.aci.files_downloader"),
-     *     "fileDecoder" = @DI\Inject("payment_processor.aci.pgp_decoder"),
-     *     "fileArchiver" = @DI\Inject("payment_processor.aci.report_archiver"),
-     *     "lockboxParser" = @DI\Inject("payment_processor.aci.lockbox_parser"),
-     *     "reportPath" = @DI\Inject("%aci.collect_pay.report_path%"),
-     *     "logger" = @DI\Inject("logger")
-     *  })
      */
     public function __construct(
         SftpFilesDownloaderInterface $filesDownloader,

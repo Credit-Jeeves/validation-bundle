@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciParserInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
@@ -12,8 +11,6 @@ use RentJeeves\CoreBundle\DateTime;
 
 /**
  * Parses Lockbox payment report from ACI in the csv format.
- *
- * @DI\Service("payment_processor.aci.lockbox_parser", public=false)
  */
 class LockboxParser implements AciParserInterface
 {
@@ -38,10 +35,6 @@ class LockboxParser implements AciParserInterface
 
     /**
      * @var LoggerInterface $logger
-     *
-     * @DI\InjectParams({
-     *     "logger" = @DI\Inject("logger"),
-     * })
      */
     public function __construct(LoggerInterface $logger)
     {

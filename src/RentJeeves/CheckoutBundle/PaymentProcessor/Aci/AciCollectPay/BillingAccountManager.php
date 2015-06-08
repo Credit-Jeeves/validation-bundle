@@ -2,21 +2,17 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
 
-use JMS\DiExtraBundle\Annotation as DI;
+use Payum\AciCollectPay\Model as RequestModel;
 use Payum\AciCollectPay\Request\ProfileRequest\AddBilling;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
 use RentJeeves\DataBundle\Entity\Contract;
-use Payum\AciCollectPay\Model as RequestModel;
 
-/**
- * @DI\Service("payment.aci_collect_pay.billing_account_manager", public=false)
- */
 class BillingAccountManager extends AbstractManager
 {
     /**
-     * @param  int                              $profileId
-     * @param  Contract                         $contract
+     * @param  int $profileId
+     * @param  Contract $contract
      * @throws PaymentProcessorRuntimeException
      */
     public function addBillingAccount($profileId, Contract $contract)
