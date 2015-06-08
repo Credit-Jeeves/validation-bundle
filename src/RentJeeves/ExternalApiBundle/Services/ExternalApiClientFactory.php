@@ -23,7 +23,7 @@ class ExternalApiClientFactory
 
     protected $realTimePaymentClientMapping = [
         ApiIntegrationType::YARDI_VOYAGER => SoapClientEnum::YARDI_PAYMENT,
-        ApiIntegrationType::AMSI => SoapClientEnum::AMSI_LEASING
+        ApiIntegrationType::AMSI => SoapClientEnum::AMSI_LEDGER
     ];
 
     /**
