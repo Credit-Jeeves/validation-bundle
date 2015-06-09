@@ -134,6 +134,7 @@ class RjGroupAdmin extends Admin
                 )
                 ->add('name')
                 ->add('statementDescriptor', null, ['label' => 'ID4', 'required' => true])
+                ->add('mailingAddressName')
             ->end()
             ->with('Deposit Account')
                 // admin.deposit_account.merchant_name
