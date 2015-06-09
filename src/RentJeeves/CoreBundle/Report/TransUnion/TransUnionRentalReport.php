@@ -4,6 +4,7 @@ namespace RentJeeves\CoreBundle\Report\TransUnion;
 
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\Annotation as Serializer;
+use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Report\RentalReport;
 use RentJeeves\CoreBundle\Report\RentalReportData;
 
@@ -15,6 +16,13 @@ abstract class TransUnionRentalReport implements RentalReport
      * @Serializer\Exclude
      */
     protected $em;
+
+    /**
+     * @var LoggerInterface
+     *
+     * @Serializer\Exclude
+     */
+    protected $logger;
 
     /**
      * @var array
@@ -37,9 +45,10 @@ abstract class TransUnionRentalReport implements RentalReport
      * @param EntityManagerInterface $em
      * @param array $propertyManagementData
      */
-    public function __construct(EntityManagerInterface $em, array $propertyManagementData = [])
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, array $propertyManagementData = [])
     {
         $this->em = $em;
+        $this->logger = $logger;
         $this->propertyManagementData = $propertyManagementData;
     }
 

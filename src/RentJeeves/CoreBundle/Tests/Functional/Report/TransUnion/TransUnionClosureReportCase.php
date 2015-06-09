@@ -2,12 +2,15 @@
 
 namespace RentJeeves\CoreBundle\Tests\Functional\Report\TransUnion;
 
+use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
 use RentJeeves\CoreBundle\Report\RentalReportData;
 use RentJeeves\CoreBundle\Report\RentalReportFactory;
+use RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Report\RentalReportDataManager;
 
 class TransUnionClosureReportCase extends BaseTestCase
 {
@@ -34,9 +37,16 @@ class TransUnionClosureReportCase extends BaseTestCase
         $contract->setFinishAt($today);
         $em->flush($contract);
 
-        $report = RentalReportFactory::getTransUnionReport(RentalReportType::CLOSURE, $em, []);
+        $params = RentalReportDataManager::getRentalReportData(
+            $today,
+            $oneMonthAgo,
+            $today,
+            CreditBureau::TRANS_UNION,
+            RentalReportType::CLOSURE
+        );
+        /** @var TransUnionClosureReport $report */
+        $report = $this->getContainer()->get('rental_report.factory')->getReport($params);
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport', $report);
-        $params = $this->getRentalReportParams($today, $oneMonthAgo, $today);
         $report->build($params);
 
         $this->assertEquals('trans_union_rental', $report->getSerializationType());
@@ -48,22 +58,5 @@ class TransUnionClosureReportCase extends BaseTestCase
         $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'trans_union_rental');
         $reportRecords = explode("\n", trim($report));
         $this->assertCount(2, $reportRecords, 'TU report should contain 2 records: header and 1 finished contract');
-    }
-
-    /**
-     * @param \DateTime $month
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
-     *
-     * @return RentalReportData
-     */
-    protected function getRentalReportParams(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
-    {
-        $params = new RentalReportData();
-        $params->setMonth($month);
-        $params->setStartDate($startDate);
-        $params->setEndDate($endDate);
-
-        return $params;
     }
 }

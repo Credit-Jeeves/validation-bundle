@@ -3,6 +3,7 @@
 namespace RentJeeves\CoreBundle\Tests\Unit\Report;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Monolog\Logger;
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
 use RentJeeves\CoreBundle\Report\RentalReportData;
@@ -15,17 +16,9 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldCreateReportObjectAsInstanceOfRentalReport()
     {
-        $rentalReportData = $this->getRentalReportDataMock();
-        $rentalReportData
-            ->expects($this->once())
-            ->method('getBureau')
-            ->will($this->returnValue(CreditBureau::EXPERIAN));
-        $rentalReportData
-            ->expects($this->once())
-            ->method('getType')
-            ->will($this->returnValue(RentalReportType::POSITIVE));
+        $rentalReportData = $this->getRentalReportData(CreditBureau::EXPERIAN, RentalReportType::POSITIVE);
 
-        $report = RentalReportFactory::getReport($rentalReportData, $this->getEntityManagerMock(), []);
+        $report = $this->getRentalReportFactory()->getReport($rentalReportData);
 
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\RentalReport', $report);
     }
@@ -37,13 +30,9 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldThrowExceptionIfUnknownBureauSpecified()
     {
-        $rentalReportData = $this->getRentalReportDataMock();
-        $rentalReportData
-            ->expects($this->exactly(2))
-            ->method('getBureau')
-            ->will($this->returnValue('Unknown bureau'));
+        $rentalReportData = $this->getRentalReportData('Unknown bureau', RentalReportType::POSITIVE);
 
-        RentalReportFactory::getReport($rentalReportData, $this->getEntityManagerMock(), []);
+        $this->getRentalReportFactory()->getReport($rentalReportData);
     }
 
     /**
@@ -51,11 +40,9 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldGetTransUnionPositiveReport()
     {
-        $report = RentalReportFactory::getTransUnionReport(
-            RentalReportType::POSITIVE,
-            $this->getEntityManagerMock(),
-            []
-        );
+        $rentalReportData = $this->getRentalReportData(CreditBureau::TRANS_UNION, RentalReportType::POSITIVE);
+
+        $report = $this->getRentalReportFactory()->getReport($rentalReportData);
 
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionPositiveReport', $report);
     }
@@ -65,11 +52,8 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldGetTransUnionNegativeReport()
     {
-        $report = RentalReportFactory::getTransUnionReport(
-            RentalReportType::NEGATIVE,
-            $this->getEntityManagerMock(),
-            []
-        );
+        $rentalReportData = $this->getRentalReportData(CreditBureau::TRANS_UNION, RentalReportType::NEGATIVE);
+        $report = $this->getRentalReportFactory()->getReport($rentalReportData);
 
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionNegativeReport', $report);
     }
@@ -79,11 +63,8 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldGetTransUnionClosureReport()
     {
-        $report = RentalReportFactory::getTransUnionReport(
-            RentalReportType::CLOSURE,
-            $this->getEntityManagerMock(),
-            []
-        );
+        $rentalReportData = $this->getRentalReportData(CreditBureau::TRANS_UNION, RentalReportType::CLOSURE);
+        $report = $this->getRentalReportFactory()->getReport($rentalReportData);
 
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport', $report);
     }
@@ -95,7 +76,9 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldThrowExceptionIfUnknownTransUnionReportTypeSpecified()
     {
-        RentalReportFactory::getTransUnionReport('Unknown TransUnion type', $this->getEntityManagerMock(), []);
+        $rentalReportData = $this->getRentalReportData(CreditBureau::TRANS_UNION, 'Unknown TransUnion type');
+
+        $this->getRentalReportFactory()->getReport($rentalReportData);
     }
 
     /**
@@ -103,7 +86,8 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldGetExperianPositiveReport()
     {
-        $report = RentalReportFactory::getExperianReport(RentalReportType::POSITIVE, $this->getEntityManagerMock());
+        $rentalReportData = $this->getRentalReportData(CreditBureau::EXPERIAN, RentalReportType::POSITIVE);
+        $report = $this->getRentalReportFactory()->getReport($rentalReportData);
 
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\Experian\ExperianPositiveReport', $report);
     }
@@ -113,7 +97,8 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldGetExperianClosureReport()
     {
-        $report = RentalReportFactory::getExperianReport(RentalReportType::CLOSURE, $this->getEntityManagerMock());
+        $rentalReportData = $this->getRentalReportData(CreditBureau::EXPERIAN, RentalReportType::CLOSURE);
+        $report = $this->getRentalReportFactory()->getReport($rentalReportData);
 
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\Experian\ExperianClosureReport', $report);
     }
@@ -125,7 +110,30 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldThrowExceptionIfUnknownExperianReportTypeSpecified()
     {
-        RentalReportFactory::getExperianReport('Unknown Experian type', $this->getEntityManagerMock());
+        $rentalReportData = $this->getRentalReportData(CreditBureau::EXPERIAN, 'Unknown Experian type');
+        $this->getRentalReportFactory()->getReport($rentalReportData);
+    }
+
+    /**
+     * @return RentalReportFactory
+     */
+    protected function getRentalReportFactory()
+    {
+        return new RentalReportFactory($this->getEntityManagerMock(), $this->getLoggerMock(), []);
+    }
+
+    /**
+     * @param string $bureau
+     * @param string $type
+     * @return RentalReportData
+     */
+    protected function getRentalReportData($bureau, $type)
+    {
+        $rentalReportData = new RentalReportData();
+        $rentalReportData->setBureau($bureau);
+        $rentalReportData->setType($type);
+
+        return $rentalReportData;
     }
 
     /**
@@ -137,10 +145,10 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|RentalReportData
+     * @return \PHPUnit_Framework_MockObject_MockObject|Logger
      */
-    protected function getRentalReportDataMock()
+    protected function getLoggerMock()
     {
-        return $this->getMock('RentJeeves\CoreBundle\Report\RentalReportData', [], [], '', false);
+        return $this->getMock('Monolog\Logger', [], [], '', false);
     }
 }

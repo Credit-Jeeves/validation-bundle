@@ -21,6 +21,8 @@ class TransUnionPositiveReport extends TransUnionRentalReport
      */
     protected function createRecords(RentalReportData $params)
     {
+        $this->logger->debug('Creating records for TU positive report...');
+
         $this->records = [];
         $contracts = $this->em->getRepository('RjDataBundle:Contract')
             ->getContractsForTransUnionPositiveReport(
@@ -32,6 +34,11 @@ class TransUnionPositiveReport extends TransUnionRentalReport
 
         foreach ($contracts as $contractData) {
             $lastPaidFor = $operationRepo->getLastContractPaidFor($contractData['contract']);
+            $this->logger->debug(sprintf(
+                'Creating TU negative record for contract: #%s. Last paidFor: %s',
+                $contractData['contract']->getId(),
+                $lastPaidFor->format('m/d/Y')
+            ));
             $this->records[] = new TransUnionReportRecord(
                 $contractData['contract'],
                 $params->getMonth(),
@@ -41,5 +48,7 @@ class TransUnionPositiveReport extends TransUnionRentalReport
                 new \DateTime($contractData['last_payment_date'])
             );
         }
+
+        $this->logger->debug(sprintf('TU positive report created! Count of records: %s', count($this->records)));
     }
 }

@@ -2,10 +2,12 @@
 
 namespace RentJeeves\CoreBundle\Tests\Report;
 
+use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
 use RentJeeves\CoreBundle\Report\RentalReportData;
-use RentJeeves\CoreBundle\Report\RentalReportFactory;
+use RentJeeves\CoreBundle\Report\TransUnion\TransUnionNegativeReport;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Report\RentalReportDataManager;
 
 class TransUnionNegativeReportCase extends BaseTestCase
 {
@@ -29,9 +31,16 @@ class TransUnionNegativeReportCase extends BaseTestCase
             ->getQuery()
             ->execute();
 
-        $report = RentalReportFactory::getTransUnionReport(RentalReportType::NEGATIVE, $em, []);
+        $params = RentalReportDataManager::getRentalReportData(
+            $month,
+            $startDate,
+            $endDate,
+            CreditBureau::TRANS_UNION,
+            RentalReportType::NEGATIVE
+        );
+        /** @var TransUnionNegativeReport $report */
+        $report = $this->getContainer()->get('rental_report.factory')->getReport($params);
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionNegativeReport', $report);
-        $params = $this->getRentalReportParams($month, $startDate, $endDate);
         $report->build($params);
 
         $this->assertEquals('trans_union_rental', $report->getSerializationType());

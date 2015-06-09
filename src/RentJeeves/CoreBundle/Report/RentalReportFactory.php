@@ -3,6 +3,7 @@
 namespace RentJeeves\CoreBundle\Report;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
 use RentJeeves\CoreBundle\Report\Experian\ExperianClosureReport;
@@ -16,19 +17,42 @@ use RentJeeves\CoreBundle\Report\TransUnion\TransUnionRentalReport;
 class RentalReportFactory
 {
     /**
+     * @var EntityManagerInterface
+     */
+    protected $em;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var array
+     */
+    protected $propertyManagement;
+
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, array $propertyManagement)
+    {
+        $this->em = $em;
+        $this->logger = $logger;
+        $this->propertyManagement = $propertyManagement;
+    }
+
+    /**
      * @param RentalReportData $data
      * @param EntityManagerInterface $em
-     * @param array $propertyManagement
+     * @param array $propertyManagement An array with RentTrack's name, address, phone. Used in report's header.
+     * @throws \RuntimeException
      * @return RentalReport
      */
-    public static function getReport(RentalReportData $data, EntityManagerInterface $em, array $propertyManagement)
+    public function getReport(RentalReportData $data)
     {
         switch ($data->getBureau()) {
             case CreditBureau::TRANS_UNION:
-                $report = self::getTransUnionReport($data->getType(), $em, $propertyManagement);
+                $report = self::getTransUnionReport($data->getType());
                 break;
             case CreditBureau::EXPERIAN:
-                $report = self::getExperianReport($data->getType(), $em);
+                $report = self::getExperianReport($data->getType());
                 break;
             default:
                 throw new \RuntimeException(sprintf('Given report bureau \'%s\' does not exist', $data->getBureau()));
@@ -43,17 +67,17 @@ class RentalReportFactory
      * @param array $propertyManagement
      * @return TransUnionRentalReport
      */
-    public static function getTransUnionReport($type, EntityManagerInterface $em, array $propertyManagement)
+    protected function getTransUnionReport($type)
     {
         switch ($type) {
             case RentalReportType::POSITIVE:
-                $report = new TransUnionPositiveReport($em, $propertyManagement);
+                $report = new TransUnionPositiveReport($this->em, $this->logger, $this->propertyManagement);
                 break;
             case RentalReportType::NEGATIVE:
-                $report = new TransUnionNegativeReport($em, $propertyManagement);
+                $report = new TransUnionNegativeReport($this->em, $this->logger, $this->propertyManagement);
                 break;
             case RentalReportType::CLOSURE:
-                $report = new TransUnionClosureReport($em, $propertyManagement);
+                $report = new TransUnionClosureReport($this->em, $this->logger, $this->propertyManagement);
                 break;
             default:
                 throw new \RuntimeException(sprintf('TransUnion report type \'%s\' does not exist', $type));
@@ -67,14 +91,14 @@ class RentalReportFactory
      * @param EntityManagerInterface $em
      * @return ExperianRentalReport
      */
-    public static function getExperianReport($type, EntityManagerInterface $em)
+    protected function getExperianReport($type)
     {
         switch ($type) {
             case RentalReportType::POSITIVE:
-                $report = new ExperianPositiveReport($em);
+                $report = new ExperianPositiveReport($this->em, $this->logger);
                 break;
             case RentalReportType::CLOSURE:
-                $report = new ExperianClosureReport($em);
+                $report = new ExperianClosureReport($this->em, $this->logger);
                 break;
             default:
                 throw new \RuntimeException(sprintf('Experian report type \'%s\' does not exist', $type));

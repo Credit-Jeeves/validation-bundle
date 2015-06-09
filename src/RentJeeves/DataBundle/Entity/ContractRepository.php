@@ -710,6 +710,26 @@ class ContractRepository extends EntityRepository
     /**
      * @param \DateTime $startDate
      * @param \DateTime $endDate
+     * @return QueryBuilder
+     */
+    protected function getBaseQueryForClosureReport(\DateTime $startDate, \DateTime $endDate)
+    {
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.status = :finished and c.finishAt BETWEEN :startDate AND :endDate');
+
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+
+        return $query;
+    }
+
+    /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
      * @return Contract[]
      */
     public function getContractsForExperianClosureReport(\DateTime $startDate, \DateTime $endDate)
@@ -717,24 +737,15 @@ class ContractRepository extends EntityRepository
         $reportingStartDate = clone $startDate;
         $reportingStartDate->setTime(23, 59, 59);
 
-        $startDate->setTime(0, 0, 0);
-        $endDate->setTime(23, 59, 59);
-
-        $query = $this->createQueryBuilder('c');
-        $query->where(
+        $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
+        $query->andWhere(
             'c.reportToExperian = 1 AND c.experianStartAt is not NULL AND c.experianStartAt <= :reportingStartAt'
         );
-        $query->andWhere('c.status = :finished and c.finishAt BETWEEN :startDate AND :endDate');
-
         $query->setParameter('reportingStartAt', $reportingStartDate);
-        $query->setParameter('finished', ContractStatus::FINISHED);
-        $query->setParameter('startDate', $startDate);
-        $query->setParameter('endDate', $endDate);
         $query = $query->getQuery();
 
         return $query->execute();
     }
-
 
     /**
      * @param \DateTime $month
@@ -835,17 +846,11 @@ class ContractRepository extends EntityRepository
     {
         $reportingStartDate = clone $startDate;
         $reportingStartDate->setTime(23, 59, 59);
-        $startDate->setTime(0, 0, 0);
-        $endDate->setTime(23, 59, 59);
 
-        $query = $this->createQueryBuilder('c');
-        $query->where(
+        $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
+        $query->andWhere(
             'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
         );
-        $query->andWhere('c.status = :finished and c.finishAt BETWEEN :startDate AND :endDate');
-        $query->setParameter('finished', ContractStatus::FINISHED);
-        $query->setParameter('startDate', $startDate);
-        $query->setParameter('endDate', $endDate);
         $query->setParameter('reportingStartAt', $reportingStartDate);
         $query = $query->getQuery();
 

@@ -4,6 +4,7 @@ namespace RentJeeves\CoreBundle\Report\Experian;
 
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\Annotation as Serializer;
+use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Report\RentalReport;
 use RentJeeves\CoreBundle\Report\RentalReportData;
 
@@ -22,11 +23,19 @@ abstract class ExperianRentalReport implements RentalReport
     protected $em;
 
     /**
+     * @var LoggerInterface
+     *
+     * @Serializer\Exclude
+     */
+    protected $logger;
+
+    /**
      * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->em = $em;
+        $this->logger = $logger;
     }
 
     /**

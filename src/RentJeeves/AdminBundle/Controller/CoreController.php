@@ -47,11 +47,8 @@ class CoreController extends BaseController
         $reportType->handleRequest($request);
 
         if ($reportType->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $propertyManagement = $this->container->getParameter('property_management');
-
             /** @var RentalReport $report */
-            $report = RentalReportFactory::getReport($rentalReportData, $em, $propertyManagement);
+            $report = $this->get('rental_report.factory')->getReport($rentalReportData);
             $report->build($rentalReportData);
 
             if ($report->isEmpty()) {

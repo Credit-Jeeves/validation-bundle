@@ -2,12 +2,13 @@
 
 namespace RentJeeves\CoreBundle\Tests\Functional\Report\Experian;
 
+use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
-use RentJeeves\CoreBundle\Report\RentalReportData;
-use RentJeeves\CoreBundle\Report\RentalReportFactory;
+use RentJeeves\CoreBundle\Report\Experian\ExperianClosureReport;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Report\RentalReportDataManager;
 
 class ExperianClosureReportCase extends BaseTestCase
 {
@@ -34,9 +35,17 @@ class ExperianClosureReportCase extends BaseTestCase
         $contract->setFinishAt($today);
         $em->flush($contract);
 
-        $report = RentalReportFactory::getExperianReport(RentalReportType::CLOSURE, $em);
+        $params = RentalReportDataManager::getRentalReportData(
+            $today,
+            $oneMonthAgo,
+            $today,
+            CreditBureau::EXPERIAN,
+            RentalReportType::CLOSURE
+        );
+        /** @var ExperianClosureReport $report */
+        $report = $this->getContainer()->get('rental_report.factory')->getReport($params);
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\Experian\ExperianClosureReport', $report);
-        $params = $this->getRentalReportParams($today, $oneMonthAgo, $today);
+
         $report->build($params);
         $this->assertEquals('csv', $report->getSerializationType());
 
@@ -51,22 +60,5 @@ class ExperianClosureReportCase extends BaseTestCase
             $reportRecords,
             'Experian closure report should contain 2 records: header and one finished contract data'
         );
-    }
-
-    /**
-     * @param \DateTime $month
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
-     *
-     * @return RentalReportData
-     */
-    protected function getRentalReportParams(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
-    {
-        $params = new RentalReportData();
-        $params->setMonth($month);
-        $params->setStartDate($startDate);
-        $params->setEndDate($endDate);
-
-        return $params;
     }
 }

@@ -2,10 +2,12 @@
 
 namespace RentJeeves\CoreBundle\Tests\Report;
 
+use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
 use RentJeeves\CoreBundle\Report\RentalReportData;
-use RentJeeves\CoreBundle\Report\RentalReportFactory;
+use RentJeeves\CoreBundle\Report\TransUnion\TransUnionPositiveReport;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Report\RentalReportDataManager;
 
 class TransUnionPositiveReportCase extends BaseTestCase
 {
@@ -20,11 +22,17 @@ class TransUnionPositiveReportCase extends BaseTestCase
         $expectedResultFilename
     ) {
         $this->load(true);
-        $em = $this->getEntityManager();
 
-        $report = RentalReportFactory::getTransUnionReport(RentalReportType::POSITIVE, $em, []);
+        $params = RentalReportDataManager::getRentalReportData(
+            $month,
+            $startDate,
+            $endDate,
+            CreditBureau::TRANS_UNION,
+            RentalReportType::POSITIVE
+        );
+        /** @var TransUnionPositiveReport $report */
+        $report = $this->getContainer()->get('rental_report.factory')->getReport($params);
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionPositiveReport', $report);
-        $params = $this->getRentalReportParams($month, $startDate, $endDate);
         $report->build($params);
 
         $this->assertEquals('trans_union_rental', $report->getSerializationType());
