@@ -78,14 +78,13 @@ class PaymentClientCase extends Base
         $this->assertEquals('2 Receipts were added to Batch '.self::$batchId, $result->getMessage()->getMessage());
     }
 
-
     /**
      * @test
      * @depends addReceiptsToBatch
      */
-    public function closeReceiptBatch()
+    public function closeBatch()
     {
-        $result = self::$client->closeReceiptBatch(
+        $result = self::$client->closeBatch(
             self::$batchId
         );
         $this->checkError();
@@ -98,7 +97,7 @@ class PaymentClientCase extends Base
     public function cancelReceiptBatch()
     {
         $this->initOpenReceiptBatchDepositDate();
-        self::$client->closeReceiptBatch(
+        self::$client->closeBatch(
             self::$batchId
         );
         $this->checkError();
