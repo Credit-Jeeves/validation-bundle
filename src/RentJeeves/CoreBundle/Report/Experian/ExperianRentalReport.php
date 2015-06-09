@@ -44,6 +44,14 @@ abstract class ExperianRentalReport implements RentalReport
     /**
      * {@inheritdoc}
      */
+    public function getRecords()
+    {
+        return $this->records;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getSerializationType()
     {
         return 'csv';

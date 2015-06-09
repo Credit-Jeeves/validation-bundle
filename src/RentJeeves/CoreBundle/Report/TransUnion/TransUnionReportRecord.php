@@ -158,6 +158,22 @@ class TransUnionReportRecord
         $this->lastPaidFor = $lastPaidFor;
     }
 
+    /**
+     * @return Contract
+     */
+    public function getContract()
+    {
+        return $this->contract;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastPaidFor()
+    {
+        return $this->lastPaidFor;
+    }
+
     public function getAccountUpdateTimestamp()
     {
         return $this->contract->getUpdatedAt()->format('mdYHis');
