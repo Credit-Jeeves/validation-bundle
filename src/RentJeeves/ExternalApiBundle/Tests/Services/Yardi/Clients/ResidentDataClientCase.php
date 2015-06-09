@@ -8,7 +8,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileTenant;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnit;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
-use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\BaseClientCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\ClientCaseBase as Base;
 
 class ResidentDataClientCase extends Base
 {

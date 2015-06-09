@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-class BaseClientCase extends BaseTestCase
+class ClientCaseBase extends BaseTestCase
 {
     protected function getYardiSettings()
     {

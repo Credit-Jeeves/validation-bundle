@@ -3,3 +3,35 @@ imports:
 
 assetic:
     use_controller: true
+
+# Override default log config so we always run at info level
+monolog:
+    channels: ["import"]
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: debug
+            handler:      nested
+        nested:
+            type:  stream
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: debug
+        firephp:
+            type:  firephp
+            level: info
+        chromephp:
+            type:  chromephp
+            level: info
+        swift_emergency:
+            type:       swift_mailer
+            from_email: %monolog.email_from%
+            to_email:   %monolog.emergency.email_to%
+            subject:    SYSTEM EMERGENCY
+            level:      emergency
+            bubble:     false # @link https://github.com/Seldaek/monolog#core-concepts
+        swift_alert:
+            type:       swift_mailer
+            from_email: %monolog.email_from%
+            to_email:   %monolog.alert.email_to%
+            subject:    SYSTEM ALERT
+            level:      alert

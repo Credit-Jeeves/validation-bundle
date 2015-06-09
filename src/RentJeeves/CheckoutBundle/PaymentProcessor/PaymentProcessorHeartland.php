@@ -59,6 +59,7 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
 
         if ($paymentAccountData->getEntity() instanceof GroupAwareInterface) {
             $user = $paymentAccountData->get('landlord');
+            $group = null;
         } else {
             $user = $contract->getTenant();
         }
