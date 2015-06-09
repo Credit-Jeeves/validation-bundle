@@ -40,74 +40,79 @@ class ContractsControllerCase extends BaseApiTestCase
 
         $this->assertResponse($response);
 
-        $answer = $this->parseContent($response->getContent());
+        $answerFromApi = $this->parseContent($response->getContent());
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getUser();
 
-        /** @var Contract $result */
-        $result = $repo->findOneBy(['tenant' => $tenant, 'id' => $id]);
+        /** @var Contract $contractInDB */
+        $contractInDB = $repo->findOneBy(['tenant' => $tenant, 'id' => $id]);
 
-        $this->assertNotNull($result);
+        $this->assertNotNull($contractInDB);
 
         $this->assertEquals(
-            $result->getId(),
-            $this->getIdEncoder()->decode($answer['id'])
+            $contractInDB->getId(),
+            $this->getIdEncoder()->decode($answerFromApi['id'])
         );
 
         $this->assertEquals(
-            $result->getId(),
-            $this->getUrlEncoder()->decode($answer['url'])
+            $contractInDB->getId(),
+            $this->getUrlEncoder()->decode($answerFromApi['url'])
         );
 
         $this->assertEquals(
-            $result->getUnit()->getId(),
-            $this->getUrlEncoder()->decode($answer['unit_url'])
+            $contractInDB->getUnit()->getId(),
+            $this->getUrlEncoder()->decode($answerFromApi['unit_url'])
         );
 
         $this->assertEquals(
-            $result->getStatus(),
-            $answer['status']
+            $contractInDB->getStatus(),
+            $answerFromApi['status']
         );
 
         $this->assertEquals(
-            number_format($result->getRent(), 2, '.', ''),
-            $answer['rent']
+            number_format($contractInDB->getRent(), 2, '.', ''),
+            $answerFromApi['rent']
         );
 
-        $leaseStartResult = $result->getStartAt() ? $result->getStartAt()->format('Y-m-d') : '';
+        $leaseStartResult = $contractInDB->getStartAt() ? $contractInDB->getStartAt()->format('Y-m-d') : '';
 
         $this->assertEquals(
             $leaseStartResult,
-            $answer['lease_start']
+            $answerFromApi['lease_start']
         );
 
-        $leaseEndResult = $result->getFinishAt() ? $result->getFinishAt()->format('Y-m-d') : '';
+        $this->assertEquals(
+            $contractInDB->getGroup()->getMailingAddressName(),
+            $answerFromApi['mailing_address_name']
+        );
+
+        $leaseEndResult = $contractInDB->getFinishAt() ? $contractInDB->getFinishAt()->format('Y-m-d') : '';
 
         $this->assertEquals(
             $leaseEndResult,
-            $answer['lease_end']
+            $answerFromApi['lease_end']
         );
 
-        $dueDateResult = $result->getDueDate() ?  $result->getDueDate() : '';
+        $dueDateResult = $contractInDB->getDueDate() ?  $contractInDB->getDueDate() : '';
 
         $this->assertEquals(
             $dueDateResult,
-            $answer['due_date']
+            $answerFromApi['due_date']
         );
 
         $this->assertEquals(
-            $result->getReportToExperian(),
-            ReportingType::getMapValue($answer['experian_reporting'])
+            $contractInDB->getReportToExperian(),
+            ReportingType::getMapValue($answerFromApi['experian_reporting'])
         );
 
         if ($checkBalance) {
             $this->assertEquals(
-                number_format($result->getIntegratedBalance(), 2, '.', ''),
-                $answer['balance']
+                number_format($contractInDB->getIntegratedBalance(), 2, '.', ''),
+                $answerFromApi['balance']
             );
         } else {
-            $this->assertTrue(!isset($answer['balance']));
+            $this->assertTrue(!isset($answerFromApi['balance']));
         }
     }
 
