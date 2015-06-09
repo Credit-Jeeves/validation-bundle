@@ -4,8 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services\MRI;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\TestBundle\Mocks\CommonSystemMocks;
 
-use \DateTime;
-
 class MRIClientCase extends \PHPUnit_Framework_TestCase
 {
     protected $systemsMocks;
@@ -82,7 +80,11 @@ class MRIClientCase extends \PHPUnit_Framework_TestCase
     public function getPaymentMock($errorMessage)
     {
         $mockPayment = $this->getMock(
-            '\RentJeeves\ExternalApiBundle\Model\MRI\Payment', ["getEntryResponse"], [], '', false
+            '\RentJeeves\ExternalApiBundle\Model\MRI\Payment',
+            ["getEntryResponse"],
+            [],
+            '',
+            false
         );
         $mockResponse = $this->getMock('\RentJeeves\ExternalApiBundle\Model\MRI\Response', ["getError"], [], '', false);
         $mockError = $this->getMock('\RentJeeves\ExternalApiBundle\Model\MRI\Error', ["getMessage"], [], '', false);
