@@ -4,7 +4,6 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
 
 use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Address;
-use JMS\DiExtraBundle\Annotation as DI;
 use Payum\AciCollectPay\Request\ProfileRequest\AddFunding;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
@@ -16,9 +15,6 @@ use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
 
-/**
- * @DI\Service("payment.aci_collect_pay.funding_account_manager", public=false)
- */
 class FundingAccountManager extends AbstractManager
 {
     /**
@@ -27,6 +23,8 @@ class FundingAccountManager extends AbstractManager
      * @param  FundingAccountData $fundingAccountData
      * @param  Contract           $contract
      * @return int
+     *
+     * @throws \Exception
      */
     public function modifyFundingAccount(
         $fundingAccountId,

@@ -11,6 +11,7 @@ use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
 use RentJeeves\LandlordBundle\Model\Import;
 use Exception;
+use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
 
 /**
  * @property EntityManager $em
@@ -51,15 +52,14 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
     }
 
     /**
-     * @return mixed
      * @throws ImportHandlerException
      */
     protected function createLastModelFromFile()
     {
-        $data = $this->mapping->getData($this->mapping->getTotal()-2, $rowCount = 1);
+        $data = $this->mapping->getData($this->mapping->getTotalContent()-1, $rowCount = 1);
 
         if (count($data) > 1) {
-            throw new ImportHandlerException("Must be just one csv row which mapped to array");
+            throw new ImportHandlerException('Must be just one csv row which mapped to array');
         }
 
         if (empty($data)) {
@@ -68,8 +68,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             return;
         }
 
-        $this->createCurrentImportModel(end($data), 1);
-        $this->currentImportModel->setNumber(1);
+        $this->createCurrentImportModel(end($data), $this->mapping->getTotalContent());
     }
 
     /**
@@ -89,6 +88,9 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         return false;
     }
 
+    /**
+     * @param string $filePath
+     */
     protected function removeLastLineInFile($filePath)
     {
         // load the data and delete the line from the array
@@ -98,6 +100,9 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         file_put_contents($filePath, implode('', $lines));
     }
 
+    /**
+     * @param string $filePath
+     */
     protected function moveLine($filePath)
     {
         $lines = file($filePath, FILE_SKIP_EMPTY_LINES);
@@ -109,16 +114,24 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
         file_put_contents($filePath, implode('', $lines));
     }
 
-    protected function updateMatchedContractsWithCallback($callbackSuccess, $callbackFailed)
-    {
+    /**
+     * @param ImportSummaryManager $report
+     * @param callable $callbackSuccess
+     * @param callable $callbackFailed
+     * @throws ImportHandlerException
+     */
+    protected function updateMatchedContractsWithCallback(
+        ImportSummaryManager $report,
+        $callbackSuccess,
+        $callbackFailed
+    ) {
         $this->createLastModelFromFile();
-
         if (!is_callable($callbackFailed) || !is_callable($callbackSuccess)) {
             return;
         }
 
         if (empty($this->currentImportModel)) {
-            return;
+            throw new \LogicException('Please check logic, current import can\'t be empty, offset');
         }
 
         try {
@@ -126,12 +139,14 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             $contract = $this->currentImportModel->getContract();
 
             if (!empty($errors)) {
+                //Must Show User For Review
                 call_user_func($callbackFailed);
 
                 return;
             }
 
             if ($this->currentImportModel->isSkipped()) {
+                $report->incrementSkipped($this->currentImportModel->getRow());
                 call_user_func($callbackSuccess);
 
                 return;
@@ -142,6 +157,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
                 !$this->isChangedImportantField($contract, $repository = 'Contract') &&
                 !$this->isContractEndedAndActiveInOurDB($contract)
             ) {
+                $report->incrementMatched();
                 $this->em->flush($contract);
                 call_user_func($callbackSuccess);
 
@@ -154,6 +170,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
                 !is_null($contractWaiting->getId()) &&
                 !$this->isChangedImportantField($contractWaiting, $repository = 'ContractWaiting')
             ) {
+                $report->incrementMatched();
                 $this->em->flush($contractWaiting);
                 call_user_func($callbackSuccess);
 

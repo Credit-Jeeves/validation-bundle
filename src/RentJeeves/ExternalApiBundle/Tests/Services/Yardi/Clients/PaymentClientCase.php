@@ -6,7 +6,7 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
-use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\BaseClientCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\ClientCaseBase as Base;
 
 class PaymentClientCase extends Base
 {
@@ -21,7 +21,7 @@ class PaymentClientCase extends Base
      */
     protected static $client;
 
-    protected function initOpenBatch()
+    protected function initOpenReceiptBatchDepositDate()
     {
         $container = $this->getKernel()->getContainer();
         $clientFactory = $container->get('soap.client.factory');
@@ -48,15 +48,15 @@ class PaymentClientCase extends Base
     /**
      * @test
      */
-    public function openBatch()
+    public function openReceiptBatchDepositDate()
     {
-        $this->initOpenBatch();
+        $this->initOpenReceiptBatchDepositDate();
         $this->checkError();
     }
 
     /**
      * @test
-     * @depends openBatch
+     * @depends openReceiptBatchDepositDate
      */
     public function addReceiptsToBatch()
     {
@@ -78,13 +78,14 @@ class PaymentClientCase extends Base
         $this->assertEquals('2 Receipts were added to Batch '.self::$batchId, $result->getMessage()->getMessage());
     }
 
+
     /**
      * @test
      * @depends addReceiptsToBatch
      */
     public function closeReceiptBatch()
     {
-        $result = self::$client->closeBatch(
+        $result = self::$client->closeReceiptBatch(
             self::$batchId
         );
         $this->checkError();
@@ -96,8 +97,8 @@ class PaymentClientCase extends Base
      */
     public function cancelReceiptBatch()
     {
-        $this->initOpenBatch();
-        self::$client->closeBatch(
+        $this->initOpenReceiptBatchDepositDate();
+        self::$client->closeReceiptBatch(
             self::$batchId
         );
         $this->checkError();

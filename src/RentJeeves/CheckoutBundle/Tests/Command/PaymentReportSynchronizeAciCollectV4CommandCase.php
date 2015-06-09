@@ -4,8 +4,6 @@ namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use RentJeeves\CheckoutBundle\Command\PaymentReportSynchronizeAciCollectV4Command;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\TestBundle\Command\BaseTestCase;
@@ -19,17 +17,6 @@ class PaymentReportSynchronizeAciCollectV4CommandCase extends BaseTestCase
     {
         $application = new Application($this->getKernel());
         $application->add(new PaymentReportSynchronizeAciCollectV4Command());
-
-        $responseFromLoader = new PaymentProcessorReport();
-        $responseFromLoader->addTransaction(new ReversalReportTransaction());
-        $responseFromLoader->addTransaction(new ReversalReportTransaction());
-
-        $loader = $this->getAciReportLoaderMock();
-        $loader->expects($this->once())
-            ->method('loadReport')
-            ->will($this->returnValue($responseFromLoader));
-
-        $this->getContainer()->set('payment_processor.aci.report_loader', $loader);
 
         $command = $application->find('payment:report:synchronize:aci:collectv4');
         $commandTester = new CommandTester($command);

@@ -10,6 +10,16 @@ use JMS\Serializer\Annotation as Serializer;
 class Unit
 {
     /**
+     * @Serializer\SerializedName("BldgId")
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"AMSI"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $buildingId;
+
+    /**
      * @Serializer\SerializedName("city")
      * @Serializer\XmlAttribute
      * @Serializer\Groups({"AMSI"})
@@ -78,6 +88,22 @@ class Unit
      * @var string
      */
     protected $propertyId;
+
+    /**
+     * @return string
+     */
+    public function getBuildingId()
+    {
+        return $this->buildingId;
+    }
+
+    /**
+     * @param string $buildingId
+     */
+    public function setBuildingId($buildingId)
+    {
+        $this->buildingId = $buildingId;
+    }
 
     /**
      * @return string

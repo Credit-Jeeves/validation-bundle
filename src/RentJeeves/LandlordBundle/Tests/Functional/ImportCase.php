@@ -193,14 +193,13 @@ class ImportCase extends ImportBaseAbstract
         );
 
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(3, $errorFields);
+        $this->assertCount(2, $errorFields);
 
         $this->assertEquals($errorFields[0]->getValue(), '2testmail.com');
         $this->assertEquals(
             trim($errorFields[1]->getHtml()),
             '<span data-bind="text:$root.getResidentId($data)">t0000020</span>'
         );
-        $this->assertEquals($errorFields[2]->getHtml(), 'tenant11@example.com');
 
         $trs = $this->getParsedTrsByStatus();
 
@@ -210,7 +209,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertCount(4, $trs['import.status.skip'], "Count contract with status 'skip' wrong");
         $this->assertCount(1, $trs['import.status.match'], "Count contract with status 'match' wrong");
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(3, $errorFields);
+        $this->assertCount(2, $errorFields);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
@@ -355,6 +354,64 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(1, $importSummary->countErrors());
         $this->assertEquals(0, $importSummary->countExceptions());
         $this->assertEquals(8, $importSummary->getCountInvited());
+    }
+
+    /**
+     * @test
+     * @depends shouldImportFile
+     */
+    public function shouldImportFileWithCheckboxOnlyNewAndException()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->setPropertyFirst();
+        $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
+        $exceptionOnly->check();
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setPropertyFirst();
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/Y');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->session->wait(
+            20000,
+            "$('.errorField').length > 0"
+        );
+
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertCount(1, $errorFields);
+
+        $this->assertEquals(
+            trim($errorFields[0]->getHtml()),
+            '<span data-bind="text:$root.getResidentId($data)">t0000020</span>'
+        );
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+
+        $this->waitRedirectToSummaryPage();
+        $this->assertNotNull($publicId = $this->page->find('css', '#publicId'));
+        /** @var ImportSummary $importSummary */
+        $importSummary = $this->getEntityManager()->getRepository('RjDataBundle:ImportSummary')->findOneBy(
+            ['publicId' => $publicId->getText()]
+        );
+        $this->assertNotEmpty($importSummary);
+        $this->assertEquals(20, $importSummary->getCountTotal());
+        $this->assertEquals(10, $importSummary->getCountMatched());
+        $this->assertEquals(9, $importSummary->getCountSkipped());
+        $this->assertEquals(0, $importSummary->getCountNew());
+        $this->assertEquals(1, $importSummary->countErrors());
+        $this->assertEquals(0, $importSummary->countExceptions());
+        $this->assertEquals(0, $importSummary->getCountInvited());
     }
 
     protected function getWaitingRoom()

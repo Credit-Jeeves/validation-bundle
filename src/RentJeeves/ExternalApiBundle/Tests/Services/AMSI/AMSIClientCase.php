@@ -52,7 +52,7 @@ class AMSIClientCase extends Base
         $client = $this->getClient();
         $client->setDebug(false);
         $propertyResidents = $client->getPropertyResidents(self::EXTERNAL_PROPERTY_ID, 'C');
-        $leases = $propertyResidents->getLease();
+        $leases = $propertyResidents->getLeases();
         $this->assertCount(50, $leases);
         /** @var Lease $lease */
         $lease = $leases[0];

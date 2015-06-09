@@ -2,14 +2,10 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * @DI\Service("payment_processor.aci.report_archiver", public=false)
- */
 class AciReportArchiver
 {
     /**
@@ -25,11 +21,6 @@ class AciReportArchiver
     /**
      * @param string $reportPath
      * @param LoggerInterface $logger
-     *
-     * @DI\InjectParams({
-     *     "reportPath" = @DI\Inject("%aci.collect_pay.report_path%"),
-     *     "logger" = @DI\Inject("logger")
-     *  })
      */
     public function __construct($reportPath, LoggerInterface $logger)
     {

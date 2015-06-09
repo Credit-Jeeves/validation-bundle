@@ -2,17 +2,13 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
 
-use JMS\DiExtraBundle\Annotation as DI;
+use Payum\AciCollectPay\Model as RequestModel;
 use Payum\AciCollectPay\Request\ProfileRequest\CreateProfile;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\Contract;
-use Payum\AciCollectPay\Model as RequestModel;
 
-/**
- * @DI\Service("payment.aci_collect_pay.enrollment_manager", public=false)
- */
 class EnrollmentManager extends AbstractManager
 {
     /**

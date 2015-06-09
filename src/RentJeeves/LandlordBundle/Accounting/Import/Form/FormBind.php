@@ -25,61 +25,66 @@ trait FormBind
     /**
      * Return array of errors and persisting entity, also fill $isNeedSendInvite if needed
      *
-     * @param ModelImport $import
-     * @param $postData
+     * @param array        $postData
      * @param array       &$errors
      *
      * @return boolean
      */
     protected function bindForm($postData, &$errors)
     {
-        $isException = $this->currentImportModel->getUniqueKeyException();
-        if (!empty($isException)) {
-            return false;
-        }
-
-        $form = $this->currentImportModel->getForm();
-        $line = $postData['line'];
-        unset($postData['line']);
-
-        self::prepareSubmit($postData);
-
-        if ($this->getIsSkip($postData) || !$this->isValidNotEditedFields($postData) ||
-            $this->currentImportModel->isSkipped() || !$form || !isset($postData['_token'])
-        ) {
-            $this->collectionImportModel->removeElement($this->currentImportModel);
-
-            return false;
-        }
-
-        $form->submit($postData);
-        $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
-
-        if ($form->isValid() && $isCsrfTokenValid) {
-            //Do save and maybe in future move it to factory pattern, when have more logic
-            switch ($form->getName()) {
-                case 'import_contract_finish':
-                    $this->currentImportModel->setContract(
-                        $form->getData()
-                    );
-                    break;
-                case 'import_contract':
-                    $this->bindImportContractForm($form);
-                    break;
-                case 'import_new_user_with_contract':
-                    $this->bindImportNewUserWithContractForm($form);
-                    break;
+        try {
+            $isException = $this->currentImportModel->getUniqueKeyException();
+            if (!empty($isException)) {
+                return false;
             }
 
-            return true;
-        }
+            $form = $this->currentImportModel->getForm();
+            $line = $postData['line'];
+            unset($postData['line']);
 
-        $errors[$line] = $this->getFormErrors($form);
-        if (!$isCsrfTokenValid) {
-            $errors[$line]['_global'] = $this->translator->trans('csrf.token.is.invalid');
-        }
+            self::prepareSubmit($postData);
 
-        return false;
+            if ($this->getIsSkip($postData) || !$this->isValidNotEditedFields($postData) ||
+                $this->currentImportModel->isSkipped() || !$form || !isset($postData['_token'])
+            ) {
+                $this->collectionImportModel->removeElement($this->currentImportModel);
+
+                return false;
+            }
+
+            $form->submit($postData);
+            $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
+
+            if ($form->isValid() && $isCsrfTokenValid) {
+                //Do save and maybe in future move it to factory pattern, when have more logic
+                switch ($form->getName()) {
+                    case 'import_contract_finish':
+                        $this->currentImportModel->setContract(
+                            $form->getData()
+                        );
+                        break;
+                    case 'import_contract':
+                        $this->bindImportContractForm($form);
+                        break;
+                    case 'import_new_user_with_contract':
+                        $this->bindImportNewUserWithContractForm($form);
+                        break;
+                }
+
+                return true;
+            }
+
+            $errors[$line] = $this->getFormErrors($form);
+            if (!$isCsrfTokenValid) {
+                $errors[$line]['_global'] = $this->translator->trans('csrf.token.is.invalid');
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            $this->manageException($e);
+
+            return false;
+        }
     }
 
     /**

@@ -4,7 +4,6 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
 
 use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\DataBundle\Entity\Order;
 use Payum\AciCollectPay\Model\Enum\FundingAccountType;
 use Payum\AciCollectPay\Model\Payment;
@@ -14,9 +13,6 @@ use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
 
-/**
- * @DI\Service("payment.aci_collect_pay.payment_manager", public=false)
- */
 class PaymentManager extends AbstractManager
 {
     /**

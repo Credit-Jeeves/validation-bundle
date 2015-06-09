@@ -15,7 +15,7 @@ class AciReportLoaderCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldCreateAciReportLoaderObjectAndObjectInstanceofRightInterface()
+    public function shouldCreateAciReportLoaderObjectAndObjectInstanceofRightClass()
     {
         $logger = $this->getLoggerMock();
         $downloader = $this->getAciSftpFilesDownloaderMock();
@@ -27,7 +27,7 @@ class AciReportLoaderCase extends BaseTestCase
         $aciLoader = new AciReportLoader($downloader, $decoder, $archiver, $parser, $reportPath, $logger);
 
         $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\ReportLoaderInterface',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader',
             $aciLoader
         );
     }

@@ -54,8 +54,9 @@ class ResidentDataManager
     }
 
     /**
-     * @param  string $externalPropertyId
+     * @param string $externalPropertyId
      * @return array
+     * @throws \LogicException
      */
     public function getResidents($externalPropertyId)
     {
@@ -64,20 +65,30 @@ class ResidentDataManager
         $currentResidents = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_CURRENT);
         $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_NOTICE);
 
-        $leases = array_merge($currentResidents->getLease(), $residentsOnNotice->getLease());
+        $leases = array_merge($currentResidents->getLeases(), $residentsOnNotice->getLeases());
+
+        if (empty($leases)) {
+            throw new \LogicException('AMSI client returned empty resident\'s list. Aborting.');
+        }
 
         $units = $client->getPropertyUnits($externalPropertyId);
         $unitsLookup = [];
         /** @var Unit $unit */
         foreach ($units as $key => $unit) {
-            $this->logger->debug(sprintf('Unit File ID: %s', $unit->getUnitId()));
-            $unitsLookup[$unit->getUnitId()] = $unit;
+            $lookUpKey = sprintf('%s_%s', $unit->getUnitId(), $unit->getBuildingId());
+            $this->logger->debug(
+                sprintf('Unit File ID: %s, Building ID: %s', $unit->getUnitId(), $unit->getBuildingId())
+            );
+            $unitsLookup[$lookUpKey] = $unit;
         }
 
         /** @var Lease $lease */
         foreach ($leases as $lease) {
-            $this->logger->debug(sprintf('Lease UnitId: %s', $lease->getUnitId()));
-            $lease->setUnit($unitsLookup[$lease->getUnitId()]);
+            $lookUpKey = sprintf('%s_%s', $lease->getUnitId(), $lease->getBldgId());
+            $this->logger->debug(
+                sprintf('Lease UnitId: %s, Building ID: %s', $lease->getUnitId(), $lease->getBldgId())
+            );
+            $lease->setUnit($unitsLookup[$lookUpKey]);
         }
         $this->logger->debug('Unit mapping complete.');
 
