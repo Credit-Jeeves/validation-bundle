@@ -429,7 +429,6 @@ abstract class Group
      *      type="string",
      *      nullable=true
      * )
-     * @Assert\Email
      */
     protected $mailingAddressName;
 

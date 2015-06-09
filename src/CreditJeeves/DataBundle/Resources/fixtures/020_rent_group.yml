@@ -6,7 +6,7 @@ fixtures:
     holding:        rjHolding_1
     type:           rent
     code:           DXC6KXOAGX
-    mailingAddressName: test7_group@mail.com
+    mailingAddressName: test7_group
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_2:
@@ -14,7 +14,7 @@ fixtures:
     statementDescriptor: Sea side Rent
     holding:        rjHolding_1
     type:           rent
-    mailingAddressName: test9_group@mail.com
+    mailingAddressName: test9_group
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_3:
@@ -22,7 +22,7 @@ fixtures:
     statementDescriptor: Campus Rent
     holding:        rjHolding_1
     type:           rent
-    mailingAddressName: test71_group@mail.com
+    mailingAddressName: test71_group
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_4:
@@ -30,7 +30,7 @@ fixtures:
     statementDescriptor: Western Rent
     holding:        rjHolding_1
     type:           rent
-    mailingAddressName: test73_group@mail.com
+    mailingAddressName: test73_group
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_5:
@@ -38,7 +38,7 @@ fixtures:
     statementDescriptor: Kharkov Rent
     holding:        rjHolding_1
     type:           rent
-    mailingAddressName: test723group@mail.com
+    mailingAddressName: test723
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_6:
@@ -46,7 +46,7 @@ fixtures:
     statementDescriptor: Rent Group
     holding:        rjHolding_2
     type:           rent
-    mailingAddressName: tes13_t_7_group@mail.com
+    mailingAddressName: tes13_t_7_
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_7:
@@ -54,7 +54,7 @@ fixtures:
     statementDescriptor: Rent Group
     holding:        rjHolding_3
     type:           rent
-    mailingAddressName: tes231t7_group@mail.com
+    mailingAddressName: tes231t7_
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_8:
@@ -62,7 +62,7 @@ fixtures:
     statementDescriptor: Rent Group
     holding:        rjHolding_4
     type:           rent
-    mailingAddressName: tes231t71_group@mail.com
+    mailingAddressName: tes231t71_
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentTrackCorp:
@@ -70,4 +70,4 @@ fixtures:
     statementDescriptor: RentTrackCorp
     code:           RentTrackCorp
     type:           generic
-    mailingAddressName: tes231t71_11group@mail.com
+    mailingAddressName: tes231t71_11
