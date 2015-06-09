@@ -421,6 +421,18 @@ abstract class Group
      */
     protected $accountNumberMapping;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(
+     *      name="mailing_address_name",
+     *      type="string",
+     *      nullable=true
+     * )
+     * @Assert\Email
+     */
+    protected $mailingAddressName;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -438,6 +450,22 @@ abstract class Group
         $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
         $this->disableCreditCard = false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailingAddressName()
+    {
+        return $this->mailingAddressName;
+    }
+
+    /**
+     * @param string $mailingAddressName
+     */
+    public function setMailingAddressName($mailingAddressName)
+    {
+        $this->mailingAddressName = $mailingAddressName;
     }
 
     /**
