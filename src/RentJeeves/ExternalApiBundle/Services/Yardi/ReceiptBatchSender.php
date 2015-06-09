@@ -77,12 +77,12 @@ class ReceiptBatchSender
     /**
      * @var array
      */
-    protected $batchIds = array();
+    protected $batchIds = [];
 
     /**
      * @var array
      */
-    protected $requests = array();
+    protected $requests = [];
 
     /**
      * @var YardiBatchReceiptMailer
@@ -111,7 +111,7 @@ class ReceiptBatchSender
      *     "serializer"         = @Inject("jms_serializer"),
      *     "mailer"             = @Inject("yardi.receipt_mailer"),
      *     "exceptionCatcher"   = @Inject("fp_badaboom.exception_catcher"),
-     *     "logger"             = @Inject("logger"),
+     *     "logger"             = @Inject("logger")
      * })
      */
     public function __construct(
@@ -391,20 +391,13 @@ class ReceiptBatchSender
         );
 
         if ($this->paymentClient->isError()) {
-            $this->logMessage(
-                sprintf(
-                    "Failed add to batchId: %s.",
-                    $batchId
-                )
+            $message = sprintf(
+                'Failed add receipts to batchId(%s), result: %s',
+                $batchId,
+                $this->paymentClient->getErrorMessage()
             );
-            $this->logger->alert(
-                sprintf(
-                    'Failed add receipts to batchId(%s), result: %s',
-                    $batchId,
-                    $this->paymentClient->getErrorMessage()
-                )
-            );
-            $this->logMessage($this->paymentClient->getErrorMessage());
+            $this->logMessage($message);
+            $this->logger->alert($message);
 
             return false;
         }
@@ -471,7 +464,7 @@ class ReceiptBatchSender
             $response['header'],
             $response['body']
         );
-        $this->logger->critical($message);
+        $this->logger->alert($message);
 
         throw new Exception($message);
     }
