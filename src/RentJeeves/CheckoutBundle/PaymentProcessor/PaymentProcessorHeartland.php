@@ -5,13 +5,16 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ChargeHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
-use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
+use RentJeeves\DataBundle\Entity\PaymentAccountInterface;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -26,43 +29,45 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     /** @var PayHeartland */
     protected $paymentManager;
 
+    /** @var  ChargeHeartland */
+    protected $chargeManager;
+
     /** @var ReportLoader */
     protected $reportLoader;
 
     /**
      * @param PaymentAccountManager $paymentAccountManager
-     * @param PayHeartland          $paymentManager
-     * @param ReportLoader          $reportLoader
+     * @param PayHeartland $paymentManager
+     * @param ChargeHeartland $chargeManager
+     * @param ReportLoader $reportLoader
      *
      * @DI\InjectParams({
      *     "paymentAccountManager" = @DI\Inject("payment.account.heartland"),
      *     "paymentManager" = @DI\Inject("payment.pay_heartland"),
+     *     "chargeManager" = @DI\Inject("payment.charge_heartland"),
      *     "reportLoader" = @DI\Inject("payment_processor.heartland.report_loader")
      * })
      */
     public function __construct(
         PaymentAccountManager $paymentAccountManager,
         PayHeartland $paymentManager,
+        ChargeHeartland $chargeManager,
         ReportLoader $reportLoader
     ) {
         $this->paymentAccountManager = $paymentAccountManager;
         $this->paymentManager = $paymentManager;
+        $this->chargeManager = $chargeManager;
         $this->reportLoader = $reportLoader;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createPaymentAccount(PaymentAccountData $paymentAccountData, Contract $contract)
+    public function createPaymentToken(AccountData $paymentAccountData, Contract $contract)
     {
         $group = $contract->getGroup();
 
-        if ($paymentAccountData->getEntity() instanceof GroupAwareInterface) {
-            $user = $paymentAccountData->get('landlord');
-            $group = null;
-        } else {
-            $user = $contract->getTenant();
-        }
+        $user = $contract->getTenant();
 
         return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group);
     }
@@ -70,15 +75,34 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function executeOrder(Order $order, PaymentAccount $paymentAccount, $paymentType = PaymentGroundType::RENT)
+    public function createBillingToken(AccountData $billingAccountData, Landlord $user)
     {
-        if (!$this->isAllowedToExecuteOrder($order, $paymentAccount)) {
-            throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
-                PaymentProcessor::HEARTLAND
+        if (!$billingAccountData->getEntity() || !$billingAccountData->getEntity() instanceof GroupAwareInterface) {
+            throw new PaymentProcessorInvalidArgumentException(
+                'createBillingToken should use entity implemented GroupAwareInterface'
             );
         }
 
-        return $this->paymentManager->executePayment($order, $paymentAccount, $paymentType);
+        return $this->paymentAccountManager->getToken($billingAccountData, $user);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function executeOrder(
+        Order $order,
+        PaymentAccountInterface $accountEntity,
+        $paymentType = PaymentGroundType::RENT
+    ) {
+        if (PaymentGroundType::CHARGE !== $paymentType && !$this->isAllowedToExecuteOrder($order, $accountEntity)) {
+            throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
+                PaymentProcessor::HEARTLAND
+            );
+        } elseif (PaymentGroundType::CHARGE === $paymentType) {
+            return $this->chargeManager->executePayment($order, $accountEntity);
+        }
+
+        return $this->paymentManager->executePayment($order, $accountEntity, $paymentType);
     }
 
     /**
@@ -90,15 +114,16 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
     }
 
     /**
-     * @param  Order          $order
-     * @param  PaymentAccount $paymentAccount
+     * @param  Order $order
+     * @param  PaymentAccountInterface $paymentAccount
      * @return bool
      */
-    protected function isAllowedToExecuteOrder(Order $order, PaymentAccount $paymentAccount)
+    protected function isAllowedToExecuteOrder(Order $order, PaymentAccountInterface $paymentAccount)
     {
-        if ($order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
-            $order->getPaymentProcessor() == PaymentProcessor::HEARTLAND
-        ) {
+        if ($paymentAccount instanceof PaymentAccount &&
+            $order->getPaymentProcessor() === PaymentProcessor::HEARTLAND &&
+            $order->getPaymentProcessor() === $paymentAccount->getPaymentProcessor()
+        ){
             return true;
         }
 

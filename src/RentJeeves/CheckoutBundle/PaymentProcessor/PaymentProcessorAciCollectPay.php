@@ -13,7 +13,9 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalid
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Entity\PaymentAccountInterface;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -79,7 +81,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaymentAccount(PaymentAccountData $data, Contract $contract)
+    public function createPaymentToken(PaymentAccountData $data, Contract $contract)
     {
         if ($data->getEntity() instanceof GroupAwareInterface) {
             throw new \Exception('Virtual Terminal is not implement yet for aci_collect_pay.');
@@ -103,21 +105,29 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
     /**
      * {@inheritdoc}
      */
+    public function createBillingToken(PaymentAccountData $data, Landlord $user)
+    {
+        throw new \Exception("createBillingToken is not implemented yet for ACI.");
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function executeOrder(
         Order $order,
-        PaymentAccount $paymentAccount,
+        PaymentAccountInterface $accountEntity,
         $paymentType = PaymentGroundType::RENT
     ) {
-        if (!$this->isAllowedToExecuteOrder($order, $paymentAccount)) {
+        if (!$this->isAllowedToExecuteOrder($order, $accountEntity)) {
             throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
                 PaymentProcessor::ACI_COLLECT_PAY
             );
         }
 
         if (PaymentGroundType::RENT == $paymentType) {
-            return $this->paymentManager->executePayment($order, $paymentAccount);
+            return $this->paymentManager->executePayment($order, $accountEntity);
         } else {
-            throw new \Exception('executeOrder with paymentType = "report" is not implement yet for aci_collect_pay.');
+            throw new \Exception('executeOrder with paymentType <> "rent" is not implement yet for aci_collect_pay.');
         }
     }
 
@@ -131,12 +141,13 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
 
     /**
      * @param  Order $order
-     * @param  PaymentAccount $paymentAccount
+     * @param  PaymentAccountInterface $paymentAccount
      * @return bool
      */
-    protected function isAllowedToExecuteOrder(Order $order, PaymentAccount $paymentAccount)
+    protected function isAllowedToExecuteOrder(Order $order, PaymentAccountInterface $paymentAccount)
     {
-        if ($order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
+        if ($paymentAccount instanceof PaymentAccount &&
+            $order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
             $order->getPaymentProcessor() == PaymentProcessor::ACI_COLLECT_PAY
         ) {
             return true;

@@ -376,7 +376,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $paymentAccount2 = clone $paymentAccount1;
 
-        $paymentAccount1->setToken($paymentProcessor->createPaymentAccount($paymentAccountData, $contract));
+        $paymentAccount1->setToken($paymentProcessor->createPaymentToken($paymentAccountData, $contract));
 
         $this->setOldProfileId(
             md5($contract->getTenant()->getId()),
@@ -391,7 +391,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $paymentAccountData->setEntity($paymentAccount2);
 
-        $paymentAccount2->setToken($paymentProcessor->createPaymentAccount($paymentAccountData, $contract));
+        $paymentAccount2->setToken($paymentProcessor->createPaymentToken($paymentAccountData, $contract));
 
         $em->persist($paymentAccount2);
 

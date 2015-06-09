@@ -2,6 +2,8 @@ model: RentJeeves\DataBundle\Entity\Landlord
 fixtures:
     Landlord_1:
         holding:  rjHolding_1
+        agent_groups:
+          - RentGroup_1
         first_name: TIMOTHY
         middle_initial: A
         last_name: APPLEGATE

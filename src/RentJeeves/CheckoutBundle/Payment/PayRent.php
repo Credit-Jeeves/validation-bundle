@@ -72,7 +72,12 @@ class PayRent
      */
     public function executePayment(Payment $payment)
     {
-        $this->logger->debug('Get new order for payment ID %s' . $payment->getId());
+        $this->logger->debug(
+            sprintf(
+                'Get new order for payment ID %s',
+                $payment->getId()
+            )
+        );
         /** @var Order $order */
         $order = $this->orderManager->createRentOrder($payment);
 
