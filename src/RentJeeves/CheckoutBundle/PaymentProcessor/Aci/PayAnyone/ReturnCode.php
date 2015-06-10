@@ -2,7 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone;
 
-class ReversalReturnCode
+class ReturnCode
 {
     /**
      * @var array

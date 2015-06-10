@@ -85,9 +85,9 @@ class AdjustmentParser extends AbstractParser
 
                 if ($payment->getDetail()->getReturnCode() !== '') {
                     $reversalDescription = sprintf(
-                        '%s/%s',
+                        '%s: %s',
                         $payment->getDetail()->getReturnCode(),
-                        ReversalReturnCode::getCodeMessage($payment->getDetail()->getReturnCode())
+                        ReturnCode::getCodeMessage($payment->getDetail()->getReturnCode())
                     );
                 } else {
                     $reversalDescription = '';

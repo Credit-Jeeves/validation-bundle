@@ -32,7 +32,7 @@ class ResponseParser extends AbstractParser
         foreach ($report->getBatches() as $batch) {
             /** @var Payment $payment */
             foreach ($batch->getPayments() as $payment) {
-                if ($payment->getReponseCode() !== self::STATUS_READY_TO_DISBURSE) {
+                if ($payment->getResponseCode() !== self::STATUS_READY_TO_DISBURSE) {
                     $this->logger->emergency(sprintf(
                         'ERRORCODE value different from the expected value.
                         PAYMENTID : %s,
@@ -45,7 +45,7 @@ class ResponseParser extends AbstractParser
                         $payment->getAmount(),
                         $batch->getBatchId(),
                         $payment->getBatchCloseDate()->format('ymd'),
-                        $payment->getReponseCode(),
+                        $payment->getResponseCode(),
                         $payment->getResponseMessage()
                     ));
                     continue;
@@ -55,7 +55,7 @@ class ResponseParser extends AbstractParser
                 $newTransaction->setBatchId($batch->getBatchId());
                 $newTransaction->setTransactionId($payment->getTransactionId());
                 $newTransaction->setBatchCloseDate($payment->getBatchCloseDate());
-                $newTransaction->setResponseCode($payment->getReponseCode());
+                $newTransaction->setResponseCode($payment->getResponseCode());
                 $newTransaction->setResponseMessage($payment->getResponseMessage());
 
                 $transactions[] = $newTransaction;

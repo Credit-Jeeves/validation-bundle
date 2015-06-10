@@ -42,7 +42,7 @@ class ModelsCase extends BaseTestCase
         );
         $this->assertEquals('102497630', $firstPayment->getTransactionId());
         $this->assertEquals(320, $firstPayment->getAmount());
-        $this->assertEquals('READY TO DISBURSE', $firstPayment->getReponseCode());
+        $this->assertEquals('READY TO DISBURSE', $firstPayment->getResponseCode());
         $this->assertEquals('UNKNOWN_BILLER', $firstPayment->getResponseMessage());
         $this->assertEquals('2015-02-24', $firstPayment->getBatchCloseDate()->format('Y-m-d'));
 
