@@ -50,8 +50,10 @@ $(document).ready(function(){
     for (i = 0; i < contractsJson.length;i++) {
         var contract = contractsJson[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
+        var dueDate=new Date(contract.startAt).getDate();
+        $("#contractDueNext" + contract.id).html(dueDate);
         if (contract.payment) {
-
+            $("#contractTotal" + contract.id).html(contract.payment.total)
             $("#cancel" + contract.id).attr("onclick", "setTimeout(function(){cancelPayment(" + contract.payment.id + "); $('.ui-dialog').hide()},50)")
             //settimeout hide dialog fixes weird bug with simpledialog
 
@@ -62,6 +64,8 @@ $(document).ready(function(){
             })
         } else {
             $("#contractFromAccLabel" + contract.id).hide()
+            $("#contractTotal" + contract.id).html(contract.rent)
+
         }
         /*
          contract object does not have payToName
@@ -185,7 +189,8 @@ function setupPayForm(id) {
 
             $("#"+prefix+"amount").val(contract.rent)
             $("#payTo").html(contract.payToName);
-            $("#contractAddress").html(contract.property.number+" "+contract.property.street+", "+contract.property.district+" "+contract.unit.name)
+            $("#contractAddress").html((contract.property.number+" "+contract.property.street+" "+contract.property.district+" "+contract.unit.name).replace("undefined","").replace(/  /g,' '))
+
 
             //get due date
 
@@ -309,9 +314,9 @@ function createReview(){
             var method=""
             var fee = 0.00;
 
-            $.each(payAccounts,function(i,localPaymentAccount){
-                if(localPaymentAccount.id==parseInt($("#"+prefix+"paymentAccount").val())){
-                    method = localPaymentAccount.type;
+            $.each(payAccounts,function(i,localPaymentAccountId){
+                if(localPaymentAccountId.id==parseInt($("#"+prefix+"paymentAccount").val())){
+                    method= localPaymentAccountId.type;
                 }})
 
             if ('card' == method) {
