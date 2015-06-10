@@ -13,7 +13,7 @@ class ResponseParser extends AbstractParser
     /**
      * @return string
      */
-    protected function getDeserializeModel()
+    protected function getDeserializationModel()
     {
         return 'RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Response\Report';
     }

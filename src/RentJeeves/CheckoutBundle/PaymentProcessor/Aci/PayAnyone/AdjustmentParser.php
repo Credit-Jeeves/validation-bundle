@@ -14,7 +14,7 @@ class AdjustmentParser extends AbstractParser
     /**
      * @return string
      */
-    protected function getDeserializeModel()
+    protected function getDeserializationModel()
     {
         return 'RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Report';
     }
@@ -45,12 +45,12 @@ class AdjustmentParser extends AbstractParser
         $depositTransactions = [];
         /** @var Payment $payment */
         foreach ($report->getOriginator()->getDepositTransactions()->getPayments() as $payment) {
-            $newDepositTransactions = new PayDirectDepositReportTransaction();
-            $newDepositTransactions->setDepositDate($report->getDepositDate());
-            $newDepositTransactions->setAmount($payment->getDetail()->getAmount());
-            $newDepositTransactions->setTransactionId($payment->getDetail()->getTransactionId());
+            $newDepositTransaction = new PayDirectDepositReportTransaction();
+            $newDepositTransaction->setDepositDate($report->getDepositDate());
+            $newDepositTransaction->setAmount($payment->getDetail()->getAmount());
+            $newDepositTransaction->setTransactionId($payment->getDetail()->getTransactionId());
 
-            $depositTransactions[] = $newDepositTransactions;
+            $depositTransactions[] = $newDepositTransaction;
         }
 
         return $depositTransactions;
@@ -71,7 +71,10 @@ class AdjustmentParser extends AbstractParser
             /** @var Payment $payment */
             foreach ($transactions->getPayments() as $payment) {
                 if ($this->getRenttrackTransactionType($type) === false) {
-                    $this->logger->alert(sprintf('Items found in the node "%s"', $type));
+                    $this->logger->alert(sprintf(
+                        'Unsupported transaction found in Aci PayAnyone report node: %s.',
+                        $type
+                    ));
                     break;
                 }
                 $newReversalTransaction = new PayDirectReversalReportTransaction();

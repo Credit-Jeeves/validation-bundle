@@ -72,7 +72,7 @@ class Originator
      * @Serializer\Type("RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Transaction")
      * @Serializer\SerializedName("RETURNED_PAYMENTS")
      */
-    protected $returnPayments;
+    protected $returnedPayments;
 
     /**
      * @return mixed
@@ -237,17 +237,17 @@ class Originator
     /**
      * @return mixed
      */
-    public function getReturnPayments()
+    public function getReturnedPayments()
     {
-        return $this->returnPayments;
+        return $this->returnedPayments;
     }
 
     /**
-     * @param mixed $returnPayments
+     * @param mixed $returnedPayments
      */
-    public function setReturnPayments($returnPayments)
+    public function setReturnedPayments($returnedPayments)
     {
-        $this->returnPayments = $returnPayments;
+        $this->returnedPayments = $returnedPayments;
     }
 
     /**
@@ -272,7 +272,7 @@ class Originator
             'CORRECTED_DUPLICATE_PAYMENTS' => $this->getCorrectedDuplicatePayments(),
             'CORRECTED_RETURNED_PAYMENTS' => $this->getCorrectedReturnedPayments(),
             'REISSUED_STOPPED_CHECKS' => $this->getReissuedStoppedChecks(),
-            'RETURNED_PAYMENTS' => $this->getReturnPayments(),
+            'RETURNED_PAYMENTS' => $this->getReturnedPayments(),
             'STOPPED_CHECKS' => $this->getStoppedChecks(),
         ];
     }

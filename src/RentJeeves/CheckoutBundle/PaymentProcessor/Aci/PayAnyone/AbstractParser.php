@@ -87,7 +87,7 @@ abstract class AbstractParser implements AciPayAnyoneParserInterface
     /**
      * @return string
      */
-    abstract protected function getDeserializeModel();
+    abstract protected function getDeserializationModel();
 
     /**
      * @param ResponseReport|AdjustmentReport $report
