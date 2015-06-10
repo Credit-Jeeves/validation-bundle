@@ -79,7 +79,7 @@ abstract class AbstractParser implements AciPayAnyoneParserInterface
      *
      * @return ResponseReport|AdjustmentReport
      */
-    private function deserializeXml($xmlData)
+    protected function deserializeXml($xmlData)
     {
         return $this->serializer->deserialize($xmlData, $this->getDeserializationModel(), 'xml');
     }
