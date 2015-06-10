@@ -30,7 +30,7 @@ class AdjustmentParserCase extends BaseTestCase
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())
             ->method('alert')
-            ->with('Items found in the node "REISSUED_STOPPED_CHECKS"');
+            ->with('Unsupported transaction found in Aci PayAnyone report node: REISSUED_STOPPED_CHECKS.');
 
         $parser = new AdjustmentParser($this->getSerializer(), $logger);
 
