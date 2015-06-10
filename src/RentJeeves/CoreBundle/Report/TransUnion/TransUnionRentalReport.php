@@ -10,6 +10,9 @@ use RentJeeves\CoreBundle\Report\RentalReportData;
 
 abstract class TransUnionRentalReport implements RentalReport
 {
+    const REPORT_BUREAU = 'transunion';
+    const REPORT_TYPE = 'base';
+
     /**
      * @var EntityManagerInterface
      *
@@ -75,7 +78,12 @@ abstract class TransUnionRentalReport implements RentalReport
     {
         $today = new \DateTime();
 
-        return sprintf('renttrack-%s.txt', $today->format('Ymd'));
+        return sprintf(
+            '%s-%s_renttrack-%s.txt',
+            static::REPORT_BUREAU,
+            static::REPORT_TYPE,
+            $today->format('Ymd')
+        );
     }
 
     /**

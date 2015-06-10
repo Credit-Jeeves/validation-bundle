@@ -49,7 +49,7 @@ class ExperianClosureReportCase extends BaseTestCase
         $report->build($params);
         $this->assertEquals('csv', $report->getSerializationType());
 
-        $expectedReportName = sprintf('renttrack-closure-%s.csv', $today->format('Ymd'));
+        $expectedReportName = sprintf('experian-closure_renttrack-raw-%s.csv', $today->format('Ymd'));
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 

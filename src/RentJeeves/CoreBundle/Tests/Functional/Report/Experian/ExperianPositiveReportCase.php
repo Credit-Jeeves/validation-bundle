@@ -36,7 +36,7 @@ class ExperianPositiveReportCase extends BaseTestCase
         $this->assertEquals('csv', $report->getSerializationType());
 
         $today = new \DateTime();
-        $expectedReportName = sprintf('renttrack-positive-%s.csv', $today->format('Ymd'));
+        $expectedReportName = sprintf('experian-positive_renttrack-raw-%s.csv', $today->format('Ymd'));
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 

@@ -7,15 +7,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 
 class ExperianClosureReport extends ExperianRentalReport
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getReportFilename()
-    {
-        $today = new \DateTime();
-
-        return sprintf('renttrack-closure-%s.csv', $today->format('Ymd'));
-    }
+    const REPORT_TYPE = 'closure';
 
     /**
      * {@inheritdoc}

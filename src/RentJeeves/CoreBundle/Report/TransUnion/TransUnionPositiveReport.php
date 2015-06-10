@@ -6,15 +6,7 @@ use RentJeeves\CoreBundle\Report\RentalReportData;
 
 class TransUnionPositiveReport extends TransUnionRentalReport
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getReportFilename()
-    {
-        $today = new \DateTime();
-
-        return sprintf('renttrack-positive-%s.txt', $today->format('Ymd'));
-    }
+    const REPORT_TYPE = 'positive';
 
     /**
      * {@inheritdoc}

@@ -46,7 +46,7 @@ class TransUnionNegativeReportCase extends BaseTestCase
         $this->assertEquals('trans_union_rental', $report->getSerializationType());
 
         $today = new \DateTime();
-        $expectedReportName = sprintf('renttrack-negative-%s.txt', $today->format('Ymd'));
+        $expectedReportName = sprintf('transunion-negative_renttrack-%s.txt', $today->format('Ymd'));
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 

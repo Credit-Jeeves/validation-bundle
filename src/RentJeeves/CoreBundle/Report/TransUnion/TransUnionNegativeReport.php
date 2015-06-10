@@ -7,15 +7,7 @@ use RentJeeves\CoreBundle\Report\RentalReportData;
 
 class TransUnionNegativeReport extends TransUnionRentalReport
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getReportFilename()
-    {
-        $today = new \DateTime();
-
-        return sprintf('renttrack-negative-%s.txt', $today->format('Ymd'));
-    }
+    const REPORT_TYPE = 'negative';
 
     /**
      * {@inheritdoc}

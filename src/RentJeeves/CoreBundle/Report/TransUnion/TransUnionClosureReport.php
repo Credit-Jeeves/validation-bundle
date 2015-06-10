@@ -7,15 +7,7 @@ use RentJeeves\CoreBundle\Report\RentalReportData;
 
 class TransUnionClosureReport extends TransUnionRentalReport
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getReportFilename()
-    {
-        $today = new \DateTime();
-
-        return sprintf('renttrack-closure-%s.txt', $today->format('Ymd'));
-    }
+    const REPORT_TYPE = 'closure';
 
     /**
      * {@inheritdoc}

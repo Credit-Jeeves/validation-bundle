@@ -14,6 +14,8 @@ class RentalReportDataManager
      * @param \DateTime $endDate
      * @param string $bureau
      * @param string $type
+     *
+     * @return RentalReportData
      */
     public static function getRentalReportData(
         \DateTime $month,

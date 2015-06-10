@@ -10,6 +10,9 @@ use RentJeeves\CoreBundle\Report\RentalReportData;
 
 abstract class ExperianRentalReport implements RentalReport
 {
+    const REPORT_BUREAU = 'experian';
+    const REPORT_TYPE = 'base';
+    
     /**
      * @var array
      */
@@ -52,6 +55,21 @@ abstract class ExperianRentalReport implements RentalReport
     public function isEmpty()
     {
         return count($this->records) == 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReportFilename()
+    {
+        $today = new \DateTime();
+
+        return sprintf(
+            '%s-%s_renttrack-raw-%s.csv',
+            static::REPORT_BUREAU,
+            static::REPORT_TYPE,
+            $today->format('Ymd')
+        );
     }
 
     /**

@@ -51,7 +51,7 @@ class TransUnionClosureReportCase extends BaseTestCase
 
         $this->assertEquals('trans_union_rental', $report->getSerializationType());
 
-        $expectedReportName = sprintf('renttrack-closure-%s.txt', $today->format('Ymd'));
+        $expectedReportName = sprintf('transunion-closure_renttrack-%s.txt', $today->format('Ymd'));
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 

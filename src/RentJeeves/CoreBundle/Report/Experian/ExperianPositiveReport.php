@@ -8,15 +8,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 
 class ExperianPositiveReport extends ExperianRentalReport
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getReportFilename()
-    {
-        $today = new \DateTime();
-
-        return sprintf('renttrack-positive-%s.csv', $today->format('Ymd'));
-    }
+    const REPORT_TYPE = 'positive';
 
     /**
      * {@inheritdoc}
