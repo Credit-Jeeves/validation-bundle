@@ -22,7 +22,6 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use JMS\Serializer\Serializer;
-use \Exception;
 use Symfony\Component\Console\Output\OutputInterface;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use Psr\Log\LoggerInterface;
@@ -185,7 +184,7 @@ class ReceiptBatchSender
                 $this->em->clear();
                 gc_collect_cycles();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logMessage(sprintf("Failed push receipts: \n%s", $e->getMessage()));
         }
@@ -198,14 +197,14 @@ class ReceiptBatchSender
             $this->logMessage(sprintf("Cancel batch \n%s", $yardiBatchId));
 
             if ($this->paymentClient->isError()) {
-                throw new Exception(sprintf("Can't cancel batch with id: %s", $yardiBatchId));
+                throw new \Exception(sprintf("Can't cancel batch with id: %s", $yardiBatchId));
             }
 
             $key = array_search($yardiBatchId, $this->batchIds);
             if (!empty($key)) {
                 unset($this->batchIds[$yardiBatchId]);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logMessage(sprintf("Failed cancel: \n%s", $e->getMessage()));
         }
@@ -292,7 +291,7 @@ class ReceiptBatchSender
             try {
                 $this->removeOrderWhichDoNotHaveLeaseId($ordersReceiptBatch);
                 if (empty($ordersReceiptBatch)) {
-                    throw new Exception("Nothing to send.");
+                    throw new \Exception("Nothing to send.");
                 }
 
                 if (!isset($remotePropertyId)) {
@@ -313,7 +312,7 @@ class ReceiptBatchSender
                     $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
                 }
                 $this->paymentClient->closeReceiptBatch($yardiBatchId);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 if (empty($yardiBatchId) || !isset($yardiBatchId)) {
                     $yardiBatchId = 'undefined';
                 } else {
@@ -354,6 +353,7 @@ class ReceiptBatchSender
     /**
      * @param array  $orders
      * @param string $batchId
+     * @return boolean
      */
     protected function sendReceiptsBatchToApi($orders, $batchId)
     {
@@ -449,7 +449,7 @@ class ReceiptBatchSender
 
     /**
      * @param string $message
-     * @throws Exception
+     * @throws \Exception
      */
     protected function throwExceptionClient($message)
     {
@@ -466,7 +466,7 @@ class ReceiptBatchSender
         );
         $this->logger->alert($message);
 
-        throw new Exception($message);
+        throw new \Exception($message);
     }
 
     /**
