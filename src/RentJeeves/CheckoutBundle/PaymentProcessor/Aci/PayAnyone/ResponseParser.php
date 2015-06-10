@@ -10,8 +10,6 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReportTran
 
 class ResponseParser extends AbstractParser
 {
-    const STATUS_READY_TO_DISBURSE = 'READY TO DISBURSE';
-
     /**
      * @return string
      */
@@ -32,24 +30,6 @@ class ResponseParser extends AbstractParser
         foreach ($report->getBatches() as $batch) {
             /** @var Payment $payment */
             foreach ($batch->getPayments() as $payment) {
-                if ($payment->getResponseCode() !== self::STATUS_READY_TO_DISBURSE) {
-                    $this->logger->emergency(sprintf(
-                        'ERRORCODE value different from the expected value.
-                        PAYMENTID : %s,
-                        TRNAMT: %s,
-                        BATCHID: %s,
-                        DTDUE: %s,
-                        ERRORCODE: %s,
-                        ERRORMESSAGE: %s.',
-                        $payment->getTransactionId(),
-                        $payment->getAmount(),
-                        $batch->getBatchId(),
-                        $payment->getBatchCloseDate()->format('ymd'),
-                        $payment->getResponseCode(),
-                        $payment->getResponseMessage()
-                    ));
-                    continue;
-                }
                 $newTransaction = new PayDirectResponseReportTransaction();
                 $newTransaction->setAmount($payment->getAmount());
                 $newTransaction->setBatchId($batch->getBatchId());

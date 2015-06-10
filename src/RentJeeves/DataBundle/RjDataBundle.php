@@ -38,6 +38,7 @@ class RjDataBundle extends Bundle
             Type::addType('PaymentProcessor', 'RentJeeves\DataBundle\Enum\PaymentProcessor');
             Type::addType('ImportType', 'RentJeeves\DataBundle\Enum\ImportType');
             Type::addType('BankAccountType', 'RentJeeves\DataBundle\Enum\BankAccountType');
+            Type::addType('OutboundTransactionType', 'RentJeeves\DataBundle\Enum\OutboundTransactionType');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()
