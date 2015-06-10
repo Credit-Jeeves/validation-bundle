@@ -112,7 +112,7 @@ class ContractsControllerCase extends BaseApiTestCase
                 $answerFromApi['balance']
             );
         } else {
-            $this->assertArrayHasKey('balance', $answerFromApi);
+            $this->assertArrayNotHasKey('balance', $answerFromApi);
         }
     }
 
