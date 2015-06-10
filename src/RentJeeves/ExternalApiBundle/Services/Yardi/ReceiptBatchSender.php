@@ -346,6 +346,7 @@ class ReceiptBatchSender
                 $order->getId(),
                 $order->getContract()->getId()
             );
+            $this->logger->alert($message);
             $this->logMessage($message);
         }
     }
