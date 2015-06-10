@@ -97,6 +97,7 @@ class PaymentClient extends AbstractClient
     /**
      * @param Order $order
      * @param string $externalPropertyId
+     * @return boolean
      */
     public function addPaymentToBatch(Order $order, $externalPropertyId)
     {
