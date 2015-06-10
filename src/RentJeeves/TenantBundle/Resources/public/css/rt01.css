@@ -614,6 +614,7 @@ body{
 
 .paymentHistoryPage .ui-content{
     background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png);
+    background-size: cover;
 }
 
 .fa .fa-bars{
@@ -681,10 +682,20 @@ body{
     text-shadow: none;
 }
 
-#panel{
-    background: black;
+.sideMenu{
+    background: black !important;
 }
 
 .contractBox{
     border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;
+}
+
+.loadingPaymentHistory{
+    color: black;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    left: 50%;
+    position: relative;
+    margin-left: -53px;
 }

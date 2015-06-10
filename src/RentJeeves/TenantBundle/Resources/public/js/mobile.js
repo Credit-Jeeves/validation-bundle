@@ -527,8 +527,7 @@ function getHistory(historyId) {
             })
             $("#paymentHistoryTable" + historyId).append(htmlStr)
             $("#paymentHistoryTableI" + historyId).append(htmlStr)
+            $(".loadingPaymentHistory").hide()
         })
     }
 }
-
-
