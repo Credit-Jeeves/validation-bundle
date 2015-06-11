@@ -99,16 +99,16 @@ class OrderRepositoryCase extends BaseTestCase
             $reportType
         );
 
-        $this->assertGreaterThan(0, count($orders), "The report generated no orders and is should have.");
+        $this->assertGreaterThan(0, count($orders), 'The report generated no orders and is should have.');
 
         foreach ($orders as $order) {
             $actualGroupId = $order->getContract()->getGroup()->getId();
-            $this->assertEquals($group->getId(), $actualGroupId, "Detected an Order the is not within Group.");
+            $this->assertEquals($group->getId(), $actualGroupId, 'Detected an Order the is not within Group.');
 
             $transactionId = $order->getYardiGenesisTransactionId();
             foreach ($order->getTransactions() as $transaction) {
                 if ($transaction->getTransactionId() == $transactionId) {
-                   $this->assertEquals('complete', $transaction->getStatus(), "Should not have reversed transactions");
+                    $this->assertEquals('complete', $transaction->getStatus(), 'Should not have reversed transactions');
                 }
             }
         }
@@ -133,18 +133,18 @@ class OrderRepositoryCase extends BaseTestCase
             $reportType
         );
 
-        $this->assertGreaterThan(0, count($orders), "The report generated no orders and is should have.");
+        $this->assertGreaterThan(0, count($orders), 'The report generated no orders and is should have.');
 
         foreach ($orders as $order) {
             $actualGroupId = $order->getContract()->getGroup()->getId();
-            $this->assertEquals($group->getId(), $actualGroupId, "Detected an Order the is not within Group.");
+            $this->assertEquals($group->getId(), $actualGroupId, 'Detected an Order the is not within Group.');
 
             $memo = $order->getPromasMemo();
 
             foreach ($order->getTransactions() as $transaction) {
                 $pattern = sprintf("/.*%s.*/", $transaction->getTransactionId());
                 if (preg_match($pattern, $memo) === 1) {
-                    $this->assertEquals('complete', $transaction->getStatus(), "Should not have reversed transactions");
+                    $this->assertEquals('complete', $transaction->getStatus(), 'Should not have reversed transactions');
                 }
             }
         }
@@ -169,16 +169,16 @@ class OrderRepositoryCase extends BaseTestCase
             $reportType
         );
 
-        $this->assertGreaterThan(0, count($orders), "The report generated no orders and is should have.");
+        $this->assertGreaterThan(0, count($orders), 'The report generated no orders and is should have.');
 
         foreach ($orders as $order) {
             $actualGroupId = $order->getContract()->getGroup()->getId();
-            $this->assertEquals($group->getId(), $actualGroupId, "Detected an Order the is not within Group.");
+            $this->assertEquals($group->getId(), $actualGroupId, 'Detected an Order the is not within Group.');
 
             $transactionId = $order->getRealPageDocumentNumber();
             foreach ($order->getTransactions() as $transaction) {
                 if ($transaction->getTransactionId() == $transactionId) {
-                    $this->assertEquals('complete', $transaction->getStatus(), "Should not have reversed transactions");
+                    $this->assertEquals('complete', $transaction->getStatus(), 'Should not have reversed transactions');
                 }
             }
 
