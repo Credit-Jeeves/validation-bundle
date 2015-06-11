@@ -21,7 +21,7 @@
 
         </div><br/>
 
-        <form {{ form_enctype(paymentType) }} method="post" onsubmit="this.focus()" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" style="line-height: 32px;" novalidate>
+        <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" style="line-height: 32px;" novalidate>
             {{ form_widget(paymentType) }}
             {{ JSFV(paymentType) }}
 
