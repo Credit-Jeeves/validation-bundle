@@ -104,11 +104,7 @@ class AccountingPaymentSynchronizer
     public function isAllowedToSend(Contract $contract)
     {
         if (in_array($contract->getHolding()->getApiIntegrationType(), $this->allowedIntegrationApi)) {
-            if ($contract->getGroup()->getGroupSettings()->getIsIntegrated() === true) {
-                return true;
-            }
-
-            return false;
+            return $contract->getGroup()->getGroupSettings()->getIsIntegrated();
         }
 
         return false;
