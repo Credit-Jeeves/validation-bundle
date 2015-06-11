@@ -64,7 +64,7 @@
 
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
                     <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
-                    <h1 class="ui-title" role="heading" aria-level="1">Current Payment</h1>
+                    <h1 class="ui-title" role="heading" aria-level="1">Payment</h1>
                     {% if contract.status != 'pending' %}
                         <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">
                             {% if contract.payment_type != 'one_time' and contract.payment_type != 'recurring' %}
@@ -124,7 +124,7 @@
                     <br>
 
                     <div style="font-family: PT Sans Caption; font-size: 10pt; font-weight: bold;">
-                        Due on day <span id="contractDueNext{{ contract.id }}"></span> of each month. {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
+                        Due: <span id="contractDueNext{{ contract.id }}"></span>. {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
 
                 {% endif %}
                     <br>

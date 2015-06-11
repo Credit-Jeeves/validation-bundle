@@ -50,7 +50,11 @@ $(document).ready(function(){
     for (i = 0; i < contractsJson.length;i++) {
         var contract = contractsJson[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
-        var dueDate=new Date(contract.startAt).getDate();
+        var dueDate=contract.startAt.substr(5,2)
+        if(dueDate.charAt(0)=="0"){
+            dueDate=dueDate.charAt(1);
+        }
+        dueDate=getOrdinal(dueDate);
         $("#contractDueNext" + contract.id).html(dueDate);
         if (contract.payment) {
             $("#contractTotal" + contract.id).html(contract.payment.total)
@@ -305,7 +309,7 @@ function setupPayForm(id) {
 
 function createReview(){
 
-    updateTotal();
+    total=updateTotal();
 
     for (i = 0; i < contractsJson.length;i++) {
         if (contractsJson[i].id == globalContractId) {
@@ -353,9 +357,12 @@ function createReview(){
         //fix some things-- if one time, change start month/day to match startdate
         d=$("#"+prefix+"start_date").val().split("/")
         $("#"+prefix+"frequency").val("monthly")
-        $("#"+prefix+"dueDate").val(parseInt(d[1].replace("0","")))
-        $("#"+prefix+"startMonth").val(parseInt(d[0].replace("0","")))
-        $("#"+prefix+"startYear").val(parseInt(d[2]));
+        $("#"+prefix+"dueDate").val(parseInt(d[1]))
+        if(d[1].charAt(0)=="0"&&d[1].length==2){
+            $("#"+prefix+"dueDate").val(d[1].charAt(1))
+        }
+        $("#"+prefix+"startMonth").val(d[0].replace("0",""))
+        $("#"+prefix+"startYear").val(d[2]);
         $("#"+prefix+"startYear").selectmenu("refresh");
 
 
@@ -457,7 +464,7 @@ function freqHide(isOneTime){
 
 //update rent/other total
 
-total=0;
+var total=0;
 function updateTotal(){
     amount=parseFloat($("#"+prefix+"amount").val())
     other=parseFloat($("#"+prefix+"amountOther").val())
@@ -469,6 +476,7 @@ function updateTotal(){
     total=amount+other
     $("#total").html(accounting.formatNumber(total,2))
     $("#"+prefix+"total").val(total)
+    return total;
 }
 
 //submit form with ajax to display dialog when completed
@@ -530,4 +538,10 @@ function getHistory(historyId) {
             $(".loadingPaymentHistory").hide()
         })
     }
+}
+
+function getOrdinal(n) {
+    var s=["th","st","nd","rd"],
+        v=n%100;
+    return n+(s[(v-20)%10]||s[v]||s[0]);
 }
