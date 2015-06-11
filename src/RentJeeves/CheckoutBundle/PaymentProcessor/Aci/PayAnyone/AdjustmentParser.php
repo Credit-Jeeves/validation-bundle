@@ -82,7 +82,18 @@ class AdjustmentParser extends AbstractParser
                 $newReversalTransaction->setAmount($payment->getDetail()->getAmount());
                 $newReversalTransaction->setTransactionDate($report->getDepositDate());
                 $newReversalTransaction->setTransactionType($this->getRenttrackTransactionType($type));
-                $newReversalTransaction->setReversalDescription($payment->getDetail()->getReturnCode());
+
+                if ($payment->getDetail()->getReturnCode() !== '') {
+                    $reversalDescription = sprintf(
+                        '%s: %s',
+                        $payment->getDetail()->getReturnCode(),
+                        ReturnCode::getCodeMessage($payment->getDetail()->getReturnCode())
+                    );
+                } else {
+                    $reversalDescription = '';
+                }
+
+                $newReversalTransaction->setReversalDescription($reversalDescription);
 
                 $reversalTransactions[] = $newReversalTransaction;
             }
