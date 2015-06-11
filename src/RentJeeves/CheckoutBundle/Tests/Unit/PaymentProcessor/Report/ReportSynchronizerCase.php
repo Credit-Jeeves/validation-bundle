@@ -141,10 +141,15 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $report->addTransaction($transaction);
 
+        $order = $outboundTransaction->getOrder();
+        $order->setStatus(OrderStatus::ERROR);
+
+        $this->getEntityManager()->flush($order);
+
         $loggerMock = $this->getLoggerMock();
         $loggerMock->expects($this->once())
             ->method('alert')
-            ->with($this->stringContains('Unexpected order #2 status (complete) when transaction #1 processing'));
+            ->with($this->stringContains('Unexpected order #2 status (error) when transaction #1 processing'));
 
         $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
         $synchronizer->synchronize($report);
