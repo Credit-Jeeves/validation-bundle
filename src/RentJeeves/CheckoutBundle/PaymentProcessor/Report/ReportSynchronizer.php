@@ -385,9 +385,9 @@ class ReportSynchronizer
         }
 
         if ($reportTransaction->getDepositDate() !== null) {
-            $transaction->setDepositDate($transaction->getDepositDate());
+            $transaction->setDepositDate($reportTransaction->getDepositDate());
+            $this->em->flush($transaction);
         }
-        $this->em->flush($transaction);
         $this->logger->debug(sprintf(
             'PayDirect Deposit Transaction #%s:  Sync successful.',
             $transaction->getTransactionId()
@@ -424,13 +424,15 @@ class ReportSynchronizer
 
         $order = $transaction->getOrder();
         // @TODO: change status after create new
-        if ($order->getStatus() === OrderStatus::COMPLETE) {
+        if ($order->getStatus() !== OrderStatus::COMPLETE) {
             $this->logger->alert(sprintf(
                 'Unexpected order #%s status (%s) when transaction #%s processing',
                 $order->getId(),
                 $order->getStatus(),
                 $reportTransaction->getTransactionId()
             ));
+
+            return;
         }
 
         $newReversalOutboundTransaction = new OutboundTransaction();
@@ -480,18 +482,19 @@ class ReportSynchronizer
             return;
         }
         if ($reportTransaction->getResponseCode() !== self::PAY_DIRECT_RESPONSE_STATUS) {
+            $date = $reportTransaction->getBatchCloseDate();
             $this->logger->emergency(sprintf(
                 'ERRORCODE value different from the expected value.
-                        PAYMENTID : %s,
-                        TRNAMT: %s,
-                        BATCHID: %s,
-                        DTDUE: %s,
-                        ERRORCODE: %s,
-                        ERRORMESSAGE: %s.',
+                    PAYMENTID : %s,
+                    TRNAMT: %s,
+                    BATCHID: %s,
+                    DTDUE: %s,
+                    ERRORCODE: %s,
+                    ERRORMESSAGE: %s.',
                 $reportTransaction->getTransactionId(),
                 $reportTransaction->getAmount(),
                 $reportTransaction->getBatchId(),
-                $reportTransaction->getBatchCloseDate()->format('ymd'),
+                $date !== null ? $date->format('ymd') : '',
                 $reportTransaction->getResponseCode(),
                 $reportTransaction->getResponseMessage()
             ));

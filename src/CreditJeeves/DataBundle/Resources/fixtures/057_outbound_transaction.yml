@@ -1,0 +1,15 @@
+model: RentJeeves\DataBundle\Entity\OutboundTransaction
+fixtures:
+    OutboundTransaction_1:
+        order: rjOrder_1
+        transactionId: 1
+        type: deposit
+        amount: 100
+        reversalDescription: deposit without depositDate
+    OutboundTransaction_2:
+        order: rjOrder_1
+        transactionId: 2
+        type: deposit
+        amount: 100
+        reversalDescription: deposit with depositDate
+        depositDate: 'now'
