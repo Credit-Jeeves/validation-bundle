@@ -67,9 +67,8 @@ class PaymentPushCommandCase extends BaseTestCase
         );
         $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
         $this->assertNotEmpty($holding);
-        $em->persist($holding->getExternalSettings());
         $em->flush($holding->getExternalSettings());
-        $numberJobs = count($jobs);
+        $this->assertCount(0, $jobs);
         $transaction = $this->createTransaction(
             $apiIntegrationType,
             $residentId,
@@ -78,7 +77,6 @@ class PaymentPushCommandCase extends BaseTestCase
             $externalUnitId
         );
 
-        $numberJobs++;
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
 
@@ -92,7 +90,7 @@ class PaymentPushCommandCase extends BaseTestCase
             ['command' => 'external_api:payment:push']
         );
 
-        $this->assertCount($numberJobs, $jobs);
+        $this->assertCount(1, $jobs);
 
         $job = end($jobs);
 
@@ -129,12 +127,11 @@ class PaymentPushCommandCase extends BaseTestCase
         );
         /** @var Holding $holding */
         $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
         $holding->getYardiSettings()->setSynchronizationStrategy(SynchronizationStrategy::REAL_TIME);
         $em->flush($holding->getYardiSettings());
-        $this->assertNotEmpty($holding);
-        $em->persist($holding->getExternalSettings());
-        $em->flush($holding->getExternalSettings());
-        $numberJobs = count($jobs);
+        $em->flush($holding);
+        $this->assertCount(0, $jobs);
         $transaction = $this->createTransaction(
             $apiIntegrationType,
             $residentId,
@@ -143,7 +140,6 @@ class PaymentPushCommandCase extends BaseTestCase
             null
         );
 
-        $numberJobs++;
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
 
@@ -157,7 +153,7 @@ class PaymentPushCommandCase extends BaseTestCase
             ['command' => 'external_api:payment:push']
         );
 
-        $this->assertCount($numberJobs, $jobs);
+        $this->assertCount(1, $jobs);
 
         $job = end($jobs);
 

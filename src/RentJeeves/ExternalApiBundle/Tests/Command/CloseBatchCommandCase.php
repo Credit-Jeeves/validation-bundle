@@ -51,7 +51,6 @@ class CloseBatchCommandCase extends BaseTestCase
         $holding->setApiIntegrationType($accountType);
 
         $em->persist($batchMapping);
-        $em->persist($holding);
 
         $client = $factoryClient->createClient($accountType, $holding->getExternalSettings());
         $batchId = $client->openBatch($externalPropertyId, new \DateTime(), 'Just are test');
