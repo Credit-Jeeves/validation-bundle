@@ -69,7 +69,7 @@ class PaymentReportCase extends BaseTestCase
         $result = $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(6, $count); // +2 for Monolog Message
+        $this->assertCount(9, $count); // +2 for Monolog Message
         $this->assertContains('Amount of synchronized payments: 9', $result);
     }
 
@@ -84,7 +84,7 @@ class PaymentReportCase extends BaseTestCase
         $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(6, $count); // +2 for Monolog Message
+        $this->assertCount(9, $count); // +2 for Monolog Message
 
         // get all report files back to dir
         $this->tearDown();

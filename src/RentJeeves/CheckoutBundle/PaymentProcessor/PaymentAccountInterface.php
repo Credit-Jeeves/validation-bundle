@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\DataBundle\Entity;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 interface PaymentAccountInterface
 {

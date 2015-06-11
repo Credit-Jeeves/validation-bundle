@@ -5,10 +5,12 @@ namespace RentJeeves\CheckoutBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use WebDriver\Exception\UnexpectedAlertOpen;
 
-class ChargeCase extends BaseTestCase
+class VirtualTerminalCase extends BaseTestCase
 {
     /**
      * @test
@@ -108,11 +110,29 @@ class ChargeCase extends BaseTestCase
 
         $this->acceptAlert();
 
-        sleep(1); // wait while create all data
+        $dialogMessage = '';
+
+        try {
+            $this->session->wait($this->timeout + 15000);
+        } catch (UnexpectedAlertOpen $e) {
+            $dialogMessage = $e->getMessage();
+        }
+
+        $this->assertContains('Payment succeed', $dialogMessage, 'Payment is not successful');
 
         /** @var Order[] $ordersAfter */
         $ordersAfter = $orderQuery->execute();
 
-        $this->assertEquals(count($ordersBefore) + 1, count($ordersAfter));
+        $this->assertEquals(count($ordersBefore) + 1, count($ordersAfter), 'Order hasn\'t created.');
+
+        $this->assertEquals(
+            OrderStatus::COMPLETE,
+            end($ordersAfter)->getStatus(),
+            sprintf(
+                'Order has status "%s" instead "%s"',
+                end($ordersAfter)->getStatus(),
+                OrderStatus::COMPLETE
+            )
+        );
     }
 }

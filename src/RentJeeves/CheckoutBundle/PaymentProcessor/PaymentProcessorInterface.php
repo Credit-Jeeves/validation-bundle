@@ -7,7 +7,6 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Entity\PaymentAccountInterface;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 interface PaymentProcessorInterface

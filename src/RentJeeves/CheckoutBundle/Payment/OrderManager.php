@@ -145,7 +145,12 @@ class OrderManager
 
         $users = $group->getGroupAgents();
         if ($users->count() == 0) {
-            throw new \RuntimeException("Group user not found");
+            throw new \RuntimeException(
+                sprintf(
+                    "Can't create charge order: user for group '%s' not found.",
+                    $group->getName()
+                )
+            );
         }
 
         $groupUser = $users->first();

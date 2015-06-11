@@ -74,17 +74,17 @@ class Terminal
     {
         $this->logger->debug(
             sprintf(
-                'Get new charge order for group ID %s',
+                'Trying to get new charge order for group ID %s',
                 $group->getId()
             )
         );
 
-        $order = $this->orderManager->createChargeOrder($group, $amount, $descriptor);
-
-        $this->em->persist($order);
-        $this->em->flush();
-
         try {
+            $order = $this->orderManager->createChargeOrder($group, $amount, $descriptor);
+
+            $this->em->persist($order);
+            $this->em->flush();
+
             $orderStatus = $this->getPaymentProcessor($group)->executeOrder(
                 $order,
                 $group->getActiveBillingAccount(),
@@ -93,13 +93,13 @@ class Terminal
 
             $order->setStatus($orderStatus);
         } catch (\Exception $e) {
-            $this->logger->alert('Order Error:' .  $e->getMessage());
+            $this->logger->alert('VirtualTerminal error occurred:' .  $e->getMessage());
             $order->setStatus(OrderStatus::ERROR);
         }
 
         $this->logger->debug(
             sprintf(
-                'New charge order ID %d, status: %s',
+                'New charge order created! ID %d, status: %s',
                 $order->getId(),
                 $order->getStatus()
             )
@@ -111,7 +111,7 @@ class Terminal
     }
 
     /**
-     * @param $group
+     * @param  Group $group
      * @return PaymentProcessorInterface
      */
     protected function getPaymentProcessor(Group $group)

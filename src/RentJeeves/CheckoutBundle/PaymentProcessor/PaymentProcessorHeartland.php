@@ -14,7 +14,6 @@ use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
-use RentJeeves\DataBundle\Entity\PaymentAccountInterface;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -123,7 +122,7 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
         if ($paymentAccount instanceof PaymentAccount &&
             $order->getPaymentProcessor() === PaymentProcessor::HEARTLAND &&
             $order->getPaymentProcessor() === $paymentAccount->getPaymentProcessor()
-        ){
+        ) {
             return true;
         }
 
