@@ -184,4 +184,83 @@ class OrderRepositoryCase extends BaseTestCase
 
         }
     }
+
+    public function shouldNotGetOrdersForRefundsDataProvider()
+    {
+        return [
+            // Just grab the return transactions rjCheckout_9_1_2 for fixture rjOrder_3_refunded
+            ["-27 days", 0],
+
+            // Just grab the deposit transactions rjCheckout_9_1_2 for fixture rjOrder_3_refunded
+            ["-28 days", 2],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider shouldNotGetOrdersForRefundsDataProvider
+     */
+    public function shouldNotGetOrdersForRefunds($adjustString, $expectedCount)
+    {
+        /** @var Landlord $landlord */
+        $landlord = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(['email' => 'landlord1@example.com']);
+        $group = $landlord->getCurrentGroup();
+
+        $startDate = $this->makeStartDate($adjustString);
+        $endDate = $this->makeEndDate($adjustString);
+
+        /** @var OrderRepository $orderRepo */
+        $orderRepo = $this->em->getRepository('DataBundle:Order');
+        $orders = $orderRepo->getOrdersForYardiGenesis(
+            $startDate,
+            $endDate,
+            [$group],
+            ExportReport::EXPORT_BY_DEPOSITS
+        );
+
+        $this->assertEquals($expectedCount, count($orders), 'We should have no orders found by return transaction');
+    }
+
+    /**
+     * @test
+     * @dataProvider shouldNotGetOrdersForRefundsDataProvider
+     */
+    public function shouldNotGetOrdersForRefundsWithPromas($adjustString, $expectedCount)
+    {
+        /** @var Landlord $landlord */
+        $landlord = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(['email' => 'landlord1@example.com']);
+        $group = $landlord->getCurrentGroup();
+
+        $startDate = $this->makeStartDate($adjustString);
+        $endDate = $this->makeEndDate($adjustString);
+
+        /** @var OrderRepository $orderRepo */
+        $orderRepo = $this->em->getRepository('DataBundle:Order');
+        $orders = $orderRepo->getOrdersForPromasReport(
+            [$group],
+            $startDate,
+            $endDate,
+            ExportReport::EXPORT_BY_DEPOSITS
+        );
+
+        $this->assertEquals($expectedCount, count($orders), 'We should have no orders found by return transaction');
+    }
+
+    protected function makeStartDate($adjustString)
+    {
+        $date = new DateTime();
+        $date->setTime(0,0,0);
+        $date->modify($adjustString);
+
+        return $date;
+    }
+
+    protected function makeEndDate($adjustString)
+    {
+        $date = new DateTime();
+        $date->setTime(23,59,59);
+        $date->modify($adjustString);
+
+        return $date;
+    }
 }
