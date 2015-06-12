@@ -37,6 +37,13 @@ abstract class OutboundTransaction
     protected $transactionId;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="batch_id", type="integer", nullable=true)
+     */
+    protected $batchId;
+
+    /**
      * @see OutboundTransactionType
      * @ORM\Column(type="OutboundTransactionType")
      */
@@ -55,6 +62,13 @@ abstract class OutboundTransaction
      * @ORM\Column(name="deposit_date", type="datetime", nullable=true)
      */
     protected $depositDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="batch_close_date", type="datetime", nullable=true)
+     */
+    protected $batchCloseDate;
 
     /**
      * @var string
@@ -213,5 +227,37 @@ abstract class OutboundTransaction
     public function setReversalDescription($reversalDescription)
     {
         $this->reversalDescription = $reversalDescription;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBatchId()
+    {
+        return $this->batchId;
+    }
+
+    /**
+     * @param int $batchId
+     */
+    public function setBatchId($batchId)
+    {
+        $this->batchId = $batchId;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getBatchCloseDate()
+    {
+        return $this->batchCloseDate;
+    }
+
+    /**
+     * @param \DateTime $batchCloseDate
+     */
+    public function setBatchCloseDate($batchCloseDate)
+    {
+        $this->batchCloseDate = $batchCloseDate;
     }
 }

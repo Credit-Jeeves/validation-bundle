@@ -500,6 +500,10 @@ class ReportSynchronizer
             return;
         }
 
+        $transaction->setBatchId($reportTransaction->getBatchId());
+        $transaction->setBatchCloseDate($reportTransaction->getBatchCloseDate());
+        $this->em->flush($transaction);
+
         $this->logger->debug(sprintf(
             'PayDirect Response Transaction #%s:  Sync successful.',
             $transaction->getTransactionId()

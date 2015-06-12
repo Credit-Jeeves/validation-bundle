@@ -128,6 +128,39 @@ class ReportSynchronizerCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldUpdateTransactionForResponseTransactionIfStatusIsCorrect()
+    {
+        $this->load(true);
+
+        $outboundTransaction = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')->findOneBy(
+            ['transactionId' => 1]
+        );
+        $this->assertNull($outboundTransaction->getBatchId());
+        $this->assertNull($outboundTransaction->getBatchCloseDate());
+
+        $date = new \DateTime();
+
+        $report = new PaymentProcessorReport();
+        $transaction = new PayDirectResponseReportTransaction();
+        $transaction->setResponseCode('READY TO DISBURSE');
+        $transaction->setTransactionId($outboundTransaction->getTransactionId());
+        $transaction->setBatchId(123456789);
+        $transaction->setBatchCloseDate($date);
+
+        $report->addTransaction($transaction);
+
+        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $this->getLoggerMock());
+        $synchronizer->synchronize($report);
+
+        $this->getEntityManager()->refresh($outboundTransaction);
+
+        $this->assertEquals(123456789, $outboundTransaction->getBatchId());
+        $this->assertEquals($date, $outboundTransaction->getBatchCloseDate());
+    }
+
+    /**
+     * @test
+     */
     public function shouldLogAlertForReversalTransactionIfOrderStatusIsNotCorrect()
     {
         $outboundTransaction = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')->findOneBy(
