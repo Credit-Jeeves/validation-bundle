@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\Downloader;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\Downloader;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader;
 use RentJeeves\TestBundle\BaseTestCase;
@@ -120,8 +120,8 @@ class AciSftpFilesDownloaderCase extends BaseTestCase
      */
     public function shouldInitSftpAndDownloadReportsAndAddLog()
     {
-        $reportPath = __DIR__ . '/../../../Fixtures/Aci/AciReportLoader';
-        $reportArchivePath = __DIR__ . '/../../../Fixtures/Aci/AciReportLoader/archive';
+        $reportPath = __DIR__ . '/../../../../Fixtures/Aci/AciReportLoader';
+        $reportArchivePath = __DIR__ . '/../../../../Fixtures/Aci/AciReportLoader/archive';
 
         $fileName = 'testForLoaderAndDownloader.txt';
 

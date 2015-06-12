@@ -84,3 +84,16 @@ services:
             - @payum
             - @logger
 
+    payment_processor.aci.pay_anyone.adjustment_parser:
+        class: RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\PayAnyone\Parser\AdjustmentParserCase
+        public: false
+        arguments:
+            - @serializer
+            - @logger
+
+    payment_processor.aci.pay_anyone.response_parser:
+        class: RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\PayAnyone\Parser\ResponseParserCase
+        public: false
+        arguments:
+            - @serializer
+            - @logger
