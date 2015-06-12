@@ -94,7 +94,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $loggerMock = $this->getLoggerMock();
         $loggerMock->expects($this->once())
             ->method('alert')
-            ->with('PayDirect Deposit Transaction #2 is already sync');
+            ->with('PayDirect Deposit Transaction #2 already has deposit date. Skipping.');
 
         $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
         $synchronizer->synchronize($report);
