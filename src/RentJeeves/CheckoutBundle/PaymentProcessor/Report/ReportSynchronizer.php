@@ -18,8 +18,6 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
  */
 class ReportSynchronizer
 {
-    const PAY_DIRECT_RESPONSE_STATUS = 'READY TO DISBURSE';
-
     /** @var EntityManager */
     protected $em;
 
@@ -377,7 +375,7 @@ class ReportSynchronizer
 
         if (null !== $transaction->getDepositDate()) {
             $this->logger->alert(sprintf(
-                'PayDirect Deposit Transaction #%s is already sync',
+                'PayDirect Deposit Transaction #%s already has deposit date. Skipping.',
                 $reportTransaction->getTransactionId()
             ));
 
@@ -481,7 +479,7 @@ class ReportSynchronizer
 
             return;
         }
-        if ($reportTransaction->getResponseCode() !== self::PAY_DIRECT_RESPONSE_STATUS) {
+        if ($reportTransaction->getResponseCode() !== PayDirectResponseReportTransaction::PAY_DIRECT_RESPONSE_STATUS) {
             $date = $reportTransaction->getBatchCloseDate();
             $this->logger->emergency(sprintf(
                 'ERRORCODE value different from the expected value.
