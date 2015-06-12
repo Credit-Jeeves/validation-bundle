@@ -105,7 +105,7 @@ class TransactionListener
         $accountingPaymentSync = $this->container->get('accounting.payment_sync');
         $accountingPaymentSync->setDebug(true);
 
-        if ($accountingPaymentSync->isAllowedToSend($contract->getHolding())) {
+        if ($accountingPaymentSync->isAllowedToSend($contract)) {
             $accountingPaymentSync->createJob($transaction->getOrder());
         }
     }
