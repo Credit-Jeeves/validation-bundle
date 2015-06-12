@@ -1,9 +1,13 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use Psr\Log\LoggerInterface;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportArchiver;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\CollectPayParserInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\LockboxParser;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\FileDecoderInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\SftpFilesDownloaderInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDecoderException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
@@ -11,7 +15,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReportTran
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class AciReportLoader
+class ReportLoader
 {
     /**
      * @var SftpFilesDownloaderInterface
@@ -47,20 +51,18 @@ class AciReportLoader
      * @param SftpFilesDownloaderInterface $filesDownloader
      * @param FileDecoderInterface $fileDecoder
      * @param AciReportArchiver $fileArchiver
-     * @param AciParserInterface $lockboxParser
-     * @param string $reportPath
+     * @param CollectPayParserInterface $lockboxParser
      * @param LoggerInterface $logger
      */
     public function __construct(
         SftpFilesDownloaderInterface $filesDownloader,
         FileDecoderInterface $fileDecoder,
         AciReportArchiver $fileArchiver,
-        AciParserInterface $lockboxParser,
-        $reportPath,
+        CollectPayParserInterface $lockboxParser,
         LoggerInterface $logger
     ) {
         $this->downloader = $filesDownloader;
-        $this->reportPath = $reportPath;
+        $this->reportPath = $filesDownloader->getDownloadDirPath();
         $this->archiver = $fileArchiver;
         $this->decoder = $fileDecoder;
         $this->parser = $lockboxParser;
@@ -79,7 +81,7 @@ class AciReportLoader
 
         $finder = new Finder();
         /** @var SplFileInfo $file */
-        foreach ($finder->files()->in($this->reportPath) as $file) {
+        foreach ($finder->files()->in($this->reportPath)->depth(0) as $file) {
             $filePath = $file->getRealPath();
             $fileTransactions = $this->getTransactionsFromReportFile($filePath);
             $this->archiver->archive($filePath);

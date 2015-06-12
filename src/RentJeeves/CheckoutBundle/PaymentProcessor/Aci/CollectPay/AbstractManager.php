@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\SubModel\Address;
