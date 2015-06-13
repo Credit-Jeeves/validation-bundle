@@ -249,7 +249,7 @@ class OrderRepositoryCase extends BaseTestCase
     protected function makeStartDate($adjustString)
     {
         $date = new DateTime();
-        $date->setTime(0,0,0);
+        $date->setTime(0, 0, 0);
         $date->modify($adjustString);
 
         return $date;
@@ -258,7 +258,7 @@ class OrderRepositoryCase extends BaseTestCase
     protected function makeEndDate($adjustString)
     {
         $date = new DateTime();
-        $date->setTime(23,59,59);
+        $date->setTime(23, 59, 59);
         $date->modify($adjustString);
 
         return $date;
