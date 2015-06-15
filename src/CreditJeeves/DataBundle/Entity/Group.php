@@ -113,6 +113,14 @@ class Group extends BaseGroup
     }
 
     /**
+     * @return bool
+     */
+    public function isExistGroupSettings()
+    {
+        return empty($this->groupSettings) ? false : true;
+    }
+
+    /**
      * @return GroupSettings
      */
     public function getGroupSettings()
@@ -191,7 +199,7 @@ class Group extends BaseGroup
     {
         $holding = $this->getHolding();
         switch ($holding->getApiIntegrationType()) {
-            case ApiIntegrationType::AMSI:
+            case ApiIntegrationType::AMSI :
                 return $holding->getAmsiSettings();
             case ApiIntegrationType::MRI:
                 return $holding->getMriSettings();

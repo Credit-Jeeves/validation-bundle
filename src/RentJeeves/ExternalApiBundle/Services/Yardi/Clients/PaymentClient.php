@@ -101,7 +101,7 @@ class PaymentClient extends AbstractClient
      */
     public function addPaymentToBatch(Order $order, $externalPropertyId)
     {
-        if ($externalLeaseId = $order->getContract()->getExternalLeaseId()) {
+        if (!$externalLeaseId = $order->getContract()->getExternalLeaseId()) {
             $this->logger->alert(
                 sprintf(
                     'Order(ID:%s) will not send to Yardi, because his contract(ID:%s) does not have externalLeaseId.',

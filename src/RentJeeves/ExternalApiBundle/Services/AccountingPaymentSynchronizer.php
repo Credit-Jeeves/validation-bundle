@@ -15,6 +15,7 @@ use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use Exception;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -96,19 +97,21 @@ class AccountingPaymentSynchronizer
      */
     public function isAllowedToSend(Contract $contract)
     {
-        $this->logger->debug("Checking if external payment post is allowed...");
-        if (in_array($contract->getHolding()->getApiIntegrationType(), $this->allowedIntegrationApi)) {
-            $this->logger->debug("Holding is allowed for external payment post.");
-            if ($contract->getGroup()->getGroupSettings()->getIsIntegrated() === true) {
-                $this->logger->debug("Group is allowed for external payment post. Post!");
+        $this->logger->debug('Checking if external payment post is allowed...');
+        $integrationType = $contract->getHolding()->getApiIntegrationType();
+        if (!empty($integrationType) && $integrationType !== ApiIntegrationType::NONE ) {
+            $this->logger->debug('Holding is allowed for external payment post.');
+            $group = $contract->getGroup();
+            if ($group->isExistGroupSettings() && $group->getGroupSettings()->getIsIntegrated() === true) {
+                $this->logger->debug('Group is allowed for external payment post. Post!');
 
                 return true;
             }
-            $this->logger->debug("Group is NOT allowed for external payment post. done.");
+            $this->logger->debug('Group is NOT allowed for external payment post. done.');
 
             return false;
         }
-        $this->logger->debug("Holding is NOT allowed for external payment post. done.");
+        $this->logger->debug('Holding is NOT allowed for external payment post. done.');
 
         return false;
     }
