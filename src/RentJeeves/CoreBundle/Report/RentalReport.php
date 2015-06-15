@@ -2,35 +2,34 @@
 
 namespace RentJeeves\CoreBundle\Report;
 
-use JMS\Serializer\Annotation as Serializer;
-
-abstract class RentalReport
+interface RentalReport
 {
     /**
-     * @Serializer\Exclude
+     * Returns the type of serialization.
+     *
+     * @return string
      */
-    protected $em;
+    public function getSerializationType();
 
     /**
-     * @Serializer\Exclude
+     * Returns a new report filename.
+     *
+     * @return string
      */
-    protected $params;
+    public function getReportFilename();
 
-    public function __construct($em, $reportMonth, $reportYear, $params = array())
-    {
-        $this->em = $em;
-        $this->params = $params;
-        $this->createHeader($params);
-        $this->createRecords($reportMonth, $reportYear);
-    }
+    /**
+     * Builds report records.
+     *
+     * @param RentalReportData $data
+     * @return void
+     */
+    public function build(RentalReportData $data);
 
-    abstract public function getSerializationType();
-
-    abstract public function getReportFilename();
-
-    abstract public function createHeader($params);
-
-    abstract public function createRecords($month, $year);
-
-    abstract public function isEmpty();
+    /**
+     * Returns if report is empty.
+     *
+     * @return boolean
+     */
+    public function isEmpty();
 }

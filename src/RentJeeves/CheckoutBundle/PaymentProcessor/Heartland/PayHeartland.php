@@ -93,6 +93,7 @@ class PayHeartland
             $tenant = $contract->getTenant();
             $billTransaction->setID3(sprintf("%s %s", $tenant->getFirstName(), $tenant->getLastName()));
             $billTransaction->setID4($contract->getGroup()->getID4StatementDescriptor());
+            $order->setDescriptor($contract->getGroup()->getID4StatementDescriptor());
         }
         if (PaymentGroundType::REPORT == $paymentType) {
             $billTransaction->setID1("report");

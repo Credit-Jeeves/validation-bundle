@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Payment;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
@@ -119,6 +120,47 @@ class OrderManager
             $order->setFee($depositAccount->getFeeACH());
             $order->setType(OrderType::HEARTLAND_BANK);
         }
+
+        return $order;
+    }
+
+    /**
+     * @param Group $group
+     * @param float $amount
+     * @param string $descriptor
+     * @return Order
+     */
+    public function createChargeOrder(Group $group, $amount, $descriptor)
+    {
+        $order = new Order();
+
+        $operation = new Operation();
+        $operation->setType(OperationType::CHARGE);
+        $operation->setAmount($amount);
+        $operation->setGroup($group);
+        $operation->setPaidFor(new DateTime());
+        $operation->setOrder($order);
+
+        $order->addOperation($operation);
+
+        $users = $group->getGroupAgents();
+        if ($users->count() == 0) {
+            throw new \RuntimeException(
+                sprintf(
+                    "Can't create charge order: user for group '%s' not found.",
+                    $group->getName()
+                )
+            );
+        }
+
+        $groupUser = $users->first();
+
+        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setUser($groupUser);
+        $order->setSum($amount);
+        $order->setStatus(OrderStatus::NEWONE);
+        $order->setDescriptor($descriptor);
+        $order->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
 
         return $order;
     }

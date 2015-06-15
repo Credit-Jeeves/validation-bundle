@@ -669,38 +669,188 @@ class ContractRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function getContractsForExperianRentalReport($monthNo, $yearNo)
+    /**
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Contract[]
+     */
+    public function getContractsForExperianPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
-        $firstDate = new DateTime("$yearNo-$monthNo-01");
-        $lastDate = new DateTime($firstDate->format('Y-m-t'));
+        $reportingStartDate = clone $startDate;
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
 
         $query = $this->createQueryBuilder('c');
-        $query->where('c.reportToExperian = 1 AND c.experianStartAt is not NULL AND c.experianStartAt <= :startDate');
-        $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
+        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
+        $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
+        $query->where(
+            'c.reportToExperian = 1 AND c.experianStartAt is not NULL AND c.experianStartAt <= :reportingStartAt'
+        );
+        $query->andWhere('c.status = :current');
+        $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
+        $query->andWhere('MONTH(op.paidFor) = :month');
+        $query->andWhere('YEAR(op.paidFor) = :year');
+
+        $query->setParameter('rent', OperationType::RENT);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
         $query->setParameter('current', ContractStatus::CURRENT);
-        $query->setParameter('finished', ContractStatus::FINISHED);
-        $query->setParameter('startDate', $firstDate);
-        $query->setParameter('lastDate', $lastDate);
+        $query->setParameter('reportingStartAt', $reportingStartDate);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+        $query->setParameter('month', $month->format('m'));
+        $query->setParameter('year', $month->format('Y'));
         $query = $query->getQuery();
 
         return $query->execute();
     }
 
-    public function getContractsForTransUnionRentalReport($monthNo, $yearNo)
+    /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return QueryBuilder
+     */
+    protected function getBaseQueryForClosureReport(\DateTime $startDate, \DateTime $endDate)
     {
-        $firstDate = new DateTime("$yearNo-$monthNo-01");
-        $lastDate = new DateTime($firstDate->format('Y-m-t'));
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
 
         $query = $this->createQueryBuilder('c');
-        $query->where(
-            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :startDate'
-        );
-        // TODO This is a problem. We will lose 15-31st closures. RT-1299
-        $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
-        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->where('c.status = :finished and c.finishAt BETWEEN :startDate AND :endDate');
+
         $query->setParameter('finished', ContractStatus::FINISHED);
-        $query->setParameter('startDate', $firstDate);
-        $query->setParameter('lastDate', $lastDate);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+
+        return $query;
+    }
+
+    /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Contract[]
+     */
+    public function getContractsForExperianClosureReport(\DateTime $startDate, \DateTime $endDate)
+    {
+        $reportingStartDate = clone $startDate;
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
+        $query->andWhere(
+            'c.reportToExperian = 1 AND c.experianStartAt is not NULL AND c.experianStartAt <= :reportingStartAt'
+        );
+        $query->setParameter('reportingStartAt', $reportingStartDate);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Contract[]
+     */
+    public function getContractsForTransUnionPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
+    {
+        $reportingStartDate = clone $startDate;
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        $query = $this->createQueryBuilder('c');
+        $query->select(
+            'c contract, sum(op.amount) total_amount, max(op.createdAt) last_payment_date, op.paidFor paid_for'
+        );
+        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
+        $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
+        $query->where(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
+        );
+        $query->andWhere('c.status = :current');
+        $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
+        $query->andWhere('MONTH(op.paidFor) = :month');
+        $query->andWhere('YEAR(op.paidFor) = :year');
+        $query->groupBy('op.paidFor');
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+        $query->setParameter('reportingStartAt', $reportingStartDate);
+        $query->setParameter('rent', OperationType::RENT);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+        $query->setParameter('month', $month->format('m'));
+        $query->setParameter('year', $month->format('Y'));
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Contract[]
+     */
+    public function getContractsForTransUnionNegativeReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
+    {
+        $reportingStartDate = clone $startDate;
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        $subquery = $this->createQueryBuilder('c2');
+        $subquery
+            ->select('c2.id')
+            ->distinct()
+            ->innerJoin('c2.operations', 'op', Expr\Join::WITH, 'op.type = :rent')
+            ->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder')
+            ->where('c2.reportToTransUnion = 1 AND c2.transUnionStartAt is not NULL')
+            ->andWhere('c2.transUnionStartAt <= :reportingStartAt')
+            ->andWhere('c2.status = :current')
+            ->andWhere('op.createdAt BETWEEN :startDate AND :endDate')
+            ->andWhere('MONTH(op.paidFor) = :month')
+            ->andWhere('YEAR(op.paidFor) = :year');
+
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
+        $query->where(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
+        );
+        $query->andWhere('c.status = :current');
+        $query->andWhere(sprintf('c.id not in (%s)', $subquery->getDQL()));
+
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+        $query->setParameter('reportingStartAt', $reportingStartDate);
+        $query->setParameter('rent', OperationType::RENT);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+        $query->setParameter('month', $month->format('m'));
+        $query->setParameter('year', $month->format('Y'));
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Contract[]
+     */
+    public function getContractsForTransUnionClosureReport(\DateTime $startDate, \DateTime $endDate)
+    {
+        $reportingStartDate = clone $startDate;
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
+        $query->andWhere(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
+        );
+        $query->setParameter('reportingStartAt', $reportingStartDate);
         $query = $query->getQuery();
 
         return $query->execute();

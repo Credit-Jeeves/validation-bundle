@@ -36,15 +36,27 @@
             </trans-unit>
             <trans-unit id="admin.report.choose_type">
                 <source>admin.report.choose_type</source>
-                <target>Choose report type:</target>
+                <target>Type:</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_bureau">
+                <source>admin.report.choose_bureau</source>
+                <target>Bureau:</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_start_date">
+                <source>admin.report.choose_start_date</source>
+                <target>Start date (created_at date of operation):</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_end_date">
+                <source>admin.report.choose_end_date</source>
+                <target>End date:</target>
             </trans-unit>
             <trans-unit id="admin.report.choose_month">
                 <source>admin.report.choose_month</source>
-                <target>Choose report month:</target>
+                <target>Month:</target>
             </trans-unit>
             <trans-unit id="admin.report.choose_year">
                 <source>admin.report.choose_year</source>
-                <target>Choose report year:</target>
+                <target>Year:</target>
             </trans-unit>
             <trans-unit id="admin.rental_reports">
                 <source>admin.rental_reports</source>
@@ -64,7 +76,7 @@
             </trans-unit>
             <trans-unit id="admin.report.notice">
                 <source>admin.report.notice</source>
-                <target>Data to report for %m%/%y% not found</target>
+                <target>Data to report for %m% not found</target>
             </trans-unit>
             <trans-unit id="admin.deposit_account.merchant_name">
                 <source>admin.deposit_account.merchant_name</source>

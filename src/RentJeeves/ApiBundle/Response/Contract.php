@@ -108,4 +108,14 @@ class Contract extends ResponseResource
 
         return null;
     }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"ContractDetails"})
+     * @return string
+     */
+    public function getMailingAddressName()
+    {
+        return $this->entity->getGroup()->getMailingAddressName();
+    }
 }

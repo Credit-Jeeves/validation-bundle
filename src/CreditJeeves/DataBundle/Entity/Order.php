@@ -117,7 +117,7 @@ class Order extends BaseOrder
      */
     public function getYardiGenesisTransactionId()
     {
-        return $this->getHeartlandTransactionId();
+        return $this->getHeartlandDepositTransactionId();
     }
 
     /**
@@ -289,7 +289,7 @@ class Order extends BaseOrder
      */
     public function getPromasMemo()
     {
-        return sprintf('Trans #%s Batch #%s', $this->getHeartlandTransactionId(), $this->getHeartlandBatchId());
+        return sprintf('Trans #%s Batch #%s', $this->getHeartlandDepositTransactionId(), $this->getHeartlandBatchId());
     }
 
     /**
@@ -394,7 +394,7 @@ class Order extends BaseOrder
      */
     public function getRealPageDocumentNumber()
     {
-        return $this->getHeartlandTransactionId();
+        return $this->getHeartlandDepositTransactionId();
     }
 
     /**
@@ -630,6 +630,15 @@ class Order extends BaseOrder
     public function getHeartlandTransactionId()
     {
         if ($transaction = $this->getHeartlandTransaction()) {
+            return $transaction->getTransactionId();
+        }
+
+        return null;
+    }
+
+    public function getHeartlandDepositTransactionId()
+    {
+        if ($transaction = $this->getCompleteTransaction()) {
             return $transaction->getTransactionId();
         }
 

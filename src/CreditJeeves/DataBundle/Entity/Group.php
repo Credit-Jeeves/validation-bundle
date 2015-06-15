@@ -13,7 +13,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\GroupRepository")
- * @ORM\Table(name="cj_account_group")
+ * @ORM\Table(name="rj_group")
  */
 class Group extends BaseGroup
 {

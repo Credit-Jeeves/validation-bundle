@@ -38,4 +38,12 @@ class CommonSystemMocks extends \PHPUnit_Framework_TestCase
 
         return $orderMock;
     }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Doctrine\ORM\EntityManager
+     */
+    public function getEntityManagerMock()
+    {
+        return $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false);
+    }
 }

@@ -30,7 +30,7 @@ class Payment
      * @Serializer\Type("string")
      * @Serializer\SerializedName("ERRORCODE")
      */
-    protected $reponseCode;
+    protected $responseCode;
 
     /**
      * @Serializer\Type("string")
@@ -89,17 +89,17 @@ class Payment
     /**
      * @return mixed
      */
-    public function getReponseCode()
+    public function getResponseCode()
     {
-        return $this->reponseCode;
+        return $this->responseCode;
     }
 
     /**
-     * @param mixed $reponseCode
+     * @param mixed $responseCode
      */
-    public function setReponseCode($reponseCode)
+    public function setResponseCode($responseCode)
     {
-        $this->reponseCode = $reponseCode;
+        $this->responseCode = $responseCode;
     }
 
     /**
