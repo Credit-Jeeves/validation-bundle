@@ -177,6 +177,29 @@ class Value
     protected $occupyDate;
 
     /**
+     * @Serializer\SerializedName("BuildingAddress")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $buildingAddress;
+
+    /**
+     * @return string
+     */
+    public function getBuildingAddress()
+    {
+        return $this->buildingAddress;
+    }
+
+    /**
+     * @param string $buildingAddress
+     */
+    public function setBuildingAddress($buildingAddress)
+    {
+        $this->buildingAddress = $buildingAddress;
+    }
+
+    /**
      * @return string
      */
     public function getIsCurrent()
