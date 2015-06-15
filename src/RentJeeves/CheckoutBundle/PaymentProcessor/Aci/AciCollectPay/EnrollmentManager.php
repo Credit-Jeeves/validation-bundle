@@ -2,12 +2,16 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\User;
 use Payum\AciCollectPay\Model as RequestModel;
 use Payum\AciCollectPay\Request\ProfileRequest\CreateProfile;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
+use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
 
 class EnrollmentManager extends AbstractManager
 {
@@ -16,7 +20,7 @@ class EnrollmentManager extends AbstractManager
      * @return int
      * @throws PaymentProcessorRuntimeException
      */
-    public function createProfile(Contract $contract)
+    public function createUserProfile(Contract $contract)
     {
         $user = $contract->getTenant();
 
@@ -24,6 +28,162 @@ class EnrollmentManager extends AbstractManager
             sprintf('[ACI CollectPay Info]:Try to create new profile for user with id = "%d"', $user->getId())
         );
 
+        $profile = $this->prepareProfile($user);
+
+        $billingAccount = $this->prepareBillingAccount($contract);
+
+        $profile->setBillingAccount($billingAccount);
+
+        $profile = $this->executeRequest($profile);
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Created new profile "%d" for user with id = "%d"',
+                $profile->getProfileId(),
+                $user->getId()
+            )
+        );
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id = "%d"',
+                $profile->getProfileId(),
+                $contract->getId()
+            )
+        );
+
+        $userProfile = new AciCollectPayUserProfile();
+        $userProfile->setProfileId($profile->getProfileId());
+        $userProfile->setUser($user);
+        $user->setAciCollectPayProfile($userProfile);
+
+        $this->em->persist($userProfile);
+        $this->em->persist($user);
+
+        $contractBilling = new AciCollectPayContractBilling();
+        $contractBilling->setContract($contract);
+
+        $contract->setAciCollectPayContractBilling($contractBilling);
+
+        $this->em->persist($contract);
+        $this->em->persist($contractBilling);
+
+        $this->em->flush();
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Saved profile "%d" for user with id = "%d"',
+                $profile->getProfileId(),
+                $user->getId()
+            )
+        );
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id = "%d"',
+                $profile->getProfileId(),
+                $contract->getId()
+            )
+        );
+
+        return $profile->getProfileId();
+    }
+
+    /**
+     * @param Group $group
+     * @param Landlord $landlord
+     * @return int
+     * @throws PaymentProcessorRuntimeException
+     */
+    public function createGroupProfile(Group $group, Landlord $landlord)
+    {
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Try to create new profile for group "%s" using landlord with id = "%d"',
+                $group->getName(),
+                $landlord->getId()
+            )
+        );
+
+        $profile = $this->prepareProfile($landlord);
+
+        $billingAccount = $this->prepareGroupBillingAccount($group);
+
+        $profile->setBillingAccount($billingAccount);
+
+        $profile = $this->executeRequest($profile);
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Created new profile "%d" for group "%s" using landlord with id = "%d"',
+                $profile->getProfileId(),
+                $group->getName(),
+                $landlord->getId()
+            )
+        );
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Added billing account to profile "%d" for group "%s"',
+                $profile->getProfileId(),
+                $group->getName()
+            )
+        );
+
+        $groupProfile = new AciCollectPayGroupProfile();
+        $groupProfile->setProfileId($profile->getProfileId());
+        $groupProfile->setGroup($group);
+        $group->setAciCollectPayProfile($groupProfile);
+
+        $this->em->persist($groupProfile);
+        $this->em->persist($group);
+
+        $this->em->flush();
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Saved profile "%d" for group "%s"',
+                $profile->getProfileId(),
+                $group->getName()
+            )
+        );
+
+        return $profile->getProfileId();
+    }
+
+    /**
+     * @param RequestModel\Profile $profile
+     * @return RequestModel\Profile
+     */
+    protected function executeRequest(RequestModel\Profile $profile)
+    {
+        $bb = print_r($profile, true);
+
+        file_put_contents('/tmp/test.txt', $bb);
+
+        $request = new CreateProfile($profile);
+
+        try {
+            $this->paymentProcessor->execute($request);
+        } catch (\Exception $e) {
+            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            throw new $e();
+        }
+
+        if (!$request->getIsSuccessful()) {
+            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            throw new PaymentProcessorRuntimeException($request->getMessages());
+        }
+
+        return $request->getModel();
+    }
+
+    /**
+     * @param User $user
+     * @return RequestModel\Profile
+     */
+    protected function prepareProfile(User $user)
+    {
         $profile = new RequestModel\Profile();
 
         $profileUser = new RequestModel\SubModel\User();
@@ -48,74 +208,34 @@ class EnrollmentManager extends AbstractManager
             $profile->setAddress($profileAddress);
         }
 
-        $billingAccount = $this->prepareBillingAccount($contract);
+        return $profile;
+    }
 
-        $profile->setBillingAccount($billingAccount);
+    /**
+     * @param Group $group
+     * @return RequestModel\SubModel\BillingAccount
+     */
+    protected function prepareGroupBillingAccount(Group $group)
+    {
+        $billingAccount = new RequestModel\SubModel\BillingAccount();
 
-        $request = new CreateProfile($profile);
+        $billingAccount->setAccountNumber($group->getId());
+        $billingAccount->setBusinessId($this->defaultBusinessId);
+        $billingAccount->setHoldername('John Brown');
+        $billingAccount->setHoldername($group->getName());
+        $billingAccount->setNickname(sprintf('%s', $group->getName()));
 
-        try {
-            $this->paymentProcessor->execute($request);
-        } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
-            throw new $e();
-        }
+        $billingAccountAddress = new RequestModel\SubModel\Address();
 
-        if (!$request->getIsSuccessful()) {
-            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
-            throw new PaymentProcessorRuntimeException($request->getMessages());
-        }
+        $billingAccountAddress->setAddress1((string) $group->getStreetAddress1());
+        $billingAccountAddress->setAddress2((string) $group->getStreetAddress2());
+        $billingAccountAddress->setCity((string) $group->getCity());
+        $billingAccountAddress->setPostalCode((string) $group->getZip());
+        $billingAccountAddress->setState((string) $group->getState());
+        $billingAccountAddress->setCountryCode($group->getCountry());
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Created new profile "%d" for user with id = "%d"',
-                $request->getModel()->getProfileId(),
-                $user->getId()
-            )
-        );
+        $billingAccount->setAddress($billingAccountAddress);
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id = "%d"',
-                $request->getModel()->getProfileId(),
-                $contract->getId()
-            )
-        );
-
-        $profile = new AciCollectPayUserProfile();
-        $profile->setProfileId($request->getModel()->getProfileId());
-        $profile->setUser($user);
-        $user->setAciCollectPayProfile($profile);
-
-        $this->em->persist($profile);
-        $this->em->persist($user);
-
-        $contractBilling = new AciCollectPayContractBilling();
-        $contractBilling->setContract($contract);
-
-        $contract->setAciCollectPayContractBilling($contractBilling);
-
-        $this->em->persist($contract);
-        $this->em->persist($contractBilling);
-
-        $this->em->flush();
-
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Saved profile "%d" for user with id = "%d"',
-                $request->getModel()->getProfileId(),
-                $user->getId()
-            )
-        );
-
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id = "%d"',
-                $request->getModel()->getProfileId(),
-                $contract->getId()
-            )
-        );
-
-        return $request->getModel()->getProfileId();
+        return $billingAccount;
     }
 }

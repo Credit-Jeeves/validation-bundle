@@ -2,8 +2,17 @@
 
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
+
 interface GroupAwareInterface
 {
+    /**
+     * @return Group
+     */
     public function getGroup();
-    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group);
+
+    /**
+     * @param Group $group
+     */
+    public function setGroup(Group $group);
 }

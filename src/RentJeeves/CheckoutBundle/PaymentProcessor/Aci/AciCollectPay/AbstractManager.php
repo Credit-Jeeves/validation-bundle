@@ -28,6 +28,11 @@ abstract class AbstractManager
     protected $logger;
 
     /**
+     * @var string
+     */
+    protected $defaultBusinessId;
+
+    /**
      * @param EntityManager      $em
      * @param PayumAwareRegistry $payum
      * @param LoggerInterface    $logger
@@ -39,6 +44,14 @@ abstract class AbstractManager
         $this->paymentProcessor = $payum->getPayment('aci_collect_pay');
 
         $this->logger = $logger;
+    }
+
+    /**
+     * @param string $businessId
+     */
+    public function setDefaultBusinessId($businessId)
+    {
+        $this->defaultBusinessId = $businessId;
     }
 
     /**

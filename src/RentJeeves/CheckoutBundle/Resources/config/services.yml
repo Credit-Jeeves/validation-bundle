@@ -67,6 +67,8 @@ services:
             - @doctrine.orm.entity_manager
             - @payum
             - @logger
+        calls:
+            - [setDefaultBusinessId, ["%aci_collect_pay_business_id%"]]
 
     payment_processor.aci.collect_pay.funding_account_manager:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\FundingAccountManager
@@ -83,4 +85,6 @@ services:
             - @doctrine.orm.entity_manager
             - @payum
             - @logger
+        calls:
+            - [setDefaultBusinessId, ["%aci_collect_pay_business_id%"]]
 
