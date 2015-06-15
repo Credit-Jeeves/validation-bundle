@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Tests\Report;
+namespace RentJeeves\CoreBundle\Tests\Functional\Report\TransUnion;
 
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
@@ -27,7 +27,8 @@ class TransUnionNegativeReportCase extends BaseTestCase
             ->createQueryBuilder('c')
             ->update()
             ->set('c.reportToTransUnion', 1)
-            ->set('c.transUnionStartAt', '2015-01-01')
+            ->set('c.transUnionStartAt', ':date')
+            ->setParameter('date', '2015-01-01')
             ->getQuery()
             ->execute();
 
@@ -52,7 +53,7 @@ class TransUnionNegativeReportCase extends BaseTestCase
 
         $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'trans_union_rental');
         $reportRecords = explode("\n", trim($report));
-        $this->assertCount(3, $reportRecords, 'TU report should contain 3 records'); // header + 2 contracts
+        $this->assertCount(2, $reportRecords, 'TU report should contain 2 records'); // header + 1 contract
     }
 
     /**

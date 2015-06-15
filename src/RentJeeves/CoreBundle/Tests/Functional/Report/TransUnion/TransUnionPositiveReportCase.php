@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Tests\Report;
+namespace RentJeeves\CoreBundle\Tests\Functional\Report\TransUnion;
 
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;

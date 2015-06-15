@@ -9,4 +9,6 @@ class PaymentGroundType extends Enum
     const RENT = 'rent';
 
     const REPORT = 'report';
+
+    const CHARGE = 'charge';
 }

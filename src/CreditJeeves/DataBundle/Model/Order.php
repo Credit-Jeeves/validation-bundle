@@ -161,6 +161,15 @@ abstract class Order
      */
     protected $paymentProcessor = PaymentProcessor::HEARTLAND;
 
+    /**
+     * @ORM\Column(
+     *     type="string",
+     *     name="descriptor",
+     *     nullable=true
+     * )
+     */
+    protected $descriptor;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
@@ -470,6 +479,22 @@ abstract class Order
     public function setPaymentProcessor($paymentProcessor)
     {
         $this->paymentProcessor = $paymentProcessor;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescriptor()
+    {
+        return $this->descriptor;
+    }
+
+    /**
+     * @param string $descriptor
+     */
+    public function setDescriptor($descriptor)
+    {
+        $this->descriptor = $descriptor;
     }
 
     /**
