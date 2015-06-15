@@ -22,6 +22,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use JMS\Serializer\Serializer;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Output\OutputInterface;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use Psr\Log\LoggerInterface;
@@ -187,6 +188,7 @@ class ReceiptBatchSender
         } catch (\Exception $e) {
             $this->exceptionCatcher->handleException($e);
             $this->logMessage(sprintf("Failed push receipts: \n%s", $e->getMessage()));
+            throw $e; // fail the job, so someone gets alerted!
         }
     }
 
@@ -263,7 +265,7 @@ class ReceiptBatchSender
              * @var $order Order
              */
             foreach ($orders as $order) {
-                $batchId =$order->getHeartlandTransaction()->getBatchId();
+                $batchId = $order->getHeartlandTransaction()->getBatchId();
                 $this->pushReceiptBatch($holding, $batchId);
             }
 
@@ -289,7 +291,7 @@ class ReceiptBatchSender
         )
         ) {
             try {
-                $this->removeOrderWhichDoNotHaveLeaseId($ordersReceiptBatch);
+                $this->assertAllOrdersHaveLeaseId($ordersReceiptBatch);
                 if (empty($ordersReceiptBatch)) {
                     throw new \Exception("Nothing to send.");
                 }
@@ -309,17 +311,21 @@ class ReceiptBatchSender
                 if ($result === true) {
                     $this->saveSuccessfullRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
                 } else {
+                    // if we can't process whole batch then cancel and stop processing.
                     $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
+                    $this->cancelBatch($yardiBatchId);
+                    break; // break out of while loop.
                 }
                 $this->paymentClient->closeReceiptBatch($yardiBatchId);
             } catch (\Exception $e) {
+                // don't throw from here, since we want to process other batches -- if possible.
+                $this->exceptionCatcher->handleException($e);
                 if (empty($yardiBatchId) || !isset($yardiBatchId)) {
                     $yardiBatchId = 'undefined';
                 } else {
                     $this->cancelBatch($yardiBatchId);
                 }
-                $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId);
-                throw $e;
+                $this->saveFailedRequest($holding, $ordersReceiptBatch, $yardiBatchId, $batchId, $e);
             }
 
             $startPagination += self::LIMIT_ORDERS;
@@ -328,9 +334,12 @@ class ReceiptBatchSender
 
     /**
      * @param $ordersReceiptBatch
+     * @throws \Exception
      */
-    protected function removeOrderWhichDoNotHaveLeaseId(&$ordersReceiptBatch)
+    protected function assertAllOrdersHaveLeaseId(&$ordersReceiptBatch)
     {
+        $isOkay = true;
+
         /** @var Order $order */
         foreach ($ordersReceiptBatch as $key => $order) {
             $leaseId = $order->getContract()->getExternalLeaseId();
@@ -338,7 +347,8 @@ class ReceiptBatchSender
                 continue;
             }
 
-            unset($ordersReceiptBatch[$key]);
+            $isOkay = false;
+
             $message = sprintf(
                 "Order(ID:%s) will not send to Yardi, because his contract(ID:%s) does not have externalLeaseId.\n
                  You can re-run initial import for setup externalLeaseId for active contract.
@@ -348,6 +358,10 @@ class ReceiptBatchSender
             );
             $this->logger->alert($message);
             $this->logMessage($message);
+        }
+
+        if (!$isOkay) {
+            throw new \Exception("Not all orders have lease ids. Cancel Batch!");
         }
     }
 
@@ -478,6 +492,7 @@ class ReceiptBatchSender
         if ($this->consoleLogger) {
             $this->consoleLogger->writeln($message);
         }
+        $this->logger->info($message);
     }
 
     /**
@@ -597,15 +612,19 @@ class ReceiptBatchSender
      * @param $orders
      * @param $yardiBatchId
      */
-    protected function saveFailedRequest(Holding $holding, $orders, $yardiBatchId, $batchId)
+    protected function saveFailedRequest(Holding $holding, $orders, $yardiBatchId, $batchId, \Exception $e = null)
     {
-        $this->logMessage(
-            sprintf(
-                "Failed Request holding: %s batch: %s",
-                $holding->getId(),
-                $yardiBatchId
-            )
+        $message = sprintf(
+            "Failed Request holding: %s batch: %s yardiBatch: %s",
+            $holding->getId(),
+            $batchId,
+            $yardiBatchId
         );
+        if ($e !== null) {
+            $message = sprintf("%s Exception Message: %s", $message, $e->getMessage());
+        }
+        $this->logMessage($message);
+        $this->logger->alert($message);
 
         $this->fillRequestDefaultData($holding, $yardiBatchId, $batchId);
         /**
