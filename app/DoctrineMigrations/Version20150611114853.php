@@ -18,6 +18,8 @@ class Version20150611114853 extends AbstractMigration
                 ADD type ENUM('deposit','reversal')
                     COMMENT '(DC2Type:OutboundTransactionType)' NOT NULL,
                 ADD reversal_description VARCHAR(255) DEFAULT NULL,
+                ADD batch_id INT DEFAULT NULL,
+                ADD batch_close_date DATETIME DEFAULT NULL,
                 DROP status"
         );
     }
@@ -33,7 +35,9 @@ class Version20150611114853 extends AbstractMigration
             "ALTER TABLE rj_transaction_outbound
                 ADD status VARCHAR(255) NOT NULL,
                 DROP type,
-                DROP reversal_description"
+                DROP reversal_description,
+                DROP batch_id,
+                DROP batch_close_date"
         );
     }
 }
