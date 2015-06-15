@@ -302,6 +302,7 @@ class OrderRepository extends EntityRepository
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
             $query->where('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
             $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
+            $query->andWhere("transaction.status = 'complete'");
             $query->andWhere('o.status IN (:statuses)');
             $query->setParameter('statuses', [
                 OrderStatus::COMPLETE,
@@ -369,6 +370,7 @@ class OrderRepository extends EntityRepository
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
             $query->where('o.status IN (:statuses)');
             $query->andWhere('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
+            $query->andWhere("transaction.status = 'complete'");
             $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
             $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         } else {

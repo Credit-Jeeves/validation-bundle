@@ -18,7 +18,12 @@ trait Tenant
     /**
      * @var string
      */
-    public static $tenantStatus = 'c';
+    public static $tenantStatusCurrent = 'c';
+
+    /**
+     * @var string
+     */
+    public static $tenantStatusPast = 'p';
 
     /**
      * @var array
@@ -203,7 +208,15 @@ trait Tenant
             return;
         }
 
-        if (trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) === self::$tenantStatus) {
+        if (trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) === self::$tenantStatusPast) {
+            $moveOutDate = $row[Mapping::KEY_MOVE_OUT];
+            $moveOutDate = (!empty($moveOutDate)) ? $this->getDateByField($moveOutDate) : new \DateTime();
+            $this->currentImportModel->setMoveOut($moveOutDate);
+
+            return;
+        }
+
+        if (trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) === self::$tenantStatusCurrent) {
             return;
         }
 
