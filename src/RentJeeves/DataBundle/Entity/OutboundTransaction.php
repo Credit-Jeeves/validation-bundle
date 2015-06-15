@@ -5,7 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Model\OutboundTransaction as BaseTransactionOutbound;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\OutboundTransactionRepository")
  * @ORM\Table(name="rj_transaction_outbound")
  */
 class OutboundTransaction extends BaseTransactionOutbound
