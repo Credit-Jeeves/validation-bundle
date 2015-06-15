@@ -325,6 +325,30 @@ abstract class MappingAbstract implements MappingInterface
             }
         }
 
+        $mappedData[self::KEY_EMAIL] = $this->getEmailFromRow($mappedData);
+
         return $mappedData;
+    }
+
+    /**
+     * @param array $row
+     * @return string
+     */
+    protected function getEmailFromRow(array $row)
+    {
+        $email = $row[self::KEY_EMAIL];
+
+        if (empty($email)) {
+            return $email;
+        }
+
+        $emailSeparated = explode('@', $email);
+        $domain = end($emailSeparated);
+
+        if ($domain === 'example.com') {
+            return '';
+        }
+
+        return $row[self::KEY_EMAIL];
     }
 }

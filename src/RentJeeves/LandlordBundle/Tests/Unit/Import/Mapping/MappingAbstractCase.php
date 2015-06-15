@@ -17,7 +17,7 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             array('02042014', '2014-02-04', 'dmY'),
             array('2014-02-04', '2014-02-04', 'mdY'),
             array('2014/02/04', '2014-02-04', 'Y/m/d'),
-            array('4/2/14', '2014-02-04','j/n/y'),
+            array('4/2/14', '2014-02-04', 'j/n/y'),
             array('04/02/14', '2014-02-04', 'd/m/y'),
             array('02/04/14', '2014-02-04', 'm/d/y'),
             array('02-04-14', '2014-02-04', 'm-d-y'),
@@ -57,27 +57,27 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
     public function streetDataProvider()
     {
         return array(
-            array([ "street" => "171 Hester Place"], "171 Hester Place", null),
-            array([ "street" => "862 Three Wood Drive"], "862 Three Wood Drive", null),
-            array([ "street" => "5013 Yorkchester Drive"], "5013 Yorkchester Drive", null),
-            array([ "street" => "959 Chester Circle"], "959 Chester Circle", null),
-            array([ "street" => "5029 Yorkchester Dr"], "5029 Yorkchester Dr", null),
-            array([ "street" => "101 MAIN ST"], "101 MAIN ST", null),
-            array([ "street" => "101 MAIN ST APT 12"], "101 MAIN ST", "12"),
-            array([ "street" => "101 W MAIN ST. APT 12"], "101 W MAIN ST", "12"),
-            array([ "street" => "101 MAIN ST S.APT.12"], "101 MAIN ST S" , "12"),
-            array([ "street" => "101 MAIN ST # 12"], "101 MAIN ST", "12"),
-            array([ "street" => "101 MAIN ST Unit 12"], "101 MAIN ST" , "12"),
-            array([ "street" => "101 MAIN ST RM 12"], "101 MAIN ST", "12"),
-            array([ "street" => "101 MAIN ST STE. 12"], "101 MAIN ST", "12"),
-            array([ "street" => "2715 P Street #2"], "2715 P Street", "2"),
-            array([ "street" => "2715 P Street #11"], "2715 P Street", "11"),
-            array([ "street" => "2715 P Street #11"], "2715 P Street", "11"),
-            array([ "street" => "527-F SPRING FOREST"], "527 SPRING FOREST", "F"),
+            array(["street" => "171 Hester Place"], "171 Hester Place", null),
+            array(["street" => "862 Three Wood Drive"], "862 Three Wood Drive", null),
+            array(["street" => "5013 Yorkchester Drive"], "5013 Yorkchester Drive", null),
+            array(["street" => "959 Chester Circle"], "959 Chester Circle", null),
+            array(["street" => "5029 Yorkchester Dr"], "5029 Yorkchester Dr", null),
+            array(["street" => "101 MAIN ST"], "101 MAIN ST", null),
+            array(["street" => "101 MAIN ST APT 12"], "101 MAIN ST", "12"),
+            array(["street" => "101 W MAIN ST. APT 12"], "101 W MAIN ST", "12"),
+            array(["street" => "101 MAIN ST S.APT.12"], "101 MAIN ST S", "12"),
+            array(["street" => "101 MAIN ST # 12"], "101 MAIN ST", "12"),
+            array(["street" => "101 MAIN ST Unit 12"], "101 MAIN ST", "12"),
+            array(["street" => "101 MAIN ST RM 12"], "101 MAIN ST", "12"),
+            array(["street" => "101 MAIN ST STE. 12"], "101 MAIN ST", "12"),
+            array(["street" => "2715 P Street #2"], "2715 P Street", "2"),
+            array(["street" => "2715 P Street #11"], "2715 P Street", "11"),
+            array(["street" => "2715 P Street #11"], "2715 P Street", "11"),
+            array(["street" => "527-F SPRING FOREST"], "527 SPRING FOREST", "F"),
             # below case checks for matching "rm" in "farm"
-            array([ "street" => "826 Davenport Farm Road"], "826 Davenport Farm Road", null),
+            array(["street" => "826 Davenport Farm Road"], "826 Davenport Farm Road", null),
             # failed for '-' within unit name
-            array([ "street" => "3903 #PP-5 STERLING"], "3903 STERLING", "PP-5"),
+            array(["street" => "3903 #PP-5 STERLING"], "3903 STERLING", "PP-5"),
         );
     }
 
@@ -97,25 +97,24 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
     public function unitDataProvider()
     {
         return array(
-            array([ "street" => "171 Hester Place", "unit" => "" ], "171 Hester Place", null),
-            array([ "street" => "862 Three Wood Drive", "unit" => "123" ], "862 Three Wood Drive", "123"),
-            array([ "street" => "5013 Yorkchester Drive", "unit" => "Ste.4" ], "5013 Yorkchester Drive", "4"),
-            array([ "street" => "959 Chester Circle", "unit" => "unit A" ], "959 Chester Circle", "A"),
-            array([ "street" => "5029 Yorkchester Dr", "unit" => "RM 1"], "5029 Yorkchester Dr", "1"),
-            array([ "street" => "101 MAIN ST", "unit" => "xyz"], "101 MAIN ST", "xyz"),
-            array([ "street" => "101 MAIN ST", "unit" => "APT 12"], "101 MAIN ST", "12"),
-            array([ "street" => "101 MAIN ST S.", "unit" => "APT.12"], "101 MAIN ST S." , "12"),
-            array([ "street" => "101 MAIN ST", "unit" => "# 12"], "101 MAIN ST", "12"),
-            array([ "street" => "101 MAIN ST", "unit" => "Unit 12"], "101 MAIN ST", "12"),
-            array([ "street" => "101 MAIN ST", "unit" => "RM 12"], "101 MAIN ST", "12"),
-            array([ "street" => "101 MAIN ST", "unit" => "STE. 12"], "101 MAIN ST", "12"),
-            array([ "street" => "2715 P Street #2", "unit" => "P2715 #2"], "2715 P Street", "2"),
-            array([ "street" => "2715 P Street #11", "unit" => "P2715#11"], "2715 P Street ", "11"),
-            array([ "street" => "5105-A Deveron Street", "unit" => "5105-A"], "5105 Deveron Street", "A"),
-            array([ "street" => "3903 #PP-5 STERLING", "unit" => "3903 #PP-5 STERLING"], "3903 STERLING", "PP-5"),
+            array(["street" => "171 Hester Place", "unit" => ""], "171 Hester Place", null),
+            array(["street" => "862 Three Wood Drive", "unit" => "123"], "862 Three Wood Drive", "123"),
+            array(["street" => "5013 Yorkchester Drive", "unit" => "Ste.4"], "5013 Yorkchester Drive", "4"),
+            array(["street" => "959 Chester Circle", "unit" => "unit A"], "959 Chester Circle", "A"),
+            array(["street" => "5029 Yorkchester Dr", "unit" => "RM 1"], "5029 Yorkchester Dr", "1"),
+            array(["street" => "101 MAIN ST", "unit" => "xyz"], "101 MAIN ST", "xyz"),
+            array(["street" => "101 MAIN ST", "unit" => "APT 12"], "101 MAIN ST", "12"),
+            array(["street" => "101 MAIN ST S.", "unit" => "APT.12"], "101 MAIN ST S.", "12"),
+            array(["street" => "101 MAIN ST", "unit" => "# 12"], "101 MAIN ST", "12"),
+            array(["street" => "101 MAIN ST", "unit" => "Unit 12"], "101 MAIN ST", "12"),
+            array(["street" => "101 MAIN ST", "unit" => "RM 12"], "101 MAIN ST", "12"),
+            array(["street" => "101 MAIN ST", "unit" => "STE. 12"], "101 MAIN ST", "12"),
+            array(["street" => "2715 P Street #2", "unit" => "P2715 #2"], "2715 P Street", "2"),
+            array(["street" => "2715 P Street #11", "unit" => "P2715#11"], "2715 P Street ", "11"),
+            array(["street" => "5105-A Deveron Street", "unit" => "5105-A"], "5105 Deveron Street", "A"),
+            array(["street" => "3903 #PP-5 STERLING", "unit" => "3903 #PP-5 STERLING"], "3903 STERLING", "PP-5"),
         );
     }
-
 
     /**
      * @test
@@ -128,5 +127,30 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_street, $actual["street"]);
         $actualUnit = array_key_exists("unit", $actual) ? $actual["unit"] : null;
         $this->assertEquals($expected_unit, $actualUnit);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckEmail()
+    {
+        $mapping = new MappingTest();
+        $handlerTestReflection = new \ReflectionClass($mapping);
+        $mappingMethodForCheckEmail = $handlerTestReflection->getMethod('getEmailFromRow');
+        $mappingMethodForCheckEmail->setAccessible(true);
+        $row = [MappingAbstract::KEY_EMAIL => 'none@example.com'];
+
+        $resultRow = $mappingMethodForCheckEmail->invoke($mapping, $row);
+        $this->assertEmpty($resultRow);
+
+        $row = [MappingAbstract::KEY_EMAIL => 'none@gmail.com'];
+
+        $resultRow = $mappingMethodForCheckEmail->invoke($mapping, $row);
+        $this->assertEquals($resultRow, 'none@gmail.com');
+
+        $row = [MappingAbstract::KEY_EMAIL => ''];
+
+        $resultRow = $mappingMethodForCheckEmail->invoke($mapping, $row);
+        $this->assertEmpty($resultRow);
     }
 }
