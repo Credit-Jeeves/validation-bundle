@@ -401,7 +401,7 @@ class ExportCase extends BaseTestCase
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
         $this->assertEquals(4, $archive->numFiles);
-        $file = $archive->getFromIndex(2);
+        $file = $archive->getFromIndex(1);
         $rows = explode("\n", trim($file));
         $this->assertEquals(1, count($rows));
         $columns = explode(",", $rows[0]);
