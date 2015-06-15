@@ -63,25 +63,6 @@ else
 fi
 cat $BUILD_DIR/rj_migration.res
 
-#TODO change app form rj to cj
-php bin/console.php --app=rj --env=migration doctrine:database:drop --force
-php bin/console.php --app=rj --env=migration doctrine:database:create && \
-php bin/console.php --app=rj --env=migration database:restore 'doctrine.dbal.default_connection' data/files/sql/cj.sql
-if php bin/console.php doctrine:migrations:migrate --app=rj --env=migration -n ; then
-  echo 'OK' > $BUILD_DIR/cj_migration.res
-  echo "##### RUN CJ_DB TEST #####"
-  php bin/console.php --app=rj --env=migration database:restore 'doctrine.dbal.default_connection' data/files/sql/drop_all_data.sql
-  if php bin/console.php --app=rj --env=migration khepin:yamlfixtures:load ; then
-    echo 'OK' > $BUILD_DIR/cj_migration_structure.res
-  else
-    echo 'FAIL' > $BUILD_DIR/cj_migration_structure.res
-  fi
-  cat $BUILD_DIR/cj_migration_structure.res
-else
-  echo 'FAIL' > $BUILD_DIR/cj_migration.res
-fi
-cat $BUILD_DIR/cj_migration.res
-
 echo "##### CHECKS CODING STANDARDS #####"
 if ./bin/cs.sh "--report=checkstyle --report-file=$BUILD_DIR/phpcs.xml ./" ; then
   echo 'OK' > $BUILD_DIR/phpcs.res
