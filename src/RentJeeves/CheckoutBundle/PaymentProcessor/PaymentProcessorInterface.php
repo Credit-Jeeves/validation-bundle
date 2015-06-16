@@ -4,36 +4,47 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
-use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 interface PaymentProcessorInterface
 {
     /**
-     * Creates a new payment account for User and Group.
+     * Creates a new payment account for User
      * Returns payment account token.
      *
-     * @param  PaymentAccountData $data
+     * @param  AccountData $data
      * @param  Contract           $contract
      * @return string
      */
-    public function createPaymentAccount(PaymentAccountData $data, Contract $contract);
+    public function createPaymentToken(AccountData $data, Contract $contract);
 
     /**
-     * Executes order of a given payment type (rent or report).
+     *
+     * Create a new billing account token that we use to charge Landlords for our service.
+     * Returns billing account token.
+     *
+     * @param AccountData $data
+     * @param Landlord $user
+     * @return mixed
+     */
+    public function createBillingToken(AccountData $data, Landlord $user);
+
+    /**
+     * Executes order of a given payment type (rent, report or charge).
      * Returns order status.
      *
      * @param  Order                                               $order
-     * @param  PaymentAccount                                      $paymentAccount
-     * @param  string                                              $paymentType
+     * @param  PaymentAccountInterface                             $accountEntity BillingAccount or PaymentAccount
+     * @param  string                                              $paymentType one of PaymentGroundType
      * @return string
      * @throws PaymentProcessorInvalidArgumentException|\Exception
      */
     public function executeOrder(
         Order $order,
-        PaymentAccount $paymentAccount,
+        PaymentAccountInterface $accountEntity,
         $paymentType = PaymentGroundType::RENT
     );
 

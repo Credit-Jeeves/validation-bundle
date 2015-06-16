@@ -13,7 +13,7 @@ class ResponseParserCase extends BaseTestCase
      */
     public function shouldCreateObjectAndInstanceOfRightClass()
     {
-        $parser = new ResponseParser($this->getSerializer(), $this->getLogger());
+        $parser = new ResponseParser($this->getSerializer(), $this->getLoggerMock());
         $this->assertInstanceOf(
             '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\AbstractParser',
             $parser
@@ -28,7 +28,9 @@ class ResponseParserCase extends BaseTestCase
         $pathToFile = $this->getFileLocator()->locate('@RjCheckoutBundle/Tests/Fixtures/Aci/testResponseFile.xml');
         $xml = file_get_contents($pathToFile);
 
-        $parser = new ResponseParser($this->getSerializer(), $this->getLogger());
+        $logger = $this->getLoggerMock();
+
+        $parser = new ResponseParser($this->getSerializer(), $logger);
 
         $transactions = $parser->parse($xml);
 
@@ -66,7 +68,7 @@ class ResponseParserCase extends BaseTestCase
         $this->assertEquals('165641', $firstTransaction->getBatchId());
         $this->assertEquals(320, $firstTransaction->getAmount());
         $this->assertEquals('102497630', $firstTransaction->getTransactionId());
-        $this->assertEquals('WAITING FOR FUNDS', $firstTransaction->getResponseCode());
+        $this->assertEquals('READY TO DISBURSE', $firstTransaction->getResponseCode());
         $this->assertEquals('UNKNOWN_BILLER', $firstTransaction->getResponseMessage());
     }
 
@@ -79,11 +81,11 @@ class ResponseParserCase extends BaseTestCase
     }
 
     /**
-     * @return \Monolog\Logger
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Monolog\Logger
      */
-    protected function getLogger()
+    protected function getLoggerMock()
     {
-        return $this->getContainer()->get('logger');
+        return $this->getMock('\Monolog\Logger', [], [], '', false);
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\PayAnyone;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\AdjustmentParser;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectDepositReportTransaction;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectReversalReportTransaction;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class AdjustmentParserCase extends BaseTestCase
@@ -57,6 +59,20 @@ class AdjustmentParserCase extends BaseTestCase
             '\RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectReversalReportTransaction',
             $transactions[4]
         );
+        /** @var PayDirectDepositReportTransaction $firstDepositTransaction */
+        $firstDepositTransaction = $transactions[0];
+        $this->assertEquals(null, $firstDepositTransaction->getBatchId());
+        $this->assertEquals('2015-06-03', $firstDepositTransaction->getDepositDate()->format('Y-m-d'));
+        $this->assertEquals('97055778', $firstDepositTransaction->getTransactionId());
+        $this->assertEquals(999, $firstDepositTransaction->getAmount());
+        /** @var PayDirectReversalReportTransaction $firstReversalTransaction */
+        $firstReversalTransaction = $transactions[2];
+        $this->assertEquals(null, $firstReversalTransaction->getBatchId());
+        $this->assertEquals('2015-06-03', $firstReversalTransaction->getTransactionDate()->format('Y-m-d'));
+        $this->assertEquals('97055769', $firstReversalTransaction->getTransactionId());
+        $this->assertEquals(999, $firstReversalTransaction->getAmount());
+        $this->assertEquals('', $firstReversalTransaction->getReversalDescription());
+        $this->assertEquals('refund', $firstReversalTransaction->getTransactionType());
     }
 
     /**

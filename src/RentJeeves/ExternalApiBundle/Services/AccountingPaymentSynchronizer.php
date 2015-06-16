@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services;
 
-use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\DataBundle\Entity\Contract;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -97,15 +97,25 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Holding $holding
+     * @param Contract $contract
      *
      * @return bool
      */
-    public function isAllowedToSend(Holding $holding)
+    public function isAllowedToSend(Contract $contract)
     {
-        if (in_array($holding->getApiIntegrationType(), $this->allowedIntegrationApi)) {
-            return true;
+        $this->logger->debug("Checking if external payment post is allowed...");
+        if (in_array($contract->getHolding()->getApiIntegrationType(), $this->allowedIntegrationApi)) {
+            $this->logger->debug("Holding is allowed for external payment post.");
+            if ($contract->getGroup()->getGroupSettings()->getIsIntegrated() === true) {
+                $this->logger->debug("Group is allowed for external payment post. Post!");
+
+                return true;
+            }
+            $this->logger->debug("Group is NOT allowed for external payment post. done.");
+
+            return false;
         }
+        $this->logger->debug("Holding is NOT allowed for external payment post. done.");
 
         return false;
     }
@@ -143,8 +153,8 @@ class AccountingPaymentSynchronizer
                 return false;
             }
 
-            $holding = $order->getContract()->getHolding();
-            if (!$this->isAllowedToSend($holding)) {
+            $contract = $order->getContract();
+            if (!$this->isAllowedToSend($contract)) {
                 $this->logger->debug(
                     sprintf(
                         "Order(%d) is not allowed to be sent to accounting system.",
@@ -155,6 +165,7 @@ class AccountingPaymentSynchronizer
                 return false;
             }
 
+            $holding = $contract->getHolding();
             if (!($transaction = $order->getCompleteTransaction() and
                 $holding->getExternalSettings() and
                 $paymentBatchId = $transaction->getBatchId() and

@@ -5,6 +5,7 @@ namespace RentJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 
 /**
  * @ORM\MappedSuperclass
@@ -36,11 +37,17 @@ abstract class OutboundTransaction
     protected $transactionId;
 
     /**
-     * @var string
+     * @var int
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="batch_id", type="integer", nullable=true)
      */
-    protected $status;
+    protected $batchId;
+
+    /**
+     * @see OutboundTransactionType
+     * @ORM\Column(type="OutboundTransactionType")
+     */
+    protected $type;
 
     /**
      * @var float
@@ -55,6 +62,20 @@ abstract class OutboundTransaction
      * @ORM\Column(name="deposit_date", type="datetime", nullable=true)
      */
     protected $depositDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="batch_close_date", type="datetime", nullable=true)
+     */
+    protected $batchCloseDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reversal_description", type="string", nullable=true)
+     */
+    protected $reversalDescription;
 
     /**
      * @var \DateTime
@@ -115,17 +136,17 @@ abstract class OutboundTransaction
     /**
      * @return string
      */
-    public function getStatus()
+    public function getType()
     {
-        return $this->status;
+        return $this->type;
     }
 
     /**
-     * @param string $status
+     * @param string $type
      */
-    public function setStatus($status)
+    public function setType($type)
     {
-        $this->status = $status;
+        $this->type = $type;
     }
 
     /**
@@ -190,5 +211,53 @@ abstract class OutboundTransaction
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReversalDescription()
+    {
+        return $this->reversalDescription;
+    }
+
+    /**
+     * @param string $reversalDescription
+     */
+    public function setReversalDescription($reversalDescription)
+    {
+        $this->reversalDescription = $reversalDescription;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBatchId()
+    {
+        return $this->batchId;
+    }
+
+    /**
+     * @param int $batchId
+     */
+    public function setBatchId($batchId)
+    {
+        $this->batchId = $batchId;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getBatchCloseDate()
+    {
+        return $this->batchCloseDate;
+    }
+
+    /**
+     * @param \DateTime $batchCloseDate
+     */
+    public function setBatchCloseDate($batchCloseDate)
+    {
+        $this->batchCloseDate = $batchCloseDate;
     }
 }

@@ -5,6 +5,7 @@ parameters:
     data.event_listener.import_summary.class: RentJeeves\DataBundle\EventListener\ImportSummaryListener
     kernel.listener.command_dispatch.exception.class: RentJeeves\CoreBundle\EventListener\ConsoleExceptionListener
     kernel.listener.command_dispatch.terminate.class: RentJeeves\CoreBundle\EventListener\ConsoleErrorListener
+    rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
     data.event_listener.order:
@@ -32,3 +33,10 @@ services:
             logger: "@logger"
         tags:
             - { name: kernel.event_listener, event: console.terminate }
+
+    rental_report.factory:
+        class: '%rental_report.factory.class%'
+        arguments:
+            em: "@doctrine.orm.default_entity_manager"
+            logger: "@logger"
+            propertyManagement: "%property_management%"

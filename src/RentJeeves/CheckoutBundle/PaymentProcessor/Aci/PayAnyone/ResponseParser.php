@@ -35,7 +35,7 @@ class ResponseParser extends AbstractParser
                 $newTransaction->setBatchId($batch->getBatchId());
                 $newTransaction->setTransactionId($payment->getTransactionId());
                 $newTransaction->setBatchCloseDate($payment->getBatchCloseDate());
-                $newTransaction->setResponseCode($payment->getReponseCode());
+                $newTransaction->setResponseCode($payment->getResponseCode());
                 $newTransaction->setResponseMessage($payment->getResponseMessage());
 
                 $transactions[] = $newTransaction;
