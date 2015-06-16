@@ -81,21 +81,21 @@ class VirtualTerminalCase extends BaseTestCase
 
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('common.account');
-        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
+        $this->session->wait($this->timeout, 'typeof $ != "undefined"');
         $this->page->clickLink('settings.deposit');
-        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
-        $this->session->wait($this->timeout, "$('.add-accoun').is(':visible')");
+        $this->session->wait($this->timeout, 'typeof $ != "undefined"');
+        $this->session->wait($this->timeout, '$(".add-accoun").is(":visible")');
         $this->page->clickLink('add.account');
         $this->assertNotNull($form = $this->page->find('css', '#billingAccountType'));
 
         $this->fillForm(
             $form,
             [
-                'billingAccountType_nickname'         => "mary",
-                'billingAccountType_PayorName'        => "mary stone",
-                'billingAccountType_AccountNumber_AccountNumber'    => "123245678",
-                'billingAccountType_AccountNumber_AccountNumberAgain'    => "123245678",
-                'billingAccountType_RoutingNumber'    => "062202574",
+                'billingAccountType_nickname'         => 'mary',
+                'billingAccountType_PayorName'        => 'mary stone',
+                'billingAccountType_AccountNumber_AccountNumber'    => '123245678',
+                'billingAccountType_AccountNumber_AccountNumberAgain'    => '123245678',
+                'billingAccountType_RoutingNumber'    => '062202574',
                 'billingAccountType_ACHDepositType_0' => true,
                 'billingAccountType_isActive'         => true,
             ]
@@ -104,11 +104,11 @@ class VirtualTerminalCase extends BaseTestCase
         $save->click();
         $this->session->wait(
             $this->timeout + 20000,
-            "!$('#billingAccountType').is(':visible')"
+            '!$("#billingAccountType").is(":visible")'
         );
         $this->session->wait(
             $this->timeout,
-            "$('.properties-table tbody tr').length"
+            '$(".properties-table tbody tr").length'
         );
         $this->assertNotNull($account = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('mary (settings.payment_account.active)', $account[0]->getText());
@@ -149,17 +149,17 @@ class VirtualTerminalCase extends BaseTestCase
 
         $this->acceptAlert();
 
-        $this->session->evaluateScript('
-            window.a = false;
-            window.alert = function (variable) {
-                window.message = variable;
-                if (variable == "Payment succeed") {
-                    window.a = true;
-                }
-            };
-        ');
+        $jsScript =
+<<<JS
+    window.isGetAlert = false;
+    window.alert = function (variable) {
+        window.message = variable; window.isGetAlert = true;
+    };
+JS;
 
-        $this->session->wait($this->timeout + 15000, 'window.a');
+        $this->session->evaluateScript($jsScript);
+
+        $this->session->wait($this->timeout + 15000, 'window.isGetAlert');
         $dialogMessage = $this->session->evaluateScript('return window.message;');
 
         $this->assertContains(
@@ -211,7 +211,9 @@ class VirtualTerminalCase extends BaseTestCase
         $profiles = $this->getOldProfileIds();
         if (is_array($profiles) && !empty($profiles)) {
             foreach ($profiles as $profile) {
-                $this->deleteProfile($profile);
+                if ($profile) {
+                    $this->deleteProfile($profile);
+                }
             }
         }
     }

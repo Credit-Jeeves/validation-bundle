@@ -142,10 +142,12 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
             );
         }
 
-        if (PaymentGroundType::REPORT != $paymentType) {
+        if (PaymentGroundType::CHARGE === $paymentType || PaymentGroundType::RENT === $paymentType) {
             return $this->paymentManager->executePayment($order, $accountEntity, $paymentType);
         } else {
-            throw new \Exception('executeOrder with paymentType = "report" is not implement yet for aci_collect_pay.');
+            throw new \Exception(
+                sprintf('executeOrder with paymentType = "%s" is not implement yet for aci_collect_pay.', $paymentType)
+            );
         }
     }
 

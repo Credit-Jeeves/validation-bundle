@@ -214,9 +214,8 @@ class EnrollmentManager extends AbstractManager
 
         $billingAccount->setAccountNumber($group->getId());
         $billingAccount->setBusinessId($this->defaultBusinessId);
-        $billingAccount->setHoldername('John Brown');
         $billingAccount->setHoldername($group->getName());
-        $billingAccount->setNickname(sprintf('%s', $group->getName()));
+        $billingAccount->setNickname($group->getName());
 
         $billingAccountAddress = new RequestModel\SubModel\Address();
 
@@ -225,7 +224,7 @@ class EnrollmentManager extends AbstractManager
         $billingAccountAddress->setCity((string) $group->getCity());
         $billingAccountAddress->setPostalCode((string) $group->getZip());
         $billingAccountAddress->setState((string) $group->getState());
-        $billingAccountAddress->setCountryCode($group->getCountry());
+        $billingAccountAddress->setCountryCode((string) $group->getCountry());
 
         $billingAccount->setAddress($billingAccountAddress);
 

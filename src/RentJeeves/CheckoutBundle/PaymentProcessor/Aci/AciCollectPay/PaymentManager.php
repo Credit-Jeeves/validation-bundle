@@ -93,9 +93,9 @@ class PaymentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Created new %s transaction for %s with order = "%d"',
-                $paymentType,
+                '[ACI CollectPay Info]:Created new %s %s transaction with order id = "%d"',
                 $request->getIsSuccessful() ? "successful" : "failed",
+                $paymentType,
                 $order->getId()
             )
         );

@@ -115,8 +115,8 @@ class FundingAccountManager extends AbstractManager
             sprintf(
                 '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for group "%s"',
                 $fundingAccountId,
-                $fundingAccountData->getEntity()->getGroup()->getName(),
-                $profileId
+                $profileId,
+                $fundingAccountData->getEntity()->getGroup()->getName()
             )
         );
 
@@ -180,12 +180,12 @@ class FundingAccountManager extends AbstractManager
         $fundingAccountAddress = new RequestModel\SubModel\Address();
 
         /** @var Address $address */
-        if ($paymentAccount instanceof UserAwareInterface) {
-            if ($user && $address = $paymentAccount->getAddress()) {
+        if ($user) {
+            if ($address = $paymentAccount->getAddress()) {
                 $paymentAccount->getAddress()->setUser($user);
             }
 
-            if (!$address && $user) {
+            if (!$address) {
                 $address = $user->getDefaultAddress();
             }
 
@@ -197,19 +197,14 @@ class FundingAccountManager extends AbstractManager
             $fundingAccountAddress->setCity((string) $address->getCity());
             $fundingAccountAddress->setState((string) $address->getArea());
             $fundingAccountAddress->setPostalCode((string) $address->getZip());
-            $fundingAccountAddress->setCountryCode($address->getCountry());
-
-        } elseif ($paymentAccount instanceof GroupAwareInterface) {
-
+            $fundingAccountAddress->setCountryCode((string) $address->getCountry());
+        } else {
             $fundingAccountAddress->setAddress1((string) $paymentAccount->getGroup()->getStreetAddress1());
             $fundingAccountAddress->setAddress2((string) $paymentAccount->getGroup()->getStreetAddress2());
             $fundingAccountAddress->setCity((string) $paymentAccount->getGroup()->getCity());
             $fundingAccountAddress->setState((string) $paymentAccount->getGroup()->getState());
             $fundingAccountAddress->setPostalCode((string) $paymentAccount->getGroup()->getZip());
-            $fundingAccountAddress->setCountryCode($paymentAccount->getGroup()->getCountry());
-
-        } else {
-            throw new PaymentProcessorInvalidArgumentException('Unsupported Payment Account Type');
+            $fundingAccountAddress->setCountryCode((string) $paymentAccount->getGroup()->getCountry());
         }
 
         $fundingAccount->setAddress($fundingAccountAddress);
