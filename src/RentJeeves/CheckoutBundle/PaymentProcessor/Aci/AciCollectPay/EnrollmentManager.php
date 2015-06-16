@@ -58,14 +58,12 @@ class EnrollmentManager extends AbstractManager
         $user->setAciCollectPayProfile($userProfile);
 
         $this->em->persist($userProfile);
-        $this->em->persist($user);
 
         $contractBilling = new AciCollectPayContractBilling();
         $contractBilling->setContract($contract);
 
         $contract->setAciCollectPayContractBilling($contractBilling);
 
-        $this->em->persist($contract);
         $this->em->persist($contractBilling);
 
         $this->em->flush();
@@ -136,7 +134,6 @@ class EnrollmentManager extends AbstractManager
         $group->setAciCollectPayProfile($groupProfile);
 
         $this->em->persist($groupProfile);
-        $this->em->persist($group);
 
         $this->em->flush();
 
@@ -157,10 +154,6 @@ class EnrollmentManager extends AbstractManager
      */
     protected function executeRequest(RequestModel\Profile $profile)
     {
-        $bb = print_r($profile, true);
-
-        file_put_contents('/tmp/test.txt', $bb);
-
         $request = new CreateProfile($profile);
 
         try {

@@ -18,7 +18,7 @@ parameters:
 
     google_maps_key: 'AIzaSyBsW5-jPDZ2C-l9d62DVgdvQMerbt0XvNo' # API account with staging@renttrack.com
 
-    aci_collect_pay_business_id: 563376
+    aci.collect_pay.business_id: 563376
 
     payment_processor.hps.report_path: /tmp
     heartland:

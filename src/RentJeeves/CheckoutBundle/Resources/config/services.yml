@@ -68,7 +68,7 @@ services:
             - @payum
             - @logger
         calls:
-            - [setDefaultBusinessId, ["%aci_collect_pay_business_id%"]]
+            - [setDefaultBusinessId, ["%aci.collect_pay.business_id%"]]
 
     payment_processor.aci.collect_pay.funding_account_manager:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\FundingAccountManager
@@ -86,5 +86,5 @@ services:
             - @payum
             - @logger
         calls:
-            - [setDefaultBusinessId, ["%aci_collect_pay_business_id%"]]
+            - [setDefaultBusinessId, ["%aci.collect_pay.business_id%"]]
 
