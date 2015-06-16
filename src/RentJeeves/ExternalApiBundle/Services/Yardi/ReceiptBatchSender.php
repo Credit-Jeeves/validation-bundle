@@ -321,7 +321,7 @@ class ReceiptBatchSender
                     $this->cancelBatch($yardiBatchId);
                     break; // break out of while loop.
                 }
-                $this->paymentClient->closeReceiptBatch($yardiBatchId);
+                $this->paymentClient->closeBatch($yardiBatchId);
             } catch (\Exception $e) {
                 // don't throw from here, since we want to process other batches -- if possible.
                 $this->exceptionCatcher->handleException($e);
