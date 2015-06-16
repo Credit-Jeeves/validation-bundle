@@ -8,8 +8,10 @@ use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
@@ -527,7 +529,31 @@ class AccountingController extends Controller
      */
     public function getResidentsMri()
     {
-        return $this->getBaseResidents();
+        $importFactory = $this->get('accounting.import.factory');
+        /** @var MappingMRI $mapping */
+        $mapping = $importFactory->getMapping();
+        /** @var StorageMRI $storage */
+        $storage = $importFactory->getStorage();
+        $nextPageLink = $this->get('request')->request->get('nextPageLink');
+
+        if (empty($nextPageLink)) {
+            $residents = $mapping->getResidents($storage->getImportExternalPropertyId());
+        } else {
+            $residents = $mapping->getResidentsByNextPageLink($nextPageLink);
+        }
+
+        $result = $storage->saveToFile($residents);
+        $newNextPageLink = $mapping->getNextPageLink();
+        //We need update matched contracts only after download all of them, that's why check var newNextPageLink
+        if ($storage->isOnlyException() && empty($newNextPageLink)) {
+            $handler = $importFactory->getHandler();
+            $handler->updateMatchedContracts();
+        }
+
+        $response = new JsonResponse(['nextPageLink' => $newNextPageLink]);
+        $response->setStatusCode((!empty($nextPageLink) || $result) ? 200 : 400);
+
+        return $response;
     }
 
     /**
