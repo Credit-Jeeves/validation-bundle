@@ -336,16 +336,7 @@ abstract class MappingAbstract implements MappingInterface
      */
     protected function getEmailFromRow(array $row)
     {
-        $email = $row[self::KEY_EMAIL];
-
-        if (empty($email)) {
-            return $email;
-        }
-
-        $emailSeparated = explode('@', $email);
-        $domain = end($emailSeparated);
-
-        if ($domain === 'example.com') {
+        if (false !== strripos($row[self::KEY_EMAIL], '@example.com')) {
             return '';
         }
 

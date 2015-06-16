@@ -146,7 +146,7 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
         $row = [MappingAbstract::KEY_EMAIL => 'none@gmail.com'];
 
         $resultRow = $mappingMethodForCheckEmail->invoke($mapping, $row);
-        $this->assertEquals($resultRow, 'none@gmail.com');
+        $this->assertEquals('none@gmail.com', $resultRow);
 
         $row = [MappingAbstract::KEY_EMAIL => ''];
 
