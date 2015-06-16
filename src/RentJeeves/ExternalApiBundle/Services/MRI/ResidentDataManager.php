@@ -76,7 +76,7 @@ class ResidentDataManager
     public function getResidentsByNextPageLink($nextPageLink)
     {
         $this->logger->debug(sprintf('Get MRI Residents by page:%s', $nextPageLink));
-        $mriResponse = $this->client->getResidentTransactionByNextPageLink($nextPageLink);
+        $mriResponse = $this->client->getResidentTransactionsByNextPageLink($nextPageLink);
 
         $this->setNextPageLink($mriResponse->getNextPageLink());
 

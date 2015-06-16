@@ -218,7 +218,7 @@ class MRIClient implements ClientInterface
      * @param string $nextPageLink
      * @return MRIResponse
      */
-    public function getResidentTransactionByNextPageLink($nextPageLink)
+    public function getResidentTransactionsByNextPageLink($nextPageLink)
     {
         $method = 'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID';
         $this->logger->debug(sprintf('Go to the next page of MRI by link: %s', $nextPageLink));

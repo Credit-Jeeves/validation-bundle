@@ -544,6 +544,7 @@ class AccountingController extends Controller
 
         $result = $storage->saveToFile($residents);
         $newNextPageLink = $mapping->getNextPageLink();
+        //We need update matched contracts only after download all of them, that's why check var newNextPageLink
         if ($storage->isOnlyException() && empty($newNextPageLink)) {
             $handler = $importFactory->getHandler();
             $handler->updateMatchedContracts();
