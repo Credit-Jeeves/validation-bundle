@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportArchiver;

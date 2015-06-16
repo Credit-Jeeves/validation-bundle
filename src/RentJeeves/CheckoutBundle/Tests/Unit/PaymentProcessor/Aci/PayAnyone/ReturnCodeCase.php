@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\PayAnyone;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\PayAnyone;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\ReturnCode;
 
