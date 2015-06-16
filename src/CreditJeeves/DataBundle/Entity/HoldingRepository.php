@@ -8,11 +8,32 @@ use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 class HoldingRepository extends EntityRepository
 {
 
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForUpdatingBalanceAMSI()
+    {
+        $query = $this->createQueryBuilder('h');
+        $query->innerJoin('h.amsiSettings', 's');
+        $query->where('h.apiIntegrationType = :amsi');
+        $query->setParameter('amsi', ApiIntegrationType::AMSI);
+
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
     public function findHoldingsForUpdatingBalance()
     {
         $query = $this->createQueryBuilder('h');
         $query->innerJoin('h.yardiSettings', 'ys');
         $query->where('ys.syncBalance = 1');
+        $query->andWhere('h.apiIntegrationType = :yardi');
+        $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
+
         $query = $query->getQuery();
 
         return $query->execute();
