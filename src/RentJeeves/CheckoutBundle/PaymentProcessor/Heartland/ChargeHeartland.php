@@ -2,76 +2,27 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum2\Heartland\Soap\Base\BillTransaction;
 use Payum2\Heartland\Soap\Base\CardProcessingMethod;
 use Payum2\Heartland\Soap\Base\MakePaymentRequest;
 use Payum2\Heartland\Soap\Base\TokenToCharge;
-use Payum2\Request\BinaryMaskStatusRequest;
-use Payum2\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Heartland\Soap\Base\Transaction as RequestTransaction;
-use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\Transaction;
 
-/**
- * @DI\Service("payment.charge_heartland")
- */
-class ChargeHeartland
+class ChargeHeartland extends BasePayHeartland
 {
-    /** @var EntityManager */
-    protected $em;
-
-    /** @var object|\Payum2\PaymentInterface */
-    protected $payment;
-
-    /** @var PaymentDetailsMapper */
-    protected $paymentDetailsMapper;
-
-    /** @var string */
-    protected $rtMerchantName;
-
     /**
-     * @param EntityManager $em
-     * @param PayumAwareRegistry $payum
-     * @param PaymentDetailsMapper $paymentDetailsMapper
-     * @param string $rtMerchantName
-     *
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
-     *     "payum" = @DI\Inject("payum2"),
-     *     "paymentDetailsMapper" = @DI\Inject("payment.heartland.payment_details_mapper"),
-     *     "rtMerchantName" = @DI\Inject("%rt_merchant_name%"),
-     * })
+     * {@inheritdoc}
      */
-    public function __construct(
-        EntityManager $em,
-        PayumAwareRegistry $payum,
-        PaymentDetailsMapper $paymentDetailsMapper,
-        $rtMerchantName
-    ) {
-        $this->em = $em;
-        $this->payment = $payum->getPayment('heartland');
-        $this->paymentDetailsMapper = $paymentDetailsMapper;
-        $this->rtMerchantName = $rtMerchantName;
-    }
-
-    /**
-     * @param Order $order
-     * @param BillingAccount $accountEntity
-     * @return string
-     */
-    public function executePayment(Order $order, BillingAccount $accountEntity)
+    protected function getPaymentDetails(Order $order, $paymentType)
     {
         /** @var Operation $operation */
         if ((!$operation = $order->getOperations()->first()) || !($group = $operation->getGroup())) {
-            throw new PaymentProcessorInvalidArgumentException();
+            throw new PaymentProcessorInvalidArgumentException('Order is invalid');
         }
 
         $paymentRequest = new MakePaymentRequest();
@@ -83,14 +34,6 @@ class ChargeHeartland
         $billTransaction->setAmountToApplyToBill($order->getSum());
         $paymentRequest->getBillTransactions()->setBillTransaction([$billTransaction]);
 
-        $tokenToCharge = new TokenToCharge();
-        $tokenToCharge->setAmount($order->getSum());
-        $tokenToCharge->setExpectedFeeAmount(0);
-        $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
-        $tokenToCharge->setToken($accountEntity->getToken());
-
-        $paymentRequest->getTokensToCharge()->setTokenToCharge([$tokenToCharge]);
-
         $requestTransaction = new RequestTransaction();
         $requestTransaction->setAmount($order->getSum());
         $requestTransaction->setFeeAmount(0);
@@ -100,24 +43,28 @@ class ChargeHeartland
         $paymentDetails->setMerchantName($this->rtMerchantName);
         $paymentDetails->setRequest($paymentRequest);
 
-        $transaction = new Transaction();
-        $transaction->setMerchantName($this->rtMerchantName);
-        $transaction->setOrder($order);
+        return $paymentDetails;
+    }
 
-        $captureRequest = new CaptureRequest($paymentDetails);
-        $this->payment->execute($captureRequest);
+    /**
+     * {@inheritdoc}
+     */
+    protected function getOrderStatus(Order $order, $isSuccessful)
+    {
+        return $isSuccessful ? OrderStatus::COMPLETE : OrderStatus::ERROR;
+    }
 
-        $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
-        $this->payment->execute($statusRequest);
+    /**
+     * {@inheritdoc}
+     */
+    protected function addToken(PaymentDetails $paymentDetails, $token, Order $order)
+    {
+        $tokenToCharge = new TokenToCharge();
+        $tokenToCharge->setAmount($order->getSum());
+        $tokenToCharge->setExpectedFeeAmount(0);
+        $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
+        $tokenToCharge->setToken($token);
 
-        $transaction = $this->paymentDetailsMapper->map($paymentDetails, $transaction);
-
-        $transaction->setAmount($order->getSum());
-        $transaction->setIsSuccessful($statusRequest->isSuccess());
-        $order->addTransaction($transaction);
-
-        $this->em->persist($transaction);
-
-        return $statusRequest->isSuccess() ? OrderStatus::COMPLETE : OrderStatus::ERROR;
+        $paymentDetails->getRequest()->getTokensToCharge()->setTokenToCharge($tokenToCharge);
     }
 }

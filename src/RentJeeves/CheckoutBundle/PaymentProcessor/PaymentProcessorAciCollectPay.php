@@ -136,6 +136,8 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
         PaymentAccountInterface $accountEntity,
         $paymentType = PaymentGroundType::RENT
     ) {
+        PaymentProcessorInvalidArgumentException::assertPaymentGroundType($paymentType);
+
         if ($paymentType === PaymentGroundType::RENT && !$this->isAllowedToExecuteOrder($order, $accountEntity)) {
             throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
                 PaymentProcessor::ACI_COLLECT_PAY

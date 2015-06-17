@@ -1,5 +1,7 @@
 parameters:
     payment_account.heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager
+    payment.charge_heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ChargeHeartland
+    payment.pay_heartland: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland
     payment_processor.aci.collect_pay.report_loader.class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader
 
 services:
@@ -8,6 +10,24 @@ services:
         calls:
             - [setPayum, ["@payum2"]]
             - [setDefaultMerchantName, ["%rt_merchant_name%"]]
+
+    payment.charge_heartland:
+        class: "%payment.charge_heartland.class%"
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @payum2
+            - @payment.heartland.payment_details_mapper
+            - "%rt_merchant_name%"
+
+    payment.pay_heartland:
+        class: "%payment.pay_heartland%"
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @payum2
+            - @payment.heartland.payment_details_mapper
+            - "%rt_merchant_name%"
 
     # ACI collect pay
     payment_processor.aci.collect_pay.report_loader:
