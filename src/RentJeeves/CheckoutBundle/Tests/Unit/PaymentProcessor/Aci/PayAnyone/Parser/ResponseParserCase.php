@@ -1,8 +1,8 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\PayAnyone;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\PayAnyone\Parser;
 
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\ResponseParser;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Parser\ResponseParser;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectResponseReportTransaction;
 use RentJeeves\TestBundle\BaseTestCase;
 
@@ -15,7 +15,7 @@ class ResponseParserCase extends BaseTestCase
     {
         $parser = new ResponseParser($this->getSerializer(), $this->getLoggerMock());
         $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\AbstractParser',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Parser\AbstractParser',
             $parser
         );
     }
@@ -29,15 +29,12 @@ class ResponseParserCase extends BaseTestCase
         $xml = file_get_contents($pathToFile);
 
         $logger = $this->getLoggerMock();
-        $logger->expects($this->once())
-            ->method('emergency')
-            ->with($this->stringContains('ERRORCODE value different from the expected value.'));
 
         $parser = new ResponseParser($this->getSerializer(), $logger);
 
         $transactions = $parser->parse($xml);
 
-        $this->assertCount(6, $transactions);
+        $this->assertCount(7, $transactions);
         $this->assertInstanceOf(
             '\RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectResponseReportTransaction',
             $transactions[0]
@@ -61,6 +58,10 @@ class ResponseParserCase extends BaseTestCase
         $this->assertInstanceOf(
             '\RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectResponseReportTransaction',
             $transactions[5]
+        );
+        $this->assertInstanceOf(
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectResponseReportTransaction',
+            $transactions[6]
         );
         /** @var PayDirectResponseReportTransaction $firstTransaction */
         $firstTransaction = $transactions[0];
