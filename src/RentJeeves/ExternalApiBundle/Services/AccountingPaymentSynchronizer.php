@@ -99,7 +99,7 @@ class AccountingPaymentSynchronizer
     {
         $this->logger->debug('Checking if external payment post is allowed...');
         $integrationType = $contract->getHolding()->getApiIntegrationType();
-        if (!empty($integrationType) && $integrationType !== ApiIntegrationType::NONE ) {
+        if (!empty($integrationType) && $integrationType !== ApiIntegrationType::NONE) {
             $this->logger->debug('Holding is allowed for external payment post.');
             $group = $contract->getGroup();
             if ($group->isExistGroupSettings() && $group->getGroupSettings()->getIsIntegrated() === true) {

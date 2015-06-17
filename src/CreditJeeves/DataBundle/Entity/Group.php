@@ -199,7 +199,7 @@ class Group extends BaseGroup
     {
         $holding = $this->getHolding();
         switch ($holding->getApiIntegrationType()) {
-            case ApiIntegrationType::AMSI :
+            case ApiIntegrationType::AMSI:
                 return $holding->getAmsiSettings();
             case ApiIntegrationType::MRI:
                 return $holding->getMriSettings();
