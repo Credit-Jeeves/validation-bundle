@@ -32,4 +32,11 @@ interface RentalReport
      * @return boolean
      */
     public function isEmpty();
+
+    /**
+     * Returns an array of report records.
+     *
+     * @return array
+     */
+    public function getRecords();
 }

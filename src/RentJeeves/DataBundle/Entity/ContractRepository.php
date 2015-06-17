@@ -677,18 +677,13 @@ class ContractRepository extends EntityRepository
      */
     public function getContractsForExperianPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
-        $reportingStartDate = clone $startDate;
-        $reportingStartDate->setTime(23, 59, 59);
-
         $startDate->setTime(0, 0, 0);
         $endDate->setTime(23, 59, 59);
 
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
-        $query->where(
-            'c.reportToExperian = 1 AND c.experianStartAt is not NULL AND c.experianStartAt <= :reportingStartAt'
-        );
+        $this->whereReportToExperian($query, 'c', clone $startDate);
         $query->andWhere('c.status = :current');
         $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
         $query->andWhere('MONTH(op.paidFor) = :month');
@@ -697,7 +692,6 @@ class ContractRepository extends EntityRepository
         $query->setParameter('rent', OperationType::RENT);
         $query->setParameter('completeOrder', OrderStatus::COMPLETE);
         $query->setParameter('current', ContractStatus::CURRENT);
-        $query->setParameter('reportingStartAt', $reportingStartDate);
         $query->setParameter('startDate', $startDate);
         $query->setParameter('endDate', $endDate);
         $query->setParameter('month', $month->format('m'));
@@ -734,14 +728,50 @@ class ContractRepository extends EntityRepository
      */
     public function getContractsForExperianClosureReport(\DateTime $startDate, \DateTime $endDate)
     {
-        $reportingStartDate = clone $startDate;
-        $reportingStartDate->setTime(23, 59, 59);
-
         $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
-        $query->andWhere(
-            'c.reportToExperian = 1 AND c.experianStartAt is not NULL AND c.experianStartAt <= :reportingStartAt'
-        );
-        $query->setParameter('reportingStartAt', $reportingStartDate);
+        $this->whereReportToExperian($query, 'c', clone $startDate);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     *
+     * @return Contract[]
+     */
+    public function getContractsForExperianNegativeReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
+    {
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        $subquery = $this->createQueryBuilder('c2');
+        $subquery
+            ->select('c2.id')
+            ->distinct()
+            ->innerJoin('c2.operations', 'op', Expr\Join::WITH, 'op.type = :rent')
+            ->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder')
+            ->andWhere('c2.status = :current')
+            ->andWhere('op.createdAt BETWEEN :startDate AND :endDate')
+            ->andWhere('MONTH(op.paidFor) = :month')
+            ->andWhere('YEAR(op.paidFor) = :year');
+        $this->whereReportToExperian($subquery, 'c2', clone $startDate);
+
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
+        $this->whereReportToExperian($query, 'c', clone $startDate);
+        $query->andWhere('c.status = :current');
+        $query->andWhere(sprintf('c.id not in (%s)', $subquery->getDQL()));
+
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
+        $query->setParameter('rent', OperationType::RENT);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
+        $query->setParameter('month', $month->format('m'));
+        $query->setParameter('year', $month->format('Y'));
         $query = $query->getQuery();
 
         return $query->execute();
@@ -755,9 +785,6 @@ class ContractRepository extends EntityRepository
      */
     public function getContractsForTransUnionPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
-        $reportingStartDate = clone $startDate;
-        $reportingStartDate->setTime(23, 59, 59);
-
         $startDate->setTime(0, 0, 0);
         $endDate->setTime(23, 59, 59);
 
@@ -767,9 +794,7 @@ class ContractRepository extends EntityRepository
         );
         $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
-        $query->where(
-            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
-        );
+        $this->whereReportToTransUnion($query, 'c', clone $startDate);
         $query->andWhere('c.status = :current');
         $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
         $query->andWhere('MONTH(op.paidFor) = :month');
@@ -778,7 +803,6 @@ class ContractRepository extends EntityRepository
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('startDate', $startDate);
         $query->setParameter('endDate', $endDate);
-        $query->setParameter('reportingStartAt', $reportingStartDate);
         $query->setParameter('rent', OperationType::RENT);
         $query->setParameter('completeOrder', OrderStatus::COMPLETE);
         $query->setParameter('month', $month->format('m'));
@@ -796,9 +820,6 @@ class ContractRepository extends EntityRepository
      */
     public function getContractsForTransUnionNegativeReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
     {
-        $reportingStartDate = clone $startDate;
-        $reportingStartDate->setTime(23, 59, 59);
-
         $startDate->setTime(0, 0, 0);
         $endDate->setTime(23, 59, 59);
 
@@ -808,26 +829,23 @@ class ContractRepository extends EntityRepository
             ->distinct()
             ->innerJoin('c2.operations', 'op', Expr\Join::WITH, 'op.type = :rent')
             ->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder')
-            ->where('c2.reportToTransUnion = 1 AND c2.transUnionStartAt is not NULL')
-            ->andWhere('c2.transUnionStartAt <= :reportingStartAt')
             ->andWhere('c2.status = :current')
             ->andWhere('op.createdAt BETWEEN :startDate AND :endDate')
             ->andWhere('MONTH(op.paidFor) = :month')
             ->andWhere('YEAR(op.paidFor) = :year');
+        $this->whereReportToTransUnion($subquery, 'c2', clone $startDate);
 
 
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
-        $query->where(
-            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
-        );
+        $this->whereReportToTransUnion($query, 'c', clone $startDate);
+
         $query->andWhere('c.status = :current');
         $query->andWhere(sprintf('c.id not in (%s)', $subquery->getDQL()));
 
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('startDate', $startDate);
         $query->setParameter('endDate', $endDate);
-        $query->setParameter('reportingStartAt', $reportingStartDate);
         $query->setParameter('rent', OperationType::RENT);
         $query->setParameter('completeOrder', OrderStatus::COMPLETE);
         $query->setParameter('month', $month->format('m'));
@@ -844,17 +862,55 @@ class ContractRepository extends EntityRepository
      */
     public function getContractsForTransUnionClosureReport(\DateTime $startDate, \DateTime $endDate)
     {
-        $reportingStartDate = clone $startDate;
-        $reportingStartDate->setTime(23, 59, 59);
-
         $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
-        $query->andWhere(
-            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :reportingStartAt'
-        );
-        $query->setParameter('reportingStartAt', $reportingStartDate);
+        $this->whereReportToTransUnion($query, 'c', clone $startDate);
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param QueryBuilder $query
+     * @param string $contractAlias
+     * @param \DateTime $reportingStartDate
+     * @return QueryBuilder
+     */
+    protected function whereReportToTransUnion(QueryBuilder $query, $contractAlias, \DateTime $reportingStartDate)
+    {
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $query->andWhere(sprintf(
+            '%s.reportToTransUnion = 1 AND %s.transUnionStartAt is not NULL AND %s.transUnionStartAt <= :startDate',
+            $contractAlias,
+            $contractAlias,
+            $contractAlias,
+            $reportingStartDate
+        ));
+        $query->setParameter('startDate', $reportingStartDate);
+
+        return $query;
+    }
+
+    /**
+     * @param QueryBuilder $query
+     * @param string $contractAlias
+     * @param \DateTime $reportingStartDate
+     * @return QueryBuilder
+     */
+    protected function whereReportToExperian(QueryBuilder $query, $contractAlias, \DateTime $reportingStartDate)
+    {
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $query->andWhere(sprintf(
+            '%s.reportToExperian = 1 AND %s.experianStartAt is not NULL AND %s.experianStartAt <= :startDate',
+            $contractAlias,
+            $contractAlias,
+            $contractAlias,
+            $reportingStartDate
+        ));
+        $query->setParameter('startDate', $reportingStartDate);
+
+        return $query;
     }
 
     /**
@@ -1088,5 +1144,20 @@ class ContractRepository extends EntityRepository
             ])
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return Contract[]
+     */
+    public function getContractsByIds(array $ids)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.id in (:ids)');
+        $query->setParameter('ids', $ids);
+        $query = $query->getQuery();
+
+        return $query->execute();
     }
 }
