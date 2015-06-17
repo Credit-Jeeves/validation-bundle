@@ -1,8 +1,8 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\PayAnyone;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\PayAnyone\Parser;
 
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\ResponseParser;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Parser\ResponseParser;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectResponseReportTransaction;
 use RentJeeves\TestBundle\BaseTestCase;
 
@@ -15,7 +15,7 @@ class ResponseParserCase extends BaseTestCase
     {
         $parser = new ResponseParser($this->getSerializer(), $this->getLoggerMock());
         $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\AbstractParser',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Parser\AbstractParser',
             $parser
         );
     }

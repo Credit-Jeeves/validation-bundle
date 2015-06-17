@@ -8,27 +8,32 @@ use CreditJeeves\DataBundle\Entity\Order;
 use Payum\AciCollectPay\Model\Enum\FundingAccountType;
 use Payum\AciCollectPay\Model\Payment;
 use Payum\AciCollectPay\Request\CaptureRequest\Capture;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
+use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Transaction;
+use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
+use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 class PaymentManager extends AbstractManager
 {
     /**
-     * @param  Order          $order
-     * @param  PaymentAccount $paymentAccount
+     * @param  Order $order
+     * @param  PaymentAccountInterface $paymentAccount
+     * @param string $paymentType
      * @return string
      */
-    public function executePayment(Order $order, PaymentAccount $paymentAccount)
+    public function executePayment(Order $order, PaymentAccountInterface $paymentAccount, $paymentType)
     {
         $payment = new Payment();
 
-        $payment->setProfileId($order->getUser()->getAciCollectPayProfileId());
+        $this->mapPaymentDetails($payment, $paymentAccount, $order, $paymentType);
+
         $payment->setFundingAccountId($paymentAccount->getToken());
         $payment->setTransactionCode($order->getId());
-        $payment->setDivisionBusinessId($order->getContract()->getGroup()->getAciCollectPaySettings()->getBusinessId());
-        $payment->setBillingAccountNumber($order->getContract()->getId());
         $payment->setAmount($order->getSum());
         $payment->setFee($order->getFee());
 
@@ -55,8 +60,12 @@ class PaymentManager extends AbstractManager
         $transaction = new Transaction();
 
         $transaction->setOrder($order);
-        $transaction->setMerchantName($order->getContract()->getGroup()->getAciCollectPaySettings()->getBusinessId());
-        $transaction->setPaymentAccount($paymentAccount);
+        $transaction->setMerchantName($payment->getDivisionBusinessId());
+
+        if ($paymentAccount instanceof PaymentAccount) {
+            $transaction->setPaymentAccount($paymentAccount);
+        }
+
         $transaction->setAmount($order->getSum() + $order->getFee());
 
         try {
@@ -84,9 +93,10 @@ class PaymentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Created new %s transaction for contract with id = "%d"',
+                '[ACI CollectPay Info]:Created new %s %s transaction with order id = "%d"',
                 $request->getIsSuccessful() ? "successful" : "failed",
-                $order->getContract()->getId()
+                $paymentType,
+                $order->getId()
             )
         );
 
@@ -104,5 +114,34 @@ class PaymentManager extends AbstractManager
         }
 
         return OrderStatus::COMPLETE;
+    }
+
+    /**
+     * @param Payment $payment
+     * @param PaymentAccountInterface $paymentAccount
+     * @param Order $order
+     * @param $paymentType
+     */
+    protected function mapPaymentDetails(
+        Payment $payment,
+        PaymentAccountInterface $paymentAccount,
+        Order $order,
+        $paymentType
+    ) {
+        if ($paymentAccount instanceof GroupAwareInterface && $paymentType === PaymentGroundType::CHARGE) {
+            $payment->setProfileId($paymentAccount->getGroup()->getAciCollectPayProfileId());
+            $payment->setDivisionBusinessId($this->defaultBusinessId);
+            $payment->setBillingAccountNumber($paymentAccount->getGroup()->getId());
+        } elseif ($paymentAccount instanceof UserAwareInterface && $paymentType === PaymentGroundType::RENT) {
+            $payment->setProfileId($paymentAccount->getUser()->getAciCollectPayProfileId());
+            $payment->setDivisionBusinessId(
+                $order->getContract()->getGroup()->getAciCollectPaySettings()->getBusinessId()
+            );
+            $payment->setBillingAccountNumber($order->getContract()->getId());
+        } else {
+            throw new PaymentProcessorInvalidArgumentException(
+                'Undefined type of payment account or incorrect payment type'
+            );
+        }
     }
 }

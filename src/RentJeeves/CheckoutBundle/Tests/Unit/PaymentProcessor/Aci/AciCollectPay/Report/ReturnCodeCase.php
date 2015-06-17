@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\AciCollectPay\Report;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\AciCollectPay\Report;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\ReturnCode;
 

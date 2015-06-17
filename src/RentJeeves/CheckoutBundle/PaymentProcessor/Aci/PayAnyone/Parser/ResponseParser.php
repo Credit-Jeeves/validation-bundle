@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Parser;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Response\Batch;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Response\Payment;

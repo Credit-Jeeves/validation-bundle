@@ -1,11 +1,11 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
-use RentJeeves\DataBundle\Enum\BankAccountType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
@@ -236,12 +236,9 @@ abstract class PaymentAccount
     }
 
     /**
-     * Set Tenant
-     *
-     * @param  \RentJeeves\DataBundle\Entity\Tenant $user
-     * @return PaymentAccount
+     * {@inheritdoc}
      */
-    public function setUser(\RentJeeves\DataBundle\Entity\Tenant $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 

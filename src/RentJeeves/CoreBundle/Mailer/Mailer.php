@@ -630,4 +630,44 @@ class Mailer extends BaseMailer
             $tenant->getCulture()
         );
     }
+
+    /**
+     * @param Landlord $landlord
+     * @param Contract[] $contracts
+     * @param string $month
+     *
+     * @return bool
+     */
+    public function sendLateReportingReviewEmailToLandlord(Landlord $landlord, $contracts, $month)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjLateReportingLandlord',
+            [
+                'landlordName' => $landlord->getFullName(),
+                'contracts' => $contracts,
+                'month' => $month,
+            ],
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param string $month
+     *
+     * @return bool
+     */
+    public function sendLateReportingReviewEmailToTenant(Tenant $tenant, $month)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjLateReportingTenant',
+            [
+                'tenantName' => $tenant->getFullName(),
+                'month' => $month,
+            ],
+            $tenant->getEmail(),
+            $tenant->getCulture()
+        );
+    }
 }

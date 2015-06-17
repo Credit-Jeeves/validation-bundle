@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\PaymentProcessor\Aci\AciCollectPay\Report;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\AciCollectPay\Report;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
@@ -14,7 +14,7 @@ class LockboxParserCase extends BaseTestCase
      */
     public function shouldParseLockboxDataIntoArrayWithTransactions()
     {
-        $data = file_get_contents(__DIR__ . '/../../../../Fixtures/Aci/lockbox.csv');
+        $data = file_get_contents(__DIR__ . '/../../../../../Fixtures/Aci/lockbox.csv');
 
         $parser = new LockboxParser($this->getContainer()->get('logger'));
         $decodedData = $parser->parse($data);
@@ -42,7 +42,7 @@ class LockboxParserCase extends BaseTestCase
      */
     public function shouldParseLockboxDataIntoArrayWithDebitTransactions()
     {
-        $data = file_get_contents(__DIR__ . '/../../../../Fixtures/Aci/debitsLockbox.csv');
+        $data = file_get_contents(__DIR__ . '/../../../../../Fixtures/Aci/debitsLockbox.csv');
 
         $parser = new LockboxParser($this->getContainer()->get('logger'));
         $decodedData = $parser->parse($data);
@@ -58,11 +58,24 @@ class LockboxParserCase extends BaseTestCase
             $decodedData[1]
         );
 
-        /** @var ReversalReportTransaction $transaction */
-        $transaction = $decodedData[0];
-        $this->assertEquals('7019551', $transaction->getTransactionId());
-        $this->assertEquals('1.11', $transaction->getAmount());
-        $this->assertEquals('5292015', $transaction->getTransactionDate()->format('mdY'));
-        $this->assertEquals('19 : Account Closed', $transaction->getReversalDescription());
+        /** @var ReversalReportTransaction $returnedTransaction */
+        $returnedTransaction = $decodedData[0];
+        $this->assertEquals('7019551', $returnedTransaction->getTransactionId());
+        $this->assertEquals('1.11', $returnedTransaction->getAmount());
+        $this->assertEquals('05292015', $returnedTransaction->getTransactionDate()->format('mdY'));
+        $this->assertEquals('19 : Account Closed', $returnedTransaction->getReversalDescription());
+        $this->assertEquals($returnedTransaction->getTransactionId(), $returnedTransaction->getOriginalTransactionId());
+        $this->assertEquals(ReversalReportTransaction::TYPE_RETURN, $returnedTransaction->getTransactionType());
+
+        /** @var ReversalReportTransaction $refundedTransaction */
+        $refundedTransaction = $decodedData[1];
+        $this->assertEquals('7020506', $refundedTransaction->getTransactionId());
+        $this->assertEquals('100.00', $refundedTransaction->getAmount());
+        $this->assertEquals('05292015', $refundedTransaction->getTransactionDate()->format('mdY'));
+        $this->assertNotEquals(
+            $refundedTransaction->getTransactionId(),
+            $refundedTransaction->getOriginalTransactionId()
+        );
+        $this->assertEquals(ReversalReportTransaction::TYPE_REFUND, $refundedTransaction->getTransactionType());
     }
 }

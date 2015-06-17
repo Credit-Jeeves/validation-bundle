@@ -1,0 +1,119 @@
+{% extends 'RjAdminBundle:Core:report.html.twig' %}
+
+{% block breadcrumb %}
+    <li><a href="{{ url('sonata_admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a><span class="divider">/</span></li>
+    <li class="active">{{ 'admin.late_report.transunion'|trans }}</li>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ 'admin.late_report.transunion'|trans }}</h1>
+    {% for flash in app.session.flashbag.get('notice') %}
+        <div class="alert">{{ flash }}</div>
+    {% endfor %}
+    <form method="post" name="rentjeeves_adminbundle_rental_report" id="rental_report">
+        <div>
+            {{ form_widget(rentalReport.bureau, {'attr': {'style': 'display:none;'}}) }}
+            {{ form_widget(rentalReport.type, {'attr': {'style': 'display:none;'}}) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.month) }}
+            {{ form_widget(rentalReport.month.month) }}
+            {{ form_widget(rentalReport.month.year) }}
+            {{ form_widget(rentalReport.month.day, {'attr': {'style': 'display:none;'}}) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.startDate) }}
+            {{ form_widget(rentalReport.startDate) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.endDate) }}
+            {{ form_widget(rentalReport.endDate) }}
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="{{ 'admin.report.generate'|trans }}"/>
+
+        {{ form_rest(rentalReport) }}
+    </form>
+    {% if reportData | length > 0 %}
+        <div class="row-fluid">
+            <div class="content span12">
+                <div class="row-fluid">
+                    <div class="sonata-ba-list span10">
+                        <form method="POST" id="form_send_notification" action="{{ url('sonata_admin_rental_report_send') }}">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr class="sonata-ba-list-field-header">
+                                        <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+                                            <input type="checkbox" id="list_batch_checkbox" />
+                                        </th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.lastname'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.firstname'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.email'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.rent'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.transunion.status'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.transunion.amount_confirmed'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.transunion.payment_rating'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.transunion.comment_code'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.due_date'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.last_paid_for'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.integrated_balance'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.group'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.links'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for reportRecord in reportData %}
+                                        <tr class="sonata-ba-list-field-record">
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-batch" objectid="{{ reportRecord.contract.id }}">
+                                                <input type="checkbox" name="idx[]" value="{{ reportRecord.contract.id }}" />
+                                            </td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.tenantSurname }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.tenantFirstname }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">
+                                                <a href="{{ url('admin_tenant_list', {'id': reportRecord.contract.tenant.id}) }}">
+                                                    {{ reportRecord.contract.tenant.email }}
+                                                </a>
+                                            </td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.contract.rent }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.leaseStatus }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.leasePaymentAmountConfirmed }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.paymentRating }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.leaseCommentCode }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.contract.dueDate }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.lastPaidFor | date('m/d/Y') }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">{{ reportRecord.contract.integratedBalance }}</td>
+                                            <td class="sonata-ba-list-field sonata-ba-list-field-text">
+                                                <a href="{{ url('admin_rj_group_list', {'id': reportRecord.contract.group.id}) }}">{{ reportRecord.contract.group.name }}</a>
+                                                {% if reportRecord.contract.group.groupSettings.isIntegrated %}
+                                                    (Int.)
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{{ url('admin_rentjeeves_data_contract_edit', {'id': reportRecord.contract.id}) }}">
+                                                    {{ 'admin.late_report.links.contract'|trans }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tbody>
+                                <tr>
+                                    <th colspan="14">
+                                        <div class="form-inline">
+                                            <select name="action" id="action_send_notification">
+                                                <option value="landlord_email">{{ 'admin.late_report.landlord.send_email'|trans }}</option>
+                                                <option value="tenant_email">{{ 'admin.late_report.tenant.send_email'|trans }}</option>
+                                            </select>
+                                            <input type="submit" id="button_send_notification" class="btn btn-small btn-primary" value="OK" />
+                                        </div>
+                                    </th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

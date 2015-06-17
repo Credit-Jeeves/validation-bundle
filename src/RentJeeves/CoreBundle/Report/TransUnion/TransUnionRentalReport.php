@@ -42,7 +42,7 @@ abstract class TransUnionRentalReport implements RentalReport
     /**
      * @var array<TransUnionReportRecord>
      */
-    protected $records;
+    protected $records = [];
 
     /**
      * @param EntityManagerInterface $em
@@ -53,6 +53,14 @@ abstract class TransUnionRentalReport implements RentalReport
         $this->em = $em;
         $this->logger = $logger;
         $this->propertyManagementData = $propertyManagementData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecords()
+    {
+        return $this->records;
     }
 
     /**

@@ -1447,3 +1447,62 @@ fixtures:
         Your property manager has disabled online payments. Any unprocessed payments you had scheduled
         through RentTrack have been cancelled. Contact your property manager immediately for more information.
       {% endblock %}
+
+# rjLateReportingLandlord.html
+  translation_44_subject:
+    translatable: email_44
+    locale: %locale%
+    property: subject
+    value: Action Required for Rent Reporting
+
+  translation_44_body:
+    translatable: email_44
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Dear {{ landlordName }},
+        As part of our regular audit of rent payments we plan to report to the bureaus, we noticed that:
+        {% for contract in contracts %}
+
+        {{ contract.tenant.fullname }}{% if contract.tenant.getResidentForHolding(contract.holding) %}, {{ contract.tenant.getResidentForHolding(contract.holding).getResidentId() }}{% endif %}
+        does not have a payment on record for {{ month }}, and will be reported as delinquent.
+
+        {% endfor %}
+
+        If this person has paid outside of RentTrack, please log in and resolve the late alert you will see on your dashboard by entering an external/cash payment:
+        <a href="http://help.renttrack.com/knowledgebase/articles/289089-how-do-i-resolve-a-late-payment">http://help.renttrack.com/knowledgebase/articles/289089-how-do-i-resolve-a-late-payment</a>.
+
+        Alternatively, you can end her contract with an outstanding balance if she is truly delinquent:
+        <a href="http://help.renttrack.com/knowledgebase/articles/323277-how-do-i-update-or-end-a-tenant-contract">http://help.renttrack.com/knowledgebase/articles/323277-how-do-i-update-or-end-a-tenant-contract</a>
+        Or let us know by replying to this email.
+
+        Thank you so much for helping us ensure that the data we report is accurate.
+      {% endblock %}
+
+# rjLateReportingTenant.html
+  translation_45_subject:
+    translatable: email_45
+    locale: %locale%
+    property: subject
+    value: Action Required for Rent Reporting
+
+  translation_45_body:
+    translatable: email_45
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Dear {{ tenantName }},
+
+        As part of our regular audit of rent payments we plan to report to the bureaus, we noticed that you are missing a payment for {{ month }}, and may be reported as delinquent.
+
+        Please make a rent payment as soon as possible.
+        If you have paid outside of RentTrack, or if your lease has ended, please contact your property manager and have them update your record in RentTrack.
+        We need them to verify that you have made a payment before we can report it to the bureaus.
+        To learn more, please visit: <help URL to be filled in later>
+        Thank you so much for helping us ensure that the data we report is accurate. If you have any questions, please contact <a href="mailto:help@renttrack.com">help@renttrack.com</a>.
+
+      {% endblock %}

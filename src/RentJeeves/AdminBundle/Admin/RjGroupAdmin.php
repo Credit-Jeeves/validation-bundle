@@ -58,6 +58,12 @@ class RjGroupAdmin extends Admin
             $query->setParameter('holding_id', $nHoldingId);
         }
 
+        $id = $this->getRequest()->get('id', null);
+        if (!empty($id)) {
+            $query->andWhere($alias.'.id = :group_id');
+            $query->setParameter('group_id', $id);
+        }
+
         return $query;
     }
 
