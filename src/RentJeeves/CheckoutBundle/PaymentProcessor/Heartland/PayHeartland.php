@@ -36,18 +36,18 @@ class PayHeartland extends BasePayHeartland
             $contract = $order->getContract();
             $paymentDetails->setMerchantName($contract->getGroup()->getMerchantName());
 
-            $billTransaction->setID1(str_replace(",", "", $contract->getProperty()->getShrinkAddress()));
+            $billTransaction->setID1(str_replace(',', '', $contract->getProperty()->getShrinkAddress()));
             if ($contract->getUnit()) { // For houses, there are no units
                 $billTransaction->setID2($contract->getUnit()->getName());
             }
 
             $tenant = $contract->getTenant();
-            $billTransaction->setID3(sprintf("%s %s", $tenant->getFirstName(), $tenant->getLastName()));
+            $billTransaction->setID3(sprintf('%s %s', $tenant->getFirstName(), $tenant->getLastName()));
             $billTransaction->setID4($contract->getGroup()->getID4StatementDescriptor());
             $order->setDescriptor($contract->getGroup()->getID4StatementDescriptor());
         } elseif (PaymentGroundType::REPORT == $paymentType) {
             $paymentDetails->setMerchantName($this->rtMerchantName);
-            $billTransaction->setID1("report");
+            $billTransaction->setID1('report');
         }
 
         return $paymentDetails;

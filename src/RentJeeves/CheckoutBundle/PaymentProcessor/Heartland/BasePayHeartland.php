@@ -8,6 +8,7 @@ use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegis
 use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Transaction;
@@ -58,6 +59,8 @@ abstract class BasePayHeartland
         PaymentAccountInterface $paymentAccount,
         $paymentType = PaymentGroundType::RENT
     ) {
+        PaymentProcessorInvalidArgumentException::assertPaymentGroundType($paymentType);
+
         $paymentDetails = $this->getPaymentDetails($order, $paymentType);
 
         /** @var Transaction $transaction */
