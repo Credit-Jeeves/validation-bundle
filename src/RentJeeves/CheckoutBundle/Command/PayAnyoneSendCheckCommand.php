@@ -15,7 +15,7 @@ class PayAnyoneSendCheckCommand extends ContainerAwareCommand
     {
         $this
             ->setName('payment:pay-anyone:send-check')
-            ->addOption('jms-job-id', null, InputOption::VALUE_REQUIRED, 'ID of job')
+            ->addOption('jms-job-id', null, InputOption::VALUE_OPTIONAL, 'ID of job')
             ->addArgument('order-id', InputArgument::REQUIRED, 'ID of order')
             ->setDescription('Send check when inbound transaction is complete');
     }
@@ -29,7 +29,7 @@ class PayAnyoneSendCheckCommand extends ContainerAwareCommand
         if (false == $order = $this->getOrderById($input->getArgument('order-id'))) {
             throw new \InvalidArgumentException(sprintf('Order with id#%s not found', $input->getArgument('order-id')));
         }
-        $this->getAciPayAnyonePaymentProcessor()->executeOrder($order);
+        $output->writeln((string) $this->getAciPayAnyonePaymentProcessor()->executeOrder($order));
     }
 
     /**
