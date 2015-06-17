@@ -6,7 +6,7 @@ parameters:
     aci.collect_pay.sftp.login: 'rntrtest'
     aci.collect_pay.sftp.password: 'r7QebTAa'
     aci.collect_pay.report_path: '/tmp/'
-	aci.collect_pay.business_id: 563376
+    aci.collect_pay.business_id: 563376
 
     aci.pay_anyone.sftp.host: transfer.princetonecom.com
     aci.pay_anyone.sftp.port: 10022
