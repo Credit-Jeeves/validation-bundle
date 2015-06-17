@@ -23,7 +23,7 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 /**
  * @DI\Service("payment_processor.aci_collect_pay")
  */
-class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
+class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
 {
     /**
      * @var EnrollmentManager
