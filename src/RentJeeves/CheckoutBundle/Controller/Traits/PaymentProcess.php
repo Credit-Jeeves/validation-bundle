@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\Controller\Traits;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Payum2\Payment;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
@@ -56,7 +56,7 @@ trait PaymentProcess
             }
         }
 
-        /** @var PaymentProcessorInterface $paymentProcessor */
+        /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
         $token = $paymentProcessor->createPaymentToken($paymentAccountMapped, $contract);
 
@@ -93,7 +93,7 @@ trait PaymentProcess
         // call out to PaymentProcessor interface for RentTrack payment token
         $mapper = $this->get('payment_account.type.mapper');
         $paymentAccountMapped = $mapper->mapLandlordAccountTypeForm($billingAccountType);
-        /** @var PaymentProcessorInterface $paymentProcessor */
+        /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
         // We can use any contract because we use only it just for get group in this case
         $token = $paymentProcessor->createBillingToken($paymentAccountMapped, $user);

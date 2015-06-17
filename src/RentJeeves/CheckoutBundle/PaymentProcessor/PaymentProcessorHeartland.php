@@ -20,7 +20,7 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 /**
  * @DI\Service("payment_processor.heartland")
  */
-class PaymentProcessorHeartland implements PaymentProcessorInterface
+class PaymentProcessorHeartland implements SubmerchantProcessorInterface
 {
     /** @var PaymentAccountManager */
     protected $paymentAccountManager;
