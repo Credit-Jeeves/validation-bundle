@@ -2,6 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Command;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,14 +42,10 @@ class PayAnyoneCancelCheckCommand extends ContainerAwareCommand
     }
 
     /**
-     * @todo implement it
+     * @return PaymentProcessorAciPayAnyone
      */
     protected function getAciPayAnyonePaymentProcessor()
     {
-        /**
-         * @todo implement it
-         */
-
-        return null;
+        return $this->getContainer()->get('payment_processor.aci.pay_anyone');
     }
 }
