@@ -60,7 +60,6 @@ class BillingAccountManager extends AbstractManager
 
         $contract->setAciCollectPayContractBilling($contractBilling);
 
-        $this->em->persist($contract);
         $this->em->persist($contractBilling);
 
         $this->em->flush();

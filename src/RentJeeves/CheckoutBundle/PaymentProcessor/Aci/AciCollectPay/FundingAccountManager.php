@@ -4,11 +4,14 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
 
 use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\User;
 use Payum\AciCollectPay\Request\ProfileRequest\AddFunding;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as FundingAccountData;
-use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\GroupAwareInterface;
+use RentJeeves\DataBundle\Entity\BillingAccount as BillingAccountEntity;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
@@ -21,7 +24,7 @@ class FundingAccountManager extends AbstractManager
      * @param  int                $fundingAccountId
      * @param  int                $profileId
      * @param  FundingAccountData $fundingAccountData
-     * @param  Contract           $contract
+     * @param  User               $user
      * @return int
      *
      * @throws \Exception
@@ -30,7 +33,7 @@ class FundingAccountManager extends AbstractManager
         $fundingAccountId,
         $profileId,
         FundingAccountData $fundingAccountData,
-        Contract $contract
+        User $user = null
     ) {
         throw new \Exception("modifyFundingAccount is not implement yet for aci_collect_pay.");
     }
@@ -38,80 +41,102 @@ class FundingAccountManager extends AbstractManager
     /**
      * @param  int                              $profileId
      * @param  FundingAccountData               $fundingAccountData
-     * @param  Contract                         $contract
+     * @param  User                             $user
      * @return int
-     * @throws PaymentProcessorRuntimeException
+     * @throws PaymentProcessorRuntimeException|PaymentProcessorInvalidArgumentException
      */
-    public function addFundingAccount($profileId, FundingAccountData $fundingAccountData, Contract $contract)
+    public function addFundingAccount($profileId, FundingAccountData $fundingAccountData, User $user = null)
+    {
+        if (!$fundingAccountData->getEntity() instanceof PaymentAccountInterface) {
+            throw new PaymentProcessorInvalidArgumentException('Entity should implement PaymentAccountInterface');
+        }
+
+        if ($fundingAccountData->getEntity() instanceof UserAwareInterface) {
+            return $this->addPaymentFundingAccount($profileId, $fundingAccountData, $user);
+        } elseif ($fundingAccountData->getEntity() instanceof GroupAwareInterface) {
+            return $this->addBillingFundingAccount($profileId, $fundingAccountData);
+        } else {
+            throw new PaymentProcessorInvalidArgumentException('Unsupported Payment Account Type');
+        }
+    }
+
+    /**
+     * @param int $profileId
+     * @param FundingAccountData $fundingAccountData
+     * @param User $user
+     * @return int
+     */
+    protected function addPaymentFundingAccount($profileId, FundingAccountData $fundingAccountData, User $user)
     {
         $this->logger->debug(
             sprintf(
                 '[ACI CollectPay Info]:Try to add new funding account for user with id = "%d" and profile "%d"',
-                $contract->getTenant()->getId(),
+                $user->getId(),
                 $profileId
             )
         );
 
-        $profile = new RequestModel\Profile();
+        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $user);
 
-        $profile->setProfileId($profileId);
-
-        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $contract);
-
-        $profile->setFundingAccount($fundingAccount);
-
-        $request = new AddFunding($profile);
-
-        try {
-            $this->paymentProcessor->execute($request);
-        } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
-            throw new $e();
-        }
-
-        if (!$request->getIsSuccessful()) {
-            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
-            throw new PaymentProcessorRuntimeException($request->getMessages());
-        }
+        $fundingAccountId = $this->executeRequest($profileId, $fundingAccount);
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Added funding account to profile "%d" for user with id = "%d"',
-                $request->getModel()->getProfileId(),
-                $contract->getTenant()->getId()
+                '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for user with id = "%d"',
+                $fundingAccountId,
+                $profileId,
+                $user->getId()
             )
         );
 
-        return $request->getModel()->getFundingAccount()->getFundingAccountId();
+        return $fundingAccountId;
+    }
+
+    /**
+     * @param int $profileId
+     * @param FundingAccountData $fundingAccountData
+     * @return int
+     */
+    protected function addBillingFundingAccount($profileId, FundingAccountData $fundingAccountData)
+    {
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Try to add new funding account for group "%s" and profile "%d"',
+                $fundingAccountData->getEntity()->getGroup()->getName(),
+                $profileId
+            )
+        );
+
+        $fundingAccount = $this->prepareFundingAccount($fundingAccountData);
+
+        $fundingAccountId = $this->executeRequest($profileId, $fundingAccount);
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for group "%s"',
+                $fundingAccountId,
+                $profileId,
+                $fundingAccountData->getEntity()->getGroup()->getName()
+            )
+        );
+
+        return $fundingAccountId;
     }
 
     /**
      * @param  FundingAccountData                   $fundingAccountData
-     * @param  Contract                             $contract
+     * @param  User                                 $user
      * @return RequestModel\SubModel\FundingAccount
      */
-    public function prepareFundingAccount(FundingAccountData $fundingAccountData, Contract $contract)
+    public function prepareFundingAccount(FundingAccountData $fundingAccountData, User $user = null)
     {
-        /** @var PaymentAccountEntity $paymentAccount */
         $fundingAccount = new RequestModel\SubModel\FundingAccount();
 
+        /** @var PaymentAccountEntity|BillingAccountEntity $paymentAccount */
         $paymentAccount = $fundingAccountData->getEntity();
 
         $fundingAccount->setNickname($paymentAccount->getName());
         $fundingAccount->setHoldername($fundingAccountData->get('account_name'));
-
-        /** @var Address $address */
-        if ($paymentAccount instanceof UserAwareInterface && $address = $paymentAccount->getAddress()) {
-            $paymentAccount->getAddress()->setUser($contract->getTenant());
-        }
-
-        if (!$address) {
-            $address = $contract->getTenant()->getDefaultAddress();
-        }
-
-        if (!$address) {
-            $address = new Address();
-        }
 
         if (PaymentAccountTypeEnum::CARD == $paymentAccount->getType()) {
             $ccMonth = $fundingAccountData->get('expiration_month');
@@ -154,16 +179,68 @@ class FundingAccountManager extends AbstractManager
 
         $fundingAccountAddress = new RequestModel\SubModel\Address();
 
-        $fundingAccountAddress->setAddress1((string) $address->getAddress());
-        $fundingAccountAddress->setCity((string) $address->getCity());
-        $fundingAccountAddress->setState((string) $address->getArea());
-        $fundingAccountAddress->setPostalCode((string) $address->getZip());
-        $fundingAccountAddress->setCountryCode($address->getCountry());
+        /** @var Address $address */
+        if ($user) {
+            if ($address = $paymentAccount->getAddress()) {
+                $paymentAccount->getAddress()->setUser($user);
+            }
+
+            if (!$address) {
+                $address = $user->getDefaultAddress();
+            }
+
+            if (!$address) {
+                $address = new Address();
+            }
+
+            $fundingAccountAddress->setAddress1((string) $address->getAddress());
+            $fundingAccountAddress->setCity((string) $address->getCity());
+            $fundingAccountAddress->setState((string) $address->getArea());
+            $fundingAccountAddress->setPostalCode((string) $address->getZip());
+            $fundingAccountAddress->setCountryCode((string) $address->getCountry());
+        } else {
+            $fundingAccountAddress->setAddress1((string) $paymentAccount->getGroup()->getStreetAddress1());
+            $fundingAccountAddress->setAddress2((string) $paymentAccount->getGroup()->getStreetAddress2());
+            $fundingAccountAddress->setCity((string) $paymentAccount->getGroup()->getCity());
+            $fundingAccountAddress->setState((string) $paymentAccount->getGroup()->getState());
+            $fundingAccountAddress->setPostalCode((string) $paymentAccount->getGroup()->getZip());
+            $fundingAccountAddress->setCountryCode((string) $paymentAccount->getGroup()->getCountry());
+        }
 
         $fundingAccount->setAddress($fundingAccountAddress);
 
         $fundingAccount->setAccount($account);
 
         return $fundingAccount;
+    }
+
+    /**
+     * @param int $profileId
+     * @param RequestModel\SubModel\FundingAccount $fundingAccount
+     * @return int
+     */
+    protected function executeRequest($profileId, RequestModel\SubModel\FundingAccount $fundingAccount)
+    {
+        $profile = new RequestModel\Profile();
+
+        $profile->setProfileId($profileId);
+
+        $profile->setFundingAccount($fundingAccount);
+
+        $request = new AddFunding($profile);
+
+        try {
+            $this->paymentProcessor->execute($request);
+        } catch (\Exception $e) {
+            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            throw new $e();
+        }
+
+        if (!$request->getIsSuccessful()) {
+            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            throw new PaymentProcessorRuntimeException($request->getMessages());
+        }
+
+        return $request->getModel()->getFundingAccount()->getFundingAccountId();
     }
 }

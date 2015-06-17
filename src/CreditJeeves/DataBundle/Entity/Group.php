@@ -204,4 +204,20 @@ class Group extends BaseGroup
                 return null;
         }
     }
+
+    /**
+     * @return int|null
+     */
+    public function getAciCollectPayProfileId()
+    {
+        return $this->getAciCollectPayProfile() ? $this->getAciCollectPayProfile()->getProfileId() : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return 'US';
+    }
 }
