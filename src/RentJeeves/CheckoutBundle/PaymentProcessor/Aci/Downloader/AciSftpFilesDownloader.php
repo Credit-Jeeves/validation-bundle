@@ -243,4 +243,12 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
     {
         return $this->sftpClient->getSftp();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDownloadDirPath()
+    {
+        return $this->reportPath;
+    }
 }

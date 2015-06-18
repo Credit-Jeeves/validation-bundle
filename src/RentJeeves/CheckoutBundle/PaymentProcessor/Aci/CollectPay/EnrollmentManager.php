@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\User;

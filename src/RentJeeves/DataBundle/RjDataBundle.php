@@ -37,6 +37,7 @@ class RjDataBundle extends Bundle
             Type::addType('PaymentBatchStatus', 'RentJeeves\DataBundle\Enum\PaymentBatchStatus');
             Type::addType('PaymentProcessor', 'RentJeeves\DataBundle\Enum\PaymentProcessor');
             Type::addType('ImportType', 'RentJeeves\DataBundle\Enum\ImportType');
+            Type::addType('SynchronizationStrategy', 'RentJeeves\DataBundle\Enum\SynchronizationStrategy');
             Type::addType('BankAccountType', 'RentJeeves\DataBundle\Enum\BankAccountType');
             Type::addType('OrderAlgorithmType', 'RentJeeves\DataBundle\Enum\OrderAlgorithmType');
             Type::addType('OutboundTransactionType', 'RentJeeves\DataBundle\Enum\OutboundTransactionType');

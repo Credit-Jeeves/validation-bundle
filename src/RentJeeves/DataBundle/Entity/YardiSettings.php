@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Model\YardiSettings as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -19,6 +20,14 @@ class YardiSettings extends Base implements SettingsInterface
     const PAYMENT_TYPE_CASH = 'cash';
     const PAYMENT_TYPE_CHECK = 'check';
     const PAYMENT_TYPE_OTHER = 'other';
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isAllowedToSendRealTimePayments()
+    {
+        return $this->getSynchronizationStrategy() === SynchronizationStrategy::REAL_TIME;
+    }
 
     /**
      * {@inheritdoc}

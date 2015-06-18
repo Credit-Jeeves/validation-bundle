@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\AdminBundle\Form;
 
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -41,6 +42,23 @@ class YardiSettingsType extends Base
                 'required'          => false,
             ]
         );
+
+        $builder->add(
+            'synchronizationStrategy',
+            'choice',
+            [
+                'error_bubbling'    => true,
+                'choices'           => array_map(
+                    'strtoupper',
+                    array_change_key_case(
+                        SynchronizationStrategy::all(),
+                        CASE_LOWER
+                    )
+                ),
+                'label'             => 'yardi.label.synchronization_strategy',
+            ]
+        );
+
         $builder->add(
             'paymentTypeACH',
             'choice',

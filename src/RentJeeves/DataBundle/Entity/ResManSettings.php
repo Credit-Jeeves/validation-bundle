@@ -11,6 +11,14 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
  */
 class ResManSettings extends Base implements SettingsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function isAllowedToSendRealTimePayments()
+    {
+        return true;
+    }
+
     public function getParameters()
     {
         return array(

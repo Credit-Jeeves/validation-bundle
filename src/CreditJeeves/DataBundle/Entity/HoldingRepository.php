@@ -18,14 +18,25 @@ class HoldingRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function findHoldingsWithYardiSettings($start, $limit)
+    /**
+     * @param integer $start
+     * @param integer $limit
+     * @param string $strategy
+     * @return Holding[]
+     */
+    public function findHoldingsWithYardiSettings($start, $limit, $strategy = null)
     {
         $query = $this->createQueryBuilder('holding');
         $query->innerJoin('holding.yardiSettings', 'yardiSetting');
         $query->where('holding.apiIntegrationType = :yardi');
         $query->andWhere('yardiSetting.postPayments = 1');
-
         $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
+
+        if ($strategy) {
+            $query->andWhere('yardiSetting.synchronizationStrategy = :strategy');
+            $query->setParameter('strategy', $strategy);
+        }
+
         $query->setFirstResult($start);
         $query->setMaxResults($limit);
         $query = $query->getQuery();

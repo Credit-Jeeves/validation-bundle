@@ -5,11 +5,11 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\BillingAccountManager;
-use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\EnrollmentManager;
-use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\FundingAccountManager;
-use RentJeeves\CheckoutBundle\PaymentProcessor\ACI\AciCollectPay\PaymentManager;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\EnrollmentManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\FundingAccountManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\PaymentManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -23,7 +23,7 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 /**
  * @DI\Service("payment_processor.aci_collect_pay")
  */
-class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
+class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
 {
     /**
      * @var EnrollmentManager
@@ -46,7 +46,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
     protected $paymentManager;
 
     /**
-     * @var AciReportLoader
+     * @var ReportLoader
      */
     protected $reportLoader;
 
@@ -55,7 +55,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
      * @param BillingAccountManager $billingAccountManager
      * @param FundingAccountManager $fundingAccountManager
      * @param PaymentManager $paymentManager
-     * @param AciReportLoader $reportLoader
+     * @param ReportLoader $reportLoader
      *
      * @DI\InjectParams({
      *     "enrollmentManager" = @DI\Inject("payment_processor.aci.collect_pay.enrollment_manager"),
@@ -70,7 +70,7 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
         BillingAccountManager $billingAccountManager,
         FundingAccountManager $fundingAccountManager,
         PaymentManager $paymentManager,
-        AciReportLoader $reportLoader
+        ReportLoader $reportLoader
     ) {
         $this->enrollmentManager = $enrollmentManager;
         $this->billingAccountManager = $billingAccountManager;
@@ -136,6 +136,8 @@ class PaymentProcessorAciCollectPay implements PaymentProcessorInterface
         PaymentAccountInterface $accountEntity,
         $paymentType = PaymentGroundType::RENT
     ) {
+        PaymentProcessorInvalidArgumentException::assertPaymentGroundType($paymentType);
+
         if ($paymentType === PaymentGroundType::RENT && !$this->isAllowedToExecuteOrder($order, $accountEntity)) {
             throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
                 PaymentProcessor::ACI_COLLECT_PAY

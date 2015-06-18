@@ -2,11 +2,11 @@
 
 namespace RentJeeves\TestBundle\Aci;
 
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader as Base;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader as Base;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
 
-class AciReportLoaderTest extends Base
+class CollectPayReportLoaderTest extends Base
 {
     /**
      * {@inheritdoc}

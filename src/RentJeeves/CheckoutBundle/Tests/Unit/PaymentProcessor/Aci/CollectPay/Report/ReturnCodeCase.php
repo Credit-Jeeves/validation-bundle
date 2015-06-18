@@ -1,8 +1,8 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\AciCollectPay\Report;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\CollectPay\Report;
 
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\ReturnCode;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\ReturnCode;
 
 class ReturnCodeCase extends \PHPUnit_Framework_TestCase
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\AciCollectPay\Report;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\CollectPay\Report;
 
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\LockboxParser;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
 use RentJeeves\TestBundle\BaseTestCase;

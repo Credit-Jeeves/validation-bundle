@@ -54,7 +54,6 @@ class LoggerStub implements LoggerInterface
     public function getTotal($counterName)
     {
         if (array_key_exists($counterName, $this->totals)) {
-
             return $this->totals[$counterName];
         }
 
