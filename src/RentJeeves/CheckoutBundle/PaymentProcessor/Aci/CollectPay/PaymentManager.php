@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;

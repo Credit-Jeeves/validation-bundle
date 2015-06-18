@@ -1,10 +1,10 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReportTransaction;
 
-interface AciParserInterface
+interface CollectPayParserInterface
 {
     /**
      * Parses given array Transactions.

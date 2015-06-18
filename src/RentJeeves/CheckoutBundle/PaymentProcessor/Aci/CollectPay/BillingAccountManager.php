@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use Payum\AciCollectPay\Model as RequestModel;
 use Payum\AciCollectPay\Request\ProfileRequest\AddBilling;

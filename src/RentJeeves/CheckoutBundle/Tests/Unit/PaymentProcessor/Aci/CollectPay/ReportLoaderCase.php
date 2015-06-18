@@ -1,16 +1,16 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci;
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\CollectPay;
 
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportArchiver;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\LockboxParser;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
 use RentJeeves\TestBundle\BaseTestCase;
 
-class AciReportLoaderCase extends BaseTestCase
+class ReportLoaderCase extends BaseTestCase
 {
     /**
      * @test
@@ -22,12 +22,11 @@ class AciReportLoaderCase extends BaseTestCase
         $decoder = $this->getAciPgpDecoderMock();
         $archiver = $this->getAciReportArchiverMock();
         $parser = $this->getLockboxParserMock();
-        $reportPath = 'testPath';
 
-        $aciLoader = new AciReportLoader($downloader, $decoder, $archiver, $parser, $reportPath, $logger);
+        $aciLoader = new ReportLoader($downloader, $decoder, $archiver, $parser, $logger);
 
         $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportLoader',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader',
             $aciLoader
         );
     }
@@ -45,6 +44,9 @@ class AciReportLoaderCase extends BaseTestCase
         $downloader = $this->getAciSftpFilesDownloaderMock();
         $downloader->expects($this->once())
             ->method('download');
+        $downloader->expects($this->once())
+            ->method('getDownloadDirPath')
+            ->will($this->returnValue($reportPath));
 
         $decoder = $this->getAciPgpDecoderMock();
         $decoder->expects($this->once())
@@ -67,7 +69,7 @@ class AciReportLoaderCase extends BaseTestCase
 
         $logger = $this->getLoggerMock();
 
-        $aciLoader = new AciReportLoader($downloader, $decoder, $archiver, $parser, $reportPath, $logger);
+        $aciLoader = new ReportLoader($downloader, $decoder, $archiver, $parser, $logger);
         $report = $aciLoader->loadReport();
 
         $this->assertEquals($transaction, $report->getTransactions()[0]);
@@ -123,7 +125,7 @@ class AciReportLoaderCase extends BaseTestCase
     protected function getLockboxParserMock()
     {
         return $this->getMock(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report\LockboxParser',
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\LockboxParser',
             [],
             [],
             '',

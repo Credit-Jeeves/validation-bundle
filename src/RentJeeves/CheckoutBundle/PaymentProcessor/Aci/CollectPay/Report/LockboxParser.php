@@ -1,9 +1,8 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report;
 
 use Psr\Log\LoggerInterface;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciParserInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
@@ -12,7 +11,7 @@ use RentJeeves\CoreBundle\DateTime;
 /**
  * Parses Lockbox payment report from ACI in the csv format.
  */
-class LockboxParser implements AciParserInterface
+class LockboxParser implements CollectPayParserInterface
 {
     const RECORD_PAYMENT_DETAIL = '6';
 
