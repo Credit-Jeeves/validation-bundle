@@ -4,7 +4,10 @@ namespace RentJeeves\ExternalApiBundle\Tests\Functional;
 
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\ExternalApiBundle\Tests\Services\AMSI\AMSIClientCase;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class ResidentBalanceSynchronizerCase extends BaseTestCase
@@ -12,7 +15,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldSyncContractBalance()
+    public function shouldSyncContractBalanceForYardi()
     {
         $this->load(true);
 
@@ -31,7 +34,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldSyncContractWaitingBalance()
+    public function shouldSyncContractWaitingBalanceForYardi()
     {
         $this->load(true);
 
@@ -71,5 +74,77 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         );
         $this->assertNotNull($updatedContractWaiting);
         $this->assertGreaterThan(4360.5, $updatedContractWaiting->getIntegratedBalance());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSyncContractBalanceForAMSI()
+    {
+        $this->load(true);
+
+        $em = $this->getEntityManager();
+        $repo = $em->getRepository('RjDataBundle:Contract');
+        $contract = $repo->findOneBy(['rent' => 850, 'balance' => -250]);
+        $this->assertNotNull($contract);
+        $this->assertEquals(0, $contract->getIntegratedBalance());
+        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
+        $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
+        $unit = $contract->getUnit();
+        $unitExternalMapping = new UnitMapping();
+        $unitExternalMapping->setExternalUnitId('001|01|101');
+        $unitExternalMapping->setUnit($unit);
+        $unit->setUnitMapping($unitExternalMapping);
+        $tenant = $contract->getTenant();
+        $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
+        $residentMapping->setResidentId('618209');
+
+        $em->flush($residentMapping);
+        $em->flush($unit);
+        $em->flush($unitExternalMapping);
+        $em->flush($propertyMapping);
+        $em->flush($contract->getHolding());
+
+        $balanceSynchronizer = $this->getContainer()->get('amsi.resident_balance_sync');
+        $balanceSynchronizer->run();
+        $updatedContract = $repo->find($contract->getId());
+        $this->assertLessThan(12000, $updatedContract->getIntegratedBalance());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSyncContractWaitingBalanceForAMSI()
+    {
+        $this->load(true);
+
+        $em = $this->getEntityManager();
+        $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
+        $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
+        $this->assertNotNull($contractWaiting);
+        $this->assertEquals(0, $contractWaiting->getIntegratedBalance());
+        $contractWaiting->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
+            $contractWaiting->getGroup()->getHolding()
+        );
+        $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
+        $unit = $contractWaiting->getUnit();
+        $unitExternalMapping = new UnitMapping();
+        $unitExternalMapping->setExternalUnitId('001|01|101');
+        $unitExternalMapping->setUnit($unit);
+        $unit->setUnitMapping($unitExternalMapping);
+        $contractWaiting->setResidentId('618209');
+
+        $em->flush($contractWaiting);
+        $em->flush($unit);
+        $em->flush($unitExternalMapping);
+        $em->flush($propertyMapping);
+        $em->flush($contractWaiting->getGroup()->getHolding());
+
+        $balanceSynchronizer = $this->getContainer()->get('amsi.resident_balance_sync');
+        $balanceSynchronizer->run();
+        $updatedContract = $repositoryContractWaiting->find($contractWaiting->getId());
+        $this->assertLessThan(12000, $updatedContract->getIntegratedBalance());
     }
 }
