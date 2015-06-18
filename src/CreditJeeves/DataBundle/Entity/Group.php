@@ -113,6 +113,14 @@ class Group extends BaseGroup
     }
 
     /**
+     * @return bool
+     */
+    public function isExistGroupSettings()
+    {
+        return empty($this->groupSettings) ? false : true;
+    }
+
+    /**
      * @return GroupSettings
      */
     public function getGroupSettings()

@@ -106,9 +106,9 @@ abstract class TransUnionRentalReport implements RentalReport
     protected function createHeader()
     {
         $lastActivityDate = $this->em->getRepository('RjDataBundle:Contract')->getLastActivityDate();
-        $name = isset($this->propertyManagementData['name'])? $this->propertyManagementData['name'] : '';
-        $address = isset($this->propertyManagementData['address'])? $this->propertyManagementData['address'] : '';
-        $phoneNumber = isset($this->propertyManagementData['phone'])? $this->propertyManagementData['phone'] : '';
+        $name = isset($this->propertyManagementData['name']) ? $this->propertyManagementData['name'] : '';
+        $address = isset($this->propertyManagementData['address']) ? $this->propertyManagementData['address'] : '';
+        $phoneNumber = isset($this->propertyManagementData['phone']) ? $this->propertyManagementData['phone'] : '';
 
         $this->header = new TransUnionReportHeader();
         $this->header->setActivityDate(new \DateTime($lastActivityDate));

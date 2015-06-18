@@ -57,6 +57,7 @@ class RentalReportController extends BaseController
                     $report->getReportFilename()
                 );
                 $response->headers->set('Content-Disposition', $attachment);
+
                 return $response;
             }
         }

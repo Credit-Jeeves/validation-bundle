@@ -12,7 +12,7 @@ abstract class ExperianRentalReport implements RentalReport
 {
     const REPORT_BUREAU = 'experian';
     const REPORT_TYPE = 'base';
-    
+
     /**
      * @var array
      */

@@ -835,7 +835,6 @@ class ContractRepository extends EntityRepository
             ->andWhere('YEAR(op.paidFor) = :year');
         $this->whereReportToTransUnion($subquery, 'c2', clone $startDate);
 
-
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
         $this->whereReportToTransUnion($query, 'c', clone $startDate);

@@ -195,7 +195,7 @@ class ResManClientCase extends Base
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
 
-        $result = $resManClient->closeBatch(self::EXTERNAL_PROPERTY_ID, $batchId);
+        $result = $resManClient->closeBatch($batchId, self::EXTERNAL_PROPERTY_ID);
 
         $this->assertTrue($result);
     }

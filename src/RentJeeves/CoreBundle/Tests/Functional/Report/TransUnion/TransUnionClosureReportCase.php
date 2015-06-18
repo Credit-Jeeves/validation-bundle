@@ -4,8 +4,6 @@ namespace RentJeeves\CoreBundle\Tests\Functional\Report\TransUnion;
 
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
-use RentJeeves\CoreBundle\Report\RentalReportData;
-use RentJeeves\CoreBundle\Report\RentalReportFactory;
 use RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;

@@ -12,7 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CloseBatchCommand extends ContainerAwareCommand
 {
     protected $availableTypes = [
-        ApiIntegrationType::RESMAN
+        ApiIntegrationType::RESMAN,
+        ApiIntegrationType::YARDI_VOYAGER
     ];
 
     protected function configure()
@@ -23,7 +24,7 @@ class CloseBatchCommand extends ContainerAwareCommand
                 'type',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Accounting Package type like "resman"'
+                'Accounting Package type like "resman", "yardi voyager"'
             )
             ->addOption(
                 'debug',

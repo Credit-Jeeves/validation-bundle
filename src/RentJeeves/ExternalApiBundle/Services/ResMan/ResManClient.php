@@ -284,12 +284,12 @@ class ResManClient implements ClientInterface
     }
 
     /**
-     * @param $externalPropertyId
-     * @param $accountingBatchId
+     * @param string $accountingBatchId
+     * @param string $externalPropertyId
      * @param  mixed $accountId Can be get from settings
      * @return bool
      */
-    public function closeBatch($externalPropertyId, $accountingBatchId, $accountId = null)
+    public function closeBatch($accountingBatchId, $externalPropertyId, $accountId = null)
     {
         $method = 'CloseBatch';
         $this->debugMessage("Call ResMan method: {$method}");
