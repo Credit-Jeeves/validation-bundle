@@ -444,7 +444,7 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(10, $archive->numFiles);
+        $this->assertEquals(14, $archive->numFiles);
         $file = $archive->getFromIndex(1);
 
         $doc = new SimpleXMLElement($file);
