@@ -243,7 +243,7 @@ class TransUnionReportRecord
             $leaseStatus = $this->getLateLeaseStatus($interval);
 
             switch ($leaseStatus) {
-                case self::LEASE_STATUS_30_59_DAYS_LATE :
+                case self::LEASE_STATUS_30_59_DAYS_LATE:
                     return 1;
                 case self::LEASE_STATUS_60_89_DAYS_LATE:
                     return 2;
