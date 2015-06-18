@@ -1,9 +1,8 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay\Report;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report;
 
 use Psr\Log\LoggerInterface;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciParserInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciReportException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReversalReportTransaction;
@@ -12,7 +11,7 @@ use RentJeeves\CoreBundle\DateTime;
 /**
  * Parses Lockbox payment report from ACI in the csv format.
  */
-class LockboxParser implements AciParserInterface
+class LockboxParser implements CollectPayParserInterface
 {
     const RECORD_PAYMENT_DETAIL = '6';
 
@@ -25,7 +24,7 @@ class LockboxParser implements AciParserInterface
     const KEY_TRANSACTION_DATE = 12;
     const KEY_REMIT_DATE = 13;
     const KEY_CONFIRMATION_NUMBER = 14;
-    const KEY_ORIGINAL_CONFIRMATION_NUMBER = 17;
+    const KEY_ORIGINAL_CONFIRMATION_NUMBER = 18;
     const KEY_RETURN_CODE = 19;
 
     /**
@@ -176,13 +175,22 @@ class LockboxParser implements AciParserInterface
     }
 
     /**
+     * Returns REFUND type if isset originalConfirmationNumber. In other case returns RETURN type.
+     *
      * @param array $record
      *
      * @return string
      */
     protected function getDebitTransactionType(array $record)
     {
-        //@TODO: add logic in this place
+        $confirmationNumber = $this->getRecordField($record, self::KEY_CONFIRMATION_NUMBER);
+        $originalConfirmationNumber = $this->getRecordField($record, self::KEY_ORIGINAL_CONFIRMATION_NUMBER);
+        if (!empty($confirmationNumber) && !empty($originalConfirmationNumber) &&
+            $confirmationNumber !== $originalConfirmationNumber
+        ) {
+            return ReversalReportTransaction::TYPE_REFUND;
+        }
+
         return ReversalReportTransaction::TYPE_RETURN;
     }
 }

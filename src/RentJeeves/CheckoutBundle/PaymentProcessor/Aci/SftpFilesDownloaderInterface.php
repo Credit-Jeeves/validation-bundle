@@ -10,6 +10,13 @@ interface SftpFilesDownloaderInterface
     public function download();
 
     /**
+     * Return path to downloaded files
+     *
+     * @return string
+     */
+    public function getDownloadDirPath();
+
+    /**
      * Connect to an SSH server
      */
     public function initializeSshConnect();

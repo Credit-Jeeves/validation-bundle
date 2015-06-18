@@ -93,9 +93,18 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
         $settingMock = $this->getMock('\RentJeeves\DataBundle\Entity\GroupSettings', [], [], '', false);
         $settingMock->method('getIsIntegrated')
             ->will($this->returnValue($isIntegrated));
-        $groupMock = $this->getMock('\RentJeeves\DataBundle\Entity\Group', ['getGroupSettings'], [], '', false);
+
+        $groupMock = $this->getMock(
+            '\RentJeeves\DataBundle\Entity\Group',
+            ['getGroupSettings', 'isExistGroupSettings'],
+            [],
+            '',
+            false
+        );
         $groupMock->method('getGroupSettings')
             ->will($this->returnValue($settingMock));
+        $groupMock->method('isExistGroupSettings')
+            ->will($this->returnValue(true));
         $mock->method('getGroup')
             ->will($this->returnValue($groupMock));
 

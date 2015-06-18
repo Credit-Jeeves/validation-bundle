@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -385,6 +386,18 @@ abstract class Group
      * )
      */
     protected $aciCollectPaySettings;
+
+    /**
+     * @var AciCollectPayGroupProfile
+     *
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile",
+     *      mappedBy="group",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $aciCollectPayProfile;
 
     /**
      * @ORM\OneToMany(
@@ -1376,5 +1389,21 @@ abstract class Group
     public function setDisableCreditCard($disableCreditCard)
     {
         $this->disableCreditCard = $disableCreditCard;
+    }
+
+    /**
+     * @return AciCollectPayGroupProfile
+     */
+    public function getAciCollectPayProfile()
+    {
+        return $this->aciCollectPayProfile;
+    }
+
+    /**
+     * @param AciCollectPayGroupProfile $aciCollectPayProfile
+     */
+    public function setAciCollectPayProfile($aciCollectPayProfile)
+    {
+        $this->aciCollectPayProfile = $aciCollectPayProfile;
     }
 }

@@ -158,6 +158,22 @@ class TransUnionReportRecord
         $this->lastPaidFor = $lastPaidFor;
     }
 
+    /**
+     * @return Contract
+     */
+    public function getContract()
+    {
+        return $this->contract;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastPaidFor()
+    {
+        return $this->lastPaidFor;
+    }
+
     public function getAccountUpdateTimestamp()
     {
         return $this->contract->getUpdatedAt()->format('mdYHis');
@@ -195,9 +211,9 @@ class TransUnionReportRecord
 
     public function getLeasePaymentAmountConfirmed()
     {
-        $amount = $this->totalOperationsAmount?: 0;
+        $amount = $this->totalOperationsAmount ?: 0;
 
-        return str_pad((int)$amount, 9, '0', STR_PAD_LEFT);
+        return str_pad((int) $amount, 9, '0', STR_PAD_LEFT);
     }
 
     public function getLeaseStatus()
@@ -297,7 +313,8 @@ class TransUnionReportRecord
     public function getLeaseBalance()
     {
         if ($this->contract->getStatus() == ContractStatus::FINISHED) {
-            $uncollectedBalance = (int)$this->contract->getUncollectedBalance();
+            $uncollectedBalance = (int) $this->contract->getUncollectedBalance();
+
             return str_pad($uncollectedBalance, 9, '0', STR_PAD_LEFT);
         }
 
@@ -308,7 +325,7 @@ class TransUnionReportRecord
     {
         $amount = $this->getBalance() > 0 ? $this->getBalance() : 0;
 
-        return str_pad((int)$amount, 9, '0', STR_PAD_LEFT);
+        return str_pad((int) $amount, 9, '0', STR_PAD_LEFT);
     }
 
     public function getOriginalChargeOffAmount()
@@ -316,7 +333,7 @@ class TransUnionReportRecord
         if ($this->contract->getStatus() == ContractStatus::FINISHED
             && $uncollectedBalance = $this->contract->getUncollectedBalance()
         ) {
-            return str_pad((int)$uncollectedBalance, 9, '0', STR_PAD_LEFT);
+            return str_pad((int) $uncollectedBalance, 9, '0', STR_PAD_LEFT);
         }
 
         return str_repeat('0', 9);
@@ -437,7 +454,7 @@ class TransUnionReportRecord
 
     protected function getFormattedRentAmount()
     {
-        $rent = (int)$this->contract->getRent();
+        $rent = (int) $this->contract->getRent();
 
         return str_pad($rent, 9, '0', STR_PAD_LEFT);
     }
@@ -460,7 +477,7 @@ class TransUnionReportRecord
         // if contract doesn't have any operations, we will not select it.
         $interval = $requiredPaidFor->diff($this->lastPaidFor)->format('%r%a');
 
-        return (int)$interval;
+        return (int) $interval;
     }
 
     private function getLateLeaseStatus($interval)

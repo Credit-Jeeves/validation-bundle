@@ -113,6 +113,14 @@ class Group extends BaseGroup
     }
 
     /**
+     * @return bool
+     */
+    public function isExistGroupSettings()
+    {
+        return empty($this->groupSettings) ? false : true;
+    }
+
+    /**
      * @return GroupSettings
      */
     public function getGroupSettings()
@@ -203,5 +211,21 @@ class Group extends BaseGroup
             default:
                 return null;
         }
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAciCollectPayProfileId()
+    {
+        return $this->getAciCollectPayProfile() ? $this->getAciCollectPayProfile()->getProfileId() : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return 'US';
     }
 }

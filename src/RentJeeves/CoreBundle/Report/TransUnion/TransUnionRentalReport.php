@@ -42,7 +42,7 @@ abstract class TransUnionRentalReport implements RentalReport
     /**
      * @var array<TransUnionReportRecord>
      */
-    protected $records;
+    protected $records = [];
 
     /**
      * @param EntityManagerInterface $em
@@ -53,6 +53,14 @@ abstract class TransUnionRentalReport implements RentalReport
         $this->em = $em;
         $this->logger = $logger;
         $this->propertyManagementData = $propertyManagementData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecords()
+    {
+        return $this->records;
     }
 
     /**
@@ -98,9 +106,9 @@ abstract class TransUnionRentalReport implements RentalReport
     protected function createHeader()
     {
         $lastActivityDate = $this->em->getRepository('RjDataBundle:Contract')->getLastActivityDate();
-        $name = isset($this->propertyManagementData['name'])? $this->propertyManagementData['name'] : '';
-        $address = isset($this->propertyManagementData['address'])? $this->propertyManagementData['address'] : '';
-        $phoneNumber = isset($this->propertyManagementData['phone'])? $this->propertyManagementData['phone'] : '';
+        $name = isset($this->propertyManagementData['name']) ? $this->propertyManagementData['name'] : '';
+        $address = isset($this->propertyManagementData['address']) ? $this->propertyManagementData['address'] : '';
+        $phoneNumber = isset($this->propertyManagementData['phone']) ? $this->propertyManagementData['phone'] : '';
 
         $this->header = new TransUnionReportHeader();
         $this->header->setActivityDate(new \DateTime($lastActivityDate));

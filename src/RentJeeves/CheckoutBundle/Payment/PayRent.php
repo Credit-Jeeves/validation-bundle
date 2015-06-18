@@ -120,7 +120,7 @@ class PayRent
      * Finds payment processor for a given payment.
      *
      * @param  Payment                                                               $payment
-     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface
+     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface
      */
     protected function getPaymentProcessor(Payment $payment)
     {

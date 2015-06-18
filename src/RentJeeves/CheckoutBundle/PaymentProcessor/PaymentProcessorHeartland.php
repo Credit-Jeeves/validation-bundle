@@ -20,7 +20,7 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 /**
  * @DI\Service("payment_processor.heartland")
  */
-class PaymentProcessorHeartland implements PaymentProcessorInterface
+class PaymentProcessorHeartland implements SubmerchantProcessorInterface
 {
     /** @var PaymentAccountManager */
     protected $paymentAccountManager;
@@ -93,6 +93,8 @@ class PaymentProcessorHeartland implements PaymentProcessorInterface
         PaymentAccountInterface $accountEntity,
         $paymentType = PaymentGroundType::RENT
     ) {
+        PaymentProcessorInvalidArgumentException::assertPaymentGroundType($paymentType);
+
         if (PaymentGroundType::CHARGE !== $paymentType && !$this->isAllowedToExecuteOrder($order, $accountEntity)) {
             throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
                 PaymentProcessor::HEARTLAND

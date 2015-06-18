@@ -8,7 +8,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
@@ -112,7 +112,7 @@ class Terminal
 
     /**
      * @param  Group $group
-     * @return PaymentProcessorInterface
+     * @return SubmerchantProcessorInterface
      */
     protected function getPaymentProcessor(Group $group)
     {

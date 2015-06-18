@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciCollectPay;
+namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use Payum\AciCollectPay\Model as RequestModel;
 use Payum\AciCollectPay\Request\ProfileRequest\AddBilling;
@@ -60,7 +60,6 @@ class BillingAccountManager extends AbstractManager
 
         $contract->setAciCollectPayContractBilling($contractBilling);
 
-        $this->em->persist($contract);
         $this->em->persist($contractBilling);
 
         $this->em->flush();

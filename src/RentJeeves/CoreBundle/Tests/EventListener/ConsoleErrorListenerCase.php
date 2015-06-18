@@ -5,8 +5,6 @@ namespace RentJeeves\CoreBundle\Tests\EventListener;
 use RentJeeves\CoreBundle\EventListener\ConsoleErrorListener;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Psr\Log\LoggerInterface;
 
 use RentJeeves\TestBundle\Stubs\LoggerStub;
 

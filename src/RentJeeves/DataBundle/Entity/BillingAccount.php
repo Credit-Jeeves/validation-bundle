@@ -13,6 +13,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class BillingAccount extends Base implements GroupAwareInterface, PaymentAccountInterface
 {
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getNickname();
+    }
+
+    /**
+     * @return string
+     */
     public function getType()
     {
         return PaymentAccountTypeEnum::BANK;

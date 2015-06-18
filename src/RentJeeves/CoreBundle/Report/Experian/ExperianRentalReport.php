@@ -12,7 +12,7 @@ abstract class ExperianRentalReport implements RentalReport
 {
     const REPORT_BUREAU = 'experian';
     const REPORT_TYPE = 'base';
-    
+
     /**
      * @var array
      */
@@ -39,6 +39,14 @@ abstract class ExperianRentalReport implements RentalReport
     {
         $this->em = $em;
         $this->logger = $logger;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecords()
+    {
+        return $this->records;
     }
 
     /**

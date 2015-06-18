@@ -9,7 +9,6 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType;
 class PaymentAccountsControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:PaymentAccount';
-
     const REQUEST_URL = 'payment_accounts';
 
     /**
