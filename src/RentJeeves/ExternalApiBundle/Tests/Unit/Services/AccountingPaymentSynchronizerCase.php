@@ -5,7 +5,7 @@ use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\TestBundle\Mocks\CommonSystemMocks;
 
-class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
+class AccountingPaymentSynronizerCase extends \PHPUnit_Framework_TestCase
 {
     /** @var AccountingPaymentSynchronizer $synchronizer */
     protected $synchronizer;

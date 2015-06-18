@@ -3,6 +3,7 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -140,6 +141,13 @@ class RjGroupAdmin extends Admin
                 )
                 ->add('name')
                 ->add('statementDescriptor', null, ['label' => 'ID4', 'required' => true])
+                ->add(
+                    'orderAlgorithm',
+                    'choice',
+                    [
+                        'choices' => OrderAlgorithmType::cachedTitles()
+                    ]
+                )
                 ->add('mailingAddressName')
             ->end()
             ->with('Deposit Account')

@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -445,6 +446,17 @@ abstract class Group
      */
     protected $mailingAddressName;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(
+     *      name="order_algorithm",
+     *      type="OrderAlgorithmType",
+     *      nullable=false
+     * )
+     */
+    protected $orderAlgorithm = OrderAlgorithmType::SUBMERCHANT;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -462,6 +474,26 @@ abstract class Group
         $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
         $this->disableCreditCard = false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderAlgorithm()
+    {
+        return $this->orderAlgorithm;
+    }
+
+    /**
+     * @param string $orderAlgorithm
+     */
+    public function setOrderAlgorithm($orderAlgorithm)
+    {
+        if (!OrderAlgorithmType::isValid($orderAlgorithm)) {
+            OrderAlgorithmType::throwsInvalid($orderAlgorithm);
+        }
+
+        $this->orderAlgorithm = $orderAlgorithm;
     }
 
     /**
