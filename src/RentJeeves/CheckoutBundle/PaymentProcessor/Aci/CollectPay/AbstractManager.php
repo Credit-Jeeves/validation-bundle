@@ -65,7 +65,7 @@ abstract class AbstractManager
         $group = $contract->getGroup();
 
         $billingAccount->setAccountNumber($contract->getId());
-        $billingAccount->setBusinessId($group->getAciCollectPaySettings()->getBusinessId());
+        $billingAccount->setBusinessId($group->getDepositAccount()->getMerchantName());
         $billingAccount->setHoldername($contract->getTenant()->getFullName());
         $billingAccount->setNickname($group->getName() . $contract->getId());
 

@@ -5,7 +5,6 @@ namespace RentJeeves\CheckoutBundle\Tests\Functional;
 use ACI\Utils\OldProfilesStorage;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
@@ -55,15 +54,9 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
 
-        $paySettings = new AciCollectPaySettings();
-
-        $paySettings->setBusinessId(564075);
-        $paySettings->setGroup($this->contract->getGroup());
-
-        $this->contract->getGroup()->setAciCollectPaySettings($paySettings);
+        $this->contract->getGroup()->getDepositAccount()->setMerchantName(564075);
 
         $this->getEntityManager()->persist($this->contract->getGroup());
-        $this->getEntityManager()->persist($paySettings);
 
         $this->getEntityManager()->flush();
 

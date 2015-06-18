@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\AdminBundle\Form;
 
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -115,6 +116,8 @@ class GroupSettingsType extends Base
                 'empty_data'        => 31,
             )
         );
+
+        $builder->add('paymentProcessor', 'choice', ['choices' => PaymentProcessor::cachedTitles()]);
 
         $self = $this;
 
