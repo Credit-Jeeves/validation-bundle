@@ -339,7 +339,7 @@ function Pay(parent, contractId) {
         var fee = 0.00;
         if ('card' == self.paymentSource.type()) {
             fee = parseFloat(contract.depositAccount.feeCC) / 100 * self.total();
-        } else if ('bank' == self.paymentSource.type()) {
+        } else if ('bank' == self.paymentSource.type() && contract.depositAccount.isPassedACH == true) {
             fee = parseFloat(contract.depositAccount.feeACH);
         }
         if (isText) {
