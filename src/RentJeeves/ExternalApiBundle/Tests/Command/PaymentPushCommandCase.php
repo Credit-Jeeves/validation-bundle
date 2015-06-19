@@ -67,7 +67,6 @@ class PaymentPushCommandCase extends BaseTestCase
         );
         $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
         $this->assertNotEmpty($holding);
-        $em->flush($holding->getExternalSettings());
         $this->assertCount(0, $jobs);
         $transaction = $this->createTransaction(
             $apiIntegrationType,
