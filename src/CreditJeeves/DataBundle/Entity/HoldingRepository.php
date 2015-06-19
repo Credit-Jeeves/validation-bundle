@@ -83,4 +83,19 @@ class HoldingRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForUpdatingBalanceResMan()
+    {
+        $query = $this->createQueryBuilder('h');
+        $query->innerJoin('h.resManSettings', 's');
+        $query->where('h.apiIntegrationType = :resman');
+        $query->andWhere('s.syncBalance = 1');
+        $query->setParameter('resman', ApiIntegrationType::RESMAN);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
 }

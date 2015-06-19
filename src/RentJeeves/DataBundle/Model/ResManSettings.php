@@ -46,6 +46,35 @@ abstract class ResManSettings
     protected $holding;
 
     /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="sync_balance",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $syncBalance = false;
+
+    /**
+     * @return boolean
+     */
+    public function getSyncBalance()
+    {
+        return $this->syncBalance;
+    }
+
+    /**
+     * @param boolean $syncBalance
+     */
+    public function setSyncBalance($syncBalance)
+    {
+        $this->syncBalance = $syncBalance;
+    }
+
+    /**
      * @return integer
      */
     public function getAccountId()
