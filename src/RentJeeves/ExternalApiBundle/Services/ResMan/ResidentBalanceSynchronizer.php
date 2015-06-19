@@ -170,9 +170,6 @@ class ResidentBalanceSynchronizer
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
         $residentId = $customer->getCustomerId();
-        if ($residentId === '510f76fc-d9d1-4fb7-bb95-ba2d2adc717f') {
-            $var = 1;
-        }
         $unitName = $customerBase->getRtUnit()->getUnitId();
         $contracts = $contractRepo->findContractByHoldingPropertyResidentUnit(
             $holding,
@@ -233,7 +230,6 @@ class ResidentBalanceSynchronizer
         Holding $holding,
         Property $property
     ) {
-        //file_put_contents('/var/www/Credit-Jeeves-SF2/dump.txt', print_r($residentTransactions, true));
         /** @var RtCustomer $customerBase */
         foreach ($residentTransactions as $customerBase) {
             if ($customerBase->getCustomers()->getCustomer()->count() === 0) {
