@@ -9,7 +9,7 @@ parameters:
     soap.client.amsi.leasing.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient'
     soap.client.amsi.ledger.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient'
     resman.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\ResMan\ResidentBalanceSynchronizer'
-amsi.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\ResidentBalanceSynchronizer'
+    amsi.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\ResidentBalanceSynchronizer'
 
 services:
     amsi.resident_balance_sync:
