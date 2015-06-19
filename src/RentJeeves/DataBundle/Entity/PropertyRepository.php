@@ -59,9 +59,9 @@ EOT;
             ->getConnection()
             ->prepare($sql);
         $stmt->execute();
+
         return $stmt->fetchAll();
     }
-
 
     public function getPropetiesAll($group)
     {
@@ -75,7 +75,7 @@ EOT;
     }
 
     /**
-     * 
+     *
      * @param unknown_type $group
      * @param string $searchBy
      * @param string $search
@@ -95,6 +95,7 @@ EOT;
             }
         }
         $query = $query->getQuery();
+
         return $query->getScalarResult();
     }
 
@@ -129,11 +130,12 @@ EOT;
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
     /**
-     * 
+     *
      * @param unknown_type $searchBy
      */
     private function applySearchField($searchBy)
@@ -145,6 +147,7 @@ EOT;
             default:
                 $searchBy = 'p.'.$searchBy;
         }
+
         return $searchBy;
     }
 
@@ -156,6 +159,7 @@ EOT;
     {
         $search = preg_replace('/\s+/', ' ', trim($search));
         $search = explode(' ', $search);
+
         return $search;
     }
 
@@ -187,6 +191,7 @@ EOT;
         if (isset($result[0][0])) {
             return $result[0][0];
         }
+
         return null;
     }
 
@@ -248,6 +253,12 @@ EOT;
         return $query;
     }
 
+    /**
+     * @param Holding $holding
+     * @param int $page
+     * @param int $limit
+     * @return Property[]
+     */
     public function findContractPropertiesByHolding(Holding $holding, $page, $limit = 20)
     {
         $offset = ($page - 1) * $limit;
@@ -272,6 +283,10 @@ EOT;
         return $query->execute();
     }
 
+    /**
+     * @param Holding $holding
+     * @return int
+     */
     public function countContractPropertiesByHolding(Holding $holding)
     {
         $query = $this->createQueryBuilder('p');

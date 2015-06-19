@@ -23,6 +23,15 @@ class AMSISettingsType extends Base
         $builder->add('user');
         $builder->add('password');
         $builder->add('portfolioName');
+        $builder->add(
+            'syncBalance',
+            'checkbox',
+            [
+                'error_bubbling'    => true,
+                'label'             => 'common.sync_balance.label',
+                'required'          => false,
+            ]
+        );
     }
 
     /**

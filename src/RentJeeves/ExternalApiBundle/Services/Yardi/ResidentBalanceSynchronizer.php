@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManager;
 use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
@@ -68,6 +67,7 @@ class ResidentBalanceSynchronizer
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
+
             return $this->logMessage($e->getMessage());
         }
     }
@@ -123,7 +123,7 @@ class ResidentBalanceSynchronizer
 
     protected function getHoldings()
     {
-        return $this->em->getRepository('DataBundle:Holding')->findHoldingsForUpdatingBalance();
+        return $this->em->getRepository('DataBundle:Holding')->findHoldingsForUpdatingBalanceYardi();
     }
 
     protected function getContract(Holding $holding, Property $property, ResidentTransactionPropertyCustomer $resident)
@@ -158,6 +158,7 @@ class ResidentBalanceSynchronizer
                     $residentId
                 )
             );
+
             return null;
         }
 
@@ -175,6 +176,7 @@ class ResidentBalanceSynchronizer
                     $residentId
                 )
             );
+
             return $contract;
         }
 

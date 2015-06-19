@@ -3000,8 +3000,8 @@
                 <source>common.test.setting.successfully</source>
                 <target>Test Successfully</target>
             </trans-unit>
-            <trans-unit id="yardi.sync_balance.label">
-                <source>yardi.sync_balance.label</source>
+            <trans-unit id="common.sync_balance.label">
+                <source>common.sync_balance.label</source>
                 <target>Sync balance?</target>
             </trans-unit>
             <trans-unit id="yardi.post_payments.label">

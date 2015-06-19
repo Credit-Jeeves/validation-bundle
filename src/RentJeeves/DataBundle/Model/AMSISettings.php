@@ -87,6 +87,35 @@ abstract class AMSISettings
     protected $holding;
 
     /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="sync_balance",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $syncBalance = false;
+
+    /**
+     * @return boolean
+     */
+    public function getSyncBalance()
+    {
+        return $this->syncBalance;
+    }
+
+    /**
+     * @param boolean $syncBalance
+     */
+    public function setSyncBalance($syncBalance)
+    {
+        $this->syncBalance = $syncBalance;
+    }
+
+    /**
      * @return string
      */
     public function getPortfolioName()

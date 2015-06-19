@@ -29,7 +29,7 @@ class YardiSettingsType extends Base
             'checkbox',
             [
                 'error_bubbling'    => true,
-                'label'             => 'yardi.sync_balance.label',
+                'label'             => 'common.sync_balance.label',
                 'required'          => false,
             ]
         );
