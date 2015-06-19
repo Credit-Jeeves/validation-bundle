@@ -13,3 +13,7 @@ parameters:
     aci.pay_anyone.sftp.login: 'renttest'
     aci.pay_anyone.sftp.password: 'W0esf4t6'
     aci.pay_anyone.report_path: '/tmp/'
+
+    aci.pay_anyone.default_achAccount:
+        routingNumber: '044000037'
+        accountNumber: '063113057'

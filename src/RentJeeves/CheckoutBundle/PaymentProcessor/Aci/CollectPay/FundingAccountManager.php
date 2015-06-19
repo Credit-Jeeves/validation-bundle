@@ -233,7 +233,7 @@ class FundingAccountManager extends AbstractManager
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
             $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
-            throw new $e();
+            throw $e;
         }
 
         if (!$request->getIsSuccessful()) {

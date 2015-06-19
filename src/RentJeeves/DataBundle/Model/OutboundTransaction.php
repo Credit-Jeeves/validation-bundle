@@ -5,6 +5,7 @@ namespace RentJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 
 /**
@@ -32,7 +33,7 @@ abstract class OutboundTransaction
     /**
      * @var int
      *
-     * @ORM\Column(name="transaction_id", type="integer")
+     * @ORM\Column(name="transaction_id", type="integer", nullable=true)
      */
     protected $transactionId;
 
@@ -48,6 +49,19 @@ abstract class OutboundTransaction
      * @ORM\Column(type="OutboundTransactionType")
      */
     protected $type;
+
+    /**
+     * @see OutboundTransactionStatus
+     * @ORM\Column(type="OutboundTransactionStatus")
+     */
+    protected $status = OutboundTransactionStatus::SUCCESS;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $message;
 
     /**
      * @var float
@@ -259,5 +273,37 @@ abstract class OutboundTransaction
     public function setBatchCloseDate($batchCloseDate)
     {
         $this->batchCloseDate = $batchCloseDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param string $message
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
     }
 }
