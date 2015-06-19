@@ -15,7 +15,8 @@ function accountingImportMri() {
         return self.superclass.loadData(false);
     }
 
-    this.loadData = function(next) {
+    this.loadData = function(next, nextPageLink) {
+        var nextPageLink = typeof nextPageLink !== 'undefined' ? nextPageLink : '';
         if (self.isFinishUploadDataToServer() === false) {
             self.showSpinner(true);
             self.loadDataMessage(Translator.trans('import.message.download.contracts'));
@@ -23,13 +24,20 @@ function accountingImportMri() {
                 url: Routing.generate('accounting_import_residents_mri'),
                 type: 'POST',
                 dataType: 'json',
+                data: {
+                    'nextPageLink': nextPageLink
+                },
                 error: function() {
                     self.loadDataMessage(Translator.trans('mri.import.error.getResidents'));
                     self.classLoadDataMessage('errorMessage');
                     self.showSpinner(false);
                 },
                 success: function(response) {
-                    self.doFinish();
+                    if (response.nextPageLink === null) {
+                        return self.doFinish();
+                    }
+
+                    return self.loadData(next, response.nextPageLink);
                 }
             });
         } else {

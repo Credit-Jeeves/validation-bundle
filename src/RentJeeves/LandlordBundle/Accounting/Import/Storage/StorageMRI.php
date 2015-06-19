@@ -85,6 +85,9 @@ class StorageMRI extends ExternalApiStorage
             } else {
                 $startAt = $this->getDateString($customer->getOccupyDateFormatted());
             }
+
+            $address = $customer->getAddress() ? $customer->getAddress() : $customer->getBuildingAddress();
+
             $finishAt = $this->getDateString($customer->getLeaseEnd());
             $moveOut = $this->getDateString($customer->getLeaseMoveOut());
             $unit = sprintf('%s_%s', $customer->getBuildingId(), $customer->getUnitId());
@@ -104,7 +107,7 @@ class StorageMRI extends ExternalApiStorage
                 $customer->getLeaseId(),
                 $unit,
                 $customer->getCity(),
-                $customer->getAddress(),
+                $address,
                 $customer->getZipCode(),
                 $customer->getState(),
                 $this->getImportExternalPropertyId()
