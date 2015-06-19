@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Model\ResMan;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 class RtCustomer
 {
@@ -121,5 +122,59 @@ class RtCustomer
     public function setCustomers(Customers $customers)
     {
         $this->customers = $customers;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getRentTrackPaymentAccepted()
+    {
+        $paymentAccepted = strtolower($this->getPaymentAccepted());
+        /**
+         * Possible Values are:
+         * Yes - All forms of payment accepted
+         * No - Online payments are not accepted
+         * Certified Funds Only - Only payments guaranteed to be successful are allowed
+         * (Credit Card, Debit Card, Money Order, etc)
+         *
+         * Currently we don't work with 3 point - it's will be seperated task
+         */
+
+        return 'yes' === $paymentAccepted ? PaymentAccepted::ANY : PaymentAccepted::DO_NOT_ACCEPT;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getRentTrackBalance()
+    {
+        $transactions = $this->getRtServiceTransactions();
+        $balance = 0;
+
+        /**
+         * @var $transaction Transactions
+         */
+        foreach ($transactions as $transaction) {
+
+            $charge = $transaction->getCharge();
+            $payment = $transaction->getPayment();
+            $credit = $transaction->getConcession();
+
+            if (!empty($charge)) {
+                $balance += $charge->getDetail()->getAmount();
+                continue;
+            }
+
+            if (!empty($payment)) {
+                $balance -= $payment->getDetail()->getAmount();
+                continue;
+            }
+
+            if (!empty($credit)) {
+                $balance -= $credit->getDetail()->getAmount();
+            }
+        }
+
+        return $balance;
     }
 }
