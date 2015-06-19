@@ -10,12 +10,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class Order
+abstract class BaseOrder
 {
     /**
      * @ORM\Id
@@ -114,17 +115,6 @@ abstract class Order
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="\RentJeeves\DataBundle\Entity\OutboundTransaction",
-     *     mappedBy="order",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     * @var ArrayCollection
-     */
-    protected $outboundTransactions;
-
-    /**
-     * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
      *     mappedBy="order",
      *     cascade={"all"}
@@ -170,6 +160,16 @@ abstract class Order
      */
     protected $descriptor;
 
+    /**
+     * @ORM\Column(
+     *     type="OrderAlgorithmType",
+     *     name="order_type",
+     *     nullable=false
+     * )
+     * @var string
+     */
+    protected $orderType = OrderAlgorithmType::SUBMERCHANT;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
@@ -177,7 +177,6 @@ abstract class Order
         $this->operations = new ArrayCollection();
         $this->sentOrder = new ArrayCollection();
         $this->created_at = new DateTime();
-        $this->outboundTransactions = new ArrayCollection();
     }
 
     /**
@@ -210,7 +209,7 @@ abstract class Order
      * Set cj_applicant_id
      *
      * @param  integer $cjApplicantId
-     * @return Order
+     * @return BaseOrder
      */
     public function setCjApplicantId($cjApplicantId)
     {
@@ -233,7 +232,7 @@ abstract class Order
      * Set status
      *
      * @param  OrderStatus $status
-     * @return Order
+     * @return BaseOrder
      */
     public function setStatus($status)
     {
@@ -256,7 +255,7 @@ abstract class Order
      * Set type
      *
      * @param  OrderType $type
-     * @return Order
+     * @return BaseOrder
      */
     public function setType($type)
     {
@@ -279,7 +278,7 @@ abstract class Order
      * Set sum
      *
      * @param  double $sum
-     * @return Order
+     * @return BaseOrder
      */
     public function setSum($sum)
     {
@@ -302,7 +301,7 @@ abstract class Order
      * Set fee
      *
      * @param  double $fee
-     * @return Order
+     * @return BaseOrder
      */
     public function setFee($fee)
     {
@@ -325,7 +324,7 @@ abstract class Order
      * Set created_date
      *
      * @param  DateTime $createdAt
-     * @return Order
+     * @return BaseOrder
      */
     public function setCreatedAt($createdAt)
     {
@@ -348,7 +347,7 @@ abstract class Order
      * Set updated_at
      *
      * @param  DateTime $updatedAt
-     * @return Order
+     * @return BaseOrder
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -371,7 +370,7 @@ abstract class Order
      * Set user
      *
      * @param  \CreditJeeves\DataBundle\Entity\User $user
-     * @return Order
+     * @return BaseOrder
      */
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
@@ -394,7 +393,7 @@ abstract class Order
      * Add order's operation
      *
      * @param  \CreditJeeves\DataBundle\Entity\Operation $operation
-     * @return Order
+     * @return BaseOrder
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
@@ -427,7 +426,7 @@ abstract class Order
      * Add transaction
      *
      * @param  \RentJeeves\DataBundle\Entity\Transaction $transaction
-     * @return Order
+     * @return BaseOrder
      */
     public function addTransaction(\RentJeeves\DataBundle\Entity\Transaction $transaction)
     {
@@ -498,33 +497,18 @@ abstract class Order
     }
 
     /**
-     * Add OutboundTransaction
-     *
-     * @param OutboundTransaction $transaction
-     * @return Order
+     * @return string
      */
-    public function addOutboundTransaction(OutboundTransaction $transaction)
+    public function getOrderType()
     {
-        $this->outboundTransactions[] = $transaction;
+        return $this->orderType;
     }
 
     /**
-     * Remove OutboundTransaction
-     *
-     * @param OutboundTransaction $transaction
+     * @param string $orderType
      */
-    public function removeOutboundTransaction(OutboundTransaction $transaction)
+    public function setOrderType($orderType)
     {
-        $this->outboundTransactions->removeElement($transaction);
-    }
-
-    /**
-     * Get OutboundTransaction
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOutboundTransactions()
-    {
-        return $this->outboundTransactions;
+        $this->orderType = $orderType;
     }
 }

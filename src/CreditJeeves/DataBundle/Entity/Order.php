@@ -2,7 +2,6 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\DataBundle\Model\Order as BaseOrder;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
@@ -18,7 +17,6 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
- * @ORM\Table(name="cj_order")
  * @ORM\HasLifecycleCallbacks()
  */
 class Order extends BaseOrder
