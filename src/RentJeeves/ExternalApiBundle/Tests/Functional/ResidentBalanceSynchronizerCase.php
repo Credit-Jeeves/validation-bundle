@@ -89,6 +89,8 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $settings = $contract->getHolding()->getAmsiSettings();
+        $settings->setSyncBalance(true);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
         $unit = $contract->getUnit();
@@ -100,16 +102,12 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
         $residentMapping->setResidentId('618209');
 
-        $em->flush($residentMapping);
-        $em->flush($unit);
-        $em->flush($unitExternalMapping);
-        $em->flush($propertyMapping);
-        $em->flush($contract->getHolding());
+        $em->flush();
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.resident_balance_sync');
         $balanceSynchronizer->run();
         $updatedContract = $repo->find($contract->getId());
-        $this->assertLessThan(12000, $updatedContract->getIntegratedBalance());
+        $this->assertLessThan(-12000, $updatedContract->getIntegratedBalance());
     }
 
     /**
@@ -135,16 +133,13 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $unitExternalMapping->setUnit($unit);
         $unit->setUnitMapping($unitExternalMapping);
         $contractWaiting->setResidentId('618209');
-
-        $em->flush($contractWaiting);
-        $em->flush($unit);
-        $em->flush($unitExternalMapping);
-        $em->flush($propertyMapping);
-        $em->flush($contractWaiting->getGroup()->getHolding());
+        $settings = $contractWaiting->getGroup()->getHolding()->getAmsiSettings();
+        $settings->setSyncBalance(true);
+        $em->flush();
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.resident_balance_sync');
         $balanceSynchronizer->run();
         $updatedContract = $repositoryContractWaiting->find($contractWaiting->getId());
-        $this->assertLessThan(12000, $updatedContract->getIntegratedBalance());
+        $this->assertLessThan(-12000, $updatedContract->getIntegratedBalance());
     }
 }

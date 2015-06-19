@@ -15,7 +15,7 @@ class ContractWaitingRepository extends EntityRepository
      * @return ContractWaiting
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findByHoldingPropertyExternaUnitIdResident(
+    public function findOneByHoldingPropertyExternalUnitIdResident(
         Holding $holding,
         Property $property,
         $externalUnitId,

@@ -16,6 +16,7 @@ class HoldingRepository extends EntityRepository
         $query = $this->createQueryBuilder('h');
         $query->innerJoin('h.amsiSettings', 's');
         $query->where('h.apiIntegrationType = :amsi');
+        $query->andWhere('s.syncBalance = 1');
         $query->setParameter('amsi', ApiIntegrationType::AMSI);
 
         $query = $query->getQuery();
@@ -26,7 +27,7 @@ class HoldingRepository extends EntityRepository
     /**
      * @return Holding[]
      */
-    public function findHoldingsForUpdatingBalance()
+    public function findHoldingsForUpdatingBalanceYardi()
     {
         $query = $this->createQueryBuilder('h');
         $query->innerJoin('h.yardiSettings', 'ys');

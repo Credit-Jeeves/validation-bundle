@@ -4,21 +4,15 @@ namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
-use Exception;
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\PropertyRepository;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @DI\Service("amsi.resident_balance_sync")
- */
 class ResidentBalanceSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
@@ -44,11 +38,9 @@ class ResidentBalanceSynchronizer
     protected $outputLogger;
 
     /**
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "residentDataManager" = @DI\Inject("amsi.resident_data"),
-     *     "logger" = @DI\Inject("logger")
-     * })
+     * @param EntityManager $em
+     * @param ResidentDataManager $residentDataManager
+     * @param LoggerInterface $logger
      */
     public function __construct(EntityManager $em, ResidentDataManager $residentDataManager, LoggerInterface $logger)
     {
@@ -65,16 +57,24 @@ class ResidentBalanceSynchronizer
         try {
             $holdings = $this->getHoldings();
             if (empty($holdings)) {
-                return $this->logMessage('No data to update');
+                return $this->logMessage('AMSI ResidentBalanceSynchronizer: No data to update');
             }
 
             foreach ($holdings as $holding) {
                 $this->residentDataManager->setSettings($holding->getExternalSettings());
+                $this->logMessage(
+                    sprintf('AMSI ResidentBalanceSynchronizer start work with holding %s', $holding->getId())
+                );
                 $this->updateBalancesForHolding($holding);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->alert(
-                sprintf('Message: %s, File: %s, Line:%s', $e->getMessage(), $e->getLine(), $e->getFile())
+                sprintf(
+                    '(AMSI ResidentBalanceSynchronizer)Message: %s, File: %s, Line:%s',
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                )
             );
 
             return $this->logMessage($e->getMessage());
@@ -83,7 +83,7 @@ class ResidentBalanceSynchronizer
 
     /**
      * @param OutputInterface $outputLogger
-     * @return $this
+     * @return self
      */
     public function usingOutput(OutputInterface $outputLogger)
     {
@@ -94,7 +94,7 @@ class ResidentBalanceSynchronizer
 
     /**
      * @param Holding $holding
-     * @throws Exception
+     * @throws \Exception
      */
     protected function updateBalancesForHolding(Holding $holding)
     {
@@ -108,14 +108,14 @@ class ResidentBalanceSynchronizer
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
             );
-            /** @var $property Property */
+            /** @var Property $property*/
             foreach ($properties as $property) {
                 $propertyMapping = $property->getPropertyMappingByHolding($holding);
 
                 if (empty($propertyMapping)) {
                     throw new \Exception(
                         sprintf(
-                            'PropertyID \'%s\', don\'t have external ID',
+                            'PropertyID \'%s\', doesn\'t have external ID',
                             $property->getId()
                         )
                     );
@@ -128,7 +128,8 @@ class ResidentBalanceSynchronizer
                 if ($residentTransactions) {
                     $this->logMessage(
                         sprintf(
-                            'Process: resident transactions for property %s of holding %s',
+                            'AMSI ResidentBalanceSynchronizer: Processing resident transactions for property %s of
+                             holding %s',
                             $propertyMapping->getExternalPropertyId(),
                             $holding->getName()
                         )
@@ -164,41 +165,26 @@ class ResidentBalanceSynchronizer
      * @param Lease $lease
      * @param Occupant $occupant
      * @return null|Contract|ContractWaiting
-     * @throws Exception
+     * @throws \Exception
      */
     protected function getContract(Holding $holding, Property $property, Lease $lease, Occupant $occupant)
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
         $residentId = $occupant->getOccuSeqNo();
-        $externalUnitId = sprintf(
-            '%s|%s|%s',
-            $lease->getPropertyId(),
-            $lease->getBldgId(),
-            $lease->getUnitId()
-        );
 
-        $contracts = $contractRepo->findContractByHoldingPropertyResidentAndExternalUnitId(
+        $contracts = $contractRepo->findContractsByHoldingPropertyResidentAndExternalUnitId(
             $holding,
             $property,
             $residentId,
-            $externalUnitId
+            $lease->getExternalUnitId()
         );
 
         if (count($contracts) > 1) {
-            $propertyMapping = $property->getPropertyMappingByHolding($holding);
-            if (empty($propertyMapping)) {
-                throw new \Exception(
-                    sprintf(
-                        'PropertyID \'%s\', don\'t have external ID',
-                        $property->getId()
-                    )
-                );
-            }
             $this->logMessage(
                 sprintf(
                     'Found more than one contract with property %s, externalUnitId %s, residentId %s',
-                    $propertyMapping->getExternalPropertyId(),
-                    $externalUnitId,
+                    $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
+                    $lease->getExternalUnitId(),
                     $residentId
                 )
             );
@@ -214,29 +200,23 @@ class ResidentBalanceSynchronizer
         }
 
         $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
-            ->findByHoldingPropertyExternaUnitIdResident($holding, $property, $externalUnitId, $residentId);
+            ->findOneByHoldingPropertyExternalUnitIdResident(
+                $holding,
+                $property,
+                $lease->getExternalUnitId(),
+                $residentId
+            );
         if ($contractWaiting) {
             $this->logMessage(sprintf('Return contract waiting ID: %s', $contractWaiting->getId()));
 
             return $contractWaiting;
         }
 
-        $propertyMapping = $property->getPropertyMappingByHolding($holding);
-
-        if (empty($propertyMapping)) {
-            throw new \Exception(
-                sprintf(
-                    'PropertyID "%s", don\'t have external ID',
-                    $property->getId()
-                )
-            );
-        }
-
         $this->logMessage(
             sprintf(
                 'Could not find contract with property %s, unit %s, resident %s',
-                $propertyMapping->getExternalPropertyId(),
-                $externalUnitId,
+                $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
+                $lease->getExternalUnitId(),
                 $residentId
             )
         );
@@ -248,7 +228,7 @@ class ResidentBalanceSynchronizer
      * @param array $residentTransactions
      * @param Holding $holding
      * @param Property $property
-     * @throws Exception
+     * @throws \Exception
      */
     protected function processResidentTransactions(
         array $residentTransactions,
@@ -277,30 +257,24 @@ class ResidentBalanceSynchronizer
     protected function doUpdate(Lease $lease, Occupant $occupant, $contract)
     {
         $residentId = $occupant->getOccuSeqNo();
-        $paymentAccepted = $lease->getBlockPaymentAccess();
+        $disallow = $lease->getBlockPaymentAccess();
         $externalLeaseId = $lease->getResiId();
         $balance = $lease->getEndBalance();
-        if (strtolower($paymentAccepted) === 'n') {
-            $paymentAccepted = PaymentAccepted::ANY;
+        if (strtolower($disallow) === 'n') {
+            $disallow = PaymentAccepted::ANY;
         } else {
-            $paymentAccepted = PaymentAccepted::DO_NOT_ACCEPT;
+            $disallow = PaymentAccepted::DO_NOT_ACCEPT;
         }
-        $externalUnitId = sprintf(
-            '%s|%s|%s',
-            $lease->getPropertyId(),
-            $lease->getBldgId(),
-            $lease->getUnitId()
-        );
-        $contract->setPaymentAccepted($paymentAccepted);
-        $contract->setExternalLeaseId($externalLeaseId);
+        $contract->setPaymentAccepted($disallow);
+        $contract->setExternalLeaseId($lease->getExternalUnitId());
         $contract->setIntegratedBalance($balance);
         $this->logMessage(
             sprintf(
                 'Set value to update: payment accepted to %s, residentId to %s, externalUnitId to %s, leaseId to %s.
                 For ContractID: %s',
-                $paymentAccepted,
+                $disallow,
                 $residentId,
-                $externalUnitId,
+                $lease->getExternalUnitId(),
                 $externalLeaseId,
                 $contract->getId()
             )

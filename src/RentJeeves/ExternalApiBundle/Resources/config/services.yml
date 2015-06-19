@@ -8,8 +8,15 @@ parameters:
     mri.client.class: RentJeeves\ExternalApiBundle\Services\MRI\MRIClient
     soap.client.amsi.leasing.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient'
     soap.client.amsi.ledger.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient'
+    amsi.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\ResidentBalanceSynchronizer'
 
 services:
+    amsi.resident_balance_sync:
+        class: "%amsi.resident_balance_sync.class%"
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@amsi.resident_data"
+            - "@logger"
     mri.client:
         class: "%mri.client.class%"
         arguments:

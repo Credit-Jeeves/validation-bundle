@@ -1057,7 +1057,7 @@ class ContractRepository extends EntityRepository
      * @param string $externalUnitId
      * @return Contract[]
      */
-    public function findContractByHoldingPropertyResidentAndExternalUnitId(
+    public function findContractsByHoldingPropertyResidentAndExternalUnitId(
         Holding $holding,
         Property $property,
         $residentId,
