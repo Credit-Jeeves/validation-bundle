@@ -21,6 +21,13 @@ class MappingMRI extends MappingCsv
      */
     protected $settings;
 
+    /**
+     * @param StorageMRI $storage
+     * @param CsvFileReaderImport $reader
+     * @param ResidentDataManager $residentDataManager
+     * @param SecurityContext $securityContext
+     * @throws ImportMappingException
+     */
     public function __construct(
         StorageMRI $storage,
         CsvFileReaderImport $reader,
@@ -53,6 +60,14 @@ class MappingMRI extends MappingCsv
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getNextPageLink()
+    {
+        return $this->residentDataManager->getNextPageLink();
+    }
+
     public function isNeedManualMapping()
     {
         return false;
@@ -69,13 +84,26 @@ class MappingMRI extends MappingCsv
     }
 
     /**
-     * @param $externalPropertyId
+     * @param string $nextPageLink
+     * @return array
+     */
+    public function getResidentsByNextPageLink($nextPageLink)
+    {
+        $this->residentDataManager->setSettings($this->settings);
+        $residents = $this->residentDataManager->getResidentsByNextPageLink($nextPageLink);
+
+        return $residents;
+    }
+
+    /**
+     * @param string $externalPropertyId
      * @return array
      */
     public function getResidents($externalPropertyId)
     {
         $this->residentDataManager->setSettings($this->settings);
+        $residents = $this->residentDataManager->getResidents($externalPropertyId);
 
-        return $this->residentDataManager->getResidents($externalPropertyId);
+        return $residents;
     }
 }

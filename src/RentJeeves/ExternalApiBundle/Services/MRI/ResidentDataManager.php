@@ -2,11 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use Symfony\Bridge\Monolog\Logger;
@@ -29,6 +27,11 @@ class ResidentDataManager
     protected $logger;
 
     /**
+     * @var string
+     */
+    protected $nextPageLink;
+
+    /**
      * @InjectParams({
      *     "client" = @Inject("mri.client"),
      *     "logger" = @Inject("logger")
@@ -45,19 +48,51 @@ class ResidentDataManager
      */
     public function setSettings(SettingsInterface $settings)
     {
-        $this->logger->debug(sprintf("Setup MRI settings ID:%s", $settings->getId()));
+        $this->logger->debug(sprintf('Setup MRI settings ID:%s', $settings->getId()));
         $this->settings = $settings;
         $this->client->setSettings($settings);
     }
 
     /**
-     * @param $externalPropertyId
+     * @return string
+     */
+    public function getNextPageLink()
+    {
+        return $this->nextPageLink;
+    }
+
+    /**
+     * @param string $nextPageLink
+     */
+    protected function setNextPageLink($nextPageLink)
+    {
+        $this->nextPageLink = $nextPageLink;
+    }
+
+    /**
+     * @param string $nextPageLink
+     * @return array
+     */
+    public function getResidentsByNextPageLink($nextPageLink)
+    {
+        $this->logger->debug(sprintf('Get MRI Residents by page:%s', $nextPageLink));
+        $mriResponse = $this->client->getResidentTransactionsByNextPageLink($nextPageLink);
+
+        $this->setNextPageLink($mriResponse->getNextPageLink());
+
+        return $mriResponse->getValues();
+    }
+
+    /**
+     * @param string $externalPropertyId
      * @return array
      */
     public function getResidents($externalPropertyId)
     {
-        $this->logger->debug(sprintf("Get MRI Residents by external property ID:%s", $externalPropertyId));
+        $this->logger->debug(sprintf('Get MRI Residents by external property ID:%s', $externalPropertyId));
         $mriResponse = $this->client->getResidentTransactions($externalPropertyId);
+
+        $this->setNextPageLink($mriResponse->getNextPageLink());
 
         return $mriResponse->getValues();
     }
