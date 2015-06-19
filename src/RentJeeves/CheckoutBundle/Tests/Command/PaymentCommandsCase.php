@@ -12,7 +12,6 @@ use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount a
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
@@ -333,15 +332,7 @@ class PaymentCommandsCase extends BaseTestCase
         /* Prepare Group */
         $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
 
-        $paySettings = new AciCollectPaySettings();
-
-        $paySettings->setBusinessId(564075);
-        $paySettings->setGroup($contract->getGroup());
-
-        $contract->getGroup()->setAciCollectPaySettings($paySettings);
-
-        $em->persist($contract->getGroup());
-        $em->persist($paySettings);
+        $contract->getGroup()->getDepositAccount()->setMerchantName(564075);
 
         /* Remove enrollment Account if it was created before */
         if ($profileId = $this->getOldProfileId(md5($contract->getTenant()->getId()))) {

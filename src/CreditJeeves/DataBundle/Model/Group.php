@@ -5,7 +5,6 @@ use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -377,18 +376,6 @@ abstract class Group
     protected $groupSettings;
 
     /**
-     * @var AciCollectPaySettings
-     *
-     * @ORM\OneToOne(
-     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPaySettings",
-     *      mappedBy="group",
-     *      cascade={"all"},
-     *      orphanRemoval=true
-     * )
-     */
-    protected $aciCollectPaySettings;
-
-    /**
      * @var AciCollectPayGroupProfile
      *
      * @ORM\OneToOne(
@@ -550,22 +537,6 @@ abstract class Group
     public function getGroupSettings()
     {
         return $this->groupSettings;
-    }
-
-    /**
-     * @param AciCollectPaySettings $aciCollectPaySettings
-     */
-    public function setAciCollectPaySettings(AciCollectPaySettings $aciCollectPaySettings)
-    {
-        $this->aciCollectPaySettings = $aciCollectPaySettings;
-    }
-
-    /**
-     * @return AciCollectPaySettings
-     */
-    public function getAciCollectPaySettings()
-    {
-        return $this->aciCollectPaySettings;
     }
 
     /**
@@ -750,7 +721,7 @@ abstract class Group
      * Set description
      *
      * @param  string $description
-     * @return GroupP
+     * @return Group
      */
     public function setDescription($description)
     {
