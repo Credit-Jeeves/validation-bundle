@@ -55,7 +55,7 @@ class ResidentDataManager
 
     /**
      * @param string $externalPropertyId
-     * @return array
+     * @return Lease[]
      * @throws \LogicException
      */
     public function getResidents($externalPropertyId)

@@ -1050,6 +1050,45 @@ class ContractRepository extends EntityRepository
         return $query->iterate();
     }
 
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $residentId
+     * @param string $externalUnitId
+     * @return Contract[]
+     */
+    public function findContractsByHoldingPropertyResidentAndExternalUnitId(
+        Holding $holding,
+        Property $property,
+        $residentId,
+        $externalUnitId
+    ) {
+        $query = $this->createQueryBuilder('c');
+        $query->select('c');
+        $query->innerJoin('c.unit', 'u');
+        $query->innerJoin('u.unitMapping', 'um');
+        $query->innerJoin('c.group', 'g');
+        $query->innerJoin('g.groupSettings', 'gs');
+        $query->innerJoin('c.tenant', 't');
+        $query->innerJoin('t.residentsMapping', 'rm');
+
+        $query->where('c.status in (:statuses)');
+        $query->andWhere('c.property = :propertyId');
+        $query->andWhere('c.holding = :holdingId');
+        $query->andWhere('gs.isIntegrated = 1');
+        $query->andWhere('um.externalUnitId = :externalUnitId');
+        $query->andWhere('rm.residentId = :residentId');
+
+        $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
+        $query->setParameter('propertyId', $property->getId());
+        $query->setParameter('holdingId', $holding->getId());
+        $query->setParameter('externalUnitId', $externalUnitId);
+        $query->setParameter('residentId', $residentId);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
     public function findContractByHoldingPropertyResidentUnit(
         Holding $holding,
         Property $property,

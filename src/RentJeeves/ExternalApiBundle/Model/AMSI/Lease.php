@@ -823,4 +823,17 @@ class Lease
     {
         $this->recurringCharges = $recurringCharges;
     }
+
+    /**
+     * @return string
+     */
+    public function getExternalUnitId()
+    {
+        return sprintf(
+            '%s|%s|%s',
+            $this->getPropertyId(),
+            $this->getBldgId(),
+            $this->getUnitId()
+        );
+    }
 }
