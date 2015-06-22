@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Model\Unit as Base;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -26,6 +27,7 @@ class Unit extends Base
         if (static::SINGLE_PROPERTY_UNIT_NAME == $name) {
             return '';
         }
+
         return $name;
     }
 
@@ -36,7 +38,17 @@ class Unit extends Base
      */
     public function getActualName()
     {
-        return $this->name;
+        $apiIntegrationType =$this->getGroup()->getHolding()->getApiIntegrationType();
+        /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
+        if ($apiIntegrationType !== ApiIntegrationType::MRI) {
+            return $this->name;
+        }
+
+        if ($this->getProperty()->isMultipleBuildings()) {
+            return $this->name;
+        }
+
+        return str_replace(['_'], [''], $this->name);
     }
 
     public function __toString()
