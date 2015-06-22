@@ -70,7 +70,7 @@ class ResManClientCase extends \PHPUnit_Framework_TestCase
         $stubClient = $this->getResManClientAlertMock($alertRegex);
 
         $externalPropertyId = "42";
-        $stubClient->closeBatch($externalPropertyId, "accountingBatchId", "accountId");
+        $stubClient->closeBatch('accountingBatchId', $externalPropertyId, 'accountId');
     }
 
     /**

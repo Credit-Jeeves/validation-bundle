@@ -3,6 +3,7 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -55,6 +56,12 @@ class RjGroupAdmin extends Admin
             $this->request->getSession()->set('holding_id', $nHoldingId);
             $query->andWhere($alias.'.holding_id = :holding_id');
             $query->setParameter('holding_id', $nHoldingId);
+        }
+
+        $id = $this->getRequest()->get('id', null);
+        if (!empty($id)) {
+            $query->andWhere($alias.'.id = :group_id');
+            $query->setParameter('group_id', $id);
         }
 
         return $query;
@@ -134,6 +141,14 @@ class RjGroupAdmin extends Admin
                 )
                 ->add('name')
                 ->add('statementDescriptor', null, ['label' => 'ID4', 'required' => true])
+                ->add(
+                    'orderAlgorithm',
+                    'choice',
+                    [
+                        'choices' => OrderAlgorithmType::cachedTitles()
+                    ]
+                )
+                ->add('mailingAddressName')
             ->end()
             ->with('Deposit Account')
                 // admin.deposit_account.merchant_name

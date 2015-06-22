@@ -36,7 +36,7 @@ class ResourceUrlEncoder extends Encoder
 
     /**
      * @param $idEncoderConfig
-     * @return $this
+     * @return self
      * @throws EncoderException
      */
     public function setIdEncoder($idEncoderConfig)

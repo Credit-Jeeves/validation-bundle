@@ -7,12 +7,11 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
-use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
@@ -333,15 +332,7 @@ class PaymentCommandsCase extends BaseTestCase
         /* Prepare Group */
         $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
 
-        $paySettings = new AciCollectPaySettings();
-
-        $paySettings->setBusinessId(564075);
-        $paySettings->setGroup($contract->getGroup());
-
-        $contract->getGroup()->setAciCollectPaySettings($paySettings);
-
-        $em->persist($contract->getGroup());
-        $em->persist($paySettings);
+        $contract->getGroup()->getDepositAccount()->setMerchantName(564075);
 
         /* Remove enrollment Account if it was created before */
         if ($profileId = $this->getOldProfileId(md5($contract->getTenant()->getId()))) {
@@ -358,6 +349,7 @@ class PaymentCommandsCase extends BaseTestCase
         $paymentAccount1->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
         $paymentAccount1->setType(PaymentAccountTypeEnum::BANK);
         $paymentAccount1->setName('Test ACI Bank');
+        $paymentAccount1->setBankAccountType(BankAccountType::CHECKING);
 
         $paymentAccountData = new PaymentAccountData();
 
@@ -371,12 +363,11 @@ class PaymentCommandsCase extends BaseTestCase
             ->set('card_number', '5110200200001115')
             ->set('routing_number', '063113057')
             ->set('account_number', '123245678')
-            ->set('ach_deposit_type', ACHDepositTypeEnum::CHECKING)
             ->set('csc_code', '123');
 
         $paymentAccount2 = clone $paymentAccount1;
 
-        $paymentAccount1->setToken($paymentProcessor->createPaymentAccount($paymentAccountData, $contract));
+        $paymentAccount1->setToken($paymentProcessor->createPaymentToken($paymentAccountData, $contract));
 
         $this->setOldProfileId(
             md5($contract->getTenant()->getId()),
@@ -387,10 +378,11 @@ class PaymentCommandsCase extends BaseTestCase
 
         $paymentAccount2->setType(PaymentAccountTypeEnum::CARD);
         $paymentAccount2->setName('Test ACI Card');
+        $paymentAccount2->setBankAccountType(null);
 
         $paymentAccountData->setEntity($paymentAccount2);
 
-        $paymentAccount2->setToken($paymentProcessor->createPaymentAccount($paymentAccountData, $contract));
+        $paymentAccount2->setToken($paymentProcessor->createPaymentToken($paymentAccountData, $contract));
 
         $em->persist($paymentAccount2);
 

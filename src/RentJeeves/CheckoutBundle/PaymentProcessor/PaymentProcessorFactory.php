@@ -5,7 +5,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 use CreditJeeves\DataBundle\Entity\Group;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface as PaymentProcessor;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface as PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentProcessor as PaymentProcessorEnum;
 
 /**
@@ -24,8 +24,8 @@ class PaymentProcessorFactory
     protected $aciCollectPay;
 
     /**
-     * @param PaymentProcessorInterface $heartland
-     * @param PaymentProcessorInterface $aciCollectPay
+     * @param SubmerchantProcessorInterface $heartland
+     * @param SubmerchantProcessorInterface $aciCollectPay
      *
      * @DI\InjectParams({
      *     "heartland" = @DI\Inject("payment_processor.heartland"),

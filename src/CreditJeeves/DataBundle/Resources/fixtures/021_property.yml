@@ -273,3 +273,14 @@ fixtures:
         is_single:      1
         createdAt:     '-1 day'
         updatedAt:     '-1 day'
+    Property_Normalized:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           CA
+        city:           Los Angeles
+        street:         West 36th Place
+        number:         1156
+        zip:            90007
+        jb:             34.021764
+        kb:             -118.293358

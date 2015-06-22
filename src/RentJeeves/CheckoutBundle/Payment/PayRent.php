@@ -72,7 +72,12 @@ class PayRent
      */
     public function executePayment(Payment $payment)
     {
-        $this->logger->debug('Get new order for payment ID %s' . $payment->getId());
+        $this->logger->debug(
+            sprintf(
+                'Get new order for payment ID %s',
+                $payment->getId()
+            )
+        );
         /** @var Order $order */
         $order = $this->orderManager->createRentOrder($payment);
 
@@ -115,7 +120,7 @@ class PayRent
      * Finds payment processor for a given payment.
      *
      * @param  Payment                                                               $payment
-     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface
+     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface
      */
     protected function getPaymentProcessor(Payment $payment)
     {

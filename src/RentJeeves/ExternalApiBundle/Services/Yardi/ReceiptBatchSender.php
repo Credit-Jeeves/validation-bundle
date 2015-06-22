@@ -12,6 +12,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\Serializer\SerializationContext;
 use \DateTime;
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
 use RentJeeves\DataBundle\Entity\YardiSettings;
@@ -22,7 +23,6 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use JMS\Serializer\Serializer;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Output\OutputInterface;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use Psr\Log\LoggerInterface;
@@ -178,7 +178,11 @@ class ReceiptBatchSender
 
         try {
             while ($holdings = $this->getHoldingRepository()
-                ->findHoldingsWithYardiSettings($startPagination, self::LIMIT_HOLDING)
+                ->findHoldingsWithYardiSettings(
+                    $startPagination,
+                    self::LIMIT_HOLDING,
+                    SynchronizationStrategy::DEPOSITED
+                )
             ) {
                 $this->pushHoldingReceipts($holdings, $depositDate);
                 $startPagination += self::LIMIT_HOLDING;
@@ -316,7 +320,7 @@ class ReceiptBatchSender
                     $this->cancelBatch($yardiBatchId);
                     break; // break out of while loop.
                 }
-                $this->paymentClient->closeReceiptBatch($yardiBatchId);
+                $this->paymentClient->closeBatch($yardiBatchId);
             } catch (\Exception $e) {
                 // don't throw from here, since we want to process other batches -- if possible.
                 $this->exceptionCatcher->handleException($e);
@@ -436,10 +440,15 @@ class ReceiptBatchSender
             return $this->batchIds[$key];
         }
 
-        $yardiBatchId = $this->paymentClient->openReceiptBatchDepositDate(
-            $this->depositDate,
-            $remotePropertyId,
+        $description = sprintf(
+            'RentTrack Online Payments Batch #%s',
             $batchId
+        );
+
+        $yardiBatchId = $this->paymentClient->openBatch(
+            $remotePropertyId,
+            $this->depositDate,
+            $description
         );
 
         if ($this->paymentClient->isError()) {

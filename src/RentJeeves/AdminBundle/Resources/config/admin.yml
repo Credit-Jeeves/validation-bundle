@@ -234,3 +234,7 @@ services:
             - CreditJeeves\DataBundle\Entity\Settings
             - 'SonataAdminBundle:CRUD'
 
+    rental_report:
+        class: RentJeeves\AdminBundle\Form\RentalReportType
+        tags:
+            - { name: form.type, alias: rental_report }

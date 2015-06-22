@@ -10,18 +10,75 @@ class Question
      * @var int
      * @Serializer\Groups({"IdentityVerificationDetails"})
      */
-    public $id;
+    protected $id;
 
     /**
      * @var string
      * @Serializer\Groups({"IdentityVerificationDetails"})
      */
-    public $question;
+    protected $question;
 
     /**
-     * @var array
+     * @var array<Choice>
      * @Serializer\Type("array<RentJeeves\ApiBundle\Response\Model\Choice>")
      * @Serializer\Groups({"IdentityVerificationDetails"})
      */
-    public $choices = [];
+    protected $choices = [];
+
+    /**
+     * @param int $id
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $question
+     * @return self
+     */
+    public function setQuestion($question)
+    {
+        $this->question = $question;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuestion()
+    {
+        return $this->question;
+    }
+
+    /**
+     * @param array<Choice> $choices
+     * @return self
+     */
+    public function setChoices(array $choices)
+    {
+        $this->choices = $choices;
+
+        return $this;
+    }
+
+    /**
+     * @return array<Choice>
+     */
+    public function getChoices()
+    {
+        return $this->choices;
+    }
 }

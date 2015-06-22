@@ -226,6 +226,7 @@ class PropertyProcess
             $propertyInDB = $this->$method($property);
             if ($propertyInDB && $saveToGoogle) {
                 $this->saveToGoogle($propertyInDB);
+
                 return $propertyInDB;
             } elseif ($propertyInDB) {
                 return $propertyInDB;
@@ -292,6 +293,7 @@ class PropertyProcess
             $result = $this->geocoder->using('cache')->geocode($address);
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
+
             return false;
         }
         if (empty($result)) {
@@ -367,13 +369,37 @@ class PropertyProcess
             if ($propertyDB = $this->checkByMinimalArgs($property) or
                 $propertyDB = $this->checkByAllArgs($property)) {
                 /** Property */
+
                 return $propertyDB;
             }
             /** Empty Property */
+
             return $property;
         }
         /** Error Address not found */
+
         return null;
+    }
+
+    /**
+     * This method try to find Property in DB in 2 steps:
+     *   - First step try to find it in DB using address parameters
+     *   - Second step go to Geocode Service for normalized address and try to find it in DB again
+     *
+     * @param Property $property
+     * @return Property|false
+     */
+    public function getPropertyFromDBIn2steps(Property $property)
+    {
+        if ($propertyDB  = $this->checkByAllArgs($property)) {
+            return $propertyDB;
+        }
+
+        if (($propertyDB = $this->getPropertyByAddress($property->getFullAddress())) && $propertyDB->getId()) {
+            return $propertyDB;
+        }
+
+        return false;
     }
 
     private function getPropertyIdentifier(Property $property)

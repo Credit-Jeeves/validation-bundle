@@ -4,11 +4,12 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
+use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -375,16 +376,16 @@ abstract class Group
     protected $groupSettings;
 
     /**
-     * @var AciCollectPaySettings
+     * @var AciCollectPayGroupProfile
      *
      * @ORM\OneToOne(
-     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPaySettings",
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile",
      *      mappedBy="group",
      *      cascade={"all"},
      *      orphanRemoval=true
      * )
      */
-    protected $aciCollectPaySettings;
+    protected $aciCollectPayProfile;
 
     /**
      * @ORM\OneToMany(
@@ -421,6 +422,28 @@ abstract class Group
      */
     protected $accountNumberMapping;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(
+     *      name="mailing_address_name",
+     *      type="string",
+     *      nullable=true
+     * )
+     */
+    protected $mailingAddressName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(
+     *      name="order_algorithm",
+     *      type="OrderAlgorithmType",
+     *      nullable=false
+     * )
+     */
+    protected $orderAlgorithm = OrderAlgorithmType::SUBMERCHANT;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -438,6 +461,42 @@ abstract class Group
         $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
         $this->disableCreditCard = false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderAlgorithm()
+    {
+        return $this->orderAlgorithm;
+    }
+
+    /**
+     * @param string $orderAlgorithm
+     */
+    public function setOrderAlgorithm($orderAlgorithm)
+    {
+        if (!OrderAlgorithmType::isValid($orderAlgorithm)) {
+            OrderAlgorithmType::throwsInvalid($orderAlgorithm);
+        }
+
+        $this->orderAlgorithm = $orderAlgorithm;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailingAddressName()
+    {
+        return $this->mailingAddressName;
+    }
+
+    /**
+     * @param string $mailingAddressName
+     */
+    public function setMailingAddressName($mailingAddressName)
+    {
+        $this->mailingAddressName = $mailingAddressName;
     }
 
     /**
@@ -478,22 +537,6 @@ abstract class Group
     public function getGroupSettings()
     {
         return $this->groupSettings;
-    }
-
-    /**
-     * @param AciCollectPaySettings $aciCollectPaySettings
-     */
-    public function setAciCollectPaySettings(AciCollectPaySettings $aciCollectPaySettings)
-    {
-        $this->aciCollectPaySettings = $aciCollectPaySettings;
-    }
-
-    /**
-     * @return AciCollectPaySettings
-     */
-    public function getAciCollectPaySettings()
-    {
-        return $this->aciCollectPaySettings;
     }
 
     /**
@@ -678,7 +721,7 @@ abstract class Group
      * Set description
      *
      * @param  string $description
-     * @return GroupP
+     * @return Group
      */
     public function setDescription($description)
     {
@@ -1349,5 +1392,21 @@ abstract class Group
     public function setDisableCreditCard($disableCreditCard)
     {
         $this->disableCreditCard = $disableCreditCard;
+    }
+
+    /**
+     * @return AciCollectPayGroupProfile
+     */
+    public function getAciCollectPayProfile()
+    {
+        return $this->aciCollectPayProfile;
+    }
+
+    /**
+     * @param AciCollectPayGroupProfile $aciCollectPayProfile
+     */
+    public function setAciCollectPayProfile($aciCollectPayProfile)
+    {
+        $this->aciCollectPayProfile = $aciCollectPayProfile;
     }
 }

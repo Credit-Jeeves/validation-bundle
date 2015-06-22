@@ -10,6 +10,10 @@ use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\ClientCaseBase as 
 
 class PaymentClientCase extends Base
 {
+    const PROPERTY_ID = 'rnttrk01';
+
+    const RESIDENT_ID = 't0012027';
+
     protected static $batchId;
 
     /**
@@ -27,9 +31,9 @@ class PaymentClientCase extends Base
             SoapClientEnum::YARDI_PAYMENT
         );
 
-        self::$batchId = self::$client->openReceiptBatchDepositDate(
+        self::$batchId = self::$client->openBatch(
+            self::PROPERTY_ID,
             new DateTime(),
-            $yardiPropertyId = 'rnttrk01',
             $description = 'Test open date'
         );
     }
@@ -61,12 +65,13 @@ class PaymentClientCase extends Base
             '@ExternalApiBundle/Resources/fixtures/receipt_push_sample.xml'
         );
         $xml = file_get_contents($path);
+        $xml = str_replace(['%residentId%', '%propertyId%'], [self::RESIDENT_ID, self::PROPERTY_ID], $xml);
         /**
          * @var $result Messages
          */
         $result = self::$client->addReceiptsToBatch(
             self::$batchId,
-            file_get_contents($path)
+            $xml
         );
 
         $this->checkError();
@@ -77,9 +82,9 @@ class PaymentClientCase extends Base
      * @test
      * @depends addReceiptsToBatch
      */
-    public function closeReceiptBatch()
+    public function closeBatch()
     {
-        $result = self::$client->closeReceiptBatch(
+        $result = self::$client->closeBatch(
             self::$batchId
         );
         $this->checkError();
@@ -92,7 +97,7 @@ class PaymentClientCase extends Base
     public function cancelReceiptBatch()
     {
         $this->initOpenReceiptBatchDepositDate();
-        self::$client->closeReceiptBatch(
+        self::$client->closeBatch(
             self::$batchId
         );
         $this->checkError();

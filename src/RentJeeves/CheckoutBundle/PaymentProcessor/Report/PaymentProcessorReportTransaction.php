@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
-
 abstract class PaymentProcessorReportTransaction
 {
     /** @var string */
@@ -24,6 +23,8 @@ abstract class PaymentProcessorReportTransaction
 
     /**
      * @param string $transactionId
+     *
+     * @return self
      */
     public function setTransactionId($transactionId)
     {
@@ -31,7 +32,6 @@ abstract class PaymentProcessorReportTransaction
 
         return $this;
     }
-
 
     /**
      * @return float
@@ -43,6 +43,8 @@ abstract class PaymentProcessorReportTransaction
 
     /**
      * @param float $amount
+     *
+     * @return self
      */
     public function setAmount($amount)
     {
@@ -61,6 +63,8 @@ abstract class PaymentProcessorReportTransaction
 
     /**
      * @param string $batchId
+     *
+     * @return self
      */
     public function setBatchId($batchId)
     {

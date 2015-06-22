@@ -15,6 +15,15 @@ class ResManSettingsType extends Base
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('accountId');
+        $builder->add(
+            'syncBalance',
+            'checkbox',
+            [
+                'error_bubbling'    => true,
+                'label'             => 'common.sync_balance.label',
+                'required'          => false,
+            ]
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

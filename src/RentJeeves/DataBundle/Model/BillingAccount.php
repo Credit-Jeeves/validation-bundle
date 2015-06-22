@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
+use RentJeeves\DataBundle\Enum\BankAccountType;
 
 /**
  * @ORM\MappedSuperclass
@@ -53,6 +54,15 @@ abstract class BillingAccount
      * @Type("string")
      */
     protected $nickname;
+
+    /**
+     * @ORM\Column(
+     *      name="bank_account_type",
+     *      type="BankAccountType",
+     *      nullable=false
+     * )
+     */
+    protected $bankAccountType;
 
     /**
      * @ORM\Column(
@@ -127,6 +137,27 @@ abstract class BillingAccount
     public function getNickname()
     {
         return $this->nickname;
+    }
+
+    /**
+     * @param string $bankAccountType
+     * @see BankAccountType
+     * @return PaymentAccount
+     */
+    public function setBankAccountType($bankAccountType)
+    {
+        $this->bankAccountType = $bankAccountType;
+    }
+
+    /**
+     * Get ACH Type for bank account only
+     *
+     * @return string
+     * @see BankAccountType
+     */
+    public function getBankAccountType()
+    {
+        return $this->bankAccountType;
     }
 
     /**

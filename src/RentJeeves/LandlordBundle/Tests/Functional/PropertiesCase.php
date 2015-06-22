@@ -86,7 +86,7 @@ class PropertiesCase extends BaseTestCase
         $pages[3]->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(8, $tr, 'wrong number of collum');
+        $this->assertCount(9, $tr, 'wrong number of property');
 
         $propertyButtonAdd->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
@@ -123,7 +123,7 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(9, $tr, 'wrong number of collum');
+        $this->assertCount(10, $tr, 'wrong number of property');
         $this->logout();
 
         // check DB to verify that property has been created correctly
@@ -286,7 +286,7 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($all = $this->page->find('css', '#all'));
-        $this->assertEquals('18', $all->getText(), 'wrong number of property');
+        $this->assertEquals('19', $all->getText(), 'wrong number of property');
         $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
         $propertyEdit->click();
         $this->session->wait($this->timeout, "$('#blockPopupEditProperty').is(':visible')");
@@ -296,7 +296,7 @@ class PropertiesCase extends BaseTestCase
         $removeProperyLast->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertEquals('17', $all->getText(), 'wrong number of property');
+        $this->assertEquals('18', $all->getText(), 'wrong number of property');
         $this->logout();
     }
 }

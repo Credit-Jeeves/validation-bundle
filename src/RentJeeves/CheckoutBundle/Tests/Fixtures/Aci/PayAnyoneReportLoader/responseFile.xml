@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE PAYMENTRESPONSE SYSTEM "/export/home/pecom/appl/dtd/payment_response_1_0.dtd">
+<PAYMENTRESPONSE FIELD1="" FIELD2="" FIELD3="">
+    <BATCH>
+        <BATCHCODE/>
+        <BATCHID>165641</BATCHID>
+        <PI>
+            <PAYER>
+                <PAYERID/>
+                <NAME>
+                    <FULLNAME>JOHN DOE</FULLNAME>
+                    <FIRSTNAME/>
+                    <MIDDLENAME/>
+                    <LASTNAME/>
+                </NAME>
+                <ADDR1>111</ADDR1>
+                <ADDR2>XVZ ST</ADDR2>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>PRINCETON</CITY>
+                <STATE>NJ</STATE>
+                <POSTALCODE>08540</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID>031100380</BANKID>
+                    <ACCTID>00553828</ACCTID>
+                    <ACCTTYPE>23456123</ACCTTYPE>
+                    <CHECKNUM>406666</CHECKNUM>
+                    <MEMOLINE/>
+                </BANKACCT>
+            </PAYER>
+            <PAYEEID>0</PAYEEID>
+            <PAYEE>
+                <FULLNAME>SHIMA CHECK PAYMENT</FULLNAME>
+                <ADDR1>109 SW 1ST ST STE 217</ADDR1>
+                <ADDR2/>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>BATTLE GROUND</CITY>
+                <STATE>WA</STATE>
+                <POSTALCODE>98604</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID/>
+                    <ACCTID/>
+                    <ACCTTYPE/>
+                </BANKACCT>
+            </PAYEE>
+            <PAYACCT>403166420</PAYACCT>
+            <TRNAMT>320.00</TRNAMT>
+            <DTDUE>150224</DTDUE>
+            <TRACEID>12343</TRACEID>
+            <FIELD1>TESTFIELD1</FIELD1>
+            <FIELD2>TESTFIELD2</FIELD2>
+            <FIELD3/>
+            <FIELD4/>
+            <FIELD5/>
+            <FIELD6/>
+            <PAYMENTID>102497630</PAYMENTID>
+            <VALIDITYCODE>CHECK</VALIDITYCODE>
+            <BILLERADVICE/>
+            <BILLERDIRECTORYID/>
+            <ERRORCODE>READY TO DISBURSE</ERRORCODE>
+            <ERRORMESSAGE>UNKNOWN_BILLER</ERRORMESSAGE>
+        </PI>
+        <FIELD1/>
+        <FIELD2/>
+        <FIELD3/>
+        <TOTALS>
+            <TOTALTRANSACTIONAMOUNT>320.00</TOTALTRANSACTIONAMOUNT>
+            <TOTALTRANSACTIONCOUNT>1</TOTALTRANSACTIONCOUNT>
+            <SETTLEMENTPAYMENTAMOUNT>320.00</SETTLEMENTPAYMENTAMOUNT>
+            <SETTLEMENTPAYMENTCOUNT>1</SETTLEMENTPAYMENTCOUNT>
+        </TOTALS>
+    </BATCH>
+    <BATCH>
+        <BATCHCODE/>
+        <BATCHID>165760</BATCHID>
+        <PI>
+            <PAYER>
+                <PAYERID/>
+                <NAME>
+                    <FULLNAME>JOHN DOE</FULLNAME>
+                    <FIRSTNAME/>
+                    <MIDDLENAME/>
+                    <LASTNAME/>
+                </NAME>
+                <ADDR1>111</ADDR1>
+                <ADDR2>XVZ ST</ADDR2>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>PRINCETON</CITY>
+                <STATE>NJ</STATE>
+                <POSTALCODE>08540</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID>031100380</BANKID>
+                    <ACCTID>00553828</ACCTID>
+                    <ACCTTYPE>23456123</ACCTTYPE>
+                    <CHECKNUM>406670</CHECKNUM>
+                    <MEMOLINE/>
+                </BANKACCT>
+            </PAYER>
+            <PAYEEID>0</PAYEEID>
+            <PAYEE>
+                <FULLNAME>UMA CHECK PAYMENT</FULLNAME>
+                <ADDR1>109 SW 1ST ST STE 217</ADDR1>
+                <ADDR2/>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>BATTLE GROUND</CITY>
+                <STATE>WA</STATE>
+                <POSTALCODE>98604</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID/>
+                    <ACCTID/>
+                    <ACCTTYPE/>
+                </BANKACCT>
+            </PAYEE>
+            <PAYACCT>403166420</PAYACCT>
+            <TRNAMT>550.00</TRNAMT>
+            <DTDUE>150303</DTDUE>
+            <TRACEID>12343</TRACEID>
+            <FIELD1>TESTFIELD1</FIELD1>
+            <FIELD2>TESTFIELD2</FIELD2>
+            <FIELD3/>
+            <FIELD4/>
+            <FIELD5/>
+            <FIELD6/>
+            <PAYMENTID>102497907</PAYMENTID>
+            <VALIDITYCODE>CHECK</VALIDITYCODE>
+            <BILLERADVICE/>
+            <BILLERDIRECTORYID/>
+            <ERRORCODE>READY TO DISBURSE</ERRORCODE>
+            <ERRORMESSAGE>UNKNOWN_BILLER</ERRORMESSAGE>
+        </PI>
+        <PI>
+            <PAYER>
+                <PAYERID/>
+                <NAME>
+                    <FULLNAME>JOHN DOE</FULLNAME>
+                    <FIRSTNAME/>
+                    <MIDDLENAME/>
+                    <LASTNAME/>
+                </NAME>
+                <ADDR1>111</ADDR1>
+                <ADDR2>XVZ ST</ADDR2>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>PRINCETON</CITY>
+                <STATE>NJ</STATE>
+                <POSTALCODE>08540</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID>031100380</BANKID>
+                    <ACCTID>00553828</ACCTID>
+                    <ACCTTYPE>23456123</ACCTTYPE>
+                    <CHECKNUM>406671</CHECKNUM>
+                    <MEMOLINE/>
+                </BANKACCT>
+            </PAYER>
+            <PAYEEID>0</PAYEEID>
+            <PAYEE>
+                <FULLNAME>SMITA CHECK PAYMENT</FULLNAME>
+                <ADDR1>109 SW 1ST ST STE 217</ADDR1>
+                <ADDR2/>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>BATTLE GROUND</CITY>
+                <STATE>WA</STATE>
+                <POSTALCODE>98604</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID/>
+                    <ACCTID/>
+                    <ACCTTYPE/>
+                </BANKACCT>
+            </PAYEE>
+            <PAYACCT>403166420</PAYACCT>
+            <TRNAMT>250.00</TRNAMT>
+            <DTDUE>150303</DTDUE>
+            <TRACEID>12343</TRACEID>
+            <FIELD1>TESTFIELD1</FIELD1>
+            <FIELD2>TESTFIELD2</FIELD2>
+            <FIELD3/>
+            <FIELD4/>
+            <FIELD5/>
+            <FIELD6/>
+            <PAYMENTID>102497908</PAYMENTID>
+            <VALIDITYCODE>CHECK</VALIDITYCODE>
+            <BILLERADVICE>553246</BILLERADVICE>
+            <BILLERDIRECTORYID/>
+            <ERRORCODE>READY TO DISBURSE</ERRORCODE>
+            <ERRORMESSAGE>REMIT_ADDRESS_VALIDATION_FAILED</ERRORMESSAGE>
+        </PI>
+        <PI>
+            <PAYER>
+                <PAYERID/>
+                <NAME>
+                    <FULLNAME>JOHN DOE</FULLNAME>
+                    <FIRSTNAME/>
+                    <MIDDLENAME/>
+                    <LASTNAME/>
+                </NAME>
+                <ADDR1>111</ADDR1>
+                <ADDR2>XVZ ST</ADDR2>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>PRINCETON</CITY>
+                <STATE>NJ</STATE>
+                <POSTALCODE>08540</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID>021200025</BANKID>
+                    <ACCTID>23456123</ACCTID>
+                    <ACCTTYPE>23456123</ACCTTYPE>
+                    <CHECKNUM/>
+                    <MEMOLINE/>
+                </BANKACCT>
+            </PAYER>
+            <PAYEEID>514104</PAYEEID>
+            <PAYEE>
+                <FULLNAME>BATTLE GROUND</FULLNAME>
+                <ADDR1>109 SW 1ST ST STE 217</ADDR1>
+                <ADDR2/>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>BATTLE GROUND</CITY>
+                <STATE>WA</STATE>
+                <POSTALCODE>98604</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID/>
+                    <ACCTID/>
+                    <ACCTTYPE/>
+                </BANKACCT>
+            </PAYEE>
+            <PAYACCT>4035-66420</PAYACCT>
+            <TRNAMT>320.00</TRNAMT>
+            <DTDUE>150303</DTDUE>
+            <TRACEID>12343</TRACEID>
+            <FIELD1>TESTFIELD1</FIELD1>
+            <FIELD2>TESTFIELD2</FIELD2>
+            <FIELD3/>
+            <FIELD4/>
+            <FIELD5/>
+            <FIELD6/>
+            <PAYMENTID>102497909</PAYMENTID>
+            <VALIDITYCODE>ELECTRONIC</VALIDITYCODE>
+            <BILLERADVICE>514104</BILLERADVICE>
+            <BILLERDIRECTORYID>514104</BILLERDIRECTORYID>
+            <ERRORCODE>READY TO DISBURSE</ERRORCODE>
+            <ERRORMESSAGE>SUCCESS</ERRORMESSAGE>
+        </PI>
+        <PI>
+            <PAYER>
+                <PAYERID/>
+                <NAME>
+                    <FULLNAME>JOHN DOE</FULLNAME>
+                    <FIRSTNAME/>
+                    <MIDDLENAME/>
+                    <LASTNAME/>
+                </NAME>
+                <ADDR1>111</ADDR1>
+                <ADDR2>XVZ ST</ADDR2>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>PRINCETON</CITY>
+                <STATE>NJ</STATE>
+                <POSTALCODE>08540</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID>031100380</BANKID>
+                    <ACCTID>00553828</ACCTID>
+                    <ACCTTYPE>23456123</ACCTTYPE>
+                    <CHECKNUM>406672</CHECKNUM>
+                    <MEMOLINE/>
+                </BANKACCT>
+            </PAYER>
+            <PAYEEID>0</PAYEEID>
+            <PAYEE>
+                <FULLNAME>BATTLE GROUND</FULLNAME>
+                <ADDR1>109 SW 1ST ST STE 217</ADDR1>
+                <ADDR2/>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>BATTLE GROUND</CITY>
+                <STATE>WA</STATE>
+                <POSTALCODE>98604</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID/>
+                    <ACCTID/>
+                    <ACCTTYPE/>
+                </BANKACCT>
+            </PAYEE>
+            <PAYACCT>4035-66420</PAYACCT>
+            <TRNAMT>520.00</TRNAMT>
+            <DTDUE>150303</DTDUE>
+            <TRACEID>12343</TRACEID>
+            <FIELD1>TESTFIELD1</FIELD1>
+            <FIELD2>TESTFIELD2</FIELD2>
+            <FIELD3/>
+            <FIELD4/>
+            <FIELD5/>
+            <FIELD6/>
+            <PAYMENTID>102497910</PAYMENTID>
+            <VALIDITYCODE>CHECK</VALIDITYCODE>
+            <BILLERADVICE>514104</BILLERADVICE>
+            <BILLERDIRECTORYID>514104</BILLERDIRECTORYID>
+            <ERRORCODE>READY TO DISBURSE</ERRORCODE>
+            <ERRORMESSAGE>ELECTRONIC_NOT_ALLOWED_WITH_BILLER_ADVICE</ERRORMESSAGE>
+        </PI>
+        <PI>
+            <PAYER>
+                <PAYERID/>
+                <NAME>
+                    <FULLNAME>JOHN DOE</FULLNAME>
+                    <FIRSTNAME/>
+                    <MIDDLENAME/>
+                    <LASTNAME/>
+                </NAME>
+                <ADDR1>111</ADDR1>
+                <ADDR2>XVZ ST</ADDR2>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>PRINCETON</CITY>
+                <STATE>NJ</STATE>
+                <POSTALCODE>08540</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID>021200025</BANKID>
+                    <ACCTID>23456123</ACCTID>
+                    <ACCTTYPE>23456123</ACCTTYPE>
+                    <CHECKNUM/>
+                    <MEMOLINE/>
+                </BANKACCT>
+            </PAYER>
+            <PAYEEID>514104</PAYEEID>
+            <PAYEE>
+                <FULLNAME>BATTLE GROUND</FULLNAME>
+                <ADDR1>109 SW 1ST ST STE 217</ADDR1>
+                <ADDR2/>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>BATTLE GROUND</CITY>
+                <STATE>WA</STATE>
+                <POSTALCODE>98604</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID/>
+                    <ACCTID/>
+                    <ACCTTYPE/>
+                </BANKACCT>
+            </PAYEE>
+            <PAYACCT>4035-66420</PAYACCT>
+            <TRNAMT>520.00</TRNAMT>
+            <DTDUE>150303</DTDUE>
+            <TRACEID>12343</TRACEID>
+            <FIELD1>TESTFIELD1</FIELD1>
+            <FIELD2>TESTFIELD2</FIELD2>
+            <FIELD3/>
+            <FIELD4/>
+            <FIELD5/>
+            <FIELD6/>
+            <PAYMENTID>102497911</PAYMENTID>
+            <VALIDITYCODE>ELECTRONIC</VALIDITYCODE>
+            <BILLERADVICE>514104</BILLERADVICE>
+            <BILLERDIRECTORYID>514104</BILLERDIRECTORYID>
+            <ERRORCODE>READY TO DISBURSE</ERRORCODE>
+            <ERRORMESSAGE>SUCCESS</ERRORMESSAGE>
+        </PI>
+        <PI>
+            <PAYER>
+                <PAYERID/>
+                <NAME>
+                    <FULLNAME>JOHN DOE</FULLNAME>
+                    <FIRSTNAME/>
+                    <MIDDLENAME/>
+                    <LASTNAME/>
+                </NAME>
+                <ADDR1>111</ADDR1>
+                <ADDR2>XVZ ST</ADDR2>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>PRINCETON</CITY>
+                <STATE>NJ</STATE>
+                <POSTALCODE>08540</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID>021200025</BANKID>
+                    <ACCTID>23456123</ACCTID>
+                    <ACCTTYPE>23456123</ACCTTYPE>
+                    <CHECKNUM/>
+                    <MEMOLINE/>
+                </BANKACCT>
+            </PAYER>
+            <PAYEEID>514104</PAYEEID>
+            <PAYEE>
+                <FULLNAME>BATTLE GROUND</FULLNAME>
+                <ADDR1>109 SW 1ST ST STE 217</ADDR1>
+                <ADDR2/>
+                <ADDR3/>
+                <ADDR4/>
+                <CITY>BATTLE GROUND</CITY>
+                <STATE>WA</STATE>
+                <POSTALCODE>98604</POSTALCODE>
+                <COUNTRY>US</COUNTRY>
+                <BANKACCT>
+                    <BANKID/>
+                    <ACCTID/>
+                    <ACCTTYPE/>
+                </BANKACCT>
+            </PAYEE>
+            <PAYACCT>4035-66420</PAYACCT>
+            <TRNAMT>520.00</TRNAMT>
+            <DTDUE>150303</DTDUE>
+            <TRACEID>12343</TRACEID>
+            <FIELD1>TESTFIELD1</FIELD1>
+            <FIELD2>TESTFIELD2</FIELD2>
+            <FIELD3/>
+            <FIELD4/>
+            <FIELD5/>
+            <FIELD6/>
+            <PAYMENTID>102497912</PAYMENTID>
+            <VALIDITYCODE>ELECTRONIC</VALIDITYCODE>
+            <BILLERADVICE>514104</BILLERADVICE>
+            <BILLERDIRECTORYID>514104</BILLERDIRECTORYID>
+            <ERRORCODE>WAITING FOR FUNDS</ERRORCODE>
+            <ERRORMESSAGE>SUCCESS</ERRORMESSAGE>
+        </PI>
+        <FIELD1/>
+        <FIELD2/>
+        <FIELD3/>
+        <TOTALS>
+            <TOTALTRANSACTIONAMOUNT>2,680.00</TOTALTRANSACTIONAMOUNT>
+            <TOTALTRANSACTIONCOUNT>6</TOTALTRANSACTIONCOUNT>
+            <SETTLEMENTPAYMENTAMOUNT>2,680.00</SETTLEMENTPAYMENTAMOUNT>
+            <SETTLEMENTPAYMENTCOUNT>6</SETTLEMENTPAYMENTCOUNT>
+        </TOTALS>
+    </BATCH>
+    <TOTALS>
+        <TOTALTRANSACTIONAMOUNT>3,000.00</TOTALTRANSACTIONAMOUNT>
+        <TOTALTRANSACTIONCOUNT>7</TOTALTRANSACTIONCOUNT>
+        <SETTLEMENTPAYMENTAMOUNT/>
+        <SETTLEMENTPAYMENTCOUNT/>
+    </TOTALS>
+</PAYMENTRESPONSE>

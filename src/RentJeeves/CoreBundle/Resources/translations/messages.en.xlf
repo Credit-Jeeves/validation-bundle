@@ -42,6 +42,10 @@
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
             </trans-unit>
+            <trans-unit id="yardi.label.synchronization_strategy">
+                <source>yardi.label.synchronization_strategy</source>
+                <target>Synchronization Strategy(Do not change this while there are open batches for the holding.)</target>
+            </trans-unit>
             <trans-unit id="import.error.empty_group">
                 <source>import.error.empty_group</source>
                 <target>Group not found.</target>
@@ -2996,8 +3000,8 @@
                 <source>common.test.setting.successfully</source>
                 <target>Test Successfully</target>
             </trans-unit>
-            <trans-unit id="yardi.sync_balance.label">
-                <source>yardi.sync_balance.label</source>
+            <trans-unit id="common.sync_balance.label">
+                <source>common.sync_balance.label</source>
                 <target>Sync balance?</target>
             </trans-unit>
             <trans-unit id="yardi.post_payments.label">

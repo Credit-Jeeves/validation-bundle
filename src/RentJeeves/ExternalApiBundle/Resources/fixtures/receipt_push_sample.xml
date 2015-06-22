@@ -8,10 +8,10 @@
                             <Detail>
                                 <DocumentNumber>444</DocumentNumber>
                                 <TransactionDate>2014-05-23</TransactionDate>
-                                <CustomerID>t0012027</CustomerID>
+                                <CustomerID>%residentId%</CustomerID>
                                 <Amount>1300.00</Amount>
                                 <Comment>Test payment</Comment>
-                                <PropertyPrimaryID>rnttrk01</PropertyPrimaryID>
+                                <PropertyPrimaryID>%propertyId%</PropertyPrimaryID>
                             </Detail>
                         </Payment>
                     </Transactions>
@@ -20,10 +20,10 @@
                             <Detail>
                                 <DocumentNumber>445</DocumentNumber>
                                 <TransactionDate>2014-04-23</TransactionDate>
-                                <CustomerID>t0012027</CustomerID>
+                                <CustomerID>%residentId%</CustomerID>
                                 <Amount>1340.00</Amount>
                                 <Comment>Test payment</Comment>
-                                <PropertyPrimaryID>rnttrk01</PropertyPrimaryID>
+                                <PropertyPrimaryID>%propertyId%</PropertyPrimaryID>
                             </Detail>
                         </Payment>
                     </Transactions>

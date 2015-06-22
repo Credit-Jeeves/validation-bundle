@@ -3,7 +3,6 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -13,7 +12,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\GroupRepository")
- * @ORM\Table(name="cj_account_group")
+ * @ORM\Table(name="rj_group")
  */
 class Group extends BaseGroup
 {
@@ -113,6 +112,14 @@ class Group extends BaseGroup
     }
 
     /**
+     * @return bool
+     */
+    public function isExistGroupSettings()
+    {
+        return empty($this->groupSettings) ? false : true;
+    }
+
+    /**
      * @return GroupSettings
      */
     public function getGroupSettings()
@@ -123,19 +130,6 @@ class Group extends BaseGroup
         }
 
         return $this->groupSettings;
-    }
-
-    /**
-     * @return AciCollectPaySettings
-     */
-    public function getAciCollectPaySettings()
-    {
-        if (empty($this->aciCollectPaySettings)) {
-            $this->aciCollectPaySettings = new AciCollectPaySettings();
-            $this->aciCollectPaySettings->setGroup($this);
-        }
-
-        return $this->aciCollectPaySettings;
     }
 
     /**
@@ -203,5 +197,21 @@ class Group extends BaseGroup
             default:
                 return null;
         }
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAciCollectPayProfileId()
+    {
+        return $this->getAciCollectPayProfile() ? $this->getAciCollectPayProfile()->getProfileId() : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return 'US';
     }
 }

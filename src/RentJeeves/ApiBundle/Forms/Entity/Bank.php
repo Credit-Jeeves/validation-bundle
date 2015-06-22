@@ -20,7 +20,7 @@ class Bank
      * @Assert\NotBlank(groups={"bank"})
      * @Assert\Choice(
      *      message="api.errors.payment_accounts.bank.type",
-     *      callback={"RentJeeves\ApiBundle\Forms\Enum\ACHDepositType", "all"},
+     *      callback={"RentJeeves\DataBundle\Enum\BankAccountType", "all"},
      *      groups={"bank"}
      * )
      */

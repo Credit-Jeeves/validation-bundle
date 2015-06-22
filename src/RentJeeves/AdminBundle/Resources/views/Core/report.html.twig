@@ -10,31 +10,40 @@
     {% for flash in app.session.flashbag.get('notice') %}
         <div class="alert">{{ flash }}</div>
     {% endfor %}
-    <form method="post">
+    <form method="post" name="rentjeeves_adminbundle_rental_report">
         <div>
-
-            <label for="report_type">{{ 'admin.report.choose_type'|trans }}</label>
-            <select name="type" id="report_type">
-                <option value="experian">{{ 'admin.report.experian'|trans }}</option>
-                <option value="trans_union">{{ 'admin.report.trans_union'|trans }}</option>
-            </select>
-
-            <label for="report_month">{{ 'admin.report.choose_month'|trans }}</label>
-            <select name="month" id="report_month">
-                {% for monthNo, monthName in months %}
-                    <option value="{{ monthNo }}">{{ monthName }}</option>
-                {% endfor %}
-            </select>
-
-            <label for="report_year">{{ 'admin.report.choose_year'|trans }}</label>
-            <select name="year" id="report_year">
-                {% for year in years %}
-                    <option value="{{ year }}">{{ year }}</option>
-                {% endfor %}
-            </select>
+            {{ form_label(rentalReport.bureau) }}
+            {{ form_widget(rentalReport.bureau) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.type) }}
+            {{ form_widget(rentalReport.type) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.month) }}
+            {{ form_widget(rentalReport.month.month) }}
+            {{ form_widget(rentalReport.month.year) }}
+            {{ form_widget(rentalReport.month.day, {'attr': {'style': 'display:none;'}}) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.startDate) }}
+            {{ form_widget(rentalReport.startDate) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.endDate) }}
+            {{ form_widget(rentalReport.endDate) }}
         </div>
 
         <input type="submit" class="btn btn-primary" value="{{ 'admin.report.generate'|trans }}"/>
-    </form>
 
+        {{ form_rest(rentalReport) }}
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/core/js/jquery.overlay.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/jquery.overlay-ext.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/rjadmin/js/rentalReport.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}" type="text/javascript"></script>
 {% endblock %}
