@@ -3725,7 +3725,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ACIClient.git",
-                "reference": "17697bb0ba31f5dcf032369c117c5595969d14f0"
+                "reference": "431f8d481605179f11b341bb96ec79584413e8ff"
             },
             "require": {
                 "ext-curl": "*",
@@ -3771,7 +3771,7 @@
             ],
             "description": "ACI integration with Payum",
             "homepage": "https://github.com/Credit-Jeeves/ACIClient",
-            "time": "2015-06-19 13:19:05"
+            "time": "2015-06-19 17:07:51"
         },
         {
             "name": "payum/core",
@@ -7724,12 +7724,12 @@
             "target-dir": "Ton/EmailBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/66Ton99/EmailBundle.git",
+                "url": "https://github.com/Credit-Jeeves/EmailBundle.git",
                 "reference": "7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/66Ton99/EmailBundle/zipball/7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
+                "url": "https://api.github.com/repos/Credit-Jeeves/EmailBundle/zipball/7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
                 "reference": "7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
                 "shasum": ""
             },

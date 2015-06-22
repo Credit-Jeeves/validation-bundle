@@ -20,7 +20,6 @@ use Payum\AciPayAnyone\Request\CancelRequest\Cancel;
 use Payum\Core\Payment as PaymentProcessor;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
@@ -28,6 +27,7 @@ use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 
 class PaymentManager
 {
+    const PAYMENT_ACCOUNT_MAX_LENGTH = 60;
     /**
      * @var EntityManager
      */
@@ -50,11 +50,6 @@ class PaymentManager
         'routingNumber' => null,
         'accountNumber' => null,
     ];
-
-    /**
-     * @var OutboundTransaction
-     */
-    protected $transaction;
 
     /**
      * @param EntityManager $em
@@ -87,10 +82,11 @@ class PaymentManager
     {
         $this->validateOrder($order);
 
+        $transaction = $this->getTransaction($order);
+
         $this->logger->debug(
             sprintf(
-                '[ACI PayAnyone Info][Execute]:Try to create new deposit transaction for order id #%d',
-                $this->getTransaction($order)->getTransactionId(),
+                '[ACI PayAnyone Info][Execute]:Trying to create new deposit transaction for order id #%d',
                 $order->getId()
             )
         );
@@ -113,7 +109,9 @@ class PaymentManager
 
         $payment->setAmount($order->getSum());
         $payment->setDueDate(new \DateTime());
-        $payment->setPaymentAccount($order->getContract()->getProperty()->getShrinkAddress());
+        $payment->setPaymentAccount(
+            $order->getContract()->getProperty()->getShrinkAddress(self::PAYMENT_ACCOUNT_MAX_LENGTH)
+        );
         $payment->setTransactionId($order->getId());
 
         $request = new Capture($payment);
@@ -124,33 +122,32 @@ class PaymentManager
                 $transactionId = $request->getModel()->getPaymentStatus()->getPaymentId()
             ) {
                 $order->setStatus(OrderStatus::SENDING);
-                $this->getTransaction($order)->setTransactionId($transactionId);
-                $this->getTransaction($order)->setMessage(null);
-                $this->getTransaction($order)->setStatus(OutboundTransactionStatus::SUCCESS);
+                $transaction->setTransactionId($transactionId);
+                $transaction->setMessage(null);
+                $transaction->setStatus(OutboundTransactionStatus::SUCCESS);
             } else {
                 $this->logger->alert(sprintf('[ACI PayAnyone Error][Execute]:%s', $request->getMessages()));
 
                 $order->setStatus(OrderStatus::ERROR);
-                $this->getTransaction($order)->setMessage($request->getMessages());
-                $this->getTransaction($order)->setStatus(OutboundTransactionStatus::ERROR);
+                $transaction->setMessage($request->getMessages());
+                $transaction->setStatus(OutboundTransactionStatus::ERROR);
             }
 
             $this->em->flush();
         } catch (\Exception $e) {
             $this->logger->alert(sprintf('[ACI PayAnyone Critical Error][Execute]:%s', $e->getMessage()));
             $order->setStatus(OrderStatus::ERROR);
-            $this->getTransaction($order)->setStatus(OutboundTransactionStatus::ERROR);
-            $this->getTransaction($order)->setMessage($e->getMessage());
-            if ($this->em->isOpen()) {
-                $this->em->flush();
-            }
+            $transaction->setStatus(OutboundTransactionStatus::ERROR);
+            $transaction->setMessage($e->getMessage());
+            $this->em->flush();
             throw $e;
         }
 
         $this->logger->debug(
             sprintf(
-                '[ACI PayAnyone Info][Execute]:Created new %s deposit transaction for order id #%d',
-                $this->getTransaction($order)->getStatus(),
+                '[ACI PayAnyone Info][Execute]:Created new %s deposit transaction #%s for order id #%d',
+                $transaction->getStatus(),
+                $transaction->getTransactionId(),
                 $order->getId()
             )
         );
@@ -160,19 +157,29 @@ class PaymentManager
 
     /**
      * @param Order $order
-     * @throws \Exception|PaymentProcessorRuntimeException
+     * @throws \Exception|PaymentProcessorInvalidArgumentException
+     * @return bool
      */
     public function cancelPayment(Order $order)
     {
+        $transaction = $this->getTransaction($order);
+
+        if (!$transaction->getTransactionId()) {
+            throw new PaymentProcessorInvalidArgumentException(
+                'Transaction doesn\'t have transaction id'
+            );
+        }
+
         $this->logger->debug(
             sprintf(
-                '[ACI PayAnyone Info][Cancel]:Try to cancel transaction #%s for order id #%d',
-                $this->getTransaction($order)->getTransactionId(),
+                '[ACI PayAnyone Info][Cancel]:Trying to cancel transaction #%s for order id #%d',
+                $transaction->getTransactionId(),
                 $order->getId()
             )
         );
+
         $payment = new ExistingPayment();
-        $payment->setTransactionId($this->getTransaction($order)->getTransactionId());
+        $payment->setPaymentId($transaction->getTransactionId());
 
         $request = new Cancel($payment);
 
@@ -181,25 +188,25 @@ class PaymentManager
 
             if ($request->getIsSuccessful()) {
                 $order->setStatus(OrderStatus::ERROR);
-                $this->getTransaction($order)->setStatus(OutboundTransactionStatus::CANCELLED);
-                $this->getTransaction($order)->setMessage('Cancelled by Admin');
+                $transaction->setStatus(OutboundTransactionStatus::CANCELLED);
+                $transaction->setMessage('Cancelled by Admin');
                 $this->logger->debug(
                     sprintf(
                         '[ACI PayAnyone Info][Cancel]:Cancelled transaction #%s for order id #%d',
-                        $this->getTransaction($order)->getTransactionId(),
+                        $transaction->getTransactionId(),
                         $order->getId()
                     )
                 );
-            } else {
-                $this->getTransaction($order)->setStatus(OutboundTransactionStatus::ERROR);
-                $this->getTransaction($order)->setMessage($request->getMessages());
-                throw new PaymentProcessorRuntimeException('Can\'t cancelled transaction: ' . $request->getMessages());
+                $this->em->flush();
+
+                return true;
             }
 
-            $this->em->flush();
-        } catch (PaymentProcessorRuntimeException $e) {
             $this->logger->alert(sprintf('[ACI PayAnyone Error][Cancel]:%s', $request->getMessages()));
-            throw $e;
+            $transaction->setMessage($request->getMessages());
+            $this->em->flush();
+
+            return false;
         } catch (\Exception $e) {
             $this->logger->alert(sprintf('[ACI PayAnyone Critical Error][Cancel]:%s', $e->getMessage()));
             throw $e;
@@ -255,13 +262,11 @@ class PaymentManager
      */
     protected function generateMemoLine(Order $order)
     {
+        /** @var Operation $operation */
         if ($operation = $order->getRentOperations()->first()) {
-            /** @var Operation $operation */
-
             return strtoupper(sprintf(
-                '%s %s,#%d',
+                '%s rent,#%d',
                 $operation->getPaidFor() ? $operation->getPaidFor()->format('M') : '',
-                $operation->getType(),
                 $order->getId()
             ));
         }
@@ -278,20 +283,18 @@ class PaymentManager
      */
     protected function getTransaction(Order $order)
     {
-        if (is_null($this->transaction)) {
-            if (!$this->transaction = $order->getDepositOutboundTransaction()) {
-                $this->transaction = new OutboundTransaction();
-                $this->transaction->setType(OutboundTransactionType::DEPOSIT);
-                $this->transaction->setOrder($order);
-                $order->addOutboundTransaction($this->transaction);
+        if (!$transaction = $order->getDepositOutboundTransaction()) {
+            $transaction = new OutboundTransaction();
+            $transaction->setType(OutboundTransactionType::DEPOSIT);
+            $transaction->setOrder($order);
+            $order->addOutboundTransaction($transaction);
 
-                $this->em->persist($this->transaction);
-            }
-
-            $this->transaction->setAmount($order->getSum());
+            $this->em->persist($transaction);
         }
 
-        return $this->transaction;
+        $transaction->setAmount($order->getSum());
+
+        return $transaction;
     }
 
     /**

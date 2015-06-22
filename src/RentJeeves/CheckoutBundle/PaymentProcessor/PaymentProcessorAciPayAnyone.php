@@ -45,7 +45,7 @@ class PaymentProcessorAciPayAnyone implements PayDirectProcessorInterface
     public function executeOrder(Order $order)
     {
         if (!$this->isAllowedToExecuteOrder($order)) {
-            throw new PaymentProcessorInvalidArgumentException('Order can\'t executed');
+            throw new PaymentProcessorInvalidArgumentException('Order can\'t be executed');
         }
 
         return $this->paymentManager->executePayment($order);
@@ -56,11 +56,11 @@ class PaymentProcessorAciPayAnyone implements PayDirectProcessorInterface
      */
     public function cancelOrder(Order $order)
     {
-        if (!$order->getDepositOutboundTransaction()) {
-            throw new PaymentProcessorInvalidArgumentException('Order does have a outbound transaction');
+        if (!$order->getDepositOutboundTransaction() || !$order->getDepositOutboundTransaction()->getTransactionId()) {
+            throw new PaymentProcessorInvalidArgumentException('Order doesn\'t have successful outbound transaction');
         }
 
-        $this->paymentManager->cancelPayment($order);
+        return $this->paymentManager->cancelPayment($order);
     }
 
     /**

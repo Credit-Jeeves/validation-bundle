@@ -2,7 +2,6 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 
 interface PayDirectProcessorInterface
@@ -22,7 +21,7 @@ interface PayDirectProcessorInterface
      *
      * @param Order $order
      *
-     * @throws PaymentProcessorRuntimeException
+     * @return bool
      */
     public function cancelOrder(Order $order);
 

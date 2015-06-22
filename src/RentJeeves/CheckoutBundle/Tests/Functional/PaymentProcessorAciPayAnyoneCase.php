@@ -7,55 +7,46 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
 {
     /**
-     * @var Order
+     * @return Order $order
      */
-    protected $order;
-
-    /**
-     * @var PaymentProcessorAciPayAnyone
-     */
-    protected $paymentProcessor;
-
-    public function setUp()
+    protected function prepareOrder()
     {
-        $this->load(true);
-
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(23);
 
-        if ($contract) {
-            $this->order = new Order();
-            $this->order->setUser($contract->getTenant());
-            $this->order->setStatus(OrderStatus::PENDING);
-            $this->order->setType(OrderType::HEARTLAND_BANK);
-            $this->order->setSum(600);
-            $this->order->setPaymentProcessor(PaymentProcessor::ACI_PAY_ANYONE);
-            $this->order->setDescriptor('Test Check');
+        $this->assertNotEmpty($contract, 'Please check fixtures');
 
-            $operation = new Operation();
-            $operation->setAmount(600);
-            $operation->setType(OperationType::RENT);
-            $operation->setOrder($this->order);
-            $operation->setGroup($contract->getGroup());
-            $operation->setContract($contract);
-            $operation->setPaidFor(new \DateTime());
+        $order = new Order();
+        $order->setUser($contract->getTenant());
+        $order->setStatus(OrderStatus::PENDING);
+        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setSum(600);
+        $order->setPaymentProcessor(PaymentProcessor::ACI_PAY_ANYONE);
+        $order->setDescriptor('Test Check');
 
-            $this->order->addOperation($operation);
+        $operation = new Operation();
+        $operation->setAmount(600);
+        $operation->setType(OperationType::RENT);
+        $operation->setOrder($order);
+        $operation->setGroup($contract->getGroup());
+        $operation->setContract($contract);
+        $operation->setPaidFor(new \DateTime());
 
-            $this->getEntityManager()->persist($operation);
-            $this->getEntityManager()->persist($this->order);
-            $this->getEntityManager()->flush();
-        }
+        $order->addOperation($operation);
 
-//        $this->paymentProcessor = $this->getContainer()->get('payment_processor.aci_pay_anyone');
+        $this->getEntityManager()->persist($operation);
+        $this->getEntityManager()->persist($order);
+        $this->getEntityManager()->flush();
+
+        return $order;
     }
 
     /**
@@ -63,7 +54,67 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
      */
     public function executeOrder()
     {
-//        $this->assertInstanceOf('CreditJeeves\DataBundle\Entity\Order', $this->order);
-//        $this->paymentProcessor->executeOrder($this->order);
+        $this->load(true);
+
+        $order = $this->prepareOrder();
+
+        $orderStatus = $this->getContainer()->get('payment_processor.aci_pay_anyone')->executeOrder($order);
+
+        $this->getEntityManager()->refresh($order);
+
+        $this->assertNotEmpty($order->getDepositOutboundTransaction(), 'Failed creation outbound transaction');
+
+        $this->assertEquals(
+            OutboundTransactionStatus::SUCCESS,
+            $order->getDepositOutboundTransaction()->getStatus(),
+            'Order execution failed: ' . $order->getDepositOutboundTransaction()->getMessage()
+        );
+
+        $this->assertEquals(
+            OrderStatus::SENDING,
+            $order->getStatus(),
+            sprintf('Invalid status order "%s" instead "%s"', $order->getStatus(), OrderStatus::SENDING)
+        );
+
+        $this->assertEquals(
+            OrderStatus::SENDING,
+            $orderStatus
+        );
+
+        return $order->getId();
+    }
+
+    /**
+     * @param int $orderId
+     *
+     * @test
+     * @depends executeOrder
+     */
+    public function cancelOrder($orderId)
+    {
+        /** @var Order $order */
+        $order = $this->getEntityManager()->getRepository('DataBundle:Order')->find($orderId);
+
+        $result = $this->getContainer()->get('payment_processor.aci_pay_anyone')->cancelOrder($order);
+
+        $this->getEntityManager()->refresh($order);
+
+        $this->assertTrue($result, 'Cancel order failed: ' . $order->getDepositOutboundTransaction()->getMessage());
+
+        $this->assertEquals(
+            OutboundTransactionStatus::CANCELLED,
+            $order->getDepositOutboundTransaction()->getStatus(),
+            sprintf(
+                'Invalid status transaction "%s" instead  "%s"',
+                $order->getDepositOutboundTransaction()->getStatus(),
+                OutboundTransactionStatus::CANCELLED
+            )
+        );
+
+        $this->assertEquals(
+            OrderStatus::ERROR,
+            $order->getStatus(),
+            sprintf('Invalid status order "%s" instead "%s"', $order->getStatus(), OrderStatus::ERROR)
+        );
     }
 }

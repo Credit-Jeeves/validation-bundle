@@ -21,6 +21,15 @@ class Version20150618192642 extends AbstractMigration
                     COMMENT '(DC2Type:OutboundTransactionStatus)' NOT NULL,
                 ADD message VARCHAR(255) DEFAULT NULL"
         );
+
+        $this->addSql(
+            "ALTER TABLE cj_order
+                CHANGE status status
+                    ENUM('cancelled', 'complete', 'error', 'new', 'pending', 'refunded', 'returned', 'sending')
+                        COMMENT '(DC2Type:OrderStatus)'
+                    NOT NULL DEFAULT 'new'"
+        );
+
     }
 
     public function down(Schema $schema)
@@ -35,6 +44,14 @@ class Version20150618192642 extends AbstractMigration
                 DROP status,
                 DROP message,
                 CHANGE transaction_id transaction_id INT NOT NULL"
+        );
+
+        $this->addSql(
+            "ALTER TABLE cj_order
+                CHANGE status status
+                    ENUM('cancelled', 'complete', 'error', 'new', 'pending', 'refunded', 'returned')
+                        COMMENT '(DC2Type:OrderStatus)'
+                    NOT NULL DEFAULT 'new'"
         );
     }
 }
