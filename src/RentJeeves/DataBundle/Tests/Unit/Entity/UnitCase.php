@@ -17,8 +17,8 @@ class UnitCase extends BaseTestCase
             [ApiIntegrationType::RESMAN, 'A1', 'A1', false],
             [ApiIntegrationType::MRI, 'A123', 'A123', true],
             [ApiIntegrationType::MRI, 'A123', 'A123', false],
-            [ApiIntegrationType::MRI, 'A_123', 'A123', false],
-            [ApiIntegrationType::MRI, 'A_123', 'A_123', true],
+            [ApiIntegrationType::MRI, 'A_123', '123', false],
+            [ApiIntegrationType::MRI, 'A_123', 'A123', true],
             [ApiIntegrationType::RESMAN, 'A123', 'A123', false],
         ];
     }
