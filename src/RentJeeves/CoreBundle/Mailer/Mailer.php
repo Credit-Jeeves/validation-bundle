@@ -638,7 +638,7 @@ class Mailer extends BaseMailer
      *
      * @return bool
      */
-    public function sendLateReportingReviewEmailToLandlord(Landlord $landlord, $contracts, $month)
+    public function sendLateReportingReviewEmailToLandlord(Landlord $landlord, array $contracts, $month)
     {
         return $this->sendBaseLetter(
             $template = 'rjLateReportingLandlord',
