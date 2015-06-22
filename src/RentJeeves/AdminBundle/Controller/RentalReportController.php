@@ -25,7 +25,6 @@ class RentalReportController extends BaseController
 
     /**
      * @Route("report", name="sonata_admin_rental_report")
-     * @Template()
      *
      * @param Request $request
      * @return array
@@ -62,14 +61,16 @@ class RentalReportController extends BaseController
             }
         }
 
-        return [
-            'rentalReport' => $reportType->createView(),
-        ];
+        return $this->render(
+            'AdminBundle:RentalReport:report.html.twig',
+            [
+                'rentalReport' => $reportType->createView()
+            ]
+        );
     }
 
     /**
      * @Route("report_transunion", name="sonata_admin_rental_report_transunion")
-     * @Template("AdminBundle:Core:report_transunion.html.twig")
      *
      * @param Request $request
      * @return array
@@ -100,15 +101,17 @@ class RentalReportController extends BaseController
             }
         }
 
-        return [
-            'rentalReport' => $reportType->createView(),
-            'reportData' => $reportData,
-        ];
+        return $this->render(
+            'AdminBundle:RentalReport:report_transunion.html.twig',
+            [
+                'rentalReport' => $reportType->createView(),
+                'reportData' => $reportData,
+            ]
+        );
     }
 
     /**
      * @Route("report_experian", name="sonata_admin_rental_report_experian")
-     * @Template("AdminBundle:Core:report_experian.html.twig")
      *
      * @param Request $request
      * @return array
@@ -151,10 +154,13 @@ class RentalReportController extends BaseController
             }
         }
 
-        return [
-            'rentalReport' => $reportType->createView(),
-            'reportData' => $reportData,
-        ];
+        return $this->render(
+            'AdminBundle:RentalReport:report_experian.html.twig',
+            [
+                'rentalReport' => $reportType->createView(),
+                'reportData' => $reportData,
+            ]
+        );
     }
 
     /**

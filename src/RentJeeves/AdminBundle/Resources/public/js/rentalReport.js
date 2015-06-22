@@ -24,11 +24,11 @@ jQuery(document).ready(function ($) {
             timeout: 60000, // 30 secs
             dataType: 'json',
             data: jQuery.param(formData, false),
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function() {
                 $('#form_send_notification').hideOverlay();
                 alert(Translator.trans('admin.late_report.error'));
             },
-            success: function(data, textStatus, jqXHR) {
+            success: function() {
                 $('#form_send_notification').hideOverlay();
                 alert(Translator.trans('admin.late_report.emails_sent'));
             }

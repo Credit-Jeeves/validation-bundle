@@ -1,4 +1,4 @@
-{% extends 'RjAdminBundle:Core:report.html.twig' %}
+{% extends 'RjAdminBundle:RentalReport:report.html.twig' %}
 
 {% block breadcrumb %}
     <li><a href="{{ url('sonata_admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a><span class="divider">/</span></li>
@@ -97,17 +97,17 @@
                                     {% endfor %}
                                 </tbody>
                                 <tbody>
-                                <tr>
-                                    <th colspan="14">
-                                        <div class="form-inline">
-                                            <select name="action" id="action_send_notification">
-                                                <option value="landlord_email">{{ 'admin.late_report.landlord.send_email'|trans }}</option>
-                                                <option value="tenant_email">{{ 'admin.late_report.tenant.send_email'|trans }}</option>
-                                            </select>
-                                            <input type="submit" id="button_send_notification" class="btn btn-small btn-primary" value="OK" />
-                                        </div>
-                                    </th>
-                                </tr>
+                                    <tr>
+                                        <th colspan="14">
+                                            <div class="form-inline">
+                                                <select name="action" id="action_send_notification">
+                                                    <option value="landlord_email">{{ 'admin.late_report.landlord.send_email'|trans }}</option>
+                                                    <option value="tenant_email">{{ 'admin.late_report.tenant.send_email'|trans }}</option>
+                                                </select>
+                                                <input type="submit" id="button_send_notification" class="btn btn-small btn-primary" value="OK" />
+                                            </div>
+                                        </th>
+                                    </tr>
                                 </tbody>
                             </table>
                         </form>
