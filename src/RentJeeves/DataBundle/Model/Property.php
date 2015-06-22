@@ -226,20 +226,10 @@ abstract class Property
     /**
      * @ORM\Column(
      *     name="is_multiple_buildings",
-     *     type="boolean",
-     *     nullable=true
+     *     type="boolean"
      * )
      */
-    protected $isMultipleBuildings;
-
-    /**
-     * This method is needed only for SonataAdminBundle, please don't use it.
-     * @return bool
-     */
-    public function getIsMultipleBuildings()
-    {
-        return $this->isMultipleBuildings();
-    }
+    protected $isMultipleBuildings = false;
 
     /**
      * @return boolean

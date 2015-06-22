@@ -16,7 +16,7 @@ class Version20150622091059 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_property
-                ADD is_multiple_buildings TINYINT(1) DEFAULT NULL"
+                ADD is_multiple_buildings TINYINT(1) DEFAULT 0"
         );
     }
 

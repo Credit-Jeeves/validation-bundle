@@ -5,9 +5,11 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Traits\AddressTrait;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
+use \RuntimeException;
 
 /**
  * Property
@@ -20,6 +22,15 @@ class Property extends Base
 {
     use AddressTrait {
         getFullAddress as fullAddress;
+    }
+
+    /**
+     * This method is needed only for SonataAdminBundle, please don't use it.
+     * @return bool
+     */
+    public function getIsMultipleBuildings()
+    {
+        return $this->isMultipleBuildings();
     }
 
     public function getShrinkAddress($length = ShorteningAddressUtility::MAX_LENGTH)
@@ -264,6 +275,7 @@ class Property extends Base
                 return true;
             }
         }
+
 
         return false;
     }

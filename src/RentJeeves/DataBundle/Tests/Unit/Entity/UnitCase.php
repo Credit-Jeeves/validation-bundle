@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\DataBundle\Tests\Entity;
+namespace RentJeeves\DataBundle\Tests\Unit\Entity;
 
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -11,7 +11,7 @@ class UnitCase extends BaseTestCase
     /**
      * @return array
      */
-    public function providerForgetActualName()
+    public function providerForGetActualName()
     {
         return [
             [ApiIntegrationType::RESMAN, 'A1', 'A1', false],
@@ -25,7 +25,7 @@ class UnitCase extends BaseTestCase
 
     /**
      * @test
-     * @dataProvider providerForgetActualName
+     * @dataProvider providerForGetActualName
      *
      * @param string $apiIntegrationType
      * @param string $unitName
