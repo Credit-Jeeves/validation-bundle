@@ -15,6 +15,11 @@ fixtures:
     holding:        rjHolding_1
     type:           rent
     mailingAddressName: test9_group
+    zip: 11219
+    city: New York
+    state: NY
+    streetAddress1: 5721 12th Ave, Brooklyn
+    streetAddress2: '#11-a'
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_3:

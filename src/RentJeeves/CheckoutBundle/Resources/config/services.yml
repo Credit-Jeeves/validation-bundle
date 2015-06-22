@@ -108,6 +108,16 @@ services:
         calls:
             - [setDefaultBusinessId, ["%aci.collect_pay.business_id%"]]
 
+    payment_processor.aci.pay_anyone.payment_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\PaymentManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+        calls:
+            - [setConfig, ["%aci.pay_anyone.default_achAccount%"]]
+
     payment_processor.aci.pay_anyone.report_loader:
         class: %payment_processor.aci.pay_anyone.report_loader.class%
         public: false

@@ -76,7 +76,7 @@ class PaymentManager extends AbstractManager
             $transaction->setIsSuccessful(false);
             $this->em->persist($transaction);
             $this->em->flush();
-            throw new $e();
+            throw $e;
         }
 
         if (!$request->getIsSuccessful()) {

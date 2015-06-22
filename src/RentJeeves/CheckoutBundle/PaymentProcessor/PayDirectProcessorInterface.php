@@ -21,7 +21,7 @@ interface PayDirectProcessorInterface
      *
      * @param Order $order
      *
-     * @return boolean
+     * @return bool
      */
     public function cancelOrder(Order $order);
 
