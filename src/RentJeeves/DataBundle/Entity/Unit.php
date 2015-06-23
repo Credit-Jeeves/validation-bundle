@@ -38,22 +38,28 @@ class Unit extends Base
      */
     public function getActualName()
     {
-        $holding = $this->getGroup()->getHolding();
-        $isIntegrateWithMri = $holding && $apiIntegrationType = $holding->getApiIntegrationType();
+        $isIntegratedWithMri = $this->isIntegratedWithMri();
         /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
-        if ($isIntegrateWithMri &&
-            ($apiIntegrationType === ApiIntegrationType::MRI && !$this->getProperty()->isMultipleBuildings())
-        ) {
+        if ($isIntegratedWithMri &&!$this->getProperty()->isMultipleBuildings()) {
             $names = explode('_', $this->name);
 
             return end($names);
-        } elseif ($isIntegrateWithMri &&
-            ($apiIntegrationType === ApiIntegrationType::MRI && $this->getProperty()->isMultipleBuildings())
-        ) {
+        } elseif ($isIntegratedWithMri && $this->getProperty()->isMultipleBuildings()) {
             return str_replace(['_'], [''], $this->name);
         }
 
         return $this->name;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isIntegratedWithMri()
+    {
+        $holding = $this->getGroup() ? $this->getGroup()->getHolding() : null;
+        $apiIntegrationType = $holding ? $holding->getApiIntegrationType() : null;
+
+        return $apiIntegrationType === ApiIntegrationType::MRI;
     }
 
     public function __toString()

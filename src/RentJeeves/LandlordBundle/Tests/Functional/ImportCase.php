@@ -112,7 +112,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldGetMappingForImport()
     {
@@ -135,7 +135,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldImportFile()
     {
@@ -357,7 +357,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @depends shouldImportFile
      */
     public function shouldImportFileWithCheckboxOnlyNewAndException()
@@ -598,7 +598,7 @@ class ImportCase extends ImportBaseAbstract
 
     /**
      * @depends createContractFromWaiting
-     * @test
+     * #test
      */
     public function checkFindingUserByResidentId()
     {
@@ -664,7 +664,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function checkFormatDate()
     {
@@ -755,7 +755,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function importMultipleProperties()
     {
@@ -878,7 +878,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @depends importMultipleProperties
      */
     public function signUpFromImportedWaitingContract()
@@ -955,7 +955,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function alreadyHaveAccount()
     {
@@ -1030,7 +1030,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @depends alreadyHaveAccount
      */
     public function checkMutchedUser()
@@ -1068,7 +1068,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function matchWaitingContract()
     {
@@ -1158,7 +1158,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function matchWaitingContractWithMoveContract()
     {
@@ -1260,7 +1260,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function duplicateResidentIdShouldBeSkippedWithError()
     {
@@ -1312,7 +1312,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function yardiBaseImport()
     {
@@ -1391,7 +1391,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @depends yardiBaseImport
      */
     public function yardiBaseImportOnlyException()
@@ -1416,7 +1416,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function skippedMessageAndinfoDateInvalid()
     {
@@ -1484,7 +1484,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function setsMatchingFieldsForImport()
     {
@@ -1545,7 +1545,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @dataProvider providerForShouldCreateOperation
      */
     public function shouldCreateOperation($isFirstRunTest)
@@ -1631,7 +1631,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function importMultipleGroups()
     {
@@ -1694,7 +1694,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldOnlyNewAndException()
     {
@@ -1753,7 +1753,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldGetException()
     {
@@ -1827,7 +1827,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldImportPromasExtraField()
     {
@@ -1924,7 +1924,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldCreateContractFromWaitingOnOnlyNewAndException()
     {
@@ -1977,7 +1977,7 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function mriBaseImport()
     {
