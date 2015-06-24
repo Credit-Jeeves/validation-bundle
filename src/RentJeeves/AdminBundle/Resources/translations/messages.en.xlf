@@ -182,6 +182,10 @@
                 <source>admin.late_report.links.contract</source>
                 <target>Contract</target>
             </trans-unit>
+            <trans-unit id="admin.late_report.links.operations">
+                <source>admin.late_report.links.operations</source>
+                <target>Operations</target>
+            </trans-unit>
             <trans-unit id="admin.late_report.transunion.status">
                 <source>admin.late_report.transunion.status</source>
                 <target>Status (Field 17A)</target>
@@ -221,6 +225,10 @@
             <trans-unit id="admin.late_report.emails_sent" extype="json">
                 <source>admin.late_report.emails_sent</source>
                 <target>Emails have been sent!</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.choose_contract" extype="json">
+                <source>admin.late_report.choose_contract</source>
+                <target>Choose a contract please</target>
             </trans-unit>
         </body>
     </file>

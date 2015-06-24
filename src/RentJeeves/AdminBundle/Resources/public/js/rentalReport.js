@@ -10,29 +10,34 @@ jQuery(document).ready(function ($) {
 
     $('#form_send_notification').submit(function () {
         var formData = $('#form_send_notification').serializeArray();
-        var url = $('#form_send_notification').attr('action');
-        var month = $('#rental_report_month_month').val();
-        $('#form_send_notification').showOverlay();
-        formData.push({
-            'name': 'month',
-            'value': month
-        });
+        // form should have at least 1 contract id selected. One action is always selected.
+        if (formData.length > 1) {
+            var url = $('#form_send_notification').attr('action');
+            var month = $('#rental_report_month_month').val();
+            $('#form_send_notification').showOverlay();
+            formData.push({
+                'name': 'month',
+                'value': month
+            });
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            timeout: 60000, // 30 secs
-            dataType: 'json',
-            data: jQuery.param(formData, false),
-            error: function() {
-                $('#form_send_notification').hideOverlay();
-                alert(Translator.trans('admin.late_report.error'));
-            },
-            success: function() {
-                $('#form_send_notification').hideOverlay();
-                alert(Translator.trans('admin.late_report.emails_sent'));
-            }
-        });
+            $.ajax({
+                url: url,
+                type: 'POST',
+                timeout: 60000, // 30 secs
+                dataType: 'json',
+                data: jQuery.param(formData, false),
+                error: function () {
+                    $('#form_send_notification').hideOverlay();
+                    alert(Translator.trans('admin.late_report.error'));
+                },
+                success: function () {
+                    $('#form_send_notification').hideOverlay();
+                    alert(Translator.trans('admin.late_report.emails_sent'));
+                }
+            });
+        } else {
+            alert(Translator.trans('admin.late_report.choose_contract'));
+        }
 
         return false;
     });
