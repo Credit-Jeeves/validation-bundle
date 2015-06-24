@@ -43,6 +43,6 @@ class UnitCase extends BaseTestCase
         $unit->setName($unitName);
         $unit->getGroup()->getHolding()->setApiIntegrationType($apiIntegrationType);
 
-        $this->assertEquals($unitNameResult, $unit->getActualName());
+        $this->assertEquals($unitNameResult, $unit->getName());
     }
 }

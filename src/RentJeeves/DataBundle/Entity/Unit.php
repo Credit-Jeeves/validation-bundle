@@ -28,16 +28,6 @@ class Unit extends Base
             return '';
         }
 
-        return $name;
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("name")
-     * @Serializer\Groups({"AdminUnit"})
-     */
-    public function getActualName()
-    {
         $isIntegratedWithMri = $this->isIntegratedWithMri();
         /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
         if ($isIntegratedWithMri &&!$this->getProperty()->isMultipleBuildings()) {
@@ -48,6 +38,16 @@ class Unit extends Base
             return str_replace(['_'], [''], $this->name);
         }
 
+        return $name;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("name")
+     * @Serializer\Groups({"AdminUnit"})
+     */
+    public function getActualName()
+    {
         return $this->name;
     }
 
