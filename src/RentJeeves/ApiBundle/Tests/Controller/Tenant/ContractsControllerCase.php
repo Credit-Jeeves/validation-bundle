@@ -87,7 +87,7 @@ class ContractsControllerCase extends BaseApiTestCase
             $answerFromApi
         );
 
-        $mailingAddress =  $answerFromApi['mailing_address'];
+        $mailingAddress = $answerFromApi['mailing_address'];
         $this->assertEquals(
             $contractInDB->getGroup()->getMailingAddressName(),
             $mailingAddress['name']
