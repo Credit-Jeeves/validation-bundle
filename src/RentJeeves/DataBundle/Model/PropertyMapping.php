@@ -69,7 +69,7 @@ abstract class PropertyMapping
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[A-Za-z_0-9]{1,128}$/",
+     *     pattern = "/^[A-Za-z_0-9\-]{1,128}$/",
      *     message = "import.error.propertyId",
      *     groups = {
      *         "import"
@@ -130,6 +130,7 @@ abstract class PropertyMapping
     public function setHolding(Holding $holding)
     {
         $this->holding = $holding;
+
         return $this;
     }
 
