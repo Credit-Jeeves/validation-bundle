@@ -7,6 +7,11 @@ fixtures:
     type:           rent
     code:           DXC6KXOAGX
     mailingAddressName: test7_group
+    street_address_1: 123
+    street_address_2: 7777
+    city: 876
+    state: UI
+    zip: UI
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_2:
@@ -15,6 +20,10 @@ fixtures:
     holding:        rjHolding_1
     type:           rent
     mailingAddressName: test9_group
+    street_address_1: 1123
+    street_address_2: 77727
+    city: 8176
+    state: PI
     zip: 11219
     city: New York
     state: NY
