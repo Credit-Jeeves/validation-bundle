@@ -153,11 +153,13 @@ class OperationRepository extends EntityRepository
         $query->select('operation.paidFor as paid_for');
         $query->innerJoin("operation.order", "ord", Expr\Join::WITH, 'ord.status = :completeStatus');
         $query->where("operation.contract = :contract");
+        $query->andWhere("operation.type = :rent");
         $query->orderBy('operation.paidFor', 'DESC');
         $query->setMaxResults(1);
 
         $query->setParameter('completeStatus', OrderStatus::COMPLETE);
         $query->setParameter('contract', $contract);
+        $query->setParameter('rent', OperationType::RENT);
         $result = $query->getQuery()->getResult();
         if (isset($result[0]['paid_for'])) {
             return $result[0]['paid_for'];

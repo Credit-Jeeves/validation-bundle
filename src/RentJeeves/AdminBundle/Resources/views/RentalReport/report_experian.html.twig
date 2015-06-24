@@ -84,6 +84,10 @@
                                                 <a href="{{ url('admin_rentjeeves_data_contract_edit', {'id': contractData.contract.id}) }}">
                                                     {{ 'admin.late_report.links.contract'|trans }}
                                                 </a>
+                                                |
+                                                <a href="{{ url('admin_creditjeeves_data_operation_list', {'contract_id': contractData.contract.id}) }}">
+                                                    {{ 'admin.late_report.links.operations'|trans }}
+                                                </a>
                                             </td>
                                         </tr>
                                     {% endfor %}
