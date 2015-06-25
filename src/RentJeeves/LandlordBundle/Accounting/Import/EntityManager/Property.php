@@ -61,9 +61,14 @@ trait Property
             return;
         }
 
-        if (isset($this->propertyMappingList[$externalPropertyId])) {
+        $propertyId = $property->getId();
+        if (!empty($propertyId) && !empty($externalPropertyId)) {
+            $keyOfPropertyMapping = sprintf('%s_%s', $property->getId(), $externalPropertyId);
+        }
+
+        if (isset($keyOfPropertyMapping) && isset($this->propertyMappingList[$keyOfPropertyMapping])) {
             $this->currentImportModel->setPropertyMapping(
-                $this->propertyMappingList[$externalPropertyId]
+                $this->propertyMappingList[$keyOfPropertyMapping]
             );
 
             return;
@@ -92,7 +97,10 @@ trait Property
         $propertyMapping->setExternalPropertyId($row[Mapping::KEY_EXTERNAL_PROPERTY_ID]);
         $propertyMapping->setHolding($holding);
 
-        $this->propertyMappingList[$externalPropertyId] = $propertyMapping;
+        if (isset($keyOfPropertyMapping)) {
+            $this->propertyMappingList[$keyOfPropertyMapping] = $propertyMapping;
+        }
+
         $this->currentImportModel->setPropertyMapping($propertyMapping);
     }
 

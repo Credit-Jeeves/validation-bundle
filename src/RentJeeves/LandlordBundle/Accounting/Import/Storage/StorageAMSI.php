@@ -49,7 +49,8 @@ class StorageAMSI extends ExternalApiStorage
             15 => Mapping::KEY_CITY,
             16 => Mapping::KEY_STREET,
             17 => Mapping::KEY_ZIP,
-            18 => Mapping::KEY_STATE
+            18 => Mapping::KEY_STATE,
+            19 => Mapping::KEY_EXTERNAL_PROPERTY_ID
         ];
 
         $this->writeCsvToFile($mapping);
@@ -127,7 +128,8 @@ class StorageAMSI extends ExternalApiStorage
                     $city,
                     $street,
                     $zip,
-                    $state
+                    $state,
+                    $this->getImportExternalPropertyId()
                 ];
 
                 $this->writeCsvToFile($data);
