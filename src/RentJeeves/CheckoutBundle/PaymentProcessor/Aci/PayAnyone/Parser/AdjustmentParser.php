@@ -5,6 +5,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Parser;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Payment;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Report as AdjustmentReport;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Report;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\ReturnCode;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectDepositReportTransaction;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectReversalReportTransaction;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReportTransaction;
@@ -43,14 +44,16 @@ class AdjustmentParser extends AbstractParser
     protected function getDepositTransactions(Report $report)
     {
         $depositTransactions = [];
-        /** @var Payment $payment */
-        foreach ($report->getOriginator()->getDepositTransactions()->getPayments() as $payment) {
-            $newDepositTransaction = new PayDirectDepositReportTransaction();
-            $newDepositTransaction->setDepositDate($report->getDepositDate());
-            $newDepositTransaction->setAmount($payment->getDetail()->getAmount());
-            $newDepositTransaction->setTransactionId($payment->getDetail()->getTransactionId());
+        if (null !== $transactions = $report->getOriginator()->getDepositTransactions()) {
+            /** @var Payment $payment */
+            foreach ($transactions->getPayments() as $payment) {
+                $newDepositTransaction = new PayDirectDepositReportTransaction();
+                $newDepositTransaction->setDepositDate($report->getDepositDate());
+                $newDepositTransaction->setAmount($payment->getDetail()->getAmount());
+                $newDepositTransaction->setTransactionId($payment->getDetail()->getTransactionId());
 
-            $depositTransactions[] = $newDepositTransaction;
+                $depositTransactions[] = $newDepositTransaction;
+            }
         }
 
         return $depositTransactions;

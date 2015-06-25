@@ -202,11 +202,15 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
     protected function archiveRemoteFile($remoteFile)
     {
         $remoteFileName = basename($remoteFile);
-        $archiveFilename = sprintf('%s/%s', $this->getSftpPathToRemoteDir('/archive'), $remoteFileName);
+        $pathToArchiveDir = $this->getSftpPathToRemoteDir('/archive');
+        $archiveFilename = sprintf('%s/%s', $pathToArchiveDir, $remoteFileName);
 
         $this->logger->debug(sprintf('ACI: Trying to archive remote file "%s".', $archiveFilename));
+        $filesystem = new Filesystem();
         try {
-            $filesystem = new Filesystem();
+            if (false === is_dir($this->getSftpPathToRemoteDir('/archive'))) {
+                $filesystem->mkdir($pathToArchiveDir);
+            }
             $filesystem->rename($remoteFile, $archiveFilename);
         } catch (\Exception $e) {
             $this->logger->debug(

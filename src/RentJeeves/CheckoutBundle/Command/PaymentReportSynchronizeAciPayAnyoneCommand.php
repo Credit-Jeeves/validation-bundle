@@ -34,7 +34,7 @@ class PaymentReportSynchronizeAciPayAnyoneCommand extends ContainerAwareCommand
      */
     protected function getAciPayAnyonePaymentProcessor()
     {
-        return $this->getContainer()->get('payment_processor.aci.pay_anyone');
+        return $this->getContainer()->get('payment_processor.aci_pay_anyone');
     }
 
     /**

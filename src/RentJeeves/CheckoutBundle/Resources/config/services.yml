@@ -161,6 +161,3 @@ services:
         arguments:
             - %aci.pay_anyone.report_path%
             - @logger
-
-    payment_processor.aci.pay_anyone:
-        class: RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone
