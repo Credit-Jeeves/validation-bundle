@@ -29,8 +29,9 @@ class Unit extends Base
         }
 
         $isIntegratedWithMri = $this->isIntegratedWithMri();
+
         /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
-        if ($isIntegratedWithMri &&!$this->getProperty()->isMultipleBuildings()) {
+        if ($isIntegratedWithMri && !$this->getProperty()->isMultipleBuildings()) {
             $names = explode('_', $this->name);
 
             return end($names);
