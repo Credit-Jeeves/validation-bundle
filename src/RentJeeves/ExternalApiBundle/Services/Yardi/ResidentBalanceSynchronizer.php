@@ -126,6 +126,13 @@ class ResidentBalanceSynchronizer
         return $this->em->getRepository('DataBundle:Holding')->findHoldingsForUpdatingBalanceYardi();
     }
 
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param ResidentTransactionPropertyCustomer $resident
+     * @return Contract
+     * @throws Exception
+     */
     protected function getContract(Holding $holding, Property $property, ResidentTransactionPropertyCustomer $resident)
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
@@ -224,6 +231,17 @@ class ResidentBalanceSynchronizer
 
             $balance = $this->calcResidentBalance($resident);
             $contract->setIntegratedBalance($balance);
+            $externalLeaseId = $contract->getExternalLeaseId();
+            if (empty($externalLeaseId)) {
+                $contract->setExternalLeaseId($resident->getLeaseId());
+                $this->logMessage(
+                    sprintf(
+                        'Contract #%s externalLeaseId has been updated. ExternalLeaseId #%s',
+                        $contract->getId(),
+                        $resident->getLeaseId()
+                    )
+                );
+            }
             $this->logMessage(
                 sprintf(
                     "Contract #%s has been updated. Now the balance is $%s",

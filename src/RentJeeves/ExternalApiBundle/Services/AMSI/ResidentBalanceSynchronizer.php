@@ -266,7 +266,10 @@ class ResidentBalanceSynchronizer
             $disallow = PaymentAccepted::DO_NOT_ACCEPT;
         }
         $contract->setPaymentAccepted($disallow);
-        $contract->setExternalLeaseId($lease->getExternalUnitId());
+        $currentExternalLeaseId = $contract->getExternalLeaseId();
+        if (empty($currentExternalLeaseId)) {
+            $contract->setExternalLeaseId($lease->getExternalUnitId());
+        }
         $contract->setIntegratedBalance($balance);
         $this->logMessage(
             sprintf(
