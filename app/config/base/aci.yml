@@ -5,14 +5,14 @@ parameters:
     aci.collect_pay.sftp.port: 10022
     aci.collect_pay.sftp.login: 'rntrtest'
     aci.collect_pay.sftp.password: 'r7QebTAa'
-    aci.collect_pay.report_path: '/tmp/'
+    aci.collect_pay.report_path: '/var/renttrack/aci/collect_pay'
     aci.collect_pay.business_id: 563376
 
     aci.pay_anyone.sftp.host: transfer.princetonecom.com
     aci.pay_anyone.sftp.port: 10022
     aci.pay_anyone.sftp.login: 'renttest'
     aci.pay_anyone.sftp.password: 'W0esf4t6'
-    aci.pay_anyone.report_path: '/tmp/'
+    aci.pay_anyone.report_path: '/var/renttrack/aci/pay_anyone'
 
     aci.pay_anyone.default_achAccount:
         routingNumber: '044000037'
