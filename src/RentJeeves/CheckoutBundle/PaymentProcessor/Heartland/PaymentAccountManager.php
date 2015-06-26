@@ -15,6 +15,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigu
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
+use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
@@ -94,15 +95,20 @@ class PaymentAccountManager
             $request->getAccountHolderData()->setLastName($lastName);
             $request->setRoutingNumber($paymentAccountData->get('routing_number'));
             $request->setAccountNumber($paymentAccountData->get('account_number'));
-            $ACHDepositType = $paymentAccountData->get('ach_deposit_type');
 
-            if (ACHDepositType::UNASSIGNED == $ACHDepositType) {
+            if (BankAccountType::BUSINESS_CHECKING === $paymentAccountEntity->getBankAccountType()) {
                 $request->setACHDepositType(ACHDepositType::CHECKING);
                 $request->setACHAccountType(ACHAccountType::BUSINESS);
             } else {
-                $request->setACHDepositType($ACHDepositType);
                 $request->setACHAccountType(ACHAccountType::PERSONAL);
+
+                if (BankAccountType::SAVINGS == $paymentAccountEntity->getBankAccountType()) {
+                    $request->setACHDepositType(ACHDepositType::SAVINGS);
+                } else {
+                    $request->setACHDepositType(ACHDepositType::CHECKING);
+                }
             }
+
             $request->setPaymentMethod(TokenPaymentMethod::ACH);
         }
 

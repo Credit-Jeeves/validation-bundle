@@ -359,19 +359,19 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord $landlord
+     * @param User     $user
      * @param Group    $group
      *
      * @return bool
      */
-    public function merchantNameSetuped(Landlord $landlord, Group $group)
+    public function merchantNameSetuped(User $user, Group $group)
     {
         $vars = [
-            'fullNameLandlord' => $landlord->getFullName(),
+            'fullNameLandlord' => $user->getFullName(),
             'groupName' => $group->getName(),
         ];
 
-        return $this->sendBaseLetter('rjMerchantNameSetuped', $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter('rjMerchantNameSetuped', $vars, $user->getEmail(), $user->getCulture());
     }
 
     /**
@@ -626,6 +626,46 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             $template = 'rjYardiPaymentAcceptedTurnOff',
             ['TenantName' => $tenant->getFullName()],
+            $tenant->getEmail(),
+            $tenant->getCulture()
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param Contract[] $contracts
+     * @param string $month
+     *
+     * @return bool
+     */
+    public function sendLateReportingReviewEmailToLandlord(Landlord $landlord, array $contracts, $month)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjLateReportingLandlord',
+            [
+                'landlordName' => $landlord->getFullName(),
+                'contracts' => $contracts,
+                'month' => $month,
+            ],
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param string $month
+     *
+     * @return bool
+     */
+    public function sendLateReportingReviewEmailToTenant(Tenant $tenant, $month)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjLateReportingTenant',
+            [
+                'tenantName' => $tenant->getFullName(),
+                'month' => $month,
+            ],
             $tenant->getEmail(),
             $tenant->getCulture()
         );

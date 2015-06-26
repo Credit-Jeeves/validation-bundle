@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
@@ -124,6 +125,15 @@ abstract class PaymentAccount
     protected $ccExpiration;
 
     /**
+     * @ORM\Column(
+     *      name="bank_account_type",
+     *      type="BankAccountType",
+     *      nullable=true
+     * )
+     */
+    protected $bankAccountType;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -226,12 +236,9 @@ abstract class PaymentAccount
     }
 
     /**
-     * Set Tenant
-     *
-     * @param  \RentJeeves\DataBundle\Entity\Tenant $user
-     * @return PaymentAccount
+     * {@inheritdoc}
      */
-    public function setUser(\RentJeeves\DataBundle\Entity\Tenant $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -415,6 +422,29 @@ abstract class PaymentAccount
     public function getCcExpiration()
     {
         return $this->ccExpiration;
+    }
+
+    /**
+     * Set ACH Type for bank account only
+     *
+     * @param string $bankAccountType
+     * @see BankAccountType
+     * @return PaymentAccount
+     */
+    public function setBankAccountType($bankAccountType)
+    {
+        $this->bankAccountType = $bankAccountType;
+    }
+
+    /**
+     * Get ACH Type for bank account only
+     *
+     * @return string
+     * @see BankAccountType
+     */
+    public function getBankAccountType()
+    {
+        return $this->bankAccountType;
     }
 
     /**

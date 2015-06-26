@@ -51,7 +51,7 @@ class ResidentDataManager
 
     /**
      * @param $externalPropertyId
-     * @return array
+     * @return RtCustomer[]
      */
     public function getResidents($externalPropertyId)
     {

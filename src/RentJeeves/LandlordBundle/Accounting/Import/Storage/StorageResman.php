@@ -5,8 +5,6 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
-use RentJeeves\ExternalApiBundle\Model\ResMan\RtServiceTransactions;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Transactions;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
@@ -92,17 +90,7 @@ class StorageResman extends ExternalApiStorage
                 $startAt = $this->getDateString($customerUser->getLease()->getLeaseFromDate());
                 $finishAt = $this->getDateString($customerUser->getLease()->getLeaseToDate());
                 $moveOut = $this->getDateString($customerUser->getLease()->getActualMoveOut());
-                $paymentAccepted = strtolower($customerBase->getPaymentAccepted());
-                /**
-                 * Possible Values are:
-                 * Yes - All forms of payment accepted
-                 * No - Online payments are not accepted
-                 * Certified Funds Only - Only payments guaranteed to be successful are allowed
-                 * (Credit Card, Debit Card, Money Order, etc)
-                 *
-                 * Currently we don't work with 3 point - it's will be seperated task
-                 */
-                $paymentAccepted = ('yes' === $paymentAccepted) ? PaymentAccepted::ANY : PaymentAccepted::DO_NOT_ACCEPT;
+                $paymentAccepted = $customerBase->getRentTrackPaymentAccepted();
                 $today = new \DateTime();
                 $finishAtObject = \DateTime::createFromFormat('Y-m-d', $finishAt);
 
@@ -125,7 +113,7 @@ class StorageResman extends ExternalApiStorage
                     $customerUser->getUserName()->getLastName(),
                     $address->getEmail(),
                     $moveOut,
-                    $this->getBalance($customerBase->getRtServiceTransactions()),
+                    $customerBase->getRentTrackBalance(),
                     $monthToMonth,
                     $paymentAccepted,
                     $externalLeaseId,
@@ -142,42 +130,6 @@ class StorageResman extends ExternalApiStorage
         }
 
         return true;
-    }
-
-    /**
-     * @param  RtServiceTransactions $rtServiceTransactions
-     * @return float|int
-     */
-    protected function getBalance(RtServiceTransactions $rtServiceTransactions)
-    {
-        $transactions = $rtServiceTransactions->getTransactions();
-        $balance = 0;
-
-        /**
-         * @var $transaction Transactions
-         */
-        foreach ($transactions as $transaction) {
-
-            $charge = $transaction->getCharge();
-            $payment = $transaction->getPayment();
-            $credit = $transaction->getConcession();
-
-            if (!empty($charge)) {
-                $balance += $charge->getDetail()->getAmount();
-                continue;
-            }
-
-            if (!empty($payment)) {
-                $balance -= $payment->getDetail()->getAmount();
-                continue;
-            }
-
-            if (!empty($credit)) {
-                $balance -= $credit->getDetail()->getAmount();
-            }
-        }
-
-        return $balance;
     }
 
     /**

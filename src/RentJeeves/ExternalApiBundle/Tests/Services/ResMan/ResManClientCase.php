@@ -22,7 +22,7 @@ class ResManClientCase extends Base
 
     const EXTERNAL_PROPERTY_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d';
 
-    const RESIDENT_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
+    const RESIDENT_ID = '510f76fc-d9d1-4fb7-bb95-ba2d2adc717f';
 
     const EXTERNAL_LEASE_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
 
@@ -195,7 +195,7 @@ class ResManClientCase extends Base
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
 
-        $result = $resManClient->closeBatch(self::EXTERNAL_PROPERTY_ID, $batchId);
+        $result = $resManClient->closeBatch($batchId, self::EXTERNAL_PROPERTY_ID);
 
         $this->assertTrue($result);
     }

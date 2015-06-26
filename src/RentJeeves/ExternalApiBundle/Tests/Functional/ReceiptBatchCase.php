@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Functional;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ReceiptBatchSender;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\PaymentClientCase;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class ReceiptBatchCase extends BaseTestCase
@@ -23,7 +24,7 @@ class ReceiptBatchCase extends BaseTestCase
         $tenant11 = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => 'tenant11@example.com']);
         /** @var ResidentMapping $residentMapping */
         $residentMapping = $tenant11->getResidentsMapping()->first();
-        $residentMapping->setResidentId('t0012027');
+        $residentMapping->setResidentId(PaymentClientCase::RESIDENT_ID);
         $em->flush($residentMapping);
 
         static::$kernel = null;

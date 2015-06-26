@@ -1,0 +1,143 @@
+<?php
+
+namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\CollectPay;
+
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportArchiver;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\LockboxParser;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Report\DepositReportTransaction;
+use RentJeeves\TestBundle\BaseTestCase;
+
+class ReportLoaderCase extends BaseTestCase
+{
+    /**
+     * @test
+     */
+    public function shouldCreateAciReportLoaderObjectAndObjectInstanceofRightClass()
+    {
+        $logger = $this->getLoggerMock();
+        $downloader = $this->getAciSftpFilesDownloaderMock();
+        $decoder = $this->getAciPgpDecoderMock();
+        $archiver = $this->getAciReportArchiverMock();
+        $parser = $this->getLockboxParserMock();
+
+        $aciLoader = new ReportLoader($downloader, $decoder, $archiver, $parser, $logger);
+
+        $this->assertInstanceOf(
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader',
+            $aciLoader
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldLoadReport()
+    {
+        $pathToFile = $this->getFileLocator()->locate(
+            '@RjCheckoutBundle/Tests/Fixtures/Aci/AciReportLoader/testForLoaderAndDownloader.txt'
+        );
+        $reportPath = substr($pathToFile, 0, strripos($pathToFile, '/'));
+
+        $downloader = $this->getAciSftpFilesDownloaderMock();
+        $downloader->expects($this->once())
+            ->method('download');
+        $downloader->expects($this->once())
+            ->method('getDownloadDirPath')
+            ->will($this->returnValue($reportPath));
+
+        $decoder = $this->getAciPgpDecoderMock();
+        $decoder->expects($this->once())
+            ->method('decode')
+            ->with($pathToFile)
+            ->will($this->returnValue($encodeData = 'TestData'));
+
+        $transaction = new DepositReportTransaction();
+
+        $parser = $this->getLockboxParserMock();
+        $parser->expects($this->once())
+            ->method('parse')
+            ->with($encodeData)
+            ->will($this->returnValue([$transaction]));
+
+        $archiver = $this->getAciReportArchiverMock();
+        $archiver->expects($this->once())
+            ->method('archive')
+            ->with($pathToFile);
+
+        $logger = $this->getLoggerMock();
+
+        $aciLoader = new ReportLoader($downloader, $decoder, $archiver, $parser, $logger);
+        $report = $aciLoader->loadReport();
+
+        $this->assertEquals($transaction, $report->getTransactions()[0]);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Monolog\Logger
+     */
+    protected function getLoggerMock()
+    {
+        return $this->getMock('\Monolog\Logger', [], [], '', false);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|AciSftpFilesDownloader
+     */
+    protected function getAciSftpFilesDownloaderMock()
+    {
+        return $this->getMock(
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader',
+            [],
+            [],
+            '',
+            false
+        );
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|AciPgpDecoder
+     */
+    protected function getAciPgpDecoderMock()
+    {
+        return $this->getMock(
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder',
+            [],
+            [],
+            '',
+            false
+        );
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|AciReportArchiver
+     */
+    protected function getAciReportArchiverMock()
+    {
+        return $this->getMock('\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportArchiver', [], [], '', false);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|LockboxParser
+     */
+    protected function getLockboxParserMock()
+    {
+        return $this->getMock(
+            '\RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\LockboxParser',
+            [],
+            [],
+            '',
+            false
+        );
+    }
+
+    /**
+     * @return \Symfony\Component\HttpKernel\Config\FileLocator
+     */
+    protected function getFileLocator()
+    {
+        return $this->getContainer()->get('file_locator');
+    }
+}

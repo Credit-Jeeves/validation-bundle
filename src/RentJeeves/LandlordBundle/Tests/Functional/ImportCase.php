@@ -775,7 +775,7 @@ class ImportCase extends ImportBaseAbstract
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
-        $dateSelector->selectOption('m/d/y');
+        $dateSelector->selectOption('m/d/y');//9/24/98
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -846,7 +846,7 @@ class ImportCase extends ImportBaseAbstract
         // third page: verify no errors and finish
         $submitImportFile->click();
 
-        $this->waitReviewAndPost(false);
+        $this->waitReviewAndPost();
         $this->waitRedirectToSummaryPage();
 
         //Check notify tenant invite for new user

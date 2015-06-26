@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManager;
 use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
@@ -68,6 +67,7 @@ class ResidentBalanceSynchronizer
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
+
             return $this->logMessage($e->getMessage());
         }
     }
@@ -123,9 +123,16 @@ class ResidentBalanceSynchronizer
 
     protected function getHoldings()
     {
-        return $this->em->getRepository('DataBundle:Holding')->findHoldingsForUpdatingBalance();
+        return $this->em->getRepository('DataBundle:Holding')->findHoldingsForUpdatingBalanceYardi();
     }
 
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param ResidentTransactionPropertyCustomer $resident
+     * @return Contract
+     * @throws Exception
+     */
     protected function getContract(Holding $holding, Property $property, ResidentTransactionPropertyCustomer $resident)
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
@@ -158,6 +165,7 @@ class ResidentBalanceSynchronizer
                     $residentId
                 )
             );
+
             return null;
         }
 
@@ -175,6 +183,7 @@ class ResidentBalanceSynchronizer
                     $residentId
                 )
             );
+
             return $contract;
         }
 
@@ -222,6 +231,17 @@ class ResidentBalanceSynchronizer
 
             $balance = $this->calcResidentBalance($resident);
             $contract->setIntegratedBalance($balance);
+            $externalLeaseId = $contract->getExternalLeaseId();
+            if (empty($externalLeaseId)) {
+                $contract->setExternalLeaseId($resident->getLeaseId());
+                $this->logMessage(
+                    sprintf(
+                        'Contract #%s externalLeaseId has been updated. ExternalLeaseId #%s',
+                        $contract->getId(),
+                        $resident->getLeaseId()
+                    )
+                );
+            }
             $this->logMessage(
                 sprintf(
                     "Contract #%s has been updated. Now the balance is $%s",

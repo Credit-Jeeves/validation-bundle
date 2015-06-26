@@ -85,6 +85,11 @@ class UnitRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param int $id
+     * @return Unit
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getUnitWithLandlord($id)
     {
         return $this
@@ -97,13 +102,35 @@ class UnitRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Return Units belongs to this Property with mapped Groups
+     *
+     * @param Property $property
+     * @return array<Unit>
+     */
+    public function getUnitsByPropertyWithGroup(Property $property)
+    {
+        return $this
+            ->createQueryBuilder('u')
+            ->innerJoin('u.property', 'p')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('u.property = :property')
+            ->setParameter('property', $property)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param array $params
+     * @return array<Unit>
+     */
     public function getUnitsByAddress($params)
     {
-        $number = $params['number'];
-        $street = $params['street'];
-        $state = $params['state'];
-        $city = $params['city'];
-        $zip = $params['zip'];
+        $number = isset($params['number']) ? $params['number'] : '';
+        $street = isset($params['street']) ? $params['street'] : '';
+        $state = isset($params['state']) ? $params['state'] : '';
+        $city = isset($params['city']) ? $params['city'] : '';
+        $zip = isset($params['zip']) ? $params['zip'] : '';
 
         return $this
             ->createQueryBuilder('u')

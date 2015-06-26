@@ -29,6 +29,23 @@ class OperationAdmin extends Admin
         $collection->remove('create');
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+
+        $id = $this->getRequest()->get('contract_id', null);
+        if (!empty($id)) {
+            $query->andWhere($alias.'.contract = :contract_id');
+            $query->setParameter('contract_id', $id);
+        }
+
+        return $query;
+    }
+
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper

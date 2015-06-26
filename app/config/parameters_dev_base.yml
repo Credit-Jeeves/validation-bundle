@@ -18,6 +18,8 @@ parameters:
 
     google_maps_key: 'AIzaSyBsW5-jPDZ2C-l9d62DVgdvQMerbt0XvNo' # API account with staging@renttrack.com
 
+    aci.collect_pay.business_id: 563376
+
     payment_processor.hps.report_path: /tmp
     heartland:
         env: testing
@@ -29,6 +31,13 @@ parameters:
         businessId: 563375
         login: RentTrackEnrollConnect
         password: KI9DPqXaJ8
+    aci_pay_anyone:
+        sandbox: true
+        acquirerId: 564727
+        login: RentTrackConnectUser
+        password: KwJBDWruMsOL
+        dateClient: 20141006
+        name: RentTrack
 
     login.attempts: 1
     login.delay: 1

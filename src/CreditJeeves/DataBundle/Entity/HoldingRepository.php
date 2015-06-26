@@ -8,24 +8,57 @@ use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 class HoldingRepository extends EntityRepository
 {
 
-    public function findHoldingsForUpdatingBalance()
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForUpdatingBalanceAMSI()
     {
         $query = $this->createQueryBuilder('h');
-        $query->innerJoin('h.yardiSettings', 'ys');
-        $query->where('ys.syncBalance = 1');
+        $query->innerJoin('h.amsiSettings', 's');
+        $query->where('h.apiIntegrationType = :amsi');
+        $query->andWhere('s.syncBalance = 1');
+        $query->setParameter('amsi', ApiIntegrationType::AMSI);
+
         $query = $query->getQuery();
 
         return $query->execute();
     }
 
-    public function findHoldingsWithYardiSettings($start, $limit)
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForUpdatingBalanceYardi()
+    {
+        $query = $this->createQueryBuilder('h');
+        $query->innerJoin('h.yardiSettings', 'ys');
+        $query->where('ys.syncBalance = 1');
+        $query->andWhere('h.apiIntegrationType = :yardi');
+        $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
+
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param integer $start
+     * @param integer $limit
+     * @param string $strategy
+     * @return Holding[]
+     */
+    public function findHoldingsWithYardiSettings($start, $limit, $strategy = null)
     {
         $query = $this->createQueryBuilder('holding');
         $query->innerJoin('holding.yardiSettings', 'yardiSetting');
         $query->where('holding.apiIntegrationType = :yardi');
         $query->andWhere('yardiSetting.postPayments = 1');
-
         $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
+
+        if ($strategy) {
+            $query->andWhere('yardiSetting.synchronizationStrategy = :strategy');
+            $query->setParameter('strategy', $strategy);
+        }
+
         $query->setFirstResult($start);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
@@ -49,5 +82,20 @@ class HoldingRepository extends EntityRepository
             ->setParameter('apiIntegrationType', $apiIntegrationType)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForUpdatingBalanceResMan()
+    {
+        $query = $this->createQueryBuilder('h');
+        $query->innerJoin('h.resManSettings', 's');
+        $query->where('h.apiIntegrationType = :resman');
+        $query->andWhere('s.syncBalance = 1');
+        $query->setParameter('resman', ApiIntegrationType::RESMAN);
+        $query = $query->getQuery();
+
+        return $query->execute();
     }
 }

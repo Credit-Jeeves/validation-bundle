@@ -23,6 +23,7 @@ class OrderStatus extends Enum
     const PENDING = 'pending';
     const REFUNDED = 'refunded';
     const RETURNED = 'returned';
+    const SENDING = 'sending';
 
     public static function getManualAvailableToSet($current)
     {

@@ -103,7 +103,7 @@ class PayCreditTrack
      * Finds payment processor for a given payment account.
      *
      * @param  PaymentAccount                                                        $paymentAccount
-     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface
+     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface
      */
     protected function getPaymentProcessor(PaymentAccount $paymentAccount)
     {

@@ -78,6 +78,7 @@ class ReportLoader
     {
         if (!$reportFiles = $this->findReports(self::DEPOSIT_REPORT_FILENAME_SUFFIX)) {
             $this->logger->alert('HPS: deposit report not found');
+
             return [];
         }
 
@@ -109,6 +110,7 @@ class ReportLoader
     {
         if (!$reportFiles = $this->findReports(self::REVERSAL_REPORT_FILENAME_SUFFIX)) {
             $this->logger->alert('HPS: reversal report not found');
+
             return [];
         }
 

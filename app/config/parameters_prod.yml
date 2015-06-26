@@ -27,6 +27,11 @@ parameters:
         username: RTAPI
         password: $RTapi13
 
+    # aci.collect_pay.sftp.login: 'donotcheckin'      # this is set locally on server
+    # aci.collect_pay.sftp.password: 'donotcheckin'   # this is set locally on server
+    # aci.collect_pay.business_id: donotcheckin       # this is set locally on server
+    # aci.pay_anyone.sftp.login: 'donotcheckin'       # this is set locally on server
+    # aci.pay_anyone.sftp.password: 'donotcheckin'    # this is set locally on server
 
     net_connect.precise_id.url: 'https://ss3.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
     net_connect.precise_id.dbhost: 'PRECISE_ID' #required!

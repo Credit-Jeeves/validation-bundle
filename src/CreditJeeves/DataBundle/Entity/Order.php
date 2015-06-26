@@ -7,11 +7,13 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
+use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
@@ -870,6 +872,14 @@ class Order extends BaseOrder
     }
 
     /**
+     * @return string
+     */
+    public function getBatchId()
+    {
+        return $this->batchId;
+    }
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("UnitID")
      * @Serializer\Groups({"ResMan"})
@@ -1136,5 +1146,29 @@ class Order extends BaseOrder
     public function getExternalBatchId()
     {
         return $this->getCompleteTransaction()->getBatchId();
+    }
+
+    /**
+     * @return OutboundTransaction
+     */
+    public function getDepositOutboundTransaction()
+    {
+        return $this->getOutboundTransactions()->filter(
+            function (OutboundTransaction $transaction) {
+                return OutboundTransactionType::DEPOSIT === $transaction->getType();
+            }
+        )->first();
+    }
+
+    /**
+     * @return OutboundTransaction
+     */
+    public function getReversalOutboundTransaction()
+    {
+        return $this->getOutboundTransactions()->filter(
+            function (OutboundTransaction $transaction) {
+                return OutboundTransactionType::REVERSAL === $transaction->getType();
+            }
+        )->first();
     }
 }

@@ -724,6 +724,9 @@ abstract class HandlerAbstract implements HandlerInterface
     {
         try {
             $tenantEmail = $this->currentImportModel->getTenant()->getEmail();
+            if ($this->currentImportModel->getPropertyMapping()) {
+                $this->flushEntity($this->currentImportModel->getPropertyMapping());
+            }
 
             if (empty($tenantEmail)) {
                 $contractWaiting = $this->getContractWaiting();
@@ -743,10 +746,6 @@ abstract class HandlerAbstract implements HandlerInterface
             $unitMapping = $unit->getUnitMapping();
             if ($unitMapping instanceof UnitMapping) {
                 $this->flushEntity($unitMapping);
-            }
-
-            if ($this->currentImportModel->getPropertyMapping()) {
-                $this->flushEntity($this->currentImportModel->getPropertyMapping());
             }
 
             if (!empty($tenantEmail) && $this->currentImportModel->getHasContractWaiting()) {

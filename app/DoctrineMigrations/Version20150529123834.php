@@ -19,7 +19,7 @@ class Version20150529123834 extends AbstractMigration
                 ADD md5_row_content VARCHAR(32) NOT NULL,
                 DROP row_offset"
         );
-        
+
         $this->addSql(
             "UPDATE rj_import_error
                 SET md5_row_content=md5(row_content)"

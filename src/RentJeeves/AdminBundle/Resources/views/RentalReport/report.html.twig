@@ -1,0 +1,50 @@
+{% extends 'RjAdminBundle::standard_layout.html.twig' %}
+
+{% block breadcrumb %}
+    <li><a href="{{ url('sonata_admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a><span class="divider">/</span></li>
+    <li class="active">{{ 'admin.rental_report'|trans }}</li>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ 'admin.rental_report'|trans }}</h1>
+    {% for flash in app.session.flashbag.get('notice') %}
+        <div class="alert">{{ flash }}</div>
+    {% endfor %}
+    <form method="post" name="rentjeeves_adminbundle_rental_report">
+        <div>
+            {{ form_label(rentalReport.bureau) }}
+            {{ form_widget(rentalReport.bureau) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.type) }}
+            {{ form_widget(rentalReport.type) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.month) }}
+            {{ form_widget(rentalReport.month.month) }}
+            {{ form_widget(rentalReport.month.year) }}
+            {{ form_widget(rentalReport.month.day, {'attr': {'style': 'display:none;'}}) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.startDate) }}
+            {{ form_widget(rentalReport.startDate) }}
+        </div>
+        <div>
+            {{ form_label(rentalReport.endDate) }}
+            {{ form_widget(rentalReport.endDate) }}
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="{{ 'admin.report.generate'|trans }}"/>
+
+        {{ form_rest(rentalReport) }}
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/core/js/jquery.overlay.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/jquery.overlay-ext.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/rjadmin/js/rentalReport.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}" type="text/javascript"></script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages' }) }}"></script>
+{% endblock %}

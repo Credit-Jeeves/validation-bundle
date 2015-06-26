@@ -5,11 +5,9 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Traits\AddressTrait;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
-use \RuntimeException;
 
 /**
  * Property
@@ -24,9 +22,9 @@ class Property extends Base
         getFullAddress as fullAddress;
     }
 
-    public function getShrinkAddress()
+    public function getShrinkAddress($length = ShorteningAddressUtility::MAX_LENGTH)
     {
-        return ShorteningAddressUtility::shrinkAddress($this->getFullAddress());
+        return ShorteningAddressUtility::shrinkAddress($this->getFullAddress(), $length);
     }
 
     public function parseGoogleAddress($data)
@@ -65,6 +63,7 @@ class Property extends Base
                 unset($property['district']);
             }
         }
+
         return $property;
     }
 
@@ -87,6 +86,7 @@ class Property extends Base
                 throw new \Exception("Unknown location from google", 1);
             }
         }
+
         return $property;
     }
 
@@ -95,6 +95,7 @@ class Property extends Base
         foreach ($details as $key => $value) {
             $this->{$key} = $value;
         }
+
         return $this;
     }
 
@@ -113,6 +114,7 @@ class Property extends Base
         } else {
             $item['units'] = $this->getUnits()->count();
         }
+
         return $item;
     }
 
@@ -125,6 +127,7 @@ class Property extends Base
                 $result++;
             }
         }
+
         return $result;
     }
 
@@ -138,6 +141,7 @@ class Property extends Base
             $item['name'] = $unit->getName();
             $result[] = $item;
         }
+
         return $result;
     }
 
@@ -163,6 +167,7 @@ class Property extends Base
         if ($area = $this->getArea()) {
             $result[] = $area;
         }
+
         return implode(', ', $result).' '.$this->getZip();
     }
 
@@ -220,6 +225,7 @@ class Property extends Base
                     )
                 );
             }
+
             return $unit;
         }
 
@@ -258,7 +264,6 @@ class Property extends Base
                 return true;
             }
         }
-
 
         return false;
     }

@@ -2,8 +2,8 @@
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use CreditJeeves\DataBundle\Model\User;
-use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -159,13 +159,13 @@ class PaymentAccountType extends AbstractType
             'ACHDepositType',
             'choice',
             [
-                'mapped' => false,
+                'property_path' => 'bankAccountType',
                 'label' => 'checkout.account_type',
                 'expanded' => true,
                 'choices' => [
-                    ACHDepositTypeEnum::CHECKING => 'checkout.account_type.checking',
-                    ACHDepositTypeEnum::SAVINGS => 'checkout.account_type.savings',
-                    ACHDepositTypeEnum::BUSINESS_CHECKING => 'checkout.account_type.business_checking'
+                    BankAccountType::CHECKING => 'checkout.account_type.checking',
+                    BankAccountType::SAVINGS => 'checkout.account_type.savings',
+                    BankAccountType::BUSINESS_CHECKING => 'checkout.account_type.business_checking'
                 ],
                 'empty_value'  => false,
                 'invalid_message' => 'checkout.error.account_type.invalid',
