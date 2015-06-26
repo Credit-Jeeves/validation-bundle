@@ -64,7 +64,6 @@ abstract class Property
      */
     protected $district;
 
-
     /**
      * @ORM\Column(
      *     name="street",
@@ -224,6 +223,30 @@ abstract class Property
      */
     protected $contractsWaiting;
 
+    /**
+     * @ORM\Column(
+     *     name="is_multiple_buildings",
+     *     type="boolean"
+     * )
+     */
+    protected $isMultipleBuildings = false;
+
+    /**
+     * @return boolean
+     */
+    public function isMultipleBuildings()
+    {
+        return $this->isMultipleBuildings;
+    }
+
+    /**
+     * @param boolean $isMultipleBuildings
+     */
+    public function setIsMultipleBuildings($isMultipleBuildings)
+    {
+        $this->isMultipleBuildings = $isMultipleBuildings;
+    }
+
     public function __construct()
     {
         $this->property_groups = new ArrayCollection();
@@ -283,6 +306,7 @@ abstract class Property
     public function setCountry($country)
     {
         $this->country = $country;
+
         return $this;
     }
 
@@ -305,6 +329,7 @@ abstract class Property
     public function setArea($area)
     {
         $this->area = $area;
+
         return $this;
     }
 
@@ -327,6 +352,7 @@ abstract class Property
     public function setCity($city)
     {
         $this->city = $city;
+
         return $this;
     }
 
@@ -349,6 +375,7 @@ abstract class Property
     public function setDistrict($district)
     {
         $this->district = $district;
+
         return $this;
     }
 
@@ -371,6 +398,7 @@ abstract class Property
     public function setStreet($street)
     {
         $this->street = $street;
+
         return $this;
     }
 
@@ -393,6 +421,7 @@ abstract class Property
     public function setNumber($number)
     {
         $this->number = $number;
+
         return $this;
     }
 
@@ -415,6 +444,7 @@ abstract class Property
     public function setZip($zip)
     {
         $this->zip = $zip;
+
         return $this;
     }
 
@@ -437,6 +467,7 @@ abstract class Property
     public function setJb($jb)
     {
         $this->jb = $jb;
+
         return $this;
     }
 
@@ -459,6 +490,7 @@ abstract class Property
     public function setKb($kb)
     {
         $this->kb = $kb;
+
         return $this;
     }
 
@@ -481,6 +513,7 @@ abstract class Property
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -503,6 +536,7 @@ abstract class Property
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -565,6 +599,7 @@ abstract class Property
         if (!$this->property_groups->contains($group)) {
             $this->property_groups[] = $group;
         }
+
         return $this;
     }
 
@@ -597,6 +632,7 @@ abstract class Property
     public function addUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
     {
         $this->units[] = $unit;
+
         return $this;
     }
 
@@ -629,6 +665,7 @@ abstract class Property
     public function addContract(Contract $contract)
     {
         $this->contracts[] = $contract;
+
         return $this;
     }
 
@@ -655,6 +692,7 @@ abstract class Property
     public function setGoogleReference($google_reference)
     {
         $this->google_reference = $google_reference;
+
         return $this;
     }
 
