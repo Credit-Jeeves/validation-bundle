@@ -37,7 +37,7 @@ class AciReportArchiver
 
         $now = new \DateTime();
         $archiveDir = sprintf('%s/archive/%s/%s', $this->reportPath, $now->format('Y'), $now->format('m'));
-        $archiveFilename = sprintf('%s/%s.%s', $archiveDir, $now->format('d-H-i-s'), $fileExtension);
+        $archiveFilename = sprintf('%s/%s_%s.%s', $archiveDir, $now->format('d-H-i'), uniqid(), $fileExtension);
 
         $this->logger->debug(sprintf('ACI: Trying to archive report "%s".', $filePath));
         try {

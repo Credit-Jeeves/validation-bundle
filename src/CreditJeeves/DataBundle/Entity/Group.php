@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\GroupRepository")
@@ -16,6 +17,78 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
  */
 class Group extends BaseGroup
 {
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\SerializedName("name")
+     * @Serializer\Type("string")
+     * @return string
+     */
+    public function getApiName()
+    {
+        return $this->getMailingAddressName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("street_address_1")
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Type("string")
+     * @return string
+     */
+    public function getApiStreetAddress1()
+    {
+        return $this->getStreetAddress1();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("street_address_2")
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Type("string")
+     * @return string
+     */
+    public function getApiStreetAddress2()
+    {
+        return $this->getStreetAddress2();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("city")
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Type("string")
+     * @return string
+     */
+    public function getApiCity()
+    {
+        return $this->getCity();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("state")
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Type("string")
+     * @return string
+     */
+    public function getApiState()
+    {
+        return $this->getState();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("zip")
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Type("string")
+     * @return string
+     */
+    public function getApiZip()
+    {
+        return $this->getZip();
+    }
+
     /**
      * @return array
      */

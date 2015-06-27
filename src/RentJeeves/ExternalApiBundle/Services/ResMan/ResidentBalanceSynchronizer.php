@@ -255,7 +255,10 @@ class ResidentBalanceSynchronizer
     {
         $contract->setPaymentAccepted($baseCustomer->getRentTrackPaymentAccepted());
         $contract->setIntegratedBalance($baseCustomer->getRentTrackBalance());
-        $contract->setExternalLeaseId($baseCustomer->getCustomerId());
+        $externalLeaseId = $contract->getExternalLeaseId();
+        if (empty($externalLeaseId)) {
+            $contract->setExternalLeaseId($baseCustomer->getCustomerId());
+        }
         $this->logMessage(
             sprintf(
                 'ResMan: payment accepted to %s, balance %s.

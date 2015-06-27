@@ -126,6 +126,8 @@ payum:
     payments:
         aci_collect_pay:
             aci_collect_pay: %aci_collect_pay%
+        aci_pay_anyone:
+            aci_pay_anyone: %aci_pay_anyone%
 
 payum2:
     contexts:

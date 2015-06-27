@@ -149,6 +149,11 @@ class RjGroupAdmin extends Admin
                     ]
                 )
                 ->add('mailingAddressName')
+                ->add('city')
+                ->add('state')
+                ->add('zip')
+                ->add('street_address_1')
+                ->add('street_address_2')
             ->end()
             ->with('Deposit Account')
                 // admin.deposit_account.merchant_name

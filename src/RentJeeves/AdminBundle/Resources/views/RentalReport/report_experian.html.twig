@@ -1,4 +1,4 @@
-{% extends 'RjAdminBundle:Core:report.html.twig' %}
+{% extends 'RjAdminBundle:RentalReport:report.html.twig' %}
 
 {% block breadcrumb %}
     <li><a href="{{ url('sonata_admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a><span class="divider">/</span></li>
@@ -42,20 +42,20 @@
                         <form method="POST" id="form_send_notification" action="{{ url('sonata_admin_rental_report_send') }}">
                             <table class="table table-bordered table-striped">
                                 <thead>
-                                <tr class="sonata-ba-list-field-header">
-                                    <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
-                                        <input type="checkbox" id="list_batch_checkbox" />
-                                    </th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.lastname'|trans }}</th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.firstname'|trans }}</th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.email'|trans }}</th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.rent'|trans }}</th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.due_date'|trans }}</th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.last_paid_for'|trans }}</th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.integrated_balance'|trans }}</th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.group'|trans }}</th>
-                                    <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.links'|trans }}</th>
-                                </tr>
+                                    <tr class="sonata-ba-list-field-header">
+                                        <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+                                            <input type="checkbox" id="list_batch_checkbox" />
+                                        </th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.lastname'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.firstname'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.email'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.rent'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.due_date'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.last_paid_for'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.integrated_balance'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.group'|trans }}</th>
+                                        <th class="sonata-ba-list-field-header-text">{{ 'admin.late_report.links'|trans }}</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     {% for contractData in reportData %}
@@ -83,6 +83,10 @@
                                             <td>
                                                 <a href="{{ url('admin_rentjeeves_data_contract_edit', {'id': contractData.contract.id}) }}">
                                                     {{ 'admin.late_report.links.contract'|trans }}
+                                                </a>
+                                                |
+                                                <a href="{{ url('admin_creditjeeves_data_operation_list', {'contract_id': contractData.contract.id}) }}">
+                                                    {{ 'admin.late_report.links.operations'|trans }}
                                                 </a>
                                             </td>
                                         </tr>

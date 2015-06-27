@@ -112,10 +112,12 @@ class Contract extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\SerializedName("mailing_address")
+     * @Serializer\Type("CreditJeeves\DataBundle\Entity\Group")
      * @return string
      */
-    public function getMailingAddressName()
+    public function getMailingAddress()
     {
-        return $this->entity->getGroup()->getMailingAddressName();
+        return $this->entity->getGroup();
     }
 }

@@ -681,6 +681,7 @@ class ContractRepository extends EntityRepository
         $endDate->setTime(23, 59, 59);
 
         $query = $this->createQueryBuilder('c');
+        $query->distinct();
         $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
         $this->whereReportToExperian($query, 'c', clone $startDate);
@@ -760,7 +761,9 @@ class ContractRepository extends EntityRepository
         $this->whereReportToExperian($subquery, 'c2', clone $startDate);
 
         $query = $this->createQueryBuilder('c');
+        $query->distinct();
         $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
+        $query->innerJoin('operation.order', 'o', Expr\Join::WITH, 'o.status = :completeOrder');
         $this->whereReportToExperian($query, 'c', clone $startDate);
         $query->andWhere('c.status = :current');
         $query->andWhere(sprintf('c.id not in (%s)', $subquery->getDQL()));
@@ -799,7 +802,7 @@ class ContractRepository extends EntityRepository
         $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
         $query->andWhere('MONTH(op.paidFor) = :month');
         $query->andWhere('YEAR(op.paidFor) = :year');
-        $query->groupBy('op.paidFor');
+        $query->groupBy('c.id, op.paidFor');
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('startDate', $startDate);
         $query->setParameter('endDate', $endDate);
@@ -836,7 +839,9 @@ class ContractRepository extends EntityRepository
         $this->whereReportToTransUnion($subquery, 'c2', clone $startDate);
 
         $query = $this->createQueryBuilder('c');
+        $query->distinct();
         $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
+        $query->innerJoin('operation.order', 'o', Expr\Join::WITH, 'o.status = :completeOrder');
         $this->whereReportToTransUnion($query, 'c', clone $startDate);
 
         $query->andWhere('c.status = :current');

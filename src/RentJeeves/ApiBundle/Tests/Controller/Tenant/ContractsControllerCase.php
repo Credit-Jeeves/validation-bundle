@@ -82,9 +82,39 @@ class ContractsControllerCase extends BaseApiTestCase
             $answerFromApi['lease_start']
         );
 
+        $this->assertArrayHasKey(
+            'mailing_address',
+            $answerFromApi
+        );
+
+        $mailingAddress = $answerFromApi['mailing_address'];
         $this->assertEquals(
             $contractInDB->getGroup()->getMailingAddressName(),
-            $answerFromApi['mailing_address_name']
+            $mailingAddress['name']
+        );
+        $this->assertEquals(
+            $contractInDB->getGroup()->getStreetAddress1(),
+            $mailingAddress['street_address_1']
+        );
+
+        $this->assertEquals(
+            $contractInDB->getGroup()->getStreetAddress2(),
+            $mailingAddress['street_address_2']
+        );
+
+        $this->assertEquals(
+            $contractInDB->getGroup()->getCity(),
+            $mailingAddress['city']
+        );
+
+        $this->assertEquals(
+            $contractInDB->getGroup()->getState(),
+            $mailingAddress['state']
+        );
+
+        $this->assertEquals(
+            $contractInDB->getGroup()->getZip(),
+            $mailingAddress['zip']
         );
 
         $leaseEndResult = $contractInDB->getFinishAt() ? $contractInDB->getFinishAt()->format('Y-m-d') : '';

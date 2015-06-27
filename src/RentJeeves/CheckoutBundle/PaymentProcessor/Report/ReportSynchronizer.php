@@ -381,11 +381,22 @@ class ReportSynchronizer
 
             return;
         }
-
         if ($reportTransaction->getDepositDate() !== null) {
             $transaction->setDepositDate($reportTransaction->getDepositDate());
-            $this->em->flush($transaction);
         }
+
+        $order = $transaction->getOrder();
+        if ($order->getStatus() === OrderStatus::SENDING) {
+            $order->setStatus(OrderStatus::COMPLETE);
+        } else {
+            $this->logger->alert(sprintf(
+                'Status for Order #%d must be \'%s\', \'%s\' given',
+                $order->getId(),
+                OrderStatus::SENDING,
+                $order->getStatus()
+            ));
+        }
+        $this->em->flush();
         $this->logger->debug(sprintf(
             'PayDirect Deposit Transaction #%s:  Sync successful.',
             $transaction->getTransactionId()
