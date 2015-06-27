@@ -22,6 +22,15 @@ class Property extends Base
         getFullAddress as fullAddress;
     }
 
+    /**
+     * This method is needed only for SonataAdminBundle, please don't use it.
+     * @return bool
+     */
+    public function getIsMultipleBuildings()
+    {
+        return $this->isMultipleBuildings();
+    }
+
     public function getShrinkAddress($length = ShorteningAddressUtility::MAX_LENGTH)
     {
         return ShorteningAddressUtility::shrinkAddress($this->getFullAddress(), $length);
