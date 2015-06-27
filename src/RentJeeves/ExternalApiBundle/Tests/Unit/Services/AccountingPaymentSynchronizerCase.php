@@ -5,7 +5,7 @@ use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\TestBundle\Mocks\CommonSystemMocks;
 
-class AccountingPaymentSynronizerCase extends \PHPUnit_Framework_TestCase
+class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
 {
     /** @var AccountingPaymentSynchronizer $synchronizer */
     protected $synchronizer;
@@ -70,22 +70,40 @@ class AccountingPaymentSynronizerCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldNotAllowToSendIfNotAllowedToSendRealTime()
+    {
+        $supportedType = ApiIntegrationType::YARDI_VOYAGER;
+        $isIntegrated = true;
+        $isAllowedRealTime = false;
+        $contractMock = $this->getContractMock($supportedType, $isIntegrated, $isAllowedRealTime);
+
+        $this->assertFalse(
+            $this->synchronizer->isAllowedToSend($contractMock),
+            "should NOT send if holding is not allowed to send realtime"
+        );
+    }
+
+    /**
      * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\DataBundle\Entity\Contract
      */
-    protected function getContractMock($integrationType, $isIntegrated)
+    protected function getContractMock($integrationType, $isIntegrated, $isAllowedRealTime = true)
     {
         $mock = $this->getMock('\RentJeeves\DataBundle\Entity\Contract', [], [], '', false);
 
         // add a holding that will return integration type
         $holdingMock = $this->getMock(
             '\RentJeeves\DataBundle\Entity\Holding',
-            ['getApiIntegrationType'],
+            ['getApiIntegrationType', 'isAllowedToSendRealTimePayments'],
             [],
             '',
             false
         );
         $holdingMock->method('getApiIntegrationType')
             ->will($this->returnValue($integrationType));
+        $holdingMock->method('isAllowedToSendRealTimePayments')
+            ->will($this->returnValue($isAllowedRealTime));
         $mock->method('getHolding')
             ->will($this->returnValue($holdingMock));
 
