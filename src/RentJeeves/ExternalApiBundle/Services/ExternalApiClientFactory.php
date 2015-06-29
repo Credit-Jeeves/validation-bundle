@@ -50,23 +50,36 @@ class ExternalApiClientFactory
      */
     public function createClient($accountingType, SettingsInterface $accountingSettings)
     {
+        $uniqueClientKey = sprintf('Type:%s->ID:%s', $accountingType, $accountingSettings->getId());
+
+        if (isset($this->accountingServiceClientMap[$uniqueClientKey])) {
+            return $this->accountingServiceClientMap[$uniqueClientKey];
+        }
+
         if (array_key_exists($accountingType, $this->externalSoapClients)
-            && empty($this->accountingServiceClientMap[$accountingType])
+            && empty($this->accountingServiceClientMap[$uniqueClientKey])
         ) {
             $serviceName = $this->externalSoapClients[$accountingType];
             $clientService = $this->soapClientFactory->getClient(
                 $accountingSettings,
                 $serviceName
             );
-            $this->accountingServiceClientMap[$accountingType] = $clientService;
+            $this->accountingServiceClientMap[$uniqueClientKey] = $clientService;
+
+            return $clientService;
         }
 
-        if (empty($this->accountingServiceClientMap[$accountingType])) {
-            throw new \Exception(sprintf('Can\'t map service "%s" in factory', $accountingType));
+        if (!isset($this->accountingServiceClientMap[$uniqueClientKey]) &&
+            isset($this->accountingServiceClientMap[$accountingType])) {
+            $this->accountingServiceClientMap[$uniqueClientKey] = $this->accountingServiceClientMap[$accountingType];
+        }
+
+        if (empty($this->accountingServiceClientMap[$uniqueClientKey])) {
+            throw new \Exception(sprintf('Can\'t map service "%s" in factory', $uniqueClientKey));
         }
 
         /** @var ClientInterface $client */
-        $client = $this->accountingServiceClientMap[$accountingType];
+        $client = $this->accountingServiceClientMap[$uniqueClientKey];
 
         $client->setSettings($accountingSettings);
 
