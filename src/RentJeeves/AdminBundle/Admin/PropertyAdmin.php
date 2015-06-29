@@ -25,7 +25,7 @@ class PropertyAdmin extends Admin
     {
         return '/rj/group/properties';
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -54,6 +54,7 @@ class PropertyAdmin extends Admin
                 $query->setParameter('landlord_id', $nLandlordId);
             }
         }
+
         return $query;
     }
 
@@ -161,6 +162,7 @@ class PropertyAdmin extends Admin
                 'uri' => $this->routeGenerator->generate('admin_creditjeeves_data_order_list')
             )
         );
+
         return $this->breadcrumbs[$action] = $menu;
     }
 
@@ -176,7 +178,8 @@ class PropertyAdmin extends Admin
             ->add('zip')
             ->add('google_reference')
             ->add('jb')
-            ->add('kb');
+            ->add('kb')
+            ->add('isMultipleBuildings');
     }
 
     protected function configureShowField(ShowMapper $showMapper)
