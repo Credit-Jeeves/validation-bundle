@@ -8,7 +8,6 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Doctrine\ORM\QueryBuilder;
 use RentJeeves\AdminBundle\Form\UserSettingsType;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
@@ -60,9 +59,10 @@ class LandlordAdmin extends Admin
             $query->setParameter('group_id', $nGroupId);
             $query->setParameter('holding', $holding);
         }
+
         return $query;
     }
-    
+
     public function configureListFields(ListMapper $listMapper)
     {
         $request = $this->getRequest();
@@ -121,8 +121,8 @@ class LandlordAdmin extends Admin
                 ->add('last_name')
                 ->add('email')
                 ->add('password', 'hidden', array('required' => false))
-                ->add('password_new', 'password', array('required' => false, 'mapped' => false))
-                ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
+                ->add('password_new', 'password', ['required' => true, 'mapped' => false])
+                ->add('password_retype', 'password', ['required' => true, 'mapped' => false])
                 ->add('is_active', null, array('required' => false))
                 ->add('is_super_admin', null, array('required' => false))
             ->end()
@@ -211,9 +211,9 @@ class LandlordAdmin extends Admin
                 'uri' => $this->routeGenerator->generate('admin_creditjeeves_data_order_list')
             )
         );
+
         return $this->breadcrumbs[$action] = $menu;
     }
-    
 
     /**
      * {@inheritdoc}
@@ -258,6 +258,7 @@ class LandlordAdmin extends Admin
                 'Please, enter password for '.$user->getFullName()
             );
         }
+
         return $user;
     }
 

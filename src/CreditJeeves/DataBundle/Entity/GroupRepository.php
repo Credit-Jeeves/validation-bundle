@@ -7,16 +7,21 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class GroupRepository extends EntityRepository
 {
+
+    /**
+     * @param Holding $holding
+     *
+     * @return Group[]
+     */
     public function getGroupsWithoutDepositAccount(Holding $holding)
     {
-        $query = $this->createQueryBuilder('g');
-        $query->leftJoin('g.depositAccount', 'da');
-        $query->where("g.holding = :holdingId");
-        $query->andWhere("da.id IS NULL");
-        $query->setParameter('holdingId', $holding->getId());
-        $query = $query->getQuery();
-
-        return $query->execute();
+        return $this->createQueryBuilder('g')
+            ->leftJoin('g.depositAccount', 'da')
+            ->where("g.holding = :holdingId")
+            ->andWhere("da.id IS NULL")
+            ->setParameter('holdingId', $holding->getId())
+            ->getQuery()
+            ->execute();
     }
 
     public function getGroupsWithPendingContracts(Holding $holding)
