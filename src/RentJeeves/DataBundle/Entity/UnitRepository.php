@@ -5,6 +5,11 @@ use Doctrine\ORM\EntityRepository;
 
 class UnitRepository extends EntityRepository
 {
+    /**
+     * @param $property
+     * @param null $group
+     * @return array
+     */
     public function getUnitsArray($property, $group = null)
     {
         $units = $this->getUnits($property, $group);
@@ -12,13 +17,18 @@ class UnitRepository extends EntityRepository
         foreach ($units as $unit) {
             $item = array();
             $item['id'] = $unit->getId();
-            $item['name'] = $unit->getName();
+            $item['name'] = $unit->getActualName();
             $result[] = $item;
         }
 
         return $result;
     }
 
+    /**
+     * @param $property
+     * @param null $group
+     * @return Unit[]
+     */
     public function getUnits($property, $group = null)
     {
 
