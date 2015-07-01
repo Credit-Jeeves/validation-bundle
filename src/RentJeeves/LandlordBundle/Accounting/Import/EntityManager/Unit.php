@@ -31,7 +31,7 @@ trait Unit
     protected function getUnitMappingByExternalUnitId(Group $group, $unitId)
     {
         try {
-            if ($unitId && $this->group) {
+            if ($unitId && $group) {
                 return $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
                     $group,
                     $unitId

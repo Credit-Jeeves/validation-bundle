@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Unit\Import\Handler;
 
+use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Model\Import;
@@ -8,7 +10,6 @@ use RentJeeves\TestBundle\BaseTestCase;
 
 class HandlerAbstractCase extends BaseTestCase
 {
-
     /**
      * @test
      */
@@ -71,5 +72,48 @@ class HandlerAbstractCase extends BaseTestCase
         $this->assertNotNull($import->getMoveOut());
         $this->assertEquals($moveOut->format('ymd'), $import->getMoveOut()->format('ymd'));
         $this->assertEquals(false, $import->isSkipped());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckUnitMappingByExternalUnitId()
+    {
+        $this->load(true);
+        $handler = new HandlerTest();
+        $handlerTestReflection = new \ReflectionClass($handler);
+        $currentImportModel = $handlerTestReflection->getProperty('em');
+        $currentImportModel->setAccessible(true);
+        $currentImportModel->setValue($handler, $em = $this->getEntityManager());
+
+        $logger = $handlerTestReflection->getProperty('logger');
+        $logger->setAccessible(true);
+        $logger->setValue($handler, $this->getContainer()->get('logger'));
+
+        $unitMappingByExternalUnitId = $handlerTestReflection->getMethod('getUnitMappingByExternalUnitId');
+        $unitMappingByExternalUnitId->setAccessible(true);
+
+        $group = $em->getRepository("DataBundle:Group")->findOneBy(['name' => 'Test Rent Group']);
+        $this->assertNotNull($group);
+        /** @var UnitMapping $unitMappingNotNull */
+        $unitMappingNotNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-7');
+        $this->assertNotNull($unitMappingNotNull);
+        $unitMappingNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-1');
+        $this->assertNull($unitMappingNull);
+
+        $unitMapping = new UnitMapping();
+        $unit = new Unit();
+        $unit->setName('Test');
+        $unit->setGroup($group = $unitMappingNotNull->getUnit()->getGroup());
+        $unit->setHolding($group->getHolding());
+        $unit->setProperty($group->getGroupProperties()->first());
+        $unitMapping->setUnit($unit);
+        $unitMapping->setExternalUnitId($unitMappingNotNull->getExternalUnitId());
+        $em->persist($unitMapping);
+        $em->persist($unit);
+        $em->flush();
+
+        $unitMappingNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-7');
+        $this->assertNull($unitMappingNull);
     }
 }
