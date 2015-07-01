@@ -40,6 +40,10 @@ trait Unit
 
             return null;
         } catch (NonUniqueResultException $e) {
+            $this->logger->alert(
+                sprintf('GroupId# %s and externalUnitId#%s duplicate in DB!', $group->getId(), $unitId)
+            );
+
             return null;
         }
     }

@@ -90,10 +90,11 @@ class StorageMRI extends ExternalApiStorage
 
             $finishAt = $this->getDateString($customer->getLeaseEnd());
             $moveOut = $this->getDateString($customer->getLeaseMoveOut());
-            $unit = sprintf('%s_%s', $customer->getBuildingId(), $customer->getUnitId());
+            $externalUnitId = sprintf('%s_%s', $customer->getBuildingId(), $customer->getUnitId());
+            $unitName = $customer->getUnitId();
             $data = [
                 $customer->getResidentId(),
-                $unit,
+                $unitName,
                 $startAt,
                 $finishAt,
                 $customer->getLeaseMonthlyRentAmount(),
@@ -105,7 +106,7 @@ class StorageMRI extends ExternalApiStorage
                 $customer->getLeaseMonthToMonth(),
                 $this->getPayAllowed($customer),
                 $customer->getLeaseId(),
-                $unit,
+                $externalUnitId,
                 $customer->getCity(),
                 $address,
                 $customer->getZipCode(),
