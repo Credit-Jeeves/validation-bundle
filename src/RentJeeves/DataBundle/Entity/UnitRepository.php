@@ -17,7 +17,7 @@ class UnitRepository extends EntityRepository
         foreach ($units as $unit) {
             $item = array();
             $item['id'] = $unit->getId();
-            $item['name'] = $unit->getActualName();
+            $item['name'] = $unit->getName();
             $result[] = $item;
         }
 
