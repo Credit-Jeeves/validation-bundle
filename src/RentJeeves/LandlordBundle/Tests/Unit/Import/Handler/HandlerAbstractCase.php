@@ -93,13 +93,13 @@ class HandlerAbstractCase extends BaseTestCase
         $unitMappingByExternalUnitId = $handlerTestReflection->getMethod('getUnitMappingByExternalUnitId');
         $unitMappingByExternalUnitId->setAccessible(true);
 
-        $group = $em->getRepository("DataBundle:Group")->findOneBy(['name' => 'Test Rent Group']);
+        $group = $em->getRepository('DataBundle:Group')->findOneBy(['name' => 'Test Rent Group']);
         $this->assertNotNull($group);
         /** @var UnitMapping $unitMappingNotNull */
         $unitMappingNotNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-7');
-        $this->assertNotNull($unitMappingNotNull);
+        $this->assertNotNull($unitMappingNotNull, 'Checked look up UnitMapping failed. Must Find.');
         $unitMappingNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-1');
-        $this->assertNull($unitMappingNull);
+        $this->assertNull($unitMappingNull, 'Checked look up UnitMapping failed. Must NOT Find.');
 
         $unitMapping = new UnitMapping();
         $unit = new Unit();
@@ -114,6 +114,6 @@ class HandlerAbstractCase extends BaseTestCase
         $em->flush();
 
         $unitMappingNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-7');
-        $this->assertNull($unitMappingNull);
+        $this->assertNull($unitMappingNull, 'Checked exception NonUniqueResultException in method - failed');
     }
 }

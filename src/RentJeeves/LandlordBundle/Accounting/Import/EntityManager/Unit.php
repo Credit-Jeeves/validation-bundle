@@ -31,7 +31,7 @@ trait Unit
     protected function getUnitMappingByExternalUnitId(Group $group, $unitId)
     {
         try {
-            if ($unitId && $group) {
+            if ($unitId) {
                 return $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
                     $group,
                     $unitId
@@ -40,8 +40,8 @@ trait Unit
 
             return null;
         } catch (NonUniqueResultException $e) {
-            $this->logger->alert(
-                sprintf('GroupId# %s and externalUnitId#%s duplicate in DB!', $group->getId(), $unitId)
+            $this->logger->debug(
+                sprintf('GroupId#%s and externalUnitId#%s duplicate in DB!', $group->getId(), $unitId)
             );
 
             return null;
