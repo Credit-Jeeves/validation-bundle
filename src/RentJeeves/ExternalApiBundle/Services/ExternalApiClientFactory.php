@@ -50,39 +50,34 @@ class ExternalApiClientFactory
      */
     public function createClient($accountingType, SettingsInterface $accountingSettings)
     {
-        $uniqueClientKey = sprintf('Type:%s->ID:%s', $accountingType, $accountingSettings->getId());
-
-        if (isset($this->accountingServiceClientMap[$uniqueClientKey])) {
-            return $this->accountingServiceClientMap[$uniqueClientKey];
-        }
-
-        if (array_key_exists($accountingType, $this->externalSoapClients)
-            && empty($this->accountingServiceClientMap[$uniqueClientKey])
-        ) {
+        if ($this->isSoapClient($accountingType)) {
             $serviceName = $this->externalSoapClients[$accountingType];
             $clientService = $this->soapClientFactory->getClient(
                 $accountingSettings,
                 $serviceName
             );
-            $this->accountingServiceClientMap[$uniqueClientKey] = $clientService;
 
             return $clientService;
         }
 
-        if (!isset($this->accountingServiceClientMap[$uniqueClientKey]) &&
-            isset($this->accountingServiceClientMap[$accountingType])) {
-            $this->accountingServiceClientMap[$uniqueClientKey] = $this->accountingServiceClientMap[$accountingType];
-        }
-
-        if (empty($this->accountingServiceClientMap[$uniqueClientKey])) {
-            throw new \Exception(sprintf('Can\'t map service "%s" in factory', $uniqueClientKey));
+        if (empty($this->accountingServiceClientMap[$accountingType])) {
+            throw new \Exception(sprintf('Can\'t map service "%s" in factory', $accountingType));
         }
 
         /** @var ClientInterface $client */
-        $client = $this->accountingServiceClientMap[$uniqueClientKey];
+        $client = $this->accountingServiceClientMap[$accountingType];
 
         $client->setSettings($accountingSettings);
 
         return $client;
+    }
+
+    /**
+     * @param $accountingType
+     * @return bool
+     */
+    public function isSoapClient($accountingType)
+    {
+        return array_key_exists($accountingType, $this->externalSoapClients);
     }
 }
