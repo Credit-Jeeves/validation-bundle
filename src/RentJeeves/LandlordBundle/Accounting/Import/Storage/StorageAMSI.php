@@ -87,7 +87,7 @@ class StorageAMSI extends ExternalApiStorage
             $startAt = $lease->getLeaseBeginDateObject();
             $finishAt = $lease->getLeaseEndDateObject();
             $today = new \DateTime();
-            if ($finishAt instanceof \DateTime && $today > $finishAt) {
+            if ($finishAt instanceof \DateTime && $today > $finishAt && empty($moveOutDate)) {
                 $monthToMonth = 'Y';
             } else {
                 $monthToMonth = 'N';
