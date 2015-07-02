@@ -381,21 +381,24 @@ class ReportSynchronizer
 
             return;
         }
-        if ($reportTransaction->getDepositDate() !== null) {
-            $transaction->setDepositDate($reportTransaction->getDepositDate());
-        }
-
         $order = $transaction->getOrder();
-        if ($order->getStatus() === OrderStatus::SENDING) {
-            $order->setStatus(OrderStatus::COMPLETE);
-        } else {
+
+        if ($order->getStatus() !== OrderStatus::SENDING) {
             $this->logger->alert(sprintf(
                 'Status for Order #%d must be \'%s\', \'%s\' given',
                 $order->getId(),
                 OrderStatus::SENDING,
                 $order->getStatus()
             ));
+
+            return;
         }
+
+        $order->setStatus(OrderStatus::COMPLETE);
+        if ($reportTransaction->getDepositDate() !== null) {
+            $transaction->setDepositDate($reportTransaction->getDepositDate());
+        }
+
         $this->em->flush();
         $this->logger->debug(sprintf(
             'PayDirect Deposit Transaction #%s:  Sync successful.',
@@ -432,8 +435,7 @@ class ReportSynchronizer
         }
 
         $order = $transaction->getOrder();
-        // @TODO: change status after create new
-        if ($order->getStatus() !== OrderStatus::COMPLETE) {
+        if ($order->getStatus() !== OrderStatus::SENDING) {
             $this->logger->alert(sprintf(
                 'Unexpected order #%s status (%s) when transaction #%s processing',
                 $order->getId(),
@@ -452,10 +454,26 @@ class ReportSynchronizer
         $newReversalOutboundTransaction->setReversalDescription($reportTransaction->getReversalDescription());
         $newReversalOutboundTransaction->setOrder($order);
 
-        if ($reportTransaction->getTransactionType() === PayDirectReversalReportTransaction::TYPE_RETURN) {
-            $order->setStatus(OrderStatus::RETURNED);
-        } elseif ($reportTransaction->getTransactionType() === PayDirectReversalReportTransaction::TYPE_REFUND) {
-            $order->setStatus(OrderStatus::REFUNDED);
+        if ($reportTransaction->getTransactionType() === PayDirectReversalReportTransaction::TYPE_REFUNDING) {
+            $order->setStatus(OrderStatus::REFUNDING);
+            $this->logger->alert(
+                sprintf(
+                    'Check#%s for Order#%d has been refunded. Need to refund to tenant via CollectV4 Client Console.
+                    Transaction #%s',
+                    $reportTransaction->getTransactionId(),
+                    $order->getId(),
+                    $transaction->getTransactionId()
+                )
+            );
+        } elseif ($reportTransaction->getTransactionType() === PayDirectReversalReportTransaction::TYPE_REISSUED) {
+            $order->setStatus(OrderStatus::REISSUED);
+            $this->logger->alert(
+                sprintf(
+                    'Check#%s has been reissued to \'%s\' group. No action required.',
+                    $reportTransaction->getTransactionId(),
+                    $order->getGroupName()
+                )
+            );
         } else {
             throw new \LogicException(sprintf(
                 'Wrong type for PayDirectReversalReportTransaction - %s',

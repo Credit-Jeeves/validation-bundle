@@ -15,14 +15,21 @@ class OrderStatus extends Enum
     const NEWONE = 'new';
     const PENDING = 'pending';
     const REFUNDED = 'refunded';
+    const REFUNDING = 'refunding';
+    const REISSUED = 'reissued';
     const RETURNED = 'returned';
     const SENDING = 'sending';
 
+    /**
+     * @param STRING $current
+     *
+     * @return array
+     */
     public static function getManualAvailableToSet($current)
     {
         $restrictedStatuses = array_diff(
-            array(OrderStatus::NEWONE, OrderStatus::COMPLETE, OrderStatus::ERROR),
-            array($current)
+            [OrderStatus::NEWONE, OrderStatus::COMPLETE, OrderStatus::ERROR],
+            [$current]
         );
 
         return array_diff(

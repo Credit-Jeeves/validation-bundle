@@ -25,13 +25,17 @@ class ReportSynchronizerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldUpdateDepositDateForDepositTransactionIfDateIsNull()
+    public function shouldUpdateOrderAndDepositDateForDepositTransactionIfDateIsNull()
     {
         $this->load(true);
 
         $outboundTransaction = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')->findOneBy(
             ['transactionId' => 1]
         );
+        $order = $outboundTransaction->getOrder();
+        $order->setStatus(OrderStatus::SENDING);
+        $this->getEntityManager()->flush($order);
+
         $this->assertNull($outboundTransaction->getDepositDate());
 
         $report = new PaymentProcessorReport();
@@ -47,6 +51,7 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $this->getEntityManager()->refresh($outboundTransaction);
         $this->assertEquals($date, $outboundTransaction->getDepositDate());
+        $this->assertEquals(OrderStatus::COMPLETE, $outboundTransaction->getOrder()->getStatus());
     }
 
     /**
@@ -95,6 +100,34 @@ class ReportSynchronizerCase extends BaseTestCase
         $loggerMock->expects($this->once())
             ->method('alert')
             ->with('PayDirect Deposit Transaction #2 already has deposit date. Skipping.');
+
+        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
+        $synchronizer->synchronize($report);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldLogAlertForDepositTransactionIfOrderStatusIsNotSending()
+    {
+        $this->load(true);
+
+        $outboundTransaction = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')->findOneBy(
+            ['transactionId' => 1]
+        );
+        $order = $outboundTransaction->getOrder();
+        $this->assertNotEquals(OrderStatus::SENDING, $order->getStatus());
+
+        $report = new PaymentProcessorReport();
+        $transaction = new PayDirectDepositReportTransaction();
+        $transaction->setTransactionId($outboundTransaction->getTransactionId());
+
+        $report->addTransaction($transaction);
+
+        $loggerMock = $this->getLoggerMock();
+        $loggerMock->expects($this->once())
+            ->method('alert')
+            ->with('Status for Order #2 must be \'sending\', \'complete\' given');
 
         $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
         $synchronizer->synchronize($report);
@@ -170,7 +203,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $report = new PaymentProcessorReport();
         $transaction = new PayDirectReversalReportTransaction();
         $transaction->setTransactionId($outboundTransaction->getTransactionId());
-        $transaction->setTransactionType(PayDirectReversalReportTransaction::TYPE_REFUND);
+        $transaction->setTransactionType(PayDirectReversalReportTransaction::TYPE_REFUNDING);
 
         $report->addTransaction($transaction);
 
@@ -191,7 +224,7 @@ class ReportSynchronizerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldCreateNewTransactionAndUpdateOrderStatusForReversalTransaction()
+    public function shouldCreateNewTransactionAndUpdateOrderStatusForRefundingReversalTransaction()
     {
         $this->load(true);
 
@@ -204,14 +237,14 @@ class ReportSynchronizerCase extends BaseTestCase
         $this->assertCount(0, $reversalOutboundTransactions);
 
         $order = $outboundTransaction->getOrder();
-        $order->setStatus(OrderStatus::COMPLETE);
+        $order->setStatus(OrderStatus::SENDING);
 
         $this->getEntityManager()->flush($order);
 
         $report = new PaymentProcessorReport();
         $transaction = new PayDirectReversalReportTransaction();
         $transaction->setTransactionId($outboundTransaction->getTransactionId());
-        $transaction->setTransactionType(PayDirectReversalReportTransaction::TYPE_REFUND);
+        $transaction->setTransactionType(PayDirectReversalReportTransaction::TYPE_REFUNDING);
         $transaction->setAmount($outboundTransaction->getAmount());
 
         $report->addTransaction($transaction);
@@ -220,7 +253,51 @@ class ReportSynchronizerCase extends BaseTestCase
         $synchronizer->synchronize($report);
 
         $this->getEntityManager()->refresh($outboundTransaction);
-        $this->assertEquals(OrderStatus::REFUNDED, $outboundTransaction->getOrder()->getStatus());
+        $this->assertEquals(OrderStatus::REFUNDING, $outboundTransaction->getOrder()->getStatus());
+
+        $reversalOutboundTransactions = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')
+            ->findBy(['type' => OutboundTransactionType::REVERSAL]);
+        $this->assertCount(1, $reversalOutboundTransactions);
+
+        $newOutboundTransaction = $reversalOutboundTransactions[0];
+        $this->assertEquals(OutboundTransactionType::REVERSAL, $newOutboundTransaction->getType());
+        $this->assertEquals(100, $newOutboundTransaction->getAmount());
+        $this->assertEquals($order, $newOutboundTransaction->getOrder());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateNewTransactionAndUpdateOrderStatusForReissuedReversalTransaction()
+    {
+        $this->load(true);
+
+        $outboundTransaction = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')->findOneBy(
+            ['transactionId' => 1]
+        );
+
+        $reversalOutboundTransactions = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')
+            ->findBy(['type' => OutboundTransactionType::REVERSAL]);
+        $this->assertCount(0, $reversalOutboundTransactions);
+
+        $order = $outboundTransaction->getOrder();
+        $order->setStatus(OrderStatus::SENDING);
+
+        $this->getEntityManager()->flush($order);
+
+        $report = new PaymentProcessorReport();
+        $transaction = new PayDirectReversalReportTransaction();
+        $transaction->setTransactionId($outboundTransaction->getTransactionId());
+        $transaction->setTransactionType(PayDirectReversalReportTransaction::TYPE_REISSUED);
+        $transaction->setAmount($outboundTransaction->getAmount());
+
+        $report->addTransaction($transaction);
+
+        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $this->getLoggerMock());
+        $synchronizer->synchronize($report);
+
+        $this->getEntityManager()->refresh($outboundTransaction);
+        $this->assertEquals(OrderStatus::REISSUED, $outboundTransaction->getOrder()->getStatus());
 
         $reversalOutboundTransactions = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')
             ->findBy(['type' => OutboundTransactionType::REVERSAL]);
