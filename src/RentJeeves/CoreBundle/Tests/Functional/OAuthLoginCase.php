@@ -9,24 +9,22 @@ class OAuthLoginCase extends BaseTestCase
     /**
      * @test
      */
-    public function loginTenant()
+    public function shouldLoginTenantByAccessToken()
     {
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->load(true);
         $this->session->visit($this->getUrl() . '?access_token=test');
-        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->assertNotNull($paymentsTable = $this->page->find('css', '#tenant-payments'));
     }
 
     /**
      * @test
      */
-    public function loginLandlord()
+    public function shouldLoginLandlordByAccessToken()
     {
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->load(true);
         $this->session->visit($this->getUrl() . '?access_token=test_landlord');
-        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->assertNotNull($this->page->findAll('css', '#payments-block td'));
     }
 }
