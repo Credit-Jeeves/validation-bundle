@@ -18,6 +18,9 @@ class LandlordController extends BaseController
         }
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\Collection|Group[]
+     */
     public function getGroups()
     {
         $user = $this->getUser();
@@ -26,7 +29,7 @@ class LandlordController extends BaseController
     }
 
     /**
-     * @return Group
+     * @return Group|null
      */
     public function getCurrentGroup()
     {

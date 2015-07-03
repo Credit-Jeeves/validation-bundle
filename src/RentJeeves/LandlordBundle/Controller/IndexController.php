@@ -5,7 +5,6 @@ namespace RentJeeves\LandlordBundle\Controller;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class IndexController extends Controller
 {
@@ -16,10 +15,13 @@ class IndexController extends Controller
     public function indexAction()
     {
         $groups = $this->getGroups();
+        if (null === $currentGroup = $this->getCurrentGroup()) {
+            throw new \LogicException(sprintf('Group not found for Landlord#%d', $this->getUser()->getId()));
+        }
 
-        return array(
+        return [
             'nGroups' => $groups->count(),
-            'Group' => $this->getCurrentGroup(),
-        );
+            'Group' => $currentGroup,
+        ];
     }
 }
