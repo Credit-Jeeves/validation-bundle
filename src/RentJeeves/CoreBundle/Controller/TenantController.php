@@ -21,7 +21,7 @@ class TenantController extends BaseController
     public function getUser()
     {
         if ($user = parent::getUser()) {
-            $user = $this->get('core.session.applicant')->getUser();
+            $user = $this->get('core.session.tenant')->getUser();
             $this->getUserDetails($user);
 
             return $user;
