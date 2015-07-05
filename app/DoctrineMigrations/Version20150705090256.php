@@ -16,7 +16,7 @@ class Version20150705090256 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE cj_holding
-                ADD is_allowed_future_contract TINYINT(1) DEFAULT '1' NOT NULL"
+                ADD is_allowed_future_contract TINYINT(1) DEFAULT '0' NOT NULL"
         );
     }
 

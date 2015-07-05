@@ -183,11 +183,11 @@ abstract class Holding
      *      type="boolean",
      *      name="is_allowed_future_contract",
      *      options={
-     *          "default":1
+     *          "default":0
      *      }
      * )
      */
-    protected $isAllowedFutureContract = true;
+    protected $isAllowedFutureContract = false;
 
     /**
      * @return mixed
