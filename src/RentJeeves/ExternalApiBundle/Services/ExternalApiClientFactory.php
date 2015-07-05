@@ -50,15 +50,14 @@ class ExternalApiClientFactory
      */
     public function createClient($accountingType, SettingsInterface $accountingSettings)
     {
-        if (array_key_exists($accountingType, $this->externalSoapClients)
-            && empty($this->accountingServiceClientMap[$accountingType])
-        ) {
+        if ($this->isSoapClient($accountingType)) {
             $serviceName = $this->externalSoapClients[$accountingType];
             $clientService = $this->soapClientFactory->getClient(
                 $accountingSettings,
                 $serviceName
             );
-            $this->accountingServiceClientMap[$accountingType] = $clientService;
+
+            return $clientService;
         }
 
         if (empty($this->accountingServiceClientMap[$accountingType])) {
@@ -71,5 +70,14 @@ class ExternalApiClientFactory
         $client->setSettings($accountingSettings);
 
         return $client;
+    }
+
+    /**
+     * @param $accountingType
+     * @return bool
+     */
+    public function isSoapClient($accountingType)
+    {
+        return array_key_exists($accountingType, $this->externalSoapClients);
     }
 }
