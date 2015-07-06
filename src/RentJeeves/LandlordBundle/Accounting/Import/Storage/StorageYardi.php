@@ -6,7 +6,6 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
-use Symfony\Component\HttpFoundation\Session\Session;
 use DateTime;
 
 /**
@@ -57,7 +56,7 @@ class StorageYardi extends ExternalApiStorage
 
         $today = new DateTime();
         $leaseEnd = $residentData->getLeaseEnd(true);
-        $monthToMonth = ($today > $leaseEnd)? 'Y' : 'N';
+        $monthToMonth = ($today > $leaseEnd && empty($moveOutDate)) ? 'Y' : 'N';
 
         $data = array(
             $residentId,
@@ -68,7 +67,7 @@ class StorageYardi extends ExternalApiStorage
             $resident->getFirstName(),
             $resident->getLastName(),
             $resident->getEmail(),
-            ($moveOutDate instanceof DateTime)? $moveOutDate->format($format) : '',
+            ($moveOutDate instanceof DateTime) ? $moveOutDate->format($format) : '',
             $ledgerDetails->getIdentification()->getBalance(),
             $monthToMonth,
             $paymentAccepted,
@@ -87,15 +86,16 @@ class StorageYardi extends ExternalApiStorage
     {
         $residentId = $resident->getResidentId();
         $moveOutDate = $resident->getMoveOutDate(true);
+        $moveOutDate = $moveOutDate instanceof DateTime ? $moveOutDate->format($this->getDateFormat()) : '';
         $paymentAccepted = $resident->getPaymentAccepted();
         $leaseId = $resident->getLeaseId();
 
         $today = new DateTime();
         $leaseEnd = $residentData->getLeaseEnd(true);
-        $monthToMonth = ($today > $leaseEnd)? 'Y' : 'N';
+        $monthToMonth = ($today > $leaseEnd && empty($moveOutDate)) ? 'Y' : 'N';
         $ledgerDetails = $this->getLedgerDetails($residentData);
 
-        $data = array(
+        $data = [
             $residentId,
             $residentData->getUnit()->getIdentification()->getUnitName(),
             $residentData->getLeaseBegin(),
@@ -104,12 +104,12 @@ class StorageYardi extends ExternalApiStorage
             $residentData->getTenantDetails()->getPersonDetails()->getName()->getFirstName(),
             $residentData->getTenantDetails()->getPersonDetails()->getName()->getLastName(),
             $residentData->getTenantDetails()->getPersonDetails()->getEmail(),
-            ($moveOutDate instanceof DateTime)? $moveOutDate->format($this->getDateFormat()) : '',
+            $moveOutDate,
             $ledgerDetails->getIdentification()->getBalance(),
             $monthToMonth,
             $paymentAccepted,
             $leaseId
-        );
+        ];
 
         $this->writeCsvToFile($data);
     }
