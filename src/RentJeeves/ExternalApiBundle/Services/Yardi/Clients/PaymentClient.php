@@ -5,6 +5,8 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializationContext;
+use RentJeeves\DataBundle\Entity\YardiSettings;
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Services\Yardi\YardiXmlCleaner;
 use SoapVar;
@@ -44,21 +46,29 @@ class PaymentClient extends AbstractClient
         $description
     ) {
         $this->debugMessage('Run OpenReceiptBatch_DepositDate');
+        /** @var YardiSettings $settings */
+        $settings = $this->getSettings();
+        $synchStrategy = $settings->getSynchronizationStrategy();
         $parameters = [
+            'YardiPropertyId'   => $yardiPropertyId,
+            'BatchDescription'  => $description,
+            'DepositMemo'       => null
+        ];
+
+        if ($synchStrategy === SynchronizationStrategy::DEPOSITED) {
+            $parameters['DepositDate'] = $depositDate;
+        }
+
+        $parametersForRequest = [
             'OpenReceiptBatch_DepositDate' => array_merge(
                 $this->getLoginCredentials(),
-                [
-                    'YardiPropertyId'   => $yardiPropertyId,
-                    'BatchDescription'  => $description,
-                    'DepositDate'       => $depositDate,
-                    'DepositMemo'       => null
-                ]
+                $parameters
             )
         ];
 
         return $this->sendRequest(
             'OpenReceiptBatch_DepositDate',
-            $parameters
+            $parametersForRequest
         );
     }
 
