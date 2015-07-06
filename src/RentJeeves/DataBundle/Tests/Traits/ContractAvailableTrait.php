@@ -49,7 +49,8 @@ trait ContractAvailableTrait
         /** @var $unit Unit */
         $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
             [
-                'name'  => '1-a'
+                'name'  => '1-a',
+                'group' => $em->getRepository('DataBundle:Group')->find(24)
             ]
         );
 

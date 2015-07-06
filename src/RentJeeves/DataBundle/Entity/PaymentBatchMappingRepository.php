@@ -33,6 +33,20 @@ class PaymentBatchMappingRepository extends EntityRepository
     }
 
     /**
+     * Function lock table for entity PaymentBatchMapping for READ and WRITE
+     * We use alias r0_, because Doctrine2 generate alias for tables and MySQL can't work without alias
+     */
+    public function lockTable()
+    {
+        $this->getEntityManager()->getConnection()->exec(
+            sprintf(
+                'LOCK TABLES %1$s as r0_ READ, %1$s WRITE;',
+                $this->getClassMetadata()->getTableName()
+            )
+        );
+    }
+
+    /**
      * @param $paymentBatchId
      * @param $accountingPackageType
      * @param $externalPropertyId
