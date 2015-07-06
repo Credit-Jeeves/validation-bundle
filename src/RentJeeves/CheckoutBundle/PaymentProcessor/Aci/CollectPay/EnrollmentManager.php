@@ -28,7 +28,7 @@ class EnrollmentManager extends AbstractManager
             sprintf('[ACI CollectPay Info]:Try to create new profile for user with id = "%d"', $user->getId())
         );
 
-        $profile = $this->prepareProfile($user);
+        $profile = $this->prepareUserProfile($user);
 
         $billingAccount = $this->prepareBillingAccount($contract);
 
@@ -103,7 +103,7 @@ class EnrollmentManager extends AbstractManager
             )
         );
 
-        $profile = $this->prepareProfile($landlord);
+        $profile = $this->prepareGroupProfile($landlord, $group);
 
         $billingAccount = $this->prepareGroupBillingAccount($group);
 
@@ -175,7 +175,7 @@ class EnrollmentManager extends AbstractManager
      * @param User $user
      * @return RequestModel\Profile
      */
-    protected function prepareProfile(User $user)
+    protected function prepareUserProfile(User $user)
     {
         $profile = new RequestModel\Profile();
 
@@ -200,6 +200,21 @@ class EnrollmentManager extends AbstractManager
 
             $profile->setAddress($profileAddress);
         }
+
+        return $profile;
+    }
+
+    /**
+     * @param User $user
+     * @param Group $group
+     * @return RequestModel\Profile
+     */
+    protected function prepareGroupProfile(User $user, Group $group)
+    {
+        $profile = $this->prepareUserProfile($user);
+
+        $groupUsername = md5('G' . $group->getId());
+        $profile->getUser()->setUsername($groupUsername);
 
         return $profile;
     }
