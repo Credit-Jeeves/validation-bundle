@@ -34,6 +34,8 @@ class PaymentClient extends AbstractClient
     );
 
     /**
+     * @link https://credit.atlassian.net/browse/RT-1507
+     *
      * @param string $externalPropertyId
      * @param \DateTime $paymentBatchDate
      * @param string $description
