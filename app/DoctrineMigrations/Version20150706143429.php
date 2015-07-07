@@ -28,18 +28,14 @@ class Version20150706143429 extends AbstractMigration
 
         $this->addSql(
             "UPDATE rj_group_settings as s
-             INNER JOIN rj_group as g ON g.id = s.group_id
-             INNER JOIN rj_deposit_account as d ON d.group_id=g.id
+             INNER JOIN rj_deposit_account as d ON d.group_id=s.group_id
              SET s.feeCC=d.feeCC,s.feeACH=d.feeACH,s.is_passed_ach=d.is_passed_ach"
         );
 
         $this->addSql(
             "ALTER TABLE rj_deposit_account
                 ADD payment_processor ENUM('heartland','aci')
-                    COMMENT '(DC2Type:PaymentProcessor)' NOT NULL,
-                DROP feeCC,
-                DROP feeACH,
-                DROP is_passed_ach"
+                    COMMENT '(DC2Type:PaymentProcessor)' NOT NULL"
         );
 
         $this->addSql(
@@ -62,11 +58,6 @@ class Version20150706143429 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_deposit_account
-                ADD feeCC NUMERIC(10,
-                2) DEFAULT NULL,
-                ADD feeACH NUMERIC(10,
-                2) DEFAULT NULL,
-                ADD is_passed_ach TINYINT(1) NOT NULL,
                 DROP payment_processor"
         );
         $this->addSql(
