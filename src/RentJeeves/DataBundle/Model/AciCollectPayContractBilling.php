@@ -30,6 +30,13 @@ abstract class AciCollectPayContractBilling
     protected $contract;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="division_id", type="string", nullable=true)
+     */
+    protected $divisionId;
+
+    /**
      * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
@@ -78,5 +85,21 @@ abstract class AciCollectPayContractBilling
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDivisionId()
+    {
+        return $this->divisionId;
+    }
+
+    /**
+     * @param mixed $divisionId
+     */
+    public function setDivisionId($divisionId)
+    {
+        $this->divisionId = $divisionId;
     }
 }

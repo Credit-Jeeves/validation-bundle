@@ -61,6 +61,7 @@ class EnrollmentManager extends AbstractManager
 
         $contractBilling = new AciCollectPayContractBilling();
         $contractBilling->setContract($contract);
+        $contractBilling->setDivisionId($contract->getGroup()->getMerchantName());
 
         $contract->setAciCollectPayContractBilling($contractBilling);
 
