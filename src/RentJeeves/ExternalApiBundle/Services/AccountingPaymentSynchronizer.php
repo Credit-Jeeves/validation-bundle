@@ -6,7 +6,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\Job;
@@ -14,7 +13,6 @@ use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
-use Exception;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
@@ -189,26 +187,30 @@ class AccountingPaymentSynchronizer
                 )
             );
 
-            if ($apiClient->supportsBatches()) {
-                $this->openBatch($order);
+            if ($apiClient->supportsBatches() && !$this->openBatch($order)) {
+                throw new \RuntimeException(
+                    sprintf('Can\'t open batch on accounting system(%s)', $holding->getApiIntegrationType())
+                );
             }
+
             $result = $this->addPaymentToBatch($order);
             $message = sprintf(
-                "Order(%d) was sent to accounting system(%s) with result: %s",
+                'Order(%d) was sent to accounting system(%s) with result: %s',
                 $order->getId(),
                 $holding->getApiIntegrationType(),
                 $result
             );
-            $this->logger->debug($message);
 
             if ($result === false) {
-                throw new Exception($message);
+                throw new \Exception($message);
             }
 
+            $this->logger->debug($message);
+
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->exceptionCatcher->handleException($e);
-            $this->logger->addCritical($e->getMessage());
+            $this->logger->addCritical(get_class($e) . ':' . $e->getMessage());
 
             return false;
         }
@@ -293,6 +295,7 @@ class AccountingPaymentSynchronizer
     /**
      * @param  Order $order
      * @return bool
+     * @throws \Exception
      */
     protected function openBatch(Order $order)
     {
@@ -301,42 +304,66 @@ class AccountingPaymentSynchronizer
         $accountingType = $this->getAccountingType($order);
         $externalPropertyId = $order->getPropertyPrimaryId();
 
-        /** @var PaymentBatchMappingRepository $repo */
-        $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
+        // Should open transaction before lock because
+        // when we try to flush record Doctrine2 open transaction and all locks for tables get broken
+        $this->em->beginTransaction();
+        try {
+            /** @var PaymentBatchMappingRepository $repo */
+            $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
 
-        if ($repo->isOpenedBatch($paymentBatchId, $accountingType, $externalPropertyId)) {
+            $repo->lockTable();
+
+            if ($repo->isOpenedBatch($paymentBatchId, $accountingType, $externalPropertyId)) {
+                $this->em->getConnection()->exec(
+                    'UNLOCK TABLES;'
+                );
+                $this->em->commit();
+
+                return true;
+            }
+
+            $paymentBatchDate = new \DateTime();
+            $description = sprintf(
+                'RentTrack Online Payments Batch #%s',
+                $paymentBatchId
+            );
+            $apiClient = $this->getApiClientByOrder($order);
+
+            $accountingBatchId = $apiClient->openBatch(
+                $externalPropertyId,
+                $paymentBatchDate,
+                $description
+            );
+
+            if (!$accountingBatchId) {
+                $this->em->getConnection()->exec('UNLOCK TABLES;');
+                $this->em->commit();
+
+                return false;
+            }
+
+            $paymentBatchMapping = new PaymentBatchMapping();
+            $paymentBatchMapping->setAccountingBatchId($accountingBatchId);
+            $paymentBatchMapping->setPaymentBatchId($paymentBatchId);
+            $paymentBatchMapping->setAccountingPackageType($accountingType);
+            $paymentBatchMapping->setExternalPropertyId($externalPropertyId);
+
+            $this->em->persist($paymentBatchMapping);
+            $this->em->flush($paymentBatchMapping);
+            $this->em->getConnection()->exec('UNLOCK TABLES;');
+            $this->em->commit();
+
             return true;
+
+        } catch (\Exception $e) {
+            $this->em->rollback();
+            throw $e;
         }
-
-        $paymentBatchDate = new DateTime();
-        $description = sprintf(
-            'RentTrack Online Payments Batch #%s',
-            $paymentBatchId
-        );
-        $apiClient = $this->getApiClientByOrder($order);
-
-        $accountingBatchId = $apiClient->openBatch(
-            $externalPropertyId,
-            $paymentBatchDate,
-            $description
-        );
-
-        if (!$accountingBatchId) {
-            return false;
-        }
-
-        $paymentBatchMapping = new PaymentBatchMapping();
-        $paymentBatchMapping->setAccountingBatchId($accountingBatchId);
-        $paymentBatchMapping->setPaymentBatchId($paymentBatchId);
-        $paymentBatchMapping->setAccountingPackageType($accountingType);
-        $paymentBatchMapping->setExternalPropertyId($externalPropertyId);
-
-        $this->em->persist($paymentBatchMapping);
-        $this->em->flush($paymentBatchMapping);
-
-        return true;
     }
 
+    /**
+     * @param string $accountingType
+     */
     public function closeBatches($accountingType)
     {
         /** @var PaymentBatchMappingRepository $repo */
