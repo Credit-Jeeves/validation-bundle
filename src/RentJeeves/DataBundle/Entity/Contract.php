@@ -932,6 +932,17 @@ class Contract extends Base
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupSettings")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\GroupSettings")
+     * @Serializer\Groups({"payRent"})
+     */
+    public function getGroupSettings()
+    {
+        return $this->getGroup()->getGroupSettings();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("groupSetting")
      * @Serializer\Type("RentJeeves\DataBundle\Entity\GroupSettings")
      * @Serializer\Groups({"payRent"})

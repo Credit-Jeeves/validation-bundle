@@ -8,6 +8,7 @@ use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
@@ -113,16 +114,16 @@ class DepositAccountListener
 
     public function postLoad(LifecycleEventArgs $eventArgs)
     {
-        /** @var $entity DepositAccount */
+        /** @var $entity GroupSettings */
         $entity = $eventArgs->getEntity();
-        if (!$entity instanceof DepositAccount) {
+        if (!$entity instanceof GroupSettings) {
             return;
         }
         if (null === $entity->getFeeACH()) {
-            $entity->setFeeACH((float)$this->feeACH);
+            $entity->setFeeACH((float) $this->feeACH);
         }
         if (null === $entity->getFeeCC()) {
-            $entity->setFeeCC((float)$this->feeCC);
+            $entity->setFeeCC((float) $this->feeCC);
         }
     }
 }

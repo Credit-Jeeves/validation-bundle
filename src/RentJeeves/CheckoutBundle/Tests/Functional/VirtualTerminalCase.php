@@ -30,7 +30,7 @@ class VirtualTerminalCase extends BaseTestCase
     {
         return [
             [PaymentProcessor::HEARTLAND],
-            [PaymentProcessor::ACI_COLLECT_PAY],
+            [PaymentProcessor::ACI],
         ];
     }
 

@@ -65,30 +65,6 @@ abstract class DepositAccount
     protected $message;
 
     /**
-     * @ORM\Column(
-     *      type="decimal",
-     *      precision=10,
-     *      scale=2,
-     *      nullable=true
-     * )
-     * @Serializer\SerializedName("feeCC")
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $feeCC;
-
-    /**
-     * @ORM\Column(
-     *      type="decimal",
-     *      precision=10,
-     *      scale=2,
-     *      nullable=true
-     * )
-     * @Serializer\SerializedName("feeACH")
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $feeACH;
-
-    /**
      * @ORM\ManyToMany(
      *      targetEntity="PaymentAccount",
      *      mappedBy="depositAccounts",
@@ -106,19 +82,34 @@ abstract class DepositAccount
     protected $mid;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean", name="is_passed_ach")
-     *
-     * @Serializer\SerializedName("isPassedACH")
-     * @Serializer\Groups({"payRent"})
+     * @ORM\Column(
+     *     type="PaymentProcessor",
+     *     name="payment_processor",
+     *     nullable=false
+     * )
      */
-    protected $passedAch;
+    protected $paymentProcessor = PaymentProcessor::HEARTLAND;
 
     public function __construct()
     {
         $this->paymentAccounts = new ArrayCollection();
         $this->passedAch = false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
+    }
+
+    /**
+     * @param string $paymentProcessor
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
     }
 
     /**
@@ -200,38 +191,6 @@ abstract class DepositAccount
     }
 
     /**
-     * @param float $feeACH
-     */
-    public function setFeeACH($feeACH)
-    {
-        $this->feeACH = $feeACH;
-    }
-
-    /**
-     * @return double
-     */
-    public function getFeeACH()
-    {
-        return $this->feeACH;
-    }
-
-    /**
-     * @param double $feeCC
-     */
-    public function setFeeCC($feeCC)
-    {
-        $this->feeCC = $feeCC;
-    }
-
-    /**
-     * @return double
-     */
-    public function getFeeCC()
-    {
-        return $this->feeCC;
-    }
-
-    /**
      * Add payment account
      *
      * @param  \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
@@ -278,21 +237,5 @@ abstract class DepositAccount
     public function setMid($mid)
     {
         $this->mid = $mid;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isPassedAch()
-    {
-        return $this->passedAch;
-    }
-
-    /**
-     * @param boolean $passedAch
-     */
-    public function setPassedAch($passedAch)
-    {
-        $this->passedAch = $passedAch;
     }
 }

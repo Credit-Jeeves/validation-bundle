@@ -78,6 +78,31 @@ abstract class BillingAccount
     protected $isActive = 0;
 
     /**
+     * @ORM\Column(
+     *     type="PaymentProcessor",
+     *     name="payment_processor",
+     *     nullable=false
+     * )
+     */
+    protected $paymentProcessor = PaymentProcessor::HEARTLAND;
+
+    /**
+     * @return string
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
+    }
+
+    /**
+     * @param string $paymentProcessor
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
+    }
+
+    /**
      * @return int
      */
     public function getId()

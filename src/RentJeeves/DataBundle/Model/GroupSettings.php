@@ -137,6 +137,40 @@ abstract class GroupSettings
     protected $closeDate = 31;
 
     /**
+     * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     * @Serializer\SerializedName("feeCC")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $feeCC;
+
+    /**
+     * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     * @Serializer\SerializedName("feeACH")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $feeACH;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", name="is_passed_ach")
+     *
+     * @Serializer\SerializedName("isPassedACH")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $passedAch;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -155,6 +189,54 @@ abstract class GroupSettings
      * @var DateTime
      */
     protected $updatedAt;
+
+    /**
+     * @param float $feeACH
+     */
+    public function setFeeACH($feeACH)
+    {
+        $this->feeACH = $feeACH;
+    }
+
+    /**
+     * @return double
+     */
+    public function getFeeACH()
+    {
+        return $this->feeACH;
+    }
+
+    /**
+     * @param double $feeCC
+     */
+    public function setFeeCC($feeCC)
+    {
+        $this->feeCC = $feeCC;
+    }
+
+    /**
+     * @return double
+     */
+    public function getFeeCC()
+    {
+        return $this->feeCC;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPassedAch()
+    {
+        return $this->passedAch;
+    }
+
+    /**
+     * @param boolean $passedAch
+     */
+    public function setPassedAch($passedAch)
+    {
+        $this->passedAch = $passedAch;
+    }
 
     /**
      * @param boolean $payBalanceOnly
