@@ -29,13 +29,6 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
  *         "method"="preUpdate"
  *     }
  * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="postLoad",
- *         "method"="postLoad"
- *     }
- * )
  */
 class DepositAccountListener
 {

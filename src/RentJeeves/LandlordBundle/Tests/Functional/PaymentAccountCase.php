@@ -2,14 +2,25 @@
 
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class PaymentAccountCase extends BaseTestCase
 {
+    public function providerForCreatePaymentAccount()
+    {
+        return [
+            [PaymentProcessor::ACI],
+            [PaymentProcessor::HEARTLAND]
+        ];
+    }
+
     /**
+     * @@dataProvider providerForCreatePaymentAccount
      * @test
      */
-    public function createPaymentAccount()
+    public function createPaymentAccount($paymentProcessor)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -21,7 +32,12 @@ class PaymentAccountCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.add-accoun').is(':visible')");
         $this->page->clickLink('add.account');
         $this->assertNotNull($form = $this->page->find('css', '#billingAccountType'));
-
+        $em = $this->getEntityManager();
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
+        $this->assertNotEmpty($group);
+        $group->getGroupSettings()->setPaymentProcessor($paymentProcessor);
+        $em->flush();
         /*
          * Test for not match repeated value for Account Number
          */
@@ -46,9 +62,6 @@ class PaymentAccountCase extends BaseTestCase
         $this->assertNotNull($errors = $this->page->findAll('css', '#billing-account-edit .attention-box li'));
         $this->assertCount(1, $errors);
         $this->assertEquals('checkout.error.account_number.match', $errors[0]->getHtml());
-
-
-
 
         /*
          * Continue Test
@@ -120,6 +133,10 @@ class PaymentAccountCase extends BaseTestCase
 
         $this->assertEquals('mary less (settings.payment_account.active)', $accounts[0]->getText());
         $this->assertEquals('gary', $accounts[2]->getText());
+
+        $em->refresh($group->getGroupSettings());
+        $billingAccount = $group->getActiveBillingAccount();
+        $this->assertEquals($billingAccount->getPaymentProcessor(), $paymentProcessor);
     }
 
     /**
