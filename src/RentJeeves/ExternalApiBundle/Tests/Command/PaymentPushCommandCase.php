@@ -126,13 +126,14 @@ class PaymentPushCommandCase extends BaseTestCase
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
             ['command' => 'external_api:payment:push']
         );
+        $this->assertCount(0, $jobs);
+
         /** @var Holding $holding */
         $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
         $this->assertNotEmpty($holding);
         $holding->getYardiSettings()->setSynchronizationStrategy(SynchronizationStrategy::REAL_TIME);
         $em->flush($holding->getYardiSettings());
-        $em->flush($holding);
-        $this->assertCount(0, $jobs);
+
         $transaction = $this->createTransaction(
             $apiIntegrationType,
             $residentId,
@@ -193,13 +194,13 @@ class PaymentPushCommandCase extends BaseTestCase
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
             ['command' => 'external_api:payment:push']
         );
+        $this->assertCount(0, $jobs);
+
         /** @var Holding $holding */
         $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
         $this->assertNotEmpty($holding);
         $holding->getYardiSettings()->setSynchronizationStrategy(SynchronizationStrategy::REAL_TIME);
         $em->flush($holding->getYardiSettings());
-        $em->flush($holding);
-        $this->assertCount(0, $jobs);
 
         $transaction = $this->createTransaction(
             $apiIntegrationType,

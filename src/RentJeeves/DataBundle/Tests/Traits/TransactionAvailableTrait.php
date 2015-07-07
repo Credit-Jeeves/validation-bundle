@@ -45,7 +45,6 @@ trait TransactionAvailableTrait
             $contract->setExternalLeaseId($externalLeaseId);
         }
         $unit = $contract->getUnit();
-//        $unit->setName('2');
 
         if ($externalUnitId !== null) {
             if (false == $unitMapping = $unit->getUnitMapping()) {

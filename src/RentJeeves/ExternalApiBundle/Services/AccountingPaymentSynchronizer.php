@@ -6,7 +6,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\Job;
@@ -323,7 +322,7 @@ class AccountingPaymentSynchronizer
                 return true;
             }
 
-            $paymentBatchDate = new DateTime();
+            $paymentBatchDate = new \DateTime();
             $description = sprintf(
                 'RentTrack Online Payments Batch #%s',
                 $paymentBatchId
