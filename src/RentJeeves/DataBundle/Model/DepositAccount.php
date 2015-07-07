@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass

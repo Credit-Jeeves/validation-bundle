@@ -25,7 +25,7 @@ class GroupCase extends BaseTestCase
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
         $this->assertCount(6, $checkbox);
-        $checkbox[5]->check(); //Check pay balance only
+        $checkbox[4]->check(); //Check pay balance only
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
 
@@ -37,8 +37,8 @@ class GroupCase extends BaseTestCase
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
         $this->assertCount(6, $checkbox);
-        $checkbox[3]->check();  //Check is integrated
-        $checkbox[5]->check(); //Check pay balance only
+        $checkbox[2]->check();  //Check is integrated
+        $checkbox[4]->check(); //Check pay balance only
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
@@ -65,8 +65,8 @@ class GroupCase extends BaseTestCase
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
         $this->assertCount(9, $checkbox); // TODO check only current tab
-        $checkbox[6]->check();  //Check is integrated
-        $checkbox[8]->check(); //Check pay balance only
+        $checkbox[5]->check();  //Check is integrated
+        $checkbox[7]->check(); //Check pay balance only
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();

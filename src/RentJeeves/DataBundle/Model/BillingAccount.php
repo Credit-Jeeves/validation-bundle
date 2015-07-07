@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
 use RentJeeves\DataBundle\Enum\BankAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
