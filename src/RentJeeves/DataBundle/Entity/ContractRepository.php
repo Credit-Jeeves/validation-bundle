@@ -712,8 +712,12 @@ class ContractRepository extends EntityRepository
         $endDate->setTime(23, 59, 59);
 
         $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
+        $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
         $query->where('c.status = :finished and c.finishAt BETWEEN :startDate AND :endDate');
 
+        $query->setParameter('rent', OperationType::RENT);
+        $query->setParameter('completeOrder', OrderStatus::COMPLETE);
         $query->setParameter('finished', ContractStatus::FINISHED);
         $query->setParameter('startDate', $startDate);
         $query->setParameter('endDate', $endDate);
