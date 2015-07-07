@@ -11,6 +11,8 @@ use RentJeeves\DataBundle\Entity\ImportError;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Enum\ImportType;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Monolog\Logger;
+use Symfony\Component\Validator\ValidatorInterface;
 
 /**
  * @Service("import_summary.manager")
@@ -23,9 +25,14 @@ class ImportSummaryManager
     protected $em;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
 
     /**
      * @var ImportSummary
@@ -33,15 +40,21 @@ class ImportSummaryManager
     protected $importSummaryModel;
 
     /**
+     * @param EntityManager $em
+     * @param LoggerInterface $logger
+     * @param ValidatorInterface $validator
+     *
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.entity_manager"),
-     *     "logger" = @Inject("logger")
+     *     "logger" = @Inject("logger"),
+     *     "validator" = @Inject("validator")
      * })
      */
-    public function __construct(EntityManager $em, LoggerInterface $logger = null)
+    public function __construct(EntityManager $em, LoggerInterface $logger = null, ValidatorInterface $validator)
     {
         $this->em = $em;
         $this->logger = $logger ? $logger : new Logger(get_class());
+        $this->validator = $validator;
     }
 
     /**
@@ -137,7 +150,7 @@ class ImportSummaryManager
         $importError->setRowContent($rowContent);
         $importError->setImportSummary($this->importSummaryModel);
 
-        if ($this->isExistEntityErrorInTheDB($importError)) {
+        if (!$this->isValid($importError)) {
             return;
         }
         $this->logger->debug('Import summary report: increment skipped');
@@ -179,7 +192,6 @@ class ImportSummaryManager
      * @param array   $row
      * @param string  $exceptionMessage
      * @param string  $exceptionId
-     * @param integer $offset
      */
     public function addException(array $row, $exceptionMessage, $exceptionId)
     {
@@ -208,7 +220,7 @@ class ImportSummaryManager
      */
     protected function saveImportError(ImportError $importError)
     {
-        if ($this->isExistEntityErrorInTheDB($importError)) {
+        if (!$this->isValid($importError)) {
             return;
         }
         $this->logger->debug(
@@ -219,23 +231,18 @@ class ImportSummaryManager
     }
 
     /**
-     * @param  ImportError $importError
+     * @param  mixed $model
      * @return boolean
      */
-    protected function isExistEntityErrorInTheDB(ImportError $importError)
+    protected function isValid($model)
     {
-        $searchParameters = [
-            'md5RowContent' => $importError->getMd5RowContent(),
-            'importSummary' => $importError->getImportSummary()->getId()
-        ];
+        $errors = $this->validator->validate($model);
 
-        if ($importError->getExceptionUid()) {
-            $searchParameters['exceptionUid'] = $importError->getExceptionUid();
+        if ($errors->count() > 0) {
+            return false;
         }
 
-        $importError = $this->em->getRepository('RjDataBundle:ImportError')->findOneBy($searchParameters);
-
-        return $importError instanceof ImportError;
+        return true;
     }
 
     /**
@@ -259,7 +266,6 @@ class ImportSummaryManager
     }
 
     /**
-     * @param Group   $group
      * @param string  $importType
      * @param integer $publicId
      *
