@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -11,6 +12,7 @@ use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Validator\Validator;
 
 /**
+ * @TODO move static var about tenantStatus to constant when we going to refactoring
  * @property Import currentImportModel
  */
 trait Tenant
@@ -24,6 +26,11 @@ trait Tenant
      * @var string
      */
     public static $tenantStatusPast = 'p';
+
+    /**
+     * @var string
+     */
+    public static $tenantStatusFuture = 'f';
 
     /**
      * @var array
@@ -200,6 +207,7 @@ trait Tenant
     }
 
     /**
+     * @link https://credit.atlassian.net/browse/RT-1468
      * @param array $row
      */
     protected function checkTenantStatus(array $row)
@@ -207,8 +215,13 @@ trait Tenant
         if (!isset($row[Mapping::KEY_TENANT_STATUS])) {
             return;
         }
-
-        if (trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) === self::$tenantStatusPast) {
+        $tenantStatus = trim(strtolower($row[Mapping::KEY_TENANT_STATUS]));
+        /**
+         * Rule #1
+         * If Tenant Status is "P", then finish the contract. (treat the same as if "move-out" is set)
+         * If no move_out date available, then set it to today's date.
+         */
+        if ($tenantStatus === self::$tenantStatusPast) {
             $moveOutDate = $row[Mapping::KEY_MOVE_OUT];
             $moveOutDate = (!empty($moveOutDate)) ? $this->getDateByField($moveOutDate) : new \DateTime();
             $this->currentImportModel->setMoveOut($moveOutDate);
@@ -216,7 +229,29 @@ trait Tenant
             return;
         }
 
-        if (trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) === self::$tenantStatusCurrent) {
+        /**
+         * Rule #2
+         * If Tenant Status is "C", then do not finish, or skip contract.
+         * Only finish if Move Out field is populated.
+         */
+        if ($tenantStatus === self::$tenantStatusCurrent) {
+            return;
+        }
+        /** @var Group $group */
+        $group = $this->getGroup($row);
+        $isAllowedCreateFutureContract = false;
+        if ($group && $holding = $group->getHolding()) {
+            $isAllowedCreateFutureContract = $holding->isAllowedFutureContract();
+        }
+        /**
+         * Rule/Config-Option #3
+         * If Tenant Status is "F", add property
+         * Set rule to
+         * a) Add property/property_group_mapping/unit (if not exist), or
+         * b) Add property/property_group_mapping/unit (if not exist) and add contract if PM says Yes.
+         * Config option at holding level: "Add future contract"
+         */
+        if ($isAllowedCreateFutureContract && $tenantStatus === self::$tenantStatusFuture) {
             return;
         }
 
