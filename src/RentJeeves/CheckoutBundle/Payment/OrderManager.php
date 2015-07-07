@@ -111,7 +111,7 @@ class OrderManager
 
         /** @var GroupSettings $groupSettings */
         $groupSettings = $this->em->getRepository('DataBundle:Group')
-            ->findOneByCode($this->rtMerchantName);
+            ->findOneByCode($this->rtMerchantName)->getGroupSettings();
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
             $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));

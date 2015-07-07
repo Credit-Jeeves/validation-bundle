@@ -8,7 +8,6 @@ use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\DepositAccount;
-use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
@@ -109,21 +108,6 @@ class DepositAccountListener
 
         foreach ($usersAdminList as $user) {
             $mail->merchantNameSetuped($user, $group);
-        }
-    }
-
-    public function postLoad(LifecycleEventArgs $eventArgs)
-    {
-        /** @var $entity GroupSettings */
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof GroupSettings) {
-            return;
-        }
-        if (null === $entity->getFeeACH()) {
-            $entity->setFeeACH((float) $this->feeACH);
-        }
-        if (null === $entity->getFeeCC()) {
-            $entity->setFeeCC((float) $this->feeCC);
         }
     }
 }

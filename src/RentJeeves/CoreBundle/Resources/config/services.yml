@@ -2,12 +2,20 @@
 
 parameters:
     data.event_listener.order.class: RentJeeves\DataBundle\EventListener\OrderListener
+    data.event_listener.groupSettingsListener.class: RentJeeves\DataBundle\EventListener\GroupSettingsListener
     data.event_listener.import_summary.class: RentJeeves\DataBundle\EventListener\ImportSummaryListener
     kernel.listener.command_dispatch.exception.class: RentJeeves\CoreBundle\EventListener\ConsoleExceptionListener
     kernel.listener.command_dispatch.terminate.class: RentJeeves\CoreBundle\EventListener\ConsoleErrorListener
     rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
+    data.event_listener.groupSettingsListener:
+        class: "%data.event_listener.depositAccount.class%"
+        tags:
+            - { name: doctrine.event_listener, event: postLoad, method: postLoad }
+        arguments:
+            - "@service_container"
+            - "@logger"
     data.event_listener.order:
         class: "%data.event_listener.order.class%"
         tags:

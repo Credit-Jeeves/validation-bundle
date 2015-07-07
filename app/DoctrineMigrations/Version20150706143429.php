@@ -7,9 +7,6 @@ use Doctrine\DBAL\Schema\Schema;
 
 class Version20150706143429 extends AbstractMigration
 {
-    /**
-     * @TODO move data from
-     */
     public function up(Schema $schema)
     {
         $this->abortIf(
