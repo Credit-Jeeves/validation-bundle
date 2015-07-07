@@ -288,7 +288,7 @@ JS;
 
         $jsScript =
 <<<JS
-                window.isGetAlert = false;
+    window.isGetAlert = false;
     window.alert = function (variable) {
         window.message = variable; window.isGetAlert = true;
     };
