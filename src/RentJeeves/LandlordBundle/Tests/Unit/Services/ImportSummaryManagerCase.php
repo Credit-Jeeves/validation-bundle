@@ -38,7 +38,7 @@ class ImportSummaryManagerCase extends BaseTestCase
 
         $this->importSummaryManager->addException(['test' => 'test'], 'Test Massage', '5555aaaa4444');
         $importErrors = $this->getEntityManager()->getRepository('RjDataBundle:ImportError')->findAll();
-        $this->assertCount(1, $importErrors); // should stay 1 b/c duplicate exception
+        $this->assertCount(1, $importErrors, 'Should stay 1 row b/c try to add duplicate exception');
 
         $this->importSummaryManager->addException(['test' => 'test1'], 'Test Massage', '5555aaaa4445');
         $importErrors = $this->getEntityManager()->getRepository('RjDataBundle:ImportError')->findAll();

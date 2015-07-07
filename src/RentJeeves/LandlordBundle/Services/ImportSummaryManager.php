@@ -41,16 +41,16 @@ class ImportSummaryManager
 
     /**
      * @param EntityManager $em
-     * @param LoggerInterface $logger
      * @param ValidatorInterface $validator
+     * @param LoggerInterface $logger
      *
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.entity_manager"),
-     *     "logger" = @Inject("logger"),
-     *     "validator" = @Inject("validator")
+     *     "validator" = @Inject("validator"),
+     *     "logger" = @Inject("logger")
      * })
      */
-    public function __construct(EntityManager $em, LoggerInterface $logger = null, ValidatorInterface $validator)
+    public function __construct(EntityManager $em, ValidatorInterface $validator, LoggerInterface $logger = null)
     {
         $this->em = $em;
         $this->logger = $logger ? $logger : new Logger(get_class());
