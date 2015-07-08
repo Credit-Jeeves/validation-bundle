@@ -2,12 +2,16 @@
 
 namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\CollectPay;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Payum\AciCollectPay\Model\Profile;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
 
 class EnrollmentManagerCase extends BaseTestCase
 {
+    use WriteAttributeExtensionTrait;
+
     /**
      * @test
      */
@@ -19,11 +23,8 @@ class EnrollmentManagerCase extends BaseTestCase
         $user->setEmail('adam.smith@renttrack.com');
         $user->setPhone('0879888745');
 
-        // can't use new instance of Group - there is no setId() method
-        $group = $this->getMock('CreditJeeves\DataBundle\Entity\Group', [], [], '', false);
-        $group->expects($this->once())
-            ->method('getId')
-            ->will($this->returnValue(2002));
+        $group = new Group();
+        $this->writeIdAttribute($group, 2002);
 
         $class = new \ReflectionClass('RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\EnrollmentManager');
         $enrollmentManager = $class->newInstanceWithoutConstructor();
