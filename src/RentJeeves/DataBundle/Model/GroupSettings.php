@@ -146,7 +146,7 @@ abstract class GroupSettings
      * @Serializer\SerializedName("feeCC")
      * @Serializer\Groups({"payRent"})
      */
-    protected $feeCC;
+    protected $feeCC = 0.00;
 
     /**
      * @ORM\Column(
@@ -158,7 +158,7 @@ abstract class GroupSettings
      * @Serializer\SerializedName("feeACH")
      * @Serializer\Groups({"payRent"})
      */
-    protected $feeACH;
+    protected $feeACH = 0.00;
 
     /**
      * @var boolean
@@ -168,7 +168,7 @@ abstract class GroupSettings
      * @Serializer\SerializedName("isPassedACH")
      * @Serializer\Groups({"payRent"})
      */
-    protected $passedAch;
+    protected $passedAch = false;
 
     /**
      * @Gedmo\Timestampable(on="create")
