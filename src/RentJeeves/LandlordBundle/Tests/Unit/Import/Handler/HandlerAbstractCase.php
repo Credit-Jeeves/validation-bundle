@@ -39,7 +39,7 @@ class HandlerAbstractCase extends BaseTestCase
             MappingAbstract::KEY_MOVE_OUT => ''
         ];
 
-        $today = new \DateTime();
+        $today = new \DateTime('-1 day');
         $checkTenantStatus->invoke($handler, $row);
 
         $this->assertEquals($today->format('ymd'), $import->getMoveOut()->format('ymd'));

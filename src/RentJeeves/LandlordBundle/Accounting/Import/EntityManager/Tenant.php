@@ -209,7 +209,7 @@ trait Tenant
 
         if (trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) === self::$tenantStatusPast) {
             $moveOutDate = $row[Mapping::KEY_MOVE_OUT];
-            $moveOutDate = (!empty($moveOutDate)) ? $this->getDateByField($moveOutDate) : new \DateTime();
+            $moveOutDate = (!empty($moveOutDate)) ? $this->getDateByField($moveOutDate) : new \DateTime('-1 day');
             $this->currentImportModel->setMoveOut($moveOutDate);
 
             return;
