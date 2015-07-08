@@ -29,6 +29,7 @@ security:
             anonymous: ~
         main:
             pattern: ^/
+            fos_oauth: true
             form_login:
                 provider: custom 
                 csrf_provider: form.csrf_provider

@@ -21,22 +21,21 @@ class TenantsController extends Controller
 {
     /**
      * @Route("/tenants", name="landlord_tenants")
-     * @Template()
      */
     public function indexAction()
     {
-        $groups = $this->getGroups();
         $form = $this->createForm(
             new InviteTenantContractType($this->getUser(), $this->getCurrentGroup())
         );
 
-        $data = array(
-            'nGroups'   => $groups->count(),
-            'Group'     => $this->getCurrentGroup(),
-            'form'      => $form->createView(),
+        return $this->render(
+            'LandlordBundle:Tenants:index.html.twig',
+            [
+                'nGroups' => $this->getGroups()->count(),
+                'Group' => $this->getCurrentGroup(),
+                'form' => $form->createView(),
+            ]
         );
-
-        return $data;
     }
 
     /**
@@ -62,7 +61,7 @@ class TenantsController extends Controller
          */
         if (!empty($group)) {
             $merchantName = $group->getMerchantName();
-            $canInvite = (!empty($merchantName))? true : false;
+            $canInvite = (!empty($merchantName)) ? true : false;
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -71,7 +70,7 @@ class TenantsController extends Controller
         $form = $this->createForm(
             new InviteTenantContractType($this->getUser(), $group)
         );
-         
+
         $request = $this->get('request');
         $translator = $this->get('translator');
         if ($request->getMethod() == 'POST' && $canInvite) {
@@ -142,6 +141,7 @@ class TenantsController extends Controller
         $response = [];
         if (!empty($errors)) {
             $response['errors'] = $errors;
+
             return new JsonResponse($response);
         }
 

@@ -499,7 +499,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'request.payments'|trans }}</span>
@@ -578,6 +578,7 @@
             <div class="fields-box">
               {{ form_widget(form.contract.property) }}
               {{ form_widget(form.contract.unit) }}
+                <img id="unitLoading" src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" style="display: none">
             </div>
           </div>
           <div class="form-row clearfix userInfo">
@@ -601,7 +602,7 @@
                 </div>
             {% endif %}
         </div>
-        
+
         <div class="col">
           <h4 class="clearfix">
             <span>{{'request.payments'|trans}}</span>
@@ -687,13 +688,13 @@
                     <option value="tenant">{{ 'tenant'|trans }}</option>
                 </select>
                 <div id="searchInput" style="display:none;" class="finder-box">
-                    <input 
+                    <input
                         type="text"
                         id="searsh-field"
                         name="searsh-field"
                         data-bind="value: searchText"
                         value="">
-                    <a 
+                    <a
                         href="#"
                         id="delete"
                         class="pie-el"
@@ -793,7 +794,7 @@
                 </td>
                 <td class="email-box ellipsis-box" data-bind="text: email"></td>
                 <td data-bind="text: phone"></td>
-                <td class="property-box ellipsis-box" 
+                <td class="property-box ellipsis-box"
                 data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
                 <!-- ko if: amount != '' -->
                 <td data-bind="text: '$'+amount"></td>
@@ -812,10 +813,10 @@
                     <!-- /ko -->
                     <!-- ko if: 'PENDING' == status -->
                     {% if canInvite %}
-                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve" href="#" 
+                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve" href="#"
                     data-bind="click: $root.approveContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     {% else %}
-                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve grey" href="#" 
+                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve grey" href="#"
                     >&nbsp;</a>
                     {% endif %}
                     <!-- /ko -->
@@ -838,7 +839,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="landrord-box without-top clearfix">
     <div class="legeng-box">
       <ul class="legeng">

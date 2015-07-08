@@ -101,12 +101,12 @@ class MRIClientCase extends Base
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
         $this->assertGreaterThan(
-            17,
+            18,
             count($mriResponse->getValues()),
-            "MRI Dataset not the size expected - did it change?"
+            'MRI Dataset not the size expected - did it change?'
         );
         /** @var Value $value */
-        $value = $mriResponse->getValues()[17];
+        $value = $mriResponse->getValues()[18];
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
         $this->assertNotEmpty($value->getResidentId());
         $this->assertNotEmpty($value->getUnitId());
@@ -115,7 +115,6 @@ class MRIClientCase extends Base
         $this->assertNotEmpty($value->getLeaseBalance());
         $this->assertNotEmpty($value->getLeaseMonthlyRentAmount());
         $this->assertInstanceOf('\DateTime', $value->getLastUpdateDate());
-        $this->assertInstanceOf('\DateTime', $value->getLeaseMoveOut());
         $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
         $this->assertInstanceOf('\DateTime', $value->getLeaseStart());
     }
