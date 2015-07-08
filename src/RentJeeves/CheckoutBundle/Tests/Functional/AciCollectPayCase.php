@@ -143,7 +143,7 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->assertNotEmpty($this->contract->getAciCollectPayContractBilling());
 
-        $merchantName = $this->contract->getGroup()->getDepositAccount()->getMerchantName();
+        $merchantName = $this->contract->getGroup()->getMerchantName();
         $this->assertEquals($merchantName, $this->contract->getAciCollectPayContractBilling()->getDivisionId());
 
         $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY]));

@@ -88,7 +88,7 @@ abstract class AciCollectPayContractBilling
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDivisionId()
     {
@@ -96,7 +96,7 @@ abstract class AciCollectPayContractBilling
     }
 
     /**
-     * @param mixed $divisionId
+     * @param string $divisionId
      */
     public function setDivisionId($divisionId)
     {
