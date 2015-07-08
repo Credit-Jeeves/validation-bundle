@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
+use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -443,6 +444,16 @@ abstract class Group
      * )
      */
     protected $orderAlgorithm = OrderAlgorithmType::SUBMERCHANT;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AciImportProfileMap",
+     *     mappedBy="group"
+     * )
+     *
+     * @var AciImportProfileMap
+     */
+    protected $aciImportProfileMap;
 
     public function __construct()
     {
@@ -1408,5 +1419,21 @@ abstract class Group
     public function setAciCollectPayProfile($aciCollectPayProfile)
     {
         $this->aciCollectPayProfile = $aciCollectPayProfile;
+    }
+
+    /**
+     * @return AciImportProfileMap
+     */
+    public function getAciImportProfileMap()
+    {
+        return $this->aciImportProfileMap;
+    }
+
+    /**
+     * @param AciImportProfileMap $aciImportProfileMap
+     */
+    public function setAciImportProfileMap(AciImportProfileMap $aciImportProfileMap)
+    {
+        $this->aciImportProfileMap = $aciImportProfileMap;
     }
 }
