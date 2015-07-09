@@ -86,7 +86,7 @@ class PaymentManager extends AbstractManager
             $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
         }
 
-        $transaction->setMessages($request->getMessages());
+        $transaction->setMessages(self::removeDebugInformation($request->getMessages()));
         $transaction->setIsSuccessful($request->getIsSuccessful());
         $transaction->setTransactionId($request->getModel()->getConfirmationNumber());
 

@@ -55,6 +55,30 @@ abstract class AbstractManager
     }
 
     /**
+     * @param $message
+     * @return string
+     */
+    public static function removeDebugInformation($message)
+    {
+        if (empty($message) || !is_string($message)) {
+            return $message;
+        }
+        $messages = explode(':', $message);
+
+        if (count($messages) === 1) {
+            return $message;
+        }
+        unset($messages[0]);
+        $messages[1] = trim($messages[1]);
+
+        if (!is_numeric($messages[1]) && count($messages) > 1) {
+            unset($messages[1]);
+        }
+
+        return trim(implode(':', $messages));
+    }
+
+    /**
      * @param  Contract       $contract
      * @return BillingAccount
      */
