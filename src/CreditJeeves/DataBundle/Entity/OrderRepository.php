@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Property;
@@ -46,8 +46,8 @@ class OrderRepository extends EntityRepository
         }
 
         if (!$showCashPayments) {
-            $query->andWhere('o.type != :cash');
-            $query->setParameter('cash', OrderType::CASH);
+            $query->andWhere('o.paymentType != :cash');
+            $query->setParameter('cash', OrderPaymentType::CASH);
         }
 
         $query->groupBy('o.id');
@@ -118,8 +118,8 @@ class OrderRepository extends EntityRepository
         }
         $this->applySortField($sort);
         if (!$showCashPayments) {
-            $query->andWhere('o.type != :cash');
-            $query->setParameter('cash', OrderType::CASH);
+            $query->andWhere('o.paymentType != :cash');
+            $query->setParameter('cash', OrderPaymentType::CASH);
         }
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
@@ -356,7 +356,7 @@ class OrderRepository extends EntityRepository
             ]);
         }
 
-        $query->andWhere('o.type in (:orderType)');
+        $query->andWhere('o.paymentType in (:paymentType)');
         $query->andWhere('g.id in (:groups)');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('res.holding = :holding');
@@ -367,7 +367,7 @@ class OrderRepository extends EntityRepository
         foreach ($groups as $group) {
             $groupsId[] = $group->getId();
         }
-        $query->setParameter('orderType', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->setParameter('paymentType', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
         $query->setParameter('groups', $groups);
         $query->setParameter('holding', $group->getHolding());
         $query->orderBy('res.residentId', 'ASC');
@@ -396,7 +396,7 @@ class OrderRepository extends EntityRepository
 
         $ordersQuery->setParameter('group', $group);
         if ($accountType) {
-            $ordersQuery->andWhere('o.type = :type');
+            $ordersQuery->andWhere('o.paymentType = :type');
             $ordersQuery->setParameter('type', $accountType);
         }
 

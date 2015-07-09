@@ -5,7 +5,7 @@ namespace RentJeeves\DataBundle\Tests\Traits;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CheckoutBundle\Payment\OrderFactory;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -77,7 +77,7 @@ trait TransactionAvailableTrait
         $order = OrderFactory::getOrder($contract->getGroup());
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setPaymentType(OrderPaymentType::CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();

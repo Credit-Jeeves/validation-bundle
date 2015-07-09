@@ -2,8 +2,9 @@
 namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PayDirectProcessorInterface;
@@ -153,7 +154,7 @@ class PayRent
      */
     protected function closePaymentIfRecurring(Payment $payment, Order $order)
     {
-        if (OrderType::HEARTLAND_CARD == $order->getType() && $payment->isRecurring()) {
+        if (OrderPaymentType::CARD == $order->getPaymentType() && $payment->isRecurring()) {
             $this->logger->debug(
                 'Close CC recurring payment ID ' . $payment->getId() . ' for order ID ' . $order->getId()
             );

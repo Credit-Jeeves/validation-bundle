@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -62,7 +62,7 @@ class OrderListenerCase extends Base
         $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setPaymentType(OrderPaymentType::CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -97,7 +97,7 @@ class OrderListenerCase extends Base
         $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setPaymentType(OrderPaymentType::CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -225,7 +225,7 @@ class OrderListenerCase extends Base
         $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum($orderAmount);
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setPaymentType(OrderPaymentType::CARD);
         $order->setStatus(OrderStatus::PENDING);
 
         $operation = new Operation();
@@ -265,7 +265,7 @@ class OrderListenerCase extends Base
             ->findBy(
                 array(
                     'status' => OrderStatus::COMPLETE,
-                    'type' => OrderType::HEARTLAND_CARD,
+                    'paymentType' => OrderPaymentType::CARD,
                     'sum' => 1250.00
                 )
             );
@@ -316,7 +316,7 @@ class OrderListenerCase extends Base
         $order = new OrderSubmerchant();
         $order->setUser($tenant);
         $order->setSum(1000);
-        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setPaymentType(OrderPaymentType::BANK);
         $order->setStatus(OrderStatus::PENDING);
 
         $operation = new Operation();
@@ -374,7 +374,7 @@ class OrderListenerCase extends Base
         $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setPaymentType(OrderPaymentType::CARD);
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
@@ -423,7 +423,7 @@ class OrderListenerCase extends Base
         $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setPaymentType(OrderPaymentType::CARD);
         $order->setStatus(OrderStatus::NEWONE);
 
         $operation = new Operation();

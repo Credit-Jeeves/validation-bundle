@@ -17,7 +17,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 
 class ContractRepositoryCase extends BaseTestCase
 {
@@ -25,7 +25,8 @@ class ContractRepositoryCase extends BaseTestCase
     {
         $today = new DateTime();
         $dayOfMonth = $today->format('d');
-        $randomTest = ($dayOfMonth >= 27)? true : false;
+        $randomTest = ($dayOfMonth >= 27) ? true : false;
+
         return array(
             //#0 When we don't have payment at all and dueDate today
             //We must send email
@@ -116,8 +117,6 @@ class ContractRepositoryCase extends BaseTestCase
         );
     }
 
-
-
     /**
      * @dataProvider dataForGetPotentialLateContract
      * @test
@@ -197,7 +196,6 @@ class ContractRepositoryCase extends BaseTestCase
         $contractId = $contract->getId();
         $contractRepository = $em->getRepository('RjDataBundle:Contract');
         $contracts = $contractRepository->getPotentialLateContract(new DateTime());
-
 
         if ($contracts) {
             $contracts = array_filter(
@@ -299,7 +297,7 @@ class ContractRepositoryCase extends BaseTestCase
             $order = new OrderSubmerchant();
             $order->setUser($contract->getTenant());
             $order->setSum(500);
-            $order->setType(OrderType::HEARTLAND_CARD);
+            $order->setPaymentType(OrderPaymentType::CARD);
             $order->setStatus(OrderStatus::COMPLETE);
 
             $operation = new Operation();
@@ -320,7 +318,6 @@ class ContractRepositoryCase extends BaseTestCase
         $contractId = $contract->getId();
 
         $contracts = $em->getRepository('RjDataBundle:Contract')->getLateContracts(5);
-
 
         if ($contracts) {
             $contracts = array_filter(

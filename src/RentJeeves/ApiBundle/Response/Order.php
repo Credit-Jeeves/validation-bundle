@@ -3,7 +3,7 @@
 namespace RentJeeves\ApiBundle\Response;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use CreditJeeves\DataBundle\Entity\Order as Entity;
@@ -95,13 +95,13 @@ class Order extends ResponseResource
      */
     public function getType()
     {
-        switch ($this->entity->getType()) {
-            case OrderType::HEARTLAND_BANK:
+        switch ($this->entity->getPaymentType()) {
+            case OrderPaymentType::BANK:
                 return 'bank';
-            case OrderType::HEARTLAND_CARD:
+            case OrderPaymentType::CARD:
                 return 'card';
             default:
-                return $this->entity->getType();
+                return $this->entity->getPaymentType();
         }
     }
 

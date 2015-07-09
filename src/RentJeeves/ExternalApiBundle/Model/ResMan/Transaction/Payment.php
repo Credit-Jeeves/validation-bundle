@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Model\ResMan\Transaction;
 
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\Serializer\Annotation as Serializer;
 use CreditJeeves\DataBundle\Entity\Order;
 
@@ -32,13 +32,13 @@ class Payment
 
     public static function getType(Order $order)
     {
-        $type = $order->getType();
+        $type = $order->getPaymentType();
 
         switch ($type) {
-            case OrderType::HEARTLAND_CARD:
+            case OrderPaymentType::CARD:
                 $typeReturn = 'Credit Card';
                 break;
-            case OrderType::HEARTLAND_BANK:
+            case OrderPaymentType::BANK:
                 $typeReturn = 'ACH';
                 break;
             default:
@@ -47,8 +47,8 @@ class Payment
                     sprintf(
                         $message,
                         $order->getId(),
-                        OrderType::HEARTLAND_CARD,
-                        OrderType::HEARTLAND_BANK
+                        OrderPaymentType::CARD,
+                        OrderPaymentType::BANK
                     )
                 );
         }

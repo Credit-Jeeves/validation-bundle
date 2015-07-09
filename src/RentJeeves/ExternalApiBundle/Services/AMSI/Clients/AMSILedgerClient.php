@@ -3,7 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\AMSI\Clients;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Batches;
 use RentJeeves\ExternalApiBundle\Model\AMSI\EdexSettlement;
@@ -255,18 +255,18 @@ class AMSILedgerClient extends AMSIBaseClient
         $payment->setClientTransactionDate($order->getCreatedAt());
         $payment->setClientTransactionId($order->getCompleteTransaction()->getTransactionId());
 
-        switch ($order->getType()) {
-            case OrderType::HEARTLAND_CARD:
+        switch ($order->getPaymentType()) {
+            case OrderPaymentType::CARD:
                 $payment->setPaymentType('P');
                 break;
-            case OrderType::HEARTLAND_BANK:
+            case OrderPaymentType::BANK:
                 $payment->setPaymentType('C');
                 break;
             default:
                 throw new \LogicException(
                     sprintf(
                         'We can\'t post this transaction, because we send just card and bank, not: %s',
-                        $order->getType()
+                        $order->getPaymentType()
                     )
                 );
         }

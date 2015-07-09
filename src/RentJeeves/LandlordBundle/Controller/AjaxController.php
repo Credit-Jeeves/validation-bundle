@@ -25,7 +25,7 @@ use Doctrine\DBAL\DBALException;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Symfony\Component\HttpFoundation\Response;
@@ -949,7 +949,7 @@ class AjaxController extends Controller
                     $order->setUser($tenant);
                     $order->setSum($amount);
                     $order->setStatus(OrderStatus::COMPLETE);
-                    $order->setType(OrderType::CASH);
+                    $order->setPaymentType(OrderPaymentType::CASH);
                     $order->setCreatedAt($createdAt);
                     $em->persist($order);
                     // Create operation

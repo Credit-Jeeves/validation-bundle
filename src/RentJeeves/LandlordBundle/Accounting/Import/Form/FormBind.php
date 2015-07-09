@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use Symfony\Component\Form\Form;
@@ -160,7 +160,7 @@ trait FormBind
 
         $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::COMPLETE);
-        $order->setType(OrderType::CASH);
+        $order->setPaymentType(OrderPaymentType::CASH);
         $order->setUser($tenant);
         $order->setSum($operation->getAmount());
 
