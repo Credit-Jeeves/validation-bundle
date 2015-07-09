@@ -252,7 +252,9 @@ trait Contract
         if ($this->currentImportModel->getMoveOut() !== null) {
             $this->currentImportModel->getContract()->setFinishAt($this->currentImportModel->getMoveOut());
             // only finish the contract if MoveOut is today or earlier
-            if ($this->currentImportModel->getMoveOut() <= $today) {
+            $moveOutInt = (int) $this->currentImportModel->getMoveOut()->format('Ymd');
+            $todayInt = $today->format('Ymd');
+            if ($moveOutInt <= $todayInt) {
                 $this->setFinishedContract();
             }
         } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
@@ -319,9 +321,15 @@ trait Contract
      */
     public function isContractInPast()
     {
-        $today = new DateTime();
+        $finishAt = $this->currentImportModel->getContract()->getFinishAt();
+        if (empty($finishAt)) {
+            return false;
+        }
 
-        return ($this->currentImportModel->getContract()->getFinishAt() &&
-                $this->currentImportModel->getContract()->getFinishAt() < $today) ? true : false;
+        $today = new DateTime();
+        $todayInt = (int) $today->format('Ymd');
+        $finishAtInt = (int) $finishAt->format('Ymd');
+
+        return $finishAtInt <= $todayInt ? true : false;
     }
 }
