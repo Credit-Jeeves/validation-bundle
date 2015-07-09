@@ -73,6 +73,16 @@ class Tenant extends User
      */
     protected $residentsMapping;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AciImportProfileMap",
+     *     mappedBy="user"
+     * )
+     *
+     * @var AciImportProfileMap
+     */
+    protected $aciImportProfileMap;
+
     public function __construct()
     {
         parent::__construct();
@@ -173,21 +183,6 @@ class Tenant extends User
         return $result;
     }
 
-    public function getContractsHomePage()
-    {
-        $result = array();
-        $contracts = $this->getContracts();
-
-        foreach ($contracts as $contract) {
-            if (in_array($contract->getStatus(), array(ContractStatus::DELETED))) {
-                continue;
-            }
-            $result[] = $contract;
-        }
-
-        return $result;
-    }
-
     public function getItem()
     {
         $result = array();
@@ -267,5 +262,21 @@ class Tenant extends User
         }
 
         return null;
+    }
+
+    /**
+     * @return AciImportProfileMap|null
+     */
+    public function getAciImportProfileMap()
+    {
+        return $this->aciImportProfileMap;
+    }
+
+    /**
+     * @param AciImportProfileMap $aciImportProfileMap
+     */
+    public function setAciImportProfileMap(AciImportProfileMap $aciImportProfileMap)
+    {
+        $this->aciImportProfileMap = $aciImportProfileMap;
     }
 }
