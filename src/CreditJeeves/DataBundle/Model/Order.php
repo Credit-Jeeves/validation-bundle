@@ -70,6 +70,7 @@ abstract class Order
 
     /**
      * @ORM\Column(
+     *     name="payment_type",
      *     type="OrderPaymentType",
      *     nullable=true
      * )
