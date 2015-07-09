@@ -71,3 +71,41 @@ services:
         class: "%export.serializer.yardi_genesis_v2.class%"
         arguments:
             - "@jms_serializer"
+
+    # Landlord import
+    accounting.landlord_import.importer:
+        class: RentJeeves\LandlordBundle\Accounting\ImportLandlord\LandlordCsvImporter
+        arguments:
+            - @reader.csv
+            - @doctrine.orm.entity_manager
+            - @accounting.landlord_import.group_mapper
+            - @accounting.landlord_import.landlord_mapper
+            - @accounting.landlord_import.unit_mapper
+            - @validator
+        calls:
+            - [setLogger, ["@logger"]]
+
+    accounting.landlord_import.abstract_mapper:
+        abstract: true
+        public: false
+        calls:
+            - [setLogger, ["@logger"]]
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+
+    accounting.landlord_import.group_mapper:
+        class: RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\GroupMapper
+        parent: accounting.landlord_import.abstract_mapper
+        arguments:
+            - @renttrack.geocoder
+
+    accounting.landlord_import.landlord_mapper:
+        class: RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\LandlordMapper
+        parent: accounting.landlord_import.abstract_mapper
+        arguments:
+            - %kernel.default_locale%
+
+    accounting.landlord_import.unit_mapper:
+        class: RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\UnitMapper
+        parent: accounting.landlord_import.abstract_mapper
+        arguments:
+            - @property.process

@@ -48,3 +48,7 @@ services:
             em: "@doctrine.orm.default_entity_manager"
             logger: "@logger"
             propertyManagement: "%property_management%"
+
+    renttrack.geocoder:
+        class: RentJeeves\CoreBundle\Services\GeoCoder
+        parent: bazinga_geocoder.geocoder

@@ -34,7 +34,8 @@ abstract class Unit
      *     pattern = "/^[A-Za-z_0-9\-\.]{1,50}$/",
      *     groups = {
      *         "import",
-     *         "registration_tos"
+     *         "registration_tos",
+     *         "landlordImport"
      *     }
      * )
      * @Serializer\Groups({"RentJeevesImport", "payRent"})
@@ -177,7 +178,6 @@ abstract class Unit
         return $this->contractsWaiting;
     }
 
-
     /**
      * @param mixed $deletedAt
      */
@@ -199,7 +199,7 @@ abstract class Unit
         $this->contracts = new ArrayCollection();
         $this->contractsWaiting = new ArrayCollection();
     }
-    
+
     /**
      * Get id
      *
@@ -219,6 +219,7 @@ abstract class Unit
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -241,6 +242,7 @@ abstract class Unit
     public function setRent($rent)
     {
         $this->rent = $rent;
+
         return $this;
     }
 
@@ -263,6 +265,7 @@ abstract class Unit
     public function setBeds($beds)
     {
         $this->beds = $beds;
+
         return $this;
     }
 
@@ -285,6 +288,7 @@ abstract class Unit
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -307,6 +311,7 @@ abstract class Unit
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -329,6 +334,7 @@ abstract class Unit
     public function setProperty(Property $property = null)
     {
         $this->property = $property;
+
         return $this;
     }
 
@@ -351,6 +357,7 @@ abstract class Unit
     public function setHolding(Holding $holding = null)
     {
         $this->holding = $holding;
+
         return $this;
     }
 
@@ -373,6 +380,7 @@ abstract class Unit
     public function setGroup(Group $group = null)
     {
         $this->group = $group;
+
         return $this;
     }
 
@@ -395,6 +403,7 @@ abstract class Unit
     public function addContract(Contract $contract)
     {
         $this->contracts[] = $contract;
+
         return $this;
     }
 
@@ -407,9 +416,10 @@ abstract class Unit
     public function removeContract(Contract $contract)
     {
         $this->contracts->removeElement($contract);
+
         return $this;
     }
-    
+
     /**
      * Get contracts
      *
@@ -429,6 +439,7 @@ abstract class Unit
     public function addContractWaiting(ContractWaiting $contract)
     {
         $this->contractsWaiting[] = $contract;
+
         return $this;
     }
 
@@ -441,6 +452,7 @@ abstract class Unit
     public function removeContractWaiting(ContractWaiting $contract)
     {
         $this->contractsWaiting->removeElement($contract);
+
         return $this;
     }
 

@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReaderImport;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\OtherOccupant;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\OtherOccupants;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
