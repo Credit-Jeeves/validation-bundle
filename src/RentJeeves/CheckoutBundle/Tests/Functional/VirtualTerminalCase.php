@@ -174,17 +174,6 @@ JS;
     }
 
     /**
-     * @return array
-     */
-    public function chargeDataProvider()
-    {
-        return [
-            [PaymentProcessor::HEARTLAND],
-            [PaymentProcessor::ACI],
-        ];
-    }
-
-    /**
      * @test
      */
     public function chargeAciCollectPay()
