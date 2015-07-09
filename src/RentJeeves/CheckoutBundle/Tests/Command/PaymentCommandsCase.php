@@ -439,6 +439,13 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertNotEmpty($orders[0]->getTransactions()->first()->getTransactionId());
         $this->assertNotEmpty($orders[1]->getTransactions()->first()->getMessages());
 
+        $group = $orders[0]->getContract()->getGroup();
+        $date = new \DateTime();
+        $expectedBatchId = sprintf('%dB%s', $group->getId(), $date->format('Ymd'));
+
+        $this->assertEquals($expectedBatchId, $orders[0]->getTransactions()->first()->getBatchId());
+        $this->assertEquals($expectedBatchId, $orders[1]->getTransactions()->first()->getBatchId());
+
         $this->deleteAciCollectPayProfile($orders[0]->getContract()->getTenant()->getAciCollectPayProfileId());
     }
 

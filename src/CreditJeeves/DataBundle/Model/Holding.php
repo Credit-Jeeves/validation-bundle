@@ -178,6 +178,33 @@ abstract class Holding
      */
     protected $apiIntegrationType;
 
+    /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="is_allowed_future_contract",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     */
+    protected $isAllowedFutureContract = false;
+
+    /**
+     * @return mixed
+     */
+    public function isAllowedFutureContract()
+    {
+        return $this->isAllowedFutureContract;
+    }
+
+    /**
+     * @param mixed $isAllowedFutureContract
+     */
+    public function setIsAllowedFutureContract($isAllowedFutureContract)
+    {
+        $this->isAllowedFutureContract = $isAllowedFutureContract;
+    }
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();

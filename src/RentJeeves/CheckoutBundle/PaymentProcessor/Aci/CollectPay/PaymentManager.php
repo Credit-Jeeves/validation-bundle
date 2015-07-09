@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use ACI\Client\CollectPay\Enum\BankAccountType;
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Entity\Order;
 use Payum\AciCollectPay\Model\Enum\FundingAccountType;
@@ -25,6 +26,7 @@ class PaymentManager extends AbstractManager
      * @param  PaymentAccountInterface $paymentAccount
      * @param string $paymentType
      * @return string
+     * @throws \Exception
      */
     public function executePayment(Order $order, PaymentAccountInterface $paymentAccount, $paymentType)
     {
@@ -61,6 +63,7 @@ class PaymentManager extends AbstractManager
 
         $transaction->setOrder($order);
         $transaction->setMerchantName($payment->getDivisionBusinessId());
+        $transaction->setBatchId($this->getBatchIdForOrder($order));
 
         if ($paymentAccount instanceof PaymentAccount) {
             $transaction->setPaymentAccount($paymentAccount);
@@ -143,5 +146,25 @@ class PaymentManager extends AbstractManager
                 'Undefined type of payment account or incorrect payment type'
             );
         }
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return string
+     */
+    protected function getBatchIdForOrder(Order $order)
+    {
+        if (null !== $contract = $order->getContract()) {
+            $group = $contract->getGroup();
+        } else {
+            /** @var Operation $firstOperation */
+            $firstOperation = $order->getOperations()->first();
+            $group = $firstOperation->getGroup();
+        }
+
+        $date = new \DateTime();
+
+        return sprintf('%dB%s', $group->getId(), $date->format('Ymd'));
     }
 }

@@ -55,7 +55,7 @@ abstract class Transaction
      *
      * @ORM\Column(
      *     name="batch_id",
-     *     type="integer",
+     *     type="string",
      *     nullable=true
      * )
      */
