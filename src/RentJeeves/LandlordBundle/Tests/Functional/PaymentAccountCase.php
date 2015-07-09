@@ -17,7 +17,7 @@ class PaymentAccountCase extends BaseTestCase
     }
 
     /**
-     * @@dataProvider providerForCreatePaymentAccount
+     * @dataProvider providerForCreatePaymentAccount
      * @test
      */
     public function createPaymentAccount($paymentProcessor)
@@ -136,7 +136,7 @@ class PaymentAccountCase extends BaseTestCase
 
         $em->refresh($group->getGroupSettings());
         $billingAccount = $group->getActiveBillingAccount();
-        $this->assertEquals($billingAccount->getPaymentProcessor(), $paymentProcessor);
+        $this->assertEquals($paymentProcessor, $billingAccount->getPaymentProcessor());
     }
 
     /**

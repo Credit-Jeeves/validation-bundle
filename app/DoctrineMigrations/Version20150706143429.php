@@ -16,10 +16,8 @@ class Version20150706143429 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_group_settings
-                ADD feeCC NUMERIC(10,
-                2) DEFAULT NULL,
-                ADD feeACH NUMERIC(10,
-                2) DEFAULT NULL,
+                ADD feeCC NUMERIC(10,2) DEFAULT NULL,
+                ADD feeACH NUMERIC(10,2) DEFAULT NULL,
                 ADD is_passed_ach TINYINT(1) NOT NULL"
         );
 

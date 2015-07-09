@@ -252,7 +252,7 @@ trait Contract
         if ($this->currentImportModel->getMoveOut() !== null) {
             $this->currentImportModel->getContract()->setFinishAt($this->currentImportModel->getMoveOut());
             // only finish the contract if MoveOut is today or earlier
-            if ($this->currentImportModel->getMoveOut() <= $today) {
+            if ($this->currentImportModel->getMoveOut() <= vk) {
                 $this->setFinishedContract();
             }
         } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
