@@ -55,6 +55,8 @@ abstract class AbstractManager
     }
 
     /**
+     * @link https://credit.atlassian.net/browse/RT-1483
+     *
      * @param $message
      * @return string
      */
@@ -68,10 +70,11 @@ abstract class AbstractManager
         if (count($messages) === 1) {
             return $message;
         }
+        //We always need to remove the first element of message
         unset($messages[0]);
         $messages[1] = trim($messages[1]);
-
-        if (!is_numeric($messages[1]) && count($messages) > 1) {
+        //if second element is numeric we should remove it too
+        if (is_numeric($messages[1]) && count($messages) > 1) {
             unset($messages[1]);
         }
 
