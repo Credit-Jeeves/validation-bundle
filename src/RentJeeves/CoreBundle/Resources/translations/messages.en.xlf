@@ -2784,6 +2784,10 @@
                 <source>yardi.import.message.download.resident</source>
                 <target>Fetching list of residents from accounting system, please stand by.</target>
             </trans-unit>
+            <trans-unit id="yardi.import.message.download.property_mapping">
+                <source>yardi.import.message.download.property_mapping</source>
+                <target>Fetching list of mapped property, please stand by.</target>
+            </trans-unit>
             <trans-unit id="csv.import.message.updated_matched_contract">
                 <source>csv.import.message.updated_matched_contract</source>
                 <target>Successfully updated existing contracts. Please stand by...</target>

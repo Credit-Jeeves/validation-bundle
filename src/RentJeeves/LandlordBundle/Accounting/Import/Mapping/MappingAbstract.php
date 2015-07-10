@@ -80,6 +80,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_UNIT_ID = 'unit_id';
 
+    const KEY_PROPERTY_ID = 'property_id';
+
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
     const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
