@@ -3,11 +3,12 @@ namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
+use Ivory\Tests\OrderedForm\OrderedResolvedFormTypeFactoryTest;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\Services\PaidFor;
 use RentJeeves\CoreBundle\DateTime;
@@ -63,11 +64,11 @@ class OrderManager
      * Creates a new order for rent payment.
      *
      * @param  Payment $payment
-     * @return Order
+     * @return OrderSubmerchant
      */
     public function createRentOrder(Payment $payment)
     {
-        $order = new Order();
+        $order = OrderFactory::getOrder($payment->getContract()->getGroup());
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
         $order->setSum($payment->getAmount() + $payment->getOther());
@@ -97,11 +98,11 @@ class OrderManager
      * Creates a new order for credit track payment.
      *
      * @param  PaymentAccount $paymentAccount
-     * @return Order
+     * @return OrderSubmerchant
      */
     public function createCreditTrackOrder(PaymentAccount $paymentAccount)
     {
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($paymentAccount->getUser());
         $order->setSum($this->creditTrackAmount);
         $order->setStatus(OrderStatus::NEWONE);
@@ -128,11 +129,11 @@ class OrderManager
      * @param Group $group
      * @param float $amount
      * @param string $descriptor
-     * @return Order
+     * @return OrderSubmerchant
      */
     public function createChargeOrder(Group $group, $amount, $descriptor)
     {
-        $order = new Order();
+        $order = new OrderSubmerchant();
 
         $operation = new Operation();
         $operation->setType(OperationType::CHARGE);
@@ -169,9 +170,9 @@ class OrderManager
      * Creates rent operations for given payment and order.
      *
      * @param Payment $payment
-     * @param Order   $order
+     * @param OrderSubmerchant   $order
      */
-    protected function createRentOperations(Payment $payment, Order $order)
+    protected function createRentOperations(Payment $payment, OrderSubmerchant $order)
     {
         $contract = $payment->getContract();
         $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
@@ -187,9 +188,9 @@ class OrderManager
      * Creates operations if only balance is paid.
      *
      * @param Payment $payment
-     * @param Order   $order
+     * @param OrderSubmerchant   $order
      */
-    protected function createBalanceBasedOperations(Payment $payment, Order $order)
+    protected function createBalanceBasedOperations(Payment $payment, OrderSubmerchant $order)
     {
         $contract = $payment->getContract();
 
@@ -236,9 +237,9 @@ class OrderManager
      * Creates plain rent operations.
      *
      * @param Payment $payment
-     * @param Order   $order
+     * @param OrderSubmerchant   $order
      */
-    protected function createRegularOperations(Payment $payment, Order $order)
+    protected function createRegularOperations(Payment $payment, OrderSubmerchant $order)
     {
         $contract = $payment->getContract();
 

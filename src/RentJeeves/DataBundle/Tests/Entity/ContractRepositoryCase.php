@@ -14,7 +14,7 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
@@ -296,7 +296,7 @@ class ContractRepositoryCase extends BaseTestCase
         $contract->setStatus(ContractStatus::CURRENT);
 
         if ($hasOrder) {
-            $order = new Order();
+            $order = new OrderSubmerchant();
             $order->setUser($contract->getTenant());
             $order->setSum(500);
             $order->setType(OrderType::HEARTLAND_CARD);

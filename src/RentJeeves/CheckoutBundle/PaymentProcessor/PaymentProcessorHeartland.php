@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ChargeHeartland;
@@ -115,11 +116,11 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     }
 
     /**
-     * @param  Order $order
+     * @param  OrderSubmerchant $order
      * @param  PaymentAccountInterface $paymentAccount
      * @return bool
      */
-    protected function isAllowedToExecuteOrder(Order $order, PaymentAccountInterface $paymentAccount)
+    protected function isAllowedToExecuteOrder(OrderSubmerchant $order, PaymentAccountInterface $paymentAccount)
     {
         if ($paymentAccount instanceof PaymentAccount &&
             $order->getPaymentProcessor() === PaymentProcessor::HEARTLAND &&

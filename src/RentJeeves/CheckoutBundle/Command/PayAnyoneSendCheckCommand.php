@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Command;
 
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,11 +34,11 @@ class PayAnyoneSendCheckCommand extends ContainerAwareCommand
 
     /**
      * @param int $orderId
-     * @return Order
+     * @return OrderPayDirect
      */
     protected function getOrderById($orderId)
     {
-        return $this->getContainer()->get('doctrine')->getManager()->find('DataBundle:Order', $orderId);
+        return $this->getContainer()->get('doctrine')->getManager()->find('DataBundle:OrderPayDirect', $orderId);
     }
 
     /**

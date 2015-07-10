@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Controller;
 
 use CreditJeeves\CoreBundle\Translation\Translator;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -22,7 +23,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
 use CreditJeeves\DataBundle\Enum\UserType;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Entity\Operation;
@@ -944,7 +945,7 @@ class AjaxController extends Controller
                         );
                     }
                     // Create order
-                    $order = new Order();
+                    $order = new OrderSubmerchant();
                     $order->setUser($tenant);
                     $order->setSum($amount);
                     $order->setStatus(OrderStatus::COMPLETE);

@@ -5,6 +5,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone;
 use ACI\Client\PayAnyone\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Payum\AciPayAnyone\Model\NewPayment;
 use Payum\AciPayAnyone\Model\SubModel\BankAccount;
@@ -12,7 +13,6 @@ use Payum\AciPayAnyone\Model\SubModel\Payee;
 use Payum\AciPayAnyone\Model\SubModel\Payer;
 use Payum\AciPayAnyone\Request\CaptureRequest\Capture;
 use Psr\Log\LoggerInterface;
-use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Payum\AciPayAnyone\Model\ExistingPayment;
 use Payum\AciPayAnyone\Model\SubModel\Address;
@@ -74,11 +74,11 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @return string Order status
      * @throws \Exception|PaymentProcessorInvalidArgumentException
      */
-    public function executePayment(Order $order)
+    public function executePayment(OrderPayDirect $order)
     {
         $this->validateOrder($order);
 
@@ -156,11 +156,11 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @throws \Exception|PaymentProcessorInvalidArgumentException
      * @return bool
      */
-    public function cancelPayment(Order $order)
+    public function cancelPayment(OrderPayDirect $order)
     {
         $transaction = $this->getTransaction($order);
 
@@ -257,10 +257,10 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @return string
      */
-    protected function generateMemoLine(Order $order)
+    protected function generateMemoLine(OrderPayDirect $order)
     {
         /** @var Operation $operation */
         if ($operation = $order->getRentOperations()->first()) {
@@ -278,10 +278,10 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @return OutboundTransaction
      */
-    protected function getTransaction(Order $order)
+    protected function getTransaction(OrderPayDirect $order)
     {
         if (!$transaction = $order->getDepositOutboundTransaction()) {
             $transaction = new OutboundTransaction();
@@ -298,10 +298,10 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @throw PaymentProcessorInvalidArgumentException
      */
-    protected function validateOrder(Order $order)
+    protected function validateOrder(OrderPayDirect $order)
     {
         if (!($order->hasContract()) || !$order->getContract()->getGroup()) {
             throw new PaymentProcessorInvalidArgumentException('Order should have contract and group');

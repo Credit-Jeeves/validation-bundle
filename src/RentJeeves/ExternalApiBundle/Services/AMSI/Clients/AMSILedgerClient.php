@@ -228,7 +228,7 @@ class AMSILedgerClient extends AMSIBaseClient
     }
 
     /**
-     * @param  Order  $order
+     * @param Order $order
      * @return string
      */
     protected function getParametersForAddPaymentCall(Order $order)

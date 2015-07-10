@@ -2,7 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use ACI\Utils\OldProfilesStorage;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\Profile;
@@ -144,7 +144,7 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(2, $plugin->getPreSendMessages());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
         $this->assertNotNull($completeTransaction = $order->getCompleteTransaction());
@@ -205,7 +205,7 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(2, $plugin->getPreSendMessages());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
         $this->assertNotNull($order->getHeartlandBatchId());
@@ -267,7 +267,7 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(2, $plugin->getPreSendMessages());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $contract->getRent()));
         $this->assertNotNull($order);
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
@@ -310,7 +310,7 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(2, $plugin->getPreSendMessages());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => '-888'));
         $this->assertNotNull($order);
         $this->assertEquals(OrderStatus::ERROR, $order->getStatus());

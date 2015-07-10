@@ -3,7 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -158,7 +158,7 @@ trait FormBind
         $tenant = $this->currentImportModel->getTenant();
         $contract = $this->currentImportModel->getContract();
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::COMPLETE);
         $order->setType(OrderType::CASH);
         $order->setUser($tenant);

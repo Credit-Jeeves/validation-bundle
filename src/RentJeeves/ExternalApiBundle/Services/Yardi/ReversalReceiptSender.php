@@ -3,7 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Order as Transaction;
-use CreditJeeves\DataBundle\Entity\Order;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -159,7 +158,7 @@ class ReversalReceiptSender
         /** @var $residentClient ResidentTransactionsClient */
         $residentClient = $this->clientFactory->getClient($settings, SoapClient::YARDI_RESIDENT_TRANSACTIONS);
 
-        /** @var Order $transaction */
+        /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
             $this->logMessage('Original trans# ' . $transaction->getCompleteTransaction()->getTransactionId());
             $transactionXml = $this->getTransactionXml($settings, $transaction);
@@ -186,7 +185,7 @@ class ReversalReceiptSender
 
     /**
      * @param YardiSettings $settings
-     * @param Order $transaction
+     * @param Transaction $transaction
      * @return boolean|string
      */
     protected function getTransactionXml(YardiSettings $settings, Transaction $transaction)

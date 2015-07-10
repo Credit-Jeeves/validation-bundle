@@ -28,11 +28,11 @@ class CommonSystemMocks extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\Order
+     * @return \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\OrderSubmerchant
      */
     public function getOrderMock($orderId)
     {
-        $orderMock = $this->getMock('\CreditJeeves\DataBundle\Entity\Order', ["getId"], [], '', false);
+        $orderMock = $this->getMock('\CreditJeeves\DataBundle\Entity\OrderSubmerchant', ["getId"], [], '', false);
         $orderMock->method('getId')
             ->will($this->returnValue($orderId));
 

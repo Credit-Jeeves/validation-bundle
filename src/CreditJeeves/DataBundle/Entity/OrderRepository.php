@@ -13,36 +13,8 @@ use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
-/**
- * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
- *
- * Aliases for this class
- * o - Order
- * p - payment, table rj_payment, class Payment
- * c - contract, table rj_contract, class Contract
- * t - tenant, table cj_user, class Tenant
- * g - group, table cj_account_group, class Group
- * oper - Operation
- * prop - Property
- * unit - Unit
- *
- */
 class OrderRepository extends EntityRepository
 {
-    /**
-     *
-     * @param \CreditJeeves\DataBundle\Entity\User $User
-     */
-    public function deleteUserOrders(\CreditJeeves\DataBundle\Entity\User $User)
-    {
-        $query = $this->createQueryBuilder('o')
-            ->delete()
-            ->where('o.cj_applicant_id = :id')
-            ->setParameter('id', $User->getId())
-            ->getQuery()
-            ->execute();
-    }
-
     /**
      * @param  Group $group
      * @param  string $searchBy
@@ -259,7 +231,7 @@ class OrderRepository extends EntityRepository
      * @param array $groups
      * @param string $exportBy
      * @param Property $property
-     * @return Order[]
+     * @return OrderSubmerchant[]
      */
     public function getOrdersForYardiGenesis(
         $start,
@@ -571,7 +543,7 @@ class OrderRepository extends EntityRepository
     /**
      * @param  User $user
      * @param  array $excludedStatuses
-     * @return Order[]
+     * @return OrderSubmerchant[]
      */
     public function getUserOrders(User $user, array $excludedStatuses = [OrderStatus::NEWONE])
     {

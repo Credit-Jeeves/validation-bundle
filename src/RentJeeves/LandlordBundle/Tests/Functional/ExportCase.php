@@ -2,7 +2,7 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
@@ -68,7 +68,7 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($property);
         $this->assertNotNull($group);
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::COMPLETE);
         $order->setType(OrderType::HEARTLAND_BANK);
         $order->setSum(999);

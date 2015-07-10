@@ -1,25 +1,31 @@
 <?php
+
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Model\Order as Base;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
-use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="orderType", type="OrderAlgorithmType")
+ * @ORM\DiscriminatorMap({
+ *      "submerchant" = "CreditJeeves\DataBundle\Entity\OrderSubmerchant",
+ *      "pay_direct" = "CreditJeeves\DataBundle\Entity\OrderPayDirect"
+ * })
+ * @ORM\Table(name="cj_order")
  */
-class Order extends BaseOrder
+abstract class Order extends Base
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
@@ -1144,29 +1150,5 @@ class Order extends BaseOrder
     public function getExternalBatchId()
     {
         return $this->getCompleteTransaction()->getBatchId();
-    }
-
-    /**
-     * @return OutboundTransaction
-     */
-    public function getDepositOutboundTransaction()
-    {
-        return $this->getOutboundTransactions()->filter(
-            function (OutboundTransaction $transaction) {
-                return OutboundTransactionType::DEPOSIT === $transaction->getType();
-            }
-        )->first();
-    }
-
-    /**
-     * @return OutboundTransaction
-     */
-    public function getReversalOutboundTransaction()
-    {
-        return $this->getOutboundTransactions()->filter(
-            function (OutboundTransaction $transaction) {
-                return OutboundTransactionType::REVERSAL === $transaction->getType();
-            }
-        )->first();
     }
 }

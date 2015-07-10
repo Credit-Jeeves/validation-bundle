@@ -2,14 +2,17 @@
 namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PayDirectProcessorInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
@@ -62,7 +65,7 @@ class PayCreditTrack
      * Runs CreditTrack payment using paymentAccount.
      *
      * @param  PaymentAccount $paymentAccount
-     * @return Order
+     * @return OrderSubmerchant
      */
     public function executePaymentAccount(PaymentAccount $paymentAccount)
     {
@@ -102,8 +105,8 @@ class PayCreditTrack
     /**
      * Finds payment processor for a given payment account.
      *
-     * @param  PaymentAccount                                                        $paymentAccount
-     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface
+     * @param  PaymentAccount                                            $paymentAccount
+     * @return SubmerchantProcessorInterface|PayDirectProcessorInterface
      */
     protected function getPaymentProcessor(PaymentAccount $paymentAccount)
     {

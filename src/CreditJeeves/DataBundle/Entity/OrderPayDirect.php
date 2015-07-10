@@ -5,11 +5,12 @@ namespace CreditJeeves\DataBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
+use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 
 /**
  * @ORM\Entity
  */
-class OrderPayDirect extends BaseOrder
+class OrderPayDirect extends Order
 {
     /**
      * @ORM\OneToMany(
@@ -32,7 +33,6 @@ class OrderPayDirect extends BaseOrder
      * Add OutboundTransaction
      *
      * @param OutboundTransaction $transaction
-     * @return BaseOrder
      */
     public function addOutboundTransaction(OutboundTransaction $transaction)
     {
@@ -57,5 +57,29 @@ class OrderPayDirect extends BaseOrder
     public function getOutboundTransactions()
     {
         return $this->outboundTransactions;
+    }
+
+    /**
+     * @return OutboundTransaction|boolean
+     */
+    public function getDepositOutboundTransaction()
+    {
+        return $this->getOutboundTransactions()->filter(
+            function (OutboundTransaction $transaction) {
+                return OutboundTransactionType::DEPOSIT === $transaction->getType();
+            }
+        )->first();
+    }
+
+    /**
+     * @return OutboundTransaction|boolean
+     */
+    public function getReversalOutboundTransaction()
+    {
+        return $this->getOutboundTransactions()->filter(
+            function (OutboundTransaction $transaction) {
+                return OutboundTransactionType::REVERSAL === $transaction->getType();
+            }
+        )->first();
     }
 }

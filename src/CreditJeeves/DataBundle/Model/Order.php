@@ -9,14 +9,13 @@ use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
-use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class BaseOrder
+abstract class Order
 {
     /**
      * @ORM\Id

@@ -5,7 +5,7 @@ namespace RentJeeves\CheckoutBundle\Tests\Functional;
 use ACI\Utils\OldProfilesStorage;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Payum\AciCollectPay\Model\Profile;
@@ -64,7 +64,7 @@ class VirtualTerminalCase extends BaseTestCase
             ->setParameter('type', OperationType::CHARGE)
             ->getQuery();
 
-        /** @var Order[] $ordersBefore */
+        /** @var OrderSubmerchant[] $ordersBefore */
         $ordersBefore = $orderQuery->execute();
 
         $this->login('landlord1@example.com', 'pass');
@@ -156,7 +156,7 @@ JS;
             sprintf('Payment is not successful: %s', $dialogMessage)
         );
 
-        /** @var Order[] $ordersAfter */
+        /** @var OrderSubmerchant[] $ordersAfter */
         $ordersAfter = $orderQuery->execute();
 
         // We check that order was created (means count orders is +1 order)
@@ -213,7 +213,7 @@ JS;
             ->setParameter('type', OperationType::CHARGE)
             ->getQuery();
 
-        /** @var Order[] $ordersBefore */
+        /** @var OrderSubmerchant[] $ordersBefore */
         $ordersBefore = $orderQuery->execute();
 
         $this->login('landlord1@example.com', 'pass');
@@ -305,7 +305,7 @@ JS;
             sprintf('Payment is not successful: %s', $dialogMessage)
         );
 
-        /** @var Order[] $ordersAfter */
+        /** @var OrderSubmerchant[] $ordersAfter */
         $ordersAfter = $orderQuery->execute();
 
         // We check that order was created (means count orders is +1 order)
@@ -320,7 +320,7 @@ JS;
                 OrderStatus::COMPLETE
             )
         );
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = reset($ordersAfter);
         /** @var Operation $operation */
         $operation = $order->getOperations()->last();

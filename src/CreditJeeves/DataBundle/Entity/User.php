@@ -149,13 +149,13 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @return Order | null
+     * @return OrderSubmerchant | null
      */
     public function getLastCompleteOrder()
     {
         $return = null;
         $orders = $this->getOrders();
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         foreach ($orders as $order) {
             if (OrderStatus::COMPLETE == $order->getStatus()) {
                 $return = $order;
@@ -177,7 +177,7 @@ abstract class User extends BaseUser
     {
         $orders = array_reverse((array) $this->getOrders()->getIterator());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         foreach ($orders as $order) {
             if (OrderStatus::COMPLETE == $order->getStatus()) {
                 /** @var Operation $operation */

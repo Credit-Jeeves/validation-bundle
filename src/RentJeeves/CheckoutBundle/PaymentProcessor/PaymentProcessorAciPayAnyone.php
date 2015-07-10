@@ -2,8 +2,8 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use JMS\DiExtraBundle\Annotation as DI;
-use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\PaymentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\ReportLoader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
@@ -42,7 +42,7 @@ class PaymentProcessorAciPayAnyone implements PayDirectProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function executeOrder(Order $order)
+    public function executeOrder(OrderPayDirect $order)
     {
         if (!$this->isAllowedToExecuteOrder($order)) {
             throw new PaymentProcessorInvalidArgumentException('Order can\'t be executed');
@@ -54,7 +54,7 @@ class PaymentProcessorAciPayAnyone implements PayDirectProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function cancelOrder(Order $order)
+    public function cancelOrder(OrderPayDirect $order)
     {
         if (!$order->getDepositOutboundTransaction() || !$order->getDepositOutboundTransaction()->getTransactionId()) {
             throw new PaymentProcessorInvalidArgumentException('Order doesn\'t have successful outbound transaction');
@@ -72,10 +72,10 @@ class PaymentProcessorAciPayAnyone implements PayDirectProcessorInterface
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @return bool
      */
-    protected function isAllowedToExecuteOrder(Order $order)
+    protected function isAllowedToExecuteOrder(OrderPayDirect $order)
     {
         // TODO Need validate by order type
         return true;

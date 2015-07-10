@@ -1,11 +1,12 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Payment;
 
-use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PayDirectProcessorInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -13,6 +14,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -119,8 +121,8 @@ class PayRent
     /**
      * Finds payment processor for a given payment.
      *
-     * @param  Payment                                                               $payment
-     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface
+     * @param  Payment                                                   $payment
+     * @return SubmerchantProcessorInterface|PayDirectProcessorInterface
      */
     protected function getPaymentProcessor(Payment $payment)
     {

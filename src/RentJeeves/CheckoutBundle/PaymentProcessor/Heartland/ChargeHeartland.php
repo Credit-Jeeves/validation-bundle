@@ -3,7 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Payum2\Heartland\Soap\Base\BillTransaction;
 use Payum2\Heartland\Soap\Base\CardProcessingMethod;
@@ -18,7 +18,7 @@ class ChargeHeartland extends BasePayHeartland
     /**
      * {@inheritdoc}
      */
-    protected function getPaymentDetails(Order $order, $paymentType)
+    protected function getPaymentDetails(OrderSubmerchant $order, $paymentType)
     {
         /** @var Operation $operation */
         if ((!$operation = $order->getOperations()->first()) || !($group = $operation->getGroup())) {
@@ -49,7 +49,7 @@ class ChargeHeartland extends BasePayHeartland
     /**
      * {@inheritdoc}
      */
-    protected function getOrderStatus(Order $order, $isSuccessful)
+    protected function getOrderStatus(OrderSubmerchant $order, $isSuccessful)
     {
         return $isSuccessful ? OrderStatus::COMPLETE : OrderStatus::ERROR;
     }
@@ -57,7 +57,7 @@ class ChargeHeartland extends BasePayHeartland
     /**
      * {@inheritdoc}
      */
-    protected function addToken(PaymentDetails $paymentDetails, $token, Order $order)
+    protected function addToken(PaymentDetails $paymentDetails, $token, OrderSubmerchant $order)
     {
         $tokenToCharge = new TokenToCharge();
         $tokenToCharge->setAmount($order->getSum());

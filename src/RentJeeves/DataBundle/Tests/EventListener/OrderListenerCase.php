@@ -3,7 +3,7 @@
 namespace RentJeeves\DataBundle\Tests\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
@@ -59,7 +59,7 @@ class OrderListenerCase extends Base
          * @var $em EntityManager
          */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setType(OrderType::HEARTLAND_CARD);
@@ -94,7 +94,7 @@ class OrderListenerCase extends Base
          */
         $contract = $this->getContract();
         $paidFor = new DateTime();
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setType(OrderType::HEARTLAND_CARD);
@@ -222,7 +222,7 @@ class OrderListenerCase extends Base
         $em->persist($contract);
         $em->flush();
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum($orderAmount);
         $order->setType(OrderType::HEARTLAND_CARD);
@@ -270,7 +270,7 @@ class OrderListenerCase extends Base
                 )
             );
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $orders[0];
 
         /** @var Operation $operation */
@@ -313,7 +313,7 @@ class OrderListenerCase extends Base
         $paidTo = $contract->getPaidTo();
         $paidToOriginal = clone $paidTo;
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($tenant);
         $order->setSum(1000);
         $order->setType(OrderType::HEARTLAND_BANK);
@@ -371,7 +371,7 @@ class OrderListenerCase extends Base
          * @var $em EntityManager
          */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setType(OrderType::HEARTLAND_CARD);
@@ -420,7 +420,7 @@ class OrderListenerCase extends Base
 
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setType(OrderType::HEARTLAND_CARD);
@@ -518,7 +518,7 @@ class OrderListenerCase extends Base
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        /** @var $order Order */
+        /** @var $order OrderSubmerchant */
         $this->assertNotNull(
             $order = $em->getRepository('DataBundle:Order')->findOneBySum('999'),
             'Expected order is not found'
