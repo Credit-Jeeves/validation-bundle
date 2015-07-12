@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\CollectPay;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\AbstractManager;
 
-class AbstractManagerCase extends \PhpUnit_Framework_TestCas
+class AbstractManagerCase extends \PHPUnit_Framework_TestCase
 {
     public function providerForRemoveDebugInformation()
     {
