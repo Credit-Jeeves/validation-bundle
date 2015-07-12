@@ -7,9 +7,11 @@ use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
 
 class HandlerAbstractCase extends BaseTestCase
 {
+    use WriteAttributeExtensionTrait;
 
     /**
      * @test
@@ -19,24 +21,13 @@ class HandlerAbstractCase extends BaseTestCase
         $this->load(true);
         $handler = new HandlerTest();
         $handlerTestReflection = new \ReflectionClass($handler);
-        $currentImportModel = $handlerTestReflection->getProperty('currentImportModel');
-        $currentImportModel->setAccessible(true);
-        $currentImportModel->setValue($handler, $import = new Import());
-
-        $currentImportModel = $handlerTestReflection->getProperty('translator');
-        $currentImportModel->setAccessible(true);
-        $currentImportModel->setValue($handler, $this->getContainer()->get('translator'));
-
-        $currentImportModel = $handlerTestReflection->getProperty('translator');
-        $currentImportModel->setAccessible(true);
-        $currentImportModel->setValue($handler, $this->getContainer()->get('translator'));
+        $this->writeAttribute($handler, 'currentImportModel', $import = new Import());
+        $this->writeAttribute($handler, 'translator', $this->getContainer()->get('translator'));
 
         /** @var StorageCsv $storageCsv */
         $storageCsv = $this->getContainer()->get('accounting.import.storage.csv');
         $storageCsv->setDateFormat('Y-m-d');
-        $storage = $handlerTestReflection->getProperty('storage');
-        $storage->setAccessible(true);
-        $storage->setValue($handler, $storageCsv);
+        $this->writeAttribute($handler, 'storage', $storageCsv);
 
         $checkTenantStatus = $handlerTestReflection->getMethod('checkTenantStatus');
         $checkTenantStatus->setAccessible(true);
@@ -85,9 +76,7 @@ class HandlerAbstractCase extends BaseTestCase
         $this->assertFalse($groupModel->getHolding()->isAllowedFutureContract());
         $groupModel->getHolding()->setIsAllowedFutureContract(true);
         $this->getEntityManager()->flush();
-        $groupReflection = $handlerTestReflection->getProperty('group');
-        $groupReflection->setAccessible(true);
-        $groupReflection->setValue($handler, $groupModel);
+        $this->writeAttribute($handler, 'group', $groupModel);
 
         $row = [
             MappingAbstract::KEY_TENANT_STATUS => 'f',
@@ -120,25 +109,11 @@ class HandlerAbstractCase extends BaseTestCase
         );
         $storageCsv->expects($this->atLeast(3))
             ->method('isMultipleProperty')
-            ->withAnyParameters(
-                $this->callback(
-                    function () {
-                        return true;
-                    }
-                )
-            );
+            ->withAnyParameters(true);
 
-        $storage = $handlerTestReflection->getProperty('storage');
-        $storage->setAccessible(true);
-        $storage->setValue($handler, $storageCsv);
-
-        $logger = $handlerTestReflection->getProperty('logger');
-        $logger->setAccessible(true);
-        $logger->setValue($handler, $this->getContainer()->get('logger'));
-
-        $em = $handlerTestReflection->getProperty('em');
-        $em->setAccessible(true);
-        $em->setValue($handler, $this->getEntityManager());
+        $this->writeAttribute($handler, 'storage', $storageCsv);
+        $this->writeAttribute($handler, 'logger', $this->getContainer()->get('logger'));
+        $this->writeAttribute($handler, 'em', $this->getEntityManager());
 
         $getPropertyByExternalPropertyId = $handlerTestReflection->getMethod('getPropertyByExternalPropertyId');
         $getPropertyByExternalPropertyId->setAccessible(true);

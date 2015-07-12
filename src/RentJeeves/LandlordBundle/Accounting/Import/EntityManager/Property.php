@@ -118,7 +118,7 @@ trait Property
 
         $this->logger->debug(
             sprintf(
-                'Looking up multi-property by external property id: %s',
+                'Looking up property by external property id: %s',
                 $externalPropertyId
             )
         );
