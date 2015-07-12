@@ -146,7 +146,7 @@ abstract class GroupSettings
      * @Serializer\SerializedName("feeCC")
      * @Serializer\Groups({"payRent"})
      */
-    protected $feeCC = 0.00;
+    protected $feeCC;
 
     /**
      * @ORM\Column(
@@ -158,7 +158,7 @@ abstract class GroupSettings
      * @Serializer\SerializedName("feeACH")
      * @Serializer\Groups({"payRent"})
      */
-    protected $feeACH = 0.00;
+    protected $feeACH;
 
     /**
      * @var boolean
