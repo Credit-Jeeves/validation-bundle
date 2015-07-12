@@ -2,6 +2,7 @@
 namespace RentJeeves\LandlordBundle\Tests\Unit\Import\Handler;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\PaymentClientCase;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Model\Import;
@@ -145,7 +146,7 @@ class HandlerAbstractCase extends BaseTestCase
         /** @var Group $groupModel */
         $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $this->assertNotEmpty($groupModel);
-        $externalPropertyId = 'rnttrk01';
+        $externalPropertyId = PaymentClientCase::PROPERTY_ID;
         $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $externalPropertyId);
         $this->assertInstanceOf('RentJeeves\DataBundle\Entity\Property', $property);
         $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, null);
