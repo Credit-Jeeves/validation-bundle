@@ -102,4 +102,58 @@ class HandlerAbstractCase extends BaseTestCase
         $checkTenantStatus->invoke($handler, $row);
         $this->assertEquals(true, $import->isSkipped());
     }
+
+    /**
+     * @test
+     */
+    public function shouldCheckPropertyByExternalPropertyId()
+    {
+        $handler = new HandlerTest();
+        $handlerTestReflection = new \ReflectionClass($handler);
+        $storageCsv = $this->getMock(
+            'RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv',
+            ['isMultipleProperty'],
+            [],
+            '',
+            false
+        );
+        $storageCsv->expects($this->atLeast(3))
+            ->method('isMultipleProperty')
+            ->withAnyParameters(
+                $this->callback(
+                    function () {
+                        return true;
+                    }
+                )
+            );
+
+        $storage = $handlerTestReflection->getProperty('storage');
+        $storage->setAccessible(true);
+        $storage->setValue($handler, $storageCsv);
+
+        $logger = $handlerTestReflection->getProperty('logger');
+        $logger->setAccessible(true);
+        $logger->setValue($handler, $this->getContainer()->get('logger'));
+
+        $em = $handlerTestReflection->getProperty('em');
+        $em->setAccessible(true);
+        $em->setValue($handler, $this->getEntityManager());
+
+        $getPropertyByExternalPropertyId = $handlerTestReflection->getMethod('getPropertyByExternalPropertyId');
+        $getPropertyByExternalPropertyId->setAccessible(true);
+
+        /** @var Group $groupModel */
+        $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
+        $this->assertNotEmpty($groupModel);
+        $externalPropertyId = 'rnttrk01';
+        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $externalPropertyId);
+        $this->assertInstanceOf('RentJeeves\DataBundle\Entity\Property', $property);
+        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, null);
+        $this->assertFalse($property);
+        /** @var Group $groupModel */
+        $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Rent Group');
+        $this->assertNotEmpty($groupModel);
+        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $externalPropertyId);
+        $this->assertFalse($property);
+    }
 }
