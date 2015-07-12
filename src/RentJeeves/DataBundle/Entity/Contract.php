@@ -1062,4 +1062,29 @@ class Contract extends Base
 
         return false;
     }
+
+    /**
+     * @link https://credit.atlassian.net/browse/RT-1006
+     *
+     * Setting paidTo logic from contract waiting.
+     * Use this method only when contract created from contract waiting and need set up paidTo.
+     *
+     * @return $this
+     */
+    public function setPaidToByBalanceDue()
+    {
+        $today = new \DateTime();
+        //if balance is >0 then balance due, set paidTo to duedate to current month.
+        if ($this->getIntegratedBalance() > 0) {
+            return $this->setPaidTo($today);
+        }
+        //if balance is <=0 then no balance due, set paidTo to duedate in month future. (+1)
+        if ($this->getIntegratedBalance() <= 0) {
+            $today->modify('+1 month');
+
+            return $this->setPaidTo($today);
+        }
+
+        return $this;
+    }
 }

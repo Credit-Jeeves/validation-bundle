@@ -749,17 +749,22 @@ abstract class HandlerAbstract implements HandlerInterface
             }
 
             if (!empty($tenantEmail) && $this->currentImportModel->getHasContractWaiting()) {
-                //Remove contract because we get duplicate contract
-                $this->currentImportModel->getTenant()->removeContract($contract);
                 $this->flushEntity($this->currentImportModel->getTenant());
-                $contract = $this->contractProcess->createContractFromWaiting(
+                $contractFromWaiting = $this->contractProcess->createContractFromWaiting(
                     $this->currentImportModel->getTenant(),
                     $this->currentImportModel->getContractWaiting()
                 );
 
-                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
-                $contract->setStatus(ContractStatus::INVITE);
-                $this->flushEntity($contract);
+                $contractFromWaiting->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+                $contractFromWaiting->setStatus(ContractStatus::INVITE);
+                $contractFromWaiting->setIntegratedBalance($contract->getIntegratedBalance());
+                $contractFromWaiting->setRent($contract->getRent());
+                $contractFromWaiting->setStartAt($contract->getStartAt());
+                $contractFromWaiting->setFinishAt($contract->getFinishAt());
+                $contractFromWaiting->setPaidToByBalanceDue();
+                //Remove contract because we get duplicate contract
+                $this->currentImportModel->getTenant()->removeContract($contract);
+                $this->flushEntity($contractFromWaiting);
 
                 $this->sendInviteEmail();
 
