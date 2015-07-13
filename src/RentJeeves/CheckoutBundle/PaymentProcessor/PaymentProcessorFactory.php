@@ -48,7 +48,7 @@ class PaymentProcessorFactory
     public function getPaymentProcessor(Group $group)
     {
         switch ($group->getGroupSettings()->getPaymentProcessor()) {
-            case PaymentProcessorEnum::ACI_COLLECT_PAY:
+            case PaymentProcessorEnum::ACI:
                 return $this->aciCollectPay;
             case PaymentProcessorEnum::HEARTLAND:
                 return $this->heartland;

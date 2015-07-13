@@ -29,7 +29,7 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
         $order->setStatus(OrderStatus::PENDING);
         $order->setType(OrderType::HEARTLAND_BANK);
         $order->setSum(600);
-        $order->setPaymentProcessor(PaymentProcessor::ACI_PAY_ANYONE);
+        $order->setPaymentProcessor(PaymentProcessor::ACI);
         $order->setDescriptor('Test Check');
 
         $operation = new Operation();

@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CoreBundle\Command;
 
-
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
