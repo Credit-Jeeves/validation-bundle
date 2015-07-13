@@ -1412,6 +1412,81 @@ class ImportCase extends ImportBaseAbstract
 
     /**
      * @test
+     */
+    public function yardiMultiImport()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
+        $em = $this->getEntityManager();
+
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy([
+            'paymentAccepted' => PaymentAccepted::CASH_EQUIVALENT,
+        ]);
+
+        $this->assertEmpty($contract);
+
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy([
+            'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
+        ]);
+
+        $this->assertEmpty($contractWaiting);
+
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
+        $this->assertNotNull($importTypeSelected = $this->page->find('css', '#import_file_type_importType'));
+        $importTypeSelected->selectOption(ImportType::MULTI_PROPERTIES);
+        $this->assertNotNull($yardiRadio = $this->page->findAll('css', '.radio'));
+        $yardiRadio[1]->click();
+        $submitImport->click();
+
+        $this->session->wait(
+            250000,
+            "$('table').is(':visible')"
+        );
+
+        for ($i = 0; $i <= 4; $i++) {
+            if ($errorFields = $this->page->findAll('css', '.errorField')) {
+                $this->assertEquals(1, count($errorFields));
+                $errorFields[0]->setValue('14test1111@mail.com');
+            }
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+            $submitImportFile->click();
+            $this->waitReviewAndPost($i<4);
+        }
+
+        $this->waitRedirectToSummaryPage();
+        $this->logout();
+
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy([
+            'paymentAccepted' => PaymentAccepted::CASH_EQUIVALENT,
+        ]);
+
+        $this->assertNotEmpty($contract);
+
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy([
+            'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
+        ]);
+        $this->assertNotEmpty($contractWaiting);
+
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy([
+                'externalLeaseId' => 't0012020',
+        ]);
+
+        $this->assertCount(3, $contracts);
+
+        $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy([
+                'residentId' => 'r0004169',
+        ]);
+
+        $this->assertNotEmpty($residentMapping);
+    }
+
+    /**
+     * @test
      * @depends yardiBaseImport
      */
     public function yardiBaseImportOnlyException()

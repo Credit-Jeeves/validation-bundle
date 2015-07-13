@@ -445,7 +445,7 @@ class AccountingController extends Controller
     /**
      * @Route(
      *     "/import/property_mapping/yardi",
-     *     name="accounting_import_property_mapping_yardi,
+     *     name="accounting_import_property_mapping_yardi",
      *     options={"expose"=true}
      * )
      */
@@ -459,10 +459,6 @@ class AccountingController extends Controller
         $mappedProperties = [];
 
         if ($storage->getImportLoaded() === false) {
-            /** @var MappingYardi $mapping */
-            $mapping = $importFactory->getMapping();
-            /** @var Holding $holding */
-            $holding = $this->getUser()->getHolding();
             /** @var $propertyMappingManager PropertyMappingManager */
             $propertyMappingManager = $this->get('property_mapping.manager');
 
@@ -476,12 +472,6 @@ class AccountingController extends Controller
                 $mappedProperties = $propertyMappingManager->getMappedProperties();
             }
 
-            $mappedProperties = array_map(
-                function (PropertyMapping $propertyMapping) {
-                    return $propertyMapping->getId();
-                },
-                $mappedProperties
-            );
         }
 
         $response = new Response($this->get('jms_serializer')->serialize($mappedProperties, 'json'));
@@ -491,13 +481,15 @@ class AccountingController extends Controller
     }
 
     /**
+     * @param int $propertyMappingId
+     *
      * @Route(
-     *     "/import/residents/yardi",
+     *     "/import/residents/yardi/{propertyMappingId}",
      *     name="accounting_import_residents_yardi",
      *     options={"expose"=true}
      * )
      */
-    public function getResidentsYardi()
+    public function getResidentsYardi($propertyMappingId)
     {
         /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
@@ -511,23 +503,15 @@ class AccountingController extends Controller
             $mapping = $importFactory->getMapping();
             /** @var Holding $holding */
             $holding = $this->getUser()->getHolding();
-            /** @var $propertyMappingManager PropertyMappingManager */
-            $propertyMappingManager = $this->get('property_mapping.manager');
-
-            if (ImportType::SINGLE_PROPERTY === $storage->getImportType()) {
-                /** @var PropertyMapping[] $mappedProperties */
-                $mappedProperties[] = $propertyMappingManager->createPropertyMapping(
-                    $storage->getImportPropertyId(),
-                    $storage->getImportExternalPropertyId()
-                );
-            } else {
-                $mappedProperties = $propertyMappingManager->getMappedProperties();
-            }
-
-            foreach ($mappedProperties as $mappedProperty) {
-                $residents[$mappedProperty->getId()] = array_merge(
-                    $mapping->getResidents($holding, $mappedProperty->getProperty()),
-                    [] // merge with empty array for start with 0
+            /** @var $propertyMapping PropertyMapping */
+            $propertyMapping = $this->getEntityManager()->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
+                'id' => $propertyMappingId,
+                'holding' => $holding->getId()
+            ]);
+            if ($propertyMapping) {
+                $residents = array_merge(
+                    $mapping->getResidents($holding, $propertyMapping->getProperty()),
+                    $residents
                 );
             }
         }
