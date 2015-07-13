@@ -15,6 +15,7 @@ class HandlerAbstractCase extends BaseTestCase
      */
     public function shouldCheckTenantStatus()
     {
+        $this->load(true);
         $handler = new HandlerTest();
         $handlerTestReflection = new \ReflectionClass($handler);
         $currentImportModel = $handlerTestReflection->getProperty('currentImportModel');
@@ -80,7 +81,9 @@ class HandlerAbstractCase extends BaseTestCase
         /** @var Group $groupModel */
         $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $this->assertNotEmpty($groupModel);
-        $this->assertTrue($groupModel->getHolding()->isAllowedFutureContract());
+        $this->assertFalse($groupModel->getHolding()->isAllowedFutureContract());
+        $groupModel->getHolding()->setIsAllowedFutureContract(true);
+        $this->getEntityManager()->flush();
         $groupReflection = $handlerTestReflection->getProperty('group');
         $groupReflection->setAccessible(true);
         $groupReflection->setValue($handler, $groupModel);

@@ -44,7 +44,7 @@ class BillingAccountManager extends AbstractManager
 
         if (!$request->getIsSuccessful()) {
             $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
-            throw new PaymentProcessorRuntimeException($request->getMessages());
+            throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
         }
 
         $this->logger->debug(

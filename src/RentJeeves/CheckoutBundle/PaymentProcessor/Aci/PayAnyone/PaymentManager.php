@@ -19,6 +19,7 @@ use Payum\AciPayAnyone\Model\SubModel\Address;
 use Payum\AciPayAnyone\Request\CancelRequest\Cancel;
 use Payum\Core\Payment as PaymentProcessor;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\AbstractManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
@@ -129,7 +130,7 @@ class PaymentManager
                 $this->logger->alert(sprintf('[ACI PayAnyone Error][Execute]:%s', $request->getMessages()));
 
                 $order->setStatus(OrderStatus::ERROR);
-                $transaction->setMessage($request->getMessages());
+                $transaction->setMessage(AbstractManager::removeDebugInformation($request->getMessages()));
                 $transaction->setStatus(OutboundTransactionStatus::ERROR);
             }
 
@@ -203,7 +204,7 @@ class PaymentManager
             }
 
             $this->logger->alert(sprintf('[ACI PayAnyone Error][Cancel]:%s', $request->getMessages()));
-            $transaction->setMessage($request->getMessages());
+            $transaction->setMessage(AbstractManager::removeDebugInformation($request->getMessages()));
             $this->em->flush();
 
             return false;
