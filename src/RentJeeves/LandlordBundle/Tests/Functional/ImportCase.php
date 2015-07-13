@@ -1275,6 +1275,7 @@ class ImportCase extends ImportBaseAbstract
         $contract = end($contracts);
         $dueDate = $contract->getGroup()->getGroupSettings()->getDueDate();
         $this->assertEquals($dueDate, $contract->getDueDate());
+        $paidToIn->setDate(null, null, $contract->getDueDate());
         $this->assertEquals($paidToIn->format('Y-m-d'), $contract->getPaidTo()->format('Y-m-d'));
     }
 

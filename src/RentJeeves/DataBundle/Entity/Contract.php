@@ -1068,23 +1068,24 @@ class Contract extends Base
      *
      * Setting paidTo logic from contract waiting.
      * Use this method only when contract created from contract waiting and need set up paidTo.
-     *
-     * @return $this
      */
     public function setPaidToByBalanceDue()
     {
-        $today = new \DateTime();
+        $this->getDueDate();
+        $paidTo = new DateTime();
+        $paidTo->setDate(
+            null,
+            null,
+            $this->getDueDate()
+        );
         //if balance is >0 then balance due, set paidTo to duedate to current month.
         if ($this->getIntegratedBalance() > 0) {
-            return $this->setPaidTo($today);
+            $this->setPaidTo($paidTo);
+
+            return;
         }
+        $paidTo->modify('+1 month');
         //if balance is <=0 then no balance due, set paidTo to duedate in month future. (+1)
-        if ($this->getIntegratedBalance() <= 0) {
-            $today->modify('+1 month');
-
-            return $this->setPaidTo($today);
-        }
-
-        return $this;
+        $this->setPaidTo($paidTo);
     }
 }
