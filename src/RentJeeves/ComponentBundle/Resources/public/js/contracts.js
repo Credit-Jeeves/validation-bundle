@@ -238,7 +238,11 @@ function Contracts() {
             success: function (response) {
 
                 if (response.units.length == 0 || response.isSingle == true) {
+                    $(idUnit).linkselect('destroy');
+                    $(idUnit).html(' ');
+                    $(idUnit).linkselect();
                     $('#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit_link').hide();
+                    
                     return;
                 }
 
