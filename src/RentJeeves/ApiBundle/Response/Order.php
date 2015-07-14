@@ -6,15 +6,8 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
-use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 use CreditJeeves\DataBundle\Entity\Order as Entity;
 
-/**
- * @DI\Service("response_resource.order")
- * @UrlResourceMeta(
- *      actionName = "get_order"
- * )
- */
 class Order extends ResponseResource
 {
     /**
