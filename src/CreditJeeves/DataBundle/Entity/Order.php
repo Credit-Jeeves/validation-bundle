@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use JMS\Serializer\GenericSerializationVisitor;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
@@ -17,15 +18,18 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
+ *
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="orderType", type="OrderAlgorithmType")
  * @ORM\DiscriminatorMap({
  *      "submerchant" = "CreditJeeves\DataBundle\Entity\OrderSubmerchant",
  *      "pay_direct" = "CreditJeeves\DataBundle\Entity\OrderPayDirect"
  * })
+ * @Serializer\Discriminator(disabled = true)
+ *
  * @ORM\Table(name="cj_order")
  */
-abstract class Order extends Base
+class Order extends Base
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
@@ -264,8 +268,8 @@ abstract class Order extends Base
     public function getExternalUnitId()
     {
         $unit = $this->getUnit();
-        if ($unit) {
-            return $unit->getUnitMapping()->getExternalUnitId();
+        if ($unit && $unitMapping = $unit->getUnitMapping()) {
+            return $unitMapping->getExternalUnitId();
         }
 
         return null;
@@ -521,7 +525,7 @@ abstract class Order extends Base
      *
      * @return array
      */
-    public function getItem()
+    public function getItem(GenericSerializationVisitor $visitor = null)
     {
         $result = array();
         /** @var Contract $contract */
@@ -551,6 +555,10 @@ abstract class Order extends Base
             case OrderStatus::RETURNED:
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
+        }
+
+        if ($visitor !== null) {
+            $visitor->setRoot($result);
         }
 
         return $result;
@@ -826,7 +834,11 @@ abstract class Order extends Base
      */
     public function getReversedDocumentNumber()
     {
-        return $this->getCompleteTransaction()->getTransactionId();
+        if ($transaction = $this->getCompleteTransaction()) {
+            return $transaction->getTransactionId();
+        }
+
+        return null;
     }
 
     /**

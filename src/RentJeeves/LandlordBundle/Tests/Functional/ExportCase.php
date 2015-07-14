@@ -76,6 +76,9 @@ class ExportCase extends BaseTestCase
         $oneWeekAgo = new DateTime();
         $oneWeekAgo->modify("-7 days");
         $order->setCreatedAt($oneWeekAgo);
+        $em->persist($order);
+        $em->flush($order);
+
         /** @var UnitMapping $unitMapping */
         $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(['externalUnitId' => 'AAABBB-7']);
         $this->assertNotNull($unitMapping);
@@ -95,6 +98,7 @@ class ExportCase extends BaseTestCase
         $operation->setOrder($order);
         $operation->setPaidFor(new DateTime('8/1/2014'));
         $operation->setContract($contract);
+        $order->addOperation($operation);
 
         $transaction = new Transaction();
         $transaction->setIsSuccessful(false);
@@ -102,6 +106,7 @@ class ExportCase extends BaseTestCase
         $transaction->setTransactionId("1");
         $transaction->setAmount(999);
         $transaction->setMerchantName('MrchntNm');
+        $order->addTransaction($transaction);
 
         $em->persist($order);
         $em->persist($operation);

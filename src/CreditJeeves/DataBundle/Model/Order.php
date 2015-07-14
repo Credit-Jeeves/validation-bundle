@@ -14,6 +14,12 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
+ *
+ * @Serializer\Discriminator(field = "objectType", map = {
+ *    "submerchant": "CreditJeeves\DataBundle\Entity\OrderSubmerchant",
+ *    "pay_direct": "CreditJeeves\DataBundle\Entity\OrderPayDirect",
+ *    "base": "CreditJeeves\DataBundle\Entity\Order"
+ * })
  */
 abstract class Order
 {
@@ -392,7 +398,7 @@ abstract class Order
      * Add order's operation
      *
      * @param  \CreditJeeves\DataBundle\Entity\Operation $operation
-     * @return BaseOrder
+     * @return self
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
@@ -425,7 +431,7 @@ abstract class Order
      * Add transaction
      *
      * @param  \RentJeeves\DataBundle\Entity\Transaction $transaction
-     * @return BaseOrder
+     * @return self
      */
     public function addTransaction(\RentJeeves\DataBundle\Entity\Transaction $transaction)
     {
@@ -509,5 +515,10 @@ abstract class Order
     public function setOrderType($orderType)
     {
         $this->orderType = $orderType;
+    }
+
+    public function getObjectType()
+    {
+        return 'base';
     }
 }

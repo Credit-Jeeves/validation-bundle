@@ -4,6 +4,8 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\GenericSerializationVisitor;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 
@@ -81,5 +83,24 @@ class OrderPayDirect extends Order
                 return OutboundTransactionType::REVERSAL === $transaction->getType();
             }
         )->first();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getObjectType()
+    {
+        return 'pay_direct';
+    }
+
+    /**
+     * @Serializer\Groups({"payment"})
+     * @Serializer\HandlerCallback("json", direction = "serialization")
+     *
+     * @return array
+     */
+    public function getItem(GenericSerializationVisitor $visitor = null)
+    {
+        return parent::getItem($visitor);
     }
 }

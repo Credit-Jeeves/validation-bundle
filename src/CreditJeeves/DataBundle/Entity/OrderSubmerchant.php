@@ -2,11 +2,30 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\GenericSerializationVisitor;
 
 /**
  * @ORM\Entity
  */
 class OrderSubmerchant extends Order
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getObjectType()
+    {
+        return 'submerchant';
+    }
 
+    /**
+     * @Serializer\Groups({"payment"})
+     * @Serializer\HandlerCallback("json", direction = "serialization")
+     *
+     * @return array
+     */
+    public function getItem(GenericSerializationVisitor $visitor = null)
+    {
+        return parent::getItem($visitor);
+    }
 }
