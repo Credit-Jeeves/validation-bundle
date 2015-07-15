@@ -35,7 +35,20 @@ class FundingAccountManager extends AbstractManager
         FundingAccountData $fundingAccountData,
         User $user = null
     ) {
-        throw new \Exception("modifyFundingAccount is not implement yet for aci_collect_pay.");
+        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $user);
+        $fundingAccount->setFundingAccountId($fundingAccountId);
+        $fundingAccountId = $this->executeRequest($profileId, $fundingAccount);
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Modify funding account with id = "%s" to profile "%d" for user with id = "%d"',
+                $fundingAccountId,
+                $profileId,
+                $user->getId()
+            )
+        );
+
+        return $fundingAccountId;
     }
 
     /**
