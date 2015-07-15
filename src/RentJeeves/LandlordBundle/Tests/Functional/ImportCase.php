@@ -1158,9 +1158,21 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * @return array
      */
-    public function matchWaitingContractWithMoveContract()
+    public function providerForMatchWaitingContractWithMoveContract()
+    {
+        return [
+            [new DateTime(), 100.01],
+            [new DateTime('+1 month'), -10.02]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerForMatchWaitingContractWithMoveContract
+     */
+    public function matchWaitingContractWithMoveContract(\DateTime $paidToIn, $balanceIn)
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
@@ -1204,6 +1216,8 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(1, count($trs['import.status.new']), "New contract is wrong number");
         $this->assertNotNull($email = $this->page->find('css', 'input.0_email'));
         $email->setValue('');
+        $this->assertNotNull($balance = $this->page->find('css', 'input.0_balance'));
+        $balance->setValue($balanceIn);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
@@ -1246,17 +1260,23 @@ class ImportCase extends ImportBaseAbstract
         $trs = $this->getParsedTrsByStatus();
         $this->assertEquals(1, count($trs), "Count statuses is wrong");
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
+        $this->assertNotNull($balance = $this->page->find('css', 'input.0_balance'));
+        $balance->setValue($balanceIn);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
 
         $em = $this->getEntityManager();
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
-            array(
-                'integratedBalance' => '-29.80',
-            )
+            ['integratedBalance' => $balanceIn]
         );
         $this->assertEquals(1, count($contracts));
+        /** @var Contract $contract */
+        $contract = end($contracts);
+        $dueDate = $contract->getGroup()->getGroupSettings()->getDueDate();
+        $this->assertEquals($dueDate, $contract->getDueDate());
+        $paidToIn->setDate(null, null, $contract->getDueDate());
+        $this->assertEquals($paidToIn->format('Y-m-d'), $contract->getPaidTo()->format('Y-m-d'));
     }
 
     /**

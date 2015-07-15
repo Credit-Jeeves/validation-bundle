@@ -176,24 +176,9 @@ class RjGroupAdmin extends Admin
                     )
                 )
                 ->add(
-                    'depositAccount.feeCC',
-                    'number',
-                    array('label' => 'CC Fee (%)', 'required' => false) //admin.deposit_account.fee_cc
-                )
-                ->add(
-                    'depositAccount.feeACH',
-                    'number',
-                    array('label' => 'ACH Fee ($)', 'required' => false) //admin.deposit_account.fee_ach
-                )
-                ->add(
                     'depositAccount.mid',
                     'number',
                     ['label' => 'Mid', 'required' => false]
-                )
-                ->add(
-                    'depositAccount.passedAch',
-                    'checkbox',
-                    ['label' => 'Is passed ach', 'required' => false]
                 )
                 ->add('disableCreditCard', 'checkbox', ['label' => 'Disable Credit Card?', 'required' => false])
             ->end()

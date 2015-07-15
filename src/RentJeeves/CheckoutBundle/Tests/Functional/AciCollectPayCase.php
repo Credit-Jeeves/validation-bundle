@@ -52,7 +52,7 @@ class AciCollectPayCase extends BaseTestCase
             $this->deleteProfile($profileId);
         }
 
-        $this->contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+        $this->contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
         $this->contract->getGroup()->getDepositAccount()->setMerchantName(564075);
 
@@ -84,7 +84,7 @@ class AciCollectPayCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $repo = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount');
 
-        $countsBefore = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY]));
+        $countsBefore = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
         $repo->clear();
 
         $this->login('tenant11@example.com', 'pass');
@@ -146,7 +146,7 @@ class AciCollectPayCase extends BaseTestCase
         $merchantName = $this->contract->getGroup()->getMerchantName();
         $this->assertEquals($merchantName, $this->contract->getAciCollectPayContractBilling()->getDivisionId());
 
-        $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY]));
+        $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
 
         $this->assertEquals($countsBefore + 1, $countsAfter);
 

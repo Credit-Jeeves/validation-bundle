@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -105,6 +106,38 @@ trait Property
     }
 
     /**
+     * @param Group $group
+     * @param string $externalPropertyId
+     * @return bool|EntityProperty
+     */
+    protected function getPropertyByExternalPropertyId(Group $group, $externalPropertyId)
+    {
+        if ($this->storage->isMultipleProperty()) {
+            return false;
+        }
+
+        $this->logger->debug(
+            sprintf(
+                'Looking up property by external property id: %s',
+                $externalPropertyId
+            )
+        );
+        /** @var PropertyMapping $propertyMapping */
+        $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+            [
+                'holding'            => $group->getHolding(),
+                'externalPropertyId' => $externalPropertyId
+            ]
+        );
+
+        if ($propertyMapping) {
+            return $propertyMapping->getProperty();
+        }
+
+        return false;
+    }
+
+    /**
      * @return EntityProperty|null
      */
     protected function getProperty($row)
@@ -116,12 +149,21 @@ trait Property
             return $this->em->getRepository('RjDataBundle:Property')->find($propertyId);
         }
 
-        if (isset($row[Mapping::KEY_UNIT_ID]) && !empty($row[Mapping::KEY_UNIT_ID]) && $this->group) {
+        $group = $this->getGroup($row);
+
+        if (!empty($row[Mapping::KEY_EXTERNAL_PROPERTY_ID]) &&
+            $group &&
+            $property = $this->getPropertyByExternalPropertyId($group, $row[Mapping::KEY_EXTERNAL_PROPERTY_ID])
+        ) {
+            return $property;
+        }
+
+        if (isset($row[Mapping::KEY_UNIT_ID]) && !empty($row[Mapping::KEY_UNIT_ID]) && $group) {
             $this->logger->debug(sprintf('Looking up property by unit_id: %s', $row[Mapping::KEY_UNIT_ID]));
 
             /** @var UnitMapping $mapping */
             $mapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
-                $this->group,
+                $group,
                 $row[Mapping::KEY_UNIT_ID]
             );
 

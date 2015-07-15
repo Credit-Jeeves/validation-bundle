@@ -330,7 +330,7 @@ class PaymentCommandsCase extends BaseTestCase
         $contract = $this->getContract($em);
 
         /* Prepare Group */
-        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
         $contract->getGroup()->getDepositAccount()->setMerchantName(564075);
 
@@ -346,7 +346,7 @@ class PaymentCommandsCase extends BaseTestCase
         $paymentAccount1 = new PaymentAccount();
 
         $paymentAccount1->setUser($contract->getTenant());
-        $paymentAccount1->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+        $paymentAccount1->setPaymentProcessor(PaymentProcessor::ACI);
         $paymentAccount1->setType(PaymentAccountTypeEnum::BANK);
         $paymentAccount1->setName('Test ACI Bank');
         $paymentAccount1->setBankAccountType(BankAccountType::CHECKING);
@@ -427,7 +427,7 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertCount(3, $plugin->getPreSendMessages()); // 2 for Order; 1 - Monolog Message
 
         $orders = $em->getRepository('DataBundle:Order')->findBy(
-            ['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY],
+            ['paymentProcessor' => PaymentProcessor::ACI],
             ['status' => 'ASC']
         );
 

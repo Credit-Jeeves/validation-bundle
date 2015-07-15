@@ -11,11 +11,11 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\Services\PaidFor;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Model\GroupSettings;
 use RuntimeException;
 
 /**
@@ -70,6 +70,7 @@ class OrderManager
         $order = new Order();
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
+        $groupSettings = $contract->getGroup()->getGroupSettings();
         $order->setSum($payment->getAmount() + $payment->getOther());
         $order->setUser($paymentAccount->getUser());
         $order->setStatus(OrderStatus::NEWONE);
@@ -78,11 +79,11 @@ class OrderManager
         $this->createRentOperations($payment, $order);
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($contract->getDepositAccount()->getFeeCC() / 100), 2));
+            $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));
             $order->setType(OrderType::HEARTLAND_CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            if (true === $contract->getDepositAccount()->isPassedAch()) {
-                $order->setFee($contract->getDepositAccount()->getFeeACH());
+            if (true === $groupSettings->isPassedAch()) {
+                $order->setFee($groupSettings->getFeeACH());
             } else {
                 $order->setFee(0);
             }
@@ -108,16 +109,15 @@ class OrderManager
         /** Not implement for ACI, PaymentProcess should be gotten from Group */
         $order->setPaymentProcessor(PaymentProcessor::HEARTLAND);
 
-        /** @var DepositAccount $depositAccount */
-        $depositAccount = $this->em->getRepository('DataBundle:Group')
-            ->findOneByCode($this->rtMerchantName)
-            ->getDepositAccount();
+        /** @var GroupSettings $groupSettings */
+        $groupSettings = $this->em->getRepository('DataBundle:Group')
+            ->findOneByCode($this->rtMerchantName)->getGroupSettings();
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($depositAccount->getFeeCC() / 100), 2));
+            $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));
             $order->setType(OrderType::HEARTLAND_CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $order->setFee($depositAccount->getFeeACH());
+            $order->setFee($groupSettings->getFeeACH());
             $order->setType(OrderType::HEARTLAND_BANK);
         }
 

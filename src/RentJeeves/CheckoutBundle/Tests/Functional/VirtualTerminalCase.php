@@ -178,7 +178,7 @@ JS;
      */
     public function chargeAciCollectPay()
     {
-        $paymentProcessor = PaymentProcessor::ACI_COLLECT_PAY;
+        $paymentProcessor = PaymentProcessor::ACI;
         $this->setDefaultSession('selenium2');
 
         $this->load(true);

@@ -2,39 +2,32 @@
 namespace RentJeeves\LandlordBundle\Tests\Unit\Import\Handler;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\PaymentClientCase;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
 
 class HandlerAbstractCase extends BaseTestCase
 {
+    use WriteAttributeExtensionTrait;
 
     /**
      * @test
      */
     public function shouldCheckTenantStatus()
     {
+        $this->load(true);
         $handler = new HandlerTest();
         $handlerTestReflection = new \ReflectionClass($handler);
-        $currentImportModel = $handlerTestReflection->getProperty('currentImportModel');
-        $currentImportModel->setAccessible(true);
-        $currentImportModel->setValue($handler, $import = new Import());
-
-        $currentImportModel = $handlerTestReflection->getProperty('translator');
-        $currentImportModel->setAccessible(true);
-        $currentImportModel->setValue($handler, $this->getContainer()->get('translator'));
-
-        $currentImportModel = $handlerTestReflection->getProperty('translator');
-        $currentImportModel->setAccessible(true);
-        $currentImportModel->setValue($handler, $this->getContainer()->get('translator'));
+        $this->writeAttribute($handler, 'currentImportModel', $import = new Import());
+        $this->writeAttribute($handler, 'translator', $this->getContainer()->get('translator'));
 
         /** @var StorageCsv $storageCsv */
         $storageCsv = $this->getContainer()->get('accounting.import.storage.csv');
         $storageCsv->setDateFormat('Y-m-d');
-        $storage = $handlerTestReflection->getProperty('storage');
-        $storage->setAccessible(true);
-        $storage->setValue($handler, $storageCsv);
+        $this->writeAttribute($handler, 'storage', $storageCsv);
 
         $checkTenantStatus = $handlerTestReflection->getMethod('checkTenantStatus');
         $checkTenantStatus->setAccessible(true);
@@ -80,10 +73,10 @@ class HandlerAbstractCase extends BaseTestCase
         /** @var Group $groupModel */
         $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $this->assertNotEmpty($groupModel);
-        $this->assertTrue($groupModel->getHolding()->isAllowedFutureContract());
-        $groupReflection = $handlerTestReflection->getProperty('group');
-        $groupReflection->setAccessible(true);
-        $groupReflection->setValue($handler, $groupModel);
+        $this->assertFalse($groupModel->getHolding()->isAllowedFutureContract());
+        $groupModel->getHolding()->setIsAllowedFutureContract(true);
+        $this->getEntityManager()->flush();
+        $this->writeAttribute($handler, 'group', $groupModel);
 
         $row = [
             MappingAbstract::KEY_TENANT_STATUS => 'f',
@@ -98,5 +91,45 @@ class HandlerAbstractCase extends BaseTestCase
         $groupModel->getHolding()->setIsAllowedFutureContract(false);
         $checkTenantStatus->invoke($handler, $row);
         $this->assertEquals(true, $import->isSkipped());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckPropertyByExternalPropertyId()
+    {
+        $handler = new HandlerTest();
+        $handlerTestReflection = new \ReflectionClass($handler);
+        $storageCsv = $this->getMock(
+            'RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv',
+            ['isMultipleProperty'],
+            [],
+            '',
+            false
+        );
+        $storageCsv->expects($this->atLeast(3))
+            ->method('isMultipleProperty')
+            ->withAnyParameters(true);
+
+        $this->writeAttribute($handler, 'storage', $storageCsv);
+        $this->writeAttribute($handler, 'logger', $this->getContainer()->get('logger'));
+        $this->writeAttribute($handler, 'em', $this->getEntityManager());
+
+        $getPropertyByExternalPropertyId = $handlerTestReflection->getMethod('getPropertyByExternalPropertyId');
+        $getPropertyByExternalPropertyId->setAccessible(true);
+
+        /** @var Group $groupModel */
+        $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
+        $this->assertNotEmpty($groupModel);
+        $externalPropertyId = PaymentClientCase::PROPERTY_ID;
+        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $externalPropertyId);
+        $this->assertInstanceOf('RentJeeves\DataBundle\Entity\Property', $property);
+        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, null);
+        $this->assertFalse($property);
+        /** @var Group $groupModel */
+        $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Rent Group');
+        $this->assertNotEmpty($groupModel);
+        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $externalPropertyId);
+        $this->assertFalse($property);
     }
 }
