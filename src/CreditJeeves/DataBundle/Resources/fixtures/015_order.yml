@@ -1,4 +1,4 @@
-model: CreditJeeves\DataBundle\Entity\Order
+model: CreditJeeves\DataBundle\Entity\OrderSubmerchant
 fixtures:
   cjOrder_1:
     sum: 9

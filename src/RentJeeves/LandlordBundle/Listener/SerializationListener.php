@@ -47,7 +47,12 @@ class SerializationListener implements EventSubscriberInterface
             ),
             array(
                 'event'  => 'serializer.pre_serialize',
-                'class'  => 'CreditJeeves\DataBundle\Entity\Order',
+                'class'  => 'CreditJeeves\DataBundle\Entity\OrderSubmerchant',
+                'method' => 'onPreSerializeOrder'
+            ),
+            array(
+                'event'  => 'serializer.pre_serialize',
+                'class'  => 'CreditJeeves\DataBundle\Entity\OrderPayDirect',
                 'method' => 'onPreSerializeOrder'
             ),
         );

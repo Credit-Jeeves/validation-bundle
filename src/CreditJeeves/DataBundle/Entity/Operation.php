@@ -410,11 +410,11 @@ class Operation extends Base
     /**
      * Add orders
      *
-     * @param \CreditJeeves\DataBundle\Entity\Order $order
+     * @param Order $order
      *
      * @return Operation
      */
-    public function setOrder(\CreditJeeves\DataBundle\Entity\Order $order)
+    public function setOrder(Order $order)
     {
         parent::setOrder($order);
         if (!$order->getOperations()->contains($this)) {

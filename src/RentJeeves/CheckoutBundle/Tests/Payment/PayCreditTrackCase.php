@@ -3,7 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Payment;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\TestBundle\BaseTestCase;
 
@@ -22,7 +22,7 @@ class PayCreditTrackCase extends BaseTestCase
             ->getRepository('DataBundle:Group')
             ->findOneByCode($this->getContainer()->getParameter('rt_merchant_name'));
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $this->getContainer()
             ->get('payment.pay_credit_track')
             ->executePaymentAccount($group->getDepositAccount()->getPaymentAccounts()->first());

@@ -2,7 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum2\Heartland\Model\PaymentDetails;
@@ -49,13 +49,13 @@ abstract class BasePayHeartland
     /**
      * Executes a payment taking money from given payment account.
      *
-     * @param  Order          $order
+     * @param  OrderSubmerchant          $order
      * @param  PaymentAccountInterface $paymentAccount
      * @param  string         $paymentType
      * @return string
      */
     public function executePayment(
-        Order $order,
+        OrderSubmerchant $order,
         PaymentAccountInterface $paymentAccount,
         $paymentType = PaymentGroundType::RENT
     ) {
@@ -108,26 +108,26 @@ abstract class BasePayHeartland
     }
 
     /**
-     * @param Order $order
+     * @param OrderSubmerchant $order
      * @param string $paymentType
      * @return PaymentDetails
      */
-    abstract protected function getPaymentDetails(Order $order, $paymentType);
+    abstract protected function getPaymentDetails(OrderSubmerchant $order, $paymentType);
 
     /**
      * Defines orders status.
      * For credit card payments order already becomes COMPLETE, for ACH payments - PENDING.
      *
-     * @param  Order  $order
+     * @param  OrderSubmerchant  $order
      * @param  bool   $isSuccessful
      * @return string
      */
-    abstract protected function getOrderStatus(Order $order, $isSuccessful);
+    abstract protected function getOrderStatus(OrderSubmerchant $order, $isSuccessful);
 
     /**
      * @param PaymentDetails $paymentDetails
      * @param string $token
-     * @param Order $order
+     * @param OrderSubmerchant $order
      */
-    abstract protected function addToken(PaymentDetails $paymentDetails, $token, Order $order);
+    abstract protected function addToken(PaymentDetails $paymentDetails, $token, OrderSubmerchant $order);
 }

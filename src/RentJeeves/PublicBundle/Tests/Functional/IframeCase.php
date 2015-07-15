@@ -3,7 +3,7 @@ namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -434,7 +434,7 @@ class IframeCase extends BaseTestCase
         $this->assertFalse($partnerCode->getIsCharged());
         $this->assertEquals('CREDITCOM', $partnerCode->getPartner()->getRequestName());
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $operation = new Operation();
         $contract = new Contract();
         $contract->setPaidTo(new DateTime());

@@ -1,27 +1,35 @@
 <?php
+
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Model\Order as Base;
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\DataBundle\Model\Order as BaseOrder;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use JMS\Serializer\GenericSerializationVisitor;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
-use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
+ *
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="order_type", type="OrderAlgorithmType")
+ * @ORM\DiscriminatorMap({
+ *      "submerchant" = "CreditJeeves\DataBundle\Entity\OrderSubmerchant",
+ *      "pay_direct" = "CreditJeeves\DataBundle\Entity\OrderPayDirect"
+ * })
+ * @Serializer\Discriminator(disabled = true)
+ *
  * @ORM\Table(name="cj_order")
- * @ORM\HasLifecycleCallbacks()
  */
-class Order extends BaseOrder
+class Order extends Base
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
@@ -260,8 +268,8 @@ class Order extends BaseOrder
     public function getExternalUnitId()
     {
         $unit = $this->getUnit();
-        if ($unit) {
-            return $unit->getUnitMapping()->getExternalUnitId();
+        if ($unit && $unitMapping = $unit->getUnitMapping()) {
+            return $unitMapping->getExternalUnitId();
         }
 
         return null;
@@ -517,7 +525,7 @@ class Order extends BaseOrder
      *
      * @return array
      */
-    public function getItem()
+    public function getItem(GenericSerializationVisitor $visitor = null)
     {
         $result = array();
         /** @var Contract $contract */
@@ -547,6 +555,10 @@ class Order extends BaseOrder
             case OrderStatus::RETURNED:
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
+        }
+
+        if ($visitor !== null) {
+            $visitor->setRoot($result);
         }
 
         return $result;
@@ -822,7 +834,11 @@ class Order extends BaseOrder
      */
     public function getReversedDocumentNumber()
     {
-        return $this->getCompleteTransaction()->getTransactionId();
+        if ($transaction = $this->getCompleteTransaction()) {
+            return $transaction->getTransactionId();
+        }
+
+        return null;
     }
 
     /**
@@ -1146,29 +1162,5 @@ class Order extends BaseOrder
     public function getExternalBatchId()
     {
         return $this->getCompleteTransaction()->getBatchId();
-    }
-
-    /**
-     * @return OutboundTransaction
-     */
-    public function getDepositOutboundTransaction()
-    {
-        return $this->getOutboundTransactions()->filter(
-            function (OutboundTransaction $transaction) {
-                return OutboundTransactionType::DEPOSIT === $transaction->getType();
-            }
-        )->first();
-    }
-
-    /**
-     * @return OutboundTransaction
-     */
-    public function getReversalOutboundTransaction()
-    {
-        return $this->getOutboundTransactions()->filter(
-            function (OutboundTransaction $transaction) {
-                return OutboundTransactionType::REVERSAL === $transaction->getType();
-            }
-        )->first();
     }
 }

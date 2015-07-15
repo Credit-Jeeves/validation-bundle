@@ -267,14 +267,10 @@ class OrderListener
             return;
         }
 
-        /**
-         * @var $order Order
-         */
+        /** @var Order $order */
         $order = $eventArgs->getEntity();
 
-        /**
-         * @var $contract Contract
-         */
+        /** @var Contract $contract */
         $contract = $order->getContract();
         if (!$contract) {
             return;

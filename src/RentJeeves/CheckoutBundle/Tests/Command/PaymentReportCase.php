@@ -3,7 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
@@ -221,7 +221,7 @@ class PaymentReportCase extends BaseTestCase
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::PENDING);
         $order->setType(OrderType::HEARTLAND_BANK);
         $order->setSum(999);

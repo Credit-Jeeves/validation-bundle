@@ -3,14 +3,13 @@
 namespace RentJeeves\DataBundle\Tests\Traits;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CheckoutBundle\Payment\OrderFactory;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Transaction;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\CoreBundle\DateTime;
@@ -75,7 +74,7 @@ trait TransactionAvailableTrait
         $em->persist($residentMapping);
         $em->flush();
 
-        $order = new Order();
+        $order = OrderFactory::getOrder($contract->getGroup());
         $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setType(OrderType::HEARTLAND_CARD);

@@ -21,7 +21,6 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Entity\Order;
 
 class EmailLandlordCommand extends ContainerAwareCommand
 {

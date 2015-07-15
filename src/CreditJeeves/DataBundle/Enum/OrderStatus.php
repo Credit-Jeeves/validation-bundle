@@ -6,14 +6,7 @@ use CreditJeeves\CoreBundle\Enum;
 /**
  * Order statuses
  * First status will be NEWONE for all orders
- * Avaliable chains:
- * 1. NEWONE -> (PENDING) -> COMPLETE
- * 2. NEWONE -> (PENDING) -> ERROR
- * 3. NEWONE -> (PENDING) -> CANCELLED
- * 4. NEWONE -> (PENDING) -> COMPLETE -> REFUNDED
- * 5. NEWONE -> (PENDING) -> COMPLETE -> RETURNED
- * @author Ton Sharp <66ton99@gmail.com>
- */
+*/
 class OrderStatus extends Enum
 {
     const CANCELLED = 'cancelled';

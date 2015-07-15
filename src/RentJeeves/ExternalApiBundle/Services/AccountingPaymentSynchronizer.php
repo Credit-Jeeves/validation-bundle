@@ -2,8 +2,8 @@
 
 namespace RentJeeves\ExternalApiBundle\Services;
 
-use RentJeeves\DataBundle\Entity\Contract;
 use CreditJeeves\DataBundle\Entity\Order;
+use RentJeeves\DataBundle\Entity\Contract;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\DateTime;
@@ -134,7 +134,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return bool
      */
     public function sendOrderToAccountingSystem(Order $order)
@@ -291,7 +291,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return bool
      */
     protected function openBatch(Order $order)

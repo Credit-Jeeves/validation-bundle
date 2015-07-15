@@ -33,7 +33,7 @@ class PaymentPushCommand extends ContainerAwareCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws RuntimeException
+     * @throws \RuntimeException
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -69,7 +69,7 @@ class PaymentPushCommand extends ContainerAwareCommand
      * @param $jobId
      * @param $em
      * @return \CreditJeeves\DataBundle\Entity\Order
-     * @throws RuntimeException
+     * @throws \RuntimeException
      * @throws \Exception
      */
     protected function getOrderByJobId($em, $jobId)
@@ -81,7 +81,7 @@ class PaymentPushCommand extends ContainerAwareCommand
         /** @var Job $job */
         $job = $em->getRepository('RjDataBundle:Job')->findOneBy(['id' => $jobId]);
         if (empty($job)) {
-            throw new RuntimeException("Can not fid --jms-job-id={$jobId}");
+            throw new \RuntimeException("Can not fid --jms-job-id={$jobId}");
         }
 
         $arrayCollectionJobRelatedOrder = $job->getRelatedEntities();
@@ -107,7 +107,7 @@ class PaymentPushCommand extends ContainerAwareCommand
 
         $orderRepository = $em->getRepository('DataBundle:Order');
         if (false == $order = $orderRepository->find($orderId)) {
-            throw new RuntimeException("Can not fid --order-id={$orderId}");
+            throw new \RuntimeException("Can not fid --order-id={$orderId}");
         }
 
         return $order;
