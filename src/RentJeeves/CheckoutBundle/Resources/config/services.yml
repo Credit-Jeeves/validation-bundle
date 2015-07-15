@@ -161,3 +161,20 @@ services:
         arguments:
             - %aci.pay_anyone.report_path%
             - @logger
+
+    payment_processor.order_status_manager:
+        class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManager
+        calls:
+            - [setManagers, ["@payment_processor.order_status_manager.submerchant", "@payment_processor.order_status_manager.pay_direct"]]
+
+    payment_processor.order_status_manager.submerchant:
+        class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderSubmerchantStatusManager
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @logger
+            - @project.mailer
+
+    payment_processor.order_status_manager.pay_direct:
+        class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderPayDirectStatusManager
+        parent: payment_processor.order_status_manager.submerchant
