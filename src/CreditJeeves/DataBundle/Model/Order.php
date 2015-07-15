@@ -15,6 +15,11 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 /**
  * @ORM\MappedSuperclass
  *
+ * Serializer can not work with the existing orderType column.
+ * The discriminator field name "orderType" of the base-class "CreditJeeves\DataBundle\Model\\Order" conflicts with
+ * a regular property of the sub-class "CreditJeeves\DataBundle\Entity\Order".
+ * That is why we use objectType.
+ *
  * @Serializer\Discriminator(field = "objectType", map = {
  *    "submerchant": "CreditJeeves\DataBundle\Entity\OrderSubmerchant",
  *    "pay_direct": "CreditJeeves\DataBundle\Entity\OrderPayDirect",
@@ -166,11 +171,6 @@ abstract class Order
     protected $descriptor;
 
     /**
-     * @ORM\Column(
-     *     type="OrderAlgorithmType",
-     *     name="order_type",
-     *     nullable=false
-     * )
      * @var string
      */
     protected $orderType = OrderAlgorithmType::SUBMERCHANT;
@@ -214,7 +214,7 @@ abstract class Order
      * Set cj_applicant_id
      *
      * @param  integer $cjApplicantId
-     * @return BaseOrder
+     * @return self
      */
     public function setCjApplicantId($cjApplicantId)
     {
@@ -237,7 +237,7 @@ abstract class Order
      * Set status
      *
      * @param  OrderStatus $status
-     * @return BaseOrder
+     * @return self
      */
     public function setStatus($status)
     {
@@ -260,7 +260,7 @@ abstract class Order
      * Set type
      *
      * @param  OrderType $type
-     * @return BaseOrder
+     * @return self
      */
     public function setType($type)
     {
@@ -283,7 +283,7 @@ abstract class Order
      * Set sum
      *
      * @param  double $sum
-     * @return BaseOrder
+     * @return self
      */
     public function setSum($sum)
     {
@@ -306,7 +306,7 @@ abstract class Order
      * Set fee
      *
      * @param  double $fee
-     * @return BaseOrder
+     * @return self
      */
     public function setFee($fee)
     {
@@ -329,7 +329,7 @@ abstract class Order
      * Set created_date
      *
      * @param  DateTime $createdAt
-     * @return BaseOrder
+     * @return self
      */
     public function setCreatedAt($createdAt)
     {
@@ -352,7 +352,7 @@ abstract class Order
      * Set updated_at
      *
      * @param  DateTime $updatedAt
-     * @return BaseOrder
+     * @return self
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -375,7 +375,7 @@ abstract class Order
      * Set user
      *
      * @param  \CreditJeeves\DataBundle\Entity\User $user
-     * @return BaseOrder
+     * @return self
      */
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
@@ -517,6 +517,9 @@ abstract class Order
         $this->orderType = $orderType;
     }
 
+    /**
+     * @return string
+     */
     public function getObjectType()
     {
         return 'base';

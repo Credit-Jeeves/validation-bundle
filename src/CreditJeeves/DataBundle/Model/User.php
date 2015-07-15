@@ -1642,10 +1642,10 @@ abstract class User extends BaseUser
     /**
      * Add orders
      *
-     * @param  \CreditJeeves\DataBundle\Entity\OrderSubmerchant $orders
+     * @param  \CreditJeeves\DataBundle\Entity\Order $orders
      * @return User
      */
-    public function addOrder(\CreditJeeves\DataBundle\Entity\OrderSubmerchant $orders)
+    public function addOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
     {
         $this->orders[] = $orders;
 
@@ -1655,9 +1655,9 @@ abstract class User extends BaseUser
     /**
      * Remove orders
      *
-     * @param \CreditJeeves\DataBundle\Entity\OrderSubmerchant $orders
+     * @param \CreditJeeves\DataBundle\Entity\Order $orders
      */
-    public function removeOrder(\CreditJeeves\DataBundle\Entity\OrderSubmerchant $orders)
+    public function removeOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
     {
         $this->orders->removeElement($orders);
     }

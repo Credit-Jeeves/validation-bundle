@@ -20,7 +20,7 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
  *
  * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="orderType", type="OrderAlgorithmType")
+ * @ORM\DiscriminatorColumn(name="order_type", type="OrderAlgorithmType")
  * @ORM\DiscriminatorMap({
  *      "submerchant" = "CreditJeeves\DataBundle\Entity\OrderSubmerchant",
  *      "pay_direct" = "CreditJeeves\DataBundle\Entity\OrderPayDirect"
