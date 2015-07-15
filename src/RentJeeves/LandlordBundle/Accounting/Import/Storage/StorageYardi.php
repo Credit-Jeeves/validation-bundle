@@ -61,7 +61,7 @@ class StorageYardi extends ExternalApiStorage
             13 => Mapping::KEY_EXTERNAL_LEASE_ID
         ];
 
-        if ($this->isMultipleMapping()) {
+        if ($this->isMultiplePropertyMapping()) {
             $mapping[14] = Mapping::KEY_PROPERTY_ID;
         }
 
@@ -110,7 +110,7 @@ class StorageYardi extends ExternalApiStorage
             $leaseId
         ];
 
-        if ($this->isMultipleMapping()) {
+        if ($this->isMultiplePropertyMapping()) {
             $data[] = $this->getImportPropertyId();
         }
 
@@ -150,7 +150,7 @@ class StorageYardi extends ExternalApiStorage
             $leaseId
         ];
 
-        if ($this->isMultipleMapping()) {
+        if ($this->isMultiplePropertyMapping()) {
             $data[] = $this->getImportPropertyId();
         }
 
@@ -184,7 +184,7 @@ class StorageYardi extends ExternalApiStorage
     /**
      * @return bool
      */
-    public function isMultipleMapping()
+    public function isMultiplePropertyMapping()
     {
         return !!$this->session->get(self::IS_MULTIPLE_PROPERTY, false);
     }

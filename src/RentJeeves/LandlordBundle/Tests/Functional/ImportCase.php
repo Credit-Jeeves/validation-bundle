@@ -1413,7 +1413,7 @@ class ImportCase extends ImportBaseAbstract
     /**
      * @test
      */
-    public function yardiMultiImport()
+    public function yardiMultiPropertyImport()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -1432,6 +1432,18 @@ class ImportCase extends ImportBaseAbstract
 
         $this->assertEmpty($contractWaiting);
 
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy([
+            'externalLeaseId' => 't0012020',
+        ]);
+
+        $this->assertCount(1, $contracts);
+
+        $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy([
+            'residentId' => 'r0004169',
+        ]);
+
+        $this->assertEmpty($residentMapping);
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         //First Step
@@ -1448,15 +1460,28 @@ class ImportCase extends ImportBaseAbstract
             "$('table').is(':visible')"
         );
 
-        for ($i = 0; $i <= 4; $i++) {
-            if ($errorFields = $this->page->findAll('css', '.errorField')) {
-                $this->assertEquals(1, count($errorFields));
-                $errorFields[0]->setValue('14test1111@mail.com');
-            }
-            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
-            $submitImportFile->click();
-            $this->waitReviewAndPost($i<4);
-        }
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
 
         $this->waitRedirectToSummaryPage();
         $this->logout();
@@ -1473,13 +1498,13 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotEmpty($contractWaiting);
 
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy([
-                'externalLeaseId' => 't0012020',
+            'externalLeaseId' => 't0012020',
         ]);
 
         $this->assertCount(3, $contracts);
 
         $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy([
-                'residentId' => 'r0004169',
+            'residentId' => 'r0004169',
         ]);
 
         $this->assertNotEmpty($residentMapping);

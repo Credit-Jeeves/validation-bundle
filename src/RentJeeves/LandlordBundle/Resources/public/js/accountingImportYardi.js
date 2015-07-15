@@ -68,7 +68,7 @@ function accountingImportYardi() {
             jQuery.ajax({
                 url: Routing.generate('accounting_import_residents_yardi',
                     {
-                        'propertyMappingId': this.currentPropertyMappingId
+                        'propertyMappingId': self.currentPropertyMappingId
                     }
                 ),
                 type: 'GET',

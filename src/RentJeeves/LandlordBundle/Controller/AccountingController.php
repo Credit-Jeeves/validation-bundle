@@ -449,7 +449,7 @@ class AccountingController extends Controller
      *     options={"expose"=true}
      * )
      */
-    public function getMappedPropertiesYardy()
+    public function getMappedPropertiesYardi()
     {
         /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
@@ -488,6 +488,8 @@ class AccountingController extends Controller
      *     name="accounting_import_residents_yardi",
      *     options={"expose"=true}
      * )
+     *
+     * @return Response
      */
     public function getResidentsYardi($propertyMappingId)
     {
@@ -653,7 +655,11 @@ class AccountingController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         try {
-            /** @var $propertyMapping PropertyMapping */
+            /*
+             * Search PropertyMapping by id with holding
+             * for be sure that we can work only with property belongs to our holding
+             */
+            /** @var PropertyMapping $propertyMapping */
             $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
                 'id' => $propertyMappingId,
                 'holding' => $holding->getId()
