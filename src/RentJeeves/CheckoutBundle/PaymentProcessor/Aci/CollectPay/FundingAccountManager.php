@@ -6,6 +6,7 @@ use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\User;
 use Payum\AciCollectPay\Request\ProfileRequest\AddFunding;
+use Payum\AciCollectPay\Request\ProfileRequest\ModifyFunding;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
@@ -37,7 +38,24 @@ class FundingAccountManager extends AbstractManager
     ) {
         $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $user);
         $fundingAccount->setFundingAccountId($fundingAccountId);
-        $fundingAccountId = $this->executeRequest($profileId, $fundingAccount);
+
+        $profile = new RequestModel\Profile();
+        $profile->setProfileId($profileId);
+        $profile->setFundingAccount($fundingAccount);
+
+        $request = new ModifyFunding($profile);
+
+        try {
+            $this->paymentProcessor->execute($request);
+        } catch (\Exception $e) {
+            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            throw $e;
+        }
+
+        if (!$request->getIsSuccessful()) {
+            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
+        }
 
         $this->logger->debug(
             sprintf(

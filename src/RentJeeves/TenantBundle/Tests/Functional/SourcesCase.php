@@ -1,17 +1,44 @@
 <?php
 namespace RentJeeves\TenantBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class SourcesCase extends BaseTestCase
 {
+
+    public function providerForEdit()
+    {
+        return [
+            [PaymentProcessor::ACI],
+            [PaymentProcessor::HEARTLAND],
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider providerForEdit
      */
-    public function edit()
+    public function edit($paymentProcessor)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
+        $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('tenant11@example.com');
+        $this->assertNotEmpty($tenant);
+        $paymentAccount = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount')->findOneBy(
+            [
+                'name' => 'RT Card',
+                'user' => $tenant
+            ]
+        );
+        $depositAccounts = $paymentAccount->getDepositAccounts();
+        /** @var DepositAccount $depositAccount */
+        foreach ($depositAccounts as $depositAccount) {
+            $depositAccount->setPaymentProcessor($paymentProcessor);
+        }
+        $this->getEntityManager()->flush();
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('rent.sources');
 
