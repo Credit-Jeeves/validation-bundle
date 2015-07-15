@@ -105,19 +105,19 @@ class MRIClientCase extends Base
             count($mriResponse->getValues()),
             "MRI Dataset not the size expected - did it change?"
         );
+        file_put_contents('/var/www/Credit-Jeeves-SF2/dump.txt', print_r($mriResponse->getValues(), true));
         /** @var Value $value */
-        $value = $mriResponse->getValues()[17];
+        $value = $mriResponse->getValues()[3];
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
         $this->assertNotEmpty($value->getResidentId());
         $this->assertNotEmpty($value->getUnitId());
         $this->assertNotEmpty($value->getFirstName());
         $this->assertNotEmpty($value->getLastName());
-        $this->assertNotEmpty($value->getLeaseBalance());
+        $this->assertEquals(0, $value->getLeaseBalance());
         $this->assertNotEmpty($value->getLeaseMonthlyRentAmount());
         $this->assertInstanceOf('\DateTime', $value->getLastUpdateDate());
         $this->assertInstanceOf('\DateTime', $value->getLeaseMoveOut());
         $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
-        $this->assertInstanceOf('\DateTime', $value->getLeaseStart());
     }
 
     /**
