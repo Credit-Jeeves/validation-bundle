@@ -105,7 +105,7 @@ class MRIClientCase extends Base
             count($mriResponse->getValues()),
             "MRI Dataset not the size expected - did it change?"
         );
-        file_put_contents('/var/www/Credit-Jeeves-SF2/dump.txt', print_r($mriResponse->getValues(), true));
+       
         /** @var Value $value */
         $value = $mriResponse->getValues()[3];
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
