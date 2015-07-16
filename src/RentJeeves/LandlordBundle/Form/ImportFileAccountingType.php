@@ -288,7 +288,7 @@ class ImportFileAccountingType extends AbstractType
                 'visible: ($root.source() == "integrated_api" && $root.importType() == "%s")',
                 ImportType::SINGLE_PROPERTY
             );
-            $propertyGroupValidation = ['single_property'];
+            $propertyGroupValidation = ['single_property_integrated_api'];
         } else {
             $dataBindProperty = 'visible: ($root.source() == "integrated_api")';
             $propertyGroupValidation = ['integrated_api'];
@@ -383,6 +383,9 @@ class ImportFileAccountingType extends AbstractType
                         $groups = ['default', $data['fileType']];
                         if (ImportType::SINGLE_PROPERTY == $data['importType']) {
                             $groups = array_merge($groups, ['single_property']);
+                            if ('integrated_api' == $data['fileType']) {
+                                $groups = array_merge($groups, ['single_property_integrated_api']);
+                            }
                         }
 
                         return $groups;
