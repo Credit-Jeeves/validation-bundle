@@ -49,6 +49,11 @@ class AMSIClientCase extends Base
      */
     public function shouldGetPropertyResidentsWithRequiredData()
     {
+        $this->markTestSkipped(
+            'AMSI Return: ' .
+            'An error occured while creating webservice objects to start the process. ' .
+            'Please verify portfolio name. There is no row at position 0.'
+        );
         $client = $this->getClient();
         $client->setDebug(false);
         $propertyResidents = $client->getPropertyResidents(self::EXTERNAL_PROPERTY_ID, 'C');
@@ -104,6 +109,11 @@ class AMSIClientCase extends Base
      */
     public function shouldGetPropertyUnits()
     {
+        $this->markTestSkipped(
+            'AMSI Return: ' .
+            'An error occured while creating webservice objects to start the process. ' .
+            'Please verify portfolio name. There is no row at position 0.'
+        );
         $client = $this->getClient();
         $client->setDebug(false);
         $units = $client->getPropertyUnits(self::EXTERNAL_PROPERTY_ID);

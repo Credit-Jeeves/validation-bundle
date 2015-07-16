@@ -165,6 +165,11 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
      */
     public function shouldSyncContractBalanceForAMSI()
     {
+        $this->markTestSkipped(
+            'AMSI Return: ' .
+            'An error occured while creating webservice objects to start the process. ' .
+            'Please verify portfolio name. There is no row at position 0.'
+        );
         $this->load(true);
 
         $em = $this->getEntityManager();
@@ -199,6 +204,11 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
      */
     public function shouldSyncContractWaitingBalanceForAMSI()
     {
+        $this->markTestSkipped(
+            'AMSI Return: ' .
+            'An error occured while creating webservice objects to start the process. ' .
+            'Please verify portfolio name. There is no row at position 0.'
+        );
         $this->load(true);
 
         $em = $this->getEntityManager();
