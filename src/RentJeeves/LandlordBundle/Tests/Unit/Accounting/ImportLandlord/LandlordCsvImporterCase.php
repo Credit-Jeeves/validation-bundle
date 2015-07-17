@@ -15,7 +15,7 @@ class LandlordCsvImporterCase extends BaseTestCase
     public function shouldThrowExceptionIfFileNotFound()
     {
         $partner = $this->getEntityManager()->find('RjDataBundle:Partner', 1);
-        $this->getLandlordImporter()->importForPartner('/badFileName.csv', $partner);
+        $this->getLandlordImporter()->importPartnerLandlords('/badFileName.csv', $partner);
     }
 
     /**
@@ -40,10 +40,10 @@ class LandlordCsvImporterCase extends BaseTestCase
         $this->assertCount(8, $allHoldings);
         $allProperties = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
         $this->assertCount(20, $allProperties);
-        $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
-        $this->assertCount(20, $allUnits);
+        $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();
+        $this->assertCount(33, $allUnits);
 
-        $importer->importForPartner(__DIR__ . '/importFile.csv', $partner);
+        $importer->importPartnerLandlords(__DIR__ . '/../../../Fixtures/importFile.csv', $partner);
         $errors = $importer->getMappingErrors();
 
         /** After import +2 for all Entities */
@@ -62,8 +62,8 @@ class LandlordCsvImporterCase extends BaseTestCase
         $this->assertCount(10, $allHoldings);
         $allProperties = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
         $this->assertCount(22, $allProperties);
-        $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
-        $this->assertCount(22, $allUnits);
+        $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();
+        $this->assertCount(35, $allUnits);
     }
 
     /**
@@ -73,5 +73,4 @@ class LandlordCsvImporterCase extends BaseTestCase
     {
         return $this->getContainer()->get('accounting.landlord_import.importer');
     }
-
 }

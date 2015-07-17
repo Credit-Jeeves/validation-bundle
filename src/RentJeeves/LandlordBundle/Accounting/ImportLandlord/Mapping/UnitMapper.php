@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\DuplicatedUnitException;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException;
 
 /**
@@ -27,7 +28,7 @@ class UnitMapper extends AbstractMapper
     }
 
     /**
-     * @throws MappingException
+     * @throws DuplicatedUnitException
      *
      * @return Unit
      */
@@ -38,12 +39,12 @@ class UnitMapper extends AbstractMapper
         }
 
         $holding = $group->getHolding();
-        if (null !== $holding->getId() && null !== $this->getUnitRepository()->findOneByHoldingAndExternalId(
-                $holding, $this->get('UnitID')
-            )
+        if (null !== $holding->getId() &&
+            null !== $this->getUnitRepository()->findOneByHoldingAndExternalId($holding, $this->get('UnitID'))
         ) {
-            throw new MappingException(sprintf(
-                    '[Mapping] : Unit with externalId#%s and Holding#%d already exist',
+            throw new DuplicatedUnitException(
+                sprintf(
+                    '[Mapping] : Unit with externalId#%s and Holding#%d already exists',
                     $this->get('UnitID'),
                     $holding->getId()
                 )
@@ -78,9 +79,9 @@ class UnitMapper extends AbstractMapper
     {
         $property = $this->propertyProcess->getPropertyByAddress($this->getAddress());
         if ($property === null) {
-            throw new MappingException(sprintf(
-                '[Mapping] : Address (%s) is not found by google', $this->getAddress()
-            ));
+            throw new MappingException(
+                sprintf('[Mapping] : Address (%s) is not found by geocoder', $this->getAddress())
+            );
         }
 
         if (false === $property->getPropertyGroups()->contains($this->getGroup())) {

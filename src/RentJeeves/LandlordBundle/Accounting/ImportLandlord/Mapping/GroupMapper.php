@@ -41,9 +41,12 @@ class GroupMapper extends AbstractMapper
         }
 
         if (false === $this->isValidAddress()) {
-            throw new MappingException(sprintf(
-                '[Mapping] : Address (%s) is not found by google', $this->getAddress()
-            ));
+            throw new MappingException(
+                sprintf(
+                    '[Mapping] : Address (%s) is not found by geocoder',
+                    $this->getAddress()
+                )
+            );
         }
 
         return $this->createGroup();
@@ -100,8 +103,7 @@ class GroupMapper extends AbstractMapper
     protected function createGroupSetting(Group $group)
     {
         $newGroupSettings = $group->getGroupSettings();
-        /** @TODO: change type after merge PR */
-        $newGroupSettings->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+        $newGroupSettings->setPaymentProcessor(PaymentProcessor::ACI);
 
         $this->em->persist($newGroupSettings);
 

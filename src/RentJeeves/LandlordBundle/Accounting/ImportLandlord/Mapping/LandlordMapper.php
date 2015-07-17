@@ -36,13 +36,8 @@ class LandlordMapper extends AbstractMapper
         }
 
         $holding = $group->getHolding();
-        if (null !== $holding->getId() && $landlord = $this->getLandlordRepository()->findOneBy(
-                [
-                    'holding' => $holding,
-                    'externalLandlordId' => $this->get('landlordID')
-                ]
-            )
-        ) {
+        $findBy = ['holding' => $holding, 'externalLandlordId' => $this->get('landlordID')];
+        if (null !== $holding->getId() && $landlord = $this->getLandlordRepository()->findOneBy($findBy)) {
             return $landlord;
         }
 

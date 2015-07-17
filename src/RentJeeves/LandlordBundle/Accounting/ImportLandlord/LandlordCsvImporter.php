@@ -10,6 +10,7 @@ use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Partner;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\DuplicatedUnitException;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\GroupMapper;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\LandlordMapper;
@@ -92,14 +93,14 @@ class LandlordCsvImporter implements LoggerAwareInterface
      *
      * @throws \Exception
      */
-    public function importForPartner($pathToFile, Partner $partner)
+    public function importPartnerLandlords($pathToFile, Partner $partner)
     {
         try {
             foreach ($this->csvReader->read($pathToFile) as $row) {
                 $this->importRow($row, $partner);
             }
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[Landlord CSV import]: %s', $e->getMessage()));
+            $this->logger->error(sprintf('[Landlord CSV import]: %s', $e->getMessage()));
 
             throw $e;
         }
@@ -127,6 +128,8 @@ class LandlordCsvImporter implements LoggerAwareInterface
             }
         } catch (MappingException $e) {
             $this->addErrorForRow($e->getMessage(), $row);
+        } catch (DuplicatedUnitException $e) {
+            $this->logger->debug(sprintf('[Landlord CSV import]: %s', $e->getMessage()));
         }
     }
 

@@ -16,7 +16,7 @@ class LandlordImportCommand extends BaseCommand
         $this
             ->setName('renttrack:landlord:import')
             ->setDescription('Import landlords, holdings, groups and properties from csv-file')
-            ->addOption('partner-name', null, InputOption::VALUE_OPTIONAL)
+            ->addOption('partner-name', null, InputOption::VALUE_REQUIRED)
             ->addOption('path', null, InputOption::VALUE_REQUIRED);
     }
 
@@ -32,7 +32,7 @@ class LandlordImportCommand extends BaseCommand
 
         $importer = $this->getLandlordCsvImporter();
         try {
-            $importer->importForPartner($input->getOption('path'), $partner);
+            $importer->importPartnerLandlords($input->getOption('path'), $partner);
         } catch (\Exception $e) {
             $output->writeln(sprintf('[Landlord CSV import]: %s', $e->getMessage()));
 

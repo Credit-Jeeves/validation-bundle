@@ -41,6 +41,8 @@ class GeoCoder extends BaseGeoCoder
     /**
      * @param mixed $geoCodedResult
      *
+     * @throw \LogicException
+     *
      * @return boolean
      */
     protected function isValidGeoCodedResult($geoCodedResult)
@@ -48,6 +50,16 @@ class GeoCoder extends BaseGeoCoder
         if ($geoCodedResult instanceof Geocoded) {
             foreach ($this->requiredResponseFields as $field) {
                 $method = 'get' . ucfirst($field);
+                if (false === method_exists($geoCodedResult, $method)) {
+                    throw new \LogicException(
+                        sprintf(
+                            'Incorrect required field \'%s\' for object %s',
+                            $field,
+                            get_class($geoCodedResult)
+                        )
+                    );
+                }
+
                 $value = $geoCodedResult->$method();
 
                 if (true === empty($value)) {

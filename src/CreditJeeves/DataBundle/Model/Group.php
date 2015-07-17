@@ -1459,7 +1459,7 @@ abstract class Group
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getExternalGroupId()
     {
@@ -1467,7 +1467,7 @@ abstract class Group
     }
 
     /**
-     * @param mixed $externalGroupId
+     * @param string $externalGroupId
      */
     public function setExternalGroupId($externalGroupId)
     {

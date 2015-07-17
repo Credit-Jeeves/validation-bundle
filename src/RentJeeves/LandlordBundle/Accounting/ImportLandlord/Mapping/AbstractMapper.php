@@ -17,16 +17,6 @@ abstract class AbstractMapper implements LoggerAwareInterface
     protected $em;
 
     /**
-     * Set a EntityManager.
-     *
-     * @param EntityManagerInterface $em
-     */
-    public function setEntityManager(EntityManagerInterface $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * @var array Associative array for mapping
      */
     protected $data;
@@ -37,6 +27,16 @@ abstract class AbstractMapper implements LoggerAwareInterface
     protected $group;
 
     /**
+     * Set a EntityManager.
+     *
+     * @param EntityManagerInterface $em
+     */
+    public function setEntityManager(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
      * @param string $key
      *
      * @return string
@@ -45,7 +45,7 @@ abstract class AbstractMapper implements LoggerAwareInterface
     {
         if (false === isset($this->data[$key])) {
             $message = sprintf('[Mapping] : value with key \'%s\' not found', $key);
-            $this->logger->alert($message);
+            $this->logger->error($message);
 
             throw new \InvalidArgumentException($message);
         }

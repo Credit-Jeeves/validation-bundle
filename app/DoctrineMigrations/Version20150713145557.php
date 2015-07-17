@@ -15,9 +15,6 @@ class Version20150713145557 extends AbstractMigration
         );
 
         $this->addSql(
-            "DROP TABLE session"
-        );
-        $this->addSql(
             "ALTER TABLE cj_user
                 ADD external_landlord_id VARCHAR(255) DEFAULT NULL"
         );

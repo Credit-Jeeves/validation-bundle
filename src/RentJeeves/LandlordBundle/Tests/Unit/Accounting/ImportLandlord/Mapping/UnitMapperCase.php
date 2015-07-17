@@ -42,7 +42,7 @@ class UnitMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException
-     * @expectedExceptionMessage [Mapping] : Address (test , test, test, test) is not found by google
+     * @expectedExceptionMessage [Mapping] : Address (test , test, test, test) is not found by geocoder
      */
     public function shouldThrowExceptionIfAddressIsNotValid()
     {
@@ -68,8 +68,8 @@ class UnitMapperCase extends AbstractMapperCase
     /**
      * @test
      *
-     * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException
-     * @expectedExceptionMessage [Mapping] : Unit with externalId#AAABBB-7 and Holding#5 already exist
+     * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\DuplicatedUnitException
+     * @expectedExceptionMessage [Mapping] : Unit with externalId#AAABBB-7 and Holding#5 already exists
      */
     public function shouldThrowExceptionIfUnitFoundByHoldingAndExternalId()
     {

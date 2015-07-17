@@ -27,7 +27,7 @@ class GroupMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException
-     * @expectedExceptionMessage [Mapping] : Address (test test, test, test, test) is not found by google
+     * @expectedExceptionMessage [Mapping] : Address (test test, test, test, test) is not found by geocoder
      */
     public function shouldThrowExceptionIfAddressIsNotValid()
     {
@@ -111,8 +111,7 @@ class GroupMapperCase extends AbstractMapperCase
         $this->assertEquals('testEmail@trololo.ua', $holding->getName());
 
         $this->assertNotNull($groupSetting = $group->getGroupSettings());
-        /** @TODO: change type after merge PR */
-        $this->assertEquals(PaymentProcessor::ACI_COLLECT_PAY, $groupSetting->getPaymentProcessor());
+        $this->assertEquals(PaymentProcessor::ACI, $groupSetting->getPaymentProcessor());
     }
 
     /**
