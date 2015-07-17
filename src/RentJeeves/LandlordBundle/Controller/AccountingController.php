@@ -2,9 +2,11 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
@@ -442,33 +444,78 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/residents/yardi",
-     *     name="accounting_import_residents_yardi",
+     *     "/import/property_mapping/yardi",
+     *     name="accounting_import_property_mapping_yardi",
      *     options={"expose"=true}
      * )
      */
-    public function getResidentsYardi()
+    public function getMappedPropertiesYardi()
     {
         /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
-        $mapping = $importFactory->getMapping();
-
         /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
-        /** @var $propertyMappingManager PropertyMappingManager */
-        $propertyMappingManager = $this->get('property_mapping.manager');
-        $propertyMapping = $propertyMappingManager->createPropertyMapping(
-            $storage->getImportPropertyId(),
-            $storage->getImportExternalPropertyId()
-        );
 
-        $holding = $this->getUser()->getHolding();
+        $mappedProperties = [];
 
         if ($storage->getImportLoaded() === false) {
-            $residents = $mapping->getResidents($holding, $propertyMapping->getProperty());
-            $residents = array_values($residents); //For start array from 0, but why don't remember
-        } else {
-            $residents = [];
+            /** @var $propertyMappingManager PropertyMappingManager */
+            $propertyMappingManager = $this->get('property_mapping.manager');
+
+            if (ImportType::SINGLE_PROPERTY === $storage->getImportType()) {
+                /** @var PropertyMapping[] $mappedProperties */
+                $mappedProperties[] = $propertyMappingManager->createPropertyMapping(
+                    $storage->getImportPropertyId(),
+                    $storage->getImportExternalPropertyId()
+                );
+            } else {
+                $mappedProperties = $propertyMappingManager->getMappedProperties();
+            }
+
+        }
+
+        $response = new Response($this->get('jms_serializer')->serialize($mappedProperties, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @param int $propertyMappingId
+     *
+     * @Route(
+     *     "/import/residents/yardi/{propertyMappingId}",
+     *     name="accounting_import_residents_yardi",
+     *     options={"expose"=true}
+     * )
+     *
+     * @return Response
+     */
+    public function getResidentsYardi($propertyMappingId)
+    {
+        /** @var $importFactory ImportFactory */
+        $importFactory = $this->get('accounting.import.factory');
+        /** @var StorageYardi $storage */
+        $storage = $importFactory->getStorage();
+
+        $residents = [];
+
+        if ($storage->getImportLoaded() === false) {
+            /** @var MappingYardi $mapping */
+            $mapping = $importFactory->getMapping();
+            /** @var Holding $holding */
+            $holding = $this->getUser()->getHolding();
+            /** @var $propertyMapping PropertyMapping */
+            $propertyMapping = $this->getEntityManager()->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
+                'id' => $propertyMappingId,
+                'holding' => $holding->getId()
+            ]);
+            if ($propertyMapping) {
+                $residents = array_merge(
+                    $mapping->getResidents($holding, $propertyMapping->getProperty()),
+                    $residents
+                );
+            }
         }
 
         $handler = $importFactory->getHandler();
@@ -570,12 +617,17 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/resident/yardi/{residentId}/{isLast}",
+     *     "/import/resident/yardi/{propertyMappingId}/{isLast}",
      *     name="accounting_import_resident_data_yardi",
      *     options={"expose"=true}
      * )
+     *
+     * @param int $propertyMappingId
+     * @param int $isLast
+     * @return Response
+     * @throws Exception
      */
-    public function getResidentData($residentId, $isLast = 0)
+    public function getResidentData($propertyMappingId, $isLast = 0)
     {
         $holding = $this->getUser()->getHolding();
         $request = $this->get('request');
@@ -601,15 +653,23 @@ class AccountingController extends Controller
         /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
         $em = $this->getDoctrine()->getManager();
-        /** @var $propertyMapping PropertyMapping */
-        $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
-            array(
-                'property'              => $storage->getImportPropertyId(),
-                'holding'               => $holding->getId()
-            )
-        );
+
         try {
+            /*
+             * Search PropertyMapping by id with holding
+             * for be sure that we can work only with property belongs to our holding
+             */
+            /** @var PropertyMapping $propertyMapping */
+            $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
+                'id' => $propertyMappingId,
+                'holding' => $holding->getId()
+            ]);
+            if (!$propertyMapping) {
+                throw new \RuntimeException('PropertyMapping is not defined.');
+            }
+
             $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $resident);
+            $storage->setImportPropertyId($propertyMapping->getProperty()->getId());
             $storage->saveToFile($residentLeaseFile, $resident);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {

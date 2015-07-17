@@ -2760,6 +2760,10 @@
                 <source>yardi.import.error.getResidents</source>
                 <target>Network interruption when connecting to Yardi server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
+            <trans-unit id="yardi.import.error.getPropertyMapping">
+                <source>yardi.import.error.getPropertyMapping</source>
+                <target>Can\'t get mapped properties.</target>
+            </trans-unit>
             <trans-unit id="mri.import.error.getResidents">
                 <source>mri.import.error.getResidents</source>
                 <target>Network interruption when connecting to MRI server. We're sorry, but you'll have to try again.</target>
@@ -2780,9 +2784,13 @@
                 <source>yardi.import.error.external_property_id</source>
                 <target>We have different external property ID for this property.</target>
             </trans-unit>
-            <trans-unit id="yardi.import.message.download.resident">
-                <source>yardi.import.message.download.resident</source>
-                <target>Fetching list of residents from accounting system, please stand by.</target>
+            <trans-unit id="yardi.import.message.download.residents">
+                <source>yardi.import.message.download.residents</source>
+                <target>Fetching list of residents from accounting system for %EXTERNAL_PROPERTY_ID%, please stand by.</target>
+            </trans-unit>
+            <trans-unit id="yardi.import.message.download.property_mapping">
+                <source>yardi.import.message.download.property_mapping</source>
+                <target>Fetching list of mapped properties, please stand by.</target>
             </trans-unit>
             <trans-unit id="csv.import.message.updated_matched_contract">
                 <source>csv.import.message.updated_matched_contract</source>

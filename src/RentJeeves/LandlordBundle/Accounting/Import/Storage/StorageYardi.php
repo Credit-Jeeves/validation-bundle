@@ -5,9 +5,8 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
-use Symfony\Component\HttpFoundation\Session\Session;
-use DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -35,6 +34,42 @@ class StorageYardi extends ExternalApiStorage
     }
 
     /**
+     * Create and write header into CSV file
+     *
+     * @throws ImportStorageException
+     */
+    protected function initializeParameters()
+    {
+        $this->setFieldDelimiter(self::FIELD_DELIMITER);
+        $this->setTextDelimiter(self::TEXT_DELIMITER);
+        $this->setDateFormat(self::DATE_FORMAT);
+        $this->setPropertyId($this->getImportPropertyId());
+
+        $mapping = [
+            1 => Mapping::KEY_RESIDENT_ID,
+            2 => Mapping::KEY_UNIT,
+            3 => Mapping::KEY_MOVE_IN,
+            4 => Mapping::KEY_LEASE_END,
+            5 => Mapping::KEY_RENT,
+            6 => Mapping::FIRST_NAME_TENANT,
+            7 => Mapping::LAST_NAME_TENANT,
+            8 => Mapping::KEY_EMAIL,
+            9 => Mapping::KEY_MOVE_OUT,
+            10 => Mapping::KEY_BALANCE,
+            11 => Mapping::KEY_MONTH_TO_MONTH,
+            12 => Mapping::KEY_PAYMENT_ACCEPTED,
+            13 => Mapping::KEY_EXTERNAL_LEASE_ID
+        ];
+
+        if ($this->isMultiplePropertyMapping()) {
+            $mapping[14] = Mapping::KEY_PROPERTY_ID;
+        }
+
+        $this->writeCsvToFile($mapping);
+        $this->setMapping($mapping);
+    }
+
+    /**
      * @param ResidentLeaseFile $residentData
      * @param ResidentsResident $resident
      * @throws ImportStorageException
@@ -55,11 +90,11 @@ class StorageYardi extends ExternalApiStorage
         }
         $finishAt = $moveOutDate ? $moveOutDate->format($format) : $residentData->getLeaseEnd();
 
-        $today = new DateTime();
+        $today = new \DateTime();
         $leaseEnd = $residentData->getLeaseEnd(true);
-        $monthToMonth = ($today > $leaseEnd)? 'Y' : 'N';
+        $monthToMonth = ($today > $leaseEnd) ? 'Y' : 'N';
 
-        $data = array(
+        $data = [
             $residentId,
             $residentData->getUnit()->getIdentification()->getUnitName(),
             $startAt,
@@ -68,12 +103,16 @@ class StorageYardi extends ExternalApiStorage
             $resident->getFirstName(),
             $resident->getLastName(),
             $resident->getEmail(),
-            ($moveOutDate instanceof DateTime)? $moveOutDate->format($format) : '',
+            ($moveOutDate instanceof \DateTime) ? $moveOutDate->format($format) : '',
             $ledgerDetails->getIdentification()->getBalance(),
             $monthToMonth,
             $paymentAccepted,
             $leaseId
-        );
+        ];
+
+        if ($this->isMultiplePropertyMapping()) {
+            $data[] = $this->getImportPropertyId();
+        }
 
         $this->writeCsvToFile($data);
     }
@@ -90,12 +129,12 @@ class StorageYardi extends ExternalApiStorage
         $paymentAccepted = $resident->getPaymentAccepted();
         $leaseId = $resident->getLeaseId();
 
-        $today = new DateTime();
+        $today = new \DateTime();
         $leaseEnd = $residentData->getLeaseEnd(true);
-        $monthToMonth = ($today > $leaseEnd)? 'Y' : 'N';
+        $monthToMonth = ($today > $leaseEnd) ? 'Y' : 'N';
         $ledgerDetails = $this->getLedgerDetails($residentData);
 
-        $data = array(
+        $data = [
             $residentId,
             $residentData->getUnit()->getIdentification()->getUnitName(),
             $residentData->getLeaseBegin(),
@@ -104,12 +143,16 @@ class StorageYardi extends ExternalApiStorage
             $residentData->getTenantDetails()->getPersonDetails()->getName()->getFirstName(),
             $residentData->getTenantDetails()->getPersonDetails()->getName()->getLastName(),
             $residentData->getTenantDetails()->getPersonDetails()->getEmail(),
-            ($moveOutDate instanceof DateTime)? $moveOutDate->format($this->getDateFormat()) : '',
+            ($moveOutDate instanceof \DateTime) ? $moveOutDate->format($this->getDateFormat()) : '',
             $ledgerDetails->getIdentification()->getBalance(),
             $monthToMonth,
             $paymentAccepted,
             $leaseId
-        );
+        ];
+
+        if ($this->isMultiplePropertyMapping()) {
+            $data[] = $this->getImportPropertyId();
+        }
 
         $this->writeCsvToFile($data);
     }
@@ -128,5 +171,21 @@ class StorageYardi extends ExternalApiStorage
         }
 
         return $ledgerDetails;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultipleProperty()
+    {
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultiplePropertyMapping()
+    {
+        return !!$this->session->get(self::IS_MULTIPLE_PROPERTY, false);
     }
 }

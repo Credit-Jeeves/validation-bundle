@@ -144,6 +144,9 @@ trait Property
     {
         if (!$this->storage->isMultipleProperty()) {
             $propertyId = $this->storage->getPropertyId();
+            if (!empty($row[Mapping::KEY_PROPERTY_ID])) {
+                $propertyId = $row[Mapping::KEY_PROPERTY_ID];
+            }
             $this->logger->debug(sprintf('Looking up multi-property by id: %s', $propertyId));
 
             return $this->em->getRepository('RjDataBundle:Property')->find($propertyId);
