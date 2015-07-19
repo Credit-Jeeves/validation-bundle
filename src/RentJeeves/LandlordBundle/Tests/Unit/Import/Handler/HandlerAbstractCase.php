@@ -3,6 +3,8 @@ namespace RentJeeves\LandlordBundle\Tests\Unit\Import\Handler;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\PaymentClientCase;
+use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Model\Import;
@@ -131,5 +133,48 @@ class HandlerAbstractCase extends BaseTestCase
         $this->assertNotEmpty($groupModel);
         $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $externalPropertyId);
         $this->assertFalse($property);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckUnitMappingByExternalUnitId()
+    {
+        $this->load(true);
+        $handler = new HandlerTest();
+        $handlerTestReflection = new \ReflectionClass($handler);
+        $currentImportModel = $handlerTestReflection->getProperty('em');
+        $currentImportModel->setAccessible(true);
+        $currentImportModel->setValue($handler, $em = $this->getEntityManager());
+
+        $logger = $handlerTestReflection->getProperty('logger');
+        $logger->setAccessible(true);
+        $logger->setValue($handler, $this->getContainer()->get('logger'));
+
+        $unitMappingByExternalUnitId = $handlerTestReflection->getMethod('getUnitMappingByExternalUnitId');
+        $unitMappingByExternalUnitId->setAccessible(true);
+
+        $group = $em->getRepository('DataBundle:Group')->findOneBy(['name' => 'Test Rent Group']);
+        $this->assertNotNull($group);
+        /** @var UnitMapping $unitMappingNotNull */
+        $unitMappingNotNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-7');
+        $this->assertNotNull($unitMappingNotNull, 'Checked look up UnitMapping failed. Must Find.');
+        $unitMappingNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-1');
+        $this->assertNull($unitMappingNull, 'Checked look up UnitMapping failed. Must NOT Find.');
+
+        $unitMapping = new UnitMapping();
+        $unit = new Unit();
+        $unit->setName('Test');
+        $unit->setGroup($group = $unitMappingNotNull->getUnit()->getGroup());
+        $unit->setHolding($group->getHolding());
+        $unit->setProperty($group->getGroupProperties()->first());
+        $unitMapping->setUnit($unit);
+        $unitMapping->setExternalUnitId($unitMappingNotNull->getExternalUnitId());
+        $em->persist($unitMapping);
+        $em->persist($unit);
+        $em->flush();
+
+        $unitMappingNull = $unitMappingByExternalUnitId->invoke($handler, $group, 'AAABBB-7');
+        $this->assertNull($unitMappingNull, 'Checked exception NonUniqueResultException in method - failed');
     }
 }

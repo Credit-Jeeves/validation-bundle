@@ -92,9 +92,9 @@ class StorageYardi extends ExternalApiStorage
 
         $today = new \DateTime();
         $leaseEnd = $residentData->getLeaseEnd(true);
-        $monthToMonth = ($today > $leaseEnd) ? 'Y' : 'N';
-
+        $monthToMonth = ($today > $leaseEnd && empty($moveOutDate)) ? 'Y' : 'N';
         $data = [
+
             $residentId,
             $residentData->getUnit()->getIdentification()->getUnitName(),
             $startAt,
@@ -126,12 +126,13 @@ class StorageYardi extends ExternalApiStorage
     {
         $residentId = $resident->getResidentId();
         $moveOutDate = $resident->getMoveOutDate(true);
+        $moveOutDate = $moveOutDate instanceof DateTime ? $moveOutDate->format($this->getDateFormat()) : '';
         $paymentAccepted = $resident->getPaymentAccepted();
         $leaseId = $resident->getLeaseId();
 
         $today = new \DateTime();
         $leaseEnd = $residentData->getLeaseEnd(true);
-        $monthToMonth = ($today > $leaseEnd) ? 'Y' : 'N';
+        $monthToMonth = ($today > $leaseEnd && empty($moveOutDate)) ? 'Y' : 'N';
         $ledgerDetails = $this->getLedgerDetails($residentData);
 
         $data = [
