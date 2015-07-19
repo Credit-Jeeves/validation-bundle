@@ -74,6 +74,11 @@ class StorageAMSI extends ExternalApiStorage
 
         /** @var Lease $lease */
         foreach ($residentLeases as $lease) {
+            $unit = $lease->getUnit();
+            if ($unit === null) {
+                continue;  // we don't have unit details -- skip.
+            }
+
             $paymentAccepted = $lease->getBlockPaymentAccess();
             if (strtolower($paymentAccepted) === 'n') {
                 $paymentAccepted = PaymentAccepted::ANY;
@@ -92,8 +97,6 @@ class StorageAMSI extends ExternalApiStorage
             } else {
                 $monthToMonth = 'N';
             }
-
-            $unit = $lease->getUnit();
 
             $street = $unit->getAddress1();
             $city = $unit->getCity();
