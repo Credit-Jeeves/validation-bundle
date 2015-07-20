@@ -3,62 +3,122 @@
 namespace RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\OutboundTransaction;
+use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 
 class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
 {
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setComplete(Order $order)
     {
-        // TODO: Implement setComplete() method.
+        $this->assertOrder($order);
+
+        /** @var OrderPayDirect $order */
+        if ($this->isOutboundLegInitiated($order)) {
+            $this->updateStatus($order, OrderStatus::COMPLETE);
+        } elseif ($this->updateStatus($order, OrderStatus::SENDING)) {
+            $job = new Job('payment:pay-anyone:send-check', ['--app=rj', $order->getId()]);
+            $this->em->persist($job);
+            $this->em->flush($job);
+        }
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setCancelled(Order $order)
     {
-        // TODO: Implement setCancelled() method.
+        $this->assertOrder($order);
+
+        /** @var OrderPayDirect $order */
+        if ($this->isOutboundLegInitiated($order)) {
+            $this->logger->alert(sprintf(
+                'An attempt to cancel outbound transaction #%s of PayDirect order #%d.
+                PayDirect order can not be cancelled (only reissued or refunded)',
+                $order->getDepositOutboundTransaction()->getTransactionId(),
+                $order->getId()
+            ));
+        } else {
+            parent::setCancelled($order);
+        }
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setRefunded(Order $order)
     {
-        // TODO: Implement setRefunded() method.
+        $this->assertOrder($order);
+
+        /** @var OrderPayDirect $order */
+        if ($this->isOutboundLegReversed($order)) {
+            parent::setRefunded($order);
+        } else {
+            $this->updateStatus($order, OrderStatus::REFUNDING);
+        }
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setReturned(Order $order)
     {
-        // TODO: Implement setReturned() method.
+        $this->assertOrder($order);
+
+        /** @var OrderPayDirect $order */
+        if ($this->isOutboundLegInitiated($order)) {
+            $this->logger->alert(sprintf(
+                'An attempt to return outbound transaction #%s of PayDirect order #%d.
+                PayDirect order can not be returned (only reissued or refunded)',
+                $order->getDepositOutboundTransaction()->getTransactionId(),
+                $order->getId()
+            ));
+        } else {
+            parent::setReturned($order);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setReissued(Order $order)
+    {
+        $this->assertOrder($order);
+
+        $this->updateStatus($order, OrderStatus::REISSUED);
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     * @return bool
+     */
+    protected function isOutboundLegInitiated(OrderPayDirect $order)
+    {
+        return ($order->getDepositOutboundTransaction() instanceof OutboundTransaction) &&
+            (OutboundTransactionStatus::SUCCESS === $order->getDepositOutboundTransaction()->getStatus());
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     * @return bool
+     */
+    protected function isOutboundLegReversed(OrderPayDirect $order)
+    {
+        return $order->getReversalOutboundTransaction() instanceof OutboundTransaction;
     }
 
     /**
      * @param Order $order
      */
-    public function setPending(Order $order)
+    protected function assertOrder(Order $order)
     {
-        // TODO: Implement setPending() method.
-    }
-
-    /**
-     * @param Order $order
-     */
-    public function setError(Order $order)
-    {
-        // TODO: Implement setError() method.
-    }
-
-    /**
-     * @param Order $order
-     */
-    public function setNew(Order $order)
-    {
-        // TODO: Implement setNew() method.
+        if (! $order instanceof OrderPayDirect) {
+            throw new \LogicException('Unsupported order type in OrderPayDirectStatusManager');
+        }
     }
 }

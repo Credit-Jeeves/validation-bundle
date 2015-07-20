@@ -68,4 +68,12 @@ class CommonSystemMocks extends \PHPUnit_Framework_TestCase
 
         return $mockObj;
     }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\CoreBundle\Mailer\Mailer
+     */
+    public function getMailerMock()
+    {
+        return $this->getMock('\RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
+    }
 }
