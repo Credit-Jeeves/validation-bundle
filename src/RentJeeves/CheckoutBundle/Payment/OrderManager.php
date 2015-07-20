@@ -114,10 +114,10 @@ class OrderManager
             ->findOneByCode($this->rtMerchantName)->getGroupSettings();
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($depositAccount->getFeeCC() / 100), 2));
+            $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));
             $order->setPaymentType(OrderPaymentType::CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $order->setFee($depositAccount->getFeeACH());
+            $order->setFee($groupSettings->getFeeACH());
             $order->setPaymentType(OrderPaymentType::BANK);
         }
 

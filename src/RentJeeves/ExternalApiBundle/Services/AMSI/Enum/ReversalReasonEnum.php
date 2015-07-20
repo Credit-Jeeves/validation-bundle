@@ -22,7 +22,9 @@ class ReversalReasonEnum extends Enum
     {
         if ($order->getStatus() === OrderStatus::RETURNED && $order->getPaymentType() === OrderPaymentType::BANK) {
             return self::REASON_NSF;
-        } elseif ($order->getStatus() === OrderStatus::RETURNED && $order->getPaymentType() === OrderPaymentType::CARD) {
+        } elseif ($order->getStatus() === OrderStatus::RETURNED &&
+            $order->getPaymentType() === OrderPaymentType::CARD
+        ) {
             return self::REASON_CHARGE_BACK;
         } else {
             return self::REASON_REVERSE;
