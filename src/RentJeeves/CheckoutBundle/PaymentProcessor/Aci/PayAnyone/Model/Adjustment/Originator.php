@@ -75,6 +75,18 @@ class Originator
     protected $returnedPayments;
 
     /**
+     * @Serializer\Type("RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Transaction")
+     * @Serializer\SerializedName("REFUNDED_SCANLINE_REJECTS")
+     */
+    protected $refundedScanlineRejects;
+
+    /**
+     * @Serializer\Type("RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Model\Adjustment\Transaction")
+     * @Serializer\SerializedName("CORRECTED_SCANLINE_REJECTS")
+     */
+    protected $correctedScanlineRejects;
+
+    /**
      * @return mixed
      */
     public function getRefundedOutdatedChecks()
@@ -259,6 +271,38 @@ class Originator
     }
 
     /**
+     * @return mixed
+     */
+    public function getRefundedScanlineRejects()
+    {
+        return $this->refundedScanlineRejects;
+    }
+
+    /**
+     * @param mixed $refundedScanlineRejects
+     */
+    public function setRefundedScanlineRejects($refundedScanlineRejects)
+    {
+        $this->refundedScanlineRejects = $refundedScanlineRejects;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCorrectedScanlineRejects()
+    {
+        return $this->correctedScanlineRejects;
+    }
+
+    /**
+     * @param mixed $correctedScanlineRejects
+     */
+    public function setCorrectedScanlineRejects($correctedScanlineRejects)
+    {
+        $this->correctedScanlineRejects = $correctedScanlineRejects;
+    }
+
+    /**
      * @return array all reversal transactions
      */
     public function getReversalTransactions()
@@ -274,6 +318,8 @@ class Originator
             'REISSUED_STOPPED_CHECKS' => $this->getReissuedStoppedChecks(),
             'RETURNED_PAYMENTS' => $this->getReturnedPayments(),
             'STOPPED_CHECKS' => $this->getStoppedChecks(),
+            'REFUNDED_SCANLINE_REJECTS' => $this->getRefundedScanlineRejects(),
+            'CORRECTED_SCANLINE_REJECTS' => $this->getCorrectedScanlineRejects(),
         ];
     }
 }
