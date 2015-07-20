@@ -63,7 +63,7 @@ class LandlordImportCommandCase extends BaseTestCase
         $this->load(true);
 
         $path = $pathToFile = $this->getFileLocator()
-            ->locate('@LandlordBundle/Tests/Unit/Accounting/ImportLandlord/importFile.csv');
+            ->locate('@LandlordBundle/Tests/Fixtures/importFile.csv');
 
         $application = new Application($this->getKernel());
         $application->add(new LandlordImportCommand());
