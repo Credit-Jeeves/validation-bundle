@@ -8,7 +8,6 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
-use Ivory\Tests\OrderedForm\OrderedResolvedFormTypeFactoryTest;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\Services\PaidFor;
 use RentJeeves\CoreBundle\DateTime;
@@ -80,7 +79,7 @@ class OrderManager
         $this->createRentOperations($payment, $order);
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($contract->getDepositAccount()->getFeeCC() / 100), 2));
+            $order->setFee(round($order->getSum() * ($contract->getGroupSettings()->getFeeCC() / 100), 2));
             $order->setPaymentType(OrderPaymentType::CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
             if (true === $groupSettings->isPassedAch()) {
