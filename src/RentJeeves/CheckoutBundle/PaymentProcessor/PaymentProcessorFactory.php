@@ -24,8 +24,8 @@ class PaymentProcessorFactory
     protected $aciCollectPay;
 
     /**
-     * @param SubmerchantProcessorInterface $heartland
-     * @param SubmerchantProcessorInterface $aciCollectPay
+     * @param PaymentProcessor $heartland
+     * @param PaymentProcessor $aciCollectPay
      *
      * @DI\InjectParams({
      *     "heartland" = @DI\Inject("payment_processor.heartland"),

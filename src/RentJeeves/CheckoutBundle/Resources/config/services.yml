@@ -6,6 +6,35 @@ parameters:
     payment.pay_heartland: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland
 
 services:
+    payment.terminal:
+        class: RentJeeves\CheckoutBundle\Payment\Terminal
+        arguments:
+            - @payment_processor.order_creation_manager
+            - @payment_processor.order_status_manager
+            - @doctrine.orm.default_entity_manager
+            - @logger
+        calls:
+            - [setFactory, ["@payment_processor.factory"]]
+
+    payment.pay_rent:
+        class: RentJeeves\CheckoutBundle\Payment\PayRent
+        arguments:
+            - @payment_processor.order_creation_manager
+            - @payment_processor.order_status_manager
+            - @doctrine.orm.default_entity_manager
+            - @logger
+        calls:
+            - [setFactory, ["@payment_processor.factory"]]
+
+    payment.pay_credit_track:
+        class: RentJeeves\CheckoutBundle\Payment\PayCreditTrack
+        arguments:
+            - @payment_processor.order_creation_manager
+            - @payment_processor.order_status_manager
+            - @doctrine.orm.default_entity_manager
+        calls:
+            - [setFactory, ["@payment_processor.factory"]]
+
     payment.account.heartland:
         class: "%payment_account.heartland.class%"
         calls:
@@ -178,3 +207,13 @@ services:
     payment_processor.order_status_manager.pay_direct:
         class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderPayDirectStatusManager
         parent: payment_processor.order_status_manager.submerchant
+
+    payment_processor.order_creation_manager:
+        class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @checkout.paid_for
+            - %rt_merchant_name%
+            - %credittrack_payment_per_month%
+

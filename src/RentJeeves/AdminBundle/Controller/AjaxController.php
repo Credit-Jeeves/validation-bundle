@@ -212,7 +212,7 @@ class AjaxController extends Controller
 
         try {
             /** @var Transaction $result */
-            $result = $this->get('payment_terminal')->pay($group, $amount, $id4Field);
+            $result = $this->get('payment.terminal')->pay($group, $amount, $id4Field);
         } catch (Exception $e) {
             return new JsonResponse(array('message' => 'Payment failed: ' . $e->getMessage()), 200);
         }

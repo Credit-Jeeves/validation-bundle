@@ -9,6 +9,11 @@ interface OrderStatusManagerInterface
     /**
      * @param Order $order
      */
+    public function setReissued(Order $order);
+
+    /**
+     * @param Order $order
+     */
     public function setComplete(Order $order);
 
     /**

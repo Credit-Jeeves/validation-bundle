@@ -9,7 +9,6 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
-use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
@@ -45,12 +44,19 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
+     */
+    public function setReissued(Order $order)
+    {
+        throw new \LogicException('It\'s not allowed to set "reissued" status to order submerchant type');
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setComplete(Order $order)
     {
         if ($this->updateStatus($order, OrderStatus::COMPLETE)) {
-            $this->syncTransactions($order);
             $this->updateBalanceContract($order);
             $this->movePaidDates($order);
             /** @var Operation $operation */
@@ -69,7 +75,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setCancelled(Order $order)
     {
@@ -80,7 +86,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setRefunded(Order $order)
     {
@@ -92,7 +98,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setReturned(Order $order)
     {
@@ -110,13 +116,17 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     public function setPending(Order $order)
     {
-        if ($this->updateStatus($order, OrderStatus::PENDING)) {
+        if (OrderType::HEARTLAND_CARD === $order->getType()
+            && PaymentProcessor::HEARTLAND === $order->getPaymentProcessor()
+        ) {
+           $this->setComplete($order);
+        } elseif ($this->updateStatus($order, OrderStatus::PENDING)) {
             $this->mailer->sendPendingInfo($order);
         }
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setError(Order $order)
     {
@@ -126,14 +136,14 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     }
 
     /**
-     * @param Order $order
+     * {@inheritdoc}
      */
     public function setNew(Order $order)
     {
         if ($this->updateStatus($order, OrderStatus::NEWONE)) {
             $this->chargePartner($order);
             if ($order->getContract()) {
-                $this->updateStartAtOfContract($order->getContract());
+                $this->updateStartAtOfContract($order);
             }
         }
     }
@@ -188,12 +198,23 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     protected function movePaidDates(Order $order, $shift = true)
     {
-        $operations = $order->getRentOperations();
+        $contract = $order->getContract();
 
-        foreach ($operations as $operation) {
+        if (!$contract) {
+            return;
+        }
+
+        $payment = $contract->getActivePayment();
+        if ($payment) {
+            $date = new DateTime($payment->getPaidFor()->format('c'));
+
+            if (!$this->em->contains($payment)) {
+                $this->em->persist($payment);
+            }
+        }
+
+        foreach ($order->getRentOperations() as $operation) {
             /** @var Operation $operation */
-            $contract = $operation->getContract();
-
             if ($shift) {
                 $contract->shiftPaidTo($operation->getAmount());
                 $movePaidFor = '+1';
@@ -202,19 +223,14 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
                 $movePaidFor = '-1';
             }
 
-            if ($payment = $contract->getActivePayment()) {
-                $date = new DateTime($payment->getPaidFor()->format('c'));
+            if (!empty($date)) {
                 $paidFor = $date->modify($movePaidFor . ' month');
                 $payment->setPaidFor($paidFor);
             }
+        }
 
-            if (!$this->em->contains($contract)) {
-                $this->em->persist($contract);
-            }
-
-            if (!$this->em->contains($payment)) {
-                $this->em->persist($payment);
-            }
+        if (!$this->em->contains($contract)) {
+            $this->em->persist($contract);
         }
 
         $this->em->flush();
@@ -227,6 +243,11 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     protected function updateBalanceContract(Order $order, $isSubtract = true)
     {
         $contract = $order->getContract();
+
+        if (!$contract) {
+            return;
+        }
+
         $isIntegrated = $contract->getGroup()->getGroupSettings()->getIsIntegrated();
         $operations = $order->getOperations();
 
@@ -312,28 +333,6 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         $this->em->flush($contract);
 
         return true;
-    }
-
-    /**
-     * @param Order $order
-     */
-    protected function syncTransactions(Order $order)
-    {
-        $transaction = $order->getCompleteTransaction();
-
-        if ($transaction
-            && OrderType::HEARTLAND_CARD == $order->getType()
-            && PaymentProcessor::HEARTLAND === $order->getPaymentProcessor()
-        ) {
-            $batchDate = clone $transaction->getCreatedAt();
-            $transaction->setBatchDate($batchDate);
-            $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $batchDate));
-
-            if (!$this->em->contains($transaction)) {
-                $this->em->persist($transaction);
-            }
-            $this->em->flush($transaction);
-        }
     }
 
     /**

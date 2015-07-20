@@ -25,4 +25,10 @@ interface PaymentAccountInterface
      * @see RentJeeves\DataBundle\Enum\BankAccountType
      */
     public function getBankAccountType();
+
+    /**
+     * @return string
+     * @see RentJeeves\DataBundle\Enum\PaymentProcessor
+     */
+    public function getPaymentProcessor();
 }

@@ -49,6 +49,14 @@ class OrderStatusManager implements OrderStatusManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function setReissued(Order $order)
+    {
+        $this->getManager($order)->setReissued($order);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setComplete(Order $order)
     {
         $this->getManager($order)->setComplete($order);

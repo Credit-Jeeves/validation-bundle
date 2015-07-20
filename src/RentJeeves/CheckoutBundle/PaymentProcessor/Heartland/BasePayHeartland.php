@@ -3,11 +3,13 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
@@ -52,7 +54,7 @@ abstract class BasePayHeartland
      * @param  OrderSubmerchant          $order
      * @param  PaymentAccountInterface $paymentAccount
      * @param  string         $paymentType
-     * @return string
+     * @return bool
      */
     public function executePayment(
         OrderSubmerchant $order,
@@ -82,12 +84,19 @@ abstract class BasePayHeartland
         }
 
         $isSuccessful = $statusRequest->isSuccess();
+
         $transaction->setIsSuccessful($isSuccessful);
         $order->addTransaction($transaction);
 
         $this->em->persist($transaction);
 
-        return $this->getOrderStatus($order, $isSuccessful);
+        if ($isSuccessful && OrderType::HEARTLAND_CARD === $order->getType()) {
+            $batchDate = clone $transaction->getCreatedAt();
+            $transaction->setBatchDate($batchDate);
+            $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $batchDate));
+        }
+
+        return !!$isSuccessful;
     }
 
     /**
@@ -113,16 +122,6 @@ abstract class BasePayHeartland
      * @return PaymentDetails
      */
     abstract protected function getPaymentDetails(OrderSubmerchant $order, $paymentType);
-
-    /**
-     * Defines orders status.
-     * For credit card payments order already becomes COMPLETE, for ACH payments - PENDING.
-     *
-     * @param  OrderSubmerchant  $order
-     * @param  bool   $isSuccessful
-     * @return string
-     */
-    abstract protected function getOrderStatus(OrderSubmerchant $order, $isSuccessful);
 
     /**
      * @param PaymentDetails $paymentDetails

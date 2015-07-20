@@ -6,7 +6,6 @@ use ACI\Client\PayAnyone\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Payum\AciPayAnyone\Model\NewPayment;
 use Payum\AciPayAnyone\Model\SubModel\BankAccount;
 use Payum\AciPayAnyone\Model\SubModel\Payee;
@@ -76,7 +75,7 @@ class PaymentManager
 
     /**
      * @param OrderPayDirect $order
-     * @return string Order status
+     * @return bool
      * @throws \Exception|PaymentProcessorInvalidArgumentException
      */
     public function executePayment(OrderPayDirect $order)
@@ -122,14 +121,12 @@ class PaymentManager
             if ($request->getIsSuccessful() &&
                 $transactionId = $request->getModel()->getPaymentStatus()->getPaymentId()
             ) {
-                $order->setStatus(OrderStatus::SENDING);
                 $transaction->setTransactionId($transactionId);
                 $transaction->setMessage(null);
                 $transaction->setStatus(OutboundTransactionStatus::SUCCESS);
             } else {
                 $this->logger->alert(sprintf('[ACI PayAnyone Error][Execute]:%s', $request->getMessages()));
 
-                $order->setStatus(OrderStatus::ERROR);
                 $transaction->setMessage(AbstractManager::removeDebugInformation($request->getMessages()));
                 $transaction->setStatus(OutboundTransactionStatus::ERROR);
             }
@@ -137,7 +134,6 @@ class PaymentManager
             $this->em->flush();
         } catch (\Exception $e) {
             $this->logger->alert(sprintf('[ACI PayAnyone Critical Error][Execute]:%s', $e->getMessage()));
-            $order->setStatus(OrderStatus::ERROR);
             $transaction->setStatus(OutboundTransactionStatus::ERROR);
             $transaction->setMessage($e->getMessage());
             $this->em->flush();
@@ -153,7 +149,7 @@ class PaymentManager
             )
         );
 
-        return $order->getStatus();
+        return !!$request->getIsSuccessful();
     }
 
     /**
@@ -188,7 +184,6 @@ class PaymentManager
             $this->paymentProcessor->execute($request);
 
             if ($request->getIsSuccessful()) {
-                $order->setStatus(OrderStatus::ERROR);
                 $transaction->setStatus(OutboundTransactionStatus::CANCELLED);
                 $transaction->setMessage('Cancelled by Admin');
                 $this->logger->debug(

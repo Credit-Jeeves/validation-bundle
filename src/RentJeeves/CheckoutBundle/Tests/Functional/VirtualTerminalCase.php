@@ -24,6 +24,15 @@ class VirtualTerminalCase extends BaseTestCase
      */
     protected $fixtureLocator;
 
+    public function setUp()
+    {
+        $this->fixtureLocator = new FileLocator(
+            [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
+        );
+
+        parent::setUp();
+    }
+
     /**
      * @test
      */
@@ -33,10 +42,6 @@ class VirtualTerminalCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
 
         $this->load(true);
-
-        $this->fixtureLocator = new FileLocator(
-            [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
-        );
 
         /** @var Landlord $landlord */
         $landlord = $this->getEntityManager()->getRepository('RjDataBundle:Landlord')->findOneBy(
@@ -102,8 +107,6 @@ class VirtualTerminalCase extends BaseTestCase
         $this->assertEquals('mary (settings.payment_account.active)', $account[0]->getText());
 
         $this->getEntityManager()->refresh($group);
-
-        $this->setOldProfileId(md5($landlord->getId()), $group->getAciCollectPayProfileId());
 
         $this->logout();
 
@@ -182,10 +185,6 @@ JS;
         $this->setDefaultSession('selenium2');
 
         $this->load(true);
-
-        $this->fixtureLocator = new FileLocator(
-            [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
-        );
 
         /** @var Landlord $landlord */
         $landlord = $this->getEntityManager()->getRepository('RjDataBundle:Landlord')->findOneBy(

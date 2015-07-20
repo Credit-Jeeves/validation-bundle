@@ -10,29 +10,27 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PayDirectProcessorInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
-use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
-/**
- * @DI\Service("payment.pay_credit_track")
- */
 class PayCreditTrack
 {
     /**
-     * @var OrderManager
+     * @var OrderCreationManager
      */
-    protected $orderManager;
+    protected $orderCreationManager;
 
     /**
-     * @var PaymentProcessorFactory
+     * @var OrderStatusManagerInterface
      */
-    protected $paymentProcessorFactory;
+    protected $orderStatusManager;
 
     /**
      * @var EntityManager
@@ -40,21 +38,29 @@ class PayCreditTrack
     protected $em;
 
     /**
-     * @DI\InjectParams({
-     *     "orderManager" = @DI\Inject("payment_processor.order_manager"),
-     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager")
-     * })
+     * @var PaymentProcessorFactory
      */
-    public function __construct(OrderManager $orderManager, EntityManager $em)
-    {
-        $this->orderManager = $orderManager;
+    protected $paymentProcessorFactory;
+
+    /**
+     * @param OrderCreationManager $orderCreationManager
+     * @param OrderStatusManagerInterface $orderStatusManager
+     * @param EntityManager $em
+     */
+    public function __construct(
+        OrderCreationManager $orderCreationManager,
+        OrderStatusManagerInterface $orderStatusManager,
+        EntityManager $em
+    ) {
+        $this->orderCreationManager = $orderCreationManager;
+        $this->orderStatusManager = $orderStatusManager;
         $this->em = $em;
     }
 
     /**
-     * Setter injection is used b/c PaymentProcessorFactory doesn't exist when __construct is called.
+     * @param PaymentProcessorFactory $factory
      *
-     * @DI\InjectParams({"factory" = @DI\Inject("payment_processor.factory")})
+     * Setter injection is used b/c PaymentProcessorFactory doesn't exist when __construct is called.
      */
     public function setFactory(PaymentProcessorFactory $factory)
     {
@@ -69,25 +75,28 @@ class PayCreditTrack
      */
     public function executePaymentAccount(PaymentAccount $paymentAccount)
     {
-        $order = $this->orderManager->createCreditTrackOrder($paymentAccount);
+        $order = $this->orderCreationManager->createCreditTrackOrder($paymentAccount);
 
-        $this->em->persist($order);
-        $this->em->flush();
+        $operation = $this->createOperation($order);
+
+        $this->orderStatusManager->setNew($order);
 
         try {
-            $orderStatus = $this->getPaymentProcessor($paymentAccount)->executeOrder(
+            if ($this->getPaymentProcessor($paymentAccount)->executeOrder(
                 $order,
                 $paymentAccount,
                 PaymentGroundType::REPORT
-            );
-            $order->setStatus($orderStatus);
+            )) {
+                $this->orderStatusManager->setComplete($order);
+            } else {
+                $this->orderStatusManager->setError($order);
+            }
         } catch (\Exception $e) {
-            $order->setStatus(OrderStatus::ERROR);
+            $this->orderStatusManager->setError($order);
         }
 
         if (OrderStatus::ERROR != $order->getStatus()) {
             $report = $this->createReport($paymentAccount->getUser());
-            $operation = $this->createOperation($order);
             $operation->setReportD2c($report);
             $job = $this->scheduleReportJob($report);
 
@@ -96,7 +105,6 @@ class PayCreditTrack
             $this->em->persist($job);
         }
 
-        $this->em->persist($order);
         $this->em->flush();
 
         return $order;
@@ -152,10 +160,11 @@ class PayCreditTrack
      * TODO: change job command to be dependent on the credit_summary_vendor config setting
      *
      * @param Report $report
+     * @return Job
      */
     protected function scheduleReportJob(Report $report)
     {
-        $job = new Job('experian-credit_profile:get', array('--app=rj'));
+        $job = new Job('experian-credit_profile:get', ['--app=rj']);
         $job->addRelatedEntity($report);
         $execute = new DateTime();
         $execute->modify("+5 minutes");

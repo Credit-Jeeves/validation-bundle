@@ -5,7 +5,9 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PayDirectProcessorInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -15,27 +17,18 @@ use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("payment.pay_rent")
- */
 class PayRent
 {
     /**
-     * @var Logger
+     * @var OrderCreationManager
      */
-    protected $logger;
+    protected $orderCreationManager;
 
     /**
-     * @var OrderManager
+     * @var OrderStatusManagerInterface
      */
-    protected $orderManager;
-
-    /**
-     * @var PaymentProcessorFactory
-     */
-    protected $paymentProcessorFactory;
+    protected $orderStatusManager;
 
     /**
      * @var EntityManager
@@ -43,23 +36,37 @@ class PayRent
     protected $em;
 
     /**
-     * @DI\InjectParams({
-     *     "orderManager" = @DI\Inject("payment_processor.order_manager"),
-     *     "logger" = @DI\Inject("logger"),
-     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager")
-     * })
+     * @var LoggerInterface
      */
-    public function __construct(OrderManager $orderManager, Logger $logger, EntityManager $em)
-    {
-        $this->orderManager = $orderManager;
-        $this->logger = $logger;
+    protected $logger;
+
+    /**
+     * @var PaymentProcessorFactory
+     */
+    protected $paymentProcessorFactory;
+
+    /**
+     * @param OrderCreationManager $orderCreationManager
+     * @param OrderStatusManagerInterface $orderStatusManager
+     * @param EntityManager $em
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        OrderCreationManager $orderCreationManager,
+        OrderStatusManagerInterface $orderStatusManager,
+        EntityManager $em,
+        LoggerInterface $logger
+    ) {
+        $this->orderCreationManager = $orderCreationManager;
+        $this->orderStatusManager = $orderStatusManager;
         $this->em = $em;
+        $this->logger = $logger;
     }
 
     /**
-     * Setter injection is used b/c PaymentProcessorFactory doesn't exist when __construct is called.
+     * @param PaymentProcessorFactory $factory
      *
-     * @DI\InjectParams({"factory" = @DI\Inject("payment_processor.factory")})
+     * Setter injection is used b/c PaymentProcessorFactory doesn't exist when __construct is called.
      */
     public function setFactory(PaymentProcessorFactory $factory)
     {
@@ -80,24 +87,27 @@ class PayRent
                 $payment->getId()
             )
         );
-        /** @var Order $order */
-        $order = $this->orderManager->createRentOrder($payment);
+        $order = $this->orderCreationManager->createRentOrder($payment);
+
+        $this->orderStatusManager->setNew($order);
 
         $this->closePaymentIfOneTime($payment);
 
-        $this->em->persist($order);
         $this->em->flush();
 
         try {
-            $orderStatus = $this->getPaymentProcessor($payment)->executeOrder(
+            if ($this->getPaymentProcessor($payment)->executeOrder(
                 $order,
                 $payment->getPaymentAccount(),
                 PaymentGroundType::RENT
-            );
-            $order->setStatus($orderStatus);
+            )) {
+                $this->orderStatusManager->setPending($order);
+            } else {
+                $this->orderStatusManager->setError($order);
+            }
         } catch (\Exception $e) {
             $this->logger->alert('Order Error:' .  $e->getMessage());
-            $order->setStatus(OrderStatus::ERROR);
+            $this->orderStatusManager->setError($order);
         }
 
         if (OrderStatus::ERROR == $order->getStatus()) {
@@ -169,7 +179,7 @@ class PayRent
     protected function setContractAsCurrent(Contract $contract)
     {
         $status = $contract->getStatus();
-        if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
+        if (in_array($status, [ContractStatus::INVITE, ContractStatus::APPROVED])) {
             $contract->setStatus(ContractStatus::CURRENT);
             $this->em->persist($contract);
         }

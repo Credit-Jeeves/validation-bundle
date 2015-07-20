@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\CheckoutBundle\Payment;
+namespace RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
@@ -8,7 +8,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderFactory;
 use RentJeeves\CheckoutBundle\Services\PaidFor;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -18,10 +18,7 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Model\GroupSettings;
 use RuntimeException;
 
-/**
- * @DI\Service("payment_processor.order_manager")
- */
-class OrderManager
+class OrderCreationManager
 {
     /**
      * @var PaidFor
@@ -44,12 +41,10 @@ class OrderManager
     protected $rtMerchantName;
 
     /**
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
-     *     "paidFor" = @DI\Inject("checkout.paid_for"),
-     *     "rtMerchantName" = @DI\Inject("%rt_merchant_name%"),
-     *     "amount" = @DI\Inject("%credittrack_payment_per_month%")
-     * })
+     * @param EntityManager $em
+     * @param PaidFor $paidFor
+     * @param $rtMerchantName
+     * @param $amount
      */
     public function __construct(EntityManager $em, PaidFor $paidFor, $rtMerchantName, $amount)
     {
@@ -158,7 +153,6 @@ class OrderManager
         $order->setPaymentType(OrderPaymentType::BANK);
         $order->setUser($groupUser);
         $order->setSum($amount);
-        $order->setStatus(OrderStatus::NEWONE);
         $order->setDescriptor($descriptor);
         $order->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
 
