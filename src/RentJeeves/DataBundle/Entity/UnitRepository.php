@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 
 class UnitRepository extends EntityRepository
@@ -167,5 +168,23 @@ class UnitRepository extends EntityRepository
             ->setParameter('ids', implode(' , ', $contractWaitingIds))
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $externalUnitId
+     *
+     * @return Unit|null
+     */
+    public function findOneByHoldingAndExternalId(Holding $holding, $externalUnitId)
+    {
+        return $this->createQueryBuilder('u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->where('um.externalUnitId = :externalId')
+            ->andWhere('u.holding = :holding')
+            ->setParameter('holding', $holding)
+            ->setParameter('externalId', $externalUnitId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

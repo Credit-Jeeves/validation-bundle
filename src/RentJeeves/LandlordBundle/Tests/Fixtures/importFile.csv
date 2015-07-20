@@ -1,0 +1,4 @@
+login_id,first_name,last_name,company_name,ll_email,ll_phone,ll_address,ll_unit,ll_city,ll_state,ll_zipcode,landlordID,StreetAddress,UnitNumber,UnitID,city_name,state_name,zipcode
+5295155,Nancy Abe,Porter n,Porter Properties,a.porter.11@example.com,(213) 369-3607,6418 Quebec,,Los Angeles,7,90068,1082722,1945 Cheremoya Avenue,,1195056,Los Angeles,California,90068
+5334631,Herbert,Balter,Balter Realty,gary@example.com,(310) 452-2465,1147  16th,,Santa Monica,7,90403,1201286,820 Pier Ave,2,1174502,Santa Monica,California,90405
+5334636,Allan,Wagner,10600 Wilshire - MAIR Development CO,ask for email3/07,(310) 470-8170,10600 Wilshire Blvd,,Los Angeles,7,90024,1201290,10600 Wilshire Blvd,,649178,Los Angeles,California,90024

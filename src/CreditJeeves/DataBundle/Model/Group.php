@@ -122,6 +122,8 @@ abstract class Group
     /**
      * @ORM\Column(type="string")
      * @Serializer\Groups({"AdminProperty"});
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $name;
 
@@ -162,6 +164,8 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $street_address_1;
 
@@ -172,16 +176,22 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $city;
 
     /**
      * @ORM\Column(type="string", nullable=true, length=7)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $state;
 
     /**
      * @ORM\Column(type="string", nullable=true, length=15)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $zip;
 
@@ -431,6 +441,8 @@ abstract class Group
      *      type="string",
      *      nullable=true
      * )
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $mailingAddressName;
 
@@ -454,6 +466,15 @@ abstract class Group
      * @var AciImportProfileMap
      */
     protected $aciImportProfileMap;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="external_group_id", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
+     */
+    protected $externalGroupId;
 
     public function __construct()
     {
@@ -1435,5 +1456,21 @@ abstract class Group
     public function setAciImportProfileMap(AciImportProfileMap $aciImportProfileMap)
     {
         $this->aciImportProfileMap = $aciImportProfileMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalGroupId()
+    {
+        return $this->externalGroupId;
+    }
+
+    /**
+     * @param string $externalGroupId
+     */
+    public function setExternalGroupId($externalGroupId)
+    {
+        $this->externalGroupId = $externalGroupId;
     }
 }
