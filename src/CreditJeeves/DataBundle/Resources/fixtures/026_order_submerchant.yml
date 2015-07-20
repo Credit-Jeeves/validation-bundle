@@ -1,12 +1,5 @@
 model: CreditJeeves\DataBundle\Entity\OrderSubmerchant
 fixtures:
-  rjOrder_1:
-    user: Tenant_1
-    status: complete
-    paymentType: card
-    sum: 1500
-    created_at: '-50 days'
-    updated_at: '-50 days'
   rjOrder_2:
     user: Tenant_1
     status: complete

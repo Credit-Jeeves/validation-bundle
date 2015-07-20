@@ -3,7 +3,6 @@ namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
