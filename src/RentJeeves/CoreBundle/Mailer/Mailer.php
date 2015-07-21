@@ -269,7 +269,7 @@ class Mailer extends BaseMailer
             'transactionId' => $order->getHeartlandTransactionId(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
-            'orderType' => $order->getType(),
+            'orderType' => $order->getPaymentType(),
         ];
 
         return $this->sendBaseLetter('rjOrderError', $vars, $tenant->getEmail(), $tenant->getCulture());

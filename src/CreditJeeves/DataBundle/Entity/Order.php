@@ -5,7 +5,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Model\Order as Base;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use JMS\Serializer\GenericSerializationVisitor;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -380,11 +380,11 @@ class Order extends Base
      */
     public function getCode()
     {
-        if ($this->getType() === OrderType::HEARTLAND_CARD) {
+        if ($this->getPaymentType() === OrderPaymentType::CARD) {
             $code = 'PMTCRED';
-        } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
+        } elseif ($this->getPaymentType() === OrderPaymentType::BANK) {
             $code = 'PMTCHECK';
-        } elseif ($this->getType() === OrderType::CASH) {
+        } elseif ($this->getPaymentType() === OrderPaymentType::CASH) {
             $code = 'EXTERNAL';
         } else {
             $code = '';
@@ -538,7 +538,7 @@ class Order extends Base
         $result['depositDate'] = $depositDate ? $depositDate->format('m/d/Y') : 'N/A';
         $result['finish'] = '--';
         $result['style'] = $this->getOrderStatusStyle();
-        $result['icon'] = $this->getOrderTypes();
+        $result['icon'] = $this->getOrderPaymentTypes();
         $status = $this->getStatus();
         $result['status'] = 'order.status.text.'.$status;
         $result['errorMessage'] = $this->getHeartlandMessage();
@@ -564,17 +564,17 @@ class Order extends Base
         return $result;
     }
 
-    public function getOrderTypes()
+    public function getOrderPaymentTypes()
     {
-        $type = $this->getType();
+        $type = $this->getPaymentType();
         switch ($type) {
-            case OrderType::HEARTLAND_CARD:
+            case OrderPaymentType::CARD:
                 $result = 'credit-card';
                 break;
-            case OrderType::HEARTLAND_BANK:
+            case OrderPaymentType::BANK:
                 $result = 'e-check';
                 break;
-            case OrderType::CASH:
+            case OrderPaymentType::CASH:
                 $result = 'cash';
                 break;
             default:
@@ -619,7 +619,7 @@ class Order extends Base
         $result['rent'] = $this->getRentAmount();
         $result['other'] = $this->getOtherAmount();
         $result['total'] = $this->getTotalAmount();
-        $result['type'] = $this->getOrderTypes();
+        $result['type'] = $this->getOrderPaymentTypes();
 
         return $result;
     }
@@ -1037,11 +1037,11 @@ class Order extends Base
      */
     public function getMriPaymentType()
     {
-        if ($this->getType() === OrderType::HEARTLAND_CARD) {
+        if ($this->getPaymentType() === OrderPaymentType::CARD) {
             return 'K';
         }
 
-        if ($this->getType() === OrderType::HEARTLAND_BANK) {
+        if ($this->getPaymentType() === OrderPaymentType::BANK) {
             return 'C';
         }
 
@@ -1073,7 +1073,7 @@ class Order extends Base
      */
     public function getMriCheckNumber()
     {
-        if ($this->getType() === OrderType::HEARTLAND_BANK) {
+        if ($this->getPaymentType() === OrderPaymentType::BANK) {
             return $this->getCompleteTransaction()->getTransactionId();
         }
 

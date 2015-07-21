@@ -3,7 +3,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Heartland\Soap\Base\BillTransaction;
 use Payum2\Heartland\Soap\Base\CardProcessingMethod;
@@ -80,7 +80,7 @@ class PayHeartland extends BasePayHeartland
         if (!$isSuccessful) {
             return OrderStatus::ERROR;
         }
-        if (OrderType::HEARTLAND_CARD == $order->getType()) {
+        if (OrderPaymentType::CARD == $order->getPaymentType()) {
             return OrderStatus::COMPLETE;
         }
 

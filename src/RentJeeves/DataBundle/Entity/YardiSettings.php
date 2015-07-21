@@ -2,7 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Model\YardiSettings as Base;
 use Doctrine\ORM\Mapping as ORM;
@@ -47,12 +47,12 @@ class YardiSettings extends Base implements SettingsInterface
         return false;
     }
 
-    public function getOrderType(Order $order)
+    public function getOrderPaymentType(Order $order)
     {
-        if (OrderType::HEARTLAND_BANK == $order->getType()) {
+        if (OrderPaymentType::BANK == $order->getPaymentType()) {
             return $this->getPaymentTypeACH();
         }
-        if (OrderType::HEARTLAND_CARD == $order->getType()) {
+        if (OrderPaymentType::CARD == $order->getPaymentType()) {
             return $this->getPaymentTypeCC();
         }
 
@@ -68,7 +68,7 @@ class YardiSettings extends Base implements SettingsInterface
      */
     public function getReversalType(Order $order)
     {
-        $originalOrderType = $this->getOrderType($order);
+        $originalOrderType = $this->getOrderPaymentType($order);
         if (strtolower($originalOrderType) == strtolower(self::PAYMENT_TYPE_CASH)) {
             return self::REVERSAL_TRANSACTION_REVERSE;
         }

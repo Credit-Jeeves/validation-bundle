@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -170,7 +170,7 @@ class OrderListener
                         // if returned order is from recurring payment, close that payment!
                         $this->closeRecurringPayment($order, $eventArgs->getEntityManager());
                         // Do not send notifications if reversed order is CASH
-                        if ($order->getType() != OrderType::CASH) {
+                        if ($order->getPaymentType() != OrderPaymentType::CASH) {
                             $this->container->get('project.mailer')->sendOrderCancelToTenant($order);
                             $this->container->get('project.mailer')->sendOrderCancelToLandlord($order);
                         }
@@ -342,7 +342,7 @@ class OrderListener
         $transaction = $order->getCompleteTransaction();
 
         if ($transaction &&
-            OrderType::HEARTLAND_CARD == $order->getType() &&
+            OrderPaymentType::CARD == $order->getPaymentType() &&
             OrderStatus::COMPLETE == $order->getStatus()
         ) {
             $batchDate = clone $transaction->getCreatedAt();
@@ -353,7 +353,7 @@ class OrderListener
 
     protected function closeRecurringPayment(Order $order, EntityManager $em)
     {
-        if (OrderType::HEARTLAND_BANK != $order->getType() && OrderStatus::RETURNED != $order->getStatus()) {
+        if (OrderPaymentType::BANK != $order->getPaymentType() && OrderStatus::RETURNED != $order->getStatus()) {
             return;
         }
         /** @var Contract $contract */

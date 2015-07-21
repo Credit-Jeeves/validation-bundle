@@ -7,7 +7,7 @@ use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -28,7 +28,7 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
         $order = new OrderPayDirect();
         $order->setUser($contract->getTenant());
         $order->setStatus(OrderStatus::PENDING);
-        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(600);
         $order->setPaymentProcessor(PaymentProcessor::ACI);
         $order->setDescriptor('Test Check');

@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
@@ -70,11 +70,12 @@ abstract class Order
 
     /**
      * @ORM\Column(
-     *     type="OrderType",
+     *     name="payment_type",
+     *     type="OrderPaymentType",
      *     nullable=true
      * )
      */
-    protected $type = OrderType::CASH;
+    protected $paymentType = OrderPaymentType::CASH;
 
     /**
      * @ORM\Column(
@@ -259,12 +260,12 @@ abstract class Order
     /**
      * Set type
      *
-     * @param  OrderType $type
-     * @return self
+     * @param  OrderPaymentType $paymentType
+     * @return Order
      */
-    public function setType($type)
+    public function setPaymentType($paymentType)
     {
-        $this->type = $type;
+        $this->paymentType = $paymentType;
 
         return $this;
     }
@@ -272,11 +273,11 @@ abstract class Order
     /**
      * Get type
      *
-     * @return OrderType
+     * @return OrderPaymentType
      */
-    public function getType()
+    public function getPaymentType()
     {
-        return $this->type;
+        return $this->paymentType;
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -151,7 +151,7 @@ class ResManClientCase extends Base
         $order = $em->getRepository('DataBundle:Order')->findOneBy(
             [
                 'user'  => $tenant->getId(),
-                'type'  => OrderType::HEARTLAND_CARD
+                'paymentType' => OrderPaymentType::CARD
             ]
         );
 

@@ -231,7 +231,7 @@ class Transaction extends Base
     public function getPaymentType()
     {
         if ($order = $this->getOrder()) {
-            return $order->getOrderTypes();
+            return $order->getOrderPaymentTypes();
         }
 
         return null;

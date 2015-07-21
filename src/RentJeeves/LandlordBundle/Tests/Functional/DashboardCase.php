@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -163,7 +163,7 @@ class DashboardCase extends BaseTestCase
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $order = $em->getRepository('DataBundle:Order')->findOneBy(['sum' => 3700]);
-        $order->setType(OrderType::CASH);
+        $order->setPaymentType(OrderPaymentType::CASH);
         $em->flush($order);
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");

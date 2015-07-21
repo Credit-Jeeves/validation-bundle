@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -223,7 +223,7 @@ class PaymentReportCase extends BaseTestCase
 
         $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::PENDING);
-        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(999);
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(array('email' => 'tenant11@example.com'));
