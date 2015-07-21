@@ -931,7 +931,7 @@
                <source>pidkiq.error.questions-%SUPPORT_EMAIL%</source>
                <target><![CDATA[
                    We're sorry, but we were unable to generate an online exam for you.
-                   Please contact contact
+                   Please contact
                    <a href="%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
                    to
                    <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-" target="_blank" class="underline">
