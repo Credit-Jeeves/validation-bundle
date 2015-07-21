@@ -113,7 +113,7 @@ class MRIClientCase extends Base
         $this->assertNotEmpty($value->getUnitId());
         $this->assertNotEmpty($value->getFirstName());
         $this->assertNotEmpty($value->getLastName());
-        $this->assertEquals(0, $value->getLeaseBalance());
+        $this->assertGreaterThan(0, $value->getLeaseBalance());
         $this->assertNotEmpty($value->getLeaseMonthlyRentAmount());
         $this->assertInstanceOf('\DateTime', $value->getLastUpdateDate());
         $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
