@@ -13,7 +13,6 @@ use Symfony\Component\Form\FormEvents;
 
 class ContractType extends AbstractType
 {
-
     const MONTH_TO_MONTH = 'monthToMonth';
     const FINISH_AT = 'finishAt';
 
@@ -22,6 +21,9 @@ class ContractType extends AbstractType
      */
     protected $group;
 
+    /**
+     * @param Group $group
+     */
     public function __construct(Group $group)
     {
         $this->group = $group;
@@ -32,117 +34,117 @@ class ContractType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $group = $this->group;
-
-        $builder->add('rent', 'text', array('error_bubbling' => true));
+        $builder->add('rent', 'text', ['error_bubbling' => true]);
         $builder->add(
             'finishAt',
             'date',
-            array(
-                'input'             => 'string',
-                'widget'            => 'single_text',
-                'format'            => 'MM/dd/yyyy',
-                'error_bubbling'    => true,
-            )
+            [
+                'input' => 'string',
+                'widget' => 'single_text',
+                'format' => 'MM/dd/yyyy',
+                'error_bubbling' => true,
+            ]
         );
 
         $builder->add(
             'startAt',
             'date',
-            array(
-                'input'             => 'string',
-                'widget'            => 'single_text',
-                'format'            => 'MM/dd/yyyy',
-                'error_bubbling'    => true,
-            )
+            [
+                'input' => 'string',
+                'widget' => 'single_text',
+                'format' => 'MM/dd/yyyy',
+                'error_bubbling' => true,
+            ]
         );
 
         $builder->add(
             'dueDate',
             'choice',
-            array(
-                'label'             => 'due_date',
-                'choices'           => Contract::getRangeDueDate(),
-                'error_bubbling'    => true,
-                'required'          => true,
-            )
+            [
+                'label' => 'due_date',
+                'choices' => Contract::getRangeDueDate(),
+                'error_bubbling' => true,
+                'required' => true,
+            ]
         );
 
         $builder->add(
             'finishAtType',
             'choice',
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     'monthToMonth' => self::MONTH_TO_MONTH,
-                    'finishAt'     => self::FINISH_AT
-                ),
-                'expanded'  => true,
-                'multiple'  => false,
-                'required'  => true,
-                'mapped'    => false,
-                'data'      => self::FINISH_AT
-            )
+                    'finishAt' => self::FINISH_AT
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'required' => true,
+                'mapped' => false,
+                'data' => self::FINISH_AT
+            ]
         );
 
         $builder->add(
             'property',
             'entity',
-            array(
+            [
                 'class' => 'RjDataBundle:Property',
                 'error_bubbling' => true,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('p')
+                'query_builder' => function (EntityRepository $repository) {
+                    return $repository->createQueryBuilder('p')
                         ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
                         ->innerJoin('p.property_groups', 'g')
                         ->where('g.id = :groupId')
                         ->setParameter('groupId', $this->group->getId())
                         ->orderBy('sortField');
-                }
-            )
+                },
+            ]
         );
         $builder->add(
             'unit',
             'entity',
-            array(
-                'class'             => 'RjDataBundle:Unit',
-                'error_bubbling'    => true
-            )
+            [
+                'class' => 'RjDataBundle:Unit',
+                'error_bubbling' => true,
+                'choices' => []
+            ]
         );
         $self = $this;
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) use ($group, $self) {
-                $self->processUnit($event, $group);
+            function (FormEvent $event) use ($self) {
+                $self->processUnit($event);
             }
         );
     }
 
-    protected function processUnit(FormEvent $event, $group)
+    /**
+     * @param FormEvent $event
+     */
+    protected function processUnit(FormEvent $event)
     {
         $form = $event->getForm();
         $data = $event->getData();
         if (!isset($data['property'])) {
             return;
         }
-
         $propertyId = $data['property'];
 
-        $formOptions = array(
-            'class'             => 'RjDataBundle:Unit',
-            'error_bubbling'    => true,
-            'query_builder'     => function (EntityRepository $er) use ($group, $propertyId) {
-
-                    $query = $er->createQueryBuilder('u');
-                    $query->where('u.property = :propertyId');
-                    $query->andWhere('u.group = :groupId');
-                    $query->setParameter('propertyId', $propertyId);
-                    $query->setParameter('groupId', $group->getId());
-
-                    return $query;
-            },
+        $form->add(
+            'unit',
+            'entity',
+            [
+                'class' => 'RjDataBundle:Unit',
+                'error_bubbling' => true,
+                'query_builder' => function (EntityRepository $repository) use ($propertyId) {
+                    return $repository->createQueryBuilder('u')
+                        ->where('u.property = :propertyId')
+                        ->andWhere('u.group = :groupId')
+                        ->setParameter('propertyId', $propertyId)
+                        ->setParameter('groupId', $this->group->getId());
+                },
+            ]
         );
-
-        $form->add('unit', 'entity', $formOptions);
     }
 
     /**
@@ -151,10 +153,10 @@ class ContractType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
-                'validation_groups' => array('tenant_invite'),
-            )
+                'validation_groups' => ['tenant_invite'],
+            ]
         );
     }
 

@@ -198,6 +198,7 @@ function Contracts() {
         var position = $('#edit-' + data.id).position();
         DetailsViewModel.reviewContract(data);
     };
+
     this.addTenant = function () {
         this.getUnits($(idProperty).linkselect('val'));
         $('#tenant-add-property-popup').dialog('open');
@@ -226,16 +227,23 @@ function Contracts() {
         });
     };
 
-    this.getUnits = function(propertyId) {
-        $(idUnit).linkselect('destroy');
-        $(idUnit).html(' ');
-        $(idUnit).linkselect();
+    /**
+     * Get all units for current group + property
+     * and
+     * create linkselect for widget "Unit"
+     *
+     * @param propertyId - integer
+     */
+    this.getUnits = function (propertyId) {
+        $('#unitLoading').show();
+
         $.ajax({
             url: Routing.generate('landlord_units_list'),
             type: 'POST',
             dataType: 'json',
             data: {'property_id': propertyId},
             success: function (response) {
+                $('#unitLoading').hide();
 
                 if (response.units.length == 0 || response.isSingle == true) {
                     $(idUnit).linkselect('destroy');
@@ -247,11 +255,10 @@ function Contracts() {
                 }
 
                 var html = '';
-                $.each(response.units, function (index, value) {
+                $.each(response.units, function () {
                     var id = $(this).get(0).id;
                     var name = $(this).get(0).name;
-                    var option = '<option value="' + id + '">' + name + '</option>';
-                    html += option;
+                    html += '<option value="' + id + '">' + name + '</option>';
                 });
 
                 $(idUnit).linkselect('destroy');
@@ -259,10 +266,6 @@ function Contracts() {
                 $(idUnit).linkselect();
             }
         });
-    };
-
-    this.filterAddress = function (data) {
-        //console.log(data.id);
     };
 }
 

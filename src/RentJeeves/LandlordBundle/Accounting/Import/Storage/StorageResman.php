@@ -94,7 +94,7 @@ class StorageResman extends ExternalApiStorage
                 $today = new \DateTime();
                 $finishAtObject = \DateTime::createFromFormat('Y-m-d', $finishAt);
 
-                if ($today > $finishAtObject) {
+                if ($today > $finishAtObject && empty($moveOut)) {
                     $monthToMonth = 'Y';
                 } else {
                     $monthToMonth = 'N';

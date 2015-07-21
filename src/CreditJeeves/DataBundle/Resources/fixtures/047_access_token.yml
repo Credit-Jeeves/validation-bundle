@@ -8,3 +8,7 @@ fixtures:
     user: partner_user_1
     client: client_3
     token: test_partneranna_lee@example.com
+  access_token_3:
+    user: Landlord_1
+    client: client_2
+    token: test_landlord
