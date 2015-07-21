@@ -24,7 +24,6 @@ use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
@@ -948,7 +947,6 @@ class AjaxController extends Controller
                     $order = new OrderSubmerchant();
                     $order->setUser($tenant);
                     $order->setSum($amount);
-                    $order->setStatus(OrderStatus::COMPLETE);
                     $order->setPaymentType(OrderPaymentType::CASH);
                     $order->setCreatedAt($createdAt);
                     $em->persist($order);
@@ -961,11 +959,10 @@ class AjaxController extends Controller
                     $operation->setPaidFor($paidFor);
                     $operation->setCreatedAt($createdAt);
                     $em->persist($operation);
-                    $contract->shiftPaidTo($amount);
-                    $contract->setBalance($contract->getBalance() - $amount);
-                    if ($contract->getSettings()->getIsIntegrated()) {
-                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
-                    }
+
+                    $this->get('payment_processor.order_status_manager')->setNew($order);
+
+                    $this->get('payment_processor.order_status_manager')->setComplete($order);
                 } else {
                     return new JsonResponse(
                         array(

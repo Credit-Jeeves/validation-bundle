@@ -5,7 +5,6 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderFactory;
@@ -68,7 +67,6 @@ class OrderCreationManager
         $groupSettings = $contract->getGroup()->getGroupSettings();
         $order->setSum($payment->getAmount() + $payment->getOther());
         $order->setUser($paymentAccount->getUser());
-        $order->setStatus(OrderStatus::NEWONE);
         $order->setPaymentProcessor($payment->getContract()->getGroup()->getGroupSettings()->getPaymentProcessor());
 
         $this->createRentOperations($payment, $order);
@@ -100,9 +98,10 @@ class OrderCreationManager
         $order = new OrderSubmerchant();
         $order->setUser($paymentAccount->getUser());
         $order->setSum($this->creditTrackAmount);
-        $order->setStatus(OrderStatus::NEWONE);
         /** Not implement for ACI, PaymentProcess should be gotten from Group */
         $order->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+
+        $this->createReportOperation($order);
 
         /** @var GroupSettings $groupSettings */
         $groupSettings = $this->em->getRepository('DataBundle:Group')
@@ -252,5 +251,20 @@ class OrderCreationManager
             $operation->setAmount($amount);
             $operation->setPaidFor($payment->getPaidFor());
         }
+    }
+
+    /**
+     * Creates a new REPORT type operation for a given order.
+     *
+     * @param  OrderSubmerchant $order
+     * @return Operation
+     */
+    protected function createReportOperation(OrderSubmerchant $order)
+    {
+        $operation = new Operation();
+        $operation->setPaidFor(new DateTime());
+        $operation->setAmount($order->getSum());
+        $operation->setType(OperationType::REPORT);
+        $operation->setOrder($order);
     }
 }

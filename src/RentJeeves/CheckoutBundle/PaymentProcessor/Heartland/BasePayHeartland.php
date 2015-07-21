@@ -3,7 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum2\Heartland\Model\PaymentDetails;
@@ -90,7 +90,7 @@ abstract class BasePayHeartland
 
         $this->em->persist($transaction);
 
-        if ($isSuccessful && OrderType::HEARTLAND_CARD === $order->getType()) {
+        if ($isSuccessful && OrderPaymentType::CARD === $order->getPaymentType()) {
             $batchDate = clone $transaction->getCreatedAt();
             $transaction->setBatchDate($batchDate);
             $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $batchDate));

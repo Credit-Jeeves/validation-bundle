@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\DateTime;
@@ -59,6 +59,10 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         if ($this->updateStatus($order, OrderStatus::COMPLETE)) {
             $this->updateBalanceContract($order);
             $this->movePaidDates($order);
+
+            if (OrderPaymentType::CASH === $order->getPaymentType()) {
+                return;
+            }
             /** @var Operation $operation */
             $operation = $order->getOperations()->last();
 
@@ -116,7 +120,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     public function setPending(Order $order)
     {
-        if (OrderType::HEARTLAND_CARD === $order->getType()
+        if (OrderPaymentType::CARD === $order->getPaymentType()
             && PaymentProcessor::HEARTLAND === $order->getPaymentProcessor()
         ) {
            $this->setComplete($order);
@@ -340,7 +344,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     protected function closeRecurringPayment(Order $order)
     {
-        if (OrderType::HEARTLAND_BANK != $order->getType()) {
+        if (OrderPaymentType::BANK != $order->getPaymentType()) {
             return;
         }
 
@@ -375,7 +379,8 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         if (!$operation) {
             return;
         }
-        if ($order->getType() != OrderType::CASH &&
+
+        if ($order->getPaymentType() != OrderPaymentType::CASH &&
             in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER])
         ) {
             $this->mailer->sendOrderCancelToTenant($order);

@@ -4,8 +4,8 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use Symfony\Component\Form\Form;
@@ -18,6 +18,7 @@ use Doctrine\ORM\UnitOfWork;
  * @property HandlerAbstract collectionImportModel
  * @property ModelImport isNeedSendInvite
  * @property HandlerAbstract contractProcess
+ * @property OrderStatusManagerInterface orderStatusManager
  * @method HandlerAbstract manageException
  */
 trait FormBind
@@ -159,7 +160,6 @@ trait FormBind
         $contract = $this->currentImportModel->getContract();
 
         $order = new OrderSubmerchant();
-        $order->setStatus(OrderStatus::COMPLETE);
         $order->setPaymentType(OrderPaymentType::CASH);
         $order->setUser($tenant);
         $order->setSum($operation->getAmount());
@@ -167,6 +167,10 @@ trait FormBind
         $operation->setContract($contract);
         $operation->setOrder($order);
         $order->addOperation($operation);
+
+        $this->orderStatusManager->setNew($order);
+
+        $this->orderStatusManager->setComplete($order);
 
         $this->currentImportModel->setOrder($order);
     }

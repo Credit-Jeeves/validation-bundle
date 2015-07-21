@@ -40,6 +40,12 @@ services:
         calls:
             - [setPayum, ["@payum2"]]
             - [setDefaultMerchantName, ["%rt_merchant_name%"]]
+    payment_processor.report_synchronizer:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReportSynchronizer
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @logger
+            - @payment_processor.order_status_manager
 
     payment_processor.aci.pgp_decoder:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder

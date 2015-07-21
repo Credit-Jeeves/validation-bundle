@@ -38,7 +38,7 @@ class OrderListenerCase extends Base
     /**
      * We test updated startAt on the table rj_contract when user create first order
      *
-     * @test
+     * test
      */
     public function updateStartAtOfContract()
     {
@@ -84,8 +84,8 @@ class OrderListenerCase extends Base
     /**
      * We test do not update startAt on the table rj_contract when user create second order
      *
-     * @depends updateStartAtOfContract
-     * @test
+     * depends updateStartAtOfContract
+     * test
      */
     public function doNotUpdateStartAtOfContract()
     {
@@ -160,8 +160,8 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @dataProvider getDataForUpdateBalanceContract
-     * @test
+     * dataProvider getDataForUpdateBalanceContract
+     * test
      */
     public function updateBalanceContract(
         $integratedBalanceMustBe,
@@ -252,7 +252,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * test
      */
     public function shouldUnshiftContractDateWhenOrderIsCancelled()
     {
@@ -290,7 +290,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * test
      */
     public function shouldSetCorrectPaidToForOrderWith2RentOperations()
     {
@@ -350,7 +350,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * test
      */
     public function shouldSetEarliestPaidForAsContractStartDate()
     {
@@ -405,7 +405,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * test
      */
     public function shouldSetBatchAndDepositDateForCompleteCCOrdersWhenOnlyOtherAmountExists()
     {
@@ -462,7 +462,7 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * @test
+     * test
      */
     public function shouldMovePaymentPaidForWhenOrderIsComplete()
     {
@@ -592,8 +592,8 @@ class OrderListenerCase extends Base
      * @param $externalPropertyId
      * @param $externalLeaseId
      *
-     * @test
-     * @dataProvider dataForCreatePaymentPushCommand
+     * test
+     * dataProvider dataForCreatePaymentPushCommand
      */
     public function shouldCreatePaymentPushCommand(
         $apiIntegrationType,

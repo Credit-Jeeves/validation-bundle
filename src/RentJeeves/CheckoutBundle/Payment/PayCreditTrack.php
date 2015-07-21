@@ -1,12 +1,10 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Payment;
 
-use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
 use CreditJeeves\DataBundle\Entity\User;
-use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
@@ -77,8 +75,6 @@ class PayCreditTrack
     {
         $order = $this->orderCreationManager->createCreditTrackOrder($paymentAccount);
 
-        $operation = $this->createOperation($order);
-
         $this->orderStatusManager->setNew($order);
 
         try {
@@ -97,10 +93,9 @@ class PayCreditTrack
 
         if (OrderStatus::ERROR != $order->getStatus()) {
             $report = $this->createReport($paymentAccount->getUser());
-            $operation->setReportD2c($report);
+            $order->getOperations()->last()->setReportD2c($report);
             $job = $this->scheduleReportJob($report);
 
-            $this->em->persist($operation);
             $this->em->persist($report);
             $this->em->persist($job);
         }
@@ -136,23 +131,6 @@ class PayCreditTrack
         $report->setRawData('');
 
         return $report;
-    }
-
-    /**
-     * Creates a new REPORT type operation for a given order.
-     *
-     * @param  Order     $order
-     * @return Operation
-     */
-    protected function createOperation(Order $order)
-    {
-        $operation = new Operation();
-        $operation->setPaidFor(new DateTime());
-        $operation->setAmount($order->getSum());
-        $operation->setType(OperationType::REPORT);
-        $order->addOperation($operation);
-
-        return $operation;
     }
 
     /**

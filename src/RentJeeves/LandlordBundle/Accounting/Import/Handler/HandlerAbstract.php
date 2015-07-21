@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group as GroupEntity;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
@@ -110,6 +111,12 @@ abstract class HandlerAbstract implements HandlerInterface
      * @var ContractProcess
      */
     public $contractProcess;
+
+    /**
+     * @Inject("payment_processor.order_status_manager")
+     * @var OrderStatusManagerInterface
+     */
+    public $orderStatusManager;
 
     /**
      * @Inject("monolog.logger.import")

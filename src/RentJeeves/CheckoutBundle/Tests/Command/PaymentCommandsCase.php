@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Enum\BankAccountType;
@@ -65,6 +66,14 @@ class PaymentCommandsCase extends BaseTestCase
         );
 
         return $commandTester;
+    }
+
+    /**
+     * @return OrderStatusManagerInterface
+     */
+    protected function getOrderStatusManager()
+    {
+        return $this->getContainer()->get('payment_processor.order_status_manager');
     }
 
     /**
@@ -168,8 +177,8 @@ class PaymentCommandsCase extends BaseTestCase
 
         $this->assertEquals($amount, $contract->getIntegratedBalance());
 
-        $order->setStatus(OrderStatus::COMPLETE);
-        $em->flush($order);
+        $this->getOrderStatusManager()->setComplete($order);
+
         $contract = $this->getContract($em);
         $this->assertEquals(0, $contract->getIntegratedBalance());
     }
@@ -226,8 +235,8 @@ class PaymentCommandsCase extends BaseTestCase
 
         $this->assertEquals($amount, $contract->getIntegratedBalance());
 
-        $order->setStatus(OrderStatus::COMPLETE);
-        $em->flush($order);
+        $this->getOrderStatusManager()->setComplete($order);
+
         $contract = $this->getContract($em);
         $this->assertEquals(0, $contract->getIntegratedBalance());
     }
@@ -334,11 +343,6 @@ class PaymentCommandsCase extends BaseTestCase
 
         $contract->getGroup()->getDepositAccount()->setMerchantName(564075);
 
-        /* Remove enrollment Account if it was created before */
-        if ($profileId = $this->getOldProfileId(md5($contract->getTenant()->getId()))) {
-            $this->deleteAciCollectPayProfile($profileId);
-        }
-
         /* Create Payment Accounts */
         /** @var PaymentProcessorAciCollectPay $paymentProcessor */
         $paymentProcessor = $this->getContainer()->get('payment_processor.aci_collect_pay');
@@ -426,14 +430,21 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(3, $plugin->getPreSendMessages()); // 2 for Order; 1 - Monolog Message
 
+        // Should get 2 Orders with Pending and Error statuses
+        /** @var OrderSubmerchant[] $orders */
         $orders = $em->getRepository('DataBundle:Order')->findBy(
             ['paymentProcessor' => PaymentProcessor::ACI],
-            ['status' => 'ASC']
+            ['status' => 'DESC']
         );
 
         $this->assertCount(2, $orders);
 
-        $this->assertEquals(OrderStatus::COMPLETE, $orders[0]->getStatus());
+        $this->assertEquals(
+            OrderStatus::PENDING,
+            $orders[0]->getStatus(),
+            $orders[0]->getTransactions()->first()->getMessages()
+        );
+
         $this->assertEquals(OrderStatus::ERROR, $orders[1]->getStatus());
 
         $this->assertNotEmpty($orders[0]->getTransactions()->first()->getTransactionId());
@@ -445,8 +456,6 @@ class PaymentCommandsCase extends BaseTestCase
 
         $this->assertEquals($expectedBatchId, $orders[0]->getTransactions()->first()->getBatchId());
         $this->assertEquals($expectedBatchId, $orders[1]->getTransactions()->first()->getBatchId());
-
-        $this->deleteAciCollectPayProfile($orders[0]->getContract()->getTenant()->getAciCollectPayProfileId());
     }
 
     /**
@@ -532,5 +541,20 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertTrue($request->getIsSuccessful());
 
         $this->unsetOldProfileId($profileId);
+    }
+
+    protected function tearDown()
+    {
+        /**
+         * Remove all aci profiles
+         */
+        $profiles = $this->getOldProfileIds();
+        if (is_array($profiles) && !empty($profiles)) {
+            foreach ($profiles as $profile) {
+                if ($profile) {
+                    $this->deleteAciCollectPayProfile($profile);
+                }
+            }
+        }
     }
 }

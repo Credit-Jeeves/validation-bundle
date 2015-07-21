@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Report;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectDepositReportTransaction;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectResponseReportTransaction;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectReversalReportTransaction;
@@ -15,17 +16,31 @@ use RentJeeves\TestBundle\BaseTestCase;
 class ReportSynchronizerCase extends BaseTestCase
 {
     /**
-     * @test
+     * @return OrderStatusManagerInterface
      */
-    public function shouldCreateObjectReportSynchronizer()
+    protected function getOrderStatusManager()
     {
-        new ReportSynchronizer($this->getEntityManager(), $this->getLoggerMock());
+        return $this->getContainer()->get('payment_processor.order_status_manager');
     }
 
     /**
      * @test
      */
-    public function shouldUpdateOrderAndDepositDateForDepositTransactionIfDateIsNull()
+    public function shouldCreateObjectReportSynchronizer()
+    {
+        return new ReportSynchronizer(
+            $this->getEntityManager(),
+            $this->getLoggerMock(),
+            $this->getOrderStatusManager()
+        );
+    }
+
+    /**
+     * @test
+     * @depends shouldCreateObjectReportSynchronizer
+     * @param ReportSynchronizer $synchronizer
+     */
+    public function shouldUpdateOrderAndDepositDateForDepositTransactionIfDateIsNull(ReportSynchronizer $synchronizer)
     {
         $this->load(true);
 
@@ -46,10 +61,10 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $report->addTransaction($transaction);
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $this->getLoggerMock());
         $synchronizer->synchronize($report);
 
         $this->getEntityManager()->refresh($outboundTransaction);
+        $this->getEntityManager()->refresh($outboundTransaction->getOrder());
         $this->assertEquals($date, $outboundTransaction->getDepositDate());
         $this->assertEquals(OrderStatus::COMPLETE, $outboundTransaction->getOrder()->getStatus());
     }
@@ -72,7 +87,11 @@ class ReportSynchronizerCase extends BaseTestCase
             ->method('alert')
             ->with('Deposit Outbound Transaction #1000 not found');
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
+        $synchronizer = new ReportSynchronizer(
+            $this->getEntityManager(),
+            $loggerMock,
+            $this->getOrderStatusManager()
+        );
         $synchronizer->synchronize($report);
     }
 
@@ -101,7 +120,11 @@ class ReportSynchronizerCase extends BaseTestCase
             ->method('alert')
             ->with('PayDirect Deposit Transaction #2 already has deposit date. Skipping.');
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
+        $synchronizer = new ReportSynchronizer(
+            $this->getEntityManager(),
+            $loggerMock,
+            $this->getOrderStatusManager()
+        );
         $synchronizer->synchronize($report);
     }
 
@@ -129,7 +152,11 @@ class ReportSynchronizerCase extends BaseTestCase
             ->method('alert')
             ->with('Status for Order #2 must be \'sending\', \'complete\' given');
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
+        $synchronizer = new ReportSynchronizer(
+            $this->getEntityManager(),
+            $loggerMock,
+            $this->getOrderStatusManager()
+        );
         $synchronizer->synchronize($report);
     }
 
@@ -154,14 +181,20 @@ class ReportSynchronizerCase extends BaseTestCase
             ->method('emergency')
             ->with($this->stringContains('ERRORCODE value different from the expected value.'));
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
+        $synchronizer = new ReportSynchronizer(
+            $this->getEntityManager(),
+            $loggerMock,
+            $this->getOrderStatusManager()
+        );
         $synchronizer->synchronize($report);
     }
 
     /**
      * @test
+     * @depends shouldCreateObjectReportSynchronizer
+     * @param ReportSynchronizer $synchronizer
      */
-    public function shouldUpdateTransactionForResponseTransactionIfStatusIsCorrect()
+    public function shouldUpdateTransactionForResponseTransactionIfStatusIsCorrect(ReportSynchronizer $synchronizer)
     {
         $this->load(true);
 
@@ -182,7 +215,6 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $report->addTransaction($transaction);
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $this->getLoggerMock());
         $synchronizer->synchronize($report);
 
         $this->getEntityManager()->refresh($outboundTransaction);
@@ -217,7 +249,11 @@ class ReportSynchronizerCase extends BaseTestCase
             ->method('alert')
             ->with($this->stringContains('Unexpected order #2 status (error) when transaction #1 processing'));
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $loggerMock);
+        $synchronizer = new ReportSynchronizer(
+            $this->getEntityManager(),
+            $loggerMock,
+            $this->getOrderStatusManager()
+        );
         $synchronizer->synchronize($report);
     }
 
@@ -249,11 +285,15 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $report->addTransaction($transaction);
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $this->getLoggerMock());
+        $synchronizer = new ReportSynchronizer(
+            $this->getEntityManager(),
+            $this->getLoggerMock(),
+            $this->getOrderStatusManager()
+        );
         $synchronizer->synchronize($report);
 
-        $this->getEntityManager()->refresh($outboundTransaction);
-        $this->assertEquals(OrderStatus::REFUNDING, $outboundTransaction->getOrder()->getStatus());
+        $this->getEntityManager()->refresh($order);
+        $this->assertEquals(OrderStatus::REFUNDING, $order->getStatus());
 
         $reversalOutboundTransactions = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')
             ->findBy(['type' => OutboundTransactionType::REVERSAL]);
@@ -293,11 +333,15 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $report->addTransaction($transaction);
 
-        $synchronizer = new ReportSynchronizer($this->getEntityManager(), $this->getLoggerMock());
+        $synchronizer = new ReportSynchronizer(
+            $this->getEntityManager(),
+            $this->getLoggerMock(),
+            $this->getOrderStatusManager()
+        );
         $synchronizer->synchronize($report);
 
-        $this->getEntityManager()->refresh($outboundTransaction);
-        $this->assertEquals(OrderStatus::REISSUED, $outboundTransaction->getOrder()->getStatus());
+        $this->getEntityManager()->refresh($order);
+        $this->assertEquals(OrderStatus::REISSUED, $order->getStatus());
 
         $reversalOutboundTransactions = $this->getEntityManager()->getRepository('RjDataBundle:OutboundTransaction')
             ->findBy(['type' => OutboundTransactionType::REVERSAL]);

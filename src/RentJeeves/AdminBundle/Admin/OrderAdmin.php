@@ -59,7 +59,7 @@ class OrderAdmin extends Admin
         $listMapper
             ->addIdentifier('id', null, ['route' => ['name' => 'show']])
             ->add('created_at', 'date', ['format' => 'Y-m-d'])
-            ->add('type')
+            ->add('paymentType')
             ->add('status', 'string', ['template' => 'AdminBundle:CRUD:payments_status_choice.html.twig'])
             ->add('heartland_transaction_ids', 'string', ['label' => 'Transaction Ids'])
             ->add('sum', 'money')
@@ -78,7 +78,7 @@ class OrderAdmin extends Admin
     {
         $datagridMapper
             ->add('user.email')
-            ->add('type')
+            ->add('paymentType')
             ->add('sum')
             ->add(
                 'transaction_id',
@@ -198,7 +198,7 @@ class OrderAdmin extends Admin
         $formMapper
             ->add('user', null, array('route' => array('name' => 'show')))
             ->add('status')
-            ->add('type')
+            ->add('paymentType')
             ->add('sum')
             ->add('created_at')
             ->add('updated_at')

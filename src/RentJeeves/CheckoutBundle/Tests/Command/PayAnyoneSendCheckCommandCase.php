@@ -6,8 +6,8 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\CheckoutBundle\Command\PayAnyoneSendCheckCommand;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -67,7 +67,7 @@ class PayAnyoneSendCheckCommandCase extends BaseTestCase
         $order = new OrderPayDirect();
         $order->setUser($contract->getTenant());
         $order->setStatus(OrderStatus::SENDING);
-        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(600);
         $order->setPaymentProcessor(PaymentProcessor::ACI);
         $order->setDescriptor('Test Check');
@@ -102,7 +102,7 @@ class PayAnyoneSendCheckCommandCase extends BaseTestCase
         $order = new OrderSubmerchant();
 
         $order->setStatus(OrderStatus::SENDING);
-        $order->setType(OrderType::CASH);
+        $order->setPaymentType(OrderPaymentType::CASH);
         $order->setUser($contract->getTenant());
         $order->setSum(600);
         $order->setPaymentProcessor(PaymentProcessor::ACI);
@@ -173,7 +173,7 @@ class PayAnyoneSendCheckCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldDoNotChangeStatusIfSuccess()
+    public function shouldNotChangeOrderStatusIfSendingCheckIsSuccessful()
     {
         $order = $this->preparePayDirectOrder();
 

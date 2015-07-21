@@ -16,15 +16,6 @@ services:
         arguments:
             - "%payment_card_fee%"
             - "%payment_bank_fee%"
-#    data.event_listener.order:
-#        class: "%data.event_listener.order.class%"
-#        tags:
-#            - { name: doctrine.event_listener, event: prePersist, method: prePersist }
-#            - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
-#            - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
-#        arguments:
-#            - "@service_container"
-#            - "@logger"
     data.event_listener.import_summary:
         class: "%data.event_listener.import_summary.class%"
         tags:
