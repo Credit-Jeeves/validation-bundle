@@ -161,7 +161,7 @@ trait Property
         }
         $this->logger->debug(
             sprintf(
-                'Property % by external property id: "%s" within holding %s',
+                'Property %s by external property id: "%s" within holding %s',
                 $foundOrNot,
                 $externalPropertyId,
                 $holding
