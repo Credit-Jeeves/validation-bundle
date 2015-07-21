@@ -8,10 +8,25 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
+use RentJeeves\TestBundle\Mocks\CommonSystemMocks;
+use Doctrine\ORM\NonUniqueResultException;
 
 class HandlerAbstractCase extends BaseTestCase
 {
     use WriteAttributeExtensionTrait;
+
+    protected $systemsMocks;
+    protected $exceptionCatcherMock;
+    protected $loggerMock;
+    protected $externalPropertyId;
+
+    protected function setUp()
+    {
+        $this->systemsMocks = new CommonSystemMocks();
+        $this->exceptionCatcherMock = $this->systemsMocks->getExceptionCatcherMock();
+        $this->loggerMock = $this->systemsMocks->getLoggerMock();
+        $this->externalPropertyId = PaymentClientCase::PROPERTY_ID;
+    }
 
     /**
      * @test
@@ -121,15 +136,77 @@ class HandlerAbstractCase extends BaseTestCase
         /** @var Group $groupModel */
         $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $this->assertNotEmpty($groupModel);
-        $externalPropertyId = PaymentClientCase::PROPERTY_ID;
-        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $externalPropertyId);
+        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $this->externalPropertyId);
         $this->assertInstanceOf('RentJeeves\DataBundle\Entity\Property', $property);
         $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, null);
-        $this->assertFalse($property);
+        $this->assertNull($property);
         /** @var Group $groupModel */
         $groupModel = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Rent Group');
         $this->assertNotEmpty($groupModel);
-        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $externalPropertyId);
-        $this->assertFalse($property);
+        $property = $getPropertyByExternalPropertyId->invoke($handler, $groupModel, $this->externalPropertyId);
+        $this->assertNull($property);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotReturnPropertyIfDuplicateExternalIdsFound()
+    {
+        $handler = $this->getHandlerMock();
+        $handlerTestReflection = new \ReflectionClass($handler);
+
+        $this->writeAttribute($handler, 'storage', $this->getStorageMock(true));
+        $this->writeAttribute($handler, 'logger', $this->loggerMock);
+
+        $getPropertyByExternalPropertyId = $handlerTestReflection->getMethod('getPropertyByExternalPropertyId');
+        $getPropertyByExternalPropertyId->setAccessible(true);
+
+        $property = $getPropertyByExternalPropertyId->invoke(
+            $handler,
+            $this->systemsMocks->getGroupMock(),
+            $this->externalPropertyId
+        );
+
+        $this->assertNull($property, "We should get null if there is a duplicate external ID for property");
+
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\LandlordBundle\Tests\Unit\Import\Handler\HandlerTest
+     */
+    public function getHandlerMock()
+    {
+        $mockObj = $this->getMock(
+            '\RentJeeves\LandlordBundle\Tests\Unit\Import\Handler\HandlerTest',
+            ['findPropertyByExternalId'],
+            [],
+            '',
+            false
+        );
+        $mockObj->expects($this->any())
+            ->method('findPropertyByExternalId')
+            ->will($this->throwException(new NonUniqueResultException));
+
+        return $mockObj;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\LandlordBundle\Tests\Unit\Import\Handler\HandlerTest
+     */
+    public function getStorageMock($isMultiProperty)
+    {
+        $mockObj = $this->getMock(
+            '\RentJeeves\LandlordBundle\Tests\Unit\Import\Handler\HandlerTest',
+            ['isMultipleProperty'],
+            [],
+            '',
+            false
+        );
+
+        $mockObj->expects($this->once())
+            ->method('isMultipleProperty')
+            ->withAnyParameters($isMultiProperty);
+
+        return $mockObj;
     }
 }
