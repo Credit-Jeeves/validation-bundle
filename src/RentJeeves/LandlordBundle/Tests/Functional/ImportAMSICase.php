@@ -13,11 +13,6 @@ class ImportAMSICase extends ImportBaseAbstract
      */
     public function shouldImportAMSI()
     {
-        $this->markTestSkipped(
-            'AMSI Return: ' .
-            'An error occured while creating webservice objects to start the process. ' .
-            'Please verify portfolio name. There is no row at position 0.'
-        );
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $em = $this->getEntityManager();

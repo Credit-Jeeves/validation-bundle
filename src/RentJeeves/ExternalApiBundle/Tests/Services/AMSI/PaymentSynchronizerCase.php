@@ -24,18 +24,13 @@ class PaymentSynchronizerCase extends BaseTestCase
      */
     public function shouldSendPaymentToAmsiAndReturnTrue()
     {
-        $this->markTestSkipped(
-            'AMSI Return: ' .
-            'An error occured while creating webservice objects to start the process. ' .
-            'Please verify portfolio name. There is no row at position 0.'
-        );
         $this->load(true);
 
         $transaction = $this->createTransaction(
             ApiIntegrationType::AMSI,
-            'test',
+            '4492',
             '001',
-            20,
+            13,
             '001|01|101'
         );
 
