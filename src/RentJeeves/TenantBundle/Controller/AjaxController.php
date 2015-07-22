@@ -135,23 +135,23 @@ class AjaxController extends Controller
 
     /**
      * @Route(
-     *      "/tenant_payments/{page}/{contractId}",
+     *      "/tenant_payments/{page}/{contractId}/{limit}",
      *      name="tenant_payments",
-     *      defaults={"_format"="json"},
+     *      defaults={"_format":"json"},
      *      requirements={"_format"="json"},
      *      options={"expose"=true}
      * )
      * @Method({"GET"})
      */
-    public function paymentsAction($page = 1, $contractId = null)
+    public function paymentsAction($page = 1, $contractId = null, $limit = self::TENANT_PAYMENTS_LIMIT)
     {
         $repo = $this->getDoctrine()->getManager()->getRepository('DataBundle:Order');
 
         $this->get('soft.deleteable.control')->disable();
-        $orders = $repo->getTenantPayments($this->getUser(), $page, $contractId, self::TENANT_PAYMENTS_LIMIT);
+        $orders = $repo->getTenantPayments($this->getUser(), $page, $contractId, $limit);
 
         $totalOrdersAmount = $repo->getTenantPaymentsAmount($this->getUser(), $contractId);
-        $pages = ceil($totalOrdersAmount / self::TENANT_PAYMENTS_LIMIT);
+        $pages = ceil($totalOrdersAmount / $limit);
 
         // can't use jms_serializer since order already has handlerCallback used in another serialization
         array_walk(
