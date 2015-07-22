@@ -32,7 +32,9 @@ class Version20150709123338 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE cj_order
                 CHANGE type payment_type ENUM('bank','card','cash')
-                    COMMENT '(DC2Type:OrderPaymentType)' DEFAULT NULL"
+                    COMMENT '(DC2Type:OrderPaymentType)' DEFAULT NULL,
+                ADD order_type ENUM('submerchant', 'pay_direct')
+                    COMMENT '(DC2Type:OrderAlgorithmType)' DEFAULT 'submerchant' NOT NULL"
         );
     }
 
@@ -46,7 +48,8 @@ class Version20150709123338 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE cj_order
                 CHANGE payment_type type ENUM('bank','card','cash')
-                    COMMENT '(DC2Type:OrderPaymentType)' DEFAULT NULL"
+                    COMMENT '(DC2Type:OrderPaymentType)' DEFAULT NULL,
+                DROP order_type"
         );
     }
 }
