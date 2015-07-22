@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -449,12 +449,16 @@ class IframeCase extends BaseTestCase
         $operation->setPaidFor($contract->getPaidTo());
         $order->addOperation($operation);
         $order->setUser($user);
-        $order->setStatus(OrderStatus::NEWONE);
-        $em->persist($order);
+        $order->setPaymentType(OrderPaymentType::CASH);
+        $order->setSum(100);
+
+        $this->getContainer()->get('payment_processor.order_status_manager')->setNew($order);
+
+        $this->getEntityManager()->refresh($partnerCode);
+
         $date = new DateTime();
         $this->assertEquals($date->format('Y-m-d'), $partnerCode->getFirstPaymentDate()->format('Y-m-d'));
         $this->assertFalse($partnerCode->getIsCharged());
-        $em->detach($order);
     }
 
     protected function checkResendInvite()

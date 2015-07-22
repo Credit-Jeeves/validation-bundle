@@ -188,7 +188,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         if ($operation) {
             $user = $order->getUser();
 
-            if ($user->getOrders()->count() == 0 && $user->getPartnerCode()) {
+            if ($user->getOrders()->count() == 1 && $user->getPartnerCode()) {
                 $user->getPartnerCode()->setFirstPaymentDate(new \DateTime());
             }
 
