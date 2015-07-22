@@ -46,4 +46,26 @@ class CommonSystemMocks extends \PHPUnit_Framework_TestCase
     {
         return $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false);
     }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\Holding
+     */
+    public function getHoldingMock()
+    {
+        $mockObj = $this->getMock('\CreditJeeves\DataBundle\Entity\Holding', [], [], '', false);
+
+        return $mockObj;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\Group
+     */
+    public function getGroupMock()
+    {
+        $mockObj = $this->getMock('\CreditJeeves\DataBundle\Entity\Group', ['getHolding'], [], '', false);
+        $mockObj->method('getHolding')
+            ->will($this->returnValue($this->getHoldingMock()));
+
+        return $mockObj;
+    }
 }

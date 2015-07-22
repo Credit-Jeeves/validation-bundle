@@ -303,4 +303,25 @@ EOT;
 
         return $query->getSingleScalarResult();
     }
+
+    /**
+     * @param Holding $holding
+     *
+     * @return Property
+     *
+     * @throws NonUniqueResultException
+     */
+    public function getPropertiesByExternalId(Holding $holding, $externalPropertyId)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->innerJoin('p.propertyMapping', 'pm');
+
+        $query->where('pm.holding = :holdingId');
+        $query->andWhere('pm.externalPropertyId = :externalPropertyId');
+
+        $query->setParameter('holdingId', $holding->getId());
+        $query->setParameter('externalPropertyId', $externalPropertyId);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

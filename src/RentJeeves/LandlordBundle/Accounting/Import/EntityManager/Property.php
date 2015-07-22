@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -10,6 +11,7 @@ use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportHandlerException;
 use RentJeeves\LandlordBundle\Model\Import;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @property Import currentImportModel
@@ -106,35 +108,78 @@ trait Property
     }
 
     /**
+     *
+     * Get a property by it's external property ID.
+     *
+     * NOTE: if there is more than one property with the same unique ID we cannot use it
+     *       because we are not certain which one to use.  In this case just return null.
+     *
      * @param Group $group
      * @param string $externalPropertyId
-     * @return bool|EntityProperty
+     * @return EntityProperty|null
      */
     protected function getPropertyByExternalPropertyId(Group $group, $externalPropertyId)
     {
         if ($this->storage->isMultipleProperty()) {
-            return false;
+            $this->logger->debug(
+                sprintf(
+                    'Multi-property import -- not looking up property by external property id: %s',
+                    $externalPropertyId
+                )
+            );
+            return null;
         }
 
+        $holding = $group->getHolding();
         $this->logger->debug(
             sprintf(
-                'Looking up property by external property id: %s',
-                $externalPropertyId
+                'Looking up property by external property id: "%s" within holding %s',
+                $externalPropertyId,
+                $holding
             )
         );
-        /** @var PropertyMapping $propertyMapping */
-        $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
-            [
-                'holding'            => $group->getHolding(),
-                'externalPropertyId' => $externalPropertyId
-            ]
-        );
 
-        if ($propertyMapping) {
-            return $propertyMapping->getProperty();
+        /** @var Property $property */
+        $property = null;
+
+        try {
+            $property = $this->findPropertyByExternalId($holding, $externalPropertyId);
+        } catch (NonUniqueResultException $e) {
+            $this->logger->warning(
+                sprintf(
+                    'External property ID:"%s" is not unique within holding %s -- cannot lookup by property id',
+                    $externalPropertyId,
+                    $holding->getId()
+                )
+            );
         }
 
-        return false;
+        if ($property === null) {
+            $foundOrNot = "NOT found";
+        } else {
+            $foundOrNot = "IS found";
+        }
+        $this->logger->debug(
+            sprintf(
+                'Property %s by external property id: "%s" within holding %s',
+                $foundOrNot,
+                $externalPropertyId,
+                $holding
+            )
+        );
+
+        return $property;
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $externalId
+     * @return EntityProperty|null
+     * @throws NonUniqueResultException
+     */
+    public function findPropertyByExternalId(Holding $holding, $externalId)
+    {
+        return $this->em->getRepository('RjDataBundle:Property')->getPropertiesByExternalId($holding, $externalId);
     }
 
     /**
