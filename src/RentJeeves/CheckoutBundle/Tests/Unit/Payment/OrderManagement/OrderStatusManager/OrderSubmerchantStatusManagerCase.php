@@ -57,12 +57,13 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
      */
     protected function getStatusManager()
     {
-        $this->getContainer()->get('payment_processor.order_status_manager');
+        return $this->getContainer()->get('payment_processor.order_status_manager');
     }
 
     /**
      * @test
-     * expectedException \LogicException
+     * @expectedException \LogicException
+     * @expectedExceptionMessage It's not allowed to set "reissued" status to order submerchant type
      */
     public function setReissued()
     {
