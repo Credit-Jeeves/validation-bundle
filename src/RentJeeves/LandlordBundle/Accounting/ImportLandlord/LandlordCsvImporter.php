@@ -113,7 +113,6 @@ class LandlordCsvImporter implements LoggerAwareInterface
     protected function importRow(array $row, Partner $partner)
     {
         try {
-            $this->em->beginTransaction();
             $group = $this->groupMapper->map($row);
             $landlord = $this->landlordMapper->map($row, $group);
             $unit = $this->unitMapper->map($row, $group);
