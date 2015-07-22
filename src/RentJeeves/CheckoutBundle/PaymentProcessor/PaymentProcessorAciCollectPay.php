@@ -138,7 +138,7 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     ) {
         PaymentProcessorInvalidArgumentException::assertPaymentGroundType($paymentType);
 
-        if ($paymentType === PaymentGroundType::RENT && !$this->isAllowedToExecuteOrder($order, $accountEntity)) {
+        if (!$this->isAllowedToExecuteOrder($order, $accountEntity)) {
             throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
                 PaymentProcessor::ACI
             );
@@ -168,8 +168,7 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
      */
     protected function isAllowedToExecuteOrder(Order $order, PaymentAccountInterface $paymentAccount)
     {
-        if ($paymentAccount instanceof PaymentAccount &&
-            $order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
+        if ($order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
             $order->getPaymentProcessor() == PaymentProcessor::ACI
         ) {
             return true;

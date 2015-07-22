@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -10,6 +11,7 @@ use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
@@ -69,8 +71,8 @@ class PaymentReportCase extends BaseTestCase
         $result = $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(9, $count); // +2 for Monolog Message
-        $this->assertContains('Amount of synchronized payments: 9', $result);
+        $this->assertCount(8, $count); // +2 for Monolog Message
+        $this->assertContains('Amount of synchronized payments: 10', $result);
     }
 
     /**
@@ -84,7 +86,7 @@ class PaymentReportCase extends BaseTestCase
         $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(9, $count); // +2 for Monolog Message
+        $this->assertCount(8, $count); // +2 for Monolog Message
 
         // get all report files back to dir
         $this->tearDown();
@@ -119,6 +121,23 @@ class PaymentReportCase extends BaseTestCase
     }
 
     /**
+     * @return array
+     */
+    public function provideReversal()
+    {
+        return [
+            ['369369', OrderStatus::COMPLETE, OrderStatus::RETURNED],
+            ['778899', OrderStatus::COMPLETE, OrderStatus::REFUNDED],
+            ['123123', OrderStatus::COMPLETE, OrderStatus::REFUNDING],
+            ['456456', OrderStatus::COMPLETE, OrderStatus::CANCELLED],
+        ];
+    }
+
+    /**
+     * @param int $transactionId
+     * @param string $firstStatus one of OrderStatus
+     * @param string $secondStatus one of OrderStatus
+     *
      * @test
      * @dataProvider provideReversal
      */
@@ -126,24 +145,16 @@ class PaymentReportCase extends BaseTestCase
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
+        /** @var Transaction $transaction */
         $transaction = $em->getRepository('RjDataBundle:Transaction')->findOneBy(['transactionId' => $transactionId]);
         $order = $transaction->getOrder();
 
         $this->assertEquals($firstStatus, $order->getStatus());
 
         $this->executeCommand();
-
+        /** @var  Order $updatedOrder */
         $this->assertNotNull($updatedOrder = $em->getRepository('DataBundle:Order')->find($order->getId()));
         $this->assertEquals($secondStatus, $updatedOrder->getStatus());
-    }
-
-    public function provideReversal()
-    {
-        return array(
-            array('369369', 'complete', 'returned'),
-            array('123123', 'complete', 'refunded'),
-            array('456456', 'complete', 'cancelled'),
-        );
     }
 
     /**

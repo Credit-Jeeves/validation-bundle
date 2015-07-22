@@ -4,7 +4,6 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Payum2\Heartland\Soap\Base\BillTransaction;
 use Payum2\Heartland\Soap\Base\CardProcessingMethod;
 use Payum2\Heartland\Soap\Base\MakePaymentRequest;
@@ -44,14 +43,6 @@ class ChargeHeartland extends BasePayHeartland
         $paymentDetails->setRequest($paymentRequest);
 
         return $paymentDetails;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getOrderStatus(OrderSubmerchant $order, $isSuccessful)
-    {
-        return $isSuccessful ? OrderStatus::COMPLETE : OrderStatus::ERROR;
     }
 
     /**

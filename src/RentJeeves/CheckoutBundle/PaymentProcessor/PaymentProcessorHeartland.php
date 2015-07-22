@@ -96,11 +96,13 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     ) {
         PaymentProcessorInvalidArgumentException::assertPaymentGroundType($paymentType);
 
-        if (PaymentGroundType::CHARGE !== $paymentType && !$this->isAllowedToExecuteOrder($order, $accountEntity)) {
+        if (!$this->isAllowedToExecuteOrder($order, $accountEntity)) {
             throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
                 PaymentProcessor::HEARTLAND
             );
-        } elseif (PaymentGroundType::CHARGE === $paymentType) {
+        }
+
+        if (PaymentGroundType::CHARGE === $paymentType) {
             return $this->chargeManager->executePayment($order, $accountEntity);
         }
 
@@ -116,13 +118,13 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     }
 
     /**
-     * @param  OrderSubmerchant $order
+     * @param  Order $order
      * @param  PaymentAccountInterface $paymentAccount
      * @return bool
      */
-    protected function isAllowedToExecuteOrder(OrderSubmerchant $order, PaymentAccountInterface $paymentAccount)
+    protected function isAllowedToExecuteOrder(Order $order, PaymentAccountInterface $paymentAccount)
     {
-        if ($paymentAccount instanceof PaymentAccount &&
+        if ($order instanceof OrderSubmerchant &&
             $order->getPaymentProcessor() === PaymentProcessor::HEARTLAND &&
             $order->getPaymentProcessor() === $paymentAccount->getPaymentProcessor()
         ) {

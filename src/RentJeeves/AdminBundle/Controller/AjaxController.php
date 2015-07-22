@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -212,7 +213,7 @@ class AjaxController extends Controller
 
         try {
             /** @var Transaction $result */
-            $result = $this->get('payment_terminal')->pay($group, $amount, $id4Field);
+            $result = $this->get('payment.terminal')->pay($group, $amount, $id4Field);
         } catch (Exception $e) {
             return new JsonResponse(array('message' => 'Payment failed: ' . $e->getMessage()), 200);
         }
@@ -245,9 +246,24 @@ class AjaxController extends Controller
             throw $this->createNotFoundException("Order status '{$status}' not found");
         }
 
-        $order->setStatus($status);
-
-        $em->flush($order);
+        switch ($status) {
+            case OrderStatus::CANCELLED:
+                $this->getOrderStatusManager()->setCancelled($order);
+                break;
+            case OrderStatus::PENDING:
+                $this->getOrderStatusManager()->setPending($order);
+                break;
+            case OrderStatus::REFUNDED:
+            case OrderStatus::REFUNDING:
+                $this->getOrderStatusManager()->setRefunded($order);
+                break;
+            case OrderStatus::REISSUED:
+                $this->getOrderStatusManager()->setReissued($order);
+                break;
+            case OrderStatus::RETURNED:
+                $this->getOrderStatusManager()->setReturned($order);
+                break;
+        }
 
         return new JsonResponse(
             array(
@@ -345,5 +361,13 @@ class AjaxController extends Controller
             $properties,
             array("AdminProperty")
         );
+    }
+
+    /**
+     * @return OrderStatusManagerInterface
+     */
+    protected function getOrderStatusManager()
+    {
+        return $this->get('payment_processor.order_status_manager');
     }
 }

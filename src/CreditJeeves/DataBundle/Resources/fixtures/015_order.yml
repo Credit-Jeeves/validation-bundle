@@ -3,4 +3,5 @@ fixtures:
   cjOrder_1:
     sum: 9
     user: cjApplicant_5
+    paymentType: cash
     status: complete

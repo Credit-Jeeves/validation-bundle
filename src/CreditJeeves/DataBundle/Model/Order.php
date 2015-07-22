@@ -61,21 +61,19 @@ abstract class Order
     /**
      * @ORM\Column(
      *     type="OrderStatus",
-     *     options={
-     *         "default"="new"
-     *     }
+     *     nullable=false
      * )
      */
-    protected $status = OrderStatus::NEWONE;
+    protected $status;
 
     /**
      * @ORM\Column(
      *     name="payment_type",
      *     type="OrderPaymentType",
-     *     nullable=true
+     *     nullable=false
      * )
      */
-    protected $paymentType = OrderPaymentType::CASH;
+    protected $paymentType;
 
     /**
      * @ORM\Column(

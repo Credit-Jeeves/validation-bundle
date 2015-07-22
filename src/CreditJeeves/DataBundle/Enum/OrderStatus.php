@@ -28,7 +28,7 @@ class OrderStatus extends Enum
     public static function getManualAvailableToSet($current)
     {
         $restrictedStatuses = array_diff(
-            [OrderStatus::NEWONE, OrderStatus::COMPLETE, OrderStatus::ERROR],
+            [OrderStatus::NEWONE, OrderStatus::COMPLETE, OrderStatus::ERROR, OrderStatus::SENDING],
             [$current]
         );
 

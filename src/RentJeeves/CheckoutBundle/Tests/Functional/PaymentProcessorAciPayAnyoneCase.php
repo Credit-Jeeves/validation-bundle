@@ -3,7 +3,6 @@
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -27,7 +26,7 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
 
         $order = new OrderPayDirect();
         $order->setUser($contract->getTenant());
-        $order->setStatus(OrderStatus::PENDING);
+        $order->setStatus(OrderStatus::SENDING);
         $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(600);
         $order->setPaymentProcessor(PaymentProcessor::ACI);
@@ -59,7 +58,7 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
 
         $order = $this->prepareOrder();
 
-        $orderStatus = $this->getContainer()->get('payment_processor.aci_pay_anyone')->executeOrder($order);
+        $result = $this->getContainer()->get('payment_processor.aci_pay_anyone')->executeOrder($order);
 
         $this->getEntityManager()->refresh($order);
 
@@ -71,15 +70,9 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
             'Order execution failed: ' . $order->getDepositOutboundTransaction()->getMessage()
         );
 
-        $this->assertEquals(
-            OrderStatus::SENDING,
-            $order->getStatus(),
-            sprintf('Invalid status order "%s" instead "%s"', $order->getStatus(), OrderStatus::SENDING)
-        );
-
-        $this->assertEquals(
-            OrderStatus::SENDING,
-            $orderStatus
+        $this->assertTrue(
+            $result,
+            'Order execution failed: ' . $order->getDepositOutboundTransaction()->getMessage()
         );
 
         return $order->getId();
@@ -110,12 +103,6 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
                 $order->getDepositOutboundTransaction()->getStatus(),
                 OutboundTransactionStatus::CANCELLED
             )
-        );
-
-        $this->assertEquals(
-            OrderStatus::ERROR,
-            $order->getStatus(),
-            sprintf('Invalid status order "%s" instead "%s"', $order->getStatus(), OrderStatus::ERROR)
         );
     }
 }

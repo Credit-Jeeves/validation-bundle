@@ -8,11 +8,10 @@ interface PayDirectProcessorInterface
 {
     /**
      * Executes PayDirect order.
-     * Returns transaction id.
      *
      * @param OrderPayDirect $order
      *
-     * @return string Order status
+     * @return bool
      */
     public function executeOrder(OrderPayDirect $order);
 

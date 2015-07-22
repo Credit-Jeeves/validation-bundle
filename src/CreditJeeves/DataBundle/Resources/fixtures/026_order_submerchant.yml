@@ -43,12 +43,12 @@ fixtures:
     created_at: '-30 days'
     updated_at: '-30 days'
   rjOrder_3_returned_1:
-      user: Tenant_1
-      status: returned
-      paymentType: bank
-      sum: 800
-      created_at: '-30 days'
-      updated_at: '-30 days'
+    user: Tenant_1
+    status: returned
+    paymentType: bank
+    sum: 800
+    created_at: '-30 days'
+    updated_at: '-30 days'
   rjOrder_4:
     user: Tenant_1
     status: complete

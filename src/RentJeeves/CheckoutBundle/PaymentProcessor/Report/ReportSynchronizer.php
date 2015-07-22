@@ -5,35 +5,44 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Entity\Transaction as HeartlandTransaction;
 use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
-/**
- * @DI\Service("payment_processor.report_synchronizer")
- */
 class ReportSynchronizer
 {
-    /** @var EntityManager */
+    /**
+     * @var  OrderStatusManagerInterface
+     */
+    protected $orderStatusManager;
+
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
-    /** @var Logger */
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
     /**
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "logger" = @DI\Inject("logger")
-     * })
+     * @param EntityManager $em
+     * @param LoggerInterface $logger
+     * @param OrderStatusManagerInterface $orderStatusManager
      */
-    public function __construct(EntityManager $em, Logger $logger)
-    {
+    public function __construct(
+        EntityManager $em,
+        LoggerInterface $logger,
+        OrderStatusManagerInterface $orderStatusManager
+    ) {
         $this->em = $em;
         $this->logger = $logger;
+        $this->orderStatusManager = $orderStatusManager;
     }
 
     /**
@@ -140,7 +149,7 @@ class ReportSynchronizer
         }
 
         if ($reportTransaction->getAmount() > 0 && $reportDepositDate = $reportTransaction->getDepositDate()) {
-            $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
+            $this->orderStatusManager->setComplete($transaction->getOrder());
             if (!$transaction->getDepositDate()) {
                 $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportDepositDate);
                 $transaction->setDepositDate($depositDate);
@@ -179,7 +188,7 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $order->setStatus(OrderStatus::RETURNED);
+        $this->orderStatusManager->setReturned($order);
         $reversalTransaction = $this->createReversalTransaction($order, $reportTransaction);
         $reversalTransaction->setBatchId($reportTransaction->getBatchId());
         $originalDepositDate = $originalTransaction->getDepositDate();
@@ -230,7 +239,7 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $order->setStatus(OrderStatus::REFUNDED);
+        $this->orderStatusManager->setRefunded($order);
         $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
         // For reversal, from Heartland:
         // "The funds would be removed from the merchant’s account on the next business day.
@@ -281,7 +290,9 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $order->setStatus(OrderStatus::CANCELLED);
+
+        $this->orderStatusManager->setCancelled($order);
+
         $originalTransaction->setDepositDate();
         $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
 
@@ -394,7 +405,7 @@ class ReportSynchronizer
             return;
         }
 
-        $order->setStatus(OrderStatus::COMPLETE);
+        $this->orderStatusManager->setComplete($order);
         if ($reportTransaction->getDepositDate() !== null) {
             $transaction->setDepositDate($reportTransaction->getDepositDate());
         }
@@ -455,7 +466,7 @@ class ReportSynchronizer
         $newReversalOutboundTransaction->setOrder($order);
 
         if ($reportTransaction->getTransactionType() === PayDirectReversalReportTransaction::TYPE_REFUNDING) {
-            $order->setStatus(OrderStatus::REFUNDING);
+            $this->orderStatusManager->setRefunded($order);
             $this->logger->alert(
                 sprintf(
                     'Check#%s for Order#%d has been refunded. Need to refund to tenant via CollectV4 Client Console.
@@ -466,7 +477,7 @@ class ReportSynchronizer
                 )
             );
         } elseif ($reportTransaction->getTransactionType() === PayDirectReversalReportTransaction::TYPE_REISSUED) {
-            $order->setStatus(OrderStatus::REISSUED);
+            $this->orderStatusManager->setReissued($order);
             $this->logger->alert(
                 sprintf(
                     'Check#%s has been reissued to \'%s\' group. No action required.',
