@@ -123,7 +123,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         if (OrderPaymentType::CARD === $order->getPaymentType()
             && PaymentProcessor::HEARTLAND === $order->getPaymentProcessor()
         ) {
-           $this->setComplete($order);
+            $this->setComplete($order);
         } elseif ($this->updateStatus($order, OrderStatus::PENDING)) {
             $this->mailer->sendPendingInfo($order);
         }
