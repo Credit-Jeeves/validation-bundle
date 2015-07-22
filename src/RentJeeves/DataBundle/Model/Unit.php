@@ -62,7 +62,8 @@ abstract class Unit
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Property",
-     *     inversedBy="units"
+     *     inversedBy="units",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="property_id",

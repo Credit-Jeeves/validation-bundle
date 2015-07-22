@@ -75,8 +75,6 @@ class GroupMapper extends AbstractMapper
         $newGroup->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
         $newGroup->setExternalGroupId($this->get('login_id'));
 
-        $this->em->persist($newGroup);
-
         $this->createGroupSetting($newGroup);
 
         return $newGroup;
@@ -90,8 +88,6 @@ class GroupMapper extends AbstractMapper
         $newHolding = new Holding();
         $newHolding->setName($this->get('ll_email'));
 
-        $this->em->persist($newHolding);
-
         return $newHolding;
     }
 
@@ -104,8 +100,6 @@ class GroupMapper extends AbstractMapper
     {
         $newGroupSettings = $group->getGroupSettings();
         $newGroupSettings->setPaymentProcessor(PaymentProcessor::ACI);
-
-        $this->em->persist($newGroupSettings);
 
         return $newGroupSettings;
     }
