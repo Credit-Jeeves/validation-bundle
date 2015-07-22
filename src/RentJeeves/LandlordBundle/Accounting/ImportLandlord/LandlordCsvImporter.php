@@ -124,6 +124,9 @@ class LandlordCsvImporter implements LoggerAwareInterface
             if (false === empty($errors)) {
                 $this->addErrorForRow(implode(PHP_EOL, array_values($errors)), $row);
             } else {
+                $this->em->persist($group);
+                $this->em->persist($landlord);
+                $this->em->persist($unit);
                 $this->em->flush();
             }
         } catch (MappingException $e) {
@@ -139,8 +142,17 @@ class LandlordCsvImporter implements LoggerAwareInterface
      */
     protected function addErrorForRow($errorMessage, array $row)
     {
+        $rowToString = implode(',', array_values($row));
+        foreach ($this->mappingErrors as $key => $errorsForRow) {
+            if ($errorsForRow['row'] === $rowToString) {
+                $this->mappingErrors[$key]['messages'][] = $errorMessage;
+
+                return;
+            }
+        }
+
         $this->mappingErrors[] = [
-            'message' => $errorMessage,
+            'messages' => [$errorMessage],
             'row' => implode(',', array_values($row))
         ];
     }

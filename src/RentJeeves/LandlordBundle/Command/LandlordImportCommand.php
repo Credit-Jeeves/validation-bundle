@@ -40,13 +40,11 @@ class LandlordImportCommand extends BaseCommand
         }
 
         foreach ($importer->getMappingErrors() as $errors) {
-            $output->writeln(
-                sprintf(
-                    '<error>[Landlord CSV import]: %s for row :%s)</error>',
-                    $errors['message'],
-                    $errors['row']
-                )
-            );
+            $output->writeln(sprintf('<error>[Landlord CSV import]: Error(s) for row (%s)</error>', $errors['row']));
+            foreach ($errors['messages'] as $message) {
+                $output->writeln(sprintf('<error>%s</error>', $message));
+            }
+            $output->writeln('');
         }
     }
 

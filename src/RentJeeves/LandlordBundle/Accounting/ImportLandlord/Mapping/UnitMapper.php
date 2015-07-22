@@ -65,8 +65,6 @@ class UnitMapper extends AbstractMapper
         $newUnit->setName($this->get('UnitNumber') ?: $this->get('UnitID'));
         $newUnit->setProperty($this->getOrCreateProperty());
 
-        $this->em->persist($newUnit);
-
         return $newUnit;
     }
 
@@ -86,10 +84,6 @@ class UnitMapper extends AbstractMapper
 
         if (false === $property->getPropertyGroups()->contains($this->getGroup())) {
             $property->addPropertyGroup($this->getGroup());
-        }
-
-        if ($property->getId() === null) {
-            $this->em->persist($property);
         }
 
         return $property;

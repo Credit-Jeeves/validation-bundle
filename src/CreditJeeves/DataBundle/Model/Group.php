@@ -62,7 +62,8 @@ abstract class Group
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="groups"
+     *     inversedBy="groups",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="holding_id",

@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException;
 
@@ -54,13 +55,11 @@ class LandlordMapper extends AbstractMapper
         $newLandlord->setFirstName($this->get('first_name'));
         $newLandlord->setLastName($this->get('last_name'));
         $newLandlord->setEmail($this->get('ll_email'));
-        $newLandlord->setPhone($this->get('ll_phone'));
+        $newLandlord->setPhone(PhoneNumberFormatter::formatToDigitsOnly($this->get('ll_phone')));
         $newLandlord->setPassword(md5(rand(1, 99999)));
         $newLandlord->setCulture($this->locale);
         $newLandlord->setAgentGroups($this->getGroup());
         $newLandlord->setExternalLandlordId($this->get('landlordID'));
-
-        $this->em->persist($newLandlord);
 
         return $newLandlord;
     }

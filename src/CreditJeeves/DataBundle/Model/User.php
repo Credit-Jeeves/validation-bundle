@@ -23,7 +23,7 @@ use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\MappedSuperclass
- * @UniqueEntity(fields={"email"}, groups={"invite", "import"})
+ * @UniqueEntity(fields={"email"}, groups={"invite", "import", "landlordImport"})
  */
 abstract class User extends BaseUser
 {

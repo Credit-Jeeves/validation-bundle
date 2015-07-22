@@ -48,7 +48,7 @@ class LandlordCsvImporterCase extends BaseTestCase
 
         /** After import +2 for all Entities */
         $this->assertEquals(1, count($errors));
-        $this->assertEquals('[Landlord] email : This value is not a valid email address.', $errors[0]['message']);
+        $this->assertEquals('[Landlord] email : This value is not a valid email address.', $errors[0]['messages'][0]);
 
         $allLandlords = $this->getEntityManager()->getRepository('RjDataBundle:Landlord')->findAll();
         $this->assertCount(9, $allLandlords);
