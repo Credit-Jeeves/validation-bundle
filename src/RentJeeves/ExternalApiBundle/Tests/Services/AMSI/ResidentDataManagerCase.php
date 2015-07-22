@@ -15,13 +15,13 @@ class ResidentDataManagerCase extends Base
     {
         $em = $this->getEntityManager();
         $settings = $em->getRepository('RjDataBundle:AMSISettings')->findOneBy(
-            ['user' => 'RentTrack']
+            ['user' => 'renttrack']
         );
         /** @var ResidentDataManager $residentDataManager */
         $residentDataManager = $this->getContainer()->get('amsi.resident_data');
         $residentDataManager->setSettings($settings);
         $leases = $residentDataManager->getResidents(AMSIClientCase::EXTERNAL_PROPERTY_ID);
-        $this->assertCount(53, $leases);
+        $this->assertCount(44, $leases);
         /** @var Lease $lease */
         $lease = $leases[0];
         $this->assertInstanceOf(

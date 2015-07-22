@@ -9,15 +9,15 @@ class ContractWaitingRepository extends EntityRepository
 {
     /**
      * @param Holding $holding
-     * @param Property $property
+     * @param PropertyMapping $propertyMapping
      * @param string $externalUnitId
      * @param string $residentId
      * @return ContractWaiting
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findOneByHoldingPropertyExternalUnitIdResident(
+    public function findOneByHoldingPropertyMappingExternalUnitIdResident(
         Holding $holding,
-        Property $property,
+        PropertyMapping $propertyMapping,
         $externalUnitId,
         $residentId
     ) {
@@ -25,16 +25,18 @@ class ContractWaitingRepository extends EntityRepository
         $query->select('contract');
         $query->innerJoin('contract.unit', 'u');
         $query->innerJoin('u.unitMapping', 'um');
+        $query->innerJoin('contract.property', 'p');
+        $query->innerJoin('p.propertyMapping', 'pm');
         $query->innerJoin('contract.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
 
         $query->where('contract.residentId = :residentId');
-        $query->andWhere('contract.property = :propertyId');
+        $query->andWhere('pm.externalPropertyId = :propertyId');
         $query->andWhere('g.holding = :holdingId');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('um.externalUnitId = :externalUnitId');
 
-        $query->setParameter('propertyId', $property->getId());
+        $query->setParameter('propertyId', $propertyMapping->getExternalPropertyId());
         $query->setParameter('holdingId', $holding->getId());
         $query->setParameter('externalUnitId', $externalUnitId);
         $query->setParameter('residentId', $residentId);

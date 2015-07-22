@@ -165,11 +165,6 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
      */
     public function shouldSyncContractBalanceForAMSI()
     {
-        $this->markTestSkipped(
-            'AMSI Return: ' .
-            'An error occured while creating webservice objects to start the process. ' .
-            'Please verify portfolio name. There is no row at position 0.'
-        );
         $this->load(true);
 
         $em = $this->getEntityManager();
@@ -189,14 +184,14 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $unit->setUnitMapping($unitExternalMapping);
         $tenant = $contract->getTenant();
         $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
-        $residentMapping->setResidentId('618209');
+        $residentMapping->setResidentId('296455');
 
         $em->flush();
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.resident_balance_sync');
         $balanceSynchronizer->run();
         $updatedContract = $repo->find($contract->getId());
-        $this->assertLessThan(-12000, $updatedContract->getIntegratedBalance());
+        $this->assertLessThan(-4500, $updatedContract->getIntegratedBalance());
     }
 
     /**
@@ -204,11 +199,6 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
      */
     public function shouldSyncContractWaitingBalanceForAMSI()
     {
-        $this->markTestSkipped(
-            'AMSI Return: ' .
-            'An error occured while creating webservice objects to start the process. ' .
-            'Please verify portfolio name. There is no row at position 0.'
-        );
         $this->load(true);
 
         $em = $this->getEntityManager();
@@ -226,7 +216,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $unitExternalMapping->setExternalUnitId('001|01|101');
         $unitExternalMapping->setUnit($unit);
         $unit->setUnitMapping($unitExternalMapping);
-        $contractWaiting->setResidentId('618209');
+        $contractWaiting->setResidentId('296455');
         $settings = $contractWaiting->getGroup()->getHolding()->getAmsiSettings();
         $settings->setSyncBalance(true);
         $em->flush();
@@ -234,6 +224,6 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $balanceSynchronizer = $this->getContainer()->get('amsi.resident_balance_sync');
         $balanceSynchronizer->run();
         $updatedContract = $repositoryContractWaiting->find($contractWaiting->getId());
-        $this->assertLessThan(-12000, $updatedContract->getIntegratedBalance());
+        $this->assertLessThan(-4500, $updatedContract->getIntegratedBalance());
     }
 }
