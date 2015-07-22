@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use Symfony\Component\Console\Output\OutputInterface;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 class ResidentBalanceSynchronizer
 {
@@ -28,6 +29,11 @@ class ResidentBalanceSynchronizer
     protected $residentDataManager;
 
     /**
+     * @var ExceptionCatcher
+     */
+    protected $exceptionCatcher;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -40,10 +46,15 @@ class ResidentBalanceSynchronizer
     /**
      * @param EntityManager $em
      * @param ResidentDataManager $residentDataManager
+     * @param ExceptionCatcher $exceptionCatcher
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, ResidentDataManager $residentDataManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        EntityManager $em,
+        ResidentDataManager $residentDataManager,
+        ExceptionCatcher $exceptionCatcher,
+        LoggerInterface $logger
+    ) {
         $this->em = $em;
         $this->logger = $logger;
         $this->residentDataManager = $residentDataManager;
@@ -68,6 +79,7 @@ class ResidentBalanceSynchronizer
                 $this->updateBalancesForHolding($holding);
             }
         } catch (\Exception $e) {
+            $this->exceptionCatcher->handleException($e);
             $this->logger->alert(
                 sprintf(
                     '(AMSI ResidentBalanceSynchronizer)Message: %s, File: %s, Line:%s',
@@ -171,6 +183,16 @@ class ResidentBalanceSynchronizer
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
         $residentId = $occupant->getOccuSeqNo();
+
+        $this->logMessage(
+            sprintf(
+                'Getting contract for holding %s, property %s, lease %s, residentId %s',
+                $holding->getId(),
+                $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
+                $lease->getExternalUnitId(),
+                $residentId
+            )
+        );
 
         $contracts = $contractRepo->findContractsByHoldingPropertyResidentAndExternalUnitId(
             $holding,

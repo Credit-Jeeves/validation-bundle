@@ -209,8 +209,17 @@ class AccountingPaymentSynchronizer
 
             return true;
         } catch (\Exception $e) {
+            $this->logger->alert(
+                sprintf(
+                    'Failed posting payment! Exception(%s): "%s" File:%s, Line:%s, Trace:%s',
+                    $e->getCode(),
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine(),
+                    $e->getTraceAsString()
+                )
+            );
             $this->exceptionCatcher->handleException($e);
-            $this->logger->addCritical(get_class($e) . ':' . $e->getMessage());
 
             return false;
         }

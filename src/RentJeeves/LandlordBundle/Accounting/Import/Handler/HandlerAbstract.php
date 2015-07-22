@@ -809,11 +809,12 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->currentImportModel->setUniqueKeyException($uniqueKeyException);
         $this->exceptionCatcher->handleException($exception);
         $messageForLogging = sprintf(
-            'Exception %s: %s, in File: %s, In Line: %s',
+            'Exception %s: %s, in File: %s, In Line: %s, Trace: %s',
             $uniqueKeyException,
             $e->getMessage(),
             $e->getFile(),
-            $e->getLine()
+            $e->getLine(),
+            $e->getTraceAsString()
         );
         $this->logger->addCritical($messageForLogging);
 
