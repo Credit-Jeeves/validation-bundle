@@ -1474,4 +1474,16 @@ abstract class Group
     {
         $this->externalGroupId = $externalGroupId;
     }
+
+    /**
+     * @Assert\True(message = "MailingAddress is required for SUBMERCHANT OrderAlgorithmType", groups={"holding"})
+     */
+    public function isMailingAddressNotEmptyForSubMerchant()
+    {
+        if ($this->getOrderAlgorithm() === OrderAlgorithmType::SUBMERCHANT && empty($this->mailingAddressName)) {
+            return false;
+        }
+
+        return true;
+    }
 }

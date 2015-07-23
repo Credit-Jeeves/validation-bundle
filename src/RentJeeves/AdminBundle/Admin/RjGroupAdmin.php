@@ -148,7 +148,7 @@ class RjGroupAdmin extends Admin
                         'choices' => OrderAlgorithmType::cachedTitles()
                     ]
                 )
-                ->add('mailingAddressName')
+                ->add('mailingAddressName', null, ['required' => false])
                 ->add('city')
                 ->add('state')
                 ->add('zip')
