@@ -1553,9 +1553,9 @@
                 <source>password.error.old_not_match</source>
                 <target>The old password you supplied is incorrect.</target>
             </trans-unit>
-            <trans-unit id="error.group.required_email_for_submerchant">
-                <source>error.group.required_email_for_submerchant</source>
-                <target>MailingAddress is required for SUBMERCHANT OrderAlgorithmType.</target>
+            <trans-unit id="error.group.required_fields_for_paydirect">
+                <source>error.group.required_fields_for_paydirect</source>
+                <target>Mailing address name, City, State, Zip, Address 1 should be required if order algorithm is PayDirect.</target>
             </trans-unit>
         </body>
     </file>

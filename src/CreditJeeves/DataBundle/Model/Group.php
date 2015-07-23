@@ -1476,11 +1476,15 @@ abstract class Group
     }
 
     /**
-     * @Assert\True(message = "error.group.required_email_for_submerchant", groups={"holding"})
+     * @Assert\True(message = "error.group.required_fields_for_paydirect", groups={"holding"})
      */
     public function isMailingAddressNotEmptyForSubMerchant()
     {
-        if ($this->getOrderAlgorithm() === OrderAlgorithmType::SUBMERCHANT && empty($this->mailingAddressName)) {
+        if ($this->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
+            (empty($this->mailingAddressName) || empty($this->city) || empty($this->state) || empty($this->zip) ||
+                empty($this->street_address_1)
+            )
+        ) {
             return false;
         }
 
