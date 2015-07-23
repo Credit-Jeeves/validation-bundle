@@ -253,7 +253,7 @@ class Mailer extends BaseMailer
      */
     public function sendRentError(Order $order)
     {
-        $tenant = $order->getContract()->getTenant();
+        $tenant = $order->getUser();
         $fee = $order->getFee();
         $amount = $order->getSum();
         $total = $fee + $amount;
