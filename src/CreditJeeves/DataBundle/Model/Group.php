@@ -1476,7 +1476,7 @@ abstract class Group
     }
 
     /**
-     * @Assert\True(message = "MailingAddress is required for SUBMERCHANT OrderAlgorithmType", groups={"holding"})
+     * @Assert\True(message = "error.group.required_email_for_submerchant", groups={"holding"})
      */
     public function isMailingAddressNotEmptyForSubMerchant()
     {
