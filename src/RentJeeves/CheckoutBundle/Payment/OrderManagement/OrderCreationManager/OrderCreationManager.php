@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
@@ -57,7 +58,7 @@ class OrderCreationManager
      * Creates a new order for rent payment.
      *
      * @param  Payment $payment
-     * @return OrderSubmerchant
+     * @return Order
      */
     public function createRentOrder(Payment $payment)
     {
@@ -162,9 +163,9 @@ class OrderCreationManager
      * Creates rent operations for given payment and order.
      *
      * @param Payment $payment
-     * @param OrderSubmerchant   $order
+     * @param Order   $order
      */
-    protected function createRentOperations(Payment $payment, OrderSubmerchant $order)
+    protected function createRentOperations(Payment $payment, Order $order)
     {
         $contract = $payment->getContract();
         $payBalanceOnly = $contract->getGroup()->getGroupSettings()->getPayBalanceOnly();
@@ -180,9 +181,9 @@ class OrderCreationManager
      * Creates operations if only balance is paid.
      *
      * @param Payment $payment
-     * @param OrderSubmerchant   $order
+     * @param Order   $order
      */
-    protected function createBalanceBasedOperations(Payment $payment, OrderSubmerchant $order)
+    protected function createBalanceBasedOperations(Payment $payment, Order $order)
     {
         $contract = $payment->getContract();
 
@@ -229,9 +230,9 @@ class OrderCreationManager
      * Creates plain rent operations.
      *
      * @param Payment $payment
-     * @param OrderSubmerchant   $order
+     * @param Order   $order
      */
-    protected function createRegularOperations(Payment $payment, OrderSubmerchant $order)
+    protected function createRegularOperations(Payment $payment, Order $order)
     {
         $contract = $payment->getContract();
 
