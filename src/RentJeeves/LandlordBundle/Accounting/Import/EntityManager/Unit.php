@@ -92,6 +92,8 @@ trait Unit
 
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
+        } elseif (!empty($row[Mapping::KEY_PROPERTY_ID]) && !$this->storage->isMultipleProperty()) {
+            $params['property'] = $row[Mapping::KEY_PROPERTY_ID];
         } elseif ($this->storage->getPropertyId()) {
             $params['property'] = $this->storage->getPropertyId();
         }
@@ -166,10 +168,10 @@ trait Unit
 
         $this->logger->debug('looking up unit mapping from DB...');
         $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
-            array(
+            [
                 'externalUnitId' => $externalUnitId,
                 'unit' => $unit
-            )
+            ]
         );
         if (empty($unitMapping)) {
             $this->logger->debug('...no mapping found. create one!');

@@ -385,7 +385,7 @@ abstract class HandlerAbstract implements HandlerInterface
         } else {
             $tenantName = $row[ImportMapping::FIRST_NAME_TENANT] . " " . $row[ImportMapping::LAST_NAME_TENANT];
         }
-        $this->logger->debug(sprintf("Creating import model for %s", $tenantName));
+        $this->logger->debug(sprintf('Creating import model for %s', $tenantName));
 
         $this->currentImportModel = new ModelImport();
         $this->currentImportModel->setRow($row);
