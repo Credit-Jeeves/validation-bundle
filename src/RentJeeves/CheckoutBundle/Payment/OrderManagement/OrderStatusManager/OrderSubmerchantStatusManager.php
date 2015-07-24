@@ -54,6 +54,14 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function setSending(Order $order)
+    {
+        throw new \LogicException('It\'s not allowed to set "sending" status to order submerchant type');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setComplete(Order $order)
     {
         if ($this->updateStatus($order, OrderStatus::COMPLETE)) {

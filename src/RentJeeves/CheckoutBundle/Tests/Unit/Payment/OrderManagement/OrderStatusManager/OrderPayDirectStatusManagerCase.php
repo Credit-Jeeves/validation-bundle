@@ -75,6 +75,17 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Unsupported order type in OrderPayDirectStatusManager
+     */
+    public function shouldAssertOrderTypeWhenSetSending()
+    {
+        $order = new OrderSubmerchant();
+        $this->statusManager->setSending($order);
+    }
+
+    /**
+     * @test
      */
     public function shouldSetOrderToCompleteWhenOutboundLegIsInitiated()
     {
@@ -201,5 +212,18 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $this->statusManager->setReturned($order);
 
         $this->assertEquals(OrderStatus::RETURNED, $order->getStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetOrderToSending()
+    {
+        $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::NEWONE);
+
+        $this->statusManager->setSending($order);
+
+        $this->assertEquals(OrderStatus::SENDING, $order->getStatus());
     }
 }

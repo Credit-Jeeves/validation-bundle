@@ -34,6 +34,8 @@ class PayAnyoneSendCheckCommand extends ContainerAwareCommand
             if ($this->getAciPayAnyonePaymentProcessor()->executeOrder($order)) {
                 $output->writeln(sprintf('Check for order #%d has been sent successfully', $order->getId()));
 
+                $this->getOrderStatusManager()->setSending($order);
+
                 return 0;
             }
         } catch (\Exception $e) {
