@@ -13,7 +13,7 @@ class UnitRepository extends EntityRepository
      *
      * @return array
      */
-    public function getUnitsArray(Property $property,Group $group = null)
+    public function getUnitsArray(Property $property, Group $group = null)
     {
         $result = [];
         foreach ($this->getUnits($property, $group) as $unit) {
