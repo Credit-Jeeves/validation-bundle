@@ -133,6 +133,22 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
 
     /**
      * @test
+     * @expectedException \LogicException
+     * @expectedExceptionMessage It's not allowed to set "sending" status to order submerchant type
+     */
+    public function setSending()
+    {
+        $statusManager = new OrderSubmerchantStatusManager(
+            $this->getEntityManager(),
+            $this->getLoggerMock(),
+            $this->getMailerMock()
+        );
+
+        $statusManager->setSending($this->createOrder());
+    }
+
+    /**
+     * @test
      */
     public function setCompleteShouldSetStatusComplete()
     {
@@ -385,7 +401,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
             $paidTo->modify($shiftedOn)->format($formatDate),
             $order->getContract()->getPaidTo()->format($formatDate),
             sprintf('PaidTo date of contract should be shifted on %s', $shiftedOn)
-
         );
     }
 
@@ -685,7 +700,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
             $paidTo->modify($shiftedOn)->format($formatDate),
             $order->getContract()->getPaidTo()->format($formatDate),
             sprintf('PaidTo date of contract should be unshifted on %s', $shiftedOn)
-
         );
     }
 
@@ -1106,7 +1120,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
             $paidTo->modify($shiftedOn)->format($formatDate),
             $order->getContract()->getPaidTo()->format($formatDate),
             sprintf('PaidTo date of contract should be unshifted on %s', $shiftedOn)
-
         );
     }
 
@@ -2040,15 +2053,5 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $this->getEntityManager()->refresh($operations[1]);
 
         $this->assertEquals($operations[1]->getPaidFor()->format('Y-m-d'), $contract->getStartAt()->format('Y-m-d'));
-    }
-
-    /**
-     * @test
-     * @expectedException \LogicException
-     * @expectedExceptionMessage It's not allowed to set "sending" status to order submerchant type
-     */
-    public function shouldThrowLogicExceptionWhenTryingToSetSendingStatus()
-    {
-        $this->getStatusManager()->setSending($this->createOrder());
     }
 }

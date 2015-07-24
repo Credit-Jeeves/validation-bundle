@@ -57,6 +57,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     public function setSending(Order $order)
     {
+        $this->logger->error('[OrderStatusManager] Trying to set "sending" for submerchant order #' . $order->getId());
         throw new \LogicException('It\'s not allowed to set "sending" status to order submerchant type');
     }
 
@@ -81,10 +82,10 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
 
             if (in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER])) {
                 $this->mailer->sendRentReceipt($order);
-                $this->logger->debug('[OrderStatusManager]Sent Rent Receipt Email for order #' . $order->getId());
+                $this->logger->debug('[OrderStatusManager]Sent receipt email for rent order #' . $order->getId());
             } elseif ($operation->getType() === OperationType::REPORT) {
                 $this->mailer->sendReportReceipt($order);
-                $this->logger->debug('[OrderStatusManager]Sent Rent Report Email for order #' . $order->getId());
+                $this->logger->debug('[OrderStatusManager]Sent receipt email for report order #' . $order->getId());
             }
         }
     }
