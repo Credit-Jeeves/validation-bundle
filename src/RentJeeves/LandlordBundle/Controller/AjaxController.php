@@ -413,8 +413,6 @@ class AjaxController extends Controller
         return new JsonResponse(array());
     }
 
-    /* Unit */
-
     /**
      * @Route(
      *     "/unit/list",
@@ -427,22 +425,18 @@ class AjaxController extends Controller
      */
     public function getUnitsList(Request $request)
     {
-        $result = array('property' => '', 'units' => array());
-        $user = $this->getUser();
-        $group = $this->getCurrentGroup();
-        $data = $request->request->all('property_id');
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
-        $result['property'] = $property->getAddress();
-        $result['isSingle'] = $property->getIsSingle();
+        /** @var Property $property */
+        $property = $this->getEntityManager()->find('RjDataBundle:Property', $request->request->get('property_id'));
         $this->get('soft.deleteable.control')->enable();
-        $result['units'] = $this->getDoctrine()
+        $units = $this->getEntityManager()
             ->getRepository('RjDataBundle:Unit')
-            ->getUnitsArray(
-                $property,
-                $group
-            );
+            ->getUnitsArray($property, $this->getCurrentGroup());
 
-        return new JsonResponse($result);
+        return new JsonResponse([
+            'property' => $property->getAddress(),
+            'isSingle' => $property->isSingle(),
+            'units' => $units
+        ]);
     }
 
     //@TODO find best way for this implementation
@@ -1276,3 +1270,5 @@ class AjaxController extends Controller
         return $result;
     }
 }
+
+/* Unit */

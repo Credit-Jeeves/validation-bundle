@@ -564,6 +564,9 @@ abstract class Property
     }
 
     /**
+     * @deprecated Please use function on the following line for getting value
+     * @see RentJeeves\DataBundle\Entity\Property::isSingle()
+     *
      * @return boolean|null
      */
     public function getIsSingle()
