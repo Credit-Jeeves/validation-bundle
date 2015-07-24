@@ -59,6 +59,7 @@ class ResidentBalanceSynchronizer
         $this->em = $em;
         $this->logger = $logger;
         $this->residentDataManager = $residentDataManager;
+        $this->exceptionCatcher = $exceptionCatcher;
     }
 
     /**
