@@ -1,36 +1,38 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 
 class UnitRepository extends EntityRepository
 {
     /**
-     * @param $property
-     * @param null $group
+     * @param Property $property
+     * @param Group $group
+     *
      * @return array
      */
-    public function getUnitsArray($property, $group = null)
+    public function getUnitsArray(Property $property, Group $group = null)
     {
-        $units = $this->getUnits($property, $group);
-        $result = array();
-        foreach ($units as $unit) {
-            $item = array();
-            $item['id'] = $unit->getId();
-            $item['name'] = $unit->getName();
-            $result[] = $item;
+        $result = [];
+        foreach ($this->getUnits($property, $group) as $unit) {
+            $result[] = [
+                'id' => $unit->getId(),
+                'name' => $unit->getName(),
+            ];
         }
 
         return $result;
     }
 
     /**
-     * @param $property
-     * @param null $group
+     * @param Property $property
+     * @param Group $group
+     *
      * @return Unit[]
      */
-    public function getUnits($property, $group = null)
+    public function getUnits(Property $property, Group $group = null)
     {
 
         $query = $this->createQueryBuilder('u');
