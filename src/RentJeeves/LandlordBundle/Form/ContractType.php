@@ -3,7 +3,6 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Doctrine\ORM\Query\Expr;
 use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -95,10 +94,9 @@ class ContractType extends AbstractType
                     return $repository->createQueryBuilder('p')
                         ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
                         ->innerJoin('p.property_groups', 'g')
-                        ->innerJoin('p.units', 'u', Expr\Join::WITH, 'u.group = :group')
+                        ->innerJoin('p.property_groups', 'g')
                         ->where('g.id = :groupId')
                         ->setParameter('groupId', $this->group->getId())
-                        ->setParameter('group', $this->group)
                         ->orderBy('sortField');
                 },
             ]
