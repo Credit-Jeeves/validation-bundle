@@ -13,7 +13,7 @@ class BillingAccountManager extends AbstractManager
     /**
      * @param  int $profileId
      * @param  Contract $contract
-     * @throws PaymentProcessorRuntimeException
+     * @throws \Exception|PaymentProcessorRuntimeException
      */
     public function addBillingAccount($profileId, Contract $contract)
     {

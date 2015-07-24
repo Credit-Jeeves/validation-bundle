@@ -145,6 +145,13 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
         }
 
         if (PaymentGroundType::CHARGE === $paymentType || PaymentGroundType::RENT === $paymentType) {
+            if ($order->hasContract() && !$order->getContract()->getAciCollectPayContractBilling()) {
+                $this->billingAccountManager->addBillingAccount(
+                    $order->getContract()->getTenant()->getAciCollectPayProfileId(),
+                    $order->getContract()
+                );
+            }
+
             return $this->paymentManager->executePayment($order, $accountEntity, $paymentType);
         } else {
             throw new \Exception(
