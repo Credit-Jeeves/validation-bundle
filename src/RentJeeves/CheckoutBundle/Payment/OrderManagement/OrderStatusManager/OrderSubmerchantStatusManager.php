@@ -429,7 +429,8 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         }
 
         if ($earliestOperation->getPaidFor() &&
-            $contract->getStartAt()->format('Y-m-d') !== $earliestOperation->getPaidFor()->format('Y-m-d')
+            ($contract->getStartAt() === null  ||
+             $contract->getStartAt()->format('Y-m-d') !== $earliestOperation->getPaidFor()->format('Y-m-d'))
         ) {
             $contract->setStartAt($earliestOperation->getPaidFor());
 
