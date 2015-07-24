@@ -27,7 +27,7 @@ use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 
 class PaymentManager
 {
-    const PAYMENT_ACCOUNT_MAX_LENGTH = 60;
+    const PAYMENT_ACCOUNT_MAX_LENGTH = 45;
     /**
      * @var EntityManager
      */
