@@ -1701,6 +1701,18 @@
                 <source>order.status.text.pending</source>
                 <target>PROCESSING</target>
             </trans-unit>
+            <trans-unit id="order.status.text.sending">
+                <source>order.status.text.sending</source>
+                <target>SENDING</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.refunding">
+                <source>order.status.text.refunding</source>
+                <target>REFUNDING</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.reissued">
+                <source>order.status.text.reissued</source>
+                <target>REISSUED</target>
+            </trans-unit>
             <trans-unit id="current_payment_sources.title">
                 <source>current_payment_sources.title</source>
                 <target>Current Payment Sources</target>

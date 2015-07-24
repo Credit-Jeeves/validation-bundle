@@ -244,7 +244,8 @@ function Payments() {
   {
       if (status == 'order.status.text.new' ||
           status == 'order.status.text.complete' ||
-          status == 'order.status.text.pending') {
+          status == 'order.status.text.pending' ||
+          status == 'order.status.text.sending') {
              return true;
       }
 

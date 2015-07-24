@@ -61,7 +61,7 @@ function TenantPaymentsViewModel()
 
     this.isSuccessfulStatus = function(status)
     {
-        if (status == 'new' || status == 'complete' || status == 'pending') {
+        if (status == 'new' || status == 'complete' || status == 'pending' || status == 'sending') {
             return true;
         }
 
