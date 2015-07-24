@@ -1410,39 +1410,99 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotEmpty($residentMapping);
     }
 
-    /**
-     * @test
-     */
-    public function yardiMultiPropertyImport()
+    public function dataProviderForYardiMultiProperty()
     {
+        return [
+            [
+                $firstCount = 5,
+                $secondCount = 7,
+                $thirdCount = 7,
+                $fourthCount = 7,
+                $fiveCount = 8,
+                $sixthCount = 1,
+                $status = 'import.status.waiting',
+                $isNeedLoadFixtures = true,
+                $countCountractsCashEquivalent = 0,
+                $countCountractsDontAcceptEquivalent = 0,
+                $countCountractsExternalLeaseId = 1,
+                $residentMappingCount = 0
+            ],
+            [
+                $firstCount = 9,
+                $secondCount = 9,
+                $thirdCount = 9,
+                $fourthCount = 8,
+                $fiveCount = 9,
+                $sixthCount = 1,
+                $status = 'import.status.match',
+                $isNeedLoadFixtures = false,
+                $countCountractsCashEquivalent = 1,
+                $countCountractsDontAcceptEquivalent = 1,
+                $countCountractsExternalLeaseId = 3,
+                $residentMappingCount = 1
+            ]
+        ];
+    }
+
+    /**
+     * @param integer $firstCount
+     * @param integer $secondCount
+     * @param integer $thirdCount
+     * @param integer $fourthCount
+     * @param integer $fiveCount
+     * @param integer $sixthCount
+     * @param string $status
+     * @param boolean $isNeedLoadFixtures
+     * @param integer $countCountractsCashEquivalent,
+     * @param integer $countCountractsDontAcceptEquivalent,
+     * @param integer $countCountractsExternalLeaseId
+     * @param integer $residentMappingCount
+     *
+     * @test
+     * @dataProvider dataProviderForYardiMultiProperty
+     */
+    public function yardiMultiPropertyImport(
+        $firstCount,
+        $secondCount,
+        $thirdCount,
+        $fourthCount,
+        $fiveCount,
+        $sixthCount,
+        $status,
+        $isNeedLoadFixtures,
+        $countCountractsCashEquivalent,
+        $countCountractsDontAcceptEquivalent,
+        $countCountractsExternalLeaseId,
+        $residentMappingCount
+    ) {
         $this->setDefaultSession('selenium2');
-        $this->load(true);
+        $this->load($isNeedLoadFixtures);
 
         $em = $this->getEntityManager();
 
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy([
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy([
             'paymentAccepted' => PaymentAccepted::CASH_EQUIVALENT,
         ]);
 
-        $this->assertEmpty($contract);
+        $this->assertCount($countCountractsCashEquivalent, $contracts);
 
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy([
+        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findBy([
             'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
         ]);
 
-        $this->assertEmpty($contractWaiting);
+        $this->assertCount($countCountractsDontAcceptEquivalent, $contractsWaiting);
 
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy([
             'externalLeaseId' => 't0012020',
         ]);
 
-        $this->assertCount(1, $contracts);
+        $this->assertCount($countCountractsExternalLeaseId, $contracts);
 
-        $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy([
+        $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findBy([
             'residentId' => 'r0004169',
         ]);
 
-        $this->assertEmpty($residentMapping);
+        $this->assertCount($residentMappingCount, $residentMapping);
 
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -1456,30 +1516,42 @@ class ImportCase extends ImportBaseAbstract
         $submitImport->click();
 
         $this->session->wait(
-            250000,
+            270000,
             "$('table').is(':visible')"
         );
 
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount($firstCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount($secondCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount($thirdCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount($fourthCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount($fiveCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertCount($sixthCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
 
@@ -1495,7 +1567,13 @@ class ImportCase extends ImportBaseAbstract
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy([
             'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
         ]);
+
         $this->assertNotEmpty($contractWaiting);
+
+        $contractWaitings = $em->getRepository('RjDataBundle:ContractWaiting')->findBy([
+            'residentId' => 't0011982',
+        ]);
+        $this->assertCount(1, $contractWaitings);
 
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy([
             'externalLeaseId' => 't0012020',
