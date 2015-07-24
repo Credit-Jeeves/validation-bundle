@@ -69,4 +69,14 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
     {
         $this->getStatusManager()->setReissued($this->createOrder());
     }
+
+    /**
+     * @test
+     * @expectedException \LogicException
+     * @expectedExceptionMessage It's not allowed to set "sending" status to order submerchant type
+     */
+    public function shouldThrowLogicExceptionWhenTryingToSetSendingStatus()
+    {
+        $this->getStatusManager()->setSending($this->createOrder());
+    }
 }

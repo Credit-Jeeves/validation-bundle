@@ -57,6 +57,14 @@ class OrderStatusManager implements OrderStatusManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function setSending(Order $order)
+    {
+        $this->getManager($order)->setSending($order);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setComplete(Order $order)
     {
         $this->getManager($order)->setComplete($order);

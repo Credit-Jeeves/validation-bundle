@@ -14,6 +14,11 @@ interface OrderStatusManagerInterface
     /**
      * @param Order $order
      */
+    public function setSending(Order $order);
+
+    /**
+     * @param Order $order
+     */
     public function setComplete(Order $order);
 
     /**

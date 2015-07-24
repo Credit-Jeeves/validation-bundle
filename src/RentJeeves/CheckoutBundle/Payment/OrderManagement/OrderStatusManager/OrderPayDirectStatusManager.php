@@ -14,6 +14,16 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
     /**
      * {@inheritdoc}
      */
+    public function setSending(Order $order)
+    {
+        $this->assertOrder($order);
+
+        $this->updateStatus($order, OrderStatus::SENDING);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setComplete(Order $order)
     {
         $this->assertOrder($order);
@@ -72,11 +82,10 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
 
         /** @var OrderPayDirect $order */
         if ($this->isOutboundLegInitiated($order)) {
-            $this->logger->alert(sprintf(
-                'An attempt to return outbound transaction #%s of PayDirect order #%d.
-                PayDirect order can not be returned (only reissued or refunded)',
-                $order->getDepositOutboundTransaction()->getTransactionId(),
-                $order->getId()
+            $this->logger->emergency(sprintf(
+                'PayDirect order <%d> has a return, please goto PayAnyone CSI Console and stop check <%s> immediately',
+                $order->getId(),
+                $order->getDepositOutboundTransaction()->getTransactionId()
             ));
         } else {
             parent::setReturned($order);
