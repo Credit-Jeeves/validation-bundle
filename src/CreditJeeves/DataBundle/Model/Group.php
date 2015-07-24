@@ -1478,7 +1478,7 @@ abstract class Group
     /**
      * @Assert\True(message = "error.group.required_fields_for_paydirect", groups={"holding"})
      */
-    public function isMailingAddressNotEmptyForSubMerchant()
+    public function isMailingAddressNotEmptyForPayDirect()
     {
         if ($this->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
             (empty($this->mailingAddressName) || empty($this->city) || empty($this->state) || empty($this->zip) ||
