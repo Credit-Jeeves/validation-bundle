@@ -11,6 +11,7 @@ use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderSt
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Enum\BankAccountType;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -414,21 +415,34 @@ class PaymentCommandsCase extends BaseTestCase
 
         $bankPayment = clone $cardPayment;
 
-        $bankPayment->setPaymentAccount($bankPaymentAccount);
-
         $cardPayment->setAmount(-200);
+
+        $bankPayment->setPaymentAccount($bankPaymentAccount);
+        // should create another payment for another contract
+        $contract2 = $em->getRepository('RjDataBundle:Contract')->findOneBy([
+            'status' => ContractStatus::CURRENT,
+            'tenant' => $contract->getTenant(),
+            'group' => $contract->getGroup(),
+        ]);
+
+        $this->assertNotNull($contract2);
+
+        $bankPayment2 = $this->createPayment($contract2, 1002);
+        $bankPayment2->setPaidFor(new DateTime());
+        $bankPayment2->setPaymentAccount($bankPaymentAccount);
 
         $em->persist($cardPayment);
         $em->persist($bankPayment);
+        $em->persist($bankPayment2);
         $em->flush();
 
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
-        $this->executeCommand();
+        $this->executeCommand(3); // created 3 jobs for 3 payments
 
         // "Your Rent is Processing" Email
-        $this->assertCount(3, $plugin->getPreSendMessages()); // 2 for Order; 1 - Monolog Message
+        $this->assertCount(4, $plugin->getPreSendMessages()); // 3 for Order; 1 - Monolog Message
 
         // Should get 2 Orders with Pending and Error statuses
         /** @var OrderSubmerchant[] $orders */
@@ -437,25 +451,36 @@ class PaymentCommandsCase extends BaseTestCase
             ['status' => 'DESC']
         );
 
-        $this->assertCount(2, $orders);
+        $this->assertCount(3, $orders);
 
+        // first contract bank account
         $this->assertEquals(
             OrderStatus::PENDING,
             $orders[0]->getStatus(),
             $orders[0]->getTransactions()->first()->getMessages()
         );
 
-        $this->assertEquals(OrderStatus::ERROR, $orders[1]->getStatus());
+        // second contract the same account
+        $this->assertEquals(
+            OrderStatus::PENDING,
+            $orders[1]->getStatus(),
+            $orders[1]->getTransactions()->first()->getMessages()
+        );
+
+        // first contract card account error with minus amount
+        $this->assertEquals(OrderStatus::ERROR, $orders[2]->getStatus());
 
         $this->assertNotEmpty($orders[0]->getTransactions()->first()->getTransactionId());
-        $this->assertNotEmpty($orders[1]->getTransactions()->first()->getMessages());
+        $this->assertNotEmpty($orders[1]->getTransactions()->first()->getTransactionId());
+        $this->assertNotEmpty($orders[2]->getTransactions()->first()->getMessages());
 
-        $group = $orders[0]->getContract()->getGroup();
+        $group = $contract->getGroup(); // group is the same
         $date = new \DateTime();
         $expectedBatchId = sprintf('%dB%s', $group->getId(), $date->format('Ymd'));
 
         $this->assertEquals($expectedBatchId, $orders[0]->getTransactions()->first()->getBatchId());
         $this->assertEquals($expectedBatchId, $orders[1]->getTransactions()->first()->getBatchId());
+        $this->assertEquals($expectedBatchId, $orders[2]->getTransactions()->first()->getBatchId());
     }
 
     /**
@@ -492,13 +517,16 @@ class PaymentCommandsCase extends BaseTestCase
         return $payment;
     }
 
-    protected function executeCommand()
+    /**
+     * @param int $countJobs
+     */
+    protected function executeCommand($countJobs = 2)
     {
         $application = new Application($this->getKernel());
         $application->add(new PayCommand());
 
         $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
-        $this->assertCount(2, $jobs);
+        $this->assertCount($countJobs, $jobs);
 
         $command = $application->find('payment:pay');
         $commandTester = new CommandTester($command);
@@ -516,7 +544,11 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertCount(0, $jobs);
     }
 
-    protected function getContract($em)
+    /**
+     * @param EntityManager $em
+     * @return Contract
+     */
+    protected function getContract(EntityManager $em)
     {
         $rentAmount = 987;
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(array('rent' => $rentAmount));
