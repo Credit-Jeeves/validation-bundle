@@ -1,7 +1,6 @@
 # It moved here because #RT-407
 
 parameters:
-#    data.event_listener.order.class: RentJeeves\DataBundle\EventListener\OrderListener
     data.event_listener.group_settings_listener.class: RentJeeves\DataBundle\EventListener\GroupSettingsListener
     data.event_listener.import_summary.class: RentJeeves\DataBundle\EventListener\ImportSummaryListener
     kernel.listener.command_dispatch.exception.class: RentJeeves\CoreBundle\EventListener\ConsoleExceptionListener

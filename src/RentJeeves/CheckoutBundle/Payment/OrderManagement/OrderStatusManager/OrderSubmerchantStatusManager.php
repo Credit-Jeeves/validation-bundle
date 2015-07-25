@@ -48,6 +48,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     public function setReissued(Order $order)
     {
+        $this->logger->error('[OrderStatusManager] Trying to set "reissued" for submerchant order #' . $order->getId());
         throw new \LogicException('It\'s not allowed to set "reissued" status to order submerchant type');
     }
 
@@ -56,6 +57,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     public function setSending(Order $order)
     {
+        $this->logger->error('[OrderStatusManager] Trying to set "sending" for submerchant order #' . $order->getId());
         throw new \LogicException('It\'s not allowed to set "sending" status to order submerchant type');
     }
 
@@ -80,8 +82,10 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
 
             if (in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER])) {
                 $this->mailer->sendRentReceipt($order);
+                $this->logger->debug('[OrderStatusManager]Sent receipt email for rent order #' . $order->getId());
             } elseif ($operation->getType() === OperationType::REPORT) {
                 $this->mailer->sendReportReceipt($order);
+                $this->logger->debug('[OrderStatusManager]Sent receipt email for report order #' . $order->getId());
             }
         }
     }
@@ -131,9 +135,13 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         if (OrderPaymentType::CARD === $order->getPaymentType()
             && PaymentProcessor::HEARTLAND === $order->getPaymentProcessor()
         ) {
+            $this->logger->debug(
+                '[OrderStatusManager]Try to set directly status "complete" for order #' . $order->getId()
+            );
             $this->setComplete($order);
         } elseif ($this->updateStatus($order, OrderStatus::PENDING)) {
             $this->mailer->sendPendingInfo($order);
+            $this->logger->debug('[OrderStatusManager]Sent Pending Info Email for order #' . $order->getId());
         }
     }
 
@@ -144,6 +152,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     {
         if ($this->updateStatus($order, OrderStatus::ERROR)) {
             $this->mailer->sendRentError($order);
+            $this->logger->debug('[OrderStatusManager]Sent Rent Error Email for order #' . $order->getId());
         }
     }
 
@@ -152,36 +161,47 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     public function setNew(Order $order)
     {
+        $shouldUpdate = $this->isNeedUpdateStartAtOfContract($order);
+
         if ($this->updateStatus($order, OrderStatus::NEWONE)) {
             $this->chargePartner($order);
-            if ($order->getContract()) {
-                $this->updateStartAtOfContract($order);
-            }
+            !$shouldUpdate || $this->updateStartAtOfContract($order);
         }
     }
 
     /**
      * @param Order $order
-     * @param string $oderStatus
+     * @param string $newStatus
      * @return bool
      */
-    protected function updateStatus(Order $order, $oderStatus)
+    protected function updateStatus(Order $order, $newStatus)
     {
-        if (!OrderStatus::isValid($oderStatus)) {
-            throw new \InvalidArgumentException(sprintf('Order status "%s" is invalid', $oderStatus));
+        if (!OrderStatus::isValid($newStatus)) {
+            throw new \InvalidArgumentException(sprintf('Order status "%s" is invalid', $newStatus));
         }
 
-        if ($order->getStatus() === $oderStatus) {
+        if ($order->getStatus() === $newStatus) {
             return false;
         }
 
-        $order->setStatus($oderStatus);
+        $oldStatus = $order->getStatus();
+
+        $order->setStatus($newStatus);
 
         if (!$this->em->contains($order)) {
             $this->em->persist($order);
         }
 
         $this->em->flush($order);
+
+        $this->logger->debug(
+            sprintf(
+                '[OrderStatusManager]Status for order #%d was updated from "%s" to "%s"',
+                $order->getId(),
+                $oldStatus,
+                $newStatus
+            )
+        );
 
         return true;
     }
@@ -198,9 +218,13 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
 
             if ($user->getOrders()->count() == 1 && $user->getPartnerCode()) {
                 $user->getPartnerCode()->setFirstPaymentDate(new \DateTime());
-            }
 
-            $this->em->flush($user->getPartnerCode());
+                if (!$this->em->contains($user->getPartnerCode())) {
+                    $this->em->persist($user->getPartnerCode());
+                }
+
+                $this->em->flush($user->getPartnerCode());
+            }
         }
     }
 
@@ -216,9 +240,13 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
             return;
         }
 
+        $oldPaidTo = clone $contract->getPaidTo();
+
         $payment = $contract->getActivePayment();
         if ($payment) {
             $date = new DateTime($payment->getPaidFor()->format('c'));
+
+            $oldPaidFor = clone $date;
 
             if (!$this->em->contains($payment)) {
                 $this->em->persist($payment);
@@ -246,6 +274,31 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         }
 
         $this->em->flush();
+
+        if ($oldPaidTo->format('Y-m-d') != $contract->getPaidTo()->format('Y-m-d')) {
+            $this->logger->debug(
+                sprintf(
+                    '[OrderStatusManager]Order #%d updated paid_to date for contract #%d from "%s" to "%s"',
+                    $order->getId(),
+                    $contract->getId(),
+                    $oldPaidTo->format('Y-m-d'),
+                    $contract->getPaidTo()->format('Y-m-d')
+                )
+            );
+        }
+        if (isset($oldPaidFor) && $oldPaidFor->format('Y-m-d') != $payment->getPaidFor()->format('Y-m-d')) {
+            $this->logger->debug(
+                sprintf(
+                    '[OrderStatusManager]Order #%d updated paid_for date' .
+                    ' for active payment #%d of contract #%d from "%s" to "%s"',
+                    $order->getId(),
+                    $payment->getId(),
+                    $contract->getId(),
+                    $oldPaidTo->format('Y-m-d'),
+                    $contract->getPaidTo()->format('Y-m-d')
+                )
+            );
+        }
     }
 
     /**
@@ -262,6 +315,9 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
 
         $isIntegrated = $contract->getGroup()->getGroupSettings()->getIsIntegrated();
         $operations = $order->getOperations();
+
+        $oldBalance = $contract->getBalance();
+        $oldIntegratedBalance = $contract->getIntegratedBalance();
 
         foreach ($operations as $operation) {
             if ($operation->getType() === OperationType::RENT) {
@@ -290,19 +346,42 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         }
 
         $this->em->flush($contract);
+
+        if ($oldBalance != $contract->getBalance()) {
+            $this->logger->debug(
+                sprintf(
+                    '[OrderStatusManager]Order #%d updated balance for contract #%d from "%s" to "%s"',
+                    $order->getId(),
+                    $contract->getId(),
+                    $oldBalance,
+                    $contract->getBalance()
+                )
+            );
+        }
+        if ($oldIntegratedBalance != $contract->getIntegratedBalance()) {
+            $this->logger->debug(
+                sprintf(
+                    '[OrderStatusManager]Order #%d updated integrated_balance for contract #%d from "%s" to "%s"',
+                    $order->getId(),
+                    $contract->getId(),
+                    $oldIntegratedBalance,
+                    $contract->getIntegratedBalance()
+                )
+            );
+        }
     }
 
     /**
-     * When tenant pays first time, set start_at = paid_for for first payment.
-     * More description on this page https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
-     * See table Possible Paths
-     *
      * @param Order $order
      * @return bool
      */
-    protected function updateStartAtOfContract(Order $order)
+    protected function isNeedUpdateStartAtOfContract(Order $order)
     {
         $contract = $order->getContract();
+
+        if (!$contract) {
+            return false;
+        }
 
         $rentOperation = $this->em->getRepository('DataBundle:Operation')->findOneBy([
             'contract' => $contract->getId(),
@@ -313,7 +392,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
          * If we have RENT operation for particular contract it's means we already pay
          * so we must do not change it
          */
-        if (!$rentOperation) {
+        if ($rentOperation) {
             return false;
         }
 
@@ -325,6 +404,22 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
             return false;
         }
 
+        return true;
+    }
+
+    /**
+     * When tenant pays first time, set start_at = paid_for for first payment.
+     * More description on this page https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
+     * See table Possible Paths
+     *
+     * @param Order $order
+     */
+    protected function updateStartAtOfContract(Order $order)
+    {
+        $contract = $order->getContract();
+
+        $rentOperations = $order->getRentOperations();
+
         /** @var Operation $earliestOperation */
         $earliestOperation = $rentOperations->first();
         foreach ($rentOperations as $rent) {
@@ -333,18 +428,26 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
             }
         }
 
-        if (!$earliestOperation->getPaidFor() || $contract->getStartAt() === $earliestOperation->getPaidFor()) {
-            return false;
+        if ($earliestOperation->getPaidFor() &&
+            ($contract->getStartAt() === null  ||
+             $contract->getStartAt()->format('Y-m-d') !== $earliestOperation->getPaidFor()->format('Y-m-d'))
+        ) {
+            $contract->setStartAt($earliestOperation->getPaidFor());
+
+            if (!$this->em->contains($contract)) {
+                $this->em->persist($contract);
+            }
+
+            $this->em->flush($contract);
+
+            $this->logger->debug(
+                sprintf(
+                    '[OrderStatusManager]Order #%d updated start_at for contract #%d',
+                    $order->getId(),
+                    $contract->getId()
+                )
+            );
         }
-
-        $contract->setStartAt($earliestOperation->getPaidFor());
-
-        if (!$this->em->contains($contract)) {
-            $this->em->persist($contract);
-        }
-        $this->em->flush($contract);
-
-        return true;
     }
 
     /**
@@ -373,6 +476,14 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
                 $this->em->persist($payment);
             }
             $this->em->flush($payment);
+            $this->logger->debug(
+                sprintf(
+                    '[OrderStatusManager]Order #%d closed active payment #%d of contract #%d',
+                    $order->getId(),
+                    $payment->getId(),
+                    $contract->getId()
+                )
+            );
         }
     }
 
@@ -393,6 +504,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         ) {
             $this->mailer->sendOrderCancelToTenant($order);
             $this->mailer->sendOrderCancelToLandlord($order);
+            $this->logger->debug('[OrderStatusManager]Sent Reversal Emails for order #' . $order->getId());
         }
     }
 }
