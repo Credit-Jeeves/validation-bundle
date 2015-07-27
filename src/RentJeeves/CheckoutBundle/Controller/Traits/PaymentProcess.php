@@ -98,6 +98,7 @@ trait PaymentProcess
         // We can use any contract because we use only it just for get group in this case
         $token = $paymentProcessor->createBillingToken($paymentAccountMapped, $user);
         $billingAccount->setToken($token);
+        $billingAccount->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
 
         $em->persist($billingAccount);
         $em->flush();

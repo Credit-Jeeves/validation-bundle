@@ -932,6 +932,17 @@ class Contract extends Base
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupSettings")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\GroupSettings")
+     * @Serializer\Groups({"payRent"})
+     */
+    public function getGroupSettings()
+    {
+        return $this->getGroup()->getGroupSettings();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("groupSetting")
      * @Serializer\Type("RentJeeves\DataBundle\Entity\GroupSettings")
      * @Serializer\Groups({"payRent"})
@@ -1061,5 +1072,31 @@ class Contract extends Base
         }
 
         return false;
+    }
+
+    /**
+     * @link https://credit.atlassian.net/browse/RT-1006
+     *
+     * Setting paidTo logic from contract waiting.
+     * Use this method only when contract created from contract waiting and need set up paidTo.
+     */
+    public function setPaidToByBalanceDue()
+    {
+        $this->getDueDate();
+        $paidTo = new DateTime();
+        $paidTo->setDate(
+            null,
+            null,
+            $this->getDueDate()
+        );
+        //if balance is >0 then balance due, set paidTo to duedate to current month.
+        if ($this->getIntegratedBalance() > 0) {
+            $this->setPaidTo($paidTo);
+
+            return;
+        }
+        $paidTo->modify('+1 month');
+        //if balance is <=0 then no balance due, set paidTo to duedate in month future. (+1)
+        $this->setPaidTo($paidTo);
     }
 }

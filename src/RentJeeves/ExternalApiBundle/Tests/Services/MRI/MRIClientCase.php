@@ -105,18 +105,18 @@ class MRIClientCase extends Base
             count($mriResponse->getValues()),
             'MRI Dataset not the size expected - did it change?'
         );
+
         /** @var Value $value */
-        $value = $mriResponse->getValues()[18];
+        $value = $mriResponse->getValues()[3];
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
         $this->assertNotEmpty($value->getResidentId());
         $this->assertNotEmpty($value->getUnitId());
         $this->assertNotEmpty($value->getFirstName());
         $this->assertNotEmpty($value->getLastName());
-        $this->assertNotEmpty($value->getLeaseBalance());
+        $this->assertGreaterThan(0, $value->getLeaseBalance());
         $this->assertNotEmpty($value->getLeaseMonthlyRentAmount());
         $this->assertInstanceOf('\DateTime', $value->getLastUpdateDate());
         $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
-        $this->assertInstanceOf('\DateTime', $value->getLeaseStart());
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ExternalApiBundle\Model;
 
-use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 

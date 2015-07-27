@@ -2,7 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
@@ -26,7 +26,7 @@ class TransactionRepository extends EntityRepository
             h.transactionId,
             o.sum as amount,
             date_format(h.createdAt, '%m/%d/%Y') as dateInitiated,
-            o.type as paymentType,
+            o.paymentType as paymentType,
             o.status as orderStatus,
             h.status as transactionStatus,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
@@ -124,8 +124,8 @@ class TransactionRepository extends EntityRepository
         $query->setParameter('start', $start);
         $query->setParameter('end', $end);
 
-        $query->andWhere('o.type in (:paymentTypes)');
-        $query->setParameter('paymentTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->andWhere('o.paymentType in (:paymentTypes)');
+        $query->setParameter('paymentTypes', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
 
         $query->andWhere('g.id in (:groups)');
         $query->setParameter('groups', $this->getGroupIds($groups));
@@ -159,7 +159,7 @@ class TransactionRepository extends EntityRepository
             o.sum as amount,
             date_format(h.createdAt, '%m/%d/%Y') as reversalDate,
             date_format(o.created_at, '%m/%d/%Y') as originDate,
-            o.type as paymentType,
+            o.paymentType as paymentType,
             o.status as orderStatus,
             h.status as transactionStatus,
             h.messages,
@@ -210,7 +210,7 @@ class TransactionRepository extends EntityRepository
         $query->groupBy('batch');
 
         if ($accountType) {
-            $query->andWhere('o.type = :type');
+            $query->andWhere('o.paymentType = :type');
             $query->setParameter('type', $accountType);
         }
 
@@ -238,7 +238,7 @@ class TransactionRepository extends EntityRepository
         $query->andWhere('h.depositDate IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
         if ($accountType) {
-            $query->andWhere('o.type = :type');
+            $query->andWhere('o.paymentType = :type');
             $query->setParameter('type', $accountType);
         }
         $query->groupBy('batch');

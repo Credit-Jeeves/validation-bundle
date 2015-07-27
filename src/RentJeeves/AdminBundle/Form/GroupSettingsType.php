@@ -119,6 +119,22 @@ class GroupSettingsType extends Base
 
         $builder->add('paymentProcessor', 'choice', ['choices' => PaymentProcessor::cachedTitles()]);
 
+        $builder->add(
+            'feeCC',
+            'number',
+            ['label' => 'CC Fee (%)', 'required' => false]
+        );
+        $builder->add(
+            'feeACH',
+            'number',
+            ['label' => 'ACH Fee ($)', 'required' => false]
+        );
+        $builder->add(
+            'passedAch',
+            'checkbox',
+            ['label' => 'Is passed ach', 'required' => false]
+        );
+
         $self = $this;
 
         $builder->addEventListener(

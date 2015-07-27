@@ -97,9 +97,10 @@ class ModelsCase extends BaseTestCase
         $this->assertEquals(999, $detail->getAmount());
         $this->assertEquals('', $detail->getReturnCode());
 
-        $this->assertCount(1, $originator->getRefundedStoppedChecks()->getPayments());
-        $this->assertCount(1, $originator->getReissuedStoppedChecks()->getPayments());
         $this->assertCount(1, $originator->getStoppedChecks()->getPayments());
+        $this->assertCount(1, $originator->getReissuedStoppedChecks()->getPayments());
+        $this->assertCount(1, $originator->getCorrectedDuplicatePayments()->getPayments());
+        $this->assertCount(1, $originator->getRefundedReturnedPayments()->getPayments());
     }
 
     /**

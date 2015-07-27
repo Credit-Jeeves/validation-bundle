@@ -1,86 +1,79 @@
-model: CreditJeeves\DataBundle\Entity\Order
+model: CreditJeeves\DataBundle\Entity\OrderSubmerchant
 fixtures:
-  rjOrder_1:
-    user: Tenant_1
-    status: complete
-    type: heartland_card
-    sum: 1500
-    created_at: '-50 days'
-    updated_at: '-50 days'
   rjOrder_2:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-40 days'
     updated_at: '-40 days'
   rjOrder_3:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-30 days'
     updated_at: '-30 days'
   rjOrder_3_error:
     user: Tenant_1
     status: error
-    type: heartland_card
+    paymentType: card
     sum: 3000
     created_at: '-30 days'
     updated_at: '-30 days'
   rjOrder_3_cancelled:
     user: Tenant_1
     status: cancelled
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: 'now'
     updated_at: 'now'
   rjOrder_3_refunded:
     user: Tenant_1
     status: refunded
-    type: heartland_card
+    paymentType: card
     sum: 700
     created_at: '-30 days'
     updated_at: '-30 days'
   rjOrder_3_returned:
     user: Tenant_1
     status: returned
-    type: heartland_card
+    paymentType: card
     sum: 750
     created_at: '-30 days'
     updated_at: '-30 days'
   rjOrder_3_returned_1:
-      user: Tenant_1
-      status: returned
-      type: heartland_bank
-      sum: 800
-      created_at: '-30 days'
-      updated_at: '-30 days'
+    user: Tenant_1
+    status: returned
+    paymentType: bank
+    sum: 800
+    created_at: '-30 days'
+    updated_at: '-30 days'
   rjOrder_4:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-20 days'
     updated_at: '-20 days'
   rjOrder_5:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-10 days'
     updated_at: '-10 days'
   rjOrder_6:
     user: Tenant_1
     status: new
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-2 days'
     updated_at: '-2 days'
   rjOrder_66:
     user: Tenant_6
     status: new
-    type: heartland_card
+    paymentType: card
     sum: 3700
     created_at: 'now'
     updated_at: 'now'
@@ -88,77 +81,77 @@ fixtures:
   rjOrder_3_1:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-370 days'
     updated_at: '-372 days'
   rjOrder_3_2_1:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-340 days'
     updated_at: '-335 days'
   rjOrder_3_2_2:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-340 days'
     updated_at: '-342 days'
   rjOrder_3_3:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-310 days'
     updated_at: '-312 days'
   rjOrder_3_4:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-280 days'
     updated_at: '-282 days'
   rjOrder_3_5:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-250 days'
     updated_at: '-252 days'
   rjOrder_3_6:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-220 days'
     updated_at: '-222 days'
   rjOrder_3_7:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-190 days'
     updated_at: '-192 days'
   rjOrder_3_8:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-160 days'
     updated_at: '-162 days'
   rjOrder_3_9:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-130 days'
     updated_at: '-132 days'
   rjOrder_3_10:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-100 days'
     updated_at: '-102 days'
@@ -166,49 +159,49 @@ fixtures:
   rjOrder_4_1:
     user: Tenant_2
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-8 month'
     updated_at: '-8 month'
   rjOrder_4_2:
     user: Tenant_2
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-7 month'
     updated_at: '-7 month'
   rjOrder_4_3:
     user: Tenant_2
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-6 month'
     updated_at: '-6 month'
   rjOrder_4_4:
     user: Tenant_2
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-5 month'
     updated_at: '-5 month'
   rjOrder_4_5:
     user: Tenant_2
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-4 month'
     updated_at: '-4 month'
   rjOrder_4_6:
     user: Tenant_2
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-3 month'
     updated_at: '-3 month'
   rjOrder_4_7:
     user: Tenant_2
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-2 month'
     updated_at: '-2 month'
@@ -216,84 +209,84 @@ fixtures:
   rjOrder_5_1:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-11 month'
     updated_at: '-11 month'
   rjOrder_5_2:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-10 month'
     updated_at: '-10 month'
   rjOrder_5_3:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-10 month'
     updated_at: '-10 month'
   rjOrder_5_4:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-8 month'
     updated_at: '-8 month'
   rjOrder_5_5:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-7 month'
     updated_at: '-7 month'
   rjOrder_5_6:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-5 month'
     updated_at: '-5 month'
   rjOrder_5_7:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-5 month'
     updated_at: '-5 month'
   rjOrder_5_8:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-4 month'
     updated_at: '-4 month'
   rjOrder_5_9:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-3 month'
     updated_at: '-3 month'
   rjOrder_5_10:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-2 month'
     updated_at: '-2 month'
   rjOrder_5_11:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-1 month'
     updated_at: '-1 month'
   rjOrder_5_12:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1250
     created_at: '-1 days'
     updated_at: '-1 days'
@@ -301,14 +294,14 @@ fixtures:
   rjOrder_6_1:
     user: Tenant_12
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1
     created_at: '-1 days'
     updated_at: '-1 days'
   rjOrder_6_2:
     user: Tenant_12
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 2
     created_at: '-1 days'
     updated_at: '-1 days'
@@ -316,7 +309,7 @@ fixtures:
   rjOrder_8:
     user: Tenant_12
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1500
     created_at: '-1 month'
     updated_at: '-1 month'
@@ -324,35 +317,35 @@ fixtures:
   rjOrder_9_1:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1000
     created_at: '2014-01-01'
     updated_at: '2014-01-01'
   rjOrder_9_2:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1000
     created_at: '2014-02-01'
     updated_at: '2014-02-01'
   rjOrder_9_3:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1000
     created_at: '2014-03-01'
     updated_at: '2014-03-01'
   rjOrder_9_4_1:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 820
     created_at: '2014-04-01'
     updated_at: '2014-04-01'
   rjOrder_9_4_2:
     user: Tenant_1
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 180
     created_at: '2014-05-05'
     updated_at: '2014-05-05'
@@ -360,7 +353,7 @@ fixtures:
   rjOrder_10:
     user: Tenant_16
     status: complete
-    type: heartland_card
+    paymentType: card
     sum: 1111
     created_at: '-1 days'
     updated_at: '-1 days'

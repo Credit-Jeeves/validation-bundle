@@ -2,10 +2,10 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Transaction;
@@ -68,14 +68,17 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($property);
         $this->assertNotNull($group);
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::COMPLETE);
-        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(999);
         $order->setUser($tenant);
         $oneWeekAgo = new DateTime();
         $oneWeekAgo->modify("-7 days");
         $order->setCreatedAt($oneWeekAgo);
+        $em->persist($order);
+        $em->flush($order);
+
         /** @var UnitMapping $unitMapping */
         $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(['externalUnitId' => 'AAABBB-7']);
         $this->assertNotNull($unitMapping);
@@ -95,6 +98,7 @@ class ExportCase extends BaseTestCase
         $operation->setOrder($order);
         $operation->setPaidFor(new DateTime('8/1/2014'));
         $operation->setContract($contract);
+        $order->addOperation($operation);
 
         $transaction = new Transaction();
         $transaction->setIsSuccessful(false);
@@ -102,6 +106,7 @@ class ExportCase extends BaseTestCase
         $transaction->setTransactionId("1");
         $transaction->setAmount(999);
         $transaction->setMerchantName('MrchntNm');
+        $order->addTransaction($transaction);
 
         $em->persist($order);
         $em->persist($operation);

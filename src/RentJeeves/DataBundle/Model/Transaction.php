@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\Order as OrderEntity;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity as Entity;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
@@ -23,7 +23,7 @@ abstract class Transaction
     protected $id;
 
     /**
-     * @var Order
+     * @var OrderEntity
      *
      * @ORM\ManyToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
@@ -55,7 +55,7 @@ abstract class Transaction
      *
      * @ORM\Column(
      *     name="batch_id",
-     *     type="integer",
+     *     type="string",
      *     nullable=true
      * )
      */
@@ -171,15 +171,15 @@ abstract class Transaction
     }
 
     /**
-     * @param Order $order
+     * @param OrderEntity $order
      */
-    public function setOrder(Order $order)
+    public function setOrder(OrderEntity $order)
     {
         $this->order = $order;
     }
 
     /**
-     * @return Order
+     * @return OrderEntity
      */
     public function getOrder()
     {

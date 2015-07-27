@@ -4,3 +4,7 @@ fixtures:
         holding: rjHolding_1
         property: Property_1
         externalPropertyId: 'rnttrk01'
+    PropertyMapping_2:
+        holding: rjHolding_1
+        property: Property_2
+        externalPropertyId: 'rnttrk02'

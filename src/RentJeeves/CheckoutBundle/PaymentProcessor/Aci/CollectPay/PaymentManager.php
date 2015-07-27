@@ -3,7 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use ACI\Client\CollectPay\Enum\BankAccountType;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use Payum\AciCollectPay\Model\Enum\FundingAccountType;
 use Payum\AciCollectPay\Model\Payment;
@@ -23,8 +23,9 @@ class PaymentManager extends AbstractManager
     /**
      * @param  Order $order
      * @param  PaymentAccountInterface $paymentAccount
-     * @param string $paymentType
-     * @return string
+     * @param  string $paymentType
+     * @return bool
+     * @throws \Exception
      */
     public function executePayment(Order $order, PaymentAccountInterface $paymentAccount, $paymentType)
     {
@@ -61,6 +62,7 @@ class PaymentManager extends AbstractManager
 
         $transaction->setOrder($order);
         $transaction->setMerchantName($payment->getDivisionBusinessId());
+        $transaction->setBatchId($this->getBatchIdForOrder($order));
 
         if ($paymentAccount instanceof PaymentAccount) {
             $transaction->setPaymentAccount($paymentAccount);
@@ -83,7 +85,7 @@ class PaymentManager extends AbstractManager
             $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
         }
 
-        $transaction->setMessages($request->getMessages());
+        $transaction->setMessages(self::removeDebugInformation($request->getMessages()));
         $transaction->setIsSuccessful($request->getIsSuccessful());
         $transaction->setTransactionId($request->getModel()->getConfirmationNumber());
 
@@ -100,20 +102,7 @@ class PaymentManager extends AbstractManager
             )
         );
 
-        return $this->getOrderStatus($request->getIsSuccessful());
-    }
-
-    /**
-     * @param  bool   $isSuccessful
-     * @return string
-     */
-    protected function getOrderStatus($isSuccessful)
-    {
-        if (!$isSuccessful) {
-            return OrderStatus::ERROR;
-        }
-
-        return OrderStatus::COMPLETE;
+        return !!$request->getIsSuccessful();
     }
 
     /**
@@ -143,5 +132,25 @@ class PaymentManager extends AbstractManager
                 'Undefined type of payment account or incorrect payment type'
             );
         }
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return string
+     */
+    protected function getBatchIdForOrder(Order $order)
+    {
+        if (null !== $contract = $order->getContract()) {
+            $group = $contract->getGroup();
+        } else {
+            /** @var Operation $firstOperation */
+            $firstOperation = $order->getOperations()->first();
+            $group = $firstOperation->getGroup();
+        }
+
+        $date = new \DateTime();
+
+        return sprintf('%dB%s', $group->getId(), $date->format('Ymd'));
     }
 }

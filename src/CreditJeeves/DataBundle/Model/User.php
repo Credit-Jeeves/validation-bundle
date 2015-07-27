@@ -23,7 +23,7 @@ use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\MappedSuperclass
- * @UniqueEntity(fields={"email"}, groups={"invite", "import"})
+ * @UniqueEntity(fields={"email"}, groups={"invite", "import", "landlordImport"})
  */
 abstract class User extends BaseUser
 {
@@ -55,7 +55,8 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Length(
@@ -72,14 +73,16 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Regex(
      *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
      *     message="regexp.error.name",
      *     groups = {
-     *         "import"
+     *         "import",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Regex(
@@ -130,7 +133,8 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Length(
@@ -147,14 +151,16 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Regex(
      *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
      *     message="regexp.error.name",
      *     groups = {
-     *         "import"
+     *         "import",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Regex(
@@ -177,7 +183,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "invitationApi",
      *         "tenant_invite",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Email(
@@ -189,7 +196,8 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @InviteEmail(
@@ -326,7 +334,8 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "invitationApi",
      *         "api",
-     *         "import_phone"
+     *         "import_phone",
+     *         "landlordImport"
      *     }
      * )
      */

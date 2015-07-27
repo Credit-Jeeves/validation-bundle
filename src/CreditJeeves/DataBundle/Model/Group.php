@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
+use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -61,7 +62,8 @@ abstract class Group
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="groups"
+     *     inversedBy="groups",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="holding_id",
@@ -121,6 +123,8 @@ abstract class Group
     /**
      * @ORM\Column(type="string")
      * @Serializer\Groups({"AdminProperty"});
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $name;
 
@@ -161,6 +165,8 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $street_address_1;
 
@@ -171,16 +177,22 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $city;
 
     /**
      * @ORM\Column(type="string", nullable=true, length=7)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $state;
 
     /**
      * @ORM\Column(type="string", nullable=true, length=15)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $zip;
 
@@ -430,6 +442,8 @@ abstract class Group
      *      type="string",
      *      nullable=true
      * )
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $mailingAddressName;
 
@@ -443,6 +457,25 @@ abstract class Group
      * )
      */
     protected $orderAlgorithm = OrderAlgorithmType::SUBMERCHANT;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AciImportProfileMap",
+     *     mappedBy="group"
+     * )
+     *
+     * @var AciImportProfileMap
+     */
+    protected $aciImportProfileMap;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="external_group_id", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
+     */
+    protected $externalGroupId;
 
     public function __construct()
     {
@@ -1408,5 +1441,53 @@ abstract class Group
     public function setAciCollectPayProfile($aciCollectPayProfile)
     {
         $this->aciCollectPayProfile = $aciCollectPayProfile;
+    }
+
+    /**
+     * @return AciImportProfileMap
+     */
+    public function getAciImportProfileMap()
+    {
+        return $this->aciImportProfileMap;
+    }
+
+    /**
+     * @param AciImportProfileMap $aciImportProfileMap
+     */
+    public function setAciImportProfileMap(AciImportProfileMap $aciImportProfileMap)
+    {
+        $this->aciImportProfileMap = $aciImportProfileMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalGroupId()
+    {
+        return $this->externalGroupId;
+    }
+
+    /**
+     * @param string $externalGroupId
+     */
+    public function setExternalGroupId($externalGroupId)
+    {
+        $this->externalGroupId = $externalGroupId;
+    }
+
+    /**
+     * @Assert\True(message = "error.group.required_fields_for_paydirect", groups={"holding"})
+     */
+    public function isMailingAddressNotEmptyForPayDirect()
+    {
+        if ($this->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
+            (empty($this->mailingAddressName) || empty($this->city) || empty($this->state) || empty($this->zip) ||
+                empty($this->street_address_1)
+            )
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

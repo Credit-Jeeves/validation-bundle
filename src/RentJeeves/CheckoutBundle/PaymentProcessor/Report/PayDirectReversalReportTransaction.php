@@ -4,8 +4,8 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
 class PayDirectReversalReportTransaction extends PaymentProcessorReportTransaction
 {
-    const TYPE_RETURN = 'return';
-    const TYPE_REFUND = 'refund';
+    const TYPE_REISSUED = 'reissued';
+    const TYPE_REFUNDING = 'refunding';
 
     /**
      * @var \DateTime

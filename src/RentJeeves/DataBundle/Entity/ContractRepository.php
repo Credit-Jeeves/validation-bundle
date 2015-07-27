@@ -4,7 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Entity\Holding;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -378,7 +378,7 @@ class ContractRepository extends EntityRepository
 
     public function getPaymentsToLandlord(
         $orderStatus = array(OrderStatus::COMPLETE),
-        $orderType = array(OrderType::HEARTLAND_BANK, OrderType::HEARTLAND_CARD)
+        $orderType = array(OrderPaymentType::BANK, OrderPaymentType::CARD)
     ) {
         $start = new DateTime();
         $end = new DateTime('+1 day');
@@ -390,8 +390,8 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('operation.order', 'o');
         $query->where('o.status IN (:orderStatus)');
         $query->setParameter('orderStatus', $orderStatus);
-        $query->andWhere('o.type in (:orderType)');
-        $query->setParameter('orderType', $orderType);
+        $query->andWhere('o.paymentType in (:paymentType)');
+        $query->setParameter('paymentType', $orderType);
         $query->andWhere('o.updated_at BETWEEN :start AND :end');
         $query->setParameter('start', $start->format('Y-m-d'));
         $query->setParameter('end', $end->format('Y-m-d'));
@@ -1061,14 +1061,14 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param Holding $holding
-     * @param Property $property
+     * @param PropertyMapping $propertyMapping
      * @param string $residentId
      * @param string $externalUnitId
      * @return Contract[]
      */
-    public function findContractsByHoldingPropertyResidentAndExternalUnitId(
+    public function findContractsByHoldingPropertyMappingResidentAndExternalUnitId(
         Holding $holding,
-        Property $property,
+        PropertyMapping $propertyMapping,
         $residentId,
         $externalUnitId
     ) {
@@ -1076,20 +1076,22 @@ class ContractRepository extends EntityRepository
         $query->select('c');
         $query->innerJoin('c.unit', 'u');
         $query->innerJoin('u.unitMapping', 'um');
+        $query->innerJoin('c.property', 'p');
+        $query->innerJoin('p.propertyMapping', 'pm');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
         $query->innerJoin('c.tenant', 't');
         $query->innerJoin('t.residentsMapping', 'rm');
 
         $query->where('c.status in (:statuses)');
-        $query->andWhere('c.property = :propertyId');
+        $query->andWhere('pm.externalPropertyId = :propertyId');
         $query->andWhere('c.holding = :holdingId');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('um.externalUnitId = :externalUnitId');
         $query->andWhere('rm.residentId = :residentId');
 
         $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
-        $query->setParameter('propertyId', $property->getId());
+        $query->setParameter('propertyId', $propertyMapping->getExternalPropertyId());
         $query->setParameter('holdingId', $holding->getId());
         $query->setParameter('externalUnitId', $externalUnitId);
         $query->setParameter('residentId', $residentId);

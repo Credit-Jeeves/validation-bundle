@@ -612,11 +612,21 @@ body{
     background-image: none;
 }
 
+.paymentHistoryPage .ui-content{
+    background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png);
+    background-size: cover;
+}
+
+.fa .fa-bars{
+    background: none; color: white; font-size: 22pt;
+}
+
 .paymentHistoryTable{
     background: rgb(220,220,220);
     border-radius: 5px;
     text-shadow: none;
     font-family: PT Sans Caption;
+    width: 100%;
 }
 
 .paymentHistoryTable td{
@@ -651,4 +661,41 @@ body{
 
 .ui-btn-icon-left:after, .ui-btn-icon-right:after, .ui-btn-icon-top:after, .ui-btn-icon-bottom:after, .ui-btn-icon-notext:after{
     background-color: #00aeef;
+}
+
+
+.headerLogo{
+    width: 100%;
+}
+
+.selectedMenuOption{
+    color: #666 !important;
+}
+
+.menu{
+    background: black;
+}
+
+.mainHeader{
+    font-size: 14pt;
+    color: white;
+    text-shadow: none;
+}
+
+.sideMenu{
+    background: black !important;
+}
+
+.contractBox{
+    border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;
+}
+
+.loadingPaymentHistory{
+    color: black;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    left: 50%;
+    position: relative;
+    margin-left: -53px;
 }

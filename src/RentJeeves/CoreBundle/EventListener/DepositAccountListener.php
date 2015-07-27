@@ -29,13 +29,6 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
  *         "method"="preUpdate"
  *     }
  * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="postLoad",
- *         "method"="postLoad"
- *     }
- * )
  */
 class DepositAccountListener
 {
@@ -108,21 +101,6 @@ class DepositAccountListener
 
         foreach ($usersAdminList as $user) {
             $mail->merchantNameSetuped($user, $group);
-        }
-    }
-
-    public function postLoad(LifecycleEventArgs $eventArgs)
-    {
-        /** @var $entity DepositAccount */
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof DepositAccount) {
-            return;
-        }
-        if (null === $entity->getFeeACH()) {
-            $entity->setFeeACH((float)$this->feeACH);
-        }
-        if (null === $entity->getFeeCC()) {
-            $entity->setFeeCC((float)$this->feeCC);
         }
     }
 }

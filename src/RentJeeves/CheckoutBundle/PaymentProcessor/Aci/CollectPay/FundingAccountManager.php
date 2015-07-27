@@ -6,6 +6,7 @@ use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\User;
 use Payum\AciCollectPay\Request\ProfileRequest\AddFunding;
+use Payum\AciCollectPay\Request\ProfileRequest\ModifyFunding;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
@@ -35,7 +36,37 @@ class FundingAccountManager extends AbstractManager
         FundingAccountData $fundingAccountData,
         User $user = null
     ) {
-        throw new \Exception("modifyFundingAccount is not implement yet for aci_collect_pay.");
+        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $user);
+        $fundingAccount->setFundingAccountId($fundingAccountId);
+
+        $profile = new RequestModel\Profile();
+        $profile->setProfileId($profileId);
+        $profile->setFundingAccount($fundingAccount);
+
+        $request = new ModifyFunding($profile);
+
+        try {
+            $this->paymentProcessor->execute($request);
+        } catch (\Exception $e) {
+            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            throw $e;
+        }
+
+        if (!$request->getIsSuccessful()) {
+            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
+        }
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Modify funding account with id = "%s" to profile "%d" for user with id = "%d"',
+                $fundingAccountId,
+                $profileId,
+                $user->getId()
+            )
+        );
+
+        return $fundingAccountId;
     }
 
     /**
@@ -238,7 +269,7 @@ class FundingAccountManager extends AbstractManager
 
         if (!$request->getIsSuccessful()) {
             $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
-            throw new PaymentProcessorRuntimeException($request->getMessages());
+            throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
         }
 
         return $request->getModel()->getFundingAccount()->getFundingAccountId();

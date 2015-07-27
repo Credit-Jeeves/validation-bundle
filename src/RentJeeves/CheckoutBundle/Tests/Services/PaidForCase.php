@@ -3,7 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
@@ -53,7 +53,7 @@ class PaidForCase extends BaseTestCase
         $contract->setRent(1000);
         $contract->setDueDate(28);
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation1 = new Operation();
@@ -145,7 +145,7 @@ class PaidForCase extends BaseTestCase
         $contract->setStartAt($startAt->modify('-1 month '));
         $contract->setPaidTo($paidTo);
         $contract->setRent(1000);
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::COMPLETE);
         $operation1 = new Operation();
         $operation1->setAmount(500);

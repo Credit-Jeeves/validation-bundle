@@ -138,13 +138,20 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     ) {
         PaymentProcessorInvalidArgumentException::assertPaymentGroundType($paymentType);
 
-        if ($paymentType === PaymentGroundType::RENT && !$this->isAllowedToExecuteOrder($order, $accountEntity)) {
+        if (!$this->isAllowedToExecuteOrder($order, $accountEntity)) {
             throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
-                PaymentProcessor::ACI_COLLECT_PAY
+                PaymentProcessor::ACI
             );
         }
 
         if (PaymentGroundType::CHARGE === $paymentType || PaymentGroundType::RENT === $paymentType) {
+            if ($order->hasContract() && !$order->getContract()->getAciCollectPayContractBilling()) {
+                $this->billingAccountManager->addBillingAccount(
+                    $order->getContract()->getTenant()->getAciCollectPayProfileId(),
+                    $order->getContract()
+                );
+            }
+
             return $this->paymentManager->executePayment($order, $accountEntity, $paymentType);
         } else {
             throw new \Exception(
@@ -168,9 +175,8 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
      */
     protected function isAllowedToExecuteOrder(Order $order, PaymentAccountInterface $paymentAccount)
     {
-        if ($paymentAccount instanceof PaymentAccount &&
-            $order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
-            $order->getPaymentProcessor() == PaymentProcessor::ACI_COLLECT_PAY
+        if ($order->getPaymentProcessor() == $paymentAccount->getPaymentProcessor() &&
+            $order->getPaymentProcessor() == PaymentProcessor::ACI
         ) {
             return true;
         }

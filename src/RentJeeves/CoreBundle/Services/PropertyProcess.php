@@ -11,7 +11,7 @@ use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use CreditJeeves\DataBundle\Entity\Group;
-use Geocoder\Geocoder;
+use Geocoder\Geocoder as GoogleGeoCoder;
 use Exception;
 use RuntimeException;
 use Monolog\Logger;
@@ -30,7 +30,7 @@ class PropertyProcess
     protected $em;
 
     /**
-     * @var Geocoder
+     * @var GoogleGeoCoder
      */
     protected $geocoder;
 
@@ -68,7 +68,7 @@ class PropertyProcess
     public function __construct(
         EntityManager $em,
         Google $google,
-        Geocoder $geocoder,
+        GoogleGeoCoder $geocoder,
         ExceptionCatcher $exceptionCatcher,
         Logger $logger
     ) {

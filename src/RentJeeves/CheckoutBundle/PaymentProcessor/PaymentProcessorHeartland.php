@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ChargeHeartland;
@@ -95,11 +96,13 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     ) {
         PaymentProcessorInvalidArgumentException::assertPaymentGroundType($paymentType);
 
-        if (PaymentGroundType::CHARGE !== $paymentType && !$this->isAllowedToExecuteOrder($order, $accountEntity)) {
+        if (!$this->isAllowedToExecuteOrder($order, $accountEntity)) {
             throw PaymentProcessorInvalidArgumentException::invalidPaymentProcessor(
                 PaymentProcessor::HEARTLAND
             );
-        } elseif (PaymentGroundType::CHARGE === $paymentType) {
+        }
+
+        if (PaymentGroundType::CHARGE === $paymentType) {
             return $this->chargeManager->executePayment($order, $accountEntity);
         }
 
@@ -121,7 +124,7 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
      */
     protected function isAllowedToExecuteOrder(Order $order, PaymentAccountInterface $paymentAccount)
     {
-        if ($paymentAccount instanceof PaymentAccount &&
+        if ($order instanceof OrderSubmerchant &&
             $order->getPaymentProcessor() === PaymentProcessor::HEARTLAND &&
             $order->getPaymentProcessor() === $paymentAccount->getPaymentProcessor()
         ) {

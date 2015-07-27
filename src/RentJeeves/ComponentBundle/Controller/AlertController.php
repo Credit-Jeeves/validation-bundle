@@ -2,13 +2,13 @@
 
 namespace RentJeeves\ComponentBundle\Controller;
 
+use CreditJeeves\CoreBundle\Controller\BaseController;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 
-class AlertController extends Controller
+class AlertController extends BaseController
 {
     /**
      * @Template
@@ -17,10 +17,10 @@ class AlertController extends Controller
      */
     public function indexAction()
     {
-        $alerts = array();
+        $alerts = [];
         $user = $this->getUser();
         $translator = $this->get('translator.default');
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getEntityManager();
 
         $inviteCode = $user->getInviteCode();
         if (!empty($inviteCode)) {
@@ -32,26 +32,20 @@ class AlertController extends Controller
             $groups = $em->getRepository('DataBundle:Group')->getGroupsWithoutDepositAccount($holding);
             // alerts about merchant name
             foreach ($groups as $group) {
-                $alerts[] = $translator->
-                    trans(
-                        'deposit.merchant.setup.admin',
-                        array(
-                            '%GROUP%' => $group->getName()
-                        )
-                    );
+                $alerts[] = $translator->trans('deposit.merchant.setup.admin', ['%GROUP%' => $group->getName()]);
             }
             // alerts about pending contracts
             $groups = $em->getRepository('DataBundle:Group')->getGroupsWithPendingContracts($holding);
             foreach ($groups as $group) {
                 $text = $translator->
-                    transChoice(
-                        'landlord.alert.pending-contract.admin',
-                        $group['amount_pending'],
-                        array(
-                            '%count%' => $group['amount_pending'],
-                            '%group%' => $group['group_name']
-                        )
-                    );
+                transChoice(
+                    'landlord.alert.pending-contract.admin',
+                    $group['amount_pending'],
+                    [
+                        '%count%' => $group['amount_pending'],
+                        '%group%' => $group['group_name']
+                    ]
+                );
                 $alerts[] = $text;
             }
         } else {
@@ -69,7 +63,7 @@ class AlertController extends Controller
             if (empty($billing)) {
                 $alerts[] = $translator->trans(
                     'landlord.payment_account.set_up_message',
-                    array('%payment_account_url%' => $this->generateUrl('settings_payment_accounts'))
+                    ['%payment_account_url%' => $this->generateUrl('settings_payment_accounts')]
                 );
             }
 
@@ -78,16 +72,14 @@ class AlertController extends Controller
                 $text = $translator->transChoice(
                     'landlord.alert.pending-contracts.landlord',
                     $pendingContractsCount,
-                    array('%COUNT%' => $pendingContractsCount)
+                    ['%COUNT%' => $pendingContractsCount]
                 );
 
                 $alerts[] = $text;
             }
         }
 
-        return array(
-            'alerts' => $alerts
-        );
+        return ['alerts' => $alerts];
     }
 
     /**

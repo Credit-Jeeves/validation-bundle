@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Property;
@@ -13,36 +13,8 @@ use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
-/**
- * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
- *
- * Aliases for this class
- * o - Order
- * p - payment, table rj_payment, class Payment
- * c - contract, table rj_contract, class Contract
- * t - tenant, table cj_user, class Tenant
- * g - group, table cj_account_group, class Group
- * oper - Operation
- * prop - Property
- * unit - Unit
- *
- */
 class OrderRepository extends EntityRepository
 {
-    /**
-     *
-     * @param \CreditJeeves\DataBundle\Entity\User $User
-     */
-    public function deleteUserOrders(\CreditJeeves\DataBundle\Entity\User $User)
-    {
-        $query = $this->createQueryBuilder('o')
-            ->delete()
-            ->where('o.cj_applicant_id = :id')
-            ->setParameter('id', $User->getId())
-            ->getQuery()
-            ->execute();
-    }
-
     /**
      * @param  Group $group
      * @param  string $searchBy
@@ -74,8 +46,8 @@ class OrderRepository extends EntityRepository
         }
 
         if (!$showCashPayments) {
-            $query->andWhere('o.type != :cash');
-            $query->setParameter('cash', OrderType::CASH);
+            $query->andWhere('o.paymentType != :cash');
+            $query->setParameter('cash', OrderPaymentType::CASH);
         }
 
         $query->groupBy('o.id');
@@ -146,8 +118,8 @@ class OrderRepository extends EntityRepository
         }
         $this->applySortField($sort);
         if (!$showCashPayments) {
-            $query->andWhere('o.type != :cash');
-            $query->setParameter('cash', OrderType::CASH);
+            $query->andWhere('o.paymentType != :cash');
+            $query->setParameter('cash', OrderPaymentType::CASH);
         }
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
@@ -259,7 +231,7 @@ class OrderRepository extends EntityRepository
      * @param array $groups
      * @param string $exportBy
      * @param Property $property
-     * @return Order[]
+     * @return OrderSubmerchant[]
      */
     public function getOrdersForYardiGenesis(
         $start,
@@ -384,7 +356,7 @@ class OrderRepository extends EntityRepository
             ]);
         }
 
-        $query->andWhere('o.type in (:orderType)');
+        $query->andWhere('o.paymentType in (:paymentType)');
         $query->andWhere('g.id in (:groups)');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('res.holding = :holding');
@@ -395,7 +367,7 @@ class OrderRepository extends EntityRepository
         foreach ($groups as $group) {
             $groupsId[] = $group->getId();
         }
-        $query->setParameter('orderType', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->setParameter('paymentType', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
         $query->setParameter('groups', $groups);
         $query->setParameter('holding', $group->getHolding());
         $query->orderBy('res.residentId', 'ASC');
@@ -424,7 +396,7 @@ class OrderRepository extends EntityRepository
 
         $ordersQuery->setParameter('group', $group);
         if ($accountType) {
-            $ordersQuery->andWhere('o.type = :type');
+            $ordersQuery->andWhere('o.paymentType = :type');
             $ordersQuery->setParameter('type', $accountType);
         }
 
@@ -571,7 +543,7 @@ class OrderRepository extends EntityRepository
     /**
      * @param  User $user
      * @param  array $excludedStatuses
-     * @return Order[]
+     * @return OrderSubmerchant[]
      */
     public function getUserOrders(User $user, array $excludedStatuses = [OrderStatus::NEWONE])
     {

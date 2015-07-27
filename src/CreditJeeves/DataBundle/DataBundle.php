@@ -40,9 +40,15 @@ class DataBundle extends Bundle
                 'CreditJeeves\DataBundle\Enum\OrderStatus'
             );
             Type::addType(
-                'OrderType',
-                'CreditJeeves\DataBundle\Enum\OrderType'
+                'OrderPaymentType',
+                'CreditJeeves\DataBundle\Enum\OrderPaymentType'
             );
+            // TODO: Should remove after migration Version20150709123338 go to backup
+            Type::addType(
+                'OrderType',
+                'CreditJeeves\DataBundle\Enum\OrderPaymentType'
+            );
+
             Type::addType(
                 'OperationType',
                 'CreditJeeves\DataBundle\Enum\OperationType'

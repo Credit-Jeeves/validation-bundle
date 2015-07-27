@@ -5,11 +5,11 @@
 </script>
         <div data-role="page" id="main">
 
-            <div data-role="panel" id="panel" style="background: black;">
+            <div data-role="panel" id="panel" class="sideMenu">
                 <ul data-role="listview">
                     <li><a href="#main" class="menuOptions" style="color: #666 !important;">Current Payments</a></li>
                     <li><a href="#paymentHistory" class="menuOptions">Payment History</a></li>
-                    <li><a href="logout" class="menuOptions">Logout</a></li>
+                    <li><a href="logout" class="menuOptions" data-ajax="false">Logout</a></li>
                 </ul>
 
             </div>
@@ -17,16 +17,16 @@
             <div data-role="header" role="banner" class="ui-header ui-bar-inherit">
                 <a href="#panel" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
 
-                <h1 class="ui-title" role="heading" aria-level="1" style="background: transparent;"><img style="width: 100%;" src="/bundles/rjcore/images/mobile/home-logo.png"></h1>
+                <h1 class="ui-title" role="heading" aria-level="1" style="background: transparent;"><img class="headerLogo" src="/bundles/rjcore/images/mobile/home-logo.png"></h1>
             </div>
 
             <div class="ui-content" role="main" style='background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png); background-size: cover;'>
 
-            <div style="color: white; font-size: 18pt; font-weight: normal; text-shadow: none;">Payment</div>
+                <div style="color: white; font-size: 18pt; font-weight: normal; text-shadow: none;">Contracts</div>
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
                     <a href="#contract{{ contract.id }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
-            <div onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );" style="border-radius: 4px;padding: 8px;padding-left: 38px;margin-top: 20px;cursor: pointer; background: #fff; opacity: 0.8;position: relative; line-height: 1.9;">
+            <div onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );" class="contractBox">
                 <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
                 <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
                             <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
@@ -64,7 +64,7 @@
 
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
                     <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
-                    <h1 class="ui-title" role="heading" aria-level="1">Current Payment</h1>
+                    <h1 class="ui-title" role="heading" aria-level="1">Payment</h1>
                     {% if contract.status != 'pending' %}
                         <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">
                             {% if contract.payment_type != 'one_time' and contract.payment_type != 'recurring' %}
@@ -86,7 +86,7 @@
 
 
                     <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">AMOUNT</div>
-                    <div style="font-family: PT Sans Caption; font-size: 14pt;">{{ contract.rent }}</div>
+                    <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractTotal{{ contract.id }}"></div>
 
                     <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAY TO</div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractPayTo{{ contract.id }}"></div>
@@ -124,7 +124,7 @@
                     <br>
 
                     <div style="font-family: PT Sans Caption; font-size: 10pt; font-weight: bold;">
-                    Due Next: {{ contract.payment_next }} {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
+                        Due: <span id="contractDueNext{{ contract.id }}"></span>. {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
 
                 {% endif %}
                     <br>

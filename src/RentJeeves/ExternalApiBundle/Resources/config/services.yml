@@ -17,6 +17,7 @@ services:
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@amsi.resident_data"
+            - "@fp_badaboom.exception_catcher"
             - "@logger"
     mri.client:
         class: "%mri.client.class%"

@@ -3,10 +3,10 @@
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -15,7 +15,7 @@ use RentJeeves\TestBundle\BaseTestCase;
 class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
 {
     /**
-     * @return Order $order
+     * @return OrderPayDirect $order
      */
     protected function prepareOrder()
     {
@@ -24,12 +24,12 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
 
         $this->assertNotEmpty($contract, 'Please check fixtures');
 
-        $order = new Order();
+        $order = new OrderPayDirect();
         $order->setUser($contract->getTenant());
-        $order->setStatus(OrderStatus::PENDING);
-        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setStatus(OrderStatus::SENDING);
+        $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(600);
-        $order->setPaymentProcessor(PaymentProcessor::ACI_PAY_ANYONE);
+        $order->setPaymentProcessor(PaymentProcessor::ACI);
         $order->setDescriptor('Test Check');
 
         $operation = new Operation();
@@ -58,7 +58,7 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
 
         $order = $this->prepareOrder();
 
-        $orderStatus = $this->getContainer()->get('payment_processor.aci_pay_anyone')->executeOrder($order);
+        $result = $this->getContainer()->get('payment_processor.aci_pay_anyone')->executeOrder($order);
 
         $this->getEntityManager()->refresh($order);
 
@@ -70,15 +70,9 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
             'Order execution failed: ' . $order->getDepositOutboundTransaction()->getMessage()
         );
 
-        $this->assertEquals(
-            OrderStatus::SENDING,
-            $order->getStatus(),
-            sprintf('Invalid status order "%s" instead "%s"', $order->getStatus(), OrderStatus::SENDING)
-        );
-
-        $this->assertEquals(
-            OrderStatus::SENDING,
-            $orderStatus
+        $this->assertTrue(
+            $result,
+            'Order execution failed: ' . $order->getDepositOutboundTransaction()->getMessage()
         );
 
         return $order->getId();
@@ -92,8 +86,8 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
      */
     public function cancelOrder($orderId)
     {
-        /** @var Order $order */
-        $order = $this->getEntityManager()->getRepository('DataBundle:Order')->find($orderId);
+        /** @var OrderPayDirect $order */
+        $order = $this->getEntityManager()->getRepository('DataBundle:OrderPayDirect')->find($orderId);
 
         $result = $this->getContainer()->get('payment_processor.aci_pay_anyone')->cancelOrder($order);
 
@@ -109,12 +103,6 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
                 $order->getDepositOutboundTransaction()->getStatus(),
                 OutboundTransactionStatus::CANCELLED
             )
-        );
-
-        $this->assertEquals(
-            OrderStatus::ERROR,
-            $order->getStatus(),
-            sprintf('Invalid status order "%s" instead "%s"', $order->getStatus(), OrderStatus::ERROR)
         );
     }
 }

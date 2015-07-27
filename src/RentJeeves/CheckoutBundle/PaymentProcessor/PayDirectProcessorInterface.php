@@ -1,29 +1,28 @@
 <?php
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 
 interface PayDirectProcessorInterface
 {
     /**
      * Executes PayDirect order.
-     * Returns transaction id.
      *
-     * @param Order $order
+     * @param OrderPayDirect $order
      *
-     * @return string Order status
+     * @return bool
      */
-    public function executeOrder(Order $order);
+    public function executeOrder(OrderPayDirect $order);
 
     /**
      * Cancels PayDirect order.
      *
-     * @param Order $order
+     * @param OrderPayDirect $order
      *
      * @return bool
      */
-    public function cancelOrder(Order $order);
+    public function cancelOrder(OrderPayDirect $order);
 
     /**
      * Loads payment processor report.

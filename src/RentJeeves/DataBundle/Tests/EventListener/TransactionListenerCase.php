@@ -3,9 +3,9 @@
 namespace RentJeeves\DataBundle\Tests\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Transaction;
@@ -35,9 +35,9 @@ class TransactionListenerCase extends BaseTestCase
         $contract = $this->getContract($startAt, $finishAt);
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
-        $order->setType(OrderType::HEARTLAND_CARD);
+        $order->setPaymentType(OrderPaymentType::CARD);
         $order->setStatus(OrderStatus::CANCELLED);
         $order->setSum(123);
         $order->setFee(0);

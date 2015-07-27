@@ -1,22 +1,20 @@
 # It moved here because #RT-407
 
 parameters:
-    data.event_listener.order.class: RentJeeves\DataBundle\EventListener\OrderListener
+    data.event_listener.group_settings_listener.class: RentJeeves\DataBundle\EventListener\GroupSettingsListener
     data.event_listener.import_summary.class: RentJeeves\DataBundle\EventListener\ImportSummaryListener
     kernel.listener.command_dispatch.exception.class: RentJeeves\CoreBundle\EventListener\ConsoleExceptionListener
     kernel.listener.command_dispatch.terminate.class: RentJeeves\CoreBundle\EventListener\ConsoleErrorListener
     rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
-    data.event_listener.order:
-        class: "%data.event_listener.order.class%"
+    data.event_listener.group_settings_listener:
+        class: "%data.event_listener.group_settings_listener.class%"
         tags:
-            - { name: doctrine.event_listener, event: prePersist, method: prePersist }
-            - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
-            - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
+            - { name: doctrine.event_listener, event: postLoad, method: postLoad }
         arguments:
-            - "@service_container"
-            - "@logger"
+            - "%payment_card_fee%"
+            - "%payment_bank_fee%"
     data.event_listener.import_summary:
         class: "%data.event_listener.import_summary.class%"
         tags:
@@ -40,3 +38,7 @@ services:
             em: "@doctrine.orm.default_entity_manager"
             logger: "@logger"
             propertyManagement: "%property_management%"
+
+    renttrack.geocoder:
+        class: RentJeeves\CoreBundle\Services\GeoCoder
+        parent: bazinga_geocoder.geocoder

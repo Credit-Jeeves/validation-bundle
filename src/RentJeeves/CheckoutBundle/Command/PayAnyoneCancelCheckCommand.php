@@ -1,8 +1,10 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Command;
 
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
+use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,24 +23,39 @@ class PayAnyoneCancelCheckCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (false == $order = $this->getOrderById($input->getArgument('order-id'))) {
             throw new \InvalidArgumentException(sprintf('Order with id#%s not found', $input->getArgument('order-id')));
         }
-        $output->writeln((string) $this->getAciPayAnyonePaymentProcessor()->cancelOrder($order));
+
+        if ($this->getAciPayAnyonePaymentProcessor()->cancelOrder($order)) {
+            $this->getOrderStatusManager()->setError($order);
+            $output->writeln(sprintf('Order #%d has been cancelled successfully', $order->getId()));
+
+            return 0;
+        }
+
+        /** @var OutboundTransaction $outboundTransaction */
+        $outboundTransaction = $order->getDepositOutboundTransaction();
+        $output->writeln(sprintf(
+            'Order #%d has not been cancelled successfully. Reason: %s',
+            $order->getId(),
+            $outboundTransaction->getMessage()
+        ));
+
+        return 1;
     }
 
     /**
      * @param int $orderId
-     * @return Order
+     * @return OrderPayDirect
      */
     protected function getOrderById($orderId)
     {
-        return $this->getContainer()->get('doctrine')->getManager()->find('DataBundle:Order', $orderId);
+        return $this->getContainer()->get('doctrine')->getManager()->find('DataBundle:OrderPayDirect', $orderId);
     }
 
     /**
@@ -47,5 +64,13 @@ class PayAnyoneCancelCheckCommand extends ContainerAwareCommand
     protected function getAciPayAnyonePaymentProcessor()
     {
         return $this->getContainer()->get('payment_processor.aci_pay_anyone');
+    }
+
+    /**
+     * @return OrderStatusManagerInterface
+     */
+    protected function getOrderStatusManager()
+    {
+        return $this->getContainer()->get('payment_processor.order_status_manager');
     }
 }

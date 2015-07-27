@@ -28,11 +28,11 @@ class CommonSystemMocks extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\Order
+     * @return \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\OrderSubmerchant
      */
     public function getOrderMock($orderId)
     {
-        $orderMock = $this->getMock('\CreditJeeves\DataBundle\Entity\Order', ["getId"], [], '', false);
+        $orderMock = $this->getMock('\CreditJeeves\DataBundle\Entity\OrderSubmerchant', ["getId"], [], '', false);
         $orderMock->method('getId')
             ->will($this->returnValue($orderId));
 
@@ -45,5 +45,35 @@ class CommonSystemMocks extends \PHPUnit_Framework_TestCase
     public function getEntityManagerMock()
     {
         return $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\Holding
+     */
+    public function getHoldingMock()
+    {
+        $mockObj = $this->getMock('\CreditJeeves\DataBundle\Entity\Holding', [], [], '', false);
+
+        return $mockObj;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\Group
+     */
+    public function getGroupMock()
+    {
+        $mockObj = $this->getMock('\CreditJeeves\DataBundle\Entity\Group', ['getHolding'], [], '', false);
+        $mockObj->method('getHolding')
+            ->will($this->returnValue($this->getHoldingMock()));
+
+        return $mockObj;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\CoreBundle\Mailer\Mailer
+     */
+    public function getMailerMock()
+    {
+        return $this->getMock('\RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
     }
 }

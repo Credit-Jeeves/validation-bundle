@@ -3,7 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Model;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
 use JMS\Serializer\Annotation as Serializer;
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\DataBundle\Entity\YardiSettings;
@@ -40,12 +39,12 @@ class Payment
             return YardiSettings::REVERSAL_PAYMENT_TYPE;
         }
 
-        $type = $yardiSettings->getOrderType($order);
+        $type = $yardiSettings->getOrderPaymentType($order);
         if (!$type) {
             throw new Exception(
                 sprintf(
                     "Order type '%s' can't be process. Provide yardi settings for it.",
-                    $order->getType()
+                    $order->getPaymentType()
                 )
             );
         }

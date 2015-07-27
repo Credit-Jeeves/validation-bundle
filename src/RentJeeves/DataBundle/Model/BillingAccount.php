@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
 use RentJeeves\DataBundle\Enum\BankAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
@@ -76,6 +77,31 @@ abstract class BillingAccount
      * @Serializer\SerializedName("isActive")
      */
     protected $isActive = 0;
+
+    /**
+     * @ORM\Column(
+     *     type="PaymentProcessor",
+     *     name="payment_processor",
+     *     nullable=false
+     * )
+     */
+    protected $paymentProcessor = PaymentProcessor::HEARTLAND;
+
+    /**
+     * @return string
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
+    }
+
+    /**
+     * @param string $paymentProcessor
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
+    }
 
     /**
      * @return int

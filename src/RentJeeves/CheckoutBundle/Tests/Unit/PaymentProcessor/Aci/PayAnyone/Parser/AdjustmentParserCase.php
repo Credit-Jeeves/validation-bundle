@@ -30,15 +30,15 @@ class AdjustmentParserCase extends BaseTestCase
         $xml = file_get_contents($pathToFile);
 
         $logger = $this->getLoggerMock();
-        $logger->expects($this->once())
-            ->method('alert')
-            ->with('Unsupported transaction found in Aci PayAnyone report node: REISSUED_STOPPED_CHECKS.');
+        //REFUNDED_RETURNED_PAYMENTS, CORRECTED_DUPLICATE_PAYMENTS, STOPPED_CHECKS
+        $logger->expects($this->any(3))
+            ->method('alert');
 
         $parser = new AdjustmentParser($this->getSerializer(), $logger);
 
         $transactions = $parser->parse($xml);
 
-        $this->assertCount(5, $transactions);
+        $this->assertCount(4, $transactions);
         $this->assertInstanceOf(
             '\RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectDepositReportTransaction',
             $transactions[0]
@@ -55,24 +55,28 @@ class AdjustmentParserCase extends BaseTestCase
             '\RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectReversalReportTransaction',
             $transactions[3]
         );
-        $this->assertInstanceOf(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\Report\PayDirectReversalReportTransaction',
-            $transactions[4]
-        );
         /** @var PayDirectDepositReportTransaction $firstDepositTransaction */
         $firstDepositTransaction = $transactions[0];
         $this->assertEquals(null, $firstDepositTransaction->getBatchId());
         $this->assertEquals('2015-06-03', $firstDepositTransaction->getDepositDate()->format('Y-m-d'));
         $this->assertEquals('97055778', $firstDepositTransaction->getTransactionId());
         $this->assertEquals(999, $firstDepositTransaction->getAmount());
-        /** @var PayDirectReversalReportTransaction $firstReversalTransaction */
-        $firstReversalTransaction = $transactions[2];
-        $this->assertEquals(null, $firstReversalTransaction->getBatchId());
-        $this->assertEquals('2015-06-03', $firstReversalTransaction->getTransactionDate()->format('Y-m-d'));
-        $this->assertEquals('97055769', $firstReversalTransaction->getTransactionId());
-        $this->assertEquals(999, $firstReversalTransaction->getAmount());
-        $this->assertEquals('', $firstReversalTransaction->getReversalDescription());
-        $this->assertEquals('refund', $firstReversalTransaction->getTransactionType());
+        /** @var PayDirectReversalReportTransaction $refundingReversalTransaction */
+        $refundingReversalTransaction = $transactions[2];
+        $this->assertEquals(null, $refundingReversalTransaction->getBatchId());
+        $this->assertEquals('2015-06-03', $refundingReversalTransaction->getTransactionDate()->format('Y-m-d'));
+        $this->assertEquals('97055769', $refundingReversalTransaction->getTransactionId());
+        $this->assertEquals(999, $refundingReversalTransaction->getAmount());
+        $this->assertEquals('', $refundingReversalTransaction->getReversalDescription());
+        $this->assertEquals('refunding', $refundingReversalTransaction->getTransactionType());
+        /** @var PayDirectReversalReportTransaction $reissuedReversalTransaction */
+        $reissuedReversalTransaction = $transactions[3];
+        $this->assertEquals(null, $reissuedReversalTransaction->getBatchId());
+        $this->assertEquals('2015-06-03', $reissuedReversalTransaction->getTransactionDate()->format('Y-m-d'));
+        $this->assertEquals('97055775', $reissuedReversalTransaction->getTransactionId());
+        $this->assertEquals(999, $reissuedReversalTransaction->getAmount());
+        $this->assertEquals('', $reissuedReversalTransaction->getReversalDescription());
+        $this->assertEquals('reissued', $reissuedReversalTransaction->getTransactionType());
     }
 
     /**

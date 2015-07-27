@@ -29,7 +29,7 @@ class AMSIClientCase extends Base
     {
         $em = $this->getEntityManager();
         $this->settings = $em->getRepository('RjDataBundle:AMSISettings')->findOneBy(
-            ['user' => 'RentTrack']
+            ['user' => 'renttrack']
         );
     }
 
@@ -53,7 +53,7 @@ class AMSIClientCase extends Base
         $client->setDebug(false);
         $propertyResidents = $client->getPropertyResidents(self::EXTERNAL_PROPERTY_ID, 'C');
         $leases = $propertyResidents->getLeases();
-        $this->assertCount(50, $leases);
+        $this->assertCount(41, $leases);
         /** @var Lease $lease */
         $lease = $leases[0];
         $this->assertInstanceOf(
@@ -87,16 +87,16 @@ class AMSIClientCase extends Base
         $this->assertNotEmpty($openItem->getOccuLastName());
 
         $recurringCharges = $lease->getRecurringCharges();
-        $this->assertCount(2, $recurringCharges);
+        $this->assertCount(1, $recurringCharges);
         /** @var RecurringCharge $recurringCharge */
-        $recurringCharge = $recurringCharges[1];
+        $recurringCharge = $recurringCharges[0];
         $this->assertInstanceOf(
             'RentJeeves\ExternalApiBundle\Model\AMSI\RecurringCharge',
             $recurringCharge
         );
         $this->assertEquals(RecurringCharge::RENT_INCOME_CODE_ID, $recurringCharge->getIncCode());
         $this->assertEquals(RecurringCharge::FREQUENCY_MONTH, $recurringCharge->getFreqCode());
-        $this->assertEquals(1700, $recurringCharge->getAmount());
+        $this->assertEquals(1480, $recurringCharge->getAmount());
     }
 
     /**
@@ -107,7 +107,7 @@ class AMSIClientCase extends Base
         $client = $this->getClient();
         $client->setDebug(false);
         $units = $client->getPropertyUnits(self::EXTERNAL_PROPERTY_ID);
-        $this->assertCount(64, $units);
+        $this->assertCount(63, $units);
         /** @var Unit $unit */
         $unit = $units[0];
         $this->assertInstanceOf(

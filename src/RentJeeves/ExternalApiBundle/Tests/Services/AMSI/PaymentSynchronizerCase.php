@@ -28,9 +28,9 @@ class PaymentSynchronizerCase extends BaseTestCase
 
         $transaction = $this->createTransaction(
             ApiIntegrationType::AMSI,
-            'test',
+            '4492',
             '001',
-            20,
+            13,
             '001|01|101'
         );
 

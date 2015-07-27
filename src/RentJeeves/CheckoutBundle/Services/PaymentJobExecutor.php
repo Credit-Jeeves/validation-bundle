@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\Services;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
@@ -139,7 +139,7 @@ class PaymentJobExecutor
         $filterClosure = function (Operation $operation) use ($date) {
             if (($order = $operation->getOrder()) &&
                 $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
-                $order->getType() != OrderType::CASH &&
+                $order->getPaymentType() != OrderPaymentType::CASH &&
                 OrderStatus::ERROR != $order->getStatus() &&
                 OrderStatus::CANCELLED != $order->getStatus()
             ) {

@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Controller;
 
 use CreditJeeves\CoreBundle\Translation\Translator;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -22,9 +23,8 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
 use CreditJeeves\DataBundle\Enum\UserType;
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Symfony\Component\HttpFoundation\Response;
@@ -413,8 +413,6 @@ class AjaxController extends Controller
         return new JsonResponse(array());
     }
 
-    /* Unit */
-
     /**
      * @Route(
      *     "/unit/list",
@@ -427,22 +425,18 @@ class AjaxController extends Controller
      */
     public function getUnitsList(Request $request)
     {
-        $result = array('property' => '', 'units' => array());
-        $user = $this->getUser();
-        $group = $this->getCurrentGroup();
-        $data = $request->request->all('property_id');
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
-        $result['property'] = $property->getAddress();
-        $result['isSingle'] = $property->getIsSingle();
+        /** @var Property $property */
+        $property = $this->getEntityManager()->find('RjDataBundle:Property', $request->request->get('property_id'));
         $this->get('soft.deleteable.control')->enable();
-        $result['units'] = $this->getDoctrine()
+        $units = $this->getEntityManager()
             ->getRepository('RjDataBundle:Unit')
-            ->getUnitsArray(
-                $property,
-                $group
-            );
+            ->getUnitsArray($property, $this->getCurrentGroup());
 
-        return new JsonResponse($result);
+        return new JsonResponse([
+            'property' => $property->getAddress(),
+            'isSingle' => $property->isSingle(),
+            'units' => $units
+        ]);
     }
 
     //@TODO find best way for this implementation
@@ -944,11 +938,10 @@ class AjaxController extends Controller
                         );
                     }
                     // Create order
-                    $order = new Order();
+                    $order = new OrderSubmerchant();
                     $order->setUser($tenant);
                     $order->setSum($amount);
-                    $order->setStatus(OrderStatus::COMPLETE);
-                    $order->setType(OrderType::CASH);
+                    $order->setPaymentType(OrderPaymentType::CASH);
                     $order->setCreatedAt($createdAt);
                     $em->persist($order);
                     // Create operation
@@ -960,11 +953,10 @@ class AjaxController extends Controller
                     $operation->setPaidFor($paidFor);
                     $operation->setCreatedAt($createdAt);
                     $em->persist($operation);
-                    $contract->shiftPaidTo($amount);
-                    $contract->setBalance($contract->getBalance() - $amount);
-                    if ($contract->getSettings()->getIsIntegrated()) {
-                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
-                    }
+
+                    $this->get('payment_processor.order_status_manager')->setNew($order);
+
+                    $this->get('payment_processor.order_status_manager')->setComplete($order);
                 } else {
                     return new JsonResponse(
                         array(
@@ -1278,3 +1270,5 @@ class AjaxController extends Controller
         return $result;
     }
 }
+
+/* Unit */

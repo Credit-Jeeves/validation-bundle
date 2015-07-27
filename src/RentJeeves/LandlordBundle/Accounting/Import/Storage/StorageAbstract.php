@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
 use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 abstract class StorageAbstract implements StorageInterface
 {
@@ -19,6 +20,7 @@ abstract class StorageAbstract implements StorageInterface
 
     const IMPORT_SUMMARY_REPORT_PUBLIC_ID = 'importSummaryReportPublicId';
 
+    /** @var  Session */
     protected $session;
 
     protected $mapping;

@@ -7,7 +7,7 @@ update cj_user set email = concat(mid(md5(email),1,16),'@example.com');
 update cj_user set username_canonical = concat(mid(md5(username_canonical),1,16),'@example.com');
 update cj_user set username = email, email_canonical = username_canonical;
 
-update cj_account_group set name = mid(md5(name),1,20);
+update rj_group set name = mid(md5(name),1,20);
 
 update cj_address set city = mid(md5(city),1,12), zip = mid(md5(zip),1,5);
 
@@ -28,7 +28,7 @@ update jms_jobs set stackTrace = NULL;
 
 update rj_billing_account set token = concat(left(token, 24),mid(md5(token),1,12)), nickname = mid(md5(nickname),1,10);
 
-update rj_checkout_heartland set merchant_name = md5(merchant_name);
+update rj_transaction set merchant_name = md5(merchant_name);
 update rj_deposit_account set merchant_name = md5(merchant_name);
 
 update rj_group_phone set phone = mid(md5(phone),1,10);
@@ -54,7 +54,6 @@ first_name = mid(md5(first_name),1,12),
 last_name = mid(md5(last_name),1,12);
 update rj_resident_mapping set resident_id = mid(md5(resident_id),1,12);
 update rj_unit_mapping set external_unit_id = mid(md5(external_unit_id),1,12);
--- update rj_deposit_account set account_number = FLOOR(RAND() * 500000);
 
 -- RentTrack Sanitization Script - relevant to next release after 3.4
 delete from yardi_settings;
@@ -63,7 +62,6 @@ delete from yardi_settings;
 update cj_user set city = mid(md5(city),1,12), zip = mid(md5(zip),1,5);
 
 delete from atb_simulation;
-delete from cj_checkout_authorize_net_aim;
 update cj_account_group_affiliate set auth_token = mid(md5(auth_token),1,20), external_key = mid(md5(external_key),1,20), website_url = 'http://www.example.com';
 
 update rj_contract_waiting set first_name = mid(md5(first_name),1,10),last_name = mid(md5(last_name),1,8);
@@ -71,7 +69,7 @@ update rj_contract_waiting set resident_id = mid(md5(resident_id),1);
 
 update rj_resident_mapping set resident_id = mid(md5(resident_id),1);
 
-update cj_account_group set statement_descriptor = mid(md5(statement_descriptor),1,16), website_url = 'http://www.example.com';
+update rj_group set statement_descriptor = mid(md5(statement_descriptor),1,16), website_url = 'http://www.example.com';
 
 update ext_log_entries set username = mid(md5(username),1,20);
 
@@ -86,3 +84,6 @@ update client set name = mid(md5(name),1,5), secret = mid(md5(secret),1,16), ran
 update rj_group_account_mapping set account_number = FLOOR(RAND() * 500000);
 delete from resman_settings;
 delete from session;
+
+-- Import error row_content has tenant PII -- relevant to 5.6
+update rj_import_error set row_content = NULL;

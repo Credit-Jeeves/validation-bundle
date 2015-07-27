@@ -74,10 +74,10 @@ class AdjustmentParser extends AbstractParser
             /** @var Payment $payment */
             foreach ($transactions->getPayments() as $payment) {
                 if ($this->getRenttrackTransactionType($type) === false) {
-                    $this->logger->alert(sprintf(
-                        'Unsupported transaction found in Aci PayAnyone report node: %s.',
-                        $type
-                    ));
+                    $this->logger->alert(
+                        sprintf('Unsupported transaction found in Aci PayAnyone report node: %s.', $type)
+                    );
+
                     break;
                 }
                 $newReversalTransaction = new PayDirectReversalReportTransaction();
@@ -115,19 +115,19 @@ class AdjustmentParser extends AbstractParser
     protected function getRenttrackTransactionType($type)
     {
         switch ($type) {
-            case 'RETURNED_PAYMENTS':
-            case 'STOPPED_CHECKS':
-                return PayDirectReversalReportTransaction::TYPE_RETURN;
+            case 'REFUNDED_OUTDATED_CHECKS':
+            case 'REFUNDED_STOPPED_CHECKS':
+                return PayDirectReversalReportTransaction::TYPE_REFUNDING;
+            case 'REISSUED_STOPPED_CHECKS':
+                return PayDirectReversalReportTransaction::TYPE_REISSUED;
             case 'REFUNDED_SCANLINE_REJECTS':
             case 'REFUNDED_DUPLICATE_PAYMENTS':
-            case 'REFUNDED_CANCELLED_PAYMENTS':
-            case 'REFUNDED_OUTDATED_CHECKS':
             case 'REFUNDED_RETURNED_PAYMENTS':
-            case 'REFUNDED_STOPPED_CHECKS':
-                return PayDirectReversalReportTransaction::TYPE_REFUND;
-            case 'REISSUED_STOPPED_CHECKS':
+            case 'CORRECTED_SCANLINE_REJECTS':
             case 'CORRECTED_DUPLICATE_PAYMENTS':
             case 'CORRECTED_RETURNED_PAYMENTS':
+            case 'STOPPED_CHECKS':
+            case 'RETURNED_PAYMENTS':
                 return false;
             default:
                 throw new \Exception(sprintf('%s - Wrong reversal transaction type', $type));

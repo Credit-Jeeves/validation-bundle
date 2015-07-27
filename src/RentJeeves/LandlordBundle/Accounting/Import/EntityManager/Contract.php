@@ -311,7 +311,10 @@ trait Contract
 
     public function setFinishedContract()
     {
-        if ($this->isContractInPast()) {
+        $moveOut = $this->currentImportModel->getMoveOut();
+        $isMoveOutInPast = $moveOut instanceof \DateTime && $moveOut <= new \DateTime();
+
+        if ($this->isContractInPast() || $isMoveOutInPast) {
             $this->currentImportModel->getContract()->setStatus(ContractStatus::FINISHED);
         }
     }

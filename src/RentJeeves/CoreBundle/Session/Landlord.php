@@ -32,6 +32,7 @@ class Landlord extends User
                 return $user;
             }
         }
+
         return new UserEntity();
     }
 
@@ -52,7 +53,6 @@ class Landlord extends User
         $this->data['group_id'] = $nGroupId;
         $this->saveToSession(UserType::LANDLORD);
     }
-    
 
     /**
      * @return integer
@@ -60,9 +60,13 @@ class Landlord extends User
     public function getGroupId()
     {
         $data = $this->getFromSession(UserType::LANDLORD);
+
         return isset($data['group_id']) ? $data['group_id'] : null;
     }
 
+    /**
+     * @return Group|null
+     */
     public function getGroup()
     {
         if ($this->getGroupId()) {

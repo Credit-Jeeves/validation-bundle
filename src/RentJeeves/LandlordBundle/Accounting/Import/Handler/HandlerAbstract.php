@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group as GroupEntity;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
@@ -110,6 +111,12 @@ abstract class HandlerAbstract implements HandlerInterface
      * @var ContractProcess
      */
     public $contractProcess;
+
+    /**
+     * @Inject("payment_processor.order_status_manager")
+     * @var OrderStatusManagerInterface
+     */
+    public $orderStatusManager;
 
     /**
      * @Inject("monolog.logger.import")
@@ -378,7 +385,7 @@ abstract class HandlerAbstract implements HandlerInterface
         } else {
             $tenantName = $row[ImportMapping::FIRST_NAME_TENANT] . " " . $row[ImportMapping::LAST_NAME_TENANT];
         }
-        $this->logger->debug(sprintf("Creating import model for %s", $tenantName));
+        $this->logger->debug(sprintf('Creating import model for %s', $tenantName));
 
         $this->currentImportModel = new ModelImport();
         $this->currentImportModel->setRow($row);
@@ -752,15 +759,19 @@ abstract class HandlerAbstract implements HandlerInterface
                 //Remove contract because we get duplicate contract
                 $this->currentImportModel->getTenant()->removeContract($contract);
                 $this->flushEntity($this->currentImportModel->getTenant());
-                $contract = $this->contractProcess->createContractFromWaiting(
+                $contractFromWaiting = $this->contractProcess->createContractFromWaiting(
                     $this->currentImportModel->getTenant(),
                     $this->currentImportModel->getContractWaiting()
                 );
 
-                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
-                $contract->setStatus(ContractStatus::INVITE);
-                $this->flushEntity($contract);
-
+                $contractFromWaiting->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+                $contractFromWaiting->setStatus(ContractStatus::INVITE);
+                $contractFromWaiting->setIntegratedBalance($contract->getIntegratedBalance());
+                $contractFromWaiting->setRent($contract->getRent());
+                $contractFromWaiting->setStartAt($contract->getStartAt());
+                $contractFromWaiting->setFinishAt($contract->getFinishAt());
+                $contractFromWaiting->setPaidToByBalanceDue();
+                $this->flushEntity($contractFromWaiting);
                 $this->sendInviteEmail();
 
                 return true;
@@ -805,11 +816,12 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->currentImportModel->setUniqueKeyException($uniqueKeyException);
         $this->exceptionCatcher->handleException($exception);
         $messageForLogging = sprintf(
-            'Exception %s: %s, in File: %s, In Line: %s',
+            'Exception %s: %s, in File: %s, In Line: %s, Trace: %s',
             $uniqueKeyException,
             $e->getMessage(),
             $e->getFile(),
-            $e->getLine()
+            $e->getLine(),
+            $e->getTraceAsString()
         );
         $this->logger->addCritical($messageForLogging);
 

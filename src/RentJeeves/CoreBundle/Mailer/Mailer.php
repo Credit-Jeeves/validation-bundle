@@ -253,7 +253,7 @@ class Mailer extends BaseMailer
      */
     public function sendRentError(Order $order)
     {
-        $tenant = $order->getContract()->getTenant();
+        $tenant = $order->getUser();
         $fee = $order->getFee();
         $amount = $order->getSum();
         $total = $fee + $amount;
@@ -269,7 +269,7 @@ class Mailer extends BaseMailer
             'transactionId' => $order->getHeartlandTransactionId(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
-            'orderType' => $order->getType(),
+            'orderType' => $order->getPaymentType(),
         ];
 
         return $this->sendBaseLetter('rjOrderError', $vars, $tenant->getEmail(), $tenant->getCulture());

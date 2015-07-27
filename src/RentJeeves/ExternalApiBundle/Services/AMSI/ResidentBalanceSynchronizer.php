@@ -6,12 +6,14 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
-use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\DataBundle\Entity\PropertyMappingRepository;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use Symfony\Component\Console\Output\OutputInterface;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 class ResidentBalanceSynchronizer
 {
@@ -28,6 +30,11 @@ class ResidentBalanceSynchronizer
     protected $residentDataManager;
 
     /**
+     * @var ExceptionCatcher
+     */
+    protected $exceptionCatcher;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -40,13 +47,19 @@ class ResidentBalanceSynchronizer
     /**
      * @param EntityManager $em
      * @param ResidentDataManager $residentDataManager
+     * @param ExceptionCatcher $exceptionCatcher
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, ResidentDataManager $residentDataManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        EntityManager $em,
+        ResidentDataManager $residentDataManager,
+        ExceptionCatcher $exceptionCatcher,
+        LoggerInterface $logger
+    ) {
         $this->em = $em;
         $this->logger = $logger;
         $this->residentDataManager = $residentDataManager;
+        $this->exceptionCatcher = $exceptionCatcher;
     }
 
     /**
@@ -68,6 +81,7 @@ class ResidentBalanceSynchronizer
                 $this->updateBalancesForHolding($holding);
             }
         } catch (\Exception $e) {
+            $this->exceptionCatcher->handleException($e);
             $this->logger->alert(
                 sprintf(
                     '(AMSI ResidentBalanceSynchronizer)Message: %s, File: %s, Line:%s',
@@ -98,29 +112,21 @@ class ResidentBalanceSynchronizer
      */
     protected function updateBalancesForHolding(Holding $holding)
     {
-        $propertyRepository = $this->em->getRepository('RjDataBundle:Property');
-        $propertySets = ceil(
-            $propertyRepository->countContractPropertiesByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
+        /** @var PropertyMappingRepository $propertyMappingRepository */
+        $propertyMappingRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
+        $propertyMappingSets = ceil(
+            $propertyMappingRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
         );
-        for ($offset = 1; $offset <= $propertySets; $offset++) {
-            $properties = $propertyRepository->findContractPropertiesByHolding(
+        $this->logMessage(sprintf('Found %d pages of property mappings', $propertyMappingSets));
+        for ($offset = 1; $offset <= $propertyMappingSets; $offset++) {
+            $this->logMessage(sprintf('Open %d page of property mappings', $offset));
+            $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
                 $holding,
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
             );
-            /** @var Property $property*/
-            foreach ($properties as $property) {
-                $propertyMapping = $property->getPropertyMappingByHolding($holding);
-
-                if (empty($propertyMapping)) {
-                    throw new \Exception(
-                        sprintf(
-                            'PropertyID \'%s\', doesn\'t have external ID',
-                            $property->getId()
-                        )
-                    );
-                }
-
+            /** @var PropertyMapping $property*/
+            foreach ($propertyMappings as $propertyMapping) {
                 $residentTransactions = $this->residentDataManager->getResidents(
                     $propertyMapping->getExternalPropertyId()
                 );
@@ -134,7 +140,7 @@ class ResidentBalanceSynchronizer
                             $holding->getName()
                         )
                     );
-                    $this->processResidentTransactions($residentTransactions, $holding, $property);
+                    $this->processResidentTransactions($residentTransactions, $holding, $propertyMapping);
                     continue;
                 }
 
@@ -161,20 +167,30 @@ class ResidentBalanceSynchronizer
 
     /**
      * @param Holding $holding
-     * @param Property $property
+     * @param PropertyMapping $propertyMapping
      * @param Lease $lease
      * @param Occupant $occupant
      * @return null|Contract|ContractWaiting
      * @throws \Exception
      */
-    protected function getContract(Holding $holding, Property $property, Lease $lease, Occupant $occupant)
+    protected function getContract(Holding $holding, PropertyMapping $propertyMapping, Lease $lease, Occupant $occupant)
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
         $residentId = $occupant->getOccuSeqNo();
 
-        $contracts = $contractRepo->findContractsByHoldingPropertyResidentAndExternalUnitId(
+        $this->logMessage(
+            sprintf(
+                'Getting contract for holding %s, propertyMapping %s, lease %s, residentId %s',
+                $holding->getId(),
+                $propertyMapping->getExternalPropertyId(),
+                $lease->getExternalUnitId(),
+                $residentId
+            )
+        );
+
+        $contracts = $contractRepo->findContractsByHoldingPropertyMappingResidentAndExternalUnitId(
             $holding,
-            $property,
+            $propertyMapping,
             $residentId,
             $lease->getExternalUnitId()
         );
@@ -183,10 +199,11 @@ class ResidentBalanceSynchronizer
             $this->logMessage(
                 sprintf(
                     'Found more than one contract with property %s, externalUnitId %s, residentId %s',
-                    $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
+                    $propertyMapping->getExternalPropertyId(),
                     $lease->getExternalUnitId(),
                     $residentId
-                )
+                ),
+                550
             );
 
             return null;
@@ -200,9 +217,9 @@ class ResidentBalanceSynchronizer
         }
 
         $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
-            ->findOneByHoldingPropertyExternalUnitIdResident(
+            ->findOneByHoldingPropertyMappingExternalUnitIdResident(
                 $holding,
-                $property,
+                $propertyMapping,
                 $lease->getExternalUnitId(),
                 $residentId
             );
@@ -215,7 +232,7 @@ class ResidentBalanceSynchronizer
         $this->logMessage(
             sprintf(
                 'Could not find contract with property %s, unit %s, resident %s',
-                $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
+                $propertyMapping->getExternalPropertyId(),
                 $lease->getExternalUnitId(),
                 $residentId
             )
@@ -227,19 +244,19 @@ class ResidentBalanceSynchronizer
     /**
      * @param array $residentTransactions
      * @param Holding $holding
-     * @param Property $property
+     * @param PropertyMapping $propertyMapping
      * @throws \Exception
      */
     protected function processResidentTransactions(
         array $residentTransactions,
         Holding $holding,
-        Property $property
+        PropertyMapping $propertyMapping
     ) {
         /** @var Lease $resident */
         foreach ($residentTransactions as $resident) {
             $occupants = $resident->getOccupants();
             foreach ($occupants as $occupant) {
-                $contract = $this->getContract($holding, $property, $resident, $occupant);
+                $contract = $this->getContract($holding, $propertyMapping, $resident, $occupant);
                 if (!$contract) {
                     continue;
                 }
@@ -287,9 +304,9 @@ class ResidentBalanceSynchronizer
     /**
      * @param string $message
      */
-    protected function logMessage($message)
+    protected function logMessage($message, $level = 100)
     {
-        $this->logger->debug($message);
+        $this->logger->log($level, $message);
         if ($this->outputLogger) {
             $this->outputLogger->writeln($message);
         }

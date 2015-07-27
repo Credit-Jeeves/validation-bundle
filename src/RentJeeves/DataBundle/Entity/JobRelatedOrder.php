@@ -1,8 +1,8 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Entity\Order;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity

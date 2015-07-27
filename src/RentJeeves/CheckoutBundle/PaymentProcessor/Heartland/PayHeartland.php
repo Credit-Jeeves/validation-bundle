@@ -1,9 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Heartland\Soap\Base\BillTransaction;
 use Payum2\Heartland\Soap\Base\CardProcessingMethod;
@@ -16,7 +14,7 @@ class PayHeartland extends BasePayHeartland
     /**
      * {@inheritdoc}
      */
-    protected function getPaymentDetails(Order $order, $paymentType)
+    protected function getPaymentDetails(OrderSubmerchant $order, $paymentType)
     {
         $request = new MakePaymentRequest();
 
@@ -56,7 +54,7 @@ class PayHeartland extends BasePayHeartland
     /**
      * {@inheritdoc}
      */
-    protected function addToken(PaymentDetails $paymentDetails, $token, Order $order)
+    protected function addToken(PaymentDetails $paymentDetails, $token, OrderSubmerchant $order)
     {
         $tokenToCharge = new TokenToCharge();
         $tokenToCharge->setAmount($order->getSum());
@@ -70,20 +68,5 @@ class PayHeartland extends BasePayHeartland
         }
         $tokensToCharge[] = $tokenToCharge;
         $paymentDetails->getRequest()->getTokensToCharge()->setTokenToCharge($tokensToCharge);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getOrderStatus(Order $order, $isSuccessful)
-    {
-        if (!$isSuccessful) {
-            return OrderStatus::ERROR;
-        }
-        if (OrderType::HEARTLAND_CARD == $order->getType()) {
-            return OrderStatus::COMPLETE;
-        }
-
-        return OrderStatus::PENDING;
     }
 }

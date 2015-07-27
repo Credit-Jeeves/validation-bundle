@@ -1,6 +1,7 @@
-model: CreditJeeves\DataBundle\Entity\Order
+model: CreditJeeves\DataBundle\Entity\OrderSubmerchant
 fixtures:
   cjOrder_1:
     sum: 9
     user: cjApplicant_5
+    paymentType: cash
     status: complete

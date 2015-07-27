@@ -88,6 +88,18 @@ class ResidentDataManager
             $this->logger->debug(
                 sprintf('Lease UnitId: %s, Building ID: %s', $lease->getUnitId(), $lease->getBldgId())
             );
+
+            if (!array_key_exists($lookUpKey, $unitsLookup)) {
+                $this->logger->alert(
+                    sprintf(
+                        'AMSI: Resident for UnitId: %s, Building ID: %s found, but unit not found by GetPropertyUnits',
+                        $lease->getUnitId(),
+                        $lease->getBldgId()
+                    )
+                );
+                continue;
+            }
+
             $lease->setUnit($unitsLookup[$lookUpKey]);
         }
         $this->logger->debug('Unit mapping complete.');

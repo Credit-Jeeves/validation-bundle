@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Tests\Entity;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\TestBundle\BaseTestCase;
 use DateTime;
@@ -14,7 +14,7 @@ class OrderCase extends BaseTestCase
      */
     public function getPostMonth()
     {
-        $order = new Order();
+        $order = new OrderSubmerchant();
 
         $operationRent = new Operation();
         $operationRent->setType(OperationType::RENT);
@@ -33,7 +33,7 @@ class OrderCase extends BaseTestCase
      */
     public function getPostMonthException()
     {
-        $order = new Order();
+        $order = new OrderSubmerchant();
 
         $operationRent = new Operation();
         $operationRent->setType(OperationType::RENT);
@@ -53,7 +53,7 @@ class OrderCase extends BaseTestCase
      */
     public function getPostMonthEmpty()
     {
-        $order = new Order();
+        $order = new OrderSubmerchant();
 
         $operationOther = new Operation();
         $operationOther->setType(OperationType::OTHER);

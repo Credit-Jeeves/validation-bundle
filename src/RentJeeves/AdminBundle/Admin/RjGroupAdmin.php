@@ -148,11 +148,11 @@ class RjGroupAdmin extends Admin
                         'choices' => OrderAlgorithmType::cachedTitles()
                     ]
                 )
-                ->add('mailingAddressName')
-                ->add('city')
-                ->add('state')
-                ->add('zip')
-                ->add('street_address_1')
+                ->add('mailingAddressName', null, ['required' => false])
+                ->add('city', null, ['required' => false])
+                ->add('state', null, ['required' => false])
+                ->add('zip', null, ['required' => false])
+                ->add('street_address_1', null, ['required' => false])
                 ->add('street_address_2')
             ->end()
             ->with('Deposit Account')
@@ -176,24 +176,9 @@ class RjGroupAdmin extends Admin
                     )
                 )
                 ->add(
-                    'depositAccount.feeCC',
-                    'number',
-                    array('label' => 'CC Fee (%)', 'required' => false) //admin.deposit_account.fee_cc
-                )
-                ->add(
-                    'depositAccount.feeACH',
-                    'number',
-                    array('label' => 'ACH Fee ($)', 'required' => false) //admin.deposit_account.fee_ach
-                )
-                ->add(
                     'depositAccount.mid',
                     'number',
                     ['label' => 'Mid', 'required' => false]
-                )
-                ->add(
-                    'depositAccount.passedAch',
-                    'checkbox',
-                    ['label' => 'Is passed ach', 'required' => false]
                 )
                 ->add('disableCreditCard', 'checkbox', ['label' => 'Disable Credit Card?', 'required' => false])
             ->end()

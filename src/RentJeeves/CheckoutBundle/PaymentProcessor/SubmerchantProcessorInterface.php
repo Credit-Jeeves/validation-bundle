@@ -34,12 +34,12 @@ interface SubmerchantProcessorInterface
 
     /**
      * Executes order of a given payment type (rent, report or charge).
-     * Returns order status.
+     * Returns true or false.
      *
      * @param  Order                                               $order
      * @param  PaymentAccountInterface                             $accountEntity BillingAccount or PaymentAccount
      * @param  string                                              $paymentType one of PaymentGroundType
-     * @return string
+     * @return bool
      * @throws PaymentProcessorInvalidArgumentException|\Exception
      */
     public function executeOrder(

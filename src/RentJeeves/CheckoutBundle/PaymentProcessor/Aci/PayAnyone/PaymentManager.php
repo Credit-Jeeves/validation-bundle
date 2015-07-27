@@ -5,20 +5,20 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone;
 use ACI\Client\PayAnyone\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use Payum\AciPayAnyone\Model\NewPayment;
 use Payum\AciPayAnyone\Model\SubModel\BankAccount;
 use Payum\AciPayAnyone\Model\SubModel\Payee;
 use Payum\AciPayAnyone\Model\SubModel\Payer;
 use Payum\AciPayAnyone\Request\CaptureRequest\Capture;
 use Psr\Log\LoggerInterface;
-use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Payum\AciPayAnyone\Model\ExistingPayment;
 use Payum\AciPayAnyone\Model\SubModel\Address;
 use Payum\AciPayAnyone\Request\CancelRequest\Cancel;
 use Payum\Core\Payment as PaymentProcessor;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\AbstractManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
@@ -27,7 +27,7 @@ use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 
 class PaymentManager
 {
-    const PAYMENT_ACCOUNT_MAX_LENGTH = 60;
+    const PAYMENT_ACCOUNT_MAX_LENGTH = 45;
     /**
      * @var EntityManager
      */
@@ -74,11 +74,11 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
-     * @return string Order status
+     * @param OrderPayDirect $order
+     * @return bool
      * @throws \Exception|PaymentProcessorInvalidArgumentException
      */
-    public function executePayment(Order $order)
+    public function executePayment(OrderPayDirect $order)
     {
         $this->validateOrder($order);
 
@@ -121,22 +121,19 @@ class PaymentManager
             if ($request->getIsSuccessful() &&
                 $transactionId = $request->getModel()->getPaymentStatus()->getPaymentId()
             ) {
-                $order->setStatus(OrderStatus::SENDING);
                 $transaction->setTransactionId($transactionId);
                 $transaction->setMessage(null);
                 $transaction->setStatus(OutboundTransactionStatus::SUCCESS);
             } else {
                 $this->logger->alert(sprintf('[ACI PayAnyone Error][Execute]:%s', $request->getMessages()));
 
-                $order->setStatus(OrderStatus::ERROR);
-                $transaction->setMessage($request->getMessages());
+                $transaction->setMessage(AbstractManager::removeDebugInformation($request->getMessages()));
                 $transaction->setStatus(OutboundTransactionStatus::ERROR);
             }
 
             $this->em->flush();
         } catch (\Exception $e) {
             $this->logger->alert(sprintf('[ACI PayAnyone Critical Error][Execute]:%s', $e->getMessage()));
-            $order->setStatus(OrderStatus::ERROR);
             $transaction->setStatus(OutboundTransactionStatus::ERROR);
             $transaction->setMessage($e->getMessage());
             $this->em->flush();
@@ -152,15 +149,15 @@ class PaymentManager
             )
         );
 
-        return $order->getStatus();
+        return !!$request->getIsSuccessful();
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @throws \Exception|PaymentProcessorInvalidArgumentException
      * @return bool
      */
-    public function cancelPayment(Order $order)
+    public function cancelPayment(OrderPayDirect $order)
     {
         $transaction = $this->getTransaction($order);
 
@@ -187,7 +184,6 @@ class PaymentManager
             $this->paymentProcessor->execute($request);
 
             if ($request->getIsSuccessful()) {
-                $order->setStatus(OrderStatus::ERROR);
                 $transaction->setStatus(OutboundTransactionStatus::CANCELLED);
                 $transaction->setMessage('Cancelled by Admin');
                 $this->logger->debug(
@@ -203,7 +199,7 @@ class PaymentManager
             }
 
             $this->logger->alert(sprintf('[ACI PayAnyone Error][Cancel]:%s', $request->getMessages()));
-            $transaction->setMessage($request->getMessages());
+            $transaction->setMessage(AbstractManager::removeDebugInformation($request->getMessages()));
             $this->em->flush();
 
             return false;
@@ -257,10 +253,10 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @return string
      */
-    protected function generateMemoLine(Order $order)
+    protected function generateMemoLine(OrderPayDirect $order)
     {
         /** @var Operation $operation */
         if ($operation = $order->getRentOperations()->first()) {
@@ -278,10 +274,10 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @return OutboundTransaction
      */
-    protected function getTransaction(Order $order)
+    protected function getTransaction(OrderPayDirect $order)
     {
         if (!$transaction = $order->getDepositOutboundTransaction()) {
             $transaction = new OutboundTransaction();
@@ -298,10 +294,10 @@ class PaymentManager
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      * @throw PaymentProcessorInvalidArgumentException
      */
-    protected function validateOrder(Order $order)
+    protected function validateOrder(OrderPayDirect $order)
     {
         if (!($order->hasContract()) || !$order->getContract()->getGroup()) {
             throw new PaymentProcessorInvalidArgumentException('Order should have contract and group');

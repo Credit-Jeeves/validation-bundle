@@ -2,7 +2,7 @@
 
 namespace RentJeeves\DataBundle\Model;
 
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
@@ -23,9 +23,9 @@ abstract class OutboundTransaction
     protected $id;
 
     /**
-     * @var Order
+     * @var OrderPayDirect
      *
-     * @ORM\ManyToOne(targetEntity="\CreditJeeves\DataBundle\Entity\Order", inversedBy="outboundTransactions")
+     * @ORM\ManyToOne(targetEntity="\CreditJeeves\DataBundle\Entity\OrderPayDirect", inversedBy="outboundTransactions")
      * @ORM\JoinColumn(name="order_id",referencedColumnName="id", nullable=false)
      */
     protected $order;
@@ -116,7 +116,7 @@ abstract class OutboundTransaction
     }
 
     /**
-     * @return Order
+     * @return OrderPayDirect
      */
     public function getOrder()
     {
@@ -124,9 +124,9 @@ abstract class OutboundTransaction
     }
 
     /**
-     * @param Order $order
+     * @param OrderPayDirect $order
      */
-    public function setOrder(Order $order)
+    public function setOrder(OrderPayDirect $order)
     {
         $this->order = $order;
     }

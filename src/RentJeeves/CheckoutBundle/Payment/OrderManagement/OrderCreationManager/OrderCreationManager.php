@@ -1,27 +1,24 @@
 <?php
-namespace RentJeeves\CheckoutBundle\Payment;
+namespace RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderFactory;
 use RentJeeves\CheckoutBundle\Services\PaidFor;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Model\GroupSettings;
 use RuntimeException;
 
-/**
- * @DI\Service("payment_processor.order_manager")
- */
-class OrderManager
+class OrderCreationManager
 {
     /**
      * @var PaidFor
@@ -44,12 +41,10 @@ class OrderManager
     protected $rtMerchantName;
 
     /**
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
-     *     "paidFor" = @DI\Inject("checkout.paid_for"),
-     *     "rtMerchantName" = @DI\Inject("%rt_merchant_name%"),
-     *     "amount" = @DI\Inject("%credittrack_payment_per_month%")
-     * })
+     * @param EntityManager $em
+     * @param PaidFor $paidFor
+     * @param $rtMerchantName
+     * @param $amount
      */
     public function __construct(EntityManager $em, PaidFor $paidFor, $rtMerchantName, $amount)
     {
@@ -67,27 +62,27 @@ class OrderManager
      */
     public function createRentOrder(Payment $payment)
     {
-        $order = new Order();
+        $order = OrderFactory::getOrder($payment->getContract()->getGroup());
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
+        $groupSettings = $contract->getGroup()->getGroupSettings();
         $order->setSum($payment->getAmount() + $payment->getOther());
         $order->setUser($paymentAccount->getUser());
-        $order->setStatus(OrderStatus::NEWONE);
         $order->setPaymentProcessor($payment->getContract()->getGroup()->getGroupSettings()->getPaymentProcessor());
 
         $this->createRentOperations($payment, $order);
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($contract->getDepositAccount()->getFeeCC() / 100), 2));
-            $order->setType(OrderType::HEARTLAND_CARD);
+            $order->setFee(round($order->getSum() * ($contract->getGroupSettings()->getFeeCC() / 100), 2));
+            $order->setPaymentType(OrderPaymentType::CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            if (true === $contract->getDepositAccount()->isPassedAch()) {
-                $order->setFee($contract->getDepositAccount()->getFeeACH());
+            if (true === $groupSettings->isPassedAch()) {
+                $order->setFee($groupSettings->getFeeACH());
             } else {
                 $order->setFee(0);
             }
 
-            $order->setType(OrderType::HEARTLAND_BANK);
+            $order->setPaymentType(OrderPaymentType::BANK);
         }
 
         return $order;
@@ -97,28 +92,28 @@ class OrderManager
      * Creates a new order for credit track payment.
      *
      * @param  PaymentAccount $paymentAccount
-     * @return Order
+     * @return OrderSubmerchant
      */
     public function createCreditTrackOrder(PaymentAccount $paymentAccount)
     {
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setUser($paymentAccount->getUser());
         $order->setSum($this->creditTrackAmount);
-        $order->setStatus(OrderStatus::NEWONE);
         /** Not implement for ACI, PaymentProcess should be gotten from Group */
         $order->setPaymentProcessor(PaymentProcessor::HEARTLAND);
 
-        /** @var DepositAccount $depositAccount */
-        $depositAccount = $this->em->getRepository('DataBundle:Group')
-            ->findOneByCode($this->rtMerchantName)
-            ->getDepositAccount();
+        $this->createReportOperation($order);
+
+        /** @var GroupSettings $groupSettings */
+        $groupSettings = $this->em->getRepository('DataBundle:Group')
+            ->findOneByCode($this->rtMerchantName)->getGroupSettings();
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($depositAccount->getFeeCC() / 100), 2));
-            $order->setType(OrderType::HEARTLAND_CARD);
+            $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));
+            $order->setPaymentType(OrderPaymentType::CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $order->setFee($depositAccount->getFeeACH());
-            $order->setType(OrderType::HEARTLAND_BANK);
+            $order->setFee($groupSettings->getFeeACH());
+            $order->setPaymentType(OrderPaymentType::BANK);
         }
 
         return $order;
@@ -128,11 +123,11 @@ class OrderManager
      * @param Group $group
      * @param float $amount
      * @param string $descriptor
-     * @return Order
+     * @return OrderSubmerchant
      */
     public function createChargeOrder(Group $group, $amount, $descriptor)
     {
-        $order = new Order();
+        $order = new OrderSubmerchant();
 
         $operation = new Operation();
         $operation->setType(OperationType::CHARGE);
@@ -155,10 +150,9 @@ class OrderManager
 
         $groupUser = $users->first();
 
-        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setPaymentType(OrderPaymentType::BANK);
         $order->setUser($groupUser);
         $order->setSum($amount);
-        $order->setStatus(OrderStatus::NEWONE);
         $order->setDescriptor($descriptor);
         $order->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
 
@@ -258,5 +252,20 @@ class OrderManager
             $operation->setAmount($amount);
             $operation->setPaidFor($payment->getPaidFor());
         }
+    }
+
+    /**
+     * Creates a new REPORT type operation for a given order.
+     *
+     * @param  OrderSubmerchant $order
+     * @return Operation
+     */
+    protected function createReportOperation(OrderSubmerchant $order)
+    {
+        $operation = new Operation();
+        $operation->setPaidFor(new DateTime());
+        $operation->setAmount($order->getSum());
+        $operation->setType(OperationType::REPORT);
+        $operation->setOrder($order);
     }
 }

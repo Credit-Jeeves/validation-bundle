@@ -2,8 +2,8 @@
 
 namespace RentJeeves\ExternalApiBundle\Services;
 
-use RentJeeves\DataBundle\Entity\Contract;
 use CreditJeeves\DataBundle\Entity\Order;
+use RentJeeves\DataBundle\Entity\Contract;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
@@ -132,7 +132,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return bool
      */
     public function sendOrderToAccountingSystem(Order $order)
@@ -209,8 +209,17 @@ class AccountingPaymentSynchronizer
 
             return true;
         } catch (\Exception $e) {
+            $this->logger->alert(
+                sprintf(
+                    'Failed posting payment! Exception(%s): "%s" File:%s, Line:%s, Trace:%s',
+                    $e->getCode(),
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine(),
+                    $e->getTraceAsString()
+                )
+            );
             $this->exceptionCatcher->handleException($e);
-            $this->logger->addCritical(get_class($e) . ':' . $e->getMessage());
 
             return false;
         }
@@ -293,7 +302,7 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return bool
      * @throws \Exception
      */

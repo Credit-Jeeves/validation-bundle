@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Order as OrderEntity;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -303,11 +304,11 @@ abstract class Operation
     /**
      * Set order
      *
-     * @param \CreditJeeves\DataBundle\Entity\Order $orders
+     * @param OrderEntity $orders
      *
      * @return Operation
      */
-    public function setOrder(\CreditJeeves\DataBundle\Entity\Order $order)
+    public function setOrder(OrderEntity $order)
     {
         $this->order = $order;
 
@@ -317,7 +318,7 @@ abstract class Operation
     /**
      * Get order
      *
-     * @return \CreditJeeves\DataBundle\Entity\Order
+     * @return OrderEntity
      */
     public function getOrder()
     {

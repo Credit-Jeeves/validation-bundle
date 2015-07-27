@@ -2,12 +2,14 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
@@ -49,13 +51,13 @@ abstract class BasePayHeartland
     /**
      * Executes a payment taking money from given payment account.
      *
-     * @param  Order          $order
+     * @param  OrderSubmerchant          $order
      * @param  PaymentAccountInterface $paymentAccount
      * @param  string         $paymentType
-     * @return string
+     * @return bool
      */
     public function executePayment(
-        Order $order,
+        OrderSubmerchant $order,
         PaymentAccountInterface $paymentAccount,
         $paymentType = PaymentGroundType::RENT
     ) {
@@ -82,12 +84,19 @@ abstract class BasePayHeartland
         }
 
         $isSuccessful = $statusRequest->isSuccess();
+
         $transaction->setIsSuccessful($isSuccessful);
         $order->addTransaction($transaction);
 
         $this->em->persist($transaction);
 
-        return $this->getOrderStatus($order, $isSuccessful);
+        if ($isSuccessful && OrderPaymentType::CARD === $order->getPaymentType()) {
+            $batchDate = clone $transaction->getCreatedAt();
+            $transaction->setBatchDate($batchDate);
+            $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $batchDate));
+        }
+
+        return !!$isSuccessful;
     }
 
     /**
@@ -108,26 +117,16 @@ abstract class BasePayHeartland
     }
 
     /**
-     * @param Order $order
+     * @param OrderSubmerchant $order
      * @param string $paymentType
      * @return PaymentDetails
      */
-    abstract protected function getPaymentDetails(Order $order, $paymentType);
-
-    /**
-     * Defines orders status.
-     * For credit card payments order already becomes COMPLETE, for ACH payments - PENDING.
-     *
-     * @param  Order  $order
-     * @param  bool   $isSuccessful
-     * @return string
-     */
-    abstract protected function getOrderStatus(Order $order, $isSuccessful);
+    abstract protected function getPaymentDetails(OrderSubmerchant $order, $paymentType);
 
     /**
      * @param PaymentDetails $paymentDetails
      * @param string $token
-     * @param Order $order
+     * @param OrderSubmerchant $order
      */
-    abstract protected function addToken(PaymentDetails $paymentDetails, $token, Order $order);
+    abstract protected function addToken(PaymentDetails $paymentDetails, $token, OrderSubmerchant $order);
 }

@@ -18,6 +18,10 @@ class PropertyMappingCase extends BaseTestCase
 
         $tableBlock->clickLink('link_list');
 
+        $this->assertNotNull($properties = $this->page->findAll('css', '.sonata-ba-list tbody tr'));
+
+        $this->assertCount(3, $properties); // we have 2 tbody last is footer with 1 tr
+
         $this->assertNotNull($create = $this->page->find('css', '.sonata-action-element'));
         $create->click();
         $this->session->wait(
@@ -30,15 +34,15 @@ class PropertyMappingCase extends BaseTestCase
             "$('.overlay-trigger').length <= 0"
         );
         $this->assertNotNull($input = $this->page->findAll('css', 'form input'));
-        $this->assertEquals(5, count($input));
+        $this->assertCount(5, $input);
         $input[0]->setValue("p987SS13");
 
         $this->assertNotNull($btn = $this->page->findAll('css', '.form-actions .btn'));
-        $this->assertEquals(3, count($btn));
+        $this->assertCount(3, $btn);
 
         $btn[1]->click();
 
-        $this->assertNotNull($properties = $this->page->findAll('css', 'tbody tr'));
-        $this->assertEquals(3, count($properties));
+        $this->assertNotNull($properties = $this->page->findAll('css', '.sonata-ba-list tbody tr'));
+        $this->assertCount(4, $properties);
     }
 }
