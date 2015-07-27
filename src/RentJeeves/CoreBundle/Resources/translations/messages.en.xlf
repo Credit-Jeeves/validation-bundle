@@ -289,7 +289,7 @@
             </trans-unit>
             <trans-unit id="verify.email.text2">
                 <source>verify.email.text2</source>
-                <target>We have also invited your landlord to sign up. We'll let you know when they do, and when 
+                <target>We have also invited your landlord to sign up. We'll let you know when they do, and when
                   you can set up your rent payment.</target>
             </trans-unit>
             <trans-unit id="verify.email.text3">
@@ -448,7 +448,7 @@
             </trans-unit>
             <trans-unit id="remove.property.description">
                 <source>remove.property.description</source>
-                <target>Are you sure you want to remove this property? Any payments 
+                <target>Are you sure you want to remove this property? Any payments
                     scheduled for this property will be cancelled.
                 </target>
             </trans-unit>
@@ -477,7 +477,7 @@
                 <target><![CDATA[
                         <p>This information is used to help tenants find you in the RentTrack system.</p>
                         <p>If this is a standalone property, please check "This is a Single Property with no Units".</p>
-                        <p> 
+                        <p>
                           You will be able to add additional properties and invite tenants to pay you directly through RentTrack after you have created your account.
                         </p>]]>
                 </target>
@@ -1021,7 +1021,7 @@
                 <source>payment.account.new</source>
                 <target>New account</target>
             </trans-unit>
-            
+
             <trans-unit id="reporting.start">
                 <source>reporting.start</source>
                 <target>Start Reporting</target>
@@ -1030,7 +1030,7 @@
                 <source>reporting.stop</source>
                 <target>Stop Reporting</target>
             </trans-unit>
-            
+
             <trans-unit id="select.status">
                 <source>select.status</source>
                 <target>Select Status</target>
@@ -1777,12 +1777,12 @@
                 <source>order.resident</source>
                 <target>Resident</target>
             </trans-unit>
-            <trans-unit id="order.type.heartland_card">
-                <source>order.type.heartland_card</source>
+            <trans-unit id="order.type.card">
+                <source>order.type.card</source>
                 <target>CC</target>
             </trans-unit>
-            <trans-unit id="order.type.heartland_bank">
-                <source>order.type.heartland_bank</source>
+            <trans-unit id="order.type.bank">
+                <source>order.type.bank</source>
                 <target>ACH</target>
             </trans-unit>
             <trans-unit id="order.fee">
