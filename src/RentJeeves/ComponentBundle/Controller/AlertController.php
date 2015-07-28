@@ -3,6 +3,7 @@
 namespace RentJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\BaseController;
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,6 +22,12 @@ class AlertController extends BaseController
         $user = $this->getUser();
         $translator = $this->get('translator.default');
         $em = $this->getEntityManager();
+        /** @var Holding $holding */
+        $holding = $user->getHolding();
+
+        if ($holding && $holding->isPaymentProcessorLocked()) {
+            $alerts[] = $translator->trans('alert.changing_payment_account');
+        }
 
         $inviteCode = $user->getInviteCode();
         if (!empty($inviteCode)) {
@@ -89,6 +96,11 @@ class AlertController extends BaseController
     {
         $alerts = array();
         $user = $this->getUser();
+        if ($this->getDoctrine()->getManager()->getRepository("RjDataBundle:Contract")
+            ->isPaymentProcessorLocked($user))
+        {
+            $alerts[] = $this->get('translator.default')->trans('alert.changing_payment_account');
+        }
         $inviteCode = $user->getInviteCode();
         if (!empty($inviteCode)) {
             $alerts[] = $this->get('translator.default')->trans('alert.tenant.verify_email');

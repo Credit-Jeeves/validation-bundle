@@ -78,6 +78,7 @@
                                 {{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}
                             </td>
                             <td class="font-helvetica">
+                                {% if isLocked == false %}
                                 <a title="{{ 'edit' | trans }}"
                                    class="type-ico pie-el edit"
                                    href="#"
@@ -92,6 +93,7 @@
                                 >
                                     &nbsp;
                                 </a>
+                                {% endif %}
                             </td>
 
                         </tr>

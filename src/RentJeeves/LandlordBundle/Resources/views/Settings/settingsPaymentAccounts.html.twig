@@ -27,13 +27,15 @@
                                     <em class="default-address" data-bind="visible: isActive()">({{ 'settings.payment_account.active'|trans }})</em>
                                 </td>
                                 <td class="font-helvetica">
-                                    <a title="{{'edit'|trans}}" class="type-ico pie-el edit" data-bind="click: $root.showEditPopup">
-                                        &nbsp;
-                                    </a>
+                                    {% if isLocked == false %}
+                                        <a title="{{'edit'|trans}}" class="type-ico pie-el edit" data-bind="click: $root.showEditPopup">
+                                            &nbsp;
+                                        </a>
 
-                                    <a title="{{'delete'|trans}}" class="type-ico pie-el delete" data-bind="visible: !isActive(), click: $root.showDeletePopup">
-                                        &nbsp;
-                                    </a>
+                                        <a title="{{'delete'|trans}}" class="type-ico pie-el delete" data-bind="visible: !isActive(), click: $root.showDeletePopup">
+                                            &nbsp;
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         </tbody>
@@ -42,7 +44,12 @@
             </div>
             <img src="{{ asset('bundles/core/images/img_loading.gif') }}" class="processPayment" data-bind="visible: isLoading">
             <div class="row-20"></div>
-            <a class="button add-accoun" data-bind="click: showCreatePopup" href="#">
+            <a
+                    {% if isLocked == false %}
+                        class="button add-accoun" data-bind="click: showCreatePopup"
+                    {% else  %}
+                        class="button add-accoun grey"
+                    {% endif %} href="#">
                 <span>{{ 'add.account' | trans }}</span>
             </a>
 
@@ -52,7 +59,7 @@
     <div class="col-box clearfix"></div>
 
 
-
+{% if isLocked == false %}
     <!-- Popups -->
     <div id="billing-account-edit" data-bind="with: currentBillingAccount" class="pricing-popup dashboard-popup properties-popup payments-popup ui-dialog-content ui-widget-content">
         <h1>{{ 'add.account.popup.title.edit'|trans }}</h1>
@@ -108,13 +115,13 @@
         </div>
     </div>
     <!-- Popups -->
-
     <script type="text/javascript">
         $(document).ready(function() {
             var viewModel = new BillingAccountViewModel({{ billingAccounts|raw }});
             ko.applyBindings(viewModel);
         });
     </script>
+{% endif %}
 {% endblock %}
 
 {% block stylesheets %}

@@ -54,22 +54,25 @@ class ComponentController extends Controller
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
         $questionsType = $this->createForm(
             new QuestionsType(
-                array(
-                    array(),
-                    array(),
-                    array(),
-                    array(),
-                    array(),
-                    array(),
-                )
+                [
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                ]
             )
         );
-        $pageVars = array(
+
+        $pageVars = [
             'paymentType' => $paymentType->createView(),
             'paymentBalanceOnlyType' => $paymentBalanceOnlyType->createView(),
             'userDetailsType' => $userDetailsType->createView(),
             'questionsType' => $questionsType->createView(),
-        );
+            'isLocked' => $this->getDoctrine()->getManager()->getRepository("RjDataBundle:Contract")
+                ->isPaymentProcessorLocked($this->getUser())
+        ];
         if ($mobile) {
             return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars);
         } else {

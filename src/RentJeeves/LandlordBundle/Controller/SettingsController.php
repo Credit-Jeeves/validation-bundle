@@ -9,14 +9,13 @@ use RentJeeves\LandlordBundle\Form\BillingAccountType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
 use RentJeeves\LandlordBundle\Form\AccountInfoType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
-use \RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 class SettingsController extends Controller
 {
@@ -29,7 +28,6 @@ class SettingsController extends Controller
     public function editProfileAction()
     {
         $landlord = $this->getUser();
-
         $form = $this->createForm(
             new AccountInfoType(),
             $landlord
@@ -50,11 +48,11 @@ class SettingsController extends Controller
                 );
             }
         }
-        return array(
-            'form'    => $form->createView(),
-        );
-    }
 
+        return [
+            'form'    => $form->createView()
+        ];
+    }
 
     /**
      * @Route("/settings/payment_accounts", name="settings_payment_accounts")
@@ -62,6 +60,7 @@ class SettingsController extends Controller
      */
     public function settingsPaymentAccountsAction()
     {
+        $holding =  $this->getUser()->getHolding();
         /** @var Group $group */
         $group = $this->getCurrentGroup();
         $billingAccounts = $group->getBillingAccounts();
@@ -71,6 +70,7 @@ class SettingsController extends Controller
             'billingAccounts' => $this->get('jms_serializer')->serialize($billingAccounts, 'json'),
             'billingAccountType' => $form->createView(),
             'nGroups' => $this->getGroups()->count(),
+            'isLocked'=> $holding->isPaymentProcessorLocked(),
         );
     }
 
@@ -105,6 +105,14 @@ class SettingsController extends Controller
         );
     }
 
+    protected function checkPaymentProcessorLock()
+    {
+        $holding =  $this->getUser()->getHolding();
+        if ($holding->isPaymentProcessorLocked()) {
+            throw new MethodNotAllowedException('Payment Processor is Locked');
+        }
+    }
+
     /**
      * @Route(
      *     "/billing/create/",
@@ -117,6 +125,7 @@ class SettingsController extends Controller
      */
     public function createBillingAction(Request $request)
     {
+        $this->checkPaymentProcessorLock();
         $logger = $this->get('logger');
         $currentGroup = $this->getCurrentGroup();
         $logger->debug("Creating landlord billing account for " . $currentGroup->getName());
@@ -131,6 +140,7 @@ class SettingsController extends Controller
             $billing = $this->createBillingAccount($billingAccountType, $landlord, $currentGroup);
         } catch (\Exception $e) {
             $logger->error("Exception occurred! " . $e->getMessage());
+
             return new JsonResponse(
                 array(
                     $billingAccountType->getName() => array(
@@ -156,6 +166,7 @@ class SettingsController extends Controller
      */
     public function editBillingAction(Request $request)
     {
+        $this->checkPaymentProcessorLock();
         $formType = new BillingAccountType();
         $formData = $request->get($formType->getName());
 
@@ -201,6 +212,7 @@ class SettingsController extends Controller
      */
     public function deleteBillingAction($accountId)
     {
+        $this->checkPaymentProcessorLock();
         $em = $this->getDoctrine()->getManager();
         /** @var BillingAccount $billingAccount */
         $billingAccount = $em->getRepository('RjDataBundle:BillingAccount')->find($accountId);
