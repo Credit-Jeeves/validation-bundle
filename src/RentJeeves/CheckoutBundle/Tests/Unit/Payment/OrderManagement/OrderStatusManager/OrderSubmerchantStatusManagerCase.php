@@ -646,11 +646,10 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
     public function shouldUnshiftContractPaidToDateDataProvider()
     {
         return [
-            [OrderPaymentType::CARD, OperationType::RENT, 1, false, 999999.99, '-1 month', 'Y-m-d'],
-            [OrderPaymentType::BANK, OperationType::RENT, 2, true, 999999.99, '-2 month', 'Y-m-d'],
-            [OrderPaymentType::BANK, OperationType::CHARGE, 1, true, 999999.99, '+0 month', 'Y-m-d'],
-            [OrderPaymentType::CASH, OperationType::REPORT, 1, false, 999999.99, '+0 month', 'Y-m-d'],
-            [OrderPaymentType::CASH, OperationType::RENT, 3, true, 333333.33, '-1 month', 'Y-m-t'] // has +-1 day
+            [OrderPaymentType::CARD, OperationType::RENT, 1, false, 999999.99, '-1 month'],
+            [OrderPaymentType::BANK, OperationType::RENT, 2, true, 999999.99, '-2 month'],
+            [OrderPaymentType::BANK, OperationType::CHARGE, 1, true, 999999.99, '+0 month'],
+            [OrderPaymentType::CASH, OperationType::REPORT, 1, false, 999999.99, '+0 month'],
         ];
     }
 
@@ -676,8 +675,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $countOperations,
         $isNeedCreateOtherOperation,
         $amountForMainOperation,
-        $shiftedOn,
-        $formatDate
+        $shiftedOn
     ) {
         $statusManager = new OrderSubmerchantStatusManager(
             $this->getEntityManager(),
@@ -697,8 +695,8 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $statusManager->setCancelled($order);
 
         $this->assertEquals(
-            $paidTo->modify($shiftedOn)->format($formatDate),
-            $order->getContract()->getPaidTo()->format($formatDate),
+            $paidTo->modify($shiftedOn)->format('Y-m-d'),
+            $order->getContract()->getPaidTo()->format('Y-m-d'),
             sprintf('PaidTo date of contract should be unshifted on %s', $shiftedOn)
         );
     }
@@ -1096,8 +1094,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $countOperations,
         $isNeedCreateOtherOperation,
         $amountForMainOperation,
-        $shiftedOn,
-        $formatDate
+        $shiftedOn
     ) {
         $statusManager = new OrderSubmerchantStatusManager(
             $this->getEntityManager(),
@@ -1117,8 +1114,8 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $statusManager->setRefunded($order);
 
         $this->assertEquals(
-            $paidTo->modify($shiftedOn)->format($formatDate),
-            $order->getContract()->getPaidTo()->format($formatDate),
+            $paidTo->modify($shiftedOn)->format('Y-m-d'),
+            $order->getContract()->getPaidTo()->format('Y-m-d'),
             sprintf('PaidTo date of contract should be unshifted on %s', $shiftedOn)
         );
     }
