@@ -26,6 +26,10 @@
                 <source>import.onlyException</source>
                 <target><![CDATA[Only Review New Tenants & Exceptions.]]></target>
             </trans-unit>
+            <trans-unit id="admin.label.payment_processor_locked">
+                <source>admin.label.payment_processor_locked</source>
+                <target>Payment Processor changes locked?</target>
+            </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
                 <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" is a registered trademark.</target>

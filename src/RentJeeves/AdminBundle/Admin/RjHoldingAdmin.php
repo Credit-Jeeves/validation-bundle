@@ -37,6 +37,17 @@ class RjHoldingAdmin extends Admin
         parent::configureFormFields($formMapper);
         $container = $this->getConfigurationPool()->getContainer();
         $formMapper
+            ->add(
+                'isPaymentProcessorLocked',
+                'choice',
+                [
+                    'label' => 'admin.label.payment_processor_locked',
+                    'choices'           => [
+                        0 => 'No',
+                        1 => 'Yes'
+                    ],
+                ]
+            )
             ->with('Accounting Settings')
             ->add(
                 'apiIntegrationType',
