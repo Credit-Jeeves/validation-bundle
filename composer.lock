@@ -594,7 +594,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
-                "reference": "d012c8637aec630b9793be69dc36d73a20828d9b"
+                "reference": "fe6aea95a190dcb69eb6a92eb90cd359ce92e70e"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
