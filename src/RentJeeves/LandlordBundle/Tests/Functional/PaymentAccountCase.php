@@ -136,4 +136,47 @@ class PaymentAccountCase extends BaseTestCase
 
         $this->logout();
     }
+
+    /**
+     * @return array
+     */
+    public function dataForCheckPaymentProcessorLocker()
+    {
+        return [
+            [true, 'alert.changing_payment_account'],
+            [false, 'landlord.alert.verify_email']
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider dataForCheckPaymentProcessorLocker
+     *
+     * @param boolean $isPaymentProcessorLocked
+     * @param string $alertMessage
+     */
+    public function checkPaymentProcessorLocker($isPaymentProcessorLocked, $alertMessage)
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
+        $em = $this->getEntityManager();
+        /** @var Holding $holding */
+        $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $holding->setIsPaymentProcessorLocked($isPaymentProcessorLocked);
+        $em->flush();
+
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('common.account');
+        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
+        $this->page->clickLink('settings.deposit');
+        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
+        $this->session->wait($this->timeout, "$('.add-accoun').is(':visible')");
+        $this->page->clickLink('add.account');
+        $this->assertNotNull($alert = $this->page->find('css', '.landlord-alert-text'));
+        $this->assertEquals($alertMessage, $alert->getText());
+        $this->assertNotNull($buttonGrey = $this->page->findAll('css', '.grey'));
+        $this->assertEquals($isPaymentProcessorLocked, count($buttonGrey) === 3);
+    }
 }

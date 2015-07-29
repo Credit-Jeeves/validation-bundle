@@ -59,7 +59,6 @@
     <div class="col-box clearfix"></div>
 
 
-{% if isLocked == false %}
     <!-- Popups -->
     <div id="billing-account-edit" data-bind="with: currentBillingAccount" class="pricing-popup dashboard-popup properties-popup payments-popup ui-dialog-content ui-widget-content">
         <h1>{{ 'add.account.popup.title.edit'|trans }}</h1>
@@ -121,7 +120,6 @@
             ko.applyBindings(viewModel);
         });
     </script>
-{% endif %}
 {% endblock %}
 
 {% block stylesheets %}
