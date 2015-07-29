@@ -842,7 +842,7 @@ class PayCase extends BaseTestCase
         $accounts = $this->page->findAll('css', 'div.payment-accounts label.radio');
         $this->assertCount(3, $accounts);
 
-        $newPaymentLink = $this->page->find('css', 'a.checkout-plus');
+        $this->assertNotEmpty($newPaymentLink = $this->page->find('css', 'a.checkout-plus'));
         $newPaymentLink->click();
 
         $accountTypes = $this->page->findAll(

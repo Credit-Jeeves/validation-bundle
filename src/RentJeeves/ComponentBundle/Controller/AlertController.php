@@ -97,8 +97,7 @@ class AlertController extends BaseController
         $alerts = array();
         $user = $this->getUser();
         if ($this->getDoctrine()->getManager()->getRepository("RjDataBundle:Contract")
-            ->isPaymentProcessorLocked($user))
-        {
+            ->isPaymentProcessorLocked($user)) {
             $alerts[] = $this->get('translator.default')->trans('alert.changing_payment_account');
         }
         $inviteCode = $user->getInviteCode();

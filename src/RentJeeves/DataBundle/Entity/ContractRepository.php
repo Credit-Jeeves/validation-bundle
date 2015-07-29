@@ -107,9 +107,10 @@ class ContractRepository extends EntityRepository
         $query->where('c.tenant = :tenant');
         $query->andWhere('h.isPaymentProcessorLocked = 1');
         $query->setParameter('tenant', $tenant);
+        $query->setMaxResults(1);
         $query = $query->getQuery();
 
-        return $query->getScalarResult() > 0;
+        return count($query->getScalarResult()) > 0;
     }
 
     /**

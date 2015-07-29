@@ -49,8 +49,7 @@ class SourcesController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         if ($em->getRepository("RjDataBundle:Contract")
-            ->isPaymentProcessorLocked($this->getUser()))
-        {
+            ->isPaymentProcessorLocked($this->getUser())) {
             throw new MethodNotAllowedException('Payment Processor is Locked');
         }
         /** @var PaymentAccount $paymentAccount */
@@ -72,8 +71,7 @@ class SourcesController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         if ($em->getRepository("RjDataBundle:Contract")
-            ->isPaymentProcessorLocked($user = $this->getUser()))
-        {
+            ->isPaymentProcessorLocked($user = $this->getUser())) {
             throw new MethodNotAllowedException('Payment Processor is Locked');
         }
         $form = new PaymentAccountType($user);
