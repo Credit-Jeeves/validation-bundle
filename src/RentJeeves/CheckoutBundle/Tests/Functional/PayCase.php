@@ -887,4 +887,78 @@ class PayCase extends BaseTestCase
 
         $this->assertTrue($isHidden);
     }
+
+    /**
+     * @return array
+     */
+    public function dataForCheckPaymentProcessorLocker()
+    {
+        return [
+            [true, 'alert.changing_payment_account'],
+            [false, 'alert.tenant.verify_email']
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider dataForCheckPaymentProcessorLocker
+     *
+     * @param boolean $isPaymentProcessorLocked
+     * @param string $alertMessage
+     */
+    public function checkPaymentProcessorLocker($isPaymentProcessorLocked, $alertMessage)
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var Holding $holding */
+        $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $holding->setIsPaymentProcessorLocked($isPaymentProcessorLocked);
+        $em->flush();
+        $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($alert = $this->page->find('css', '.landlord-alert-text'));
+        $this->assertEquals($alertMessage, $alert->getText());
+
+        $this->page->pressButton($this->payButtonName);
+
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '2000',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            )
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $addNewAccount = $this->page->find('css', '.checkout-plus');
+        $this->assertEquals($isPaymentProcessorLocked, empty($addNewAccount));
+        $paymentSource = $this->page->find('css', '#rent-menu .last a');
+        $this->assertNotEmpty($paymentSource);
+        $paymentSource->click();
+        $editSource = $this->page->find('css', '.edit');
+        $delSource = $this->page->find('css', '.delete');
+
+        $this->assertEquals($isPaymentProcessorLocked, empty($editSource));
+        $this->assertEquals($isPaymentProcessorLocked, empty($delSource));
+    }
 }
