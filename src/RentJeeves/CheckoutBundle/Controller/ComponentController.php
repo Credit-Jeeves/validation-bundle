@@ -70,7 +70,7 @@ class ComponentController extends Controller
             'paymentBalanceOnlyType' => $paymentBalanceOnlyType->createView(),
             'userDetailsType' => $userDetailsType->createView(),
             'questionsType' => $questionsType->createView(),
-            'isLocked' => $this->getDoctrine()->getManager()->getRepository("RjDataBundle:Contract")
+            'isLocked' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')
                 ->isPaymentProcessorLocked($this->getUser())
         ];
         if ($mobile) {

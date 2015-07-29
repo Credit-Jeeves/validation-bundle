@@ -37,7 +37,7 @@ class SourcesController extends Controller
 
         return [
             'paymentAccounts' => $paymentAccounts,
-            'isLocked' => $this->getDoctrine()->getManager()->getRepository("RjDataBundle:Contract")
+            'isLocked' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')
                 ->isPaymentProcessorLocked($this->getUser())
         ];
     }
@@ -48,7 +48,7 @@ class SourcesController extends Controller
     public function delAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        if ($em->getRepository("RjDataBundle:Contract")
+        if ($em->getRepository('RjDataBundle:Tenant')
             ->isPaymentProcessorLocked($this->getUser())) {
             throw new MethodNotAllowedException('Payment Processor is Locked');
         }
@@ -70,7 +70,7 @@ class SourcesController extends Controller
     public function saveAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        if ($em->getRepository("RjDataBundle:Contract")
+        if ($em->getRepository('RjDataBundle:Tenant')
             ->isPaymentProcessorLocked($user = $this->getUser())) {
             throw new MethodNotAllowedException('Payment Processor is Locked');
         }

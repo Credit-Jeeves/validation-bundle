@@ -173,10 +173,12 @@ class PaymentAccountCase extends BaseTestCase
         $this->page->clickLink('settings.deposit');
         $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->session->wait($this->timeout, "$('.add-accoun').is(':visible')");
-        $this->page->clickLink('add.account');
         $this->assertNotNull($alert = $this->page->find('css', '.landlord-alert-text'));
         $this->assertEquals($alertMessage, $alert->getText());
-        $this->assertNotNull($buttonGrey = $this->page->findAll('css', '.grey'));
+        $this->assertNotNull(
+            $buttonGrey = $this->page->findAll('css', '.grey'),
+            'This is button for add new payment account. 2 Buttons means we available add payment account.'
+        );
         $this->assertEquals($isPaymentProcessorLocked, count($buttonGrey) === 3);
     }
 }

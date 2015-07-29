@@ -39,13 +39,9 @@ class RjHoldingAdmin extends Admin
         $formMapper
             ->add(
                 'isPaymentProcessorLocked',
-                'choice',
+                null,
                 [
                     'label' => 'admin.label.payment_processor_locked',
-                    'choices'           => [
-                        0 => 'No',
-                        1 => 'Yes'
-                    ],
                 ]
             )
             ->with('Accounting Settings')

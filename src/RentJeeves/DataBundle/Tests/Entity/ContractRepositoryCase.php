@@ -422,7 +422,7 @@ class ContractRepositoryCase extends BaseTestCase
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
         $this->assertNotEmpty($tenant);
         $this->assertEquals(
-            $em->getRepository('RjDataBundle:Contract')->isPaymentProcessorLocked($tenant),
+            $em->getRepository('RjDataBundle:Tenant')->isPaymentProcessorLocked($tenant),
             $isPaymentProcessorLocked
         );
     }

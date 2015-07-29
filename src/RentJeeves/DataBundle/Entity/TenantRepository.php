@@ -3,13 +3,32 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
 
 class TenantRepository extends EntityRepository
 {
+    /**
+     * @param Tenant $tenant
+     * @return bool
+     */
+    public function isPaymentProcessorLocked(Tenant $tenant)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.holding', 'h');
+        $query->where('c.tenant = :tenant');
+        $query->andWhere('h.isPaymentProcessorLocked = 1');
+        $query->andWhere('c.status != :deleted AND c.status != :finished');
+        $query->setParameter('tenant', $tenant);
+        $query->setParameter('deleted', ContractStatus::DELETED);
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+
+        return count($query->getScalarResult()) > 0;
+    }
+
     public function countTenants($group, $searchBy = 'address', $search = '')
     {
         $query = $this->createQueryBuilder('t');
@@ -22,6 +41,7 @@ class TenantRepository extends EntityRepository
 //             $query->setParameter('search', $search);
         }
         $query = $query->getQuery();
+
         return $query->getScalarResult();
     }
 
@@ -48,6 +68,7 @@ class TenantRepository extends EntityRepository
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
+
         return $query->execute();
     }
 

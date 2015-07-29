@@ -60,7 +60,7 @@ class SettingsController extends Controller
      */
     public function settingsPaymentAccountsAction()
     {
-        $holding =  $this->getUser()->getHolding();
+        $holding = $this->getUser()->getHolding();
         /** @var Group $group */
         $group = $this->getCurrentGroup();
         $billingAccounts = $group->getBillingAccounts();
@@ -70,7 +70,7 @@ class SettingsController extends Controller
             'billingAccounts' => $this->get('jms_serializer')->serialize($billingAccounts, 'json'),
             'billingAccountType' => $form->createView(),
             'nGroups' => $this->getGroups()->count(),
-            'isLocked'=> $holding->isPaymentProcessorLocked(),
+            'isLocked' => $holding->isPaymentProcessorLocked(),
         );
     }
 
@@ -107,7 +107,7 @@ class SettingsController extends Controller
 
     protected function checkPaymentProcessorLock()
     {
-        $holding =  $this->getUser()->getHolding();
+        $holding = $this->getUser()->getHolding();
         if ($holding->isPaymentProcessorLocked()) {
             throw new MethodNotAllowedException('Payment Processor is Locked');
         }

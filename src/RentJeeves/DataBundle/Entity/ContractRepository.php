@@ -97,23 +97,6 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param Tenant $tenant
-     * @return bool
-     */
-    public function isPaymentProcessorLocked(Tenant $tenant)
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.holding', 'h');
-        $query->where('c.tenant = :tenant');
-        $query->andWhere('h.isPaymentProcessorLocked = 1');
-        $query->setParameter('tenant', $tenant);
-        $query->setMaxResults(1);
-        $query = $query->getQuery();
-
-        return count($query->getScalarResult()) > 0;
-    }
-
-    /**
      * @param string $search
      *
      * @return array
