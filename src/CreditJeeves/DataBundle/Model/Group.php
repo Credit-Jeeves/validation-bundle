@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -347,7 +348,7 @@ abstract class Group
     protected $importSummaries;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *     targetEntity="\RentJeeves\DataBundle\Entity\DepositAccount",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"},
@@ -355,9 +356,9 @@ abstract class Group
      *     fetch="EAGER"
      * )
      *
-     * @var DepositAccount
+     * @var ArrayCollection
      */
-    protected $depositAccount;
+    protected $depositAccounts;
 
     /**
      * @ORM\OneToMany(
@@ -494,6 +495,7 @@ abstract class Group
         $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
         $this->disableCreditCard = false;
+        $this->depositAccounts = new ArrayCollection();
     }
 
     /**
@@ -1258,21 +1260,48 @@ abstract class Group
         return $this->contracts;
     }
 
-    public function setDepositAccount($account)
+    /**
+     * @param $account
+     */
+    public function addDepositAccount($account)
     {
-        $this->depositAccount = $account;
-
-        return $this;
+        $this->depositAccounts->add($account);
     }
 
     /**
      * Get DepositAccount
      *
+     * @deprecated pls use getDepositAccounts
+     *
      * @return DepositAccount
      */
     public function getDepositAccount()
     {
-        return $this->depositAccount;
+        /** @var DepositAccount $depositAccount */
+        foreach ($this->depositAccounts as $depositAccount) {
+            if ($depositAccount->getType() === DepositAccountType::RENT &&
+                $depositAccount->getPaymentProcessor() === $this->getGroupSettings()->getPaymentProcessor()
+            ) {
+                return $depositAccount;
+            }
+        }
+
+        throw new \LogicException(
+            sprintf(
+                'DepositAccount with type \'%s\' and paymentProcessor \'%s\' for group#%d not found',
+                DepositAccountType::RENT,
+                $this->getGroupSettings()->getPaymentProcessor(),
+                (int) $this->getId()
+            )
+        );
+    }
+
+    /**
+     * @return ArrayCollection|DepositAccount[]
+     */
+    public function getDepositAccounts()
+    {
+        return $this->depositAccounts;
     }
 
     /**
