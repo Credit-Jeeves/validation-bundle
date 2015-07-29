@@ -57,7 +57,8 @@ class BillingAccountManager extends AbstractManager
 
         $contractBilling = new AciCollectPayContractBilling();
         $contractBilling->setContract($contract);
-        $contractBilling->setDivisionId($contract->getGroup()->getMerchantName());
+        $depositAccount = $contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
+        $contractBilling->setDivisionId($depositAccount ? $depositAccount->getMerchantName() : '');
 
         $contract->setAciCollectPayContractBilling($contractBilling);
 

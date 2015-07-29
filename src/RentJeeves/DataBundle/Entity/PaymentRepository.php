@@ -7,9 +7,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use Doctrine_Expression;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
@@ -52,7 +50,7 @@ class PaymentRepository extends EntityRepository
         );
         $query->setParameter('contractNotActiveStatuses', array(ContractStatus::DELETED, ContractStatus::FINISHED));
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('g.depositAccount', 'd');
+        $query->innerJoin('g.depositAccounts', 'd');
         $query->leftJoin(
             'p.jobs',
             'j',
@@ -85,6 +83,7 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('paymentAccepted', (string) PaymentAccepted::ANY);
 
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -108,6 +107,7 @@ class PaymentRepository extends EntityRepository
         if ($jobs) {
             $em->flush();
         }
+
         return $jobs;
     }
 

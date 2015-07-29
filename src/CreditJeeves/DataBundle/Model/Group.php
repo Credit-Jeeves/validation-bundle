@@ -1269,13 +1269,9 @@ abstract class Group
     }
 
     /**
-     * Get DepositAccount
-     *
-     * @deprecated pls use getDepositAccounts
-     *
-     * @return DepositAccount
+     * @return DepositAccount|null
      */
-    public function getDepositAccount()
+    public function getRentDepositAccountForCurrentPaymentProcessor()
     {
         /** @var DepositAccount $depositAccount */
         foreach ($this->depositAccounts as $depositAccount) {
@@ -1286,14 +1282,7 @@ abstract class Group
             }
         }
 
-        throw new \LogicException(
-            sprintf(
-                'DepositAccount with type \'%s\' and paymentProcessor \'%s\' for group#%d not found',
-                DepositAccountType::RENT,
-                $this->getGroupSettings()->getPaymentProcessor(),
-                (int) $this->getId()
-            )
-        );
+        return null;
     }
 
     /**

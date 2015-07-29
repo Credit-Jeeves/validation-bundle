@@ -8,11 +8,13 @@ use Payum2\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
 use Payum2\Payment;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RuntimeException;
 
 /**
  * @author Stephen Crosby <stephen@brandedcrate.com>
+ * @TODO: need refactoring
  */
 trait AccountAssociate
 {
@@ -29,17 +31,15 @@ trait AccountAssociate
     protected function ensureAccountAssociation(PaymentAccount $paymentAccount, Group $group)
     {
         $em = $this->getDoctrine()->getManager();
-        $depositAccount = $group->getDepositAccount();
-        $registerToMerchantName = $group->getMerchantName();
+        if (null === $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor()) {
+            throw new \RuntimeException('Cannot register to a group without deposit account.');
+        }
+        if (null == $registerToMerchantName = $depositAccount->getMerchantName()) {
+            throw new \RuntimeException('Cannot register to a group without a merchant name.');
+        }
 
         $existingDepositAccounts = $em->getRepository('RjDataBundle:DepositAccount')
             ->completeByPaymentAccount($paymentAccount);
-
-        if ($registerToMerchantName == null) {
-            throw new RuntimeException(
-                'Cannot register to a group without a merchant name.'
-            );
-        }
 
         if (in_array($depositAccount, $existingDepositAccounts)) {
             // already associated
@@ -54,7 +54,8 @@ trait AccountAssociate
         }
 
         // any previously registered group will work
-        $merchantName = $existingDepositAccounts[0]->getGroup()->getMerchantName();
+        /** @var DepositAccount[] $existingDepositAccounts */
+        $merchantName = $existingDepositAccounts[0]->getMerchantName();
         $token = $paymentAccount->getToken();
 
         $this->registerTokenToAdditionalMerchant(

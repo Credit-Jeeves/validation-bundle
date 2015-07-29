@@ -8,7 +8,6 @@ use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
-use RentJeeves\DataBundle\Entity\DepositAccount;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -146,13 +145,6 @@ class Group extends BaseGroup
         return $properties ? count($properties) : 0;
     }
 
-    public function getMerchantName()
-    {
-        $depositAccount = $this->getDepositAccount();
-
-        return !empty($depositAccount) ? $depositAccount->getMerchantName() : '';
-    }
-
     public function getMainDealer()
     {
         $dealer = $this->getDealer();
@@ -203,19 +195,6 @@ class Group extends BaseGroup
         }
 
         return $this->groupSettings;
-    }
-
-    /**
-     * @return DepositAccount
-     */
-    public function getDepositAccount()
-    {
-        if (empty($this->depositAccount)) {
-            $this->depositAccount = new DepositAccount();
-            $this->depositAccount->setGroup($this);
-        }
-
-        return $this->depositAccount;
     }
 
     public function getID4StatementDescriptor()

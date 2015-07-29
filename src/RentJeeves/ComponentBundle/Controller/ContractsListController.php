@@ -28,7 +28,8 @@ class ContractsListController extends Controller
         $canInvite = false;
 
         if (!empty($group)) {
-            $merchantName = $group->getMerchantName();
+            $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+            $merchantName = $depositAccount ? $depositAccount->getMerchantName() : '';
             $canInvite = (!empty($merchantName)) ? true : false;
         }
         $date = new DateTime();

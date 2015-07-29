@@ -10,8 +10,10 @@ use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -342,7 +344,12 @@ class PaymentCommandsCase extends BaseTestCase
         /* Prepare Group */
         $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $contract->getGroup()->getDepositAccount()->setMerchantName(564075);
+        $depositAccount = new DepositAccount($contract->getGroup());
+        $depositAccount->setPaymentProcessor($contract->getGroup()->getGroupSettings()->getPaymentProcessor());
+        $depositAccount->setType(DepositAccountType::RENT);
+        $depositAccount->setMerchantName(564075);
+
+        $contract->getGroup()->addDepositAccount($depositAccount);
 
         /* Create Payment Accounts */
         /** @var PaymentProcessorAciCollectPay $paymentProcessor */
