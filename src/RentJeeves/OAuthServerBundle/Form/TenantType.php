@@ -12,17 +12,19 @@ class TenantType extends AbstractType
 {
     public function buildForm(FormBuilder $builder, array $options)
     {
+        $emailOptions = [];
+
+        if ($options['inviteEmail']) {
+            $emailOptions['constraints'] =  new TenantEmail([
+                'groups'    => 'registration_tos'
+            ]);
+        }
+
         $builder->add('first_name');
 
         $builder->add('last_name');
 
-        $builder->add('email', null, [
-            'constraints' => new TenantEmail(
-                [
-                    'groups'    => 'registration_tos'
-                ]
-            )
-        ]);
+        $builder->add('email', 'email', $emailOptions);
 
         $builder->add(
             'password',

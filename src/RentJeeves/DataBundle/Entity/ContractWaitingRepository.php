@@ -82,17 +82,21 @@ class ContractWaitingRepository extends EntityRepository
     /**
      * @param Holding $holding
      * @param string  $residentId
+     * @param bool $sortReverse
      *
      * @return ContractWaiting[]
      */
-    public function findAllByHoldingAndResidentId(Holding $holding, $residentId)
+    public function findAllByHoldingAndResidentId(Holding $holding, $residentId, $sortReverse = false)
     {
+        $sort = $sortReverse ? 'DESC' : 'ASC';
+
         return $this->createQueryBuilder('cw')
             ->innerJoin('cw.group', 'groups')
             ->where('groups.holding = :holding')
             ->andWhere('cw.residentId = :residentId')
             ->setParameter('holding', $holding)
             ->setParameter('residentId', $residentId)
+            ->orderBy('cw.id', $sort)
             ->getQuery()
             ->execute();
     }
