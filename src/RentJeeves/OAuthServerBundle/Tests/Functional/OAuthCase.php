@@ -36,7 +36,7 @@ class OAuthCase extends BaseTestCase
                 self::CLIENT_ID,
                 $residentMapping->getResidentId(),
                 $residentMapping->getHolding()->getId()
-             )
+            )
         );
 
         $this->assertNotNull($createUserLink = $this->page->find('css', '#create-user'));
