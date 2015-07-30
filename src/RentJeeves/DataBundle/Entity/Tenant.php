@@ -100,7 +100,7 @@ class Tenant extends User
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\ArrayCollection|ResidentMapping[]
      */
     public function getResidentsMapping()
     {

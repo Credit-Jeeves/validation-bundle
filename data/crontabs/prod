@@ -1,7 +1,6 @@
-10 3 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:report:synchronize >> /var/log/renttrack.log 2>&1
-15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:report:synchronize >> /var/log/renttrack.log 2>&1
+15 4 * * * /usr/bin/php -d memory_limit=1024M /var/www/my.renttrack.com/bin/console.php --app=rj payment:report:synchronize -vvv >> /var/log/renttrack.log 2>&1
 # Run the payments early in the morning to hit all the recurring payments:
-30 4 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+#DSE:moving_to_awake_time 30 4 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
 # Run payments every two hours during working day:
 0 9 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
 0 11 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
@@ -10,9 +9,9 @@
 0 17 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
 # Run payments right after we cut people off in the UI at 21:50:
 55 21 * * * /var/www/my.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
-0 8 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant >> /var/log/renttrack.log 2>&1
-0 8 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --auto >> /var/log/renttrack.log 2>&1
-30 0 * * * /var/www/my.renttrack.com/bin/console --app=rj contract:update:balance >> /var/log/renttrack.log 2>&1
+0 8 * * * /usr/bin/php -d memory_limit=1024M /var/www/my.renttrack.com/bin/console.php --app=rj Email:tenant -v >> /var/log/renttrack.log 2>&1
+10 8 * * * /usr/bin/php -d memory_limit=1024M /var/www/my.renttrack.com/bin/console.php --app=rj Email:tenant --auto -v >> /var/log/renttrack.log 2>&1
+#30 0 * * * /var/www/my.renttrack.com/bin/console --app=rj contract:update:balance >> /var/log/renttrack.log 2>&1
 #0 1 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:tenant --type=late --days=1 >> /var/log/renttrack.log 2>&1
 #30 23 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord >> /var/log/renttrack.log 2>&1
 0 7 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=pending >> /var/log/renttrack.log 2>&1
@@ -20,9 +19,34 @@
 0 7 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:batchDeposit:report >> /var/log/renttrack.log 2>&1
 #0 1 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=report >> /var/log/renttrack.log 2>&1
 #30 23 * * * /var/www/my.renttrack.com/bin/console --app=rj Email:landlord --type=late >> /var/log/renttrack.log 2>&1
-*/5 * * * * /var/www/my.renttrack.com/bin/console jms-job-queue:run --max-runtime=300
 
-# Yardi Cron Jobs
+# Getting duplicate payments on the 1st when the payment jobs take more than 5min to get through, so we changed this
+#*/5 * * * * /var/www/my.renttrack.com/bin/console jms-job-queue:run --max-runtime=300
+# This is now managed by supervisord -- see /etc/supervisord.conf
+#*/30 * * * * /var/www/my.renttrack.com/bin/console jms-job-queue:run --max-runtime=1800
+
+# Yardi Cron Jobs (sync balance each day, push payments each day)
 # Push Payments, should run after reversal synchronization and deposit jobs
-25 4 * * * /var/www/my.renttrack.com/bin/console --app=rj api:yardi:push-batch-receipts --debug=true >> /var/log/renttrack_yardi_push.log 2>&1
-20 4 * * * /var/www/my.renttrack.com/bin/console --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
+30 4 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:push-batch-receipts --debug=true >> /var/log/renttrack_yardi_push.log 2>&1
+20 4 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
+0 5 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console --app=rj api:yardi:push-reversal-receipts >> /var/log/renttrack_yardi_reversal.log 2>&1
+
+# AMSI Cron Jobs (close batches at end of each day)
+30 22 * * * /var/www/my.renttrack.com/bin/console --app=rj api:accounting:amsi:close-batches >> /var/log/renttrack_amsi_push.log 2>&1
+#30 22 * * * /var/www/my.renttrack.com/bin/console --app=rj api:accounting:amsi:return-payment >> /var/log/renttrack_amsi_reversal.log 2>&1
+15 4 * * * /var/www/my.renttrack.com/bin/console --app=rj api:amsi:sync-balance --env=prod >> /var/log/renttrack_amsi_sync.log 2>&1
+
+# ResMan Cron Jobs (close batches at end of each day)
+35 22 * * * /var/www/my.renttrack.com/bin/console --app=rj api:accounting:close-payment-batches >> /var/log/renttrack_resman_push.log 2>&1
+25 4 * * * /var/www/my.renttrack.com/bin/console --app=rj api:resman:sync-balance --env=prod >> /var/log/renttrack_resman_sync.log 2>&1
+
+
+# Balance Syncs
+# Pull right after 5am for USRG
+10 5 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
+50 8 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
+50 10 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
+50 12 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
+50 14 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
+50 16 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
+45 21 * * * /usr/bin/php -d memory_limit=512M /var/www/my.renttrack.com/bin/console.php --app=rj api:yardi:sync-balance >> /var/log/renttrack_yardi_balance.log 2>&1
