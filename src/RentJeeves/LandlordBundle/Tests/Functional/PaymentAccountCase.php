@@ -143,8 +143,8 @@ class PaymentAccountCase extends BaseTestCase
     public function dataForCheckPaymentProcessorLocker()
     {
         return [
-            [true, 'alert.changing_payment_account'],
-            [false, 'landlord.alert.verify_email']
+            [true, 'alert.changing_payment_account', 3],
+            [false, 'landlord.alert.verify_email', 2]
         ];
     }
 
@@ -154,8 +154,9 @@ class PaymentAccountCase extends BaseTestCase
      *
      * @param boolean $isPaymentProcessorLocked
      * @param string $alertMessage
+     * @param boolean $availableButtonsCount
      */
-    public function checkPaymentProcessorLocker($isPaymentProcessorLocked, $alertMessage)
+    public function checkPaymentProcessorLocker($isPaymentProcessorLocked, $alertMessage, $availableButtonsCount)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -179,6 +180,6 @@ class PaymentAccountCase extends BaseTestCase
             $buttonGrey = $this->page->findAll('css', '.grey'),
             'This is button for add new payment account. 2 Buttons means we available add payment account.'
         );
-        $this->assertEquals($isPaymentProcessorLocked, count($buttonGrey) === 3);
+        $this->assertEquals($isPaymentProcessorLocked, $availableButtonsCount);
     }
 }

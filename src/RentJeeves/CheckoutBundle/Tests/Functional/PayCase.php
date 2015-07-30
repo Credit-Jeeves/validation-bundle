@@ -933,14 +933,14 @@ class PayCase extends BaseTestCase
         );
         $this->fillForm(
             $form,
-            array(
+            [
                 'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '2000',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
                 'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
                 'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
                 'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
-            )
+            ]
         );
 
         $this->page->pressButton('pay_popup.step.next');

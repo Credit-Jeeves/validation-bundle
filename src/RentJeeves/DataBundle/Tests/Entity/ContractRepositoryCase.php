@@ -2,7 +2,6 @@
 
 namespace RentJeeves\DataBundle\Tests\Entity;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -391,39 +390,5 @@ class ContractRepositoryCase extends BaseTestCase
 
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($id);
         $this->assertEmpty($contractWaiting);
-    }
-
-    /**
-     * @return array
-     */
-    public function dataForCheckLockPaymentProcessor()
-    {
-        return [
-            [true],
-            [false]
-        ];
-    }
-
-    /**
-     * @dataProvider dataForCheckLockPaymentProcessor
-     * @test
-     *
-     * @var boolean $isPaymentProcessorLocked
-     */
-    public function checkLockPaymentProcessor($isPaymentProcessorLocked)
-    {
-        $this->load(true);
-        $em = $this->getEntityManager();
-        /** @var Holding $holding */
-        $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
-        $this->assertNotEmpty($holding);
-        $holding->setIsPaymentProcessorLocked($isPaymentProcessorLocked);
-        $em->flush();
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
-        $this->assertNotEmpty($tenant);
-        $this->assertEquals(
-            $em->getRepository('RjDataBundle:Tenant')->isPaymentProcessorLocked($tenant),
-            $isPaymentProcessorLocked
-        );
     }
 }
