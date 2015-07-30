@@ -29,11 +29,10 @@ class PayHeartland extends BasePayHeartland
         $paymentDetails = new PaymentDetails();
         $paymentDetails->setRequest($request);
         $paymentDetails->setAmount($order->getSum() + $order->getFee());
+        $paymentDetails->setMerchantName($order->getDepositAccount()->getMerchantName());
 
         if (PaymentGroundType::RENT == $paymentType) {
             $contract = $order->getContract();
-            $depositAccount = $contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
-            $paymentDetails->setMerchantName($depositAccount ? $depositAccount->getMerchantName() : '');
 
             $billTransaction->setID1(str_replace(',', '', $contract->getProperty()->getShrinkAddress()));
             if ($contract->getUnit()) { // For houses, there are no units
@@ -45,7 +44,6 @@ class PayHeartland extends BasePayHeartland
             $billTransaction->setID4($contract->getGroup()->getID4StatementDescriptor());
             $order->setDescriptor($contract->getGroup()->getID4StatementDescriptor());
         } elseif (PaymentGroundType::REPORT == $paymentType) {
-            $paymentDetails->setMerchantName($this->rtMerchantName);
             $billTransaction->setID1('report');
         }
 

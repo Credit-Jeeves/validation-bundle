@@ -69,6 +69,8 @@ class OrderCreationManager
         $order->setSum($payment->getAmount() + $payment->getOther());
         $order->setUser($paymentAccount->getUser());
         $order->setPaymentProcessor($payment->getContract()->getGroup()->getGroupSettings()->getPaymentProcessor());
+        $order->setPaymentAccount($payment->getPaymentAccount());
+        $order->setDepositAccount($payment->getDepositAccount());
 
         $this->createRentOperations($payment, $order);
 
@@ -101,12 +103,17 @@ class OrderCreationManager
         $order->setSum($this->creditTrackAmount);
         /** Not implement for ACI, PaymentProcess should be gotten from Group */
         $order->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+        $order->setPaymentAccount($paymentAccount);
+
+        /** @var Group $rentTrackGroup */
+        $rentTrackGroup = $this->em->getRepository('DataBundle:Group')->findOneByCode($this->rtMerchantName);
+
+        $order->setDepositAccount($rentTrackGroup->getRentDepositAccountForCurrentPaymentProcessor());
 
         $this->createReportOperation($order);
 
         /** @var GroupSettings $groupSettings */
-        $groupSettings = $this->em->getRepository('DataBundle:Group')
-            ->findOneByCode($this->rtMerchantName)->getGroupSettings();
+        $groupSettings = $rentTrackGroup->getGroupSettings();
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
             $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));
@@ -155,6 +162,11 @@ class OrderCreationManager
         $order->setSum($amount);
         $order->setDescriptor($descriptor);
         $order->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
+
+        /** @var Group $rentTrackGroup */
+        $rentTrackGroup = $this->em->getRepository('DataBundle:Group')->findOneByCode($this->rtMerchantName);
+
+        $order->setDepositAccount($rentTrackGroup->getRentDepositAccountForCurrentPaymentProcessor());
 
         return $order;
     }

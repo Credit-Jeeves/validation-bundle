@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Entity\DepositAccount as DepositAccountEntity;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -60,6 +61,22 @@ class Payment
      * @var PaymentAccount
      */
     protected $paymentAccount;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
+     *      inversedBy="payments",
+     *      cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="deposit_account_id",
+     *      referencedColumnName="id"
+     * )
+     * @Serializer\Exclude
+     *
+     * @var DepositAccountEntity
+     */
+    protected $depositAccount;
 
     /**
      * @ORM\Column(type="PaymentType")
@@ -569,5 +586,21 @@ class Payment
     public function setCloseDetails(array $closeDetails)
     {
         $this->closeDetails = $closeDetails;
+    }
+
+    /**
+     * @return DepositAccountEntity
+     */
+    public function getDepositAccount()
+    {
+        return $this->depositAccount;
+    }
+
+    /**
+     * @param DepositAccountEntity $depositAccount
+     */
+    public function setDepositAccount(DepositAccountEntity $depositAccount)
+    {
+        $this->depositAccount = $depositAccount;
     }
 }

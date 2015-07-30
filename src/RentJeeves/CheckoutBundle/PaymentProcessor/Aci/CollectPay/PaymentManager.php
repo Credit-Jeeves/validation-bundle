@@ -63,11 +63,6 @@ class PaymentManager extends AbstractManager
         $transaction->setOrder($order);
         $transaction->setMerchantName($payment->getDivisionBusinessId());
         $transaction->setBatchId($this->getBatchIdForOrder($order));
-
-        if ($paymentAccount instanceof PaymentAccount) {
-            $transaction->setPaymentAccount($paymentAccount);
-        }
-
         $transaction->setAmount($order->getSum() + $order->getFee());
 
         try {
@@ -123,8 +118,7 @@ class PaymentManager extends AbstractManager
             $payment->setBillingAccountNumber($paymentAccount->getGroup()->getId());
         } elseif ($paymentAccount instanceof UserAwareInterface && $paymentType === PaymentGroundType::RENT) {
             $payment->setProfileId($paymentAccount->getUser()->getAciCollectPayProfileId());
-            $depositAccount = $order->getContract()->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
-            $payment->setDivisionBusinessId($depositAccount ? $depositAccount->getMerchantName() : '');
+            $payment->setDivisionBusinessId($order->getDepositAccount()->getMerchantName());
             $payment->setBillingAccountNumber($order->getContract()->getId());
         } else {
             throw new PaymentProcessorInvalidArgumentException(

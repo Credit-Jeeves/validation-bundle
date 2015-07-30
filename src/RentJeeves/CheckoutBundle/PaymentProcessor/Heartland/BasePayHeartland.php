@@ -27,25 +27,19 @@ abstract class BasePayHeartland
     /** @var PaymentDetailsMapper */
     protected $paymentDetailsMapper;
 
-    /** @var string */
-    protected $rtMerchantName;
-
     /**
      * @param EntityManager $em
      * @param PayumAwareRegistry $payum
      * @param PaymentDetailsMapper $paymentDetailsMapper
-     * @param string $rtMerchantName
      */
     public function __construct(
         EntityManager $em,
         PayumAwareRegistry $payum,
-        PaymentDetailsMapper $paymentDetailsMapper,
-        $rtMerchantName
+        PaymentDetailsMapper $paymentDetailsMapper
     ) {
         $this->em = $em;
         $this->payum = $payum->getPayment('heartland');
         $this->paymentDetailsMapper = $paymentDetailsMapper;
-        $this->rtMerchantName = $rtMerchantName;
     }
 
     /**
@@ -68,10 +62,6 @@ abstract class BasePayHeartland
         /** @var Transaction $transaction */
         $transaction = $this->paymentDetailsMapper->map($paymentDetails);
         $transaction->setOrder($order);
-
-        if ($paymentAccount instanceof PaymentAccount) {
-            $transaction->setPaymentAccount($paymentAccount);
-        }
 
         $this->addToken($paymentDetails, $paymentAccount->getToken(), $order);
 

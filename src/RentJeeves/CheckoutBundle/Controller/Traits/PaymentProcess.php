@@ -3,7 +3,7 @@ namespace RentJeeves\CheckoutBundle\Controller\Traits;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
-use Payum2\Payment;
+use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
@@ -136,6 +136,14 @@ trait PaymentProcess
             $paymentEntity->setPaymentAccount($paymentAccount);
         } else {
             throw $this->createNotFoundException('PaymentAccount cannot be null');
+        }
+
+        // TODO: set deposit account from form when you implement PayAnything story
+        $depositAccount = $contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
+        if (null !== $depositAccount) {
+            $paymentEntity->setDepositAccount($depositAccount);
+        } else {
+            throw $this->createNotFoundException('DepositAccount cannot be null');
         }
 
         if ($pidkiqEnabled && !$this->isVerifiedUser($request, $contract)) {
