@@ -25,7 +25,9 @@ class PayCreditTrackCase extends BaseTestCase
         /** @var OrderSubmerchant $order */
         $order = $this->getContainer()
             ->get('payment.pay_credit_track')
-            ->executePaymentAccount($group->getDepositAccount()->getPaymentAccounts()->first());
+            ->executePaymentAccount(
+                $group->getRentDepositAccountForCurrentPaymentProcessor()->getPaymentAccounts()->first()
+            );
 
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
     }

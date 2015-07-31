@@ -92,7 +92,8 @@ abstract class AbstractManager
         $group = $contract->getGroup();
 
         $billingAccount->setAccountNumber($contract->getId());
-        $billingAccount->setBusinessId($group->getDepositAccount()->getMerchantName());
+        $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+        $billingAccount->setBusinessId($depositAccount ? $depositAccount->getMerchantName() : '');
         $billingAccount->setHoldername($contract->getTenant()->getFullName());
         $billingAccount->setNickname($group->getName() . $contract->getId());
 

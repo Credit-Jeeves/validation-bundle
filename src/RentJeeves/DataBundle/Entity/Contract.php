@@ -920,6 +920,8 @@ class Contract extends Base
     }
 
     /**
+     * @deprecated
+     *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("depositAccount")
      * @Serializer\Type("RentJeeves\DataBundle\Entity\DepositAccount")
@@ -927,7 +929,7 @@ class Contract extends Base
      */
     public function getDepositAccount()
     {
-        return $this->getGroup()->getDepositAccount();
+        return $this->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
     }
 
     /**

@@ -6,7 +6,9 @@ use ACI\Utils\OldProfilesStorage;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -54,7 +56,12 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $this->contract->getGroup()->getDepositAccount()->setMerchantName(564075);
+        $depositAccount = new DepositAccount($this->contract->getGroup());
+        $depositAccount->setPaymentProcessor($this->contract->getGroup()->getGroupSettings()->getPaymentProcessor());
+        $depositAccount->setType(DepositAccountType::RENT);
+        $depositAccount->setMerchantName(564075);
+
+        $this->contract->getGroup()->addDepositAccount($depositAccount);
 
         $this->getEntityManager()->persist($this->contract->getGroup());
 
@@ -143,7 +150,8 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->assertNotEmpty($this->contract->getAciCollectPayContractBilling());
 
-        $merchantName = $this->contract->getGroup()->getMerchantName();
+        $merchantName = $this->contract
+            ->getGroup()->getRentDepositAccountForCurrentPaymentProcessor()->getMerchantName();
         $this->assertEquals($merchantName, $this->contract->getAciCollectPayContractBilling()->getDivisionId());
 
         $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));

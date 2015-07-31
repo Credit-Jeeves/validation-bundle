@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
@@ -22,13 +23,14 @@ abstract class DepositAccount
     protected $id;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *      inversedBy="depositAccount"
+     *      inversedBy="depositAccounts"
      * )
      * @ORM\JoinColumn(
      *      name="group_id",
-     *      referencedColumnName="id"
+     *      referencedColumnName="id",
+     *      nullable=false
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
      */
@@ -90,6 +92,13 @@ abstract class DepositAccount
      * )
      */
     protected $paymentProcessor = PaymentProcessor::HEARTLAND;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="DepositAccountType", options={"default" = "rent"})
+     */
+    protected $type = DepositAccountType::RENT;
 
     public function __construct()
     {
@@ -238,5 +247,21 @@ abstract class DepositAccount
     public function setMid($mid)
     {
         $this->mid = $mid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

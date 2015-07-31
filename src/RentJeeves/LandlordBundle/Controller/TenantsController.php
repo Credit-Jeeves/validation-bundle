@@ -2,9 +2,11 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Form\ContractType;
@@ -51,16 +53,17 @@ class TenantsController extends Controller
      */
     public function saveInviteTenantAction()
     {
-        /** @var $user Landlord */
+        /** @var Landlord $user */
         $user = $this->getUser();
-        /** @var $group Group */
+        /** @var Group $group */
         $group = $this->get("core.session.landlord")->getGroup();
         $canInvite = false;
         /**
          * Only landlord with setup merchant name can invite tenant
          */
         if (!empty($group)) {
-            $merchantName = $group->getMerchantName();
+            $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+            $merchantName = $depositAccount ? $depositAccount->getMerchantName() : '';
             $canInvite = (!empty($merchantName)) ? true : false;
         }
 

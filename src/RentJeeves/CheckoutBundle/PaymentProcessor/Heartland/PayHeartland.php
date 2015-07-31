@@ -32,7 +32,8 @@ class PayHeartland extends BasePayHeartland
 
         if (PaymentGroundType::RENT == $paymentType) {
             $contract = $order->getContract();
-            $paymentDetails->setMerchantName($contract->getGroup()->getMerchantName());
+            $depositAccount = $contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
+            $paymentDetails->setMerchantName($depositAccount ? $depositAccount->getMerchantName() : '');
 
             $billTransaction->setID1(str_replace(',', '', $contract->getProperty()->getShrinkAddress()));
             if ($contract->getUnit()) { // For houses, there are no units
