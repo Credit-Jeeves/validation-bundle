@@ -15,11 +15,12 @@ class TenantRepository extends EntityRepository
      */
     public function isPaymentProcessorLocked(Tenant $tenant)
     {
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.holding', 'h');
-        $query->where('c.tenant = :tenant');
+        $query = $this->createQueryBuilder('t');
+        $query->innerJoin('t.contracts', 'con');
+        $query->innerJoin('con.holding', 'h');
+        $query->where('con.tenant = :tenant');
         $query->andWhere('h.isPaymentProcessorLocked = 1');
-        $query->andWhere('c.status != :deleted AND c.status != :finished');
+        $query->andWhere('con.status != :deleted AND con.status != :finished');
         $query->setParameter('tenant', $tenant);
         $query->setParameter('deleted', ContractStatus::DELETED);
         $query->setParameter('finished', ContractStatus::FINISHED);
