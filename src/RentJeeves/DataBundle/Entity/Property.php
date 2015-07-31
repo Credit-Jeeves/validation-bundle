@@ -188,8 +188,10 @@ class Property extends Base
 
         $groups = $this->getPropertyGroups();
         $merchantExist = false;
+        /** @var Group $group */
         foreach ($groups as $group) {
-            if (($depositAccount = $group->getDepositAccount()) && $depositAccount->isComplete()) {
+            if (($depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor()) &&
+                $depositAccount->isComplete()) {
                 $merchantExist = true;
                 break;
             }

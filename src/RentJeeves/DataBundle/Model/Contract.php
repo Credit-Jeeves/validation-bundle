@@ -59,7 +59,8 @@ abstract class Contract
      * )
      * @ORM\JoinColumn(
      *     name="group_id",
-     *     referencedColumnName="id"
+     *     referencedColumnName="id",
+     *     nullable=false
      * )
      */
     protected $group;

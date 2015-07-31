@@ -123,9 +123,8 @@ class PaymentManager extends AbstractManager
             $payment->setBillingAccountNumber($paymentAccount->getGroup()->getId());
         } elseif ($paymentAccount instanceof UserAwareInterface && $paymentType === PaymentGroundType::RENT) {
             $payment->setProfileId($paymentAccount->getUser()->getAciCollectPayProfileId());
-            $payment->setDivisionBusinessId(
-                $order->getContract()->getGroup()->getDepositAccount()->getMerchantName()
-            );
+            $depositAccount = $order->getContract()->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
+            $payment->setDivisionBusinessId($depositAccount ? $depositAccount->getMerchantName() : '');
             $payment->setBillingAccountNumber($order->getContract()->getId());
         } else {
             throw new PaymentProcessorInvalidArgumentException(

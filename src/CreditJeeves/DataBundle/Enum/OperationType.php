@@ -9,6 +9,7 @@ use CreditJeeves\CoreBundle\Enum;
 class OperationType extends Enum
 {
     const CHARGE = 'charge';
+    const CUSTOM = 'custom';
     const OTHER = 'other';
     const RENT = 'rent';
     const REPORT = 'report';

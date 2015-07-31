@@ -42,6 +42,7 @@ class RjDataBundle extends Bundle
             Type::addType('OrderAlgorithmType', 'RentJeeves\DataBundle\Enum\OrderAlgorithmType');
             Type::addType('OutboundTransactionType', 'RentJeeves\DataBundle\Enum\OutboundTransactionType');
             Type::addType('OutboundTransactionStatus', 'RentJeeves\DataBundle\Enum\OutboundTransactionStatus');
+            Type::addType('DepositAccountType', 'RentJeeves\DataBundle\Enum\DepositAccountType');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()

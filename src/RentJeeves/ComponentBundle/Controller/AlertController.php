@@ -4,6 +4,7 @@ namespace RentJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -56,8 +57,9 @@ class AlertController extends BaseController
                 $alerts[] = $text;
             }
         } else {
+            /** @var Group $group */
             $group = $this->get('core.session.landlord')->getGroup();
-            $deposit = $group->getDepositAccount();
+            $deposit = $group->getRentDepositAccountForCurrentPaymentProcessor();
             $billing = $group->getActiveBillingAccount();
 
             if (empty($deposit) || $deposit->getStatus() == DepositAccountStatus::DA_INIT) {

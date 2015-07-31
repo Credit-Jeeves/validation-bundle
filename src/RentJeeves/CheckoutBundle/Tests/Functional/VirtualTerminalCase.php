@@ -38,6 +38,7 @@ class VirtualTerminalCase extends BaseTestCase
      */
     public function chargeHeartland()
     {
+        $this->markTestSkipped('Skipped until RT-1335');
         $paymentProcessor = PaymentProcessor::HEARTLAND;
         $this->setDefaultSession('selenium2');
 
@@ -181,6 +182,7 @@ JS;
      */
     public function chargeAciCollectPay()
     {
+        $this->markTestSkipped('Skipped until RT-1335');
         $paymentProcessor = PaymentProcessor::ACI;
         $this->setDefaultSession('selenium2');
 

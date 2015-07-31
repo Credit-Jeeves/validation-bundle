@@ -16,7 +16,7 @@ class GroupRepository extends EntityRepository
     public function getGroupsWithoutDepositAccount(Holding $holding)
     {
         return $this->createQueryBuilder('g')
-            ->leftJoin('g.depositAccount', 'da')
+            ->leftJoin('g.depositAccounts', 'da')
             ->where("g.holding = :holdingId")
             ->andWhere("da.id IS NULL")
             ->setParameter('holdingId', $holding->getId())

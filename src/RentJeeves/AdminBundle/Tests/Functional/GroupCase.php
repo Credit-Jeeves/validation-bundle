@@ -11,6 +11,7 @@ class GroupCase extends BaseTestCase
      */
     public function settingFirst()
     {
+        $this->markTestSkipped('Skipped until RT-1335');
         $this->load(true);
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
@@ -51,6 +52,7 @@ class GroupCase extends BaseTestCase
      */
     public function settingSecond()
     {
+        $this->markTestSkipped('Skipped until RT-1335');
         $this->load(true);
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
