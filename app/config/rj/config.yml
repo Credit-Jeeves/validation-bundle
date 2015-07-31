@@ -44,7 +44,7 @@ parameters:
     payment_bank_fee: 0 # feeACH would be processed on heartland side
     payment_card_fee: 2.95% # feeCC
     payment_dollars: $20
-    payment_one_time_until_value: '21:50' # 01:59
+    payment_one_time_until_value: '18:45'
     tenant_payment_per_month_curence: $
     tenant_payment_per_month_dollars: 1
     tenant_payment_per_month_cents: 95
