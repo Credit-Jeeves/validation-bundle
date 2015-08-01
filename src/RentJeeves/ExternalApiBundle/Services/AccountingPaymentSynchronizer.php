@@ -322,7 +322,7 @@ class AccountingPaymentSynchronizer
 
             $repo->lockTable();
 
-            if ($repo->isOpenedBatch($paymentBatchId, $accountingType, $externalPropertyId)) {
+            if ($repo->isOpenedBatch($paymentBatchId, $accountingType)) {
                 $this->em->getConnection()->exec(
                     'UNLOCK TABLES;'
                 );
