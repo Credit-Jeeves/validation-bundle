@@ -3,7 +3,6 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
@@ -22,6 +21,7 @@ class TenantRepository extends EntityRepository
 //             $query->setParameter('search', $search);
         }
         $query = $query->getQuery();
+
         return $query->getScalarResult();
     }
 
@@ -48,6 +48,7 @@ class TenantRepository extends EntityRepository
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -201,5 +202,27 @@ class TenantRepository extends EntityRepository
         $query->setParameter('residentId', $residentMapping->getResidentId());
 
         return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $residentId
+     * @return null|Tenant
+     * @throws NonUniqueResultException
+     */
+    public function getTenantWithPendingInvitationByHoldingAndResidentId(Holding $holding, $residentId)
+    {
+        return $this->createQueryBuilder('tenant')
+            ->innerJoin(
+                'tenant.residentsMapping',
+                'resident'
+            )
+            ->where('resident.holding = :holding')
+            ->andWhere('resident.residentId = :residentId')
+            ->andWhere('tenant.invite_code IS NOT NULL')
+            ->setParameter('holding', $holding)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
