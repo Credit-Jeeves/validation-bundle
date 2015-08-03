@@ -154,7 +154,7 @@ class PaymentAccountCase extends BaseTestCase
      *
      * @param boolean $isPaymentProcessorLocked
      * @param string $alertMessage
-     * @param boolean $availableButtonsCount
+     * @param integer $availableButtonsCount
      */
     public function checkPaymentProcessorLocker($isPaymentProcessorLocked, $alertMessage, $availableButtonsCount)
     {
@@ -180,6 +180,6 @@ class PaymentAccountCase extends BaseTestCase
             $buttonGrey = $this->page->findAll('css', '.grey'),
             'This is button for add new payment account. 2 Buttons means we available add payment account.'
         );
-        $this->assertEquals($isPaymentProcessorLocked, $availableButtonsCount);
+        $this->assertCount($availableButtonsCount, $buttonGrey);
     }
 }

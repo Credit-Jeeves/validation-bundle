@@ -41,6 +41,7 @@ class RjHoldingAdmin extends Admin
                 'isPaymentProcessorLocked',
                 null,
                 [
+                    'required' => false,
                     'label' => 'admin.label.payment_processor_locked',
                 ]
             )
