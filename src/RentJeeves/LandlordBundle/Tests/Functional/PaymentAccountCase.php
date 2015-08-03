@@ -178,7 +178,7 @@ class PaymentAccountCase extends BaseTestCase
         $this->assertEquals($alertMessage, $alert->getText());
         $this->assertNotNull(
             $buttonGrey = $this->page->findAll('css', '.grey'),
-            'This is button for add new payment account. 2 Buttons means we available add payment account.'
+            'Can not find button for add payment account'
         );
         $this->assertCount($availableButtonsCount, $buttonGrey);
     }
