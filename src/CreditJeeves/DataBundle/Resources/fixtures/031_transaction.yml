@@ -2,7 +2,6 @@ model: RentJeeves\DataBundle\Entity\Transaction
 fixtures:
   rjCheckout_1_1:
     order:  rjOrder_1
-    paymentAccount: PaymentAccount_14
     amount: 1500
     transaction_id: 123123
     isSuccessful: true
@@ -87,7 +86,6 @@ fixtures:
 # finished contract
   rjCheckout_7_1_1:
     order:  rjOrder_3_1
-    paymentAccount: PaymentAccount_14
     amount: 1500
     transaction_id: 369369
     isSuccessful: true

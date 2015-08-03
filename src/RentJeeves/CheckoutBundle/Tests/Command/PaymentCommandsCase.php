@@ -161,8 +161,10 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertNotNull($order);
         $this->assertNotNull($completeTransaction = $order->getCompleteTransaction());
         $this->assertNotNull($order->getHeartlandBatchId());
-        $this->assertNotNull($paymentAccount = $completeTransaction->getPaymentAccount());
+        $this->assertNotNull($paymentAccount = $order->getPaymentAccount());
+        $this->assertNotNull($depositAccount = $order->getDepositAccount());
         $this->assertEquals($payment->getPaymentAccount()->getId(), $paymentAccount->getId());
+        $this->assertEquals($payment->getDepositAccount()->getId(), $depositAccount->getId());
         $operations = $order->getOperations();
         $this->assertCount(3, $operations);
 
@@ -516,6 +518,7 @@ class PaymentCommandsCase extends BaseTestCase
         $payment->setStatus(PaymentStatus::ACTIVE);
         $payment->setContract($contract);
         $payment->setPaymentAccount($paymentAccount);
+        $payment->setDepositAccount($contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor());
         $today = new DateTime();
         $payment->setDueDate($today->format('j'));
         $payment->setStartMonth($today->format('n'));

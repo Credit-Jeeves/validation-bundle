@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -227,9 +228,20 @@ abstract class PaymentAccount
      */
     protected $transactions;
 
+    /**
+     * @ORM\OneToMany(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Order",
+     *      mappedBy="paymentAccount",
+     *      cascade={"persist"}
+     * )
+     * @var ArrayCollection
+     */
+    protected $orders;
+
     public function __construct()
     {
         $this->payments = new ArrayCollection();
+        $this->orders = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
         $this->transactions = new ArrayCollection();
         $this->creditTrackJobs = new ArrayCollection();
@@ -568,5 +580,21 @@ abstract class PaymentAccount
     public function getPaymentProcessor()
     {
         return $this->paymentProcessor;
+    }
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function addOrder(Order $order)
+    {
+        $this->orders->add($order);
     }
 }

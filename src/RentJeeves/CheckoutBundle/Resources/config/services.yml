@@ -60,7 +60,6 @@ services:
             - @doctrine.orm.default_entity_manager
             - @payum2
             - @payment.heartland.payment_details_mapper
-            - "%rt_merchant_name%"
 
     payment.pay_heartland:
         class: "%payment.pay_heartland%"
@@ -69,7 +68,6 @@ services:
             - @doctrine.orm.default_entity_manager
             - @payum2
             - @payment.heartland.payment_details_mapper
-            - "%rt_merchant_name%"
 
     # ACI collect pay
     payment_processor.aci.collect_pay.report_loader:

@@ -39,7 +39,7 @@ class ChargeHeartland extends BasePayHeartland
         $paymentRequest->setTransaction($requestTransaction);
 
         $paymentDetails = new PaymentDetails();
-        $paymentDetails->setMerchantName($this->rtMerchantName);
+        $paymentDetails->setMerchantName($order->getDepositAccount()->getMerchantName());
         $paymentDetails->setRequest($paymentRequest);
 
         return $paymentDetails;
