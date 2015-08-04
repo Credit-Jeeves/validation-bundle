@@ -52,7 +52,7 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTemplate, [edit, AdminBundle:CRUD:holding_edit.html.twig]]
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+            - [ setTranslationDomain, [messages]]
 
     sonata.admin.rj_group:
         class: RentJeeves\AdminBundle\Admin\RjGroupAdmin

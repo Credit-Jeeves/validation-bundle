@@ -14,11 +14,13 @@
             <span data-bind="text: $data.name"></span>
         </label>
         <!-- /ko -->
-        <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
-            <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus">
-                <span></span>{{ 'payment.account.new' | trans }}
-            </a>
-        </div>
+        {% if isLocked == false %}
+            <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
+                <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus">
+                    <span></span>{{ 'payment.account.new' | trans }}
+                </a>
+            </div>
+        {% endif %}
     </div>
 </div>
 <div data-bind="visible: isNewPaymentAccount || $root.notEmptyPaymentAccount">
