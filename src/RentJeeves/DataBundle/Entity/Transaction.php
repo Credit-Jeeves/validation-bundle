@@ -313,7 +313,7 @@ class Transaction extends Base
      *
      * @return string
      */
-    public function getTransactionDate()
+    public function getReversalDate()
     {
         return $this->getDepositDate()->format('Y-m-d');
     }
