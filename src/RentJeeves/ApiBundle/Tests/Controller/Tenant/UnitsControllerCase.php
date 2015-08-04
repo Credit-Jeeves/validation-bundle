@@ -175,4 +175,78 @@ class UnitsControllerCase extends BaseApiTestCase
 
         $this->assertEquals($responseForNormalizedAddress, $responseForNotNormalizedAddress);
     }
+
+    /**
+     * @return array
+     */
+    public function provideUnitIds()
+    {
+        return [
+            [1],
+            [10],
+            [27], // SINGLE_PROPERTY
+            [30]
+        ];
+    }
+
+    /**
+     * @param int $id
+     *
+     * @test
+     * @dataProvider provideUnitIds
+     */
+    public function shouldCheckShowUnitResponseIsCorrect($id)
+    {
+        $encodedId = $this->getIdEncoder()->encode($id);
+
+        $response = $this->getRequest($encodedId);
+
+        $this->assertResponse($response);
+
+        $answerFromApi = $this->parseContent($response->getContent());
+
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+
+        /** @var Unit $unitInDB */
+        $unitInDB = $repo->findOneById($id);
+
+        $this->assertNotNull($unitInDB);
+
+        $this->assertEquals(
+            $unitInDB->getId(),
+            $this->getUrlEncoder()->decode($answerFromApi['url'])
+        );
+
+        $this->assertEquals(
+            $unitInDB->getName(),
+            $answerFromApi['name']
+        );
+
+        $this->assertArrayHasKey(
+            'address',
+            $answerFromApi
+        );
+
+        $address = $answerFromApi['address'];
+
+        $this->assertEquals(
+            $unitInDB->getProperty()->getCity(),
+            $address['city']
+        );
+
+        $this->assertEquals(
+            $unitInDB->getProperty()->getArea(),
+            $address['state']
+        );
+
+        $this->assertEquals(
+            $unitInDB->getProperty()->getZip(),
+            $address['zip']
+        );
+
+        $this->assertEquals(
+            $unitInDB->getProperty()->getNumber() . ' ' . $unitInDB->getProperty()->getStreet(),
+            $address['street']
+        );
+    }
 }
