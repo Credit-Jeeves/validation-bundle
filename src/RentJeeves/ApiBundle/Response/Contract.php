@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Forms\Enum\ReportingType;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 use RentJeeves\DataBundle\Entity\Contract as Entity;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 /**
  * @DI\Service("response_resource.contract")
@@ -16,6 +17,9 @@ use RentJeeves\DataBundle\Entity\Contract as Entity;
  */
 class Contract extends ResponseResource
 {
+    const DELIVERY_METHOD_ELECTRONIC = 'electronic';
+    const DELIVERY_METHOD_CHECK = 'check';
+
     /**
      * @var Entity
      */
@@ -107,6 +111,20 @@ class Contract extends ResponseResource
         }
 
         return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\SerializedName("delivery_method")
+     * @return string
+     */
+    public function getDeliveryMethod()
+    {
+        $orderAlgorithm = $this->entity->getGroup()->getOrderAlgorithm();
+
+        return $orderAlgorithm === OrderAlgorithmType::SUBMERCHANT ?
+            self::DELIVERY_METHOD_ELECTRONIC : self::DELIVERY_METHOD_CHECK;
     }
 
     /**
