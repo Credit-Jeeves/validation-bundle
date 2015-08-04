@@ -224,7 +224,7 @@ class PaymentManager
         $payeeAddress->setPostalCode($group->getZip());
         $payeeAddress->setCountryCode($group->getCountry());
 
-        $payee->setName($group->getName());
+        $payee->setName($group->getMailingAddressName());
         $payee->setAddress($payeeAddress);
 
         return $payee;
