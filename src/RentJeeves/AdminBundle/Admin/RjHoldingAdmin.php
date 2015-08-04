@@ -45,6 +45,14 @@ class RjHoldingAdmin extends Admin
                     'label' => 'admin.label.payment_processor_locked',
                 ]
             )
+            ->add(
+                'isPaymentsEnable',
+                null,
+                [
+                    'required' => false,
+                    'label' => 'admin.label.is_payments_enable',
+                ]
+            )
             ->with('Accounting Settings')
             ->add(
                 'apiIntegrationType',

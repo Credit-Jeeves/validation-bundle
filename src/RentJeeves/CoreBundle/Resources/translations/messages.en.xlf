@@ -30,6 +30,10 @@
                 <source>admin.label.payment_processor_locked</source>
                 <target>Payment Processor changes locked?</target>
             </trans-unit>
+            <trans-unit id="admin.label.is_payments_enable">
+                <source>admin.label.is_payments_enable</source>
+                <target>Is Payments Enable?</target>
+            </trans-unit>
             <trans-unit id="alert.changing_payment_account">
                 <source>alert.changing_payment_account</source>
                 <target>

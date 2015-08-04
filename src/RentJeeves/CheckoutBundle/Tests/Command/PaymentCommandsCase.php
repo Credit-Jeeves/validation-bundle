@@ -2,6 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use ACI\Utils\OldProfilesStorage;
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
@@ -77,6 +78,37 @@ class PaymentCommandsCase extends BaseTestCase
     protected function getOrderStatusManager()
     {
         return $this->getContainer()->get('payment_processor.order_status_manager');
+    }
+
+    /**
+     * @return array
+     */
+    public function providerForShouldCheckOptionIsPaymentsEnable()
+    {
+        return [
+            [true, 1],
+            [false, 0]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerForShouldCheckOptionIsPaymentsEnable
+     *
+     * @param boolean $isPaymentsEnable
+     * @param integer $jobsCount
+     */
+    public function shouldCheckOptionIsPaymentsEnable($isPaymentsEnable, $jobsCount)
+    {
+        $this->load(true);
+        /** @var Holding $holding */
+        $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $holding->setIsPaymentsEnable($isPaymentsEnable);
+        $this->getEntityManager()->flush();
+
+        $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertCount($jobsCount, $jobs);
     }
 
     /**
