@@ -858,7 +858,7 @@ class Order extends Base
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TransactionDate")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
+     * @Serializer\Groups({"soapYardiRequest", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
