@@ -15,7 +15,7 @@ class Version20150804084153 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_holding
-                ADD is_payments_enable TINYINT(1) DEFAULT '1' NOT NULL"
+                ADD payments_enabled TINYINT(1) DEFAULT '1' NOT NULL"
         );
     }
 
@@ -27,7 +27,7 @@ class Version20150804084153 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_holding
-                DROP is_payments_enable"
+                DROP payments_enabled"
         );
     }
 }

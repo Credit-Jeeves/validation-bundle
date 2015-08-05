@@ -205,7 +205,7 @@ abstract class Holding
     /**
      * @ORM\Column(
      *      type="boolean",
-     *      name="is_payments_enable",
+     *      name="payments_enabled",
      *      options={
      *          "default":1
      *      }
@@ -213,22 +213,22 @@ abstract class Holding
      *
      * @var boolean
      */
-    protected $isPaymentsEnable = true;
+    protected $paymentsEnabled = true;
 
     /**
      * @return boolean
      */
-    public function isPaymentsEnable()
+    public function isPaymentsEnabled()
     {
-        return $this->isPaymentsEnable;
+        return $this->paymentsEnabled;
     }
 
     /**
-     * @param boolean $isPaymentsEnable
+     * @param boolean $paymentsEnabled
      */
-    public function setIsPaymentsEnable($isPaymentsEnable)
+    public function setPaymentsEnabled($paymentsEnabled)
     {
-        $this->isPaymentsEnable = $isPaymentsEnable;
+        $this->paymentsEnabled = $paymentsEnabled;
     }
 
     /**

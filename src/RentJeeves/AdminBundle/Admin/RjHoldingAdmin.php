@@ -46,11 +46,11 @@ class RjHoldingAdmin extends Admin
                 ]
             )
             ->add(
-                'isPaymentsEnable',
+                'paymentsEnabled',
                 null,
                 [
                     'required' => false,
-                    'label' => 'admin.label.is_payments_enable',
+                    'label' => 'admin.label.payments_enabled',
                 ]
             )
             ->with('Accounting Settings')

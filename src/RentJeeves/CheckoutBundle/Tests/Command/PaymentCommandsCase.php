@@ -83,7 +83,7 @@ class PaymentCommandsCase extends BaseTestCase
     /**
      * @return array
      */
-    public function providerForShouldCheckOptionIsPaymentsEnable()
+    public function providerForCheckingOptionIsPaymentsEnabled()
     {
         return [
             [true, 1],
@@ -93,18 +93,18 @@ class PaymentCommandsCase extends BaseTestCase
 
     /**
      * @test
-     * @dataProvider providerForShouldCheckOptionIsPaymentsEnable
+     * @dataProvider providerForCheckingOptionIsPaymentsEnabled
      *
-     * @param boolean $isPaymentsEnable
+     * @param boolean $isPaymentsEnabled
      * @param integer $jobsCount
      */
-    public function shouldCheckOptionIsPaymentsEnable($isPaymentsEnable, $jobsCount)
+    public function shouldCheckOptionIsPaymentsEnabled($isPaymentsEnabled, $jobsCount)
     {
         $this->load(true);
         /** @var Holding $holding */
         $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
         $this->assertNotEmpty($holding);
-        $holding->setIsPaymentsEnable($isPaymentsEnable);
+        $holding->setPaymentsEnabled($isPaymentsEnabled);
         $this->getEntityManager()->flush();
 
         $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
