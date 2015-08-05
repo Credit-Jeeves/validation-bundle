@@ -30,6 +30,7 @@ class LoggableListenerCase extends BaseTestCase
         $contract->setStartAt(new DateTime());
         $contract->setStatus(ContractStatus::INVITE);
         $contract->setGroup($group);
+        $contract->setDueDate($group->getGroupSettings()->getDueDate());
         $contract->setProperty($group->getGroupProperties()->last());
         $contract->setUnit($contract->getProperty()->getUnits()->first());
 

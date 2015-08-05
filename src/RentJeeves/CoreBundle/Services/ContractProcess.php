@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CoreBundle\Services;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -99,6 +100,8 @@ class ContractProcess
                 return false;
             }
 
+            // we already have set Group to contract
+            $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
 
             $this->em->persist($contract);
             $this->em->flush();
@@ -128,6 +131,7 @@ class ContractProcess
         $contract->setUnit($contractWaiting->getUnit());
         $contract->setStatus(ContractStatus::APPROVED);
         $contract->setStartAt($contractWaiting->getStartAt());
+        $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
         $contract->setFinishAt($contractWaiting->getFinishAt());
         $contract->setIntegratedBalance($contractWaiting->getIntegratedBalance());
         $contract->setRent($contractWaiting->getRent());
@@ -195,9 +199,11 @@ class ContractProcess
             return false;
         }
 
+        /** @var Group $group */
         foreach ($groups as $group) {
             $contract->setHolding($group->getHolding());
             $contract->setGroup($group);
+            $contract->setDueDate($group->getGroupSettings()->getDueDate());
             $this->em->persist($contract);
             $result[] = $contract;
             $contract = clone $contract;
