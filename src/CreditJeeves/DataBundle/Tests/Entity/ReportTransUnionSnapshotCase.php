@@ -134,7 +134,7 @@ class ReportTransUnionSnapshotCase extends BaseTestCase
      */
     public function shouldGetOldestTradelineInYears()
     {
-        $this->assertEquals('17', $this->report->getOldestTradelineInYears());
+        $this->assertEquals('18', $this->report->getOldestTradelineInYears());
     }
 
     /**
