@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Command;
+namespace RentJeeves\CheckoutBundle\Command;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;

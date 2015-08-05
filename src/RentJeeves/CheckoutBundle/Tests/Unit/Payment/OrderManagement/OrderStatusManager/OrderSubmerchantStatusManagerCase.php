@@ -473,8 +473,8 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $statusManager->setComplete($order);
 
         $this->assertEquals(
-            $paidFor->modify($shiftedOn),
-            $order->getContract()->getPayments()->last()->getPaidFor(),
+            $paidFor->modify($shiftedOn)->format('m/d/Y'),
+            $order->getContract()->getPayments()->last()->getPaidFor()->format('m/d/Y'),
             sprintf('PaidFor date of %s payment should be shifted on %s', $paymentStatus, $shiftedOn)
         );
     }
