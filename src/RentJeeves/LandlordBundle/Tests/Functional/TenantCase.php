@@ -119,25 +119,29 @@ class TenantCase extends BaseTestCase
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
 
-        $this->assertNotNull($select = $this->page->find('css', '.group-select>a'));
+        $this->assertNotNull($select = $this->page->find('css', '.group-select>a'), 'Can not find group selector');
         $select->click();
 
-        $this->assertNotNull($selectOption = $this->page->find('css', '#holding-group_li_1>span'));
+        $this->assertNotNull(
+            $selectOption = $this->page->find('css', '#holding-group_li_1>span'),
+            'Can not find group option in group selector'
+        );
         $selectOption->click();
         $this->session->wait($this->timeout - 20000, "false"); // wait refresh page, try set less time
 
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($approve = $this->page->find('css', '.approve'));
+        $this->assertNotNull($approve = $this->page->find('css', '.approve'), 'Can not find Approve button');
         $approve->click();
 
         $this->session->wait($this->timeout, "$('#tenant-approve-property-popup .footer-button-box').is(':visible')");
 
-        $this->assertNotNull($amountInput = $this->page->find('css', '#amount-approve'));
+        $this->assertNotNull($amountInput = $this->page->find('css', '#amount-approve'), 'Can not find amount input');
         $amount = $amountInput->getValue();
         $amountInput->setValue('999999999TEST');
         $this->assertNotNull(
-            $closeBtn = $this->page->find('css', '.ui-dialog-titlebar-close')
+            $closeBtn = $this->page->find('css', '.ui-dialog-titlebar-close'),
+            'Can not find close button'
         );
         $closeBtn->click();
         $approve->click();
@@ -155,7 +159,10 @@ class TenantCase extends BaseTestCase
             "$('#amount-edit').val(' ');"
         );
 
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
+        $this->assertNotNull(
+            $amount = $this->page->find('css', '#amount-edit'),
+            'Can not find #amount-edit on the page'
+        );
         $amount->setValue('7677.00');
         if ($isIntegrated) {
             $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'));
@@ -171,85 +178,106 @@ class TenantCase extends BaseTestCase
 
         // click next_payment_date and select today
         $start = $this->page->find('css', '#contractEditStart');
-        $this->assertNotNull($start);
+        $this->assertNotNull($start, 'Can not find #contractEditStart on the page');
         $start->click();
 
         $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
 
         $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
-        $this->assertNotNull($today);
+        $this->assertNotNull($today, 'Can not find datepicker value for today');
         $today->click();
         $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
         // end selected next_payment_date
 
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'), 'Can not find amount input');
         $amount->setValue(7677.00);
         // choose input radio ON, and select date finish
 
         $endAtRadio = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabel');
-        $this->assertNotNull($endAtRadio);
+        $this->assertNotNull($endAtRadio, 'Can not find finishAt radio button');
         $endAtRadio->click();
 
         $finish = $this->page->find('css', '#contractEditFinish');
-        $this->assertNotNull($finish);
+        $this->assertNotNull($finish, 'Can not find finish contract popup');
         $finish->click();
         $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
 
         $next = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-next');
-        $this->assertNotNull($next);
+        $this->assertNotNull($next, 'Can not find NEXT on the datepicker');
         $next->click();
 
         $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
-        $this->assertNotNull($future);
+        $this->assertNotNull($future, 'Can not find FUTURE on the datepicker');
         $future[count($future) - 1]->click();
         // end select finish date
 
-        $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
+        $this->assertNotNull(
+            $contractEditStart = $this->page->find('css', '#contractEditStart'),
+            'Can not find #contractEditStart on the page'
+        );
         $start = $contractEditStart->getValue();
 
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditFinish'));
         $finish = $contractEditStart->getValue();
 
-        $this->assertNotNull($unitEdit = $this->page->find('css', '#unit-edit'));
-        $unitEdit->selectOption('2-e'); //
+        $this->assertNotNull(
+            $unitEdit = $this->page->find('css', '#unit-edit'),
+            'Can not find UNIT select box'
+        );
+        $unitEdit->selectOption('2-e');
 
-        $this->assertNotNull($unitEdit = $this->page->find('css', '.dueDateEdit'));
-        $unitEdit->selectOption('14'); //
+        $this->assertNotNull(
+            $unitEdit = $this->page->find('css', '.dueDateEdit'),
+            'Can not find dueDate select box'
+        );
+        $unitEdit->selectOption('14');
 
         if ($isIntegrated) {
-            $this->assertNotNull($balanceField = $this->page->find('css', '.balance-field'));
-            $balanceField->setValue("200.00");
+            $this->assertNotNull(
+                $balanceField = $this->page->find('css', '.balance-field'),
+                'Can not find balance field'
+            );
+            $balanceField->setValue('200.00');
         }
 
         $this->page->pressButton('savechanges');
         $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($approve = $this->page->find('css', '.approve'));
+        $this->assertNotNull($approve = $this->page->find('css', '.approve'), 'Can not find APPROVE button');
         $approve->click();
 
-        $this->assertNotNull($editStart = $this->page->find('css', '#contractApproveStart'));
-        $this->assertNotNull($editFinish = $this->page->find('css', '#contractApproveFinish'));
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
-        $this->assertNotNull($address = $this->page->find('css', '#tenant-approve-property-popup .addressDiv'));
-        $this->assertEquals($start, $editStart->getValue(), 'Wrong edit start');
-        $this->assertEquals($finish, $editFinish->getValue(), 'Wrong edit finish');
-        $this->assertEquals(7677.00, $amount->getValue(), 'Wrong edit amount');
-        $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong edit unit');
+        $this->assertNotNull(
+            $editStart = $this->page->find('css', '#contractApproveStart'),
+            'Can not find contract start'
+        );
+        $this->assertNotNull(
+            $editFinish = $this->page->find('css', '#contractApproveFinish'),
+            'Can not find contract finish'
+        );
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'), 'Can not find contract amount');
+        $this->assertNotNull(
+            $address = $this->page->find('css', '#tenant-approve-property-popup .addressDiv'),
+            'Can not find contract address'
+        );
+        $this->assertEquals($start, $editStart->getValue(), 'Wrong start date after edit');
+        $this->assertEquals($finish, $editFinish->getValue(), 'Wrong finish date after edit');
+        $this->assertEquals(7677.00, $amount->getValue(), 'Wrong amount after edit');
+        $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong unit after edit');
 
         if ($isIntegrated) {
-            $this->assertNotNull($resident = $this->page->find('css', '#residentId'));
-            $this->assertEquals('t12345', $resident->getValue(), 'Wrong edit resident id');
+            $this->assertNotNull($resident = $this->page->find('css', '#residentId'), 'Can not find resident');
+            $this->assertEquals('t12345', $resident->getValue(), 'Wrong resident id after edit');
         }
 
         $this->page->pressButton('close');
-        $this->assertNotNull($edit = $this->page->find('css', '.edit'));
+        $this->assertNotNull($edit = $this->page->find('css', '.edit'), 'Can not find contract edit button');
         $edit->click();
 
         $this->session->wait($this->timeout, "$('#tenant-edit-property-popup').is(':visible')");
         $endAtRadio = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabelM2M');
-        $this->assertNotNull($endAtRadio);
+        $this->assertNotNull($endAtRadio, 'Can not find contract endAt radio button');
         if ($isIntegrated) {
-            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'));
+            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'), 'Can not find resident field');
             $this->session->evaluateScript(
                 "$('#resident-edit').val(' ');"
             );
@@ -259,7 +287,7 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('savechanges');
         $this->session->reload();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($edit = $this->page->find('css', '.edit'));
+        $this->assertNotNull($edit = $this->page->find('css', '.edit'), 'Can not find contract edit button');
         $edit->click();
 
         $this->session->wait($this->timeout, "$('#tenant-edit-property-popup').is(':visible')");
@@ -270,12 +298,12 @@ class TenantCase extends BaseTestCase
             'css',
             '#tenant-edit-property-popup .monthToMonth'
         );
-        $this->assertNotNUll($checkedMonth2Month);
-        $this->assertNotNUll($checkedMonth2Month->getAttribute('checked'));
-        $this->assertEquals('monthToMonth', $checkedMonth2Month->getValue());
-        $this->assertEquals('true', $checkedMonth2Month->getAttribute('checked'));
+        $this->assertNotNull($checkedMonth2Month, 'MonthToMonth should not be null');
+        $this->assertNotNUll($checkedMonth2Month->getAttribute('checked'), 'MonthToMonth should have attr CHECKED');
+        $this->assertEquals('monthToMonth', $checkedMonth2Month->getValue(), 'MonthToMonth value is wrong');
+        $this->assertEquals('true', $checkedMonth2Month->getAttribute('checked'), 'MonthToMonth should be checked');
         if ($isIntegrated) {
-            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'));
+            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'), 'Can not find resident field');
             $this->assertEquals('t123457', $resident->getValue(), 'Wrong edit resident id');
         }
         $this->logout();
@@ -285,18 +313,18 @@ class TenantCase extends BaseTestCase
                 'rent' => 7677.00
             )
         );
-        $this->assertCount(1, $contracts, 'Wrong count contract');
+        $this->assertCount(1, $contracts, 'Wrong count contract. Should be 1.');
 
         /**
          * @var $contract Contract
          */
         $contract = reset($contracts);
         if ($isIntegrated) {
-            $this->assertEquals(200.00, $contract->getIntegratedBalance(), 'Wrong balance');
+            $this->assertEquals(200.00, $contract->getIntegratedBalance(), 'Wrong integrated balance');
             $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
         } else {
             $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
-            $this->assertEquals(0, $contract->getIntegratedBalance(), 'Wrong balance');
+            $this->assertEquals(0, $contract->getIntegratedBalance(), 'Wrong integrated balance');
         }
     }
 

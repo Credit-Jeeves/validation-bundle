@@ -109,6 +109,7 @@ class InviteLandlord
         $contract->setTenant($tenant);
         $contract->setHolding($holding);
         $contract->setGroup($group);
+        $contract->setDueDate($group->getGroupSettings()->getDueDate());
 
         $this->validate($contract);
 
