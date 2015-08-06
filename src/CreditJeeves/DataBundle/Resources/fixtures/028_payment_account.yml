@@ -5,7 +5,7 @@ fixtures:
         address: TenantAddres_1
         type: card
         name: Card
-        token: '2A83E7EB-0558-48EC-A342-A71D0092BD3F'
+        token: '2A83E7EB-0558-48EC-A342-A71D0092BD3C'
         ccExpiration: 'last day of +1 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'
@@ -15,7 +15,7 @@ fixtures:
         user: Tenant_1
         type: bank
         name: Bank
-        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
+        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB1'
         createdAt: '-5 days'
         updatedAt: '-5 days'
         depositAccounts:
@@ -24,7 +24,7 @@ fixtures:
         user: Tenant_2
         type: bank
         name: Bank
-        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
+        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB2'
         createdAt: '-5 days'
         updatedAt: '-5 days'
         depositAccounts:
@@ -34,7 +34,7 @@ fixtures:
         address: TenantAddres_2
         type: card
         name: Card
-        token: '2A83E7EB-0558-48EC-A342-A71D0092BD3F'
+        token: '2A83E7EB-0558-48EC-A342-A71D0092BD3D'
         ccExpiration: 'last day of +4 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'
@@ -64,7 +64,7 @@ fixtures:
         user: Tenant_10
         type: bank
         name: Bank account
-        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
+        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB4'
         createdAt: '2014-02-28'
         updatedAt: '2014-02-28'
         depositAccounts:
