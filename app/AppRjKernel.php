@@ -53,7 +53,6 @@ class AppRjKernel extends AppKernel
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
             new Fp\JsFormValidatorBundle\FpJsFormValidatorBundle(),
             new Bazinga\Bundle\GeocoderBundle\BazingaGeocoderBundle(),
-            new Ivory\OrderedFormBundle\IvoryOrderedFormBundle(),
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
