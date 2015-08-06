@@ -50,6 +50,7 @@ class PaymentRepository extends EntityRepository
         );
         $query->setParameter('contractNotActiveStatuses', array(ContractStatus::DELETED, ContractStatus::FINISHED));
         $query->innerJoin('c.group', 'g');
+        $query->innerJoin('c.holding', 'h');
         $query->innerJoin('g.depositAccounts', 'd');
         $query->leftJoin(
             'p.jobs',
@@ -57,6 +58,7 @@ class PaymentRepository extends EntityRepository
             Expr\Join::WITH,
             "DATE(j.createdAt) = :startDate"
         );
+        $query->andWhere('h.paymentsEnabled = 1');
         $query->andWhere('j.id IS NULL');
         $query->andWhere('p.status = :status');
         $query->andWhere('c.paymentAccepted = :paymentAccepted');
