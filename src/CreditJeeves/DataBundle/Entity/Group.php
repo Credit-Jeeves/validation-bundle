@@ -165,7 +165,7 @@ class Group extends BaseGroup
     /**
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getBillingAccountByCurrentPaymentProcessor()
+    public function getBillingAccountsByCurrentPaymentProcessor()
     {
         $currentPaymentProcessor = $this->getGroupSettings()->getPaymentProcessor();
 
@@ -182,7 +182,7 @@ class Group extends BaseGroup
     public function getActiveBillingAccount()
     {
         /** @var BillingAccount $account */
-        foreach ($this->getBillingAccountByCurrentPaymentProcessor() as $account) {
+        foreach ($this->getBillingAccountsByCurrentPaymentProcessor() as $account) {
             if ($account->getIsActive()) {
                 return $account;
             }

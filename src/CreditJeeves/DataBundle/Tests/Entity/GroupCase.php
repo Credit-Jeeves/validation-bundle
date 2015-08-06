@@ -49,11 +49,11 @@ class GroupCase extends BaseTestCase
         $this->createNewBillingAccount($group, PaymentProcessor::HEARTLAND, 'heartlandSecond');
 
         $this->assertCount(3, $group->getBillingAccounts());
-        $this->assertCount(1, $group->getBillingAccountByCurrentPaymentProcessor());
+        $this->assertCount(1, $group->getBillingAccountsByCurrentPaymentProcessor());
 
         $groupSettings->setPaymentProcessor(PaymentProcessor::HEARTLAND);
         $this->getEntityManager()->flush();
 
-        $this->assertCount(2, $group->getBillingAccountByCurrentPaymentProcessor());
+        $this->assertCount(2, $group->getBillingAccountsByCurrentPaymentProcessor());
     }
 }
