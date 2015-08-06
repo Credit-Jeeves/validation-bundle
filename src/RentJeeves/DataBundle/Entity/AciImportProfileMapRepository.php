@@ -17,7 +17,7 @@ class AciImportProfileMapRepository extends EntityRepository
         return $this->createQueryBuilder('p')
             ->leftJoin('p.user', 'u')
             ->leftJoin('u.contracts', 'c')
-            ->leftJoin('p.group','g')
+            ->leftJoin('p.group', 'g')
             ->where('g.holding = :holding')
             ->orWhere('c.holding = :holding')
             ->setParameter('holding', $holding)
