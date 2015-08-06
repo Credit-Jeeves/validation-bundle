@@ -63,7 +63,7 @@ class SettingsController extends Controller
         $holding = $this->getUser()->getHolding();
         /** @var Group $group */
         $group = $this->getCurrentGroup();
-        $billingAccounts = $group->getBillingAccounts();
+        $billingAccounts = $group->getBillingAccountsByCurrentPaymentProcessor();
         $form = $this->createForm(new BillingAccountType());
 
         return array(
@@ -87,7 +87,7 @@ class SettingsController extends Controller
     {
         /** @var Group $group */
         $group = $this->getCurrentGroup();
-        $billingAccounts = $group->getBillingAccounts();
+        $billingAccounts = $group->getBillingAccountsByCurrentPaymentProcessor();
         $data = $this->get('jms_serializer')->serialize($billingAccounts, 'json');
 
         return new Response($data, 200, array('content-type' => 'application/json'));
