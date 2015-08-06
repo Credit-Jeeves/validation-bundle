@@ -124,7 +124,8 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull(
             $selectOption = $this->page->find('css', '#holding-group_li_1>span'),
-            'Can not find group option in group selector');
+            'Can not find group option in group selector'
+        );
         $selectOption->click();
         $this->session->wait($this->timeout - 20000, "false"); // wait refresh page, try set less time
 
@@ -221,7 +222,8 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull(
             $unitEdit = $this->page->find('css', '#unit-edit'),
-            'Can not find UNIT select box');
+            'Can not find UNIT select box'
+        );
         $unitEdit->selectOption('2-e');
 
         $this->assertNotNull(
