@@ -112,6 +112,20 @@ class ImportCase extends ImportBaseAbstract
     }
 
     /**
+     * @param array $map
+     * @param int $limit
+     */
+    protected function fillCsvMapping(array $map, $limit)
+    {
+        for ($i = 1; $i <= $limit; $i++) {
+            if (isset($map[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column' . $i));
+                $choice->selectOption($map[$i]);
+            }
+        }
+    }
+
+    /**
      * @test
      */
     public function shouldGetMappingForImport()
@@ -177,13 +191,8 @@ class ImportCase extends ImportBaseAbstract
 
         $mapFile = $this->mapFile;
         $mapFile[15] = ImportMapping::KEY_TENANT_STATUS;
-        // Fill all select choice on the page with correct data
-        for ($i = 1; $i <= 15; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($mapFile[$i])) {
-                $choice->selectOption($mapFile[$i]);
-            }
-        }
+
+        $this->fillCsvMapping($mapFile, 15);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -456,7 +465,6 @@ class ImportCase extends ImportBaseAbstract
             $this->setPropertyFirst();
             $submitImportFile->click();
             $this->assertNull($error = $this->page->find('css', '.error_list>li'));
-            $this->assertNotNull($table = $this->page->find('css', 'table'));
             //Second step
             $this->assertNotNull($table = $this->page->find('css', 'table'));
 
@@ -630,16 +638,11 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
-        $this->assertNotNull($table = $this->page->find('css', 'table'));
         //Second step
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($this->mapFile, 14);
+
         //Map Payment
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -687,12 +690,8 @@ class ImportCase extends ImportBaseAbstract
         //Second step
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($this->mapFile, 14);
+
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
@@ -780,12 +779,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 17; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapMultiplePropertyFile[$i])) {
-                $choice->selectOption($this->mapMultiplePropertyFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($this->mapMultiplePropertyFile, 17);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -977,12 +971,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($this->mapFile, 14);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1033,7 +1022,7 @@ class ImportCase extends ImportBaseAbstract
      * @test
      * @depends alreadyHaveAccount
      */
-    public function checkMutchedUser()
+    public function checkMatchedUser()
     {
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
@@ -1052,12 +1041,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($this->mapFile, 14);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1104,12 +1088,7 @@ class ImportCase extends ImportBaseAbstract
             '12'=> ImportMapping::KEY_MOVE_OUT,
             '14'=> ImportMapping::KEY_EMAIL,
         );
-        for ($i = 1; $i <= 15; $i++) {
-            if (isset($mapFile[$i])) {
-                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-                $choice->selectOption($mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($mapFile, 15);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1139,12 +1118,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 15; $i++) {
-            if (isset($mapFile[$i])) {
-                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-                $choice->selectOption($mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($mapFile, 15);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1201,12 +1175,7 @@ class ImportCase extends ImportBaseAbstract
             '8' => ImportMapping::KEY_BALANCE,
             '9' => ImportMapping::KEY_EMAIL,
         );
-        for ($i = 1; $i <= 15; $i++) {
-            if (isset($mapFile[$i])) {
-                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-                $choice->selectOption($mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($mapFile, 15);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1247,12 +1216,7 @@ class ImportCase extends ImportBaseAbstract
             '8' => ImportMapping::KEY_BALANCE,
             '9' => ImportMapping::KEY_EMAIL,
         );
-        for ($i = 1; $i <= 15; $i++) {
-            if (isset($mapFile[$i])) {
-                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-                $choice->selectOption($mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($mapFile, 15);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1302,12 +1266,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($this->mapFile, 14);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1616,7 +1575,7 @@ class ImportCase extends ImportBaseAbstract
     /**
      * @test
      */
-    public function skippedMessageAndinfoDateInvalid()
+    public function skippedMessageAndInfoDateInvalid()
     {
         $this->load(true);
         // get count of property
@@ -1657,12 +1616,7 @@ class ImportCase extends ImportBaseAbstract
             '12'=> ImportMapping::KEY_MOVE_OUT,
             '14'=> ImportMapping::KEY_EMAIL,
         );
-        for ($i = 1; $i <= 15; $i++) {
-            if (isset($mapFile[$i])) {
-                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-                $choice->selectOption($mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($mapFile, 15);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1767,12 +1721,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($this->mapFile, 14);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -1916,12 +1865,9 @@ class ImportCase extends ImportBaseAbstract
 
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+
+        $this->fillCsvMapping($this->mapFile, 14);
+
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
 
@@ -1999,12 +1945,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+        $this->fillCsvMapping($this->mapFile, 14);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -2062,12 +2003,8 @@ class ImportCase extends ImportBaseAbstract
             '11'=> ImportMapping::KEY_CREDITS,
             '13'=> ImportMapping::KEY_PAYMENT_ACCEPTED,
         ];
-        for ($i = 1; $i <= 13; $i++) {
-            if (isset($mapFile[$i])) {
-                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-                $choice->selectOption($mapFile[$i]);
-            }
-        }
+
+        $this->fillCsvMapping($mapFile, 13);
 
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
@@ -2151,12 +2088,9 @@ class ImportCase extends ImportBaseAbstract
 
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
-        for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
-            if (isset($this->mapFile[$i])) {
-                $choice->selectOption($this->mapFile[$i]);
-            }
-        }
+
+        $this->fillCsvMapping($this->mapFile, 14);
+
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
@@ -2237,5 +2171,48 @@ class ImportCase extends ImportBaseAbstract
         $this->assertCount(25, $contract);
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
         $this->assertCount(10, $contractWaiting);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldImportCurrentPromasTenantsAndSetMonthToMonthToTrueIfMonthToMonthIsNo()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import_current_tenant.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setPropertyFirst();
+        $this->assertNotNull($dateSelector = $this->page->find('css', '.import-date'));
+        $dateSelector->selectOption('m/d/Y');
+        $submitImportFile->click();
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $mapFile = $this->mapFile;
+        $mapFile[15] = ImportMapping::KEY_TENANT_STATUS;
+        $mapFile[16] = ImportMapping::KEY_MONTH_TO_MONTH;
+
+        $this->fillCsvMapping($mapFile, 16);
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->session->wait(1000, "$('table').is(':visible')");
+
+        $importContractStatuses = $this->getParsedTrsByStatus();
+
+        $this->assertCount(1, $importContractStatuses, '1 contract status should be found: "new"');
+        $this->assertCount(2, $importContractStatuses['import.status.new'], '2 new contracts should be imported');
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+
+        $this->waitRedirectToSummaryPage();
+        $this->assertNotNull($publicId = $this->page->find('css', '#publicId'));
     }
 }
