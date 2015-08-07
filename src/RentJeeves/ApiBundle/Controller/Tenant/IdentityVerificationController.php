@@ -157,10 +157,7 @@ class IdentityVerificationController extends Controller
 
         /** @var PidKiqProcessorInterface|PidKiqStateAwareInterface $pidKiqProcessor */
         $pidKiqProcessor = $this->get('pidkiq.processor_factory')->getPidKiqProcessor();
-
-        if (!$pidKiqProcessor->processAnswers($this->prepareAnswers($request->get('answers')))) {
-            throw new BadRequestHttpException($pidKiqProcessor->getMessage());
-        }
+        $pidKiqProcessor->processAnswers($this->prepareAnswers($request->get('answers')));
 
         return $this->get('response_resource.factory')
             ->getResponse($pidKiqProcessor->getPidkiqModel());

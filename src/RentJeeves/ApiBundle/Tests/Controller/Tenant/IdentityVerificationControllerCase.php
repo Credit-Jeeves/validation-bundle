@@ -231,4 +231,33 @@ class IdentityVerificationControllerCase extends BaseApiTestCase
 
         $this->assertEquals(UserIsVerified::PASSED, $this->getUser()->getIsVerified());
     }
+
+    /**
+     * @test
+     */
+    public function shouldReturn200ResponseWithStatusWhenAnswersAreIncorrect()
+    {
+        $this->prepareClient(true);
+
+        $pidkiq = $this->preparedModel();
+        $encodedId = $this->getIdEncoder()->encode($pidkiq->getId());
+        $response = $this->getRequest($encodedId);
+        $this->assertResponse($response);
+
+        $answers = [
+            'answers' => [
+                [2 => 1], // incorrect answer
+                [1 => 2],
+                [3 => 3],
+                [4 => 5],
+            ]
+        ];
+
+        $response = $this->putRequest($encodedId, $answers);
+        $this->assertResponse($response);
+
+        $answer = $this->parseContent($response->getContent());
+        $this->assertArrayHasKey('status', $answer);
+        $this->assertEquals(PidkiqStatus::FAILURE, $answer['status']);
+    }
 }
