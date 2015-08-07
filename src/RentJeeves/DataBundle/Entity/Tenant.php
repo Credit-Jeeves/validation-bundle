@@ -161,13 +161,16 @@ class Tenant extends User
     /**
      * Get contracts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|Contract[]
      */
     public function getContracts()
     {
         return $this->contracts;
     }
 
+    /**
+     * @return Contract[]
+     */
     public function getActiveContracts()
     {
         $result = array();
@@ -220,7 +223,7 @@ class Tenant extends User
     /**
      * Get paymentAccounts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|PaymentAccount[]
      */
     public function getPaymentAccounts()
     {

@@ -20,6 +20,7 @@ class MapAciImportProfileCommandCase extends BaseTestCase
         $this->load(true);
         $em = $this->getEntityManager();
 
+        $em->createQuery('DELETE RjDataBundle:AciImportProfileMap')->execute();
         $mapData = $em->getRepository('RjDataBundle:AciImportProfileMap')->findAll();
         $this->assertCount(0, $mapData, 'Map data should be empty');
 
