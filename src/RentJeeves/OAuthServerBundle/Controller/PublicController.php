@@ -46,11 +46,11 @@ class PublicController extends Controller
 
             $tenant->setPassword($password);
             $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+            $tenant->setInviteCode(null);
+            $tenant->setIsActive(true);
 
             $em->persist($tenant);
             $em->flush();
-
-            $this->get('project.mailer')->sendRjCheckEmail($tenant);
 
             /** @var $contractWaiting ContractWaiting */
             if ($contractWaitingId = $request->getSession()->get('contract_waiting_id') and
