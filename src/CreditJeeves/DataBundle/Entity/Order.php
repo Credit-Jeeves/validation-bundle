@@ -869,6 +869,21 @@ class Order extends Base
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("TransactionDate")
+     * @Serializer\Groups({"soapYardiReversed"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     */
+    public function getReversalDate()
+    {
+        /** @var Transaction $transaction */
+        $transaction = $this->getReversedTransaction();
+
+        return $transaction->getDepositDate()->format('Y-m-d');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("BatchID")
      * @Serializer\Groups({"ResMan"})
      * @Serializer\Type("string")

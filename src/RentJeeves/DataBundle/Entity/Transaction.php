@@ -303,18 +303,4 @@ class Transaction extends Base
 
         return $yardiSettings->getReversalType($order);
     }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("TransactionDate")
-     * @Serializer\Groups({"soapYardiReversed"})
-     * @Serializer\Type("string")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return string
-     */
-    public function getReversalDate()
-    {
-        return $this->getDepositDate()->format('Y-m-d');
-    }
 }
