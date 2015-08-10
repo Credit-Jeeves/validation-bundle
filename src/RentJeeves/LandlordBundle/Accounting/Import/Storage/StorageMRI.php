@@ -94,7 +94,7 @@ class StorageMRI extends ExternalApiStorage
             $isCurrent = $customer->getIsCurrent();
             $monthToMonth = strtolower($isCurrent) === 'y' ? $isCurrent : $monthToMonth;
 
-            $externalUnitId = sprintf('%s_%s', $customer->getBuildingId(), $customer->getUnitId());
+            $externalUnitId = $customer->getExternalUnitId();
             $unitName = $customer->getUnitId();
 
             $data = [

@@ -610,4 +610,17 @@ class Value
     {
         $this->zipCode = $zipCode;
     }
+
+    /**
+     * @return string
+     */
+    public function getExternalUnitId()
+    {
+        return sprintf(
+            '%s|%s|%s',
+            $this->getPropertyId(),
+            $this->getBuildingId(),
+            $this->getUnitId()
+        );
+    }
 }
