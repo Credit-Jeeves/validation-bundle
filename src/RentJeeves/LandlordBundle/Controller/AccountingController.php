@@ -518,8 +518,10 @@ class AccountingController extends Controller
             }
         }
         $em = $this->getEntityManager();
-        $em->getConnection()->close();
-        $em->getConnection()->connect();
+        if (!$em->getConnection()->isConnected()) {
+            $em->getConnection()->close();
+            $em->getConnection()->connect();
+        }
         $handler = $importFactory->getHandler();
         $handler->getReport()->setTotal(count($residents));
         $response = new Response($this->get('jms_serializer')->serialize($residents, 'json'));
