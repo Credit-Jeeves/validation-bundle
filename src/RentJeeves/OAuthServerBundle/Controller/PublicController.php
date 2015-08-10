@@ -33,7 +33,7 @@ class PublicController extends Controller
         $form = $this->createForm(
             $tenantType = new TenantType(),
             $tenant,
-            $tenant->getId() ? ['inviteEmail' => false] : []
+            $this->isTenantAlreadyExists($tenant) ? ['inviteEmail' => false] : []
         );
         $form->handleRequest($request);
 
@@ -49,8 +49,14 @@ class PublicController extends Controller
             $tenant->setInviteCode(null);
             $tenant->setIsActive(true);
 
+            $isTenantAlreadyExists = $this->isTenantAlreadyExists($tenant);
+
             $em->persist($tenant);
             $em->flush();
+
+            if (!$isTenantAlreadyExists) {
+                $this->get('project.mailer')->sendRjCheckEmail($tenant);
+            }
 
             /** @var $contractWaiting ContractWaiting */
             if ($contractWaitingId = $request->getSession()->get('contract_waiting_id') and
@@ -138,5 +144,14 @@ class PublicController extends Controller
         }
 
         return new Tenant();
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @return bool
+     */
+    protected function isTenantAlreadyExists(Tenant $tenant)
+    {
+        return null != $tenant->getId();
     }
 }
