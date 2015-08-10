@@ -98,7 +98,7 @@
                     </td>
                     <td data-bind="text: finish"></td>
                     <td data-bind="text: address"></td>
-                    <td data-bind="text: tenant"></td>
+                    <td data-bind="text: $root.getTenantWithDepositTitle($data)"></td>
                     <td data-bind="text: amount"></td>
                     <td class="type-box"><span data-bind="attr: {'class': 'clarification ' + icon}"><i></i></span></td>
                 </tr>
