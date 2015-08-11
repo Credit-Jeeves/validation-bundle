@@ -24,7 +24,7 @@ use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\LandlordBundle\Accounting\Import\ImportFactory;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\Yardi;
-use RentJeeves\LandlordBundle\Accounting\AccountingPermission as Permission;
+use RentJeeves\LandlordBundle\Accounting\LandlordPermission as Permission;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract as ImportHandler;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
@@ -65,7 +65,7 @@ class AccountingController extends Controller
         /**
          * @var $accountingPermission Permission
          */
-        $accountingPermission = $this->get('accounting.permission');
+        $accountingPermission = $this->get('landlord.permission');
         if (!$accountingPermission->hasAccessToAccountingTab()) {
             throw new Exception("Don't have access");
         }
