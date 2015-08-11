@@ -1,25 +1,24 @@
-function PaymentSource(parent, isForceSave, newAddress, defaultType) {
+function PaymentAccount(data, defaultType) {
+    var self = this;
     if (typeof(defaultType) == 'undefined') {
         defaultType = 'bank';
     }
-    var self = this;
+
     this.id = ko.observable(null);
     this.type = ko.observable(defaultType);
     this.name = ko.observable('');
+
     this.PayorName = ko.observable('');
     this.RoutingNumber = ko.observable('');
     this.AccountNumber = ko.observable('');
     this.ACHDepositType = ko.observable(null);
+
     this.CardAccountName = ko.observable('');
     this.CardNumber = ko.observable('');
     this.VerificationCode = ko.observable('');
     this.ExpirationMonth = ko.observable(null);
     this.ExpirationYear = ko.observable(null);
 
-    this.address = new Address(this, window.addressesViewModels, newAddress);
-    this.save = ko.observable(isForceSave);
-    this.isForceSave = ko.observable(isForceSave);
-    this.groupId = ko.observable(null);
     this.contractId = ko.observable(null);
 
     this.getCardNumber = ko.computed(function() {
@@ -32,24 +31,34 @@ function PaymentSource(parent, isForceSave, newAddress, defaultType) {
         return card.join('');
     });
 
+    var mapping = {
+        'cc_expiration': {
+            create: function(options) {
+                var expDate = new Date(options.data);
+                options.parent.ExpirationMonth(expDate.getMonth());
+                options.parent.ExpirationYear(expDate.getFullYear());
+                delete options.parent.cc_expiration;
+            }
+        },
+        'ignore' : ['addressId', 'deposit_accounts']
+    };
 
+    ko.mapping.fromJS(data, mapping, self);
 
-    this.clear = function() {
-        self.type(defaultType);
+    this.clear = function () {
         self.id(null);
+        self.type(defaultType);
         self.name('');
+
         self.PayorName('');
         self.RoutingNumber('');
         self.AccountNumber('');
         self.ACHDepositType(null);
+
         self.CardAccountName('');
         self.CardNumber('');
         self.VerificationCode('');
         self.ExpirationMonth(null);
         self.ExpirationYear(null);
-//        self.save(isForceSave);
-//        self.isForceSave(isForceSave);
-
-        self.address.clear();
-    };
+    }
 }

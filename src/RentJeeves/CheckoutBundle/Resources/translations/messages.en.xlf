@@ -78,6 +78,10 @@
                 <source>checkout.rent_start.title</source>
                 <target>Rent starting in %MONTH%</target>
             </trans-unit>
+            <trans-unit id="checkout.rent_start.title.non_selected_month">
+                <source>checkout.rent_start.title.non_selected_month</source>
+                <target>this month</target>
+            </trans-unit>
             <trans-unit id="checkout.rent_starting.text">
                 <source>checkout.rent_starting.text</source>
                 <target>Put only your rent amount in the 'Rent' field. Put all non-rent payments, like utilities, fees, and deposits, in the 'Other' field.</target>

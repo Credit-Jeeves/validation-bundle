@@ -3,10 +3,8 @@
 namespace RentJeeves\CheckoutBundle\Controller;
 
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
-use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
-use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -75,40 +73,6 @@ class ComponentController extends Controller
         ];
         if ($mobile) {
             return $this->render('RjCheckoutBundle:Component:pay.mobile.html.twig', $pageVars);
-        } else {
-            return $pageVars;
-        }
-    }
-
-    /**
-     * @Template()
-     */
-    public function sourceAction($mobile = false)
-    {
-        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
-
-        $this->get('soft.deleteable.control')->enable();
-
-        $payAccountsJson = $this->get('jms_serializer')->serialize(
-            $this->getUser()->getPaymentAccounts(),
-            'json',
-            SerializationContext::create()->setGroups(array('paymentAccounts'))
-        );
-
-        $addressesJson = $this->get('jms_serializer')->serialize(
-            $this->getUser()->getAddresses(),
-            'json',
-            SerializationContext::create()->setGroups(array('paymentAccounts'))
-        );
-
-        $pageVars = array(
-            'paymentAccountType' => $paymentAccountType->createView(),
-            'addressesJson' => $addressesJson,
-            'payAccountsJson' => $payAccountsJson,
-        );
-
-        if ($mobile) {
-            return $this->render('RjCheckoutBundle:Component:source.mobile.html.twig', $pageVars);
         } else {
             return $pageVars;
         }

@@ -41,7 +41,7 @@ class PaymentAccountType extends AbstractType
                 'empty_value'  => false,
                 'data'  => PaymentAccountTypeEnum::BANK,
                 'attr' => [
-                    'data-bind' => 'checked: paymentSource.type'
+                    'data-bind' => 'checked: currentPaymentAccount().type'
                 ],
                 'invalid_message' => 'checkout.error.payment_type.invalid',
              ]
@@ -53,10 +53,7 @@ class PaymentAccountType extends AbstractType
             [
                 'label' => 'checkout.account_nickname',
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.name',
-                    'row_attr' => [
-                        'data-bind' => 'visible: paymentSource.save'
-                    ]
+                    'data-bind' => 'value: currentPaymentAccount().name',
                 ]
             ]
         );
@@ -69,9 +66,9 @@ class PaymentAccountType extends AbstractType
                 'label' => 'checkout.payor_name',
                 'attr' => [
                     'placeholder' => 'checkout.payor_name.placeholder',
-                    'data-bind' => 'value: paymentSource.PayorName',
+                    'data-bind' => 'value: currentPaymentAccount().PayorName',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'constraints' => [
@@ -103,9 +100,9 @@ class PaymentAccountType extends AbstractType
                         '<p class="banking-numbers clearfix"></p>' .
                         '</div>',
                     'tooltip_text_class' => 'banking-numbers clearfix',
-                    'data-bind' => 'value: paymentSource.RoutingNumber',
+                    'data-bind' => 'value: currentPaymentAccount().RoutingNumber',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'constraints' => [
@@ -139,9 +136,9 @@ class PaymentAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'checkout.account_number',
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.AccountNumber',
+                    'data-bind' => 'value: currentPaymentAccount().AccountNumber',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ],
                 ],
                 'constraints' => [
@@ -178,9 +175,9 @@ class PaymentAccountType extends AbstractType
                     ),
                 ],
                 'attr' => [
-                    'data-bind' => 'checked: paymentSource.ACHDepositType',
+                    'data-bind' => 'checked: currentPaymentAccount().ACHDepositType',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ]
                 ]
             ]
@@ -201,9 +198,9 @@ class PaymentAccountType extends AbstractType
                     ),
                 ],
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.CardAccountName',
+                    'data-bind' => 'value: currentPaymentAccount().CardAccountName',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type()'
                     ]
                 ]
             ]
@@ -223,9 +220,9 @@ class PaymentAccountType extends AbstractType
                         '<li><span class="cc discover">discover</span></li>' .
 //                        '<li><span class="cc dc">diners club</span></li>',
                         '</ul>',
-                    'data-bind' => 'value: paymentSource.CardNumber',
+                    'data-bind' => 'value: currentPaymentAccount().CardNumber',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'constraints' => [
@@ -248,9 +245,9 @@ class PaymentAccountType extends AbstractType
                 'attr' => [
                     'class' => 'phone-width',
                     'help' => 'checkout.csc.help',
-                    'data-bind' => 'value: paymentSource.VerificationCode',
+                    'data-bind' => 'value: currentPaymentAccount().VerificationCode',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'constraints' => [
@@ -274,9 +271,9 @@ class PaymentAccountType extends AbstractType
                 'empty_value'  => 'common.month',
                 'attr' => [
                     'class' => 'original',
-                    'data-bind' => 'value: paymentSource.ExpirationMonth',
+                    'data-bind' => 'value: currentPaymentAccount().ExpirationMonth',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'invalid_message' => 'checkout.error.ExpirationMonth.invalid',
@@ -303,9 +300,9 @@ class PaymentAccountType extends AbstractType
                 'empty_value'  => 'common.year',
                 'attr' => [
                     'class' => 'original',
-                    'data-bind' => 'value: paymentSource.ExpirationYear',
+                    'data-bind' => 'value: currentPaymentAccount().ExpirationYear',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'invalid_message' => 'checkout.error.ExpirationYear.invalid',
@@ -331,17 +328,17 @@ class PaymentAccountType extends AbstractType
                 'expanded' => true,
                 'choices' => clone $this->user->getAddresses(),
                 'attr' => [
-                    'data-bind' => 'checked: paymentSource.address.addressChoice',
+                    'data-bind' => 'checked: billingaddress.addressChoice',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() && window.addressesViewModels.length'
+                        'data-bind' => 'visible: (\'card\' == currentPaymentAccount().type() && addresses().length > 0)'
                     ],
                     'html' =>
-                        '<!-- ko foreach: newUserAddress -->' .
+                        '<!-- ko foreach: newAddresses -->' .
                             '<label class="checkbox radio">' .
                                 '<input type="radio" name="' . $this->getName() . '[address_choice]"' .
                                     'required="required"' .
                                     'data-bind="' .
-                                        'checked: $parent.paymentSource.address.addressChoice, ' .
+                                        'checked: $parent.billingaddress.addressChoice, ' .
                                         'attr: {\'id\': \'' . $this->getName() . '_address_choice_\' + $data.id() }, ' .
                                         'value: $data.id()' .
                                     '" />' .
@@ -368,7 +365,7 @@ class PaymentAccountType extends AbstractType
             [
                 'mapped' => false,
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.address.isAddNewAddress'
+                    'data-bind' => 'value: billingaddress.isAddNewAddress'
                 ]
             ]
         );
@@ -382,10 +379,10 @@ class PaymentAccountType extends AbstractType
                 'attr' => [
                     'data-bind' => 'visible: false',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type()'
                     ],
-                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.address.isAddNewAddress()">' .
-                        '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">' .
+                    'html' => '<div class="fields-box" data-bind="visible: !billingaddress.isAddNewAddress()">' .
+                        '<a href="#" data-bind="i18n: {}, click: billingaddress.addAddress">' .
                         'common.add_new' .
                         '</a>' .
                         '</div>',
@@ -396,7 +393,7 @@ class PaymentAccountType extends AbstractType
 
         $builder->add(
             'address',
-            new UserAddressType('paymentSource.'),
+            new UserAddressType('billing'),
             [
                 'mapped' => false,
                 'label' => 'checkout.billing_address.new',
@@ -405,25 +402,9 @@ class PaymentAccountType extends AbstractType
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() ' .
-                            '&& paymentSource.address.isAddNewAddress()',
+                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type() ' .
+                            '&& billingaddress.isAddNewAddress()',
                         'class' => 'form-row-custom clearfix type-text'
-                    ]
-                ]
-            ]
-        );
-
-        $builder->add(
-            'save',
-            'checkbox',
-            [
-                'mapped' => false,
-                'label' => 'checkout.payment.save',
-                'attr' => [
-                    'help' => 'checkout.payment.save.help',
-                    'data-bind' => 'checked: paymentSource.save',
-                    'row_attr' => [
-                        'data-bind' => 'visible: !paymentSource.isForceSave()'
                     ]
                 ]
             ]
@@ -431,18 +412,7 @@ class PaymentAccountType extends AbstractType
 
         $builder->add('submit', 'submit', ['attr' => ['force_row' => true, 'class' => 'hide_submit']]);
 
-        $builder->add('id', 'hidden', ['attr' => ['data-bind' => 'value: paymentSource.id']]);
-
-        $builder->add(
-            'groupId',
-            'hidden',
-            [
-                'mapped' => false,
-                'attr' => [
-                    'data-bind' => 'value: paymentSource.groupId',
-                ]
-            ]
-        );
+        $builder->add('id', 'hidden', ['attr' => ['data-bind' => 'value: currentPaymentAccount().id']]);
 
         $builder->add(
             'contractId',
@@ -450,7 +420,7 @@ class PaymentAccountType extends AbstractType
             [
                 'mapped' => false,
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.contractId',
+                    'data-bind' => 'value: currentPaymentAccount().contractId',
                 ]
             ]
         );
@@ -473,9 +443,6 @@ class PaymentAccountType extends AbstractType
                         if ('true' == $form->get('is_new_address')->getData()) {
                             $groups[] = 'user_address_new';
                         }
-                    }
-                    if ($form->get('save')->getData()) {
-                        $groups[] = 'save';
                     }
 
                     $groups[] = $type;

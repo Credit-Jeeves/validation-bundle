@@ -1,0 +1,11 @@
+{% form_theme paymentAccountType 'RjCoreBundle::form.html.twig' %}
+
+<div class="form-row clearfix">
+    <div class="fields-box">
+        <small><b>*</b>{{ 'required' | trans  }}</small>
+    </div>
+</div>
+<form {{ form_enctype(paymentAccountType) }} novalidate method="post">
+    {{ form_widget(paymentAccountType) }}
+    {{ JSFV(paymentAccountType) }}
+</form>

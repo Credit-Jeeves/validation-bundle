@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 
 /**
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\TenantRepository")
@@ -228,6 +229,24 @@ class Tenant extends User
     public function getPaymentAccounts()
     {
         return $this->paymentAccounts;
+    }
+
+    /**
+     * @param $paymentProcessor
+     * @param bool $isDisabledCreditCard
+     * @return \Doctrine\Common\Collections\Collection|PaymentAccount[]
+     */
+    public function getPaymentAccountsByPaymentProcessor($paymentProcessor, $isDisabledCreditCard = false)
+    {
+        return $this->getPaymentAccounts()->filter(
+            function (PaymentAccount $paymentAccount) use ($paymentProcessor, $isDisabledCreditCard) {
+                if ($isDisabledCreditCard && $paymentAccount->getType() === PaymentAccountType::CARD) {
+                    return false;
+                }
+
+                return ($paymentAccount->getPaymentProcessor() === $paymentProcessor);
+            }
+        );
     }
 
     public function getAvailableVerificationStatuses()

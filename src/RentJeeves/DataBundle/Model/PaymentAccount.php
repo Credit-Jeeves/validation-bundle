@@ -13,6 +13,7 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
+ * @Serializer\XmlRoot("request")
  */
 abstract class PaymentAccount
 {
@@ -98,7 +99,8 @@ abstract class PaymentAccount
      * @Assert\NotBlank(
      *      message="checkout.error.account_nickname.empty",
      *      groups={
-     *          "save"
+     *          "card",
+     *          "bank"
      *      }
      * )
      * @Serializer\Groups({"basic", "paymentAccounts"});
