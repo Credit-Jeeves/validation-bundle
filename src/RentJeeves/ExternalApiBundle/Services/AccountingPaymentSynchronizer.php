@@ -283,8 +283,7 @@ class AccountingPaymentSynchronizer
             $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
             $batchId = $repo->getAccountingBatchId(
                 $paymentBatchId,
-                $accountingPackageType,
-                $externalPropertyId
+                $accountingPackageType
             );
 
             $order->setBatchId($batchId);
