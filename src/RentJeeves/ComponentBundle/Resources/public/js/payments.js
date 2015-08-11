@@ -232,6 +232,15 @@ function Payments() {
       return Translator.trans(order.status);
   };
 
+  this.getTenantWithDepositTitle = function(order) {
+      var title = order.tenant;
+      if (order.depositType.length > 0 && order.depositType.toLowerCase() != 'rent') {
+          title += ' (paid for ' + order.depositType + ')';
+      }
+
+      return title;
+  };
+
   this.getOrderAmount = function(isDeposit, order) {
       if (!isDeposit) {
           return '-' + order.amount;
