@@ -24,10 +24,10 @@ class StorageMRICase extends BaseTestCase
         $this->assertNotEmpty($landlord);
 
         $storageMriMock = $this->getMock(
-            'RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI', 
-            [], 
-            [], 
-            '', 
+            'RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI',
+            [],
+            [],
+            '',
             false
         );
         $landlordSessionMock = $this->getMock('RentJeeves\CoreBundle\Session\Landlord', [], [], '', false);
