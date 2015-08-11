@@ -858,28 +858,13 @@ class Order extends Base
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TransactionDate")
-     * @Serializer\Groups({"soapYardiRequest", "ResMan"})
+     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed", "ResMan"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      */
     public function getTransactionDate()
     {
         return $this->getCreatedAt()->format('Y-m-d');
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("TransactionDate")
-     * @Serializer\Groups({"soapYardiReversed"})
-     * @Serializer\Type("string")
-     * @Serializer\XmlElement(cdata=false)
-     */
-    public function getReversalDate()
-    {
-        /** @var Transaction $transaction */
-        $transaction = $this->getReversedTransaction();
-
-        return $transaction->getDepositDate()->format('Y-m-d');
     }
 
     /**
