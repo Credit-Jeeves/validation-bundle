@@ -79,10 +79,10 @@ class GroupSettingsType extends Base
         $builder->add(
             'showPropertiesTab',
             'checkbox',
-            array(
+            [
                 'error_bubbling'    => true,
                 'required'          => false,
-            )
+            ]
         );
 
         $dueDate = array();
