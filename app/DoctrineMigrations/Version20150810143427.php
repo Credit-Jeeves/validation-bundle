@@ -75,11 +75,5 @@ class Version20150810143427 extends AbstractMigration
         $this->addSql(
             "DROP TABLE rj_payment_account_migration"
         );
-        $this->addSql(
-            "DROP INDEX unique_index ON rj_billing_account"
-        );
-        $this->addSql(
-            "DROP INDEX unique_index ON rj_payment_account"
-        );
     }
 }

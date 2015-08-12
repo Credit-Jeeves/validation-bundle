@@ -162,7 +162,7 @@ class CsvImporter
     {
         $token = $record->getFundingAccountHolderAddress2();
         /** @var PaymentAccount $paymentAccount */
-        if (null === $paymentAccount = $this->getPaymentAccountRepository()->findOneBy(['token' => $token])) {
+        if (null === $paymentAccount = $this->getPaymentAccountRepository()->findOneOrNullByToken($token)) {
             $this->errors[] = sprintf(
                 'FundingResponseRecord: PaymentAccount with token#%s not found',
                 $token
@@ -218,7 +218,7 @@ class CsvImporter
     protected function importGroupFundingResponseRecord(FundingResponseRecord $record, AciImportProfileMap $aciProfile)
     {
         $token = $record->getFundingAccountHolderAddress2();
-        if (null === $billingAccount = $this->getBillingAccountRepository()->findOneBy(['token' => $token])) {
+        if (null === $billingAccount = $this->getBillingAccountRepository()->findOneOrNullByToken($token)) {
             $this->errors[] = sprintf(
                 'FundingResponseRecord: BillingAccount with token#%s not found',
                 $token
