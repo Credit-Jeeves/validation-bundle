@@ -37,6 +37,7 @@ class SourcesController extends Controller
 
         return [
             'paymentAccounts' => $paymentAccounts,
+            'needDisplayGroups' => false,
             'isLocked' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')
                 ->isPaymentProcessorLocked($this->getUser())
         ];
@@ -137,5 +138,17 @@ class SourcesController extends Controller
                     ) : null
             )
         );
+    }
+
+    /**
+     * @param $paymentAccountId
+     *
+     * @Template()
+     *
+     * @return array
+     */
+    public function groupListAction($paymentAccountId)
+    {
+        return ['groupList' => ''];
     }
 }

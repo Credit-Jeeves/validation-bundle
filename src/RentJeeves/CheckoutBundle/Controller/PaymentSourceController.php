@@ -41,23 +41,32 @@ class PaymentSourceController extends Controller
      *
      * @return Response
      */
-    public function getPaymentAccountsListAction($contractId)
+    public function getPaymentAccountsListAction($contractId = null)
     {
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
-        /** @var Contract $contract */
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
-
-        if (!$contract || !$this->getUser() instanceof Tenant) {
+        if (!$this->getUser() instanceof Tenant) {
             return new JsonResponse([]);
+        }
+
+        if ($contractId) {
+            /** @var Contract $contract */
+            $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+        }
+
+        if (!empty($contract)) {
+            $paymentAccounts = $this->getUser()->getPaymentAccountsByPaymentProcessor(
+                $contract->getGroupSettings()->getPaymentProcessor(),
+                $contract->getGroup()->isDisableCreditCard()
+            );
+        } else {
+            $paymentAccounts = $this->getUser()->getPaymentAccounts();
         }
 
         $this->get('soft.deleteable.control')->enable();
 
         $payAccountsJson = $this->get('jms_serializer')->serialize(
-            $this->getUser()->getPaymentAccountsByPaymentProcessor(
-                $contract->getGroupSettings()->getPaymentProcessor(), $contract->getGroup()->isDisableCreditCard()
-            ),
+            $paymentAccounts,
             'json',
             SerializationContext::create()->setGroups(['paymentAccounts'])->setSerializeNull(true)
         );

@@ -13,15 +13,25 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
         defaultType = 'bank';
     }
 
-    self.contractId = contractId;
+    self.disableCreditCard = ko.observable(null);
 
-    self.contractId.subscribe(function (newValue) {
-        if (newValue) {
-            self.load(newValue);
-        }
-    });
+    self.contractId = ko.observable(null);
 
-    self.disableCreditCard = disableCreditCard;
+    if (contractId) {
+        self.contractId = contractId;
+
+        self.contractId.subscribe(function (newValue) {
+            if (newValue) {
+                self.load(newValue);
+            }
+        });
+    }
+
+    self.disableCreditCard = ko.observable(null);
+
+    if (disableCreditCard) {
+        self.disableCreditCard = disableCreditCard;
+    }
 
     self.paymentAccounts = ko.observableArray([]);
 
@@ -40,13 +50,9 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
      * @param newPaymentAccountId
      */
     var changePaymentAccountHandler = function (newPaymentAccountId) {
-        if (typeof (parent.changePaymentAccountHandler) === 'function') {
-            parent.changePaymentAccountHandler(newPaymentAccountId);
-        }
-
         if (newPaymentAccountId) {
             var paymentAccount = ko.utils.arrayFirst(self.paymentAccounts(), function (paymentAccount) {
-                return paymentAccount().id() === newPaymentAccountId;
+                return paymentAccount().id() == newPaymentAccountId;
             });
             if (paymentAccount) {
                 self.currentPaymentAccount(paymentAccount());
@@ -55,6 +61,9 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
         } else {
             self.currentPaymentAccount(new PaymentAccount({'contractId' : contractId}, defaultType));
             self.isNewPaymentAccount(true);
+        }
+        if (typeof (parent.changePaymentAccountHandler) === 'function') {
+            parent.changePaymentAccountHandler(newPaymentAccountId);
         }
     };
 
@@ -65,10 +74,10 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
     };
 
     var afterMapPaymentAccountsHandler = function (owner) {
+        self.isNewPaymentAccount(self.paymentAccounts().length < 1);
         if (typeof (parent.afterMapPaymentAccountsHandler) === 'function') {
             parent.afterMapPaymentAccountsHandler(parent);
         }
-        self.isNewPaymentAccount(self.paymentAccounts().length < 1);
     };
 
     /**
@@ -80,7 +89,9 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
         beforeMapPaymentAccountsHandler();
         self.paymentAccounts.removeAll();
         var mappedArray = jQuery.map(paymentAccounts, function(paymentAccount) {
-            paymentAccount.contractId = contractId;
+            if (contractId) {
+                paymentAccount.contractId = contractId;
+            }
             return ko.observable(new PaymentAccount(paymentAccount));
         });
         self.paymentAccounts(mappedArray);
@@ -104,16 +115,13 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
      * Load initialization data from server
      */
     self.load = function(contractId) {
-        // Retrieve payment accounts from server by contract
-        if (contractId) {
-            jQuery.getJSON(
-                Routing.generate('payment_accounts_list', {'contractId': contractId}),
-                function(data) {
-                    self.mapPaymentAccounts(data);
-                }
-            );
-        }
-
+        // Retrieve payment accounts from server by contract if contract is null should get all payment accounts
+        jQuery.getJSON(
+            Routing.generate('payment_accounts_list', {'contractId': contractId}),
+            function(data) {
+                self.mapPaymentAccounts(data);
+            }
+        );
     };
 
     /**

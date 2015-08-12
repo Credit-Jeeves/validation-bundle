@@ -20,6 +20,7 @@ function PaymentAccount(data, defaultType) {
     this.ExpirationYear = ko.observable(null);
 
     this.contractId = ko.observable(null);
+    this.addressId = ko.observable(null);
 
     this.getCardNumber = ko.computed(function() {
         var card = self.CardNumber().toString().split('');
@@ -40,7 +41,7 @@ function PaymentAccount(data, defaultType) {
                 delete options.parent.cc_expiration;
             }
         },
-        'ignore' : ['addressId', 'deposit_accounts']
+        'ignore' : ['deposit_accounts']
     };
 
     ko.mapping.fromJS(data, mapping, self);

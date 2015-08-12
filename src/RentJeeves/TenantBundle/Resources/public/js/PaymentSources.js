@@ -1,36 +1,21 @@
 function PaymentSources() {
     var self = this;
     var formName = 'rentjeeves_checkoutbundle_paymentaccounttype';
-    this.newUserAddress = ko.observableArray([]);
 
-    this.paymentSource = new PaymentSource(this, true, null);
+    // Connected Payment Source Component
+    ko.utils.extend(self, new PaymentSourceViewModel(self));
 
-    this.delUrl = ko.computed(function() {
-        return Routing.generate('tenant_payment_sources_del', { id: self.paymentSource.id() });
-    });
+    ko.utils.extend(self, new PayAddress(self));
 
-    var fillPaymentSource = function(id) {
-        jQuery.each(window.paymentAccounts, function(key, val) {
-            if (val.id == id) {
-                self.paymentSource.clear();
-                ko.mapping.fromJS(val, {}, self.paymentSource);
-                self.paymentSource.address.addressChoice(val.addressId);
-                if (exp = val.cc_expiration) {
-                    var date = new Date(exp);
-                    self.paymentSource.ExpirationMonth(date.getMonth());
-                    self.paymentSource.ExpirationYear(date.getFullYear());
-                } else {
-                    self.paymentSource.ExpirationMonth(null);
-                    self.paymentSource.ExpirationYear(null);
-                }
-                return false;
-            }
-            return true;
-        });
+    self.changePaymentAccountHandler = function() {
+        self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());
     };
 
+    this.delUrl = ko.computed(function() {
+        return Routing.generate('tenant_payment_sources_del', { id: self.currentPaymentAccountId() });
+    });
     this.edit = function(id) {
-        fillPaymentSource(id);
+        self.currentPaymentAccountId(id);
         window.formProcess.removeAllErrors('#payment-account-edit ');
         $("#payment-account-edit").dialog({
             width:650,
@@ -48,16 +33,13 @@ function PaymentSources() {
             timeout: 30000, // 30 secs
             dataType: 'json',
             data: jQuery.param(data, false),
-//            complete: function(jqXHR, textStatus) {
-//                jQuery('#pay-popup').hideOverlay();
-//            },
             error: function(jqXHR, textStatus, errorThrown) {
                 window.formProcess.removeAllErrors();
                 jQuery('#payment-account-edit').hideOverlay();
                 window.formProcess.reLogin(jqXHR, errorThrown);
                 window.formProcess.addFormError(null, errorThrown);
             },
-            success: function(data, textStatus, jqXHR) {
+            success: function(data) {
                 window.formProcess.removeAllErrors('#payment-account-edit ');
 
                 jQuery('#payment-account-edit').hideOverlay();
@@ -76,7 +58,7 @@ function PaymentSources() {
         $("#payment-account-edit").dialog('close');
     };
     this.delDialog = function(id) {
-        fillPaymentSource(id);
+        self.currentPaymentAccountId(id);
         $("#payment-account-delete").dialog({
             width:400,
             modal:true
@@ -92,4 +74,6 @@ function PaymentSources() {
         self.editSave();
         return false;
     });
+
+    window.test = self;
 }
