@@ -232,6 +232,33 @@ abstract class Property
     protected $isMultipleBuildings = false;
 
     /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ImportMappingByProperty",
+     *     mappedBy="property"
+     * )
+     * @Serializer\Exclude
+     *
+     * @var ImportMappingByProperty
+     */
+    protected $importMappingByProperty;
+
+    /**
+     * @return ImportMappingByProperty
+     */
+    public function getImportMappingByProperty()
+    {
+        return $this->importMappingByProperty;
+    }
+
+    /**
+     * @param ImportMappingByProperty $importMappingByProperty
+     */
+    public function setImportMappingByProperty(ImportMappingByProperty $importMappingByProperty)
+    {
+        $this->importMappingByProperty = $importMappingByProperty;
+    }
+
+    /**
      * @return boolean
      */
     public function isMultipleBuildings()
