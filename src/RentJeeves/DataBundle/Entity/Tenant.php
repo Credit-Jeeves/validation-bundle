@@ -232,19 +232,23 @@ class Tenant extends User
     }
 
     /**
-     * @param $paymentProcessor
+     * @param string|array $paymentProcessor
      * @param bool $isDisabledCreditCard
      * @return \Doctrine\Common\Collections\Collection|PaymentAccount[]
      */
     public function getPaymentAccountsByPaymentProcessor($paymentProcessor, $isDisabledCreditCard = false)
     {
+        if (is_scalar($paymentProcessor)) {
+            $paymentProcessor = [$paymentProcessor];
+        }
+
         return $this->getPaymentAccounts()->filter(
             function (PaymentAccount $paymentAccount) use ($paymentProcessor, $isDisabledCreditCard) {
                 if ($isDisabledCreditCard && $paymentAccount->getType() === PaymentAccountType::CARD) {
                     return false;
                 }
 
-                return ($paymentAccount->getPaymentProcessor() === $paymentProcessor);
+                return in_array($paymentAccount->getPaymentProcessor(), $paymentProcessor);
             }
         );
     }

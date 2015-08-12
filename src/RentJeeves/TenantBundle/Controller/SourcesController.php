@@ -33,7 +33,11 @@ class SourcesController extends Controller
      */
     public function indexAction()
     {
-        $paymentAccounts = $this->getUser()->getPaymentAccounts();
+        $paymentProcessors = $this->getDoctrine()
+            ->getRepository('RjDataBundle:Contract')
+            ->getActivePaymentProcessorsForTenant($this->getUser());
+
+        $paymentAccounts = $this->getUser()->getPaymentAccountsByPaymentProcessor($paymentProcessors);
 
         return [
             'paymentAccounts' => $paymentAccounts,
@@ -138,17 +142,5 @@ class SourcesController extends Controller
                     ) : null
             )
         );
-    }
-
-    /**
-     * @param $paymentAccountId
-     *
-     * @Template()
-     *
-     * @return array
-     */
-    public function groupListAction($paymentAccountId)
-    {
-        return ['groupList' => ''];
     }
 }

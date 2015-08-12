@@ -11,6 +11,22 @@ function PaymentSources() {
         self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());
     };
 
+    self.afterMapPaymentAccountsHandler = function() {
+        // this need b/c currentPaymentAccountId can be set before paymentAccounts will be retrieve from server
+        if (self.currentPaymentAccountId()) {
+            var preset = self.currentPaymentAccountId();
+            self.currentPaymentAccountId(null);
+            self.currentPaymentAccountId(preset);
+        }
+        jQuery('#payment-account-edit').hideOverlay();
+    };
+
+    self.afterMapAddressesHandler = function() {
+        if (self.currentPaymentAccountId()) {
+            self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());
+        }
+    };
+
     this.delUrl = ko.computed(function() {
         return Routing.generate('tenant_payment_sources_del', { id: self.currentPaymentAccountId() });
     });
@@ -19,7 +35,12 @@ function PaymentSources() {
         window.formProcess.removeAllErrors('#payment-account-edit ');
         $("#payment-account-edit").dialog({
             width:650,
-            modal:true
+            modal:true,
+            open: function() {
+                if (self.paymentAccounts().length <= 0) {
+                    jQuery('#payment-account-edit').showOverlay();
+                }
+            }
         });
     };
     this.editSave = function() {
@@ -74,6 +95,4 @@ function PaymentSources() {
         self.editSave();
         return false;
     });
-
-    window.test = self;
 }

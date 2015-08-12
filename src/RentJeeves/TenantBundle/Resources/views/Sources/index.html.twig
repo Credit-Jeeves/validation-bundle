@@ -74,12 +74,6 @@
                         <tr id="payment-account-row-{{ loop.revindex }}">
                             <td class="font-helvetica">
                                 {{ paymentAccount.getName }}
-                                {% if needDisplayGroups  %}
-                                    {{ render(controller(
-                                    'TenantBundle:SourcesController:groupList',
-                                    {'paymentAccountId' : paymentAccount.getId}
-                                    )) }}
-                                {% endif %}
                             </td>
                             <td class="font-helvetica">{{ ('payment_account_' ~ paymentAccount.getType) | trans }}</td>
                             <td class="font-helvetica">

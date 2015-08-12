@@ -11,11 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
+ * @method Tenant getUser()
  * @Route("/checkout")
  */
 class PaymentSourceController extends Controller
@@ -27,7 +26,7 @@ class PaymentSourceController extends Controller
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
 
-        return [ 'paymentAccountType' => $paymentAccountType->createView()];
+        return ['paymentAccountType' => $paymentAccountType->createView()];
     }
 
     /**
@@ -45,14 +44,13 @@ class PaymentSourceController extends Controller
     {
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
-        if (!$this->getUser() instanceof Tenant) {
-            return new JsonResponse([]);
-        }
 
         if ($contractId) {
             /** @var Contract $contract */
             $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
         }
+
+        $this->get('soft.deleteable.control')->enable();
 
         if (!empty($contract)) {
             $paymentAccounts = $this->getUser()->getPaymentAccountsByPaymentProcessor(
@@ -60,10 +58,12 @@ class PaymentSourceController extends Controller
                 $contract->getGroup()->isDisableCreditCard()
             );
         } else {
-            $paymentAccounts = $this->getUser()->getPaymentAccounts();
-        }
+            $paymentProcessors = $this->getDoctrine()
+                ->getRepository('RjDataBundle:Contract')
+                ->getActivePaymentProcessorsForTenant($this->getUser());
 
-        $this->get('soft.deleteable.control')->enable();
+            $paymentAccounts = $this->getUser()->getPaymentAccountsByPaymentProcessor($paymentProcessors);
+        }
 
         $payAccountsJson = $this->get('jms_serializer')->serialize(
             $paymentAccounts,

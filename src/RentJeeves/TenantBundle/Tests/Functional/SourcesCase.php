@@ -1,7 +1,11 @@
 <?php
 namespace RentJeeves\TenantBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -42,13 +46,14 @@ class SourcesCase extends BaseTestCase
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('rent.sources');
 
-        $this->session->wait($this->timeout, "jQuery('#payment-account-row-3').length");
+        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
         $this->assertNotNull($row = $this->page->find('css', '#payment-account-row-3'));
         $row->clickLink('edit');
 
         $this->session->wait(
             $this->timeout,
-            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length"
+            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length" .
+            " && jQuery('.overlay-trigger').length <= 0"
         );
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
@@ -91,7 +96,10 @@ class SourcesCase extends BaseTestCase
 
         $this->page->pressButton('payment_account.edit.save');
 
-        $this->session->wait($this->timeout + 15000, "jQuery('#payment-account-row-3 td:first').text() == 'New Card'");
+        $this->session->wait(
+            $this->timeout + 15000,
+            "jQuery.trim(jQuery('#payment-account-row-3 td:first').text()) == 'New Card'"
+        );
 
         $this->assertNotNull($cols = $this->page->findAll('css', '#payment-account-row-3 td'));
         $this->assertEquals('New Card', $cols[0]->getText());
@@ -143,7 +151,10 @@ class SourcesCase extends BaseTestCase
 
         $this->page->pressButton('payment_account.edit.save');
 
-        $this->session->wait($this->timeout, "jQuery('#payment-account-row-2 td:first').text() == 'Edited'");
+        $this->session->wait(
+            $this->timeout,
+            "jQuery.trim(jQuery('#payment-account-row-2 td:first').text()) == 'Edited'"
+        );
 
         $this->assertNotNull($cols = $this->page->findAll('css', '#payment-account-row-2 td'));
         $this->assertEquals('Edited', $cols[0]->getText());
@@ -199,5 +210,80 @@ class SourcesCase extends BaseTestCase
 
         //Check email notify landlord about removed contract by tenant
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowJustActivePaymentSources()
+    {
+        $this->setDefaultSession('goutte');
+        $this->load(true);
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()
+            ->getRepository('RjDataBundle:Tenant')
+            ->findOneBy(['email' => 'tenant11@example.com']);
+        $this->assertNotEmpty($tenant);
+        $this->getEntityManager()->getConnection()->exec(
+            sprintf(
+                'UPDATE rj_contract SET status = "%s" WHERE tenant_id = %d',
+                ContractStatus::DELETED,
+                $tenant->getId()
+            )
+        );
+        $paymentAccounts = $tenant->getPaymentAccountsByPaymentProcessor(PaymentProcessor::HEARTLAND);
+        $this->assertCount(3, $paymentAccounts);
+
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->clickLink('rent.sources');
+
+        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
+        $this->assertCount(0, $rows);
+        /** @var Contract $contract */
+        $contract = $tenant->getContracts()->first();
+        /** @var Contract $contract2 */
+        $contract2 = $tenant->getContracts()->next();
+        $contract->setStatus(ContractStatus::APPROVED);
+        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+        $this->getEntityManager()->persist($contract);
+        $this->getEntityManager()->flush();
+
+        $this->session->reload();
+
+        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
+        $this->assertCount(3, $rows);
+
+        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
+        $this->getEntityManager()->flush();
+
+        $this->session->reload();
+
+        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
+        $this->assertCount(0, $rows);
+
+        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $paymentAccounts->first();
+        $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
+        $this->getEntityManager()->persist($paymentAccount);
+        $this->getEntityManager()->flush();
+
+        $this->session->reload();
+
+        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
+        $this->assertCount(2, $rows);
+
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(25);
+        $contract2->setGroup($group);
+        $contract2->setStatus(ContractStatus::PENDING);
+        $group->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
+        $this->getEntityManager()->persist($contract2);
+        $this->getEntityManager()->persist($group);
+        $this->getEntityManager()->flush();
+
+        $this->session->reload();
+
+        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
+        $this->assertCount(3, $rows);
     }
 }

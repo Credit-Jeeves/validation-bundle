@@ -207,11 +207,11 @@ function Pay(parent, contract) {
     var checkFillAllQuestions = function () {
         window.formProcess.removeAllErrors('#pay-popup ');
 
-        var questionsDiv = $('div#questions>div').has('input:radio');
+        var questionsDiv = jQuery('div#questions>div').has('input:radio');
         var countQuestionsWithoutAnswer = 0;
 
         questionsDiv.each(function () {
-            if ($(this).find('input:radio:checked').length === 0) {
+            if (jQuery(this).find('input:radio:checked').length === 0) {
                 countQuestionsWithoutAnswer++;
             }
         });
@@ -381,10 +381,9 @@ function Pay(parent, contract) {
         return false;
     };
 
-
     self.isPidVerificationSkipped = ko.computed(function() {
         var contract = ko.unwrap(self.contract);
-        return contract ? contract.isPidVerificationSkipped : false
+        return contract ? contract.isPidVerificationSkipped : false;
     });
 
     ko.utils.extend(self, new UserVerification(self, self.isPidVerificationSkipped));

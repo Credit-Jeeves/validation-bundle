@@ -1218,4 +1218,30 @@ class ContractRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @param Tenant $tenant
+     * @return array
+     */
+    public function getActivePaymentProcessorsForTenant(Tenant $tenant)
+    {
+        $result = [];
+        $tmpResult = $this->createQueryBuilder('c')
+            ->select('gs.paymentProcessor')
+            ->where('c.status != :statusDelete')
+            ->andWhere('c.tenant = :tenant')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->groupBy('gs.paymentProcessor')
+            ->setParameter(':statusDelete', ContractStatus::DELETED)
+            ->setParameter(':tenant', $tenant)
+            ->getQuery()
+            ->getArrayResult();
+
+         foreach ($tmpResult as $paymentProcessor) {
+             $result[] = $paymentProcessor['paymentProcessor'];
+         }
+
+        return $result;
+    }
 }
