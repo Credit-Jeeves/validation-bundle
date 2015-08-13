@@ -64,3 +64,14 @@ services:
             - @aci_profiles_mapper
             - @jms_serializer
             - @validator
+
+    aci_enrollment_file_deserializer:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer\EnrollmentResponseFileDeserializer
+        public: false
+
+    aci_profiles_importer:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\CsvImporter
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @aci_enrollment_file_deserializer
+            - @validator

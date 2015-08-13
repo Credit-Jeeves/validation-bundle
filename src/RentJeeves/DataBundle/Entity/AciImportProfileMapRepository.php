@@ -3,8 +3,12 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * @method AciImportProfileMap|AciImportProfileMap[] find($id, $lockMode = LockMode::NONE, $lockVersion = null)
+ */
 class AciImportProfileMapRepository extends EntityRepository
 {
     /**
