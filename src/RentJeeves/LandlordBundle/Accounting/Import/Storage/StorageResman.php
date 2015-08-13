@@ -67,7 +67,6 @@ class StorageResman extends ExternalApiStorage
         }
 
         ini_set('max_execution_time', '120');
-
         /** @var $customerBase RtCustomer  */
         foreach ($customers as $customerBase) {
             $filePath = $this->getFilePath(true);
@@ -102,7 +101,7 @@ class StorageResman extends ExternalApiStorage
 
                 $residentId = $customerUser->getCustomerId();
                 $address = $customerUser->getAddress();
-
+                $externalUnitId = $customerUser->getExternalUnitId($customerBase);
                 $data = [
                     $residentId,
                     $customerBase->getRtUnit()->getUnitId(),
@@ -117,7 +116,7 @@ class StorageResman extends ExternalApiStorage
                     $monthToMonth,
                     $paymentAccepted,
                     $externalLeaseId,
-                    $customerBase->getRtUnit()->getUnitId(),
+                    $externalUnitId,
                     $address->getCity(),
                     $address->getAddress1(),
                     $address->getPostalCode(),

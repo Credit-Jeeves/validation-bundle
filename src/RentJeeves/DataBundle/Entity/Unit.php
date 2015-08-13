@@ -28,14 +28,14 @@ class Unit extends Base
             return '';
         }
 
-        $isIntegratedWithMri = $this->isIntegratedWithMri();
+        $isIntegratedWithBuildingId = $this->isIntegratedWithBuildingId();
 
         /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
-        if ($isIntegratedWithMri && !$this->getProperty()->isMultipleBuildings()) {
+        if ($isIntegratedWithBuildingId && !$this->getProperty()->isMultipleBuildings()) {
             $names = explode('_', $this->name);
 
             return end($names);
-        } elseif ($isIntegratedWithMri && $this->getProperty()->isMultipleBuildings()) {
+        } elseif ($isIntegratedWithBuildingId && $this->getProperty()->isMultipleBuildings()) {
             return str_replace(['_'], [''], $this->name);
         }
 
@@ -55,12 +55,12 @@ class Unit extends Base
     /**
      * @return bool
      */
-    protected function isIntegratedWithMri()
+    protected function isIntegratedWithBuildingId()
     {
         $holding = $this->getGroup() ? $this->getGroup()->getHolding() : null;
         $apiIntegrationType = $holding ? $holding->getApiIntegrationType() : null;
 
-        return $apiIntegrationType === ApiIntegrationType::MRI;
+        return $apiIntegrationType === ApiIntegrationType::MRI || $apiIntegrationType === ApiIntegrationType::RESMAN;
     }
 
     public function __toString()

@@ -180,7 +180,6 @@ class ResManClient implements ClientInterface
             $this->replaceResponseTo,
             $body
         );
-
         $resMan = $this->deserializeResponse($body, $this->mappingResponse[self::BASE_RESPONSE]);
         if (!($resMan instanceof ResMan)) {
             $message = $this->createExceptionMessage(

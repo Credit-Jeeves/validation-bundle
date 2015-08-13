@@ -14,12 +14,16 @@ class UnitCase extends BaseTestCase
     public function providerForGetActualName()
     {
         return [
-            [ApiIntegrationType::RESMAN, 'A1', 'A1', false],
+            [ApiIntegrationType::YARDI_VOYAGER, 'A1', 'A1', false],
             [ApiIntegrationType::MRI, 'A123', 'A123', true],
             [ApiIntegrationType::MRI, 'A123', 'A123', false],
             [ApiIntegrationType::MRI, 'A_123', '123', false],
             [ApiIntegrationType::MRI, 'A_123', 'A123', true],
+            [ApiIntegrationType::YARDI_VOYAGER, 'A123', 'A123', false],
+            [ApiIntegrationType::RESMAN, 'A123', 'A123', true],
             [ApiIntegrationType::RESMAN, 'A123', 'A123', false],
+            [ApiIntegrationType::RESMAN, 'A_123', '123', false],
+            [ApiIntegrationType::RESMAN, 'A_123', 'A123', true],
         ];
     }
 
