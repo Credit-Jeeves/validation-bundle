@@ -16,6 +16,7 @@ use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Entity\Unit;
 
 /**
  * @method Contract|Contract[] find($id, $lockMode = LockMode::NONE, $lockVersion = null)
@@ -1128,7 +1129,11 @@ class ContractRepository extends EntityRepository
         $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
         $query->setParameter('propertyId', $property->getId());
         $query->setParameter('holdingId', $holding->getId());
-        $query->setParameter('unitName', $unitName);
+        if ($property->isSingle()) {
+            $query->setParameter('unitName', UNIT::SINGLE_PROPERTY_UNIT_NAME);
+        } else {
+            $query->setParameter('unitName', $unitName);
+        }
         $query->setParameter('residentId', $residentId);
         $query = $query->getQuery();
 
