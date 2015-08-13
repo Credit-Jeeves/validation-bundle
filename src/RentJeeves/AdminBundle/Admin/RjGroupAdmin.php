@@ -2,7 +2,7 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -14,6 +14,8 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\FormError;
 
 class RjGroupAdmin extends Admin
 {
@@ -78,6 +80,18 @@ class RjGroupAdmin extends Admin
     /**
      * {@inheritdoc}
      */
+    public function preUpdate($object)
+    {
+        $depositAccounts = $object->getDepositAccounts();
+        /** @var DepositAccount $depositAccount */
+        foreach ($depositAccounts as $depositAccount) {
+            $depositAccount->setGroup($object);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getBaseRoutePattern()
     {
         return '/rj/'.self::TYPE;
@@ -91,15 +105,6 @@ class RjGroupAdmin extends Admin
             ->add('affiliate')
             ->add('groupPhones')
             ->add('count_properties')
-            ->add(
-                'depositAccount',
-                'sonata_type_model',
-                array(
-                    'empty_value' => 'None',
-                    'required' => false,
-                    'label' => 'Merchant status'
-                )
-            )
             ->add('disableCreditCard')
             ->add(
                 '_action',
@@ -155,32 +160,17 @@ class RjGroupAdmin extends Admin
                 ->add('street_address_1', null, ['required' => false])
                 ->add('street_address_2')
             ->end()
-            ->with('Deposit Account')
-                // admin.deposit_account.merchant_name
-                ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name', 'required' => false))
+            ->with('Deposit Accounts')
                 ->add(
-                    'accountNumberMapping.accountNumber',
-                    null,
-                    array(
-                        'label' => 'Account Number',
-                        'required' => false,
-                    )
+                    'depositAccounts',
+                    'sonata_type_collection',
+                    [],
+                    [
+                        'edit' => 'inline',
+                        'inline' => 'table',
+                        'sortable' => 'position',
+                    ]
                 )
-                ->add(
-                    'depositAccount.status',
-                    'choice',
-                    array(
-                        'label' => 'Status',
-                        'required' => false,
-                        'choices' => DepositAccountStatus::cachedTitles()
-                    )
-                )
-                ->add(
-                    'depositAccount.mid',
-                    'number',
-                    ['label' => 'Mid', 'required' => false]
-                )
-                ->add('disableCreditCard', 'checkbox', ['label' => 'Disable Credit Card?', 'required' => false])
             ->end()
             ->with('Group Phones')
                 ->add(
@@ -253,13 +243,61 @@ class RjGroupAdmin extends Admin
                 }
             }
         );
+
+        $container = $this->getConfigurationPool()->getContainer();
+        /** @var EntityManager $em */
+        $em = $container->get('doctrine.orm.entity_manager');
+        $trans = $container->get('translator');
+        $formMapper->getFormBuilder()->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($em, $trans) {
+                $form = $event->getForm();
+                /** @var Group $data */
+                $data = $form->getData();
+                $listAlreadyUsed = [];
+                foreach ($data->getDepositAccounts() as $depositAccount) {
+                    $key = sprintf(
+                        '%s%s',
+                        $depositAccount->getType(),
+                        $depositAccount->getPaymentProcessor()
+                    );
+
+                    if (isset($listAlreadyUsed[$key])) {
+                        $form->addError(
+                            new FormError($trans->trans('admin.error.deposit_account'))
+                        );
+
+                        continue;
+                    }
+                    $listAlreadyUsed[$key] = true;
+                    $result = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
+                        [
+                            'type' => $depositAccount->getType(),
+                            'paymentProcessor' => $depositAccount->getPaymentProcessor(),
+                            'group' => $depositAccount->getGroup()
+                        ]
+                    );
+
+                    if (!empty($result) && ($depositAccount->getId() === $result->getId())) {
+                        continue;
+                    }
+
+                    if (empty($result)) {
+                        continue;
+                    }
+
+                    $form->addError(
+                        new FormError($trans->trans('admin.error.deposit_account'))
+                    );
+                }
+            }
+        );
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name')
-            ->add('depositAccount.status', null, array('label' => 'Merchant status'));
+            ->add('name');
     }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
