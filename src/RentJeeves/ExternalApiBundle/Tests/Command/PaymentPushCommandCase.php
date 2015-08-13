@@ -83,8 +83,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertFalse($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            $apiIntegrationType,
-            $externalPropertyId
+            $apiIntegrationType
         ));
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
@@ -147,8 +146,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertFalse($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            $apiIntegrationType,
-            $externalPropertyId
+            $apiIntegrationType
         ));
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
@@ -225,8 +223,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertFalse($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            $apiIntegrationType,
-            $externalPropertyId
+            $apiIntegrationType
         ));
 
         /** @var Job[] $jobs */
@@ -256,8 +253,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertTrue($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            $apiIntegrationType,
-            $externalPropertyId
+            $apiIntegrationType
         ));
 
         $batches = $repo->createQueryBuilder('pbm')

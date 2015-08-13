@@ -277,10 +277,10 @@ class ResidentBalanceSynchronizer
         $disallow = $lease->getBlockPaymentAccess();
         $externalLeaseId = $lease->getResiId();
         $balance = $lease->getEndBalance();
-        if (strtolower($disallow) === 'n') {
-            $disallow = PaymentAccepted::ANY;
-        } else {
+        if (strtolower($disallow) === 'y') {
             $disallow = PaymentAccepted::DO_NOT_ACCEPT;
+        } else {
+            $disallow = PaymentAccepted::ANY;
         }
         $contract->setPaymentAccepted($disallow);
         $currentExternalLeaseId = $contract->getExternalLeaseId();

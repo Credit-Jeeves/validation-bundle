@@ -429,6 +429,15 @@ class ReceiptBatchSender
     }
 
     /**
+     *
+     * Get the external yardi batch ID.
+     *
+     * If the batch is open, just return the cached ID.
+     * If the batch is not open, then open it -- this only needs to be done once per batch.
+     *
+     * NOTE: We must supply the property ID of the first transaction to open the batch, but after that,
+     * we can send payments to any property on this batch.
+     *
      * @param $remotePropertyId
      * @param $batchId
      * @return mixed
@@ -547,7 +556,6 @@ class ReceiptBatchSender
         $groups = $holding->getGroups();
         $settings = $this->paymentClient->getSettings();
         foreach ($groups as $group) {
-
             $key = $this->getKeyForRequest($holding, $group, $batchId);
 
             if (isset($this->requests[$key])) {
