@@ -42,6 +42,13 @@ class Version20150811074038 extends AbstractMigration implements ContainerAwareI
             "Migration can only be executed safely on 'mysql'."
         );
 
+        $databaseName = $this->em->getConnection()->getDatabase();
+        if (strripos($databaseName, 'jenkins') === false) {
+            print_r(sprintf('Jenkins DB(%s), not run migration. %s', $databaseName, PHP_EOL));
+
+            return;
+        }
+
         $query = $this->em->getRepository('DataBundle:Holding')->getQueryForHoldingsWithMriSettings();
         $pageSize = 5;
         /** @var Paginator $paginator */
