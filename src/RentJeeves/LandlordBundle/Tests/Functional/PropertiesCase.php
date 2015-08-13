@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -298,5 +299,33 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertEquals('18', $all->getText(), 'wrong number of property');
         $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowPropertiesTabDependingOnGroupSettingValue()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $tabs = $this->page->findAll('css', '.header-tabs .top-nav>ul>li');
+        $this->assertCount(4, $tabs, 'By default TestRentGroup should have 4 visible tabs.');
+        $this->logout();
+
+        $em = $this->getEntityManager();
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
+        $this->assertNotNull($group, 'Can not find Test Rent Group');
+        $groupSettings = $group->getGroupSettings();
+        $groupSettings->setShowPropertiesTab(false);
+        $em->persist($groupSettings);
+        $em->flush($groupSettings);
+
+        $this->login('landlord1@example.com', 'pass');
+        $tabs = $this->page->findAll('css', '.header-tabs .top-nav>ul>li');
+        $this->assertCount(3, $tabs, '3 tabs should be shown if showPropertiesTab is off');
+        $this->assertEquals('tabs.dashboard', $tabs[0]->getText(), 'The 1st tab should be "dashboard"');
+        $this->assertEquals('tabs.tenants', $tabs[1]->getText(), 'The 2nd tab should be "tenants"');
+        $this->assertEquals('tab.accounting', $tabs[2]->getText(), 'The 3d tab should be "accounting"');
     }
 }

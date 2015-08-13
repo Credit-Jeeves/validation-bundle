@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Accounting;
+namespace RentJeeves\LandlordBundle\Menu;
 
 use CreditJeeves\CoreBundle\Session\User as SessionUser;
 use CreditJeeves\DataBundle\Entity\Group;
@@ -12,9 +12,9 @@ use JMS\DiExtraBundle\Annotation\Service;
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
- * @Service("accounting.permission")
+ * @Service("landlord.permission")
  */
-class AccountingPermission
+class LandlordPermission
 {
     /**
      * @var User
@@ -73,6 +73,18 @@ class AccountingPermission
     public function hasAccessToAccountingTab()
     {
         if ($this->hasAccessToExport() || $this->hasAccessToImport()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToPropertiesTab()
+    {
+        if (null !== $this->group && $this->group->getGroupSettings()->isShowPropertiesTab()) {
             return true;
         }
 

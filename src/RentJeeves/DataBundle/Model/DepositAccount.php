@@ -101,7 +101,7 @@ abstract class DepositAccount
      */
     protected $type = DepositAccountType::RENT;
 
-    /*
+    /**
      * @ORM\OneToMany(
      *      targetEntity="RentJeeves\DataBundle\Entity\Payment",
      *      mappedBy="depositAccount",
