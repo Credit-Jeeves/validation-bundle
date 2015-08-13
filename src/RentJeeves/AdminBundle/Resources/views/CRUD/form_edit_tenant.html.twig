@@ -1,0 +1,8 @@
+{% extends 'SonataAdminBundle:CRUD:edit.html.twig' %}
+{% block customformactions %}
+    {% if admin.hasroute('unlock') %}
+        <a class="btn" href="{{ admin.generateObjectUrl('unlock', object) }}">
+            {{ 'admin.action.unlock'|trans }}
+        </a>
+    {% endif %}
+{% endblock %}
