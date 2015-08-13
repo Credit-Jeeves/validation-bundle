@@ -6,10 +6,10 @@ use CreditJeeves\CoreBundle\Enum;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CoreBundle\Command\BaseCommand;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -99,20 +99,15 @@ class MigrateActivePaymentsCommand extends BaseCommand
             foreach ($activePayments as $activePayment) {
                 $output->writeln('');
                 $output->writeln(sprintf('Processing active payment #%d.', $activePayment->getId()));
-                // !!! how can we know which payment account to take?
-                $newPaymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->findOneBy(
-                    [
-                        'paymentProcessor' => $paymentProcessorTo,
-                        'type' => $activePayment->getPaymentAccount()->getType(),
-                        'user' => $activePayment->getContract()->getTenant()
-                    ]
+                $newPaymentAccount = $this->getNewPaymentAccount(
+                    $paymentProcessorFrom,
+                    $activePayment->getPaymentAccount()
                 );
-                if (!$newPaymentAccount) {
+                if (null === $newPaymentAccount) {
                     $output->writeln(sprintf(
-                        'Payment account for payment processor \'%s\' and user #%d: \'%s\' not found.',
+                        'New Payment account with payment processor %s for Payment Account#\'%d\' not found.',
                         $paymentProcessorTo,
-                        $activePayment->getContract()->getTenant()->getId(),
-                        $activePayment->getContract()->getTenant()->getEmail()
+                        $activePayment->getPaymentAccount()->getId()
                     ));
                     continue;
                 }
@@ -169,6 +164,35 @@ class MigrateActivePaymentsCommand extends BaseCommand
             $output->writeln('<info>All payments have been successfully migrated!</info>');
         } catch (\Exception $e) {
             $output->writeln(sprintf('<error>Something went wrong. %s</error>>', $e->getMessage()));
+        }
+    }
+
+    /**
+     * @param string $paymentProcessorFrom
+     * @param PaymentAccount $activePaymentAccount
+     *
+     * @return PaymentAccount|null
+     */
+    protected function getNewPaymentAccount($paymentProcessorFrom, PaymentAccount $activePaymentAccount)
+    {
+        if ($paymentProcessorFrom === PaymentProcessor::HEARTLAND) {
+            $paymentAccountMigration = $this->getEntityManager()
+                ->getRepository('RjDataBundle:PaymentAccountMigration')->findOneBy(
+                    [
+                        'heartlandPaymentAccount' => $activePaymentAccount,
+                    ]
+                );
+
+            return $paymentAccountMigration === null ?: $paymentAccountMigration->getAciPaymentAccount();
+        } else {
+            $paymentAccountMigration = $this->getEntityManager()
+                ->getRepository('RjDataBundle:PaymentAccountMigration')->findOneBy(
+                    [
+                        'aciPaymentAccount' => $activePaymentAccount,
+                    ]
+                );
+
+            return $paymentAccountMigration === null ?: $paymentAccountMigration->getHeartlandPaymentAccount();
         }
     }
 
