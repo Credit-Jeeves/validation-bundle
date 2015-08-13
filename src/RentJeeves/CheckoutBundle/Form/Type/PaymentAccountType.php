@@ -123,12 +123,18 @@ class PaymentAccountType extends AbstractType
                 'first_name' => 'AccountNumber',
                 'second_name' => 'AccountNumberAgain',
                 'first_options'  => [
-                    'label' => 'checkout.account_number'
+                    'label' => 'checkout.account_number',
+                    'attr' => [
+                        'data-bind' => 'value: currentPaymentAccount().AccountNumber',
+                    ],
                 ],
                 'second_options' => [
                     'label' => 'checkout.account_number_again',
                     'label_attr' => [
                         'class' => 'clear',
+                    ],
+                    'attr' => [
+                        'data-bind' => 'value: currentPaymentAccount().AccountNumberAgain',
                     ],
                 ],
                 'invalid_message' => 'checkout.error.account_number.match',
@@ -136,7 +142,6 @@ class PaymentAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'checkout.account_number',
                 'attr' => [
-                    'data-bind' => 'value: currentPaymentAccount().AccountNumber',
                     'row_attr' => [
                         'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ],

@@ -21,7 +21,5 @@ function PersonalInfoFillPidkiq(addresses) {
 
     self.newAddresses = ko.observableArray([]);
 
-    // Constructor
-
     self.mapAddresses(addresses);
 }

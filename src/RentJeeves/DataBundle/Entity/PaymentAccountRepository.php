@@ -5,6 +5,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\CoreBundle\Traits\DateCommon;
+use Doctrine\ORM\Query\Expr;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 
 class PaymentAccountRepository extends EntityRepository
 {
@@ -72,5 +75,57 @@ class PaymentAccountRepository extends EntityRepository
             ->setParameter('token', $token)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @return PaymentAccount[]
+     */
+    public function getActivePaymentAccountsForTenant(Tenant $tenant)
+    {
+        return $this->createQueryBuilder('pa')
+            ->innerJoin('pa.user', 'u')
+            ->innerJoin('u.contracts', 'c')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs', Expr\Join::WITH, 'gs.paymentProcessor = pa.paymentProcessor')
+            ->where('pa.user = :tenant')
+            ->andWhere('c.status != :statusDeleted')
+            ->andWhere('c.status != :statusFinished')
+            ->setParameters([
+                'tenant' => $tenant,
+                'statusDeleted' => ContractStatus::DELETED,
+                'statusFinished' => ContractStatus::FINISHED,
+            ])
+            ->groupBy('pa.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param Contract $contract
+     * @return PaymentAccount[]
+     */
+    public function getPaymentAccountsForTenantByContract(Tenant $tenant, Contract $contract)
+    {
+        $paymentProcessor = $contract->getGroup()->getGroupSettings()->getPaymentProcessor();
+        $isDisabledCreditCard = $contract->getGroup()->isDisableCreditCard();
+
+        $query = $this->createQueryBuilder('pa')
+            ->innerJoin('pa.user', 'u')
+            ->where('pa.user = :tenant')
+            ->andWhere('pa.paymentProcessor = :paymentProcessor')
+            ->setParameters([
+                'tenant' => $tenant,
+                'paymentProcessor' => $paymentProcessor
+            ]);
+
+        if ($isDisabledCreditCard) {
+            $query
+                ->andWhere('pa.type != :card')
+                ->setParameter('card', PaymentAccountType::CARD);
+        }
+
+        return $query->getQuery()->getResult();
     }
 }

@@ -53,16 +53,13 @@ class PaymentSourceController extends Controller
         $this->get('soft.deleteable.control')->enable();
 
         if (!empty($contract)) {
-            $paymentAccounts = $this->getUser()->getPaymentAccountsByPaymentProcessor(
-                $contract->getGroupSettings()->getPaymentProcessor(),
-                $contract->getGroup()->isDisableCreditCard()
-            );
+            $paymentAccounts = $this->getDoctrine()
+                ->getRepository('RjDataBundle:PaymentAccount')
+                ->getPaymentAccountsForTenantByContract($this->getUser(), $contract);
         } else {
-            $paymentProcessors = $this->getDoctrine()
-                ->getRepository('RjDataBundle:Contract')
-                ->getActivePaymentProcessorsForTenant($this->getUser());
-
-            $paymentAccounts = $this->getUser()->getPaymentAccountsByPaymentProcessor($paymentProcessors);
+            $paymentAccounts = $this->getDoctrine()
+                ->getRepository('RjDataBundle:PaymentAccount')
+                ->getActivePaymentAccountsForTenant($this->getUser());
         }
 
         $payAccountsJson = $this->get('jms_serializer')->serialize(

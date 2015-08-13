@@ -123,7 +123,8 @@ class SourcesCase extends BaseTestCase
 
         $this->session->wait(
             $this->timeout,
-            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length"
+            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length" .
+            " && jQuery('.overlay-trigger').length <= 0"
         );
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
@@ -214,6 +215,7 @@ class SourcesCase extends BaseTestCase
 
     /**
      * @test
+     * Active contracts mean not finished and not deleted contracts
      */
     public function shouldShowJustActivePaymentSources()
     {
@@ -231,14 +233,18 @@ class SourcesCase extends BaseTestCase
                 $tenant->getId()
             )
         );
-        $paymentAccounts = $tenant->getPaymentAccountsByPaymentProcessor(PaymentProcessor::HEARTLAND);
-        $this->assertCount(3, $paymentAccounts);
+        $paymentAccounts = $tenant->getPaymentAccounts();
+        $this->assertCount(3, $paymentAccounts, 'Please check fixtures, tenant should have 3 payment accounts');
 
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('rent.sources');
 
         $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(0, $rows);
+        $this->assertCount(
+            0,
+            $rows,
+            'Should display no payment accounts b/c tenant doesn\'t have any active contracts'
+        );
         /** @var Contract $contract */
         $contract = $tenant->getContracts()->first();
         /** @var Contract $contract2 */
@@ -251,7 +257,11 @@ class SourcesCase extends BaseTestCase
         $this->session->reload();
 
         $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(3, $rows);
+        $this->assertCount(
+            3,
+            $rows,
+            'Should display 3 payment accounts b/c tenant has 3 heartland payment account like active contracts group'
+        );
 
         $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
         $this->getEntityManager()->flush();
@@ -259,7 +269,12 @@ class SourcesCase extends BaseTestCase
         $this->session->reload();
 
         $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(0, $rows);
+        $this->assertCount(
+            0,
+            $rows,
+            'Should display no payment accounts b/c tenant has 3 heartland payment account' .
+            ' but active contract group has aci payment processor'
+        );
 
         $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::HEARTLAND);
         /** @var PaymentAccount $paymentAccount */
@@ -271,7 +286,12 @@ class SourcesCase extends BaseTestCase
         $this->session->reload();
 
         $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(2, $rows);
+        $this->assertCount(
+            2,
+            $rows,
+            'Should display 2 payment accounts b/c tenant has 2 heartland payment account like active contracts group' .
+            ' and shouldn\'t display 1 aci payment account'
+        );
 
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(25);
         $contract2->setGroup($group);
@@ -284,6 +304,11 @@ class SourcesCase extends BaseTestCase
         $this->session->reload();
 
         $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(3, $rows);
+        $this->assertCount(
+            3,
+            $rows,
+            'Should display 3 payment accounts b/c tenant has 2 heartland payment account like active contracts group' .
+            ' and should display 1 aci payment account like another active contract'
+        );
     }
 }

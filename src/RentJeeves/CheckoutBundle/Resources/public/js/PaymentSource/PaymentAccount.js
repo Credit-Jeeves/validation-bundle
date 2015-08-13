@@ -11,6 +11,7 @@ function PaymentAccount(data, defaultType) {
     this.PayorName = ko.observable('');
     this.RoutingNumber = ko.observable('');
     this.AccountNumber = ko.observable('');
+    this.AccountNumberAgain = ko.observable('');
     this.ACHDepositType = ko.observable(null);
 
     this.CardAccountName = ko.observable('');
@@ -54,6 +55,7 @@ function PaymentAccount(data, defaultType) {
         self.PayorName('');
         self.RoutingNumber('');
         self.AccountNumber('');
+        self.AccountNumberAgain('');
         self.ACHDepositType(null);
 
         self.CardAccountName('');

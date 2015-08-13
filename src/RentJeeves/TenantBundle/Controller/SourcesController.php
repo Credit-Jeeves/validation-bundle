@@ -33,11 +33,9 @@ class SourcesController extends Controller
      */
     public function indexAction()
     {
-        $paymentProcessors = $this->getDoctrine()
-            ->getRepository('RjDataBundle:Contract')
-            ->getActivePaymentProcessorsForTenant($this->getUser());
-
-        $paymentAccounts = $this->getUser()->getPaymentAccountsByPaymentProcessor($paymentProcessors);
+        $paymentAccounts = $this->getDoctrine()
+            ->getRepository('RjDataBundle:PaymentAccount')
+            ->getActivePaymentAccountsForTenant($this->getUser());
 
         return [
             'paymentAccounts' => $paymentAccounts,
