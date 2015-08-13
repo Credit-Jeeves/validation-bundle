@@ -65,7 +65,7 @@ class PaymentAccountRepository extends EntityRepository
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    protected function findOneOrNullByToken($token)
+    public function findOneOrNullByToken($token)
     {
         return $this->createQueryBuilder('pa')
             ->where('pa.token = :token')

@@ -33,7 +33,7 @@ class BillingAccountRepository extends EntityRepository
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    protected function findOneOrNullByToken($token)
+    public function findOneOrNullByToken($token)
     {
         return $this->createQueryBuilder('ba')
             ->where('ba.token = :token')
