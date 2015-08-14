@@ -14,8 +14,6 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormError;
 
 class RjGroupAdmin extends Admin
 {
@@ -240,55 +238,6 @@ class RjGroupAdmin extends Admin
                 if (!$accountMapping->getHolding()) {
                     $holding = $group->getHolding();
                     $accountMapping->setHolding($holding);
-                }
-            }
-        );
-
-        $container = $this->getConfigurationPool()->getContainer();
-        /** @var EntityManager $em */
-        $em = $container->get('doctrine.orm.entity_manager');
-        $trans = $container->get('translator');
-        $formMapper->getFormBuilder()->addEventListener(
-            FormEvents::SUBMIT,
-            function (FormEvent $event) use ($em, $trans) {
-                $form = $event->getForm();
-                /** @var Group $data */
-                $data = $form->getData();
-                $listAlreadyUsed = [];
-                foreach ($data->getDepositAccounts() as $depositAccount) {
-                    $key = sprintf(
-                        '%s%s',
-                        $depositAccount->getType(),
-                        $depositAccount->getPaymentProcessor()
-                    );
-
-                    if (isset($listAlreadyUsed[$key])) {
-                        $form->addError(
-                            new FormError($trans->trans('admin.error.deposit_account'))
-                        );
-
-                        continue;
-                    }
-                    $listAlreadyUsed[$key] = true;
-                    $result = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
-                        [
-                            'type' => $depositAccount->getType(),
-                            'paymentProcessor' => $depositAccount->getPaymentProcessor(),
-                            'group' => $depositAccount->getGroup()
-                        ]
-                    );
-
-                    if (!empty($result) && ($depositAccount->getId() === $result->getId())) {
-                        continue;
-                    }
-
-                    if (empty($result)) {
-                        continue;
-                    }
-
-                    $form->addError(
-                        new FormError($trans->trans('admin.error.deposit_account'))
-                    );
                 }
             }
         );
