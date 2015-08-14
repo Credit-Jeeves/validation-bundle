@@ -21,6 +21,7 @@ class LockboxParser implements CollectPayParserInterface
     const KEY_RECORD_TYPE = 0;
     const KEY_CREDIT_DEBIT_MODE = 3;
     const KEY_TRANSACTION_AMOUNT = 6;
+    const KEY_RETURN_TRANSACTION_AMOUNT = 8;
     const KEY_TRANSACTION_DATE = 12;
     const KEY_REMIT_DATE = 13;
     const KEY_CONFIRMATION_NUMBER = 14;
@@ -155,7 +156,7 @@ class LockboxParser implements CollectPayParserInterface
         $transaction = new ReversalReportTransaction();
         $transaction
             ->setTransactionId($this->getRecordField($record, self::KEY_CONFIRMATION_NUMBER))
-            ->setAmount($this->getRecordField($record, self::KEY_TRANSACTION_AMOUNT))
+            ->setAmount($this->getRecordField($record, self::KEY_RETURN_TRANSACTION_AMOUNT))
             ->setOriginalTransactionId($this->getRecordField($record, self::KEY_ORIGINAL_CONFIRMATION_NUMBER))
             ->setTransactionType($this->getDebitTransactionType($record));
 
