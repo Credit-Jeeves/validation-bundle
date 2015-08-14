@@ -151,8 +151,10 @@ class TenantsController extends Controller
             return new JsonResponse($response);
         }
 
-        $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
-        $em->flush();
+        if (!empty($tenant) && !empty($contract)) {
+            $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
+            $em->flush();
+        }
 
         return new JsonResponse($response);
     }

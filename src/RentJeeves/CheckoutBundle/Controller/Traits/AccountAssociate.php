@@ -10,6 +10,7 @@ use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RuntimeException;
 
 /**
@@ -30,6 +31,10 @@ trait AccountAssociate
      */
     protected function ensureAccountAssociation(PaymentAccount $paymentAccount, Group $group)
     {
+        if ($paymentAccount->getPaymentProcessor() !== PaymentProcessor::HEARTLAND) {
+            return true;
+        }
+
         $em = $this->getDoctrine()->getManager();
         if (null === $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor()) {
             throw new \RuntimeException('Cannot register to a group without deposit account.');

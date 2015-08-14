@@ -2,10 +2,10 @@ function Address(parent, addresses, newAddress) {
     var self = this;
 
     if (!addresses) {
-        addresses = [];
+        addresses = ko.observableArray([]);
     }
 
-//    this.addresses = ko.observableArray(addresses);
+    this.addresses = addresses;
 
     this.id = ko.observable(null);
     this.number = ko.observable(null);
@@ -30,14 +30,14 @@ function Address(parent, addresses, newAddress) {
         }
     });
 
-    this.isAddNewAddress = ko.observable(!addresses.length);
+    this.isAddNewAddress = ko.observable(!self.addresses().length);
     this.addAddress = function() {
         self.isAddNewAddress(true);
         self.addressChoice(null);
 
         if (newAddress) {
             var isUnique = true;
-            jQuery.each(addresses, function(key, val) {
+            jQuery.each(self.addresses(), function(key, val) {
                 if (val.toString() == newAddress.toString()) {
                     isUnique = false;
                     return false;
@@ -57,7 +57,7 @@ function Address(parent, addresses, newAddress) {
 
     var findAddressById = function(id) {
         var address = null;
-        jQuery.each(addresses, function(key, val) {
+        jQuery.each(self.addresses(), function(key, val) {
             if (val.id() == id) {
                 address = val;
                 return false;
