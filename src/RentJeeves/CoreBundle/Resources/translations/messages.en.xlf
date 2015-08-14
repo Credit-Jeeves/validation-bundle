@@ -30,6 +30,10 @@
                 <source>admin.label.payment_processor_locked</source>
                 <target>Payment Processor changes locked?</target>
             </trans-unit>
+            <trans-unit id="admin.label.payments_enabled">
+                <source>admin.label.payments_enabled</source>
+                <target>Payments enabled?</target>
+            </trans-unit>
             <trans-unit id="alert.changing_payment_account">
                 <source>alert.changing_payment_account</source>
                 <target>
@@ -3232,6 +3236,10 @@
             <trans-unit id="export.all_properties">
                 <source>export.all_properties</source>
                 <target>(All Properties)</target>
+            </trans-unit>
+            <trans-unit id="admin.error.deposit_account">
+                <source>admin.error.deposit_account</source>
+                <target>You already have deposit account with such type and payment processor.</target>
             </trans-unit>
         </body>
     </file>

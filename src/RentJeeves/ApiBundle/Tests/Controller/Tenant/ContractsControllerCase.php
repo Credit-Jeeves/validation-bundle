@@ -6,6 +6,8 @@ use RentJeeves\ApiBundle\Forms\Enum\ReportingType;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\ApiBundle\Response\Contract as ContractResponseEntity;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 class ContractsControllerCase extends BaseApiTestCase
 {
@@ -80,6 +82,11 @@ class ContractsControllerCase extends BaseApiTestCase
         $this->assertEquals(
             $leaseStartResult,
             $answerFromApi['lease_start']
+        );
+
+        $this->assertEquals(
+            ContractResponseEntity::DELIVERY_METHOD_ELECTRONIC,
+            $answerFromApi['delivery_method']
         );
 
         $this->assertArrayHasKey(
@@ -624,5 +631,47 @@ class ContractsControllerCase extends BaseApiTestCase
         $this->assertEquals($reportingStatus, $last->getReportToExperian());
 
         $this->assertEquals($reportingStartAt, $startAt);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowCheckDeliveryMethodIfGroupIsPayDirect()
+    {
+        $this->load(true);
+        $contractId = 1;
+        $encodedId = $this->getIdEncoder()->encode($contractId);
+
+        // Send request 1st time - make sure delivery method is electronic
+        $response = $this->getRequest($encodedId);
+        $this->assertResponse($response);
+        $answerFromApi = $this->parseContent($response->getContent());
+
+        $this->assertEquals(
+            ContractResponseEntity::DELIVERY_METHOD_ELECTRONIC,
+            $answerFromApi['delivery_method']
+        );
+
+        /** @var Contract $contractInDB */
+        $contractInDB = $this->getEntityRepository(self::WORK_ENTITY)->findOneById($contractId);
+        $this->assertNotNull($contractInDB);
+
+        $group = $contractInDB->getGroup();
+        $this->assertEquals(OrderAlgorithmType::SUBMERCHANT, $group->getOrderAlgorithm());
+
+        // Set Group to PayDirect order algorithm
+        $group->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
+        $em = $this->getEntityManager();
+        $em->persist($group);
+        $em->flush($group);
+
+        // Send request 2nd time - make sure delivery method is check
+        $response = $this->getRequest($encodedId);
+        $this->assertResponse($response);
+        $answerFromApi = $this->parseContent($response->getContent());
+        $this->assertEquals(
+            ContractResponseEntity::DELIVERY_METHOD_CHECK,
+            $answerFromApi['delivery_method']
+        );
     }
 }

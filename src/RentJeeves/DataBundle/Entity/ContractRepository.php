@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -16,6 +17,9 @@ use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 
+/**
+ * @method Contract|Contract[] find($id, $lockMode = LockMode::NONE, $lockVersion = null)
+ */
 class ContractRepository extends EntityRepository
 {
     use DateCommon;

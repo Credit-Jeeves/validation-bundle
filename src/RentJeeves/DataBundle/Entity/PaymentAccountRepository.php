@@ -5,7 +5,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\CoreBundle\Traits\DateCommon;
-use RentJeeves\TenantBundle\Model\CreditTrack;
 
 class PaymentAccountRepository extends EntityRepository
 {
@@ -53,6 +52,25 @@ class PaymentAccountRepository extends EntityRepository
             $em->persist($jobs[] = $job);
         }
         $em->flush();
+
         return $jobs;
+    }
+
+    /**
+     * @todo: After adding replace this function to $repo->findOneBy(['token' => $token]);
+     *
+     * @param string $token
+     *
+     * @return PaymentAccount|null
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneOrNullByToken($token)
+    {
+        return $this->createQueryBuilder('pa')
+            ->where('pa.token = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

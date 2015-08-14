@@ -17,10 +17,10 @@ class Version20150731191342 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_transaction
                 DROP
-                FOREIGN KEY FK_B949C317AE9DDE6F"
+                FOREIGN KEY FK_A1CC4699AE9DDE6F"
         );
         $this->addSql(
-            "DROP INDEX IDX_B949C317AE9DDE6F ON rj_transaction"
+            "DROP INDEX IDX_A1CC4699AE9DDE6F ON rj_transaction"
         );
         $this->addSql(
             "ALTER TABLE rj_transaction
@@ -41,12 +41,12 @@ class Version20150731191342 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_transaction
-                ADD CONSTRAINT FK_B949C317AE9DDE6F
+                ADD CONSTRAINT FK_A1CC4699AE9DDE6F
                 FOREIGN KEY (payment_account_id)
                 REFERENCES rj_payment_account (id)"
         );
         $this->addSql(
-            "CREATE INDEX IDX_B949C317AE9DDE6F ON rj_transaction (payment_account_id)"
+            "CREATE INDEX IDX_A1CC4699AE9DDE6F ON rj_transaction (payment_account_id)"
         );
     }
 }

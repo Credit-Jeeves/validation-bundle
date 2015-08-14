@@ -30,4 +30,23 @@ class Unit extends ResponseResource
     {
         return $this->entity->getName();
     }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"UnitDetails"})
+     * @Serializer\SerializedName("address")
+     * @Serializer\Type("array")
+     * @return string
+     */
+    public function getAddress()
+    {
+        $property = $this->entity->getProperty();
+
+        return [
+            'street' => sprintf('%s %s', $property->getNumber(), $property->getStreet()),
+            'city' => $property->getCity(),
+            'state' => $property->getArea(),
+            'zip' => $property->getZip()
+        ];
+    }
 }

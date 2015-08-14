@@ -163,11 +163,26 @@ class Group extends BaseGroup
     }
 
     /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBillingAccountsByCurrentPaymentProcessor()
+    {
+        $currentPaymentProcessor = $this->getGroupSettings()->getPaymentProcessor();
+
+        return $this->getBillingAccounts()->filter(
+            function ($entry) use ($currentPaymentProcessor) {
+                return $currentPaymentProcessor === $entry->getPaymentProcessor();
+            }
+        );
+    }
+
+    /**
      * @return BillingAccount|null
      */
     public function getActiveBillingAccount()
     {
-        foreach ($this->getBillingAccounts() as $account) {
+        /** @var BillingAccount $account */
+        foreach ($this->getBillingAccountsByCurrentPaymentProcessor() as $account) {
             if ($account->getIsActive()) {
                 return $account;
             }

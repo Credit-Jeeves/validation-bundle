@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -79,7 +80,9 @@ class TenantsController extends Controller
         if ($request->getMethod() == 'POST' && $canInvite) {
             $form->handleRequest($request);
             if ($form->isValid()) {
+                /** @var Tenant $tenant */
                 $tenant = $form->getData()['tenant'];
+                /** @var Contract $contract */
                 $contract = $form->getData()['contract'];
                 $residentMapping = isset($form->getData()['resident']) ? $form->getData()['resident'] : null;
                 $finishAtType = $form->get('contract')->get('finishAtType')->getData();

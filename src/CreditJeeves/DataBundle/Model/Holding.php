@@ -203,6 +203,35 @@ abstract class Holding
     protected $isPaymentProcessorLocked = false;
 
     /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="payments_enabled",
+     *      options={
+     *          "default":1
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $paymentsEnabled = true;
+
+    /**
+     * @return boolean
+     */
+    public function isPaymentsEnabled()
+    {
+        return $this->paymentsEnabled;
+    }
+
+    /**
+     * @param boolean $paymentsEnabled
+     */
+    public function setPaymentsEnabled($paymentsEnabled)
+    {
+        $this->paymentsEnabled = $paymentsEnabled;
+    }
+
+    /**
      * @return boolean
      */
     public function isPaymentProcessorLocked()

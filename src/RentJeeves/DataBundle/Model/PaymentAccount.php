@@ -220,16 +220,6 @@ abstract class PaymentAccount
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Transaction",
-     *     mappedBy="paymentAccount"
-     * )
-     *
-     * @var ArrayCollection
-     */
-    protected $transactions;
-
-    /**
-     * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Order",
      *      mappedBy="paymentAccount",
      *      cascade={"persist"}
@@ -243,7 +233,6 @@ abstract class PaymentAccount
         $this->payments = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
-        $this->transactions = new ArrayCollection();
         $this->creditTrackJobs = new ArrayCollection();
     }
 
@@ -546,14 +535,6 @@ abstract class PaymentAccount
     public function getPayments()
     {
         return $this->payments;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getTransactions()
-    {
-        return $this->transactions;
     }
 
     /**
