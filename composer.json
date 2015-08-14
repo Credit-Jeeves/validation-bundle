@@ -207,7 +207,6 @@
         "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*",
-        "egeloen/ordered-form-bundle": "~1.0",
         "credit-jeeves/credit-jeeves": "dev-master",
         "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",

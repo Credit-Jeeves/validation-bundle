@@ -37,13 +37,19 @@ class BillingAccountListener
         }
 
         $em = $eventArgs->getEntityManager();
-        $billingAccounts = $em->getRepository('RjDataBundle:BillingAccount')->findBy(
-            array('group' => $entity->getGroup(), 'isActive' => true)
-        );
+        $billingAccounts = $em->getRepository('RjDataBundle:BillingAccount')
+            ->findBy(
+                [
+                    'group' => $entity->getGroup(),
+                    'paymentProcessor' => $entity->getPaymentProcessor(),
+                    'isActive' => true
+                ]
+            );
 
         // first payment account has to be active
         if (count($billingAccounts) == 0) {
             $entity->setIsActive(true);
+
             return;
         }
 

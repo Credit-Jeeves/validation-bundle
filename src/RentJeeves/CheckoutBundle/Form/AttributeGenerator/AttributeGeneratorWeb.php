@@ -181,7 +181,7 @@ class AttributeGeneratorWeb extends AttributeGenerator
                 'class' => 'datepicker-field',
                 'row_attr' => [
                     'data-bind' => 'visible: \'one_time\' == payment.type()
-                                || contract.groupSetting.pay_balance_only'
+                                || contract().groupSetting.pay_balance_only'
                 ],
                 'data-bind' => 'datepicker: payment.startDate, ' .
                     'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',

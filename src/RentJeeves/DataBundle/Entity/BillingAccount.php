@@ -2,10 +2,10 @@
 
 namespace RentJeeves\DataBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\DataBundle\Model\BillingAccount as Base;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="rj_billing_account")

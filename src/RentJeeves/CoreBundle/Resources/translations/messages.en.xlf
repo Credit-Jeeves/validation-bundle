@@ -3237,6 +3237,10 @@
                 <source>export.all_properties</source>
                 <target>(All Properties)</target>
             </trans-unit>
+            <trans-unit id="admin.error.deposit_account">
+                <source>admin.error.deposit_account</source>
+                <target>You already have deposit account with such type and payment processor.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

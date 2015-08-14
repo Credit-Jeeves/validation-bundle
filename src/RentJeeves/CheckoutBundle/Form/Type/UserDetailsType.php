@@ -10,7 +10,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\Regex;
 
 class UserDetailsType extends AbstractType
 {
@@ -83,7 +82,7 @@ class UserDetailsType extends AbstractType
                 'attr' => array(
                     'data-bind' => 'checked: address.addressChoice',
                     'html' =>
-                        '<!-- ko foreach: newUserAddress -->' .
+                        '<!-- ko foreach: newAddresses -->' .
                             '<label class="checkbox radio">' .
                                 '<input type="radio" name="' . $this->getName() . '[address_choice]"' .
                                     'required="required"' .

@@ -171,6 +171,21 @@ abstract class GroupSettings
     protected $passedAch = false;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *     type="boolean",
+     *     name="show_properties_tab",
+     *     options={
+     *         "default":1
+     *      }
+     * )
+     *
+     * @Serializer\Exclude
+     */
+    protected $showPropertiesTab = true;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -420,5 +435,21 @@ abstract class GroupSettings
     public function setIsReportingOff($isReportingOff)
     {
         $this->isReportingOff = $isReportingOff;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowPropertiesTab()
+    {
+        return $this->showPropertiesTab;
+    }
+
+    /**
+     * @param boolean $showPropertiesTab
+     */
+    public function setShowPropertiesTab($showPropertiesTab)
+    {
+        $this->showPropertiesTab = $showPropertiesTab;
     }
 }

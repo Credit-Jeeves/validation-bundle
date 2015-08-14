@@ -63,7 +63,7 @@ services:
             - CreditJeeves\DataBundle\Entity\Group
             - 'SonataAdminBundle:CRUD'
         calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+            - [ setTranslationDomain, [messages]]
 
     sonata.admin.rj_group.phone:
         class: RentJeeves\AdminBundle\Admin\GroupPhoneAdmin
@@ -76,6 +76,16 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+    sonata.admin.deposit_account:
+        class: RentJeeves\AdminBundle\Admin\DepositAccountAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "DepositAccount" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\DepositAccount
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [messages]]
 
 
     sonata.admin.landlord:
@@ -98,6 +108,7 @@ services:
             - RentJeeves\DataBundle\Entity\Tenant
             - 'SonataAdminBundle:CRUD'
         calls:
+            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_tenant.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
     sonata.admin.contract:

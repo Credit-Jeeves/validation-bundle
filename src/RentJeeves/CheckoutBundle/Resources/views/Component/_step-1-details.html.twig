@@ -1,34 +1,36 @@
 <div class="form-row clearfix">
     <label>{{ 'checkout.property' | trans }}<b>*</b></label>
     <div class="fields-box" id="rentjeeves_checkoutbundle_paymenttype_property_address">
-        <span class="value big left" data-bind="text: propertyAddress"></span>
+        <span class="value big left" data-bind="text: propertyAddress().toString"></span>
         <small><b>*</b>{{ 'required' | trans }}</small>
     </div>
 </div>
-<div class="form-row clearfix" data-bind="visible: contract.groupSetting.is_integrated">
+<!-- ko if: contract -->
+<div class="form-row clearfix" data-bind="visible: contract().groupSetting.is_integrated">
     <label>{{ 'common.balance' | trans }}</label>
     <div class="fields-box">
-        <span class="value big left" data-bind="text: '$'+contract.integrated_balance"></span>
+        <span class="value big left" data-bind="text: '$'+contract().integrated_balance"></span>
     </div>
-    <div class="tooltip-box type3 pie-el" data-bind="visible: contract.groupSetting.pay_balance_only">
+    <div class="tooltip-box type3 pie-el" data-bind="visible: contract().groupSetting.pay_balance_only">
         <h4>{{ 'common.balance.due'|trans }}</h4>
         <p>{{ 'common.balance.as.full'|trans }}</p>
     </div>
 </div>
-<div class="form-row clearfix" data-bind="visible: contract.groupSetting.pay_balance_only">
+<div class="form-row clearfix" data-bind="visible: contract().groupSetting.pay_balance_only">
     <label>{{ 'checkout.total' | trans }}</label>
     <div class="fields-box">
-        <span class="value big left" data-bind="text: '$'+contract.integrated_balance"></span>
+        <span class="value big left" data-bind="text: '$'+contract().integrated_balance"></span>
     </div>
 </div>
-<form data-bind="if: !contract.groupSetting.pay_balance_only" {{ form_enctype(paymentType) }} novalidate method="post">
+<form data-bind="if: !contract().groupSetting.pay_balance_only" {{ form_enctype(paymentType) }} novalidate method="post">
     {{ form_widget(paymentType) }}
     {{ JSFV(paymentType) }}
 </form>
-<form data-bind="if: contract.groupSetting.pay_balance_only" {{ form_enctype(paymentBalanceOnlyType) }} novalidate method="post">
+<form data-bind="if: contract().groupSetting.pay_balance_only" {{ form_enctype(paymentBalanceOnlyType) }} novalidate method="post">
     {{ form_widget(paymentBalanceOnlyType) }}
     {{ JSFV(paymentBalanceOnlyType) }}
 </form>
+<!-- /ko -->
 <script type="text/html" id="paidFor-html">
     <div class="tooltip-box type3 pie-el">
         <h4 data-bind="text: 'checkout.rent_start.title', i18n: {'MONTH': getPaidFor}">

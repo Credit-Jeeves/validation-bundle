@@ -125,8 +125,6 @@ class AciCollectPayCase extends BaseTestCase
             "jQuery('#id-source-step:visible').length"
         );
 
-        $this->page->clickLink('payment.account.new');
-
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
 
         $this->fillForm($form, $this->getPaymentAccountFormData($type));

@@ -1473,6 +1473,10 @@
                 <source>admin.action.charge</source>
                 <target>Charge</target>
             </trans-unit>
+            <trans-unit id="admin.action.unlock">
+                <source>admin.action.unlock</source>
+                <target>Unlock</target>
+            </trans-unit>
             <trans-unit id="desired.car">
                 <source>desired.car</source>
                 <target>Desired car</target>
