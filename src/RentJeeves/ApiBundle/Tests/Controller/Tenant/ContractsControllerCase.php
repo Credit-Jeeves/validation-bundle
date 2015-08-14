@@ -159,10 +159,16 @@ class ContractsControllerCase extends BaseApiTestCase
     public static function contractsDataProvider()
     {
         return [
+            // 0
             [
                 'unit_url' => 'unit_url/656765400',
+                'rent' => 500,
+                'due_date' => 10,
+                'lease_start' => '2015-01-01',
+                'lease_end' => '2020-01-01',
                 'experian_reporting' => 'enabled',
             ],
+            // 1
             [
                 'new_unit' => [
                     'address' => [
@@ -179,7 +185,12 @@ class ContractsControllerCase extends BaseApiTestCase
                         'phone' => '999-555-5555',
                     ],
                 ],
+                'rent' => 700,
+                'due_date' => 1,
+                'lease_start' => '2015-02-02',
+                'lease_end' => '2020-02-02',
             ],
+            // 2
             [
                 'new_unit' => [
                     'address' => [
@@ -194,13 +205,28 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ],
                 'experian_reporting' => 'enabled',
+                'rent' => 600,
+                'due_date' => 5,
+                'lease_start' => '2015-03-03',
+                'lease_end' => '2020-03-03',
             ],
+            // 3
             [
                 'unit_url' => 'unit_url/2974582658',
+                'rent' => 800,
+                'due_date' => 3,
+                'lease_start' => '2015-01-01',
+                'lease_end' => '2020-03-03',
             ],
+            // 4
             [
-                'unit_url' => 'unit_url/2511139177', // 0
+                'unit_url' => 'unit_url/2511139177',
+                'rent' => 800,
+                'due_date' => 3,
+                'lease_start' => '2015-01-01',
+                'lease_end' => '2020-03-03',
             ],
+            // 5
             [
                 'new_unit' => [
                     'address' => [
@@ -211,10 +237,20 @@ class ContractsControllerCase extends BaseApiTestCase
                         'phone' => '111-111-111'
                     ],
                 ],
+                'rent' => 800,
+                'due_date' => 3,
+                'lease_start' => '2015-01-01',
+                'lease_end' => '2020-03-03',
             ],
+            // 6
             [
                 'experian_reporting' => 'enabled',
+                'rent' => 800,
+                'due_date' => 3,
+                'lease_start' => '2015-01-01',
+                'lease_end' => '2020-03-03',
             ],
+            // 7
             [
                 'new_unit' => [
                     'address' => [
@@ -228,7 +264,12 @@ class ContractsControllerCase extends BaseApiTestCase
                         'email' => 'test_landlord3@gmail.com',
                     ],
                 ],
+                'rent' => 800,
+                'due_date' => 3,
+                'lease_start' => '2015-01-01',
+                'lease_end' => '2020-03-03',
             ],
+            // 8
             [
                 'new_unit' => [
                     'address' => [
@@ -243,7 +284,12 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ],
                 'experian_reporting' => 'enabled',
+                'rent' => 800,
+                'due_date' => 3,
+                'lease_start' => '2015-01-01',
+                'lease_end' => '2020-03-03',
             ],
+            // 9
             [
                 'unit_url' => 'unit_url/2511139177', // 0
                 'new_unit' => [
@@ -258,7 +304,12 @@ class ContractsControllerCase extends BaseApiTestCase
                         'email' => 'test_landlord4@gmail.com',
                     ],
                 ],
+                'rent' => 800,
+                'due_date' => 3,
+                'lease_start' => '2015-01-01',
+                'lease_end' => '2020-03-03',
             ],
+            // 10
             [
                 'experian_reporting' => 'enable',
             ],
@@ -306,10 +357,25 @@ class ContractsControllerCase extends BaseApiTestCase
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
         $this->assertNotNull(
-            $repo->findOneBy([
-                'tenant' => $tenant,
-                'id' => $this->getIdEncoder()->decode($answer['id'])
-            ])
+            $contract = $repo->findOneBy(
+                [
+                    'tenant' => $tenant,
+                    'id' => $this->getIdEncoder()->decode($answer['id'])
+                ]
+            ),
+            'Contract was not created'
+        );
+        $this->assertEquals($requestParams['rent'], $contract->getRent());
+        $this->assertEquals($requestParams['due_date'], $contract->getDueDate());
+        $this->assertEquals(
+            $requestParams['lease_start'],
+            $contract->getStartAt()->format('Y-m-d'),
+            'Lease start date is wrong'
+        );
+        $this->assertEquals(
+            $requestParams['lease_end'],
+            $contract->getFinishAt()->format('Y-m-d'),
+            'Lease end date is wrong'
         );
     }
 
@@ -321,11 +387,19 @@ class ContractsControllerCase extends BaseApiTestCase
         return [
             [
                 [
+                    'rent' => 999,
+                    'due_date' => 3,
+                    'lease_start' => '2015-01-01',
+                    'lease_end' => '2020-03-03',
                     'experian_reporting' => 'enabled',
                 ]
             ],
             [
                 [
+                    'rent' => 555,
+                    'due_date' => 3,
+                    'lease_start' => '2015-01-01',
+                    'lease_end' => '2020-03-03',
                     'experian_reporting' => 'disabled',
                 ]
             ]
@@ -345,21 +419,33 @@ class ContractsControllerCase extends BaseApiTestCase
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
-        $last = $repo->findOneBy([
+        $lastContract = $repo->findOneBy([
             'tenant' => $tenant,
         ], ['id' => 'DESC']);
 
-        $encodedId = $this->getIdEncoder()->encode($last->getId());
+        $encodedId = $this->getIdEncoder()->encode($lastContract->getId());
 
         $response = $this->putRequest($encodedId, $requestParams);
 
         $this->assertResponse($response, $statusCode);
 
-        $this->getEm()->refresh($last);
+        $this->getEm()->refresh($lastContract);
 
         $this->assertEquals(
-            !!$last->getReportToExperian(),
+            !!$lastContract->getReportToExperian(),
             ReportingType::getMapValue($requestParams['experian_reporting'])
+        );
+        $this->assertEquals($requestParams['rent'], $lastContract->getRent(), 'Rent was not updated');
+        $this->assertEquals($requestParams['due_date'], $lastContract->getDueDate(), 'Due date was not updated');
+        $this->assertEquals(
+            $requestParams['lease_start'],
+            $lastContract->getStartAt()->format('Y-m-d'),
+            'Lease start date was not updated'
+        );
+        $this->assertEquals(
+            $requestParams['lease_end'],
+            $lastContract->getFinishAt()->format('Y-m-d'),
+            'Lease end date was not updated'
         );
     }
 
@@ -369,6 +455,7 @@ class ContractsControllerCase extends BaseApiTestCase
     public static function wrongContractDataProvider()
     {
         return [
+            // 0
             [
                 self::contractsDataProvider()[4],
                 [
@@ -378,6 +465,7 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ]
             ],
+            // 1
             [
                 self::contractsDataProvider()[5],
                 [
@@ -413,6 +501,7 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ]
             ],
+            // 2
             [
                 self::contractsDataProvider()[6],
                 [
@@ -446,6 +535,7 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ]
             ],
+            // 3
             [
                 self::contractsDataProvider()[7],
                 [
@@ -454,6 +544,7 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ]
             ],
+            // 4
             [
                 self::contractsDataProvider()[8],
                 [
@@ -462,6 +553,7 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ]
             ],
+            // 5
             [
                 self::contractsDataProvider()[9],
                 [
@@ -532,6 +624,10 @@ class ContractsControllerCase extends BaseApiTestCase
             [
                 [
                     'unit_url' => 'unit_url/2974582658',
+                    'rent' => 555,
+                    'due_date' => 3,
+                    'lease_start' => '2015-01-01',
+                    'lease_end' => '2020-03-03',
                     'experian_reporting' => 'enabled'
                 ],
                 true,
@@ -540,12 +636,20 @@ class ContractsControllerCase extends BaseApiTestCase
             [
                 [
                     'unit_url' => 'unit_url/2974582658',
+                    'rent' => 555,
+                    'due_date' => 3,
+                    'lease_start' => '2015-01-01',
+                    'lease_end' => '2020-03-03',
                 ],
                 false,
             ],
             [
                 [
                     'unit_url' => 'unit_url/2974582658',
+                    'rent' => 555,
+                    'due_date' => 3,
+                    'lease_start' => '2015-01-01',
+                    'lease_end' => '2020-03-03',
                     'experian_reporting' => 'disabled'
                 ],
                 false,
@@ -590,12 +694,24 @@ class ContractsControllerCase extends BaseApiTestCase
     {
         return [
             [
-                ['experian_reporting' => 'enabled'],
+                [
+                    'experian_reporting' => 'enabled',
+                    'rent' => 555,
+                    'due_date' => 3,
+                    'lease_start' => '2015-01-01',
+                    'lease_end' => '2020-03-03',
+                ],
                 true,
                 'now',
             ],
             [
-                ['experian_reporting' => 'disabled'],
+                [
+                    'experian_reporting' => 'disabled',
+                    'rent' => 555,
+                    'due_date' => 3,
+                    'lease_start' => '2015-01-01',
+                    'lease_end' => '2020-03-03',
+                ],
                 false,
                 'now',
             ]
@@ -673,5 +789,39 @@ class ContractsControllerCase extends BaseApiTestCase
             ContractResponseEntity::DELIVERY_METHOD_CHECK,
             $answerFromApi['delivery_method']
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldAllowLeaseEndToBeEmpty()
+    {
+        $requestParams = [
+            'unit_url' => 'unit_url/2974582658',
+            'rent' => 555,
+            'due_date' => 3,
+            'lease_start' => '2015-01-01',
+            'experian_reporting' => 'enabled'
+        ];
+
+        $response = $this->postRequest($requestParams);
+        $this->assertResponse($response, 201);
+        $answer = $this->parseContent($response->getContent());
+        $tenant = $this->getUser();
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        $this->assertNotNull(
+            $contract = $repo->findOneBy(
+                [
+                    'tenant' => $tenant,
+                    'id' => $this->getIdEncoder()->decode($answer['id'])
+                ]
+            ),
+            'Contract was not created'
+        );
+
+        $this->assertEquals($requestParams['rent'], $contract->getRent());
+        $this->assertEquals($requestParams['due_date'], $contract->getDueDate());
+        $this->assertEquals($requestParams['lease_start'], $contract->getStartAt()->format('Y-m-d'));
+        $this->assertNull($contract->getFinishAt(), 'FinishAt is expected to be NULL');
     }
 }

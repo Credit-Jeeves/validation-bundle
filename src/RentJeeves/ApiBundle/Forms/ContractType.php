@@ -60,6 +60,20 @@ class ContractType extends AbstractType
             ],
         ]);
 
+        $builder->add('rent', null);
+
+        $builder->add('due_date', null);
+
+        $builder->add('lease_start', 'datetime', [
+            'property_path' => 'startAt',
+            'widget' => 'single_text',
+        ]);
+
+        $builder->add('lease_end', 'datetime', [
+            'property_path' => 'finishAt',
+            'widget' => 'single_text',
+        ]);
+
         $builder->add('experian_reporting', new ReportingType(), [
             'property_path' => 'reportToExperian'
         ]);
