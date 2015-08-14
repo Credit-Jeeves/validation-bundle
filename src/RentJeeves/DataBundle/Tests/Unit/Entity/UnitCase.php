@@ -15,16 +15,16 @@ class UnitCase extends BaseTestCase
     public function providerForGetActualName()
     {
         return [
-            [ApiIntegrationType::YARDI_VOYAGER, 'A1', 'A1', false],
-            [ApiIntegrationType::MRI, 'A123', 'A123', true],
-            [ApiIntegrationType::MRI, 'A123', 'A123', false],
-            [ApiIntegrationType::MRI, 'A_123', '123', false],
-            [ApiIntegrationType::MRI, 'A_123', 'A123', true],
-            [ApiIntegrationType::YARDI_VOYAGER, 'A123', 'A123', false],
-            [ApiIntegrationType::RESMAN, 'A123', 'A123', true],
-            [ApiIntegrationType::RESMAN, 'A123', 'A123', false],
-            [ApiIntegrationType::RESMAN, 'A_123', '123', false],
-            [ApiIntegrationType::RESMAN, 'A_123', 'A123', true],
+            [ApiIntegrationType::YARDI_VOYAGER, 'A1', 'A1', 'U1|23|99', false],
+            [ApiIntegrationType::MRI, 'A123', '23A123', 'U1|23|99', true],
+            [ApiIntegrationType::MRI, 'A123', 'A123', 'U1|23|99', false],
+            [ApiIntegrationType::MRI, 'A_123', 'A_123', 'U1|23|99', false],
+            [ApiIntegrationType::MRI, 'A_123', '23A_123', 'U1|23|99', true],
+            [ApiIntegrationType::YARDI_VOYAGER, 'A123', 'A123', 'U1|23|99', false],
+            [ApiIntegrationType::RESMAN, 'A123', '23A123', 'U1|23|99', true],
+            [ApiIntegrationType::RESMAN, 'A123', 'A123', 'U1|23|99', false],
+            [ApiIntegrationType::RESMAN, 'A_123', 'A_123', 'U1|23|99', false],
+            [ApiIntegrationType::RESMAN, 'A_123', '23A_123', 'U1|23|99', true],
         ];
     }
 

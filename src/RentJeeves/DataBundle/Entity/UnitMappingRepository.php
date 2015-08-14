@@ -5,7 +5,6 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
-use CreditJeeves\DataBundle\Entity\Holding;
 
 class UnitMappingRepository extends EntityRepository
 {

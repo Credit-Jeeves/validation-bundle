@@ -29,13 +29,13 @@ class Unit extends Base
         }
 
         $isIntegratedWithBuildingId = $this->isIntegratedWithBuildingId();
-
+        $unitId = $this->getUnitMapping()->getExternalUnitId();
         /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
         /** @link https://credit.atlassian.net/browse/RT-1579 refactoring by link logic*/
-        if (isIntegratedWithBuildingId && $this->getProperty()->isMultipleBuildings() && !empty($unitId)) {
+        if ($isIntegratedWithBuildingId && $this->getProperty()->isMultipleBuildings() && !empty($unitId)) {
             $names = explode('|', $unitId);
 
-            return (isset($names[1])) ? $this->name.$names[1] : $this->name;
+            return (isset($names[1])) ? $names[1].$this->name : $this->name;
         }
 
         return $name;
