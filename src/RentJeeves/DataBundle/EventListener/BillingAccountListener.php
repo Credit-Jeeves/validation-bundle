@@ -49,6 +49,7 @@ class BillingAccountListener
         // first payment account has to be active
         if (count($billingAccounts) == 0) {
             $entity->setIsActive(true);
+
             return;
         }
 

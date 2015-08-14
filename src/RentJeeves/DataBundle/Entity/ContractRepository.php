@@ -16,7 +16,6 @@ use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Entity\Unit;
 
 /**
  * @method Contract|Contract[] find($id, $lockMode = LockMode::NONE, $lockVersion = null)

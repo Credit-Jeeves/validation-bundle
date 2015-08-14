@@ -28,15 +28,18 @@ class Unit extends Base
             return '';
         }
 
+        $unitMapping = $this->getUnitMapping();
+        if (empty($unitMapping)) {
+            return $name;
+        }
         $isIntegratedWithMri = $this->isIntegratedWithMri();
-
+        $unitId = $unitMapping->getExternalUnitId();
         /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
-        if ($isIntegratedWithMri && !$this->getProperty()->isMultipleBuildings()) {
-            $names = explode('_', $this->name);
+        /** @link https://credit.atlassian.net/browse/RT-1579 refactoring by link logic*/
+        if ($isIntegratedWithMri && $this->getProperty()->isMultipleBuildings() && !empty($unitId)) {
+            $names = explode('|', $unitId);
 
-            return end($names);
-        } elseif ($isIntegratedWithMri && $this->getProperty()->isMultipleBuildings()) {
-            return str_replace(['_'], [''], $this->name);
+            return (isset($names[1])) ? $this->name.$names[1] : $this->name;
         }
 
         return $name;

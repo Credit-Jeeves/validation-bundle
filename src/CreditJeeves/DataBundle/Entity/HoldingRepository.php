@@ -9,6 +9,18 @@ class HoldingRepository extends EntityRepository
 {
 
     /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getQueryForHoldingsWithMriSettings()
+    {
+        return $this->createQueryBuilder('holding')
+            ->innerJoin('holding.mriSettings', 'mriSettings')
+            ->innerJoin('holding.propertyMapping', 'propertyMapping')
+            ->where('holding.apiIntegrationType = :mri')
+            ->setParameter('mri', ApiIntegrationType::MRI);
+    }
+
+    /**
      * @return Holding[]
      */
     public function findHoldingsForUpdatingBalanceAMSI()
