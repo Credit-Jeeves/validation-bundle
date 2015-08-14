@@ -6,6 +6,7 @@ use RentJeeves\CheckoutBundle\Command\MigrateActivePaymentsCommand;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Entity\PaymentAccountMigration;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -189,6 +190,11 @@ class MigrateActivePaymentsCommandCase extends BaseTestCase
         $aciDepositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
         $aciDepositAccount->setType(DepositAccountType::RENT);
 
+        $paymentAccountMigration = new PaymentAccountMigration();
+        $paymentAccountMigration->setHeartlandPaymentAccount($hpsActivePayment->getPaymentAccount());
+        $paymentAccountMigration->setAciPaymentAccount($aciPaymentAccount);
+
+        $em->persist($paymentAccountMigration);
         $em->persist($aciPaymentAccount);
         $em->persist($aciDepositAccount);
         $em->flush();
@@ -222,6 +228,7 @@ class MigrateActivePaymentsCommandCase extends BaseTestCase
 
     /**
      * @test
+     * @depends shouldCloseHPSActivePaymentAndOpenACIActivePayment
      */
     public function shouldMigrateBackFromACIToHPS()
     {
