@@ -84,11 +84,11 @@
                                 <a class="btn btn-danger" href="{{ admin.generateObjectUrl('delete', object) }}">{{ 'link_delete'|trans({}, 'SonataAdminBundle') }}</a>
                             {% endif %}
 
-                            {% if admin.id(object) %}
+                            {% block customformactions %}
                                 {% if admin.hasroute('terminal') %}
                                     <a class="btn" onclick="charge({{ object.id }})">{{ 'admin.action.charge'|trans }}</a>
                                 {% endif %}
-                            {% endif %}
+                            {% endblock %}
 
                             {% if admin.isAclEnabled() and admin.hasroute('acl') and admin.isGranted('MASTER', object) %}
                                 <a class="btn" href="{{ admin.generateObjectUrl('acl', object) }}">{{ 'link_edit_acl'|trans({}, 'SonataAdminBundle') }}</a>

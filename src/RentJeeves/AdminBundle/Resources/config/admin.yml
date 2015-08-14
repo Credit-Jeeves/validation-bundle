@@ -108,6 +108,7 @@ services:
             - RentJeeves\DataBundle\Entity\Tenant
             - 'SonataAdminBundle:CRUD'
         calls:
+            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_tenant.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
     sonata.admin.contract:

@@ -283,8 +283,7 @@ class AccountingPaymentSynchronizer
             $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
             $batchId = $repo->getAccountingBatchId(
                 $paymentBatchId,
-                $accountingPackageType,
-                $externalPropertyId
+                $accountingPackageType
             );
 
             $order->setBatchId($batchId);
@@ -322,7 +321,7 @@ class AccountingPaymentSynchronizer
 
             $repo->lockTable();
 
-            if ($repo->isOpenedBatch($paymentBatchId, $accountingType, $externalPropertyId)) {
+            if ($repo->isOpenedBatch($paymentBatchId, $accountingType)) {
                 $this->em->getConnection()->exec(
                     'UNLOCK TABLES;'
                 );

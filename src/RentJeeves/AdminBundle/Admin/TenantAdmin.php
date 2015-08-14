@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace RentJeeves\AdminBundle\Admin;
 
 use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
@@ -6,10 +6,8 @@ use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Doctrine\ORM\QueryBuilder;
-
-use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class TenantAdmin extends Admin
 {
@@ -37,6 +35,17 @@ class TenantAdmin extends Admin
     public function getBaseRoutePattern()
     {
         return '/'.self::TYPE;
+    }
+
+    /**
+     * @param RouteCollection $collection
+     */
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection->add(
+            'unlock',
+            $this->getRouterIdParameter().'/unlock'
+        );
     }
 
     /**
@@ -172,7 +181,6 @@ class TenantAdmin extends Admin
             ->end();
     }
 
-    
     /**
      * {@inheritdoc}
      */
@@ -189,7 +197,7 @@ class TenantAdmin extends Admin
         $user->setType(self::TYPE);
         $user = $this->checkPassword($user);
     }
-    
+
     private function checkPassword($user)
     {
         $isValid = false;
@@ -208,6 +216,7 @@ class TenantAdmin extends Admin
         if (!$isValid) {
             $request->getSession()->getFlashBag()->add('sonata_flash_error', 'Please, enter password for this admin');
         }
+
         return $user;
     }
 
