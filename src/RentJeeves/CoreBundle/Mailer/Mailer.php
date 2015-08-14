@@ -537,6 +537,7 @@ class Mailer extends BaseMailer
             'landlordFirstName' => $landlord->getFirstName(),
             'date' => $date,
             'groupName' => $group->getName(),
+            'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
             'accountNumber' => $group->getAccountNumber(),
             'batches' => $batches,
             'returns' => $returns,

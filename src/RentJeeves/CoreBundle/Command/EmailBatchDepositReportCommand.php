@@ -84,6 +84,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 $groups[] = [
                     'groupName' => $group->getName(),
                     'accountNumber' => $group->getAccountNumber(),
+                    'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
                     'batches' => $this->prepareBatchReportData($batchData),
                     'returns' => $reversalData,
                 ];

@@ -1147,7 +1147,9 @@ fixtures:
       {% if batches %}
         {% for batch in batches %}
         Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
-        Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
+        {% if groupPaymentProcessor == 'heartland' %}
+            Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
+        {% endif %}
         <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
           <thead>
             <tr>
@@ -1243,7 +1245,9 @@ fixtures:
         {% if group.batches %}
           {% for batch in group.batches %}
           Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
-          Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
+          {% if group.groupPaymentProcessor == 'heartland' %}
+              Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
+          {% endif %}
           <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
             <thead>
               <tr>
