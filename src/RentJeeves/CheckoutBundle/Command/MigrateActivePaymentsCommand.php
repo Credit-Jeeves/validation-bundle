@@ -183,7 +183,7 @@ class MigrateActivePaymentsCommand extends BaseCommand
                     ]
                 );
 
-            return $paymentAccountMigration === null ?: $paymentAccountMigration->getAciPaymentAccount();
+            return $paymentAccountMigration === null ? null : $paymentAccountMigration->getAciPaymentAccount();
         } else {
             $paymentAccountMigration = $this->getEntityManager()
                 ->getRepository('RjDataBundle:PaymentAccountMigration')->findOneBy(
@@ -192,7 +192,7 @@ class MigrateActivePaymentsCommand extends BaseCommand
                     ]
                 );
 
-            return $paymentAccountMigration === null ?: $paymentAccountMigration->getHeartlandPaymentAccount();
+            return $paymentAccountMigration === null ? null : $paymentAccountMigration->getHeartlandPaymentAccount();
         }
     }
 
