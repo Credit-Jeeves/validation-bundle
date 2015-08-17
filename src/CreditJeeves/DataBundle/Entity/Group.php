@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\GroupRepository")
@@ -280,5 +281,23 @@ class Group extends BaseGroup
     public function getCountry()
     {
         return 'US';
+    }
+
+    /**
+     * @Assert\True(message = "admin.error.deposit_account", groups={"unique_mapping"})
+     * @return boolean
+     */
+    public function isValidDepositAccountUniqueIndex()
+    {
+        $alreadyUsedDepositAccounts = [];
+        foreach ($this->getDepositAccounts() as $account) {
+            $key = $account->getType().$account->getPaymentProcessor();
+            if (in_array($key, $alreadyUsedDepositAccounts)) {
+                return false;
+            }
+            $alreadyUsedDepositAccounts[] = $key;
+        }
+
+        return true;
     }
 }
