@@ -105,13 +105,13 @@ class OrdersControllerCase extends BaseApiTestCase
     public static function getOrderDataProvider()
     {
         return [
-            [2, 'card', '123123', '-49 days', '9', '-50 days'],
-            [14, 'card', '369369', '-359 days', '9', '-370 days', '', true],
-            [3, 'card', '456456', '-41 days', '', '-40 days'],
-            [6, 'card', '147741', '', '', 'now'],
-            [7, 'card', '55123260', '-28 days', '', '-30 days', 'Payment was refunded'],
-            [9, 'bank', '571232603', '', '', '-30 days'],
-            [5, 'card', '456555', '', '', 'now', 'Heartland Error'],
+            [2, 'card', '123123', 1500, 0, 1500, '-49 days', '9', '-50 days'],
+            [3, 'card', '456456', 1500, 300, 1800, '-41 days', '', '-40 days'],
+            [5, 'card', '456555', 3000, 0, 3000, '', '', 'now', 'Heartland Error'],
+            [6, 'card', '147741', 1500, 0, 1500, '', '', 'now'],
+            [7, 'card', '55123260', 700, 0, 700, '-28 days', '', '-30 days', 'Payment was refunded'],
+            [9, 'bank', '571232603', 800, 0, 800, '', '', '-30 days'],
+            [14, 'card', '369369', 1500, 0, 1500, '-359 days', '9', '-370 days', '', true],
         ];
     }
 
@@ -132,7 +132,10 @@ class OrdersControllerCase extends BaseApiTestCase
     public function getOrder(
         $orderId,
         $type,
-        $transactionId = '',
+        $transactionId,
+        $rent,
+        $other,
+        $total,
         $depositedAt = '',
         $paymentAccountId = '',
         $paidFor = '',
@@ -203,6 +206,9 @@ class OrdersControllerCase extends BaseApiTestCase
 
         $depositedAt = $depositedAt ? (new DateTime($depositedAt))->format('Y-m-d') : '';
         $this->assertEquals($depositedAt, $answer['deposited_at']);
+        $this->assertEquals($rent, $answer['rent']);
+        $this->assertEquals($other, $answer['other']);
+        $this->assertEquals($total, $answer['total']);
     }
 
     /**
