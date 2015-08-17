@@ -28,13 +28,11 @@ trait ContractAvailableTrait
             return $em->getRepository('RjDataBundle:Contract')->findOneBy(
                 array(
                     'rent'    => 999999.99,
-                    'balance' => 9999.89
                 )
             );
         }
         $contract = new Contract();
         $contract->setRent(999999.99);
-        $contract->setBalance(9999.89);
         $contract->setStartAt($startAt);
 
         /** @var Group $group */

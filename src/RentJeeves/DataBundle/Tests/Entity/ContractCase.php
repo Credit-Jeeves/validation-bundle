@@ -3,9 +3,6 @@ namespace RentJeeves\DataBundle\Tests\Entity;
 
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Payment;
-use RentJeeves\DataBundle\Entity\Property;
-use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
@@ -18,6 +15,7 @@ class ContractCase extends BaseTestCase
     public function providerForgetStartAtWithDueDate()
     {
         $now = new DateTime();
+
         return array(
             array($now->format('Y-m-d'), $now->format('j'), $now->format('Y-m-d')),
             array('2001-01-01', 3, '2001-01-03'),
@@ -68,14 +66,11 @@ class ContractCase extends BaseTestCase
     {
         $contract = new Contract();
         $contract->setRent($rent);
-        $contract->setBalance($balance);
         $contract->setDueDate($dueDay);
         $contract->setPaidTo(new DateTime($paidTo));
         $contract->shiftPaidTo($amount);
         $this->assertEquals($result, $contract->getPaidTo()->format('Y-m-d'));
     }
-
-
 
     public function providerUnshiftPaidTo()
     {
@@ -105,7 +100,6 @@ class ContractCase extends BaseTestCase
     {
         $contract = new Contract();
         $contract->setRent(1000);
-        $contract->setBalance($balance);
         $contract->setDueDate($dueDay);
         $contract->setPaidTo(new DateTime($paidTo));
         $contract->unshiftPaidTo($amount);

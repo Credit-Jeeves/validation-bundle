@@ -260,7 +260,6 @@ fixtures:
         property: Property_1
         unit:     Unit_1_10
         rent:     850
-        balance:  -250
         status:   current
         paidTo:  '1 days'
         startAt:   '30 days'

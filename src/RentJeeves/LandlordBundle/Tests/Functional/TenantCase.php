@@ -8,7 +8,6 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
-use DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -316,14 +315,12 @@ class TenantCase extends BaseTestCase
         $this->assertCount(1, $contracts, 'Wrong count contract. Should be 1.');
 
         /**
-         * @var $contract Contract
+         * @var Contract $contract
          */
         $contract = reset($contracts);
         if ($isIntegrated) {
             $this->assertEquals(200.00, $contract->getIntegratedBalance(), 'Wrong integrated balance');
-            $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
         } else {
-            $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
             $this->assertEquals(0, $contract->getIntegratedBalance(), 'Wrong integrated balance');
         }
     }
@@ -605,7 +602,6 @@ class TenantCase extends BaseTestCase
         $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn2').val('30')");
         $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn3').val('9041')");
 
-
         $this->fillForm(
             $form,
             array(
@@ -732,14 +728,12 @@ class TenantCase extends BaseTestCase
             )
         );
 
-
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
             $this->timeout + 10000,
             "jQuery('#id-source-step:visible').length"
         );
-
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
 
@@ -755,14 +749,12 @@ class TenantCase extends BaseTestCase
             )
         );
 
-
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
             $this->timeout + 85000, // local need more time for passed test
             "!jQuery('#id-source-step').is(':visible')"
         );
-
 
         $this->session->wait(
             $this->timeout,
@@ -784,7 +776,6 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($pay = $this->page->find('css', '#pay-popup'));
         $this->assertFalse($pay->isVisible());
         $this->logout();
-
 
         /**
          * @var $em EntityManager

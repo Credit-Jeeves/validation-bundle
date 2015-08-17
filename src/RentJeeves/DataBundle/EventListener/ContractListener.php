@@ -138,8 +138,6 @@ class ContractListener
         if ($newValue !== ContractStatus::CURRENT) {
             return;
         }
-
-        $contract->setBalance($contract->getRent());
     }
 
     protected function isPaymentAcceptedFieldChanged(PreUpdateEventArgs $eventArgs)
