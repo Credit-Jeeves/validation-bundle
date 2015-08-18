@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -299,5 +300,22 @@ class Group extends BaseGroup
         }
 
         return true;
+    }
+
+    /**
+     * @Assert\True(message = "error.statement_descriptor.too_long", groups={"holding"})
+     * @return boolean
+     */
+    public function isValidDescriptor()
+    {
+        if ($this->getGroupSettings()->getPaymentProcessor() === PaymentProcessor::HEARTLAND) {
+            $limit = 14;
+        } else {
+            $limit = 21;
+        }
+
+        $length = strlen($this->getStatementDescriptor());
+
+        return $length <= $limit;
     }
 }

@@ -417,10 +417,6 @@ abstract class Group
      *     name="statement_descriptor",
      *     nullable=true
      * )
-    * @Assert\Length(
-     *     max = 14,
-     *     maxMessage="error.statement_descriptor.too_long"
-     * )
      */
     protected $statementDescriptor;
 
