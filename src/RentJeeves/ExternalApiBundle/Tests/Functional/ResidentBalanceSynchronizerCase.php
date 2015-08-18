@@ -22,13 +22,13 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $repo = $em->getRepository('RjDataBundle:Contract');
-        $contract = $repo->findOneBy(array('rent' => 850, 'balance' => -250));
+        $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
 
         $balanceSyncronizer = $this->getContainer()->get('yardi.resident_balance_sync');
         $balanceSyncronizer->run();
-        $updatedContract = $repo->find($contract->getId());
+        $updatedContract = $repo->find(20);
         $this->assertGreaterThan(4360.5, $updatedContract->getIntegratedBalance());
     }
 
@@ -42,7 +42,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $repo = $em->getRepository('RjDataBundle:Contract');
 
-        $contract = $repo->findOneBy(array('rent' => 850, 'balance' => -250));
+        $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $contract->setStatus(ContractStatus::FINISHED);
         $em->flush($contract);
@@ -85,7 +85,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $this->load(true);
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
-        $contract = $repo->findOneBy(['rent' => 850, 'balance' => -250]);
+        $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->setIntegratedBalance(-2000.00);
@@ -114,7 +114,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
 
-        $contract = $repo->findOneBy(['rent' => 850, 'balance' => -250]);
+        $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->setIntegratedBalance(-2000.00);
@@ -169,7 +169,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
 
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
-        $contract = $repo->findOneBy(['rent' => 850, 'balance' => -250]);
+        $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);

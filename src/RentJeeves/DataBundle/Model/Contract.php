@@ -182,21 +182,6 @@ abstract class Contract
      *     precision=10,
      *     scale=2,
      *     nullable=false,
-     *     name="balance",
-     *     options={
-     *          "default":"0.00"
-     *     }
-     * )
-     * @Gedmo\Versioned
-     */
-    protected $balance = 0.00;
-
-    /**
-     * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
-     *     nullable=false,
      *     name="integrated_balance",
      *     options={
      *          "default":"0.00"
@@ -637,22 +622,6 @@ abstract class Contract
     public function getRent()
     {
         return $this->rent;
-    }
-
-    /**
-     * @param float $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getBalance()
-    {
-        return $this->balance;
     }
 
     /**
