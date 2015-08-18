@@ -17,6 +17,10 @@ class Version20150817140716 extends AbstractMigration
             "ALTER TABLE rj_contract
                 DROP balance"
         );
+        $this->addSql(
+            "ALTER TABLE rj_contract_history
+                DROP balance"
+        );
     }
 
     public function down(Schema $schema)
@@ -27,6 +31,9 @@ class Version20150817140716 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_contract ADD balance NUMERIC(10,2) DEFAULT '0.00' NOT NULL"
+        );
+        $this->addSql(
+            "ALTER TABLE rj_contract_history ADD balance NUMERIC(10,2) DEFAULT '0.00' NOT NULL"
         );
     }
 }
