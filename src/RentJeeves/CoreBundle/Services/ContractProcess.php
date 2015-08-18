@@ -100,8 +100,9 @@ class ContractProcess
                 return false;
             }
 
-            // we already have set Group to contract
-            $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+            if (null === $contract->getDueDate()) {
+                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+            }
 
             $this->em->persist($contract);
             $this->em->flush();
@@ -203,7 +204,9 @@ class ContractProcess
         foreach ($groups as $group) {
             $contract->setHolding($group->getHolding());
             $contract->setGroup($group);
-            $contract->setDueDate($group->getGroupSettings()->getDueDate());
+            if (null === $contract->getDueDate()) {
+                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+            }
             $this->em->persist($contract);
             $result[] = $contract;
             $contract = clone $contract;

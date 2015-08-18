@@ -31,11 +31,11 @@ class Unit extends Base
         $isIntegratedWithBuildingId = $this->isIntegratedWithBuildingId();
         $unitId = ($unitMapping = $this->getUnitMapping()) ? $unitMapping->getExternalUnitId() : '';
         /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
-        /** @link https://credit.atlassian.net/browse/RT-1579 refactoring by link logic*/
+        /** @link https://credit.atlassian.net/browse/RT-1579 refactoring by link logic */
         if ($isIntegratedWithBuildingId && $this->getProperty()->isMultipleBuildings() && !empty($unitId)) {
             $names = explode('|', $unitId);
 
-            return (isset($names[1])) ? $names[1].$this->name : $this->name;
+            return isset($names[1]) ? $names[1].$this->name : $this->name;
         }
 
         return $name;

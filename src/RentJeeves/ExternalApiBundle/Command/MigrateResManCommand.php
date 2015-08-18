@@ -30,8 +30,7 @@ class MigrateResManCommand extends ContainerAwareCommand
 
     protected function configure()
     {
-        $this
-            ->setName('external-api:resman:migrate-external-units');
+        $this->setName('external-api:resman:migrate-external-units');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -90,6 +89,7 @@ class MigrateResManCommand extends ContainerAwareCommand
             $this->migrateOneBatchResidents($residents, $holding);
         }
     }
+
     /**
      * @param array $residents
      * @param Holding $holding
@@ -108,6 +108,7 @@ class MigrateResManCommand extends ContainerAwareCommand
             }
         }
     }
+
     /**
      * @param RtCustomer $mainCustomer
      * @param Customer $customer
