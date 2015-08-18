@@ -308,21 +308,14 @@ class Group extends BaseGroup
      */
     public function isValidDescriptor()
     {
-        $paymentProcessor = $this->getGroupSettings()->getPaymentProcessor();
-        $limit = 0;
-
-        if ($paymentProcessor === PaymentProcessor::HEARTLAND) {
+        if ($this->getGroupSettings()->getPaymentProcessor() === PaymentProcessor::HEARTLAND) {
             $limit = 14;
-        }
-
-        if ($paymentProcessor === PaymentProcessor::ACI) {
+        } else {
             $limit = 21;
         }
-        $length = strlen($this->getStatementDescriptor());
-        if ($length > $limit) {
-            return false;
-        }
 
-        return true;
+        $length = strlen($this->getStatementDescriptor());
+
+        return $length <= $limit;
     }
 }
