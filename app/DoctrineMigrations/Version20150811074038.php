@@ -43,7 +43,7 @@ class Version20150811074038 extends AbstractMigration implements ContainerAwareI
         );
 
         $databaseName = $this->em->getConnection()->getDatabase();
-        if (strripos($databaseName, 'jenkins') === false) {
+        if (strripos($databaseName, 'jenkins') === true) {
             print_r(sprintf('Jenkins DB(%s), not run migration. %s', $databaseName, PHP_EOL));
 
             return;
