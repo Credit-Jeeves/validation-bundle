@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 
-class Version20150811074038 extends AbstractMigration implements ContainerAwareInterface
+class Version20160811074038 extends AbstractMigration implements ContainerAwareInterface
 {
     /**
      * @var ContainerInterface
@@ -88,9 +88,10 @@ class Version20150811074038 extends AbstractMigration implements ContainerAwareI
         /** @var ResidentDataManager $residentManager */
         $residentManager = $this->container->get('mri.resident_data');
         $residentManager->setSettings($holding->getExternalSettings());
-        $propertysMapping = $holding->getPropertyMapping();
+        $propertiesMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')
+            ->getByHoldingAndGroupByExternalUnitId($holding);
         /** @var PropertyMapping $propertyMapping */
-        foreach ($propertysMapping as $propertyMapping) {
+        foreach ($propertiesMapping as $propertyMapping) {
             $residents = $residentManager->getResidents($propertyMapping->getExternalPropertyId());
             if (empty($residents)) {
                 print_r(
@@ -145,22 +146,36 @@ class Version20150811074038 extends AbstractMigration implements ContainerAwareI
         $newUnitName = $customer->getUnitId();
         print_r(
             sprintf(
-                'CurrentExternalUnitId:%s newExternalUnitId:%s, newUnitName: %s %s',
+                'CurrentExternalUnitId:%s newExternalUnitId:%s, newUnitName: %s HoldingId:%s-%s %s',
                 $currentExternalUnitId,
                 $newExternalUnitId,
                 $newUnitName,
+                $holding->getId(),
+                $holding->getName(),
                 PHP_EOL
             )
         );
-        $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getUnitMappingByHoldingAndExternalUnitId(
-            $holding,
-            $currentExternalUnitId
-        );
-
-        if (empty($unitMapping)) {
-            return;
+        try {
+            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getUnitMappingByHoldingAndExternalUnitId(
+                $holding,
+                $currentExternalUnitId
+            );
+        } catch (\Exception $e) {
+            print_r(sprintf('Exception non unique result: %s. Please check DB, data not correct.', $e->getMessage()));
         }
 
+        if (empty($unitMapping)) {
+            print_r('Don\'t have unitMapping.');
+
+            return;
+        }
+        print_r(
+            sprintf(
+                'We have unitMapping. Updating UnitMapping ID %s %s',
+                $unitMapping->getId(),
+                PHP_EOL
+            )
+        );
         $unitMapping->setExternalUnitId($newExternalUnitId);
         if ($unitMapping->getUnit()->getName() !== $newUnitName) {
             $unitMapping->getUnit()->setName($newUnitName);
