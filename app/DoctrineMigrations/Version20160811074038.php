@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 
-class Version20150811074038 extends AbstractMigration implements ContainerAwareInterface
+class Version20160811074038 extends AbstractMigration implements ContainerAwareInterface
 {
     /**
      * @var ContainerInterface
@@ -43,7 +43,7 @@ class Version20150811074038 extends AbstractMigration implements ContainerAwareI
         );
 
         $databaseName = $this->em->getConnection()->getDatabase();
-        if (strripos($databaseName, 'jenkins') === false) {
+        if (strripos($databaseName, 'jenkins') === true) {
             print_r(sprintf('Jenkins DB(%s), not run migration. %s', $databaseName, PHP_EOL));
 
             return;
@@ -89,9 +89,7 @@ class Version20150811074038 extends AbstractMigration implements ContainerAwareI
         $residentManager = $this->container->get('mri.resident_data');
         $residentManager->setSettings($holding->getExternalSettings());
         $propertiesMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')
-            ->getByHoldingAndGroupExternalUnitId(
-                $holding
-            );
+            ->getByHoldingAndGroupByExternalUnitId($holding);
         /** @var PropertyMapping $propertyMapping */
         foreach ($propertiesMapping as $propertyMapping) {
             $residents = $residentManager->getResidents($propertyMapping->getExternalPropertyId());
@@ -157,10 +155,14 @@ class Version20150811074038 extends AbstractMigration implements ContainerAwareI
                 PHP_EOL
             )
         );
-        $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getUnitMappingByHoldingAndExternalUnitId(
-            $holding,
-            $currentExternalUnitId
-        );
+        try {
+            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getUnitMappingByHoldingAndExternalUnitId(
+                $holding,
+                $currentExternalUnitId
+            );
+        } catch (\Exception $e) {
+            print_r(sprintf('Exception non unique result: %s. Please check DB, data not correct.', $e->getMessage()));
+        }
 
         if (empty($unitMapping)) {
             print_r('Don\'t have unitMapping.');

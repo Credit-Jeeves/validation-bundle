@@ -196,14 +196,12 @@ class StorageMRI extends ExternalApiStorage
      */
     protected function getPayAllowed(Value $customer)
     {
-        $payAllowed = trim(strtolower($customer->getPayAllowed()));
+        $payNotAllowed = trim(strtolower($customer->getPayAllowed()));
 
-        if ($payAllowed === 'd') {
+        if ($payNotAllowed === 'y') {
             return PaymentAccepted::DO_NOT_ACCEPT;
         }
 
-        if (empty($payAllowed) || $payAllowed === 'c') {
-            return PaymentAccepted::ANY;
-        }
+        return PaymentAccepted::ANY;
     }
 }

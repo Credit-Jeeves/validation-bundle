@@ -830,8 +830,6 @@ class AjaxController extends Controller
 
         if ($contract->getSettings()->getIsIntegrated()) {
             $contract->setIntegratedBalance($details['balance']);
-        } else {
-            $contract->setBalance($details['balance']);
         }
 
         if ($action == 'remove') {

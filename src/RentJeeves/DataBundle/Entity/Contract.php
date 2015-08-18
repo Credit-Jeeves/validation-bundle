@@ -585,9 +585,7 @@ class Contract extends Base
      */
     private function fixDay($newDate)
     {
-        if (28 < $this->getDueDate() && $newDate->format('j') != $this->getDueDate() &&
-            (0 == $this->getBalance() || abs($this->getBalance()) == $this->getRent())
-        ) {
+        if (28 < $this->getDueDate() && $newDate->format('j') != $this->getDueDate()) {
             if ($newDate->format('t') >= $this->getDueDate() && 3 >= abs($newDate->format('j') - $this->getDueDate())) {
                 $newDate->setDate(null, null, $this->getDueDate());
             }
@@ -670,6 +668,7 @@ class Contract extends Base
     }
 
     /**
+     * @TODO: move to new service
      * @TODO make it with serializer, it's sucks currently
      * @TODO remove EntityManager Entity must not use it
      *
@@ -982,13 +981,16 @@ class Contract extends Base
         return $this->getStartAt();
     }
 
+    /**
+     * @return float
+     */
     public function getCurrentBalance()
     {
         if ($this->getSettings()->getIsIntegrated()) {
             return $this->getIntegratedBalance();
-        } else {
-            return $this->getBalance();
         }
+
+        return 0;
     }
 
     /**

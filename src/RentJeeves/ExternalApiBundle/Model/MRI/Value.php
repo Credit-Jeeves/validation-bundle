@@ -135,7 +135,7 @@ class Value
     protected $leaseMonthToMonth;
 
     /**
-     * @Serializer\SerializedName("PayAllowed")
+     * @Serializer\SerializedName("BlockEPayments")
      * @Serializer\Type("string")
      * @Serializer\Groups({"MRI-Response"})
      */

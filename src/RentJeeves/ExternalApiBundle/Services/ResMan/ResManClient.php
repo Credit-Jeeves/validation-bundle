@@ -150,6 +150,7 @@ class ResManClient implements ClientInterface
 
         $postBody = array_merge($baseParams, $params, $this->settings->getParameters());
         $this->debugMessage(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
+
         $request = $this->httpClient->post($uri, $headers = null, $postBody);
 
         return $this->manageResponse($this->httpClient->send($request));
@@ -180,7 +181,6 @@ class ResManClient implements ClientInterface
             $this->replaceResponseTo,
             $body
         );
-
         $resMan = $this->deserializeResponse($body, $this->mappingResponse[self::BASE_RESPONSE]);
         if (!($resMan instanceof ResMan)) {
             $message = $this->createExceptionMessage(

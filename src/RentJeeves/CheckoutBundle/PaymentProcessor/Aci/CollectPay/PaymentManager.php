@@ -53,6 +53,7 @@ class PaymentManager extends AbstractManager
                     break;
             }
         } else {
+            $payment->setDescriptor($order->getDescriptor());
             $payment->setFundingAccountType(FundingAccountType::CCARD);
         }
 

@@ -121,6 +121,26 @@ class Order extends ResponseResource
      * @Serializer\Groups({"OrderDetails"})
      * @return string
      */
+    public function getRent()
+    {
+        return $this->entity->getRentAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"OrderDetails"})
+     * @return string
+     */
+    public function getOther()
+    {
+        return $this->entity->getOtherAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"OrderDetails"})
+     * @return string
+     */
     public function getTotal()
     {
         return $this->entity->getTotalAmount();
