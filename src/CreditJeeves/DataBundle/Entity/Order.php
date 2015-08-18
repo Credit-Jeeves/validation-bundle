@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use JMS\Serializer\GenericSerializationVisitor;
+use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
@@ -981,7 +982,7 @@ class Order extends Base
      */
     public function getResManDescription()
     {
-        return $this->getComment();
+        return ShorteningAddressUtility::shrinkAddress($this->getComment(), 50);
     }
 
     /**
