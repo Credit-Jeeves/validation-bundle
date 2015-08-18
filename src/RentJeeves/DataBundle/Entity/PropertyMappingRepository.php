@@ -57,4 +57,39 @@ class PropertyMappingRepository extends EntityRepository
 
         return $query;
     }
+
+    /**
+     * @param Holding $holding
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getUniqueByHolding(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('pm');
+        $query->innerJoin('pm.property', 'p');
+        $query->innerJoin('p.contracts', 'c');
+
+        $query->where('c.status in (:statuses)');
+        $query->andWhere('pm.holding = :holdingId');
+
+        $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
+        $query->setParameter('holdingId', $holding->getId());
+
+        return $query;
+    }
+
+    /**
+     * @param Holding $holding
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getByHoldingAndGroupExternalUnitId(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('pm');
+        $query->innerJoin('pm.property', 'p');
+        $query->groupBy('pm.externalPropertyId');
+        $query->andWhere('pm.holding = :holdingId');
+
+        $query->setParameter('holdingId', $holding->getId());
+
+        return $query->getQuery()->execute();
+    }
 }
