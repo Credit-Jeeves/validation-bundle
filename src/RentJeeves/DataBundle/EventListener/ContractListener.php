@@ -127,21 +127,6 @@ class ContractListener
         $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
     }
 
-    public function updateBalanceForCurrentStatus(Contract $contract, PreUpdateEventArgs $eventArgs)
-    {
-        if (!$eventArgs->hasChangedField('status')) {
-            return;
-        }
-
-        $newValue = $eventArgs->getNewValue('status');
-
-        if ($newValue !== ContractStatus::CURRENT) {
-            return;
-        }
-
-        $contract->setBalance($contract->getRent());
-    }
-
     protected function isPaymentAcceptedFieldChanged(PreUpdateEventArgs $eventArgs)
     {
         if (!$eventArgs->hasChangedField('paymentAccepted')) {
@@ -220,7 +205,6 @@ class ContractListener
         }
         $this->monitoringContractAmount($contract, $eventArgs);
         $this->checkContract($contract);
-        $this->updateBalanceForCurrentStatus($contract, $eventArgs);
         $this->closePaymentByYardi($contract, $eventArgs);
         $this->sendYardiPaymentEmail($contract, $eventArgs);
     }

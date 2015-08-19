@@ -3673,7 +3673,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ACIClient.git",
-                "reference": "db0a6116f25bcef34f23f885eee72f1f0b1966db"
+                "reference": "b9bb22b3543d191aff08dfc59c826d69e49f656b"
             },
             "require": {
                 "ext-curl": "*",

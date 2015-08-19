@@ -4,6 +4,8 @@ namespace RentJeeves\DataBundle\Tests\Unit\Entity;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class GroupCase extends BaseTestCase
 {
@@ -29,5 +31,45 @@ class GroupCase extends BaseTestCase
     {
         $group = new Group();
         $group->setOrderAlgorithm(null);
+    }
+
+    public function providerForCheckValidationForDescriptor()
+    {
+        return [
+            [PaymentProcessor::HEARTLAND, '123456789123456', false],
+            [PaymentProcessor::HEARTLAND, '12345678912', true],
+            [PaymentProcessor::ACI, '12345678912345678912345', false],
+            [PaymentProcessor::ACI, '123456789123456789123', true]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerForCheckValidationForDescriptor
+     */
+    public function shouldCheckValidationForDescriptor($paymentProcessor, $statementDescriptor, $result)
+    {
+        $group = new Group();
+        $groupSettings = new GroupSettings();
+        $group->setGroupSettings($groupSettings);
+        $groupSettings->setPaymentProcessor($paymentProcessor);
+        $group->setStatementDescriptor($statementDescriptor);
+
+        $this->assertEquals($result, $group->isValidDescriptor());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckGroupValidation()
+    {
+        $group = new Group();
+        $groupSettings = new GroupSettings();
+        $group->setGroupSettings($groupSettings);
+        $groupSettings->setPaymentProcessor(PaymentProcessor::ACI);
+        $group->setStatementDescriptor('12345678912345678912345');
+        $validator = $this->getContainer()->get('validator');
+        $errors = $validator->validate($group, ['holding']);
+        $this->assertCount(1, $errors);
     }
 }

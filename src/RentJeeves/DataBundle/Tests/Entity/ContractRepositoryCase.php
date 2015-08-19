@@ -139,7 +139,6 @@ class ContractRepositoryCase extends BaseTestCase
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $contract = new Contract();
         $contract->setRent(999999.99);
-        $contract->setBalance(9999.89);
         $contract->setStartAt($startAtOfContract);
         $contract->setFinishAt($finishAtOfContract);
         $contract->setDueDate($today->format('j'));
@@ -259,7 +258,6 @@ class ContractRepositoryCase extends BaseTestCase
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $contract = new Contract();
         $contract->setRent(999999.99);
-        $contract->setBalance(9999.89);
         $contract->setStartAt(new DateTime("-1 month"));
         $contract->setFinishAt(new DateTime("+5 month"));
         $contract->setDueDate($today->format('j'));

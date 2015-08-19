@@ -233,14 +233,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
             'Group is not integrated, please check fixtures'
         );
         $this->assertEquals(
-            9999.89,
-            $order->getContract()->getBalance(),
-            sprintf(
-                'Contract with id #%s has incorrect balance, please check fixtures',
-                $order->getContract()->getId()
-            )
-        );
-        $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),
             sprintf(
@@ -251,11 +243,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
 
         $statusManager->setComplete($order);
 
-        $this->assertEquals(
-            $resultBalance,
-            $order->getContract()->getBalance(),
-            'Contract for integration group should update balance whole sum of all only rent operations'
-        );
         $this->assertEquals(
             $resultIntegratedBalance,
             $order->getContract()->getIntegratedBalance(),
@@ -310,14 +297,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         );
         $order->getContract()->setGroup($group);
         $this->getEntityManager()->persist($order->getContract());
-        $this->assertEquals(
-            9999.89,
-            $order->getContract()->getBalance(),
-            sprintf(
-                'Contract with id #%s has incorrect balance, please check fixtures',
-                $order->getContract()->getId()
-            )
-        );
+
         $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),
@@ -329,11 +309,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
 
         $statusManager->setComplete($order);
 
-        $this->assertEquals(
-            $resultBalance,
-            $order->getContract()->getBalance(),
-            'Contract for not integration group should update balance whole sum of all only rent operations'
-        );
         $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),
@@ -963,14 +938,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
             'Group is not integrated, please check fixtures'
         );
         $this->assertEquals(
-            9999.89,
-            $order->getContract()->getBalance(),
-            sprintf(
-                'Contract with id #%s has incorrect balance, please check fixtures',
-                $order->getContract()->getId()
-            )
-        );
-        $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),
             sprintf(
@@ -981,11 +948,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
 
         $statusManager->setRefunded($order);
 
-        $this->assertEquals(
-            $resultBalance,
-            $order->getContract()->getBalance(),
-            'Contract for integration group should revert balance whole sum of all only rent operations'
-        );
         $this->assertEquals(
             $resultIntegratedBalance,
             $order->getContract()->getIntegratedBalance(),
@@ -1042,14 +1004,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $this->getEntityManager()->persist($order->getContract());
 
         $this->assertEquals(
-            9999.89,
-            $order->getContract()->getBalance(),
-            sprintf(
-                'Contract with id #%s has incorrect balance, please check fixtures',
-                $order->getContract()->getId()
-            )
-        );
-        $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),
             sprintf(
@@ -1060,11 +1014,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
 
         $statusManager->setRefunded($order);
 
-        $this->assertEquals(
-            $resultBalance,
-            $order->getContract()->getBalance(),
-            'Contract for integration group should revert balance whole sum of all only rent operations'
-        );
         $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),
@@ -1321,14 +1270,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
             'Group is not integrated, please check fixtures'
         );
         $this->assertEquals(
-            9999.89,
-            $order->getContract()->getBalance(),
-            sprintf(
-                'Contract with id #%s has incorrect balance, please check fixtures',
-                $order->getContract()->getId()
-            )
-        );
-        $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),
             sprintf(
@@ -1339,11 +1280,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
 
         $statusManager->setReturned($order);
 
-        $this->assertEquals(
-            $resultBalance,
-            $order->getContract()->getBalance(),
-            'Contract for integration group should revert balance whole sum of all only rent operations'
-        );
         $this->assertEquals(
             $resultIntegratedBalance,
             $order->getContract()->getIntegratedBalance(),
@@ -1400,14 +1336,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $this->getEntityManager()->persist($order->getContract());
 
         $this->assertEquals(
-            9999.89,
-            $order->getContract()->getBalance(),
-            sprintf(
-                'Contract with id #%s has incorrect balance, please check fixtures',
-                $order->getContract()->getId()
-            )
-        );
-        $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),
             sprintf(
@@ -1418,11 +1346,6 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
 
         $statusManager->setReturned($order);
 
-        $this->assertEquals(
-            $resultBalance,
-            $order->getContract()->getBalance(),
-            'Contract for integration group should revert balance whole sum of all only rent operations'
-        );
         $this->assertEquals(
             0,
             $order->getContract()->getIntegratedBalance(),

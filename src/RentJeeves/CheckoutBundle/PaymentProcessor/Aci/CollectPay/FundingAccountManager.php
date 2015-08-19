@@ -173,7 +173,6 @@ class FundingAccountManager extends AbstractManager
             $ccMonth = $fundingAccountData->get('expiration_month');
             $ccYear = $fundingAccountData->get('expiration_year');
             $paymentAccount->setCcExpiration(new \DateTime("last day of {$ccYear}-{$ccMonth}"));
-
             $account = new RequestModel\SubModel\CCardAccount();
 
             $account->setExpMonth($ccMonth);
