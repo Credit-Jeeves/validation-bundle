@@ -39,6 +39,10 @@ class Version20150728172118 extends AbstractMigration
         $this->addSql("
             ALTER TABLE rj_deposit_account DROP FOREIGN KEY FK_7F2B897FE54D947;
             ALTER TABLE rj_deposit_account DROP KEY UNIQ_7F2B897FE54D947;
+            ALTER TABLE rj_deposit_account
+                ADD CONSTRAINT FK_7F2B897FE54D947
+                FOREIGN KEY (group_id)
+                REFERENCES rj_group (id);
         ");
     }
 
