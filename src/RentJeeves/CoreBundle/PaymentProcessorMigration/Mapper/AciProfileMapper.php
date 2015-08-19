@@ -187,7 +187,10 @@ class AciProfileMapper
             return null;
         }
         /** @var Landlord $landlord */
-        $landlord = $group->getGroupAgents()->first();
+        if (false == $landlord = $group->getGroupAgents()->first()) {
+            return null;
+        }
+
         $address = $landlord->getDefaultAddress();
 
         $consumerRecord = new ConsumerRecord();
