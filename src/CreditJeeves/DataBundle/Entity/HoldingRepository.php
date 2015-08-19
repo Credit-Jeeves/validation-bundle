@@ -7,6 +7,17 @@ use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 
 class HoldingRepository extends EntityRepository
 {
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getQueryForHoldingsWithResManSettings()
+    {
+        return $this->createQueryBuilder('holding')
+            ->innerJoin('holding.resManSettings', 'resManSettings')
+            ->innerJoin('holding.propertyMapping', 'propertyMapping')
+            ->where('holding.apiIntegrationType = :resManSettings')
+            ->setParameter('resManSettings', ApiIntegrationType::RESMAN);
+    }
 
     /**
      * @return \Doctrine\ORM\QueryBuilder

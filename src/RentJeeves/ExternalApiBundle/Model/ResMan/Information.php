@@ -23,6 +23,30 @@ class Information
     protected $address;
 
     /**
+     * @Serializer\SerializedName("BuildingID")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\XmlElement(namespace="http://www.w3.org/2005/Atom")
+     */
+    protected $buildingID;
+
+    /**
+     * @return string
+     */
+    public function getBuildingID()
+    {
+        return $this->buildingID;
+    }
+
+    /**
+     * @param string $buildingID
+     */
+    public function setBuildingID($buildingID)
+    {
+        $this->buildingID = $buildingID;
+    }
+
+    /**
      * @return float
      */
     public function getMarketRent()

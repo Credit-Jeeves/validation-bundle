@@ -28,18 +28,14 @@ class Unit extends Base
             return '';
         }
 
-        $unitMapping = $this->getUnitMapping();
-        if (empty($unitMapping)) {
-            return $name;
-        }
-        $isIntegratedWithMri = $this->isIntegratedWithMri();
-        $unitId = $unitMapping->getExternalUnitId();
+        $isIntegratedWithBuildingId = $this->isIntegratedWithBuildingId();
+        $unitId = ($unitMapping = $this->getUnitMapping()) ? $unitMapping->getExternalUnitId() : '';
         /** @link https://credit.atlassian.net/browse/RT-1476  MRI Unit name causing confusion */
-        /** @link https://credit.atlassian.net/browse/RT-1579 refactoring by link logic*/
-        if ($isIntegratedWithMri && $this->getProperty()->isMultipleBuildings() && !empty($unitId)) {
+        /** @link https://credit.atlassian.net/browse/RT-1579 refactoring by link logic */
+        if ($isIntegratedWithBuildingId && $this->getProperty()->isMultipleBuildings() && !empty($unitId)) {
             $names = explode('|', $unitId);
 
-            return (isset($names[1])) ? $this->name.$names[1] : $this->name;
+            return isset($names[1]) ? $names[1].$this->name : $this->name;
         }
 
         return $name;
@@ -58,12 +54,12 @@ class Unit extends Base
     /**
      * @return bool
      */
-    protected function isIntegratedWithMri()
+    protected function isIntegratedWithBuildingId()
     {
         $holding = $this->getGroup() ? $this->getGroup()->getHolding() : null;
         $apiIntegrationType = $holding ? $holding->getApiIntegrationType() : null;
 
-        return $apiIntegrationType === ApiIntegrationType::MRI;
+        return $apiIntegrationType === ApiIntegrationType::MRI || $apiIntegrationType === ApiIntegrationType::RESMAN;
     }
 
     public function __toString()
