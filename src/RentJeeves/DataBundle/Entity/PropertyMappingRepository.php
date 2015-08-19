@@ -62,7 +62,7 @@ class PropertyMappingRepository extends EntityRepository
      * @param Holding $holding
      * @return PropertyMapping[]
      */
-    public function getByHoldingAndGroupByExternalUnitId(Holding $holding)
+    public function getByHoldingAndGroupByExternalPropertyID(Holding $holding)
     {
         $query = $this->createQueryBuilder('pm');
         $query->groupBy('pm.externalPropertyId');

@@ -89,7 +89,7 @@ class Version20160811074038 extends AbstractMigration implements ContainerAwareI
         $residentManager = $this->container->get('mri.resident_data');
         $residentManager->setSettings($holding->getExternalSettings());
         $propertiesMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')
-            ->getByHoldingAndGroupByExternalUnitId($holding);
+            ->getByHoldingAndGroupByExternalPropertyID($holding);
         /** @var PropertyMapping $propertyMapping */
         foreach ($propertiesMapping as $propertyMapping) {
             $residents = $residentManager->getResidents($propertyMapping->getExternalPropertyId());
