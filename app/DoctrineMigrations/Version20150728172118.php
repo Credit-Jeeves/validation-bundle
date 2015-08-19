@@ -36,6 +36,10 @@ class Version20150728172118 extends AbstractMigration
             "ALTER TABLE rj_contract
                 CHANGE group_id group_id BIGINT NOT NULL"
         );
+        $this->addSql("
+            ALTER TABLE rj_deposit_account DROP FOREIGN KEY FK_7F2B897FE54D947;
+            ALTER TABLE rj_deposit_account DROP KEY UNIQ_7F2B897FE54D947;
+        ");
     }
 
     /**
