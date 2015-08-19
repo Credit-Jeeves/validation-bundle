@@ -199,7 +199,8 @@ class ImportContractType extends AbstractType
         $handler = $this->import->getHandler();
         $isNeedCreateCashOperation = $handler->isNeedCreateCashOperation();
         $dueDate = $handler->getDueDateOfContract();
-        if (!$isNeedCreateCashOperation) {
+        // if (!$isNeedCreateCashOperation) {
+        if (true) { // We no longer want to automatically create cash operations. TO DO future story to remove this.
             return;
         }
 
