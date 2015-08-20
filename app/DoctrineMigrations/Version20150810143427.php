@@ -18,7 +18,7 @@ class Version20150810143427 extends AbstractMigration
         );
 
         $this->addSql(
-            "CREATE TABLE rj_billing_account_migration (id VARCHAR(255) NOT NULL,
+            "CREATE TABLE rj_billing_account_migration (id BIGINT AUTO_INCREMENT NOT NULL,
                 heartland_payment_account_id INT DEFAULT NULL,
                 aci_payment_account_id INT DEFAULT NULL,
                 UNIQUE INDEX UNIQ_151FCE5A31F0BB2E (heartland_payment_account_id),
@@ -26,7 +26,7 @@ class Version20150810143427 extends AbstractMigration
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
         $this->addSql(
-            "CREATE TABLE rj_payment_account_migration (id VARCHAR(255) NOT NULL,
+            "CREATE TABLE rj_payment_account_migration (id BIGINT AUTO_INCREMENT NOT NULL,
                 heartland_payment_account_id BIGINT DEFAULT NULL,
                 aci_payment_account_id BIGINT DEFAULT NULL,
                 UNIQUE INDEX UNIQ_509EA7231F0BB2E (heartland_payment_account_id),
