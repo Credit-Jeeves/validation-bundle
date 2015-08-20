@@ -202,9 +202,9 @@ class AciProfileMapper
         $consumerRecord->setConsumerLastName($landlord->getLastName());
         $consumerRecord->setPrimaryEmailAddress($landlord->getEmail());
         $consumerRecord->setAddress1((string) $address);
-        $consumerRecord->setCity($address->getCity());
-        $consumerRecord->setState($address->getArea());
-        $consumerRecord->setZipCode($address->getZip());
+        $consumerRecord->setCity($address ? $address->getCity() : '');
+        $consumerRecord->setState($address ? $address->getArea() : '');
+        $consumerRecord->setZipCode($address ? $address->getZip() : '');
 
         return $consumerRecord;
     }
