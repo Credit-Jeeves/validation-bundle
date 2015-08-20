@@ -119,8 +119,9 @@ class CsvExporter
                 $classNameParts = explode('\\', get_class($model));
                 $className = end($classNameParts);
                 $this->errors[$model->getProfileId()][] = sprintf(
-                    '[%s] %s : %s',
+                    '[%s] %s (%s): %s',
                     $className,
+                    $error->getInvalidValue(),
                     $error->getPropertyPath(),
                     $error->getMessage()
                 );

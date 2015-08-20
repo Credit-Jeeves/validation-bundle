@@ -33,6 +33,7 @@ class AciProfileMapperCase extends BaseTestCase
         $holding = $depositAccount = $user->getActiveContracts()[0]->getGroup()->getHolding();
 
         $address = $user->getDefaultAddress();
+        $address->setCity('123456789012345');
 
         $profile = new AciImportProfileMap();
         $profile->setUser($user);
@@ -58,7 +59,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->assertEquals($user->getLastName(), $consumerRecord->getConsumerLastName());
         $this->assertEquals($user->getEmail(), $consumerRecord->getPrimaryEmailAddress());
         $this->assertEquals((string) $address, $consumerRecord->getAddress1());
-        $this->assertEquals($address->getCity(), $consumerRecord->getCity());
+        $this->assertEquals('123456789012', $consumerRecord->getCity());
         $this->assertEquals($address->getArea(), $consumerRecord->getState());
         $this->assertEquals($address->getZip(), $consumerRecord->getZipCode());
 
@@ -77,7 +78,7 @@ class AciProfileMapperCase extends BaseTestCase
             $accountRecord->getNameOnBillingAccount()
         );
         $this->assertEquals((string) $address, $accountRecord->getAddress1());
-        $this->assertEquals($address->getCity(), $accountRecord->getCity());
+        $this->assertEquals('123456789012', $accountRecord->getCity());
         $this->assertEquals($address->getArea(), $accountRecord->getState());
         $this->assertEquals($address->getZip(), $accountRecord->getZipCode());
         $this->assertEquals('testBusinessId', $accountRecord->getBusinessId());
