@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 class PaymentAccountMigration
 {
     /**
-     * @ORM\Column()
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */

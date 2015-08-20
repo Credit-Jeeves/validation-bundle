@@ -96,7 +96,7 @@ class AciProfileMapper
         $consumerRecord->setConsumerLastName($user->getLastName());
         $consumerRecord->setPrimaryEmailAddress($user->getEmail());
         $consumerRecord->setAddress1((string) $address);
-        $consumerRecord->setCity($address ? $address->getCity() : '');
+        $consumerRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
         $consumerRecord->setState($address ? $address->getArea() : '');
         $consumerRecord->setZipCode($address ? $address->getZip() : '');
 
@@ -127,7 +127,7 @@ class AciProfileMapper
             $accountRecord->setDivisionId($depositAccount->getMerchantName());
             $accountRecord->setNameOnBillingAccount($user->getFirstName() . ' ' . $user->getLastName());
             $accountRecord->setAddress1((string) $address);
-            $accountRecord->setCity($address ? $address->getCity() : '');
+            $accountRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
             $accountRecord->setState($address ? $address->getArea() : '');
             $accountRecord->setZipCode($address ? $address->getZip() : '');
             $accountRecord->setBusinessId($this->businessId);
@@ -202,7 +202,7 @@ class AciProfileMapper
         $consumerRecord->setConsumerLastName($landlord->getLastName());
         $consumerRecord->setPrimaryEmailAddress($landlord->getEmail());
         $consumerRecord->setAddress1((string) $address);
-        $consumerRecord->setCity($address ? $address->getCity() : '');
+        $consumerRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
         $consumerRecord->setState($address ? $address->getArea() : '');
         $consumerRecord->setZipCode($address ? $address->getZip() : '');
 
