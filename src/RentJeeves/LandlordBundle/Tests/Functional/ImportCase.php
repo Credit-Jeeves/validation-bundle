@@ -1702,6 +1702,7 @@ class ImportCase extends ImportBaseAbstract
      */
     public function shouldCreateOperation($isFirstRunTest)
     {
+        $this->markTestSkipped('Per RT-1610, we no longer want to create cash payments through imports.');
         if ($isFirstRunTest) {
             $this->load(true);
         }

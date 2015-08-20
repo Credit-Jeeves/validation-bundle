@@ -199,8 +199,9 @@ class ImportContractType extends AbstractType
         $handler = $this->import->getHandler();
         $isNeedCreateCashOperation = $handler->isNeedCreateCashOperation();
         $dueDate = $handler->getDueDateOfContract();
-        if (!$isNeedCreateCashOperation) {
-            return;
+        // if (!$isNeedCreateCashOperation) {
+        if (true) { // We no longer want to automatically create cash operations.
+            return; // TO DO Future story to create based on API ledgers, not import balances.
         }
 
         $operation = $handler->getOperationByDueDate($dueDate);
