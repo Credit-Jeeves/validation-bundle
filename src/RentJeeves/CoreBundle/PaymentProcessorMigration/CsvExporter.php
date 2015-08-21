@@ -60,20 +60,20 @@ class CsvExporter
 
     /**
      * @param string $pathToFile
-     * @param Holding $holding
+     * @param array $holdings
      */
-    public function export($pathToFile, Holding $holding = null)
+    public function export($pathToFile, array $holdings = null)
     {
-        if ($holding === null) {
+        if ($holdings === null) {
             $aciProfiles = $this->getAciProfileMapRepository()->findAll();
         } else {
-            $aciProfiles = $this->getAciProfileMapRepository()->findAllByHolding($holding);
+            $aciProfiles = $this->getAciProfileMapRepository()->findAllByHoldingIds($this->getHoldingIds($holdings));
         }
         if (true === empty($aciProfiles)) {
             return;
         }
 
-        $models = $this->mapProfilesToModels($aciProfiles, $holding);
+        $models = $this->mapProfilesToModels($aciProfiles, $holdings);
         $models = $this->getValidModels($models);
         $csvData = $this->serializeModelsToCsv($models);
 
@@ -82,15 +82,15 @@ class CsvExporter
 
     /**
      * @param array $aciProfiles
-     * @param Holding $holding
+     * @param array $holdings
      *
      * @return array
      */
-    protected function mapProfilesToModels(array $aciProfiles = [], Holding $holding = null)
+    protected function mapProfilesToModels(array $aciProfiles = [], array $holdings = null)
     {
         $models = [];
         foreach ($aciProfiles as $aciProfile) {
-            $models = array_merge($models, $this->mapper->map($aciProfile, $holding));
+            $models = array_merge($models, $this->mapper->map($aciProfile, $holdings));
         }
 
         return $models;
@@ -143,6 +143,22 @@ class CsvExporter
         $context->setAttribute('use_header', false);
 
         return $this->serializer->serialize($models, 'csv_pipe', $context);
+    }
+
+    /**
+     * @param array $holdings
+     *
+     * @return array
+     */
+    protected function getHoldingIds(array $holdings)
+    {
+        $ids = [];
+        /** @var Holding $holding */
+        foreach ($holdings as $holding) {
+            $ids[] = $holding->getId();
+        }
+
+        return $ids;
     }
 
     /**

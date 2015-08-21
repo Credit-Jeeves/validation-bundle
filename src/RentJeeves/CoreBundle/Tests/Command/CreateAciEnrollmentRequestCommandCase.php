@@ -90,6 +90,69 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
         );
 
         $fileData = file_get_contents($this->getFilePath());
-        $this->assertEquals(7, count(explode("\n", $fileData)));
+        $this->assertEquals(7, count(explode("\n", $fileData)));// 5 for Holding#5 and 2 for other
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderForSeveralHoldings()
+    {
+        return [
+            [5, 6, 7],
+            [6, 7, 3],
+        ];
+    }
+
+    /**
+     * @param int $firstId
+     * @param int $lastId
+     * @param int $expectedCount
+     *
+     * @test
+     * @dataProvider dataProviderForSeveralHoldings
+     */
+    public function shouldCreateFileWithRowsForRangeHoldings($firstId, $lastId, $expectedCount)
+    {
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+        $application->add(new CreateAciEnrollmentRequestCommand());
+
+        $command = $application->find('payment-processor:aci-import:create-enrollment-request');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            [
+                'command' => $command->getName(),
+                '--path' => $this->getFilePath(),
+                '--holding_id' => $firstId,
+                '--holding_id_end' => $lastId,
+            ]
+        );
+
+        $fileData = file_get_contents($this->getFilePath());
+        $this->assertEquals($expectedCount, count(explode("\n", $fileData)));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotCreateFileForRangeHoldingsWithoutAciProfileMapForThisHoldings()
+    {
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+        $application->add(new CreateAciEnrollmentRequestCommand());
+
+        $command = $application->find('payment-processor:aci-import:create-enrollment-request');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            [
+                'command' => $command->getName(),
+                '--path' => $this->getFilePath(),
+                '--holding_id' => 7,
+                '--holding_id_end' => 15,
+            ]
+        );
+
+        $this->assertFalse(file_exists($this->getFilePath()));
     }
 }

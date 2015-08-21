@@ -121,4 +121,20 @@ class HoldingRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @param int $firstId
+     * @param int $lastId
+     *
+     * @return Holding[]
+     */
+    public function findHoldingsByRangeIds($firstId, $lastId)
+    {
+        return $this->createQueryBuilder('h')
+            ->where('h.id >= :firstId AND h.id <= :lastId')
+            ->setParameter('firstId', $firstId)
+            ->setParameter('lastId', $lastId)
+            ->getQuery()
+            ->execute();
+    }
 }
