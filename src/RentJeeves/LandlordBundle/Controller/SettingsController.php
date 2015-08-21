@@ -67,7 +67,7 @@ class SettingsController extends Controller
         $form = $this->createForm(new BillingAccountType());
 
         return array(
-            'billingAccounts' => $this->get('jms_serializer')->serialize($billingAccounts, 'json'),
+            'billingAccounts' => $this->get('jms_serializer')->serialize($billingAccounts->getValues(), 'json'),
             'billingAccountType' => $form->createView(),
             'nGroups' => $this->getGroups()->count(),
             'isLocked' => $holding->isPaymentProcessorLocked(),
@@ -88,7 +88,7 @@ class SettingsController extends Controller
         /** @var Group $group */
         $group = $this->getCurrentGroup();
         $billingAccounts = $group->getBillingAccountsByCurrentPaymentProcessor();
-        $data = $this->get('jms_serializer')->serialize($billingAccounts, 'json');
+        $data = $this->get('jms_serializer')->serialize($billingAccounts->getValues(), 'json');
 
         return new Response($data, 200, array('content-type' => 'application/json'));
     }
