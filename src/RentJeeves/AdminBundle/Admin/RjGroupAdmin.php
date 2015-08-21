@@ -73,6 +73,11 @@ class RjGroupAdmin extends Admin
     public function prePersist($object)
     {
         $object->setType(GroupType::RENT);
+        $depositAccounts = $object->getDepositAccounts();
+        /** @var DepositAccount $depositAccount */
+        foreach ($depositAccounts as $depositAccount) {
+            $depositAccount->setGroup($object);
+        }
     }
 
     /**

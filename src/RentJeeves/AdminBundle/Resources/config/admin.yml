@@ -63,6 +63,7 @@ services:
             - CreditJeeves\DataBundle\Entity\Group
             - 'SonataAdminBundle:CRUD'
         calls:
+            - [ setTemplate, [edit, AdminBundle:CRUD:group_edit.html.twig]]
             - [ setTranslationDomain, [messages]]
 
     sonata.admin.rj_group.phone:
