@@ -11,10 +11,13 @@ use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingRecord;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 class CsvExporterCase extends BaseTestCase
 {
+    use WriteAttributeExtensionTrait;
+
     /**
      * remove created file
      */
@@ -37,9 +40,12 @@ class CsvExporterCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldCreateFileWithDataForHoldingIfSendHolding()
+    public function shouldCreateFileWithDataForHoldingIfSendHoldings()
     {
         $holding = new Holding();
+        $this->writeIdAttribute($holding, 1);
+        $holding2 = new Holding();
+        $this->writeIdAttribute($holding2, 2);
 
         $profile1 = new AciImportProfileMap();
         $profile1->setUser(new Tenant());
@@ -51,8 +57,8 @@ class CsvExporterCase extends BaseTestCase
         $aciProfileMapRepositoryMock = $this->getAciProfileMapRepositoryMock();
         // For holding
         $aciProfileMapRepositoryMock->expects($this->once())
-            ->method('findAllByHolding')
-            ->with($this->equalTo($holding))
+            ->method('findAllByHoldingIds')
+            ->with($this->equalTo([1, 2]))
             ->will($this->returnValue($emResponse));
 
         $em->expects($this->once())
@@ -79,7 +85,7 @@ class CsvExporterCase extends BaseTestCase
             ->will($this->returnValue($result = "csvDataHere"));
 
         $csvExporter = new CsvExporter($em, $mapper, $serializer, $validator);
-        $csvExporter->export($this->getFilePath(), $holding);
+        $csvExporter->export($this->getFilePath(), [$holding, $holding2]);
 
         $this->assertContains($result, file_get_contents($this->getFilePath()));
     }
@@ -87,7 +93,7 @@ class CsvExporterCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldCreateFileWithDataForAllHoldingIfNotSendHolding()
+    public function shouldCreateFileWithDataForAllHoldingIfNotSendHoldings()
     {
         $holding = null;
 

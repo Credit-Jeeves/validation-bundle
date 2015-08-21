@@ -41,7 +41,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = new AciProfileMapper('testBusinessId');
-        $result = $mapper->map($profile, $holding);
+        $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(8, count($result));
         /** @var ConsumerRecord $consumerRecord */
@@ -142,7 +142,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = new AciProfileMapper('testBusinessId');
-        $result = $mapper->map($profile, $holding);
+        $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(7, count($result));
 
@@ -193,7 +193,7 @@ class AciProfileMapperCase extends BaseTestCase
         $profile->setUser($user);
 
         $mapper = new AciProfileMapper('testBusinessId');
-        $result = $mapper->map($profile, $holding);
+        $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(4, count($result));
         $this->assertNotInstanceOf(
@@ -234,7 +234,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = new AciProfileMapper('testBusinessId');
-        $result = $mapper->map($profile, $holding);
+        $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(5, count($result));
         $this->assertNotInstanceOf(
@@ -286,7 +286,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = new AciProfileMapper('testBusinessId');
-        $result = $mapper->map($profile, $holding);
+        $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(3, count($result));
         /** @var ConsumerRecord $consumerRecord */
@@ -364,7 +364,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = new AciProfileMapper('testBusinessId');
-        $result = $mapper->map($profile, $holding);
+        $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(1, count($result));
 
@@ -402,7 +402,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = new AciProfileMapper('testBusinessId');
-        $result = $mapper->map($profile, $holding);
+        $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(2, count($result));
 

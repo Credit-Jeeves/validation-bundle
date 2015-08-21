@@ -3,6 +3,7 @@
 namespace RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingRecord;
@@ -19,9 +20,9 @@ class AciProfileMapper
     protected $profile;
 
     /**
-     * @var Holding
+     * @var Holding[]
      */
-    protected $holding;
+    protected $holdings;
 
     /**
      * @var string
@@ -42,14 +43,14 @@ class AciProfileMapper
      * return these models
      *
      * @param AciImportProfileMap $profileMap
-     * @param Holding $holding
+     * @param array $holdings
      *
      * @return array
      */
-    public function map(AciImportProfileMap $profileMap, Holding $holding = null)
+    public function map(AciImportProfileMap $profileMap, array $holdings = null)
     {
         $this->profile = $profileMap;
-        $this->holding = $holding;
+        $this->holdings = $holdings;
 
         if (null !== $this->profile->getUser()) {
             $records = $this->mapUser();
@@ -85,20 +86,30 @@ class AciProfileMapper
             return null;
         }
 
-        $address = $user->getDefaultAddress();
-
         $consumerRecord = new ConsumerRecord();
         $consumerRecord->setProfileId($this->profile->getId());
         $consumerRecord->setBusinessId($this->businessId);
-        $consumerRecord->setUserName($user->getUsername());
-        $consumerRecord->setPassword($user->getUsername()); // Any value
+        $consumerRecord->setUserName(substr($user->getUsername(), 0, 32));
+        $consumerRecord->setPassword(substr($user->getUsername(), 0, 32)); // Any value
         $consumerRecord->setConsumerFirstName($user->getFirstName());
         $consumerRecord->setConsumerLastName($user->getLastName());
         $consumerRecord->setPrimaryEmailAddress($user->getEmail());
-        $consumerRecord->setAddress1((string) $address);
-        $consumerRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
-        $consumerRecord->setState($address ? $address->getArea() : '');
-        $consumerRecord->setZipCode($address ? $address->getZip() : '');
+
+        if (null !== $address = $user->getDefaultAddress()) {
+            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress((string) $address, 64));
+            $consumerRecord->setCity(substr($address->getCity(), 0, 12));
+            $consumerRecord->setState($address->getArea());
+            $consumerRecord->setZipCode($address->getZip());
+        } else {
+            $contracts = $user->getActiveContracts();
+            if (false === empty($contracts)) {
+                $property = $contracts[0]->getProperty();
+                $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($property->getAddress(), 64));
+                $consumerRecord->setCity(substr($property->getCity(), 0, 12));
+                $consumerRecord->setState($property->getArea());
+                $consumerRecord->setZipCode($property->getZip());
+            }
+        }
 
         return $consumerRecord;
     }
@@ -117,7 +128,7 @@ class AciProfileMapper
                 PaymentProcessor::ACI
             );
             if (null === $depositAccount || null !== $contract->getAciCollectPayContractBilling() ||
-                ($this->holding !== null && $contract->getHolding() !== $this->holding)
+                ($this->holdings !== null && false === in_array($contract->getHolding(), $this->holdings))
             ) {
                 continue;
             }
@@ -215,7 +226,7 @@ class AciProfileMapper
     protected function mapGroupAccountRecord()
     {
         $group = $this->profile->getGroup();
-        if (($this->holding !== null && $group->getHolding() !== $this->holding) ||
+        if (($this->holdings !== null && false === in_array($group->getHolding(), $this->holdings)) ||
             null !== $group->getAciCollectPayProfile()
         ) {
             return null;

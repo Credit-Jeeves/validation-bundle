@@ -12,19 +12,23 @@ use Doctrine\ORM\EntityRepository;
 class AciImportProfileMapRepository extends EntityRepository
 {
     /**
-     * @param Holding $holding
+     * @param array $holdingIds
      *
      * @return AciImportProfileMap[]
      */
-    public function findAllByHolding(Holding $holding)
+    public function findAllByHoldingIds(array $holdingIds)
     {
+        if (true === empty($holdingIds)) {
+            return [];
+        }
+
         return $this->createQueryBuilder('p')
             ->leftJoin('p.user', 'u')
             ->leftJoin('u.contracts', 'c')
             ->leftJoin('p.group', 'g')
-            ->where('g.holding = :holding')
-            ->orWhere('c.holding = :holding')
-            ->setParameter('holding', $holding)
+            ->where('g.holding IN (:holdingIds)')
+            ->orWhere('c.holding IN (:holdingIds)')
+            ->setParameter('holdingIds', $holdingIds)
             ->getQuery()
             ->getResult();
     }
