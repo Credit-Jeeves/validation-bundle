@@ -865,7 +865,7 @@ class AjaxController extends Controller
                 $residentMapping->setHolding($holding);
                 $residentMapping->setTenant($tenant);
             }
-            $residentMapping->setResidentId($details['residentId']);
+            $residentMapping->setResidentId(trim($details['residentId']));
             $resident = $this->get('resident_manager');
             $errors = array_merge(
                 $errors,
