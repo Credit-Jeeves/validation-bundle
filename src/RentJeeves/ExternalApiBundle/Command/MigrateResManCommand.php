@@ -73,7 +73,8 @@ class MigrateResManCommand extends ContainerAwareCommand
         $this->output->writeln(sprintf('Start migrate holding:%s', $holding->getId()));
         /** @var ResidentDataManager $residentManager */
         $this->residentManager->setSettings($holding->getExternalSettings());
-        $propertiesMapping = $holding->getPropertyMapping();
+        $propertiesMapping =  $this->em->getRepository('RjDataBundle:PropertyMapping')
+            ->getByHoldingAndGroupByExternalPropertyID($holding);
         /** @var PropertyMapping $propertyMapping */
         foreach ($propertiesMapping as $propertyMapping) {
             $residents = $this->residentManager->getResidents($propertyMapping->getExternalPropertyId());
@@ -116,7 +117,13 @@ class MigrateResManCommand extends ContainerAwareCommand
      */
     protected function migrateOneResident(RtCustomer $mainCustomer, Customer $customer, Holding $holding)
     {
-        $this->output->writeln(sprintf('Start migrate customer, residentID:%s', $customer->getCustomerId()));
+        $this->output->writeln(
+            sprintf(
+                'Start migrate customer, residentID:%s holdingId: %s',
+                $customer->getCustomerId(),
+                $holding->getId()
+            )
+        );
         $currentExternalUnitId = $mainCustomer->getRtUnit()->getUnitId();
         $newExternalUnitId = $customer->getExternalUnitId($mainCustomer);
         $this->output->writeln(
@@ -126,13 +133,23 @@ class MigrateResManCommand extends ContainerAwareCommand
                 $newExternalUnitId
             )
         );
-        $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getUnitMappingByHoldingAndExternalUnitId(
-            $holding,
-            $currentExternalUnitId
-        );
-        if (empty($unitMapping)) {
+        try {
+            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getUnitMappingByHoldingAndExternalUnitId(
+                $holding,
+                $currentExternalUnitId
+            );
+        } catch (\Exception $e) {
+            $this->output->writeln(sprintf('Exception:%s. Please check data in DB.', $e->getMessage()));
+
             return;
         }
+
+        if (empty($unitMapping)) {
+            $this->output->writeln('Can\'t find unitMapping');
+
+            return;
+        }
+        $this->output->writeln('We find unitMapping and doing update with newExternalUnitId.');
         $unitMapping->setExternalUnitId($newExternalUnitId);
         $this->em->flush();
     }
