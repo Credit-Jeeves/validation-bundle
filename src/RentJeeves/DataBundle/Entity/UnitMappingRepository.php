@@ -45,4 +45,29 @@ class UnitMappingRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function getMappingScopedByGroup(Property $property, Group $group, $externalUnitId)
+    {
+        return $this->createQueryBuilder('mapping')
+            ->innerJoin(
+                'mapping.unit',
+                'u'
+            )
+            ->innerJoin(
+                'u.group',
+                'g'
+            )
+            ->innerJoin(
+                'u.property',
+                'p'
+            )
+            ->where('g.id = :groupId')
+            ->andWhere('p.id = :propertyId')
+            ->andWhere('mapping.externalUnitId = :externalUnitId')
+            ->setParameter('groupId', $group->getId())
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->setParameter('propertyId', $property->getId())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
