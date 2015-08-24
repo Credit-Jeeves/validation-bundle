@@ -2,8 +2,11 @@
 namespace RentJeeves\ExternalApiBundle\Command;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Common\Collections\Collection;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResidentDataManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,8 +76,7 @@ class MigrateResManCommand extends ContainerAwareCommand
         $this->output->writeln(sprintf('Start migrate holding:%s', $holding->getId()));
         /** @var ResidentDataManager $residentManager */
         $this->residentManager->setSettings($holding->getExternalSettings());
-        $propertiesMapping =  $this->em->getRepository('RjDataBundle:PropertyMapping')
-            ->getByHoldingAndGroupByExternalPropertyID($holding);
+        $propertiesMapping =  $holding->getPropertyMapping();
         /** @var PropertyMapping $propertyMapping */
         foreach ($propertiesMapping as $propertyMapping) {
             $residents = $this->residentManager->getResidents($propertyMapping->getExternalPropertyId());
@@ -87,15 +89,16 @@ class MigrateResManCommand extends ContainerAwareCommand
                 );
                 continue;
             }
-            $this->migrateOneBatchResidents($residents, $holding);
+            $this->migrateOneBatchResidents($residents, $holding, $propertyMapping);
         }
     }
 
     /**
      * @param array $residents
      * @param Holding $holding
+     * @param Collection $groups
      */
-    protected function migrateOneBatchResidents(array $residents, Holding $holding)
+    protected function migrateOneBatchResidents(array $residents, Holding $holding, PropertyMapping $propertyMapping)
     {
         /** @var RtCustomer $resident */
         foreach ($residents as $resident) {
@@ -105,7 +108,7 @@ class MigrateResManCommand extends ContainerAwareCommand
 
             /** @var Customer $customerUser */
             foreach ($resident->getCustomers()->getCustomer() as $customerUser) {
-                $this->migrateOneResident($resident, $customerUser, $holding);
+                $this->migrateOneResident($resident, $customerUser, $holding, $propertyMapping);
             }
         }
     }
@@ -114,43 +117,98 @@ class MigrateResManCommand extends ContainerAwareCommand
      * @param RtCustomer $mainCustomer
      * @param Customer $customer
      * @param Holding $holding
+     * @param Group $group
      */
-    protected function migrateOneResident(RtCustomer $mainCustomer, Customer $customer, Holding $holding)
-    {
-        $this->output->writeln(
-            sprintf(
-                'Start migrate customer, residentID:%s holdingId: %s',
-                $customer->getCustomerId(),
-                $holding->getId()
-            )
-        );
-        $currentExternalUnitId = $mainCustomer->getRtUnit()->getUnitId();
-        $newExternalUnitId = $customer->getExternalUnitId($mainCustomer);
-        $this->output->writeln(
-            sprintf(
-                'CurrentExternalUnitId:%s newExternalUnitId:%s',
-                $currentExternalUnitId,
-                $newExternalUnitId
-            )
-        );
-        try {
-            $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getUnitMappingByHoldingAndExternalUnitId(
-                $holding,
-                $currentExternalUnitId
+    protected function migrateOneResident(
+        RtCustomer $mainCustomer,
+        Customer $customer,
+        Holding $holding,
+        PropertyMapping $propertyMapping
+    ) {
+        // externalPropertyIds are unique to groups (not holdings) so get the groups to scope lookup to
+        if (null == $groups = $this->getGroupFromPropertyMapping($propertyMapping)) {
+            return; // could not get a group
+        }
+
+        foreach ($groups as $group) {
+            $this->output->writeln(
+                sprintf(
+                    'Start migrate customer, residentID:%s holdingId: %s Group %s',
+                    $customer->getCustomerId(),
+                    $holding->getId(),
+                    $group->getId()
+                )
             );
-        } catch (\Exception $e) {
-            $this->output->writeln(sprintf('Exception:%s. Please check data in DB.', $e->getMessage()));
+            $currentExternalUnitId = $mainCustomer->getRtUnit()->getUnitId();
+            $newExternalUnitId = $customer->getExternalUnitId($mainCustomer);
+            $this->output->writeln(
+                sprintf(
+                    'CurrentExternalUnitId:%s newExternalUnitId:%s',
+                    $currentExternalUnitId,
+                    $newExternalUnitId
+                )
+            );
+            try {
+                $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingScopedByGroup(
+                    $propertyMapping->getProperty(),
+                    $group,
+                    $currentExternalUnitId
+                );
+            } catch (\Exception $e) {
+                $this->output->writeln(
+                    sprintf(
+                        'Exception:%s. Trace:%s. Please check data in DB.',
+                        $e->getMessage(),
+                        $e->getTraceAsString() // Because we are not getting message from doctrine exception RT-1491
+                    )
+                );
 
-            return;
+                return;
+            }
+
+            if (empty($unitMapping)) {
+                $this->output->writeln('Can\'t find unitMapping');
+
+                return;
+            }
+            $this->output->writeln('We found unitMapping and doing update with newExternalUnitId.');
+            $unitMapping->setExternalUnitId($newExternalUnitId);
+            $this->em->flush();
+        }
+    }
+
+    /**
+     * Get the group for the property.
+     *
+     * Write out warning and don't return a group if there is not at least one group found
+     *
+     * @param PropertyMapping $propertyMapping
+     * @return Collection|null
+     */
+    protected function getGroupFromPropertyMapping(PropertyMapping $propertyMapping)
+    {
+        /** @var Group $group */
+        $groups = $propertyMapping->getProperty()->getPropertyGroups();
+        if (empty($groups)) {
+            $this->output->writeln(
+                sprintf(
+                    'FAIL: Property ID:%s not associated with a Group',
+                    $propertyMapping->getExternalPropertyId()
+                )
+            );
+
+            return null;
         }
 
-        if (empty($unitMapping)) {
-            $this->output->writeln('Can\'t find unitMapping');
-
-            return;
+        if (count($groups) != 1) {
+            $this->output->writeln(
+                sprintf(
+                    'WARNING: property ID:#%s has multiple groups. We will look for property mapping for each group.',
+                    $propertyMapping->getExternalPropertyId()
+                )
+            );
         }
-        $this->output->writeln('We find unitMapping and doing update with newExternalUnitId.');
-        $unitMapping->setExternalUnitId($newExternalUnitId);
-        $this->em->flush();
+
+        return $groups;
     }
 }
