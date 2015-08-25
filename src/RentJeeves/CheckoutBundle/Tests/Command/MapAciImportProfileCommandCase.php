@@ -1,9 +1,9 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\CoreBundle\Command\MapAciImportProfileCommand;
+use RentJeeves\CheckoutBundle\Command\MapAciImportProfileCommand;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\TestBundle\Command\BaseTestCase;
@@ -20,6 +20,7 @@ class MapAciImportProfileCommandCase extends BaseTestCase
         $this->load(true);
         $em = $this->getEntityManager();
 
+        $em->createQuery('DELETE RjDataBundle:AciImportProfileMap')->execute();
         $mapData = $em->getRepository('RjDataBundle:AciImportProfileMap')->findAll();
         $this->assertCount(0, $mapData, 'Map data should be empty');
 

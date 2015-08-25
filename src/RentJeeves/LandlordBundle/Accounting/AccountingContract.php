@@ -9,7 +9,6 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -89,7 +88,6 @@ class AccountingContract
 
     protected function updateContract(Contract $contractToUser, Contract $contractFromUser)
     {
-        $contractToUser->setBalance($contractFromUser->getBalance());
         $contractToUser->setRent($contractFromUser->getRent());
         $contractToUser->setIntegratedBalance($contractFromUser->getIntegratedBalance());
         $contractToUser->setStartAt($contractFromUser->getStartAt());

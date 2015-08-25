@@ -2,6 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use ACI\Utils\OldProfilesStorage;
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
@@ -10,8 +11,10 @@ use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -75,6 +78,37 @@ class PaymentCommandsCase extends BaseTestCase
     protected function getOrderStatusManager()
     {
         return $this->getContainer()->get('payment_processor.order_status_manager');
+    }
+
+    /**
+     * @return array
+     */
+    public function providerForCheckingOptionIsPaymentsEnabled()
+    {
+        return [
+            [true, 1],
+            [false, 0]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerForCheckingOptionIsPaymentsEnabled
+     *
+     * @param boolean $isPaymentsEnabled
+     * @param integer $jobsCount
+     */
+    public function shouldCheckOptionIsPaymentsEnabled($isPaymentsEnabled, $jobsCount)
+    {
+        $this->load(true);
+        /** @var Holding $holding */
+        $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $holding->setPaymentsEnabled($isPaymentsEnabled);
+        $this->getEntityManager()->flush();
+
+        $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertCount($jobsCount, $jobs);
     }
 
     /**
@@ -159,8 +193,10 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertNotNull($order);
         $this->assertNotNull($completeTransaction = $order->getCompleteTransaction());
         $this->assertNotNull($order->getHeartlandBatchId());
-        $this->assertNotNull($paymentAccount = $completeTransaction->getPaymentAccount());
+        $this->assertNotNull($paymentAccount = $order->getPaymentAccount());
+        $this->assertNotNull($depositAccount = $order->getDepositAccount());
         $this->assertEquals($payment->getPaymentAccount()->getId(), $paymentAccount->getId());
+        $this->assertEquals($payment->getDepositAccount()->getId(), $depositAccount->getId());
         $operations = $order->getOperations();
         $this->assertCount(3, $operations);
 
@@ -342,7 +378,12 @@ class PaymentCommandsCase extends BaseTestCase
         /* Prepare Group */
         $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $contract->getGroup()->getDepositAccount()->setMerchantName(564075);
+        $depositAccount = new DepositAccount($contract->getGroup());
+        $depositAccount->setPaymentProcessor($contract->getGroup()->getGroupSettings()->getPaymentProcessor());
+        $depositAccount->setType(DepositAccountType::RENT);
+        $depositAccount->setMerchantName(564075);
+
+        $contract->getGroup()->addDepositAccount($depositAccount);
 
         /* Create Payment Accounts */
         /** @var PaymentProcessorAciCollectPay $paymentProcessor */
@@ -509,6 +550,7 @@ class PaymentCommandsCase extends BaseTestCase
         $payment->setStatus(PaymentStatus::ACTIVE);
         $payment->setContract($contract);
         $payment->setPaymentAccount($paymentAccount);
+        $payment->setDepositAccount($contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor());
         $today = new DateTime();
         $payment->setDueDate($today->format('j'));
         $payment->setStartMonth($today->format('n'));

@@ -2,7 +2,7 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -73,6 +73,23 @@ class RjGroupAdmin extends Admin
     public function prePersist($object)
     {
         $object->setType(GroupType::RENT);
+        $depositAccounts = $object->getDepositAccounts();
+        /** @var DepositAccount $depositAccount */
+        foreach ($depositAccounts as $depositAccount) {
+            $depositAccount->setGroup($object);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function preUpdate($object)
+    {
+        $depositAccounts = $object->getDepositAccounts();
+        /** @var DepositAccount $depositAccount */
+        foreach ($depositAccounts as $depositAccount) {
+            $depositAccount->setGroup($object);
+        }
     }
 
     /**
@@ -91,15 +108,6 @@ class RjGroupAdmin extends Admin
             ->add('affiliate')
             ->add('groupPhones')
             ->add('count_properties')
-            ->add(
-                'depositAccount',
-                'sonata_type_model',
-                array(
-                    'empty_value' => 'None',
-                    'required' => false,
-                    'label' => 'Merchant status'
-                )
-            )
             ->add('disableCreditCard')
             ->add(
                 '_action',
@@ -155,32 +163,17 @@ class RjGroupAdmin extends Admin
                 ->add('street_address_1', null, ['required' => false])
                 ->add('street_address_2')
             ->end()
-            ->with('Deposit Account')
-                // admin.deposit_account.merchant_name
-                ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name', 'required' => false))
+            ->with('Deposit Accounts')
                 ->add(
-                    'accountNumberMapping.accountNumber',
-                    null,
-                    array(
-                        'label' => 'Account Number',
-                        'required' => false,
-                    )
+                    'depositAccounts',
+                    'sonata_type_collection',
+                    [],
+                    [
+                        'edit' => 'inline',
+                        'inline' => 'table',
+                        'sortable' => 'position',
+                    ]
                 )
-                ->add(
-                    'depositAccount.status',
-                    'choice',
-                    array(
-                        'label' => 'Status',
-                        'required' => false,
-                        'choices' => DepositAccountStatus::cachedTitles()
-                    )
-                )
-                ->add(
-                    'depositAccount.mid',
-                    'number',
-                    ['label' => 'Mid', 'required' => false]
-                )
-                ->add('disableCreditCard', 'checkbox', ['label' => 'Disable Credit Card?', 'required' => false])
             ->end()
             ->with('Group Phones')
                 ->add(
@@ -258,8 +251,7 @@ class RjGroupAdmin extends Admin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name')
-            ->add('depositAccount.status', null, array('label' => 'Merchant status'));
+            ->add('name');
     }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)

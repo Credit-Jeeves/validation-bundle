@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -15,8 +16,10 @@ use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Entity\Unit;
 
+/**
+ * @method Contract|Contract[] find($id, $lockMode = LockMode::NONE, $lockVersion = null)
+ */
 class ContractRepository extends EntityRepository
 {
     use DateCommon;
@@ -1034,7 +1037,7 @@ class ContractRepository extends EntityRepository
         $query->leftJoin('c.property', 'p');
         $query->leftJoin('c.unit', 'u');
         $query->leftJoin('c.group', 'g');
-        $query->leftJoin('g.depositAccount', 'da');
+        $query->leftJoin('g.depositAccounts', 'da');
         $query->leftJoin('c.payments', 'pay');
         if (!empty($status)) {
             $query->andWhere('c.status NOT IN :statuses');

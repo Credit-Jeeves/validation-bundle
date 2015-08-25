@@ -17,6 +17,7 @@ class OAuthCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->clearEmail();
 
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()
@@ -67,6 +68,10 @@ class OAuthCase extends BaseTestCase
         $this->assertNotNull($text = $this->page->find('css', 'h3'));
 
         $this->assertEquals('authorization.main_info', $text->getText());
+
+        $this->setDefaultSession('goutte');
+        $emails = $this->getEmails();
+        $this->assertCount(0, $emails, 'Should not send any emails if user already exists');
 
         $this->logout();
     }
@@ -120,6 +125,64 @@ class OAuthCase extends BaseTestCase
         $this->assertNotNull($text = $this->page->find('css', 'h3'));
 
         $this->assertEquals('authorization.main_info', $text->getText());
+
+        $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendEmailIfUserIsNew()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->clearEmail();
+
+        $this->session->visit(
+            sprintf(
+                $this->getUrl() .
+                'oauth/v2/auth?client_id=%s',
+                self::CLIENT_ID
+            )
+        );
+
+        $this->assertNotNull($createUserLink = $this->page->find('css', '#create-user'));
+
+        $createUserLink->click();
+
+        $this->assertNotNull($form = $this->page->find('css', '#registration_form'));
+
+        $this->assertNotNull($firstName = $this->page->find('css', '#api_tenant_first_name'));
+        $firstName->setValue('New tenant');
+
+        $this->assertNotNull($lastName = $this->page->find('css', '#api_tenant_last_name'));
+        $lastName->setValue('lastname');
+
+        $this->assertNotNull($email = $this->page->find('css', '#api_tenant_email'));
+        $email->setValue('apinewtenant@example.com');
+
+        $this->fillForm($form, [
+            'api_tenant_password_Password' => '1111',
+            'api_tenant_password_Verify_Password' => '1111',
+            'api_tenant_tos' => true,
+        ]);
+
+        $this->assertNotNull($connect = $this->page->find('css', '#connectBtn'));
+
+        $connect->click();
+
+        $this->assertNotNull($text = $this->page->find('css', 'h3'));
+
+        $this->assertEquals('authorization.main_info', $text->getText());
+
+        $this->setDefaultSession('goutte');
+        $emails = $this->getEmails();
+        $this->assertCount(1, $emails, 'Should send email if user does not exist');
+        $email = $this->getEmailReader()->getEmail($emails[0]);
+        $this->assertEquals(
+            'Get Started with RentTrack',
+            $email->getHeaders()->get('Subject')->getFieldValue()
+        );
 
         $this->logout();
     }

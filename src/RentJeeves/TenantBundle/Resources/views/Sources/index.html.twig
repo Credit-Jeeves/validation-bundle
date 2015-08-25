@@ -21,7 +21,7 @@
                     {{ 'payment_account.delete.text' | trans() }}
                 </div>
                 <div class="row-20"></div>
-                <p data-bind="text: paymentSource.name"></p>
+                <p data-bind="text: currentPaymentAccount().name"></p>
                 <div class="footer-button-box">
                     <a class="button" data-bind="attr: { href: delUrl }" style="display: inline-block;">
                         <span>{{ 'payment_account.delete.yes' | trans() }}</span>
@@ -41,7 +41,7 @@
                     </ul>
                 </div>
                 <div class="col long-label">
-                    {{ render(controller('RjCheckoutBundle:Component:source')) }}
+                    {{ render(controller('RjCheckoutBundle:PaymentSource:source')) }}
                 </div>
 
                 <div class="footer-button-box">
@@ -72,12 +72,15 @@
                     <tbody>
                     {% for paymentAccount in paymentAccounts %}
                         <tr id="payment-account-row-{{ loop.revindex }}">
-                            <td class="font-helvetica">{{ paymentAccount.getName }}</td>
+                            <td class="font-helvetica">
+                                {{ paymentAccount.getName }}
+                            </td>
                             <td class="font-helvetica">{{ ('payment_account_' ~ paymentAccount.getType) | trans }}</td>
                             <td class="font-helvetica">
                                 {{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}
                             </td>
                             <td class="font-helvetica">
+                                {% if isLocked == false %}
                                 <a title="{{ 'edit' | trans }}"
                                    class="type-ico pie-el edit"
                                    href="#"
@@ -92,6 +95,7 @@
                                 >
                                     &nbsp;
                                 </a>
+                                {% endif %}
                             </td>
 
                         </tr>

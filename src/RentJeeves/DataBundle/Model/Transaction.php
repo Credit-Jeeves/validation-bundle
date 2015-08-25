@@ -37,20 +37,6 @@ abstract class Transaction
     protected $order;
 
     /**
-     * @var Entity\PaymentAccount
-     *
-     * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
-     *     inversedBy="transactions"
-     * )
-     * @ORM\JoinColumn(
-     *     name="payment_account_id",
-     *     referencedColumnName="id"
-     * )
-     */
-    protected $paymentAccount;
-
-    /**
      * @var int
      *
      * @ORM\Column(
@@ -184,22 +170,6 @@ abstract class Transaction
     public function getOrder()
     {
         return $this->order;
-    }
-
-    /**
-     * @param Entity\PaymentAccount $paymentAccount
-     */
-    public function setPaymentAccount(Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccount = $paymentAccount;
-    }
-
-    /**
-     * @return Entity\PaymentAccount|null
-     */
-    public function getPaymentAccount()
-    {
-        return $this->paymentAccount;
     }
 
     /**

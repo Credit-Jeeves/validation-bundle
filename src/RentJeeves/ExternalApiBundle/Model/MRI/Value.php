@@ -135,7 +135,7 @@ class Value
     protected $leaseMonthToMonth;
 
     /**
-     * @Serializer\SerializedName("PayAllowed")
+     * @Serializer\SerializedName("BlockEPayments")
      * @Serializer\Type("string")
      * @Serializer\Groups({"MRI-Response"})
      */
@@ -609,5 +609,18 @@ class Value
     public function setZipCode($zipCode)
     {
         $this->zipCode = $zipCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalUnitId()
+    {
+        return sprintf(
+            '%s|%s|%s',
+            $this->getPropertyId(),
+            $this->getBuildingId(),
+            $this->getUnitId()
+        );
     }
 }

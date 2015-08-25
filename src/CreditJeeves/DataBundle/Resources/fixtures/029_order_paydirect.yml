@@ -4,6 +4,7 @@ fixtures:
         user: Tenant_1
         status: complete
         paymentType: card
+        paymentAccount: PaymentAccount_14
         sum: 1500
         created_at: '-50 days'
         updated_at: '-50 days'

@@ -2,7 +2,7 @@
 namespace RentJeeves\LandlordBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use RentJeeves\LandlordBundle\Accounting\AccountingPermission as Permission;
+use RentJeeves\LandlordBundle\Accounting\LandlordPermission as Permission;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Builder extends ContainerAware
@@ -11,28 +11,31 @@ class Builder extends ContainerAware
     {
         $sRoute = $this->container->get('request')->get('_route');
         $menu = $factory->createItem('root');
+        /**
+         * @var $permission Permission
+         */
+        $permission = $this->container->get('landlord.permission');
         $menu->addChild(
             'tabs.dashboard',
             array(
                 'route' => 'landlord_homepage'
             )
         );
-        $menu->addChild(
-            'tabs.properties',
-            array(
-                'route' => 'landlord_properties'
-            )
-        );
+        if ($permission->hasAccessToPropertiesTab()) {
+            $menu->addChild(
+                'tabs.properties',
+                array(
+                    'route' => 'landlord_properties'
+                )
+            );
+        }
         $menu->addChild(
             'tabs.tenants',
             array(
                 'route' => 'landlord_tenants'
             )
         );
-        /**
-         * @var $permission Permission
-         */
-        $permission = $this->container->get('accounting.permission');
+
         if ($permission->hasAccessToAccountingTab()) {
             if ($permission->hasAccessToImport()) {
                 $menu->addChild(
@@ -104,7 +107,7 @@ class Builder extends ContainerAware
         /**
          * @var $permission Permission
          */
-        $permission = $this->container->get('accounting.permission');
+        $permission = $this->container->get('landlord.permission');
 
         if ($permission->hasAccessToImport()) {
             $menu->addChild(

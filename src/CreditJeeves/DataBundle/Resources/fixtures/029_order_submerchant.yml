@@ -4,7 +4,7 @@ fixtures:
     user: Tenant_1
     status: complete
     paymentType: card
-    sum: 1500
+    sum: 1800
     created_at: '-40 days'
     updated_at: '-40 days'
   rjOrder_3:
@@ -82,6 +82,7 @@ fixtures:
     user: Tenant_1
     status: complete
     paymentType: card
+    paymentAccount: PaymentAccount_14
     sum: 1500
     created_at: '-370 days'
     updated_at: '-372 days'

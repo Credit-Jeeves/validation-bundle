@@ -7,9 +7,10 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
-use RentJeeves\DataBundle\Entity\DepositAccount;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\GroupRepository")
@@ -146,13 +147,6 @@ class Group extends BaseGroup
         return $properties ? count($properties) : 0;
     }
 
-    public function getMerchantName()
-    {
-        $depositAccount = $this->getDepositAccount();
-
-        return !empty($depositAccount) ? $depositAccount->getMerchantName() : '';
-    }
-
     public function getMainDealer()
     {
         $dealer = $this->getDealer();
@@ -171,11 +165,26 @@ class Group extends BaseGroup
     }
 
     /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBillingAccountsByCurrentPaymentProcessor()
+    {
+        $currentPaymentProcessor = $this->getGroupSettings()->getPaymentProcessor();
+
+        return $this->getBillingAccounts()->filter(
+            function ($entry) use ($currentPaymentProcessor) {
+                return $currentPaymentProcessor === $entry->getPaymentProcessor();
+            }
+        );
+    }
+
+    /**
      * @return BillingAccount|null
      */
     public function getActiveBillingAccount()
     {
-        foreach ($this->getBillingAccounts() as $account) {
+        /** @var BillingAccount $account */
+        foreach ($this->getBillingAccountsByCurrentPaymentProcessor() as $account) {
             if ($account->getIsActive()) {
                 return $account;
             }
@@ -203,19 +212,6 @@ class Group extends BaseGroup
         }
 
         return $this->groupSettings;
-    }
-
-    /**
-     * @return DepositAccount
-     */
-    public function getDepositAccount()
-    {
-        if (empty($this->depositAccount)) {
-            $this->depositAccount = new DepositAccount();
-            $this->depositAccount->setGroup($this);
-        }
-
-        return $this->depositAccount;
     }
 
     public function getID4StatementDescriptor()
@@ -286,5 +282,40 @@ class Group extends BaseGroup
     public function getCountry()
     {
         return 'US';
+    }
+
+    /**
+     * @Assert\True(message = "admin.error.deposit_account", groups={"unique_mapping"})
+     * @return boolean
+     */
+    public function isValidDepositAccountUniqueIndex()
+    {
+        $alreadyUsedDepositAccounts = [];
+        foreach ($this->getDepositAccounts() as $account) {
+            $key = $account->getType().$account->getPaymentProcessor();
+            if (in_array($key, $alreadyUsedDepositAccounts)) {
+                return false;
+            }
+            $alreadyUsedDepositAccounts[] = $key;
+        }
+
+        return true;
+    }
+
+    /**
+     * @Assert\True(message = "error.statement_descriptor.too_long", groups={"holding"})
+     * @return boolean
+     */
+    public function isValidDescriptor()
+    {
+        if ($this->getGroupSettings()->getPaymentProcessor() === PaymentProcessor::HEARTLAND) {
+            $limit = 14;
+        } else {
+            $limit = 21;
+        }
+
+        $length = strlen($this->getStatementDescriptor());
+
+        return $length <= $limit;
     }
 }

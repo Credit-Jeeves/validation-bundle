@@ -1,0 +1,26 @@
+model: RentJeeves\DataBundle\Entity\DepositAccount
+fixtures:
+    DepositAccount_1:
+        merchantName: Monticeto_Percent
+        group:  RentGroup_1
+        status: complete
+        type: rent
+    DepositAccount_2:
+        merchantName: Monticeto_Percent
+        group: RentGroup_2
+        status: complete
+        type: rent
+    DepositAccount_3:
+        merchantName: WestPac
+        group: RentGroup_3
+        status: complete
+        type: rent
+    DepositAccount_4:
+        group: RentGroup_4
+        status: init
+        type: rent
+    DepositAccount_RentTrackCorp:
+        merchantName: RentTrackCorp
+        group: RentTrackCorp
+        status: complete
+        type: rent

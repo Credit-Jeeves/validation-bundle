@@ -3,9 +3,6 @@ namespace RentJeeves\DataBundle\Tests\Entity;
 
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Payment;
-use RentJeeves\DataBundle\Entity\Property;
-use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
@@ -18,6 +15,7 @@ class ContractCase extends BaseTestCase
     public function providerForgetStartAtWithDueDate()
     {
         $now = new DateTime();
+
         return array(
             array($now->format('Y-m-d'), $now->format('j'), $now->format('Y-m-d')),
             array('2001-01-01', 3, '2001-01-03'),
@@ -47,12 +45,6 @@ class ContractCase extends BaseTestCase
             array(2,  '2013-12-31', 1000, 1000, '2014-01-31'),
             array(31, '2013-12-31', 1000, 1000, '2014-01-31'),
             array(31, '2013-12-31', 950, 1000, '2014-01-31'),
-            array(31, '2013-12-31', 950, 1000, '2014-01-31', 1000),
-            array(31, '2013-12-31', 950, 1000, '2014-01-31', -1000),
-            array(31, '2013-12-31', 950, 1000, '2014-01-29', 950),
-            array(31, '2013-12-31', 950, 1000, '2014-01-29', 50),
-            array(31, '2013-12-31', 950, 1000, '2014-01-29', -50),
-            array(31, '2013-12-31', 950, 1000, '2014-01-29', -950),
             array(31, '2013-12-15', 550, 1000, '2013-12-31'),
             array(31, '2013-12-31', 500, 1000, '2014-01-15'),
             array(31, '2013-12-31', 500, 0, '2013-12-31'),
@@ -64,18 +56,15 @@ class ContractCase extends BaseTestCase
      * @test
      * @dataProvider providerShiftPaidTo
      */
-    public function shiftPaidTo($dueDay, $paidTo, $amount, $rent, $result, $balance = 0)
+    public function shiftPaidTo($dueDay, $paidTo, $amount, $rent, $result)
     {
         $contract = new Contract();
         $contract->setRent($rent);
-        $contract->setBalance($balance);
         $contract->setDueDate($dueDay);
         $contract->setPaidTo(new DateTime($paidTo));
         $contract->shiftPaidTo($amount);
         $this->assertEquals($result, $contract->getPaidTo()->format('Y-m-d'));
     }
-
-
 
     public function providerUnshiftPaidTo()
     {
@@ -85,12 +74,8 @@ class ContractCase extends BaseTestCase
             array(31, '2014-03-31', 950, '2014-02-28'),
             array(2,  '2014-01-31', 1000, '2013-12-31'),
             array(31, '2014-01-31', 1000, '2013-12-31'),
-            array(31, '2014-01-29', 967, '2013-12-31', 967),
-            array(31, '2014-01-29', 967, '2013-12-31', 50),
-            array(31, '2014-01-29', 967, '2013-12-31', -50),
-            array(31, '2014-01-29', 967, '2013-12-31', -967),
+            array(31, '2014-01-29', 967, '2013-12-31'),
             array(31, '2014-01-01', 567, '2013-12-15'),
-            array(31, '2014-01-15', 500, '2013-12-31'),
             array(31, '2014-01-15', 500, '2013-12-31'),
             array(31, '2014-01-15', 400, '2013-12-31'),
             array(11, '2014-07-01', 836, '2014-06-06'),
@@ -101,11 +86,10 @@ class ContractCase extends BaseTestCase
      * @test
      * @dataProvider providerUnshiftPaidTo
      */
-    public function unshiftPaidTo($dueDay, $paidTo, $amount, $result, $balance = 0)
+    public function unshiftPaidTo($dueDay, $paidTo, $amount, $result)
     {
         $contract = new Contract();
         $contract->setRent(1000);
-        $contract->setBalance($balance);
         $contract->setDueDate($dueDay);
         $contract->setPaidTo(new DateTime($paidTo));
         $contract->unshiftPaidTo($amount);

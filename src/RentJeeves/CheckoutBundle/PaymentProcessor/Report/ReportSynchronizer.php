@@ -188,7 +188,6 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $this->orderStatusManager->setReturned($order);
         $reversalTransaction = $this->createReversalTransaction($order, $reportTransaction);
         $reversalTransaction->setBatchId($reportTransaction->getBatchId());
         $originalDepositDate = $originalTransaction->getDepositDate();
@@ -203,6 +202,9 @@ class ReportSynchronizer
 
         $this->em->persist($reversalTransaction);
         $this->em->flush();
+
+        // this needs to run after the reversalTransaction is persisted
+        $this->orderStatusManager->setReturned($order);
 
         $this->logger->debug(sprintf(
             'Returned transaction %s: Sync successful.',
@@ -239,7 +241,6 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $this->orderStatusManager->setRefunded($order);
         $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
         // For reversal, from Heartland:
         // "The funds would be removed from the merchant’s account on the next business day.
@@ -251,6 +252,9 @@ class ReportSynchronizer
 
         $this->em->persist($voidedTransaction);
         $this->em->flush();
+
+        // this needs to run after the voidedTransaction is persisted
+        $this->orderStatusManager->setRefunded($order);
 
         $this->logger->debug(sprintf(
             'Refunded transaction %s: Sync successful.',
@@ -290,14 +294,14 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-
-        $this->orderStatusManager->setCancelled($order);
-
         $originalTransaction->setDepositDate();
         $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
 
         $this->em->persist($voidedTransaction);
         $this->em->flush();
+
+        // this needs to run after the voidedTransaction is persisted
+        $this->orderStatusManager->setCancelled($order);
 
         $this->logger->debug(sprintf(
             'Cancelled transaction %s: Sync successful.',

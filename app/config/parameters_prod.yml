@@ -73,5 +73,5 @@ parameters:
 
     monolog.email_from: systems@renttrack.com
     monolog.alert.email_to: escalations@renttrack.com
-    monolog.emergency.email_to: emergency@renttrack.com
+    monolog.emergency.email_to: emergency-email-alerts@renttrack.pagerduty.com
 

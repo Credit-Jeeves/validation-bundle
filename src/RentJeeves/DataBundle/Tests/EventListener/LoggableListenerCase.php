@@ -25,11 +25,11 @@ class LoggableListenerCase extends BaseTestCase
         $contract = new Contract();
         $contract->setTenant($tenant);
         $contract->setRent(1000);
-        $contract->setBalance(1000);
         $contract->setFinishAt(new DateTime());
         $contract->setStartAt(new DateTime());
         $contract->setStatus(ContractStatus::INVITE);
         $contract->setGroup($group);
+        $contract->setDueDate($group->getGroupSettings()->getDueDate());
         $contract->setProperty($group->getGroupProperties()->last());
         $contract->setUnit($contract->getProperty()->getUnits()->first());
 
@@ -42,7 +42,6 @@ class LoggableListenerCase extends BaseTestCase
 
         //Update
         $contract->setRent(1100);
-        $contract->setBalance(1100);
         $em->persist($contract);
         $em->flush($contract);
 

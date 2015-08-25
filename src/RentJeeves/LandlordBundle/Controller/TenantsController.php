@@ -2,9 +2,12 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Form\ContractType;
@@ -51,16 +54,17 @@ class TenantsController extends Controller
      */
     public function saveInviteTenantAction()
     {
-        /** @var $user Landlord */
+        /** @var Landlord $user */
         $user = $this->getUser();
-        /** @var $group Group */
+        /** @var Group $group */
         $group = $this->get("core.session.landlord")->getGroup();
         $canInvite = false;
         /**
          * Only landlord with setup merchant name can invite tenant
          */
         if (!empty($group)) {
-            $merchantName = $group->getMerchantName();
+            $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+            $merchantName = $depositAccount ? $depositAccount->getMerchantName() : '';
             $canInvite = (!empty($merchantName)) ? true : false;
         }
 
@@ -76,7 +80,9 @@ class TenantsController extends Controller
         if ($request->getMethod() == 'POST' && $canInvite) {
             $form->handleRequest($request);
             if ($form->isValid()) {
+                /** @var Tenant $tenant */
                 $tenant = $form->getData()['tenant'];
+                /** @var Contract $contract */
                 $contract = $form->getData()['contract'];
                 $residentMapping = isset($form->getData()['resident']) ? $form->getData()['resident'] : null;
                 $finishAtType = $form->get('contract')->get('finishAtType')->getData();
@@ -145,8 +151,10 @@ class TenantsController extends Controller
             return new JsonResponse($response);
         }
 
-        $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
-        $em->flush();
+        if (!empty($tenant) && !empty($contract)) {
+            $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
+            $em->flush();
+        }
 
         return new JsonResponse($response);
     }

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -12,6 +13,7 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
+ * @Serializer\XmlRoot("request")
  */
 abstract class PaymentAccount
 {
@@ -97,7 +99,8 @@ abstract class PaymentAccount
      * @Assert\NotBlank(
      *      message="checkout.error.account_nickname.empty",
      *      groups={
-     *          "save"
+     *          "card",
+     *          "bank"
      *      }
      * )
      * @Serializer\Groups({"basic", "paymentAccounts"});
@@ -219,19 +222,19 @@ abstract class PaymentAccount
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Transaction",
-     *     mappedBy="paymentAccount"
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Order",
+     *      mappedBy="paymentAccount",
+     *      cascade={"persist"}
      * )
-     *
      * @var ArrayCollection
      */
-    protected $transactions;
+    protected $orders;
 
     public function __construct()
     {
         $this->payments = new ArrayCollection();
+        $this->orders = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
-        $this->transactions = new ArrayCollection();
         $this->creditTrackJobs = new ArrayCollection();
     }
 
@@ -537,14 +540,6 @@ abstract class PaymentAccount
     }
 
     /**
-     * @return ArrayCollection
-     */
-    public function getTransactions()
-    {
-        return $this->transactions;
-    }
-
-    /**
      * Get UserSettings
      *
      * @return UserSettings
@@ -568,5 +563,21 @@ abstract class PaymentAccount
     public function getPaymentProcessor()
     {
         return $this->paymentProcessor;
+    }
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function addOrder(Order $order)
+    {
+        $this->orders->add($order);
     }
 }

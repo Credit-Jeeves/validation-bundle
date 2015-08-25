@@ -8,7 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -173,6 +175,38 @@ abstract class Order
      * @var string
      */
     protected $orderType = OrderAlgorithmType::SUBMERCHANT;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *      inversedBy="orders",
+     *      cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="payment_account_id",
+     *      referencedColumnName="id"
+     * )
+     * @Serializer\Exclude
+     *
+     * @var PaymentAccount
+     */
+    protected $paymentAccount;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
+     *      inversedBy="orders",
+     *      cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="deposit_account_id",
+     *      referencedColumnName="id"
+     * )
+     * @Serializer\Exclude
+     *
+     * @var DepositAccount
+     */
+    protected $depositAccount;
 
     public function __construct()
     {
@@ -515,6 +549,39 @@ abstract class Order
     {
         $this->orderType = $orderType;
     }
+
+    /**
+     * @return PaymentAccount
+     */
+    public function getPaymentAccount()
+    {
+        return $this->paymentAccount;
+    }
+
+    /**
+     * @param PaymentAccount $paymentAccount
+     */
+    public function setPaymentAccount(PaymentAccount $paymentAccount)
+    {
+        $this->paymentAccount = $paymentAccount;
+    }
+
+    /**
+     * @return DepositAccount
+     */
+    public function getDepositAccount()
+    {
+        return $this->depositAccount;
+    }
+
+    /**
+     * @param DepositAccount $depositAccount
+     */
+    public function setDepositAccount(DepositAccount $depositAccount)
+    {
+        $this->depositAccount = $depositAccount;
+    }
+
 
     /**
      * @return string

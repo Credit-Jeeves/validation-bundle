@@ -27,6 +27,16 @@ class Customer
     protected $type;
 
     /**
+     * @Serializer\SerializedName("Property")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\PropertyCustomer")
+     * @Serializer\Groups({"ResMan"})
+     * @Serializer\XmlElement(namespace="http://www.w3.org/2005/Atom")
+     *
+     * @var PropertyCustomer
+     */
+    protected $property;
+
+    /**
      * @Serializer\SerializedName("Name")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\ResMan\UserName")
      * @Serializer\Groups({"ResMan"})
@@ -49,6 +59,36 @@ class Customer
      * @Serializer\XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
     protected $lease;
+
+    /**
+     * @return PropertyCustomer
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
+
+    /**
+     * @param PropertyCustomer $property
+     */
+    public function setProperty(PropertyCustomer $property)
+    {
+        $this->property = $property;
+    }
+
+    /**
+     * @param RtCustomer $rtCustomer
+     * @return string
+     */
+    public function getExternalUnitId(RtCustomer $rtCustomer)
+    {
+        return sprintf(
+            '%s|%s|%s',
+            $this->getProperty()->getPrimaryId(),
+            $rtCustomer->getRtUnit()->getUnit()->getInformation()->getBuildingID(),
+            $rtCustomer->getRtUnit()->getUnitId()
+        );
+    }
 
     /**
      * @return string

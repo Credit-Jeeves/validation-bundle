@@ -1,10 +1,13 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
@@ -22,13 +25,14 @@ abstract class DepositAccount
     protected $id;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *      inversedBy="depositAccount"
+     *      inversedBy="depositAccounts"
      * )
      * @ORM\JoinColumn(
      *      name="group_id",
-     *      referencedColumnName="id"
+     *      referencedColumnName="id",
+     *      nullable=false
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
      */
@@ -52,7 +56,6 @@ abstract class DepositAccount
      *         "default"="init"
      *      }
      * )
-     *
      */
     protected $status = DepositAccountStatus::DA_INIT;
 
@@ -91,9 +94,38 @@ abstract class DepositAccount
      */
     protected $paymentProcessor = PaymentProcessor::HEARTLAND;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="DepositAccountType", options={"default" = "rent"})
+     */
+    protected $type = DepositAccountType::RENT;
+
+    /**
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\Payment",
+     *      mappedBy="depositAccount",
+     *      cascade={"persist"}
+     * )
+     * @var ArrayCollection
+     */
+    protected $payments;
+
+    /**
+     * @ORM\OneToMany(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Order",
+     *      mappedBy="depositAccount",
+     *      cascade={"persist"}
+     * )
+     * @var ArrayCollection
+     */
+    protected $orders;
+
     public function __construct()
     {
         $this->paymentAccounts = new ArrayCollection();
+        $this->payments = new ArrayCollection();
+        $this->orders = new ArrayCollection();
         $this->passedAch = false;
     }
 
@@ -238,5 +270,53 @@ abstract class DepositAccount
     public function setMid($mid)
     {
         $this->mid = $mid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /*
+     * @return ArrayCollection|PaymentEntity[]
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param PaymentEntity $payment
+     */
+    public function addPayment(PaymentEntity $payment)
+    {
+        $this->payments->add($payment);
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function addOrder(Order $order)
+    {
+        $this->orders->add($order);
     }
 }

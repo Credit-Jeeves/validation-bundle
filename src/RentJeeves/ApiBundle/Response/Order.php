@@ -46,8 +46,7 @@ class Order extends ResponseResource
      */
     public function getPaymentAccountUrl()
     {
-        if ($transaction = $this->getTransaction()
-            and $paymentAccount = $transaction->getPaymentAccount()
+        if ($paymentAccount = $this->entity->getPaymentAccount()
             and !$paymentAccount->getDeletedAt()
         ) {
             return $this
@@ -79,9 +78,7 @@ class Order extends ResponseResource
      */
     public function getPaymentSource()
     {
-        if ($transaction = $this->getTransaction()
-            and $paymentAccount = $transaction->getPaymentAccount()
-        ) {
+        if ($paymentAccount = $this->entity->getPaymentAccount()) {
             return $paymentAccount->getName();
         }
 
@@ -117,6 +114,26 @@ class Order extends ResponseResource
         }
 
         return '';
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"OrderDetails"})
+     * @return string
+     */
+    public function getRent()
+    {
+        return $this->entity->getRentAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"OrderDetails"})
+     * @return string
+     */
+    public function getOther()
+    {
+        return $this->entity->getOtherAmount();
     }
 
     /**

@@ -124,18 +124,21 @@ class PayController extends Controller
     public function sourceExistingAction(Request $request)
     {
         $formType = new PaymentAccountType($this->getUser());
-        $formData = $this->getRequest()->get($formType->getName());
+        $formData = $request->get($formType->getName());
 
         $paymentAccountId = $formData['id'];
-        $groupId = $formData['groupId'];
+        $contractId = $request->get('contract_id');
 
         $em = $this->getDoctrine()->getManager();
         $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId);
-        $group = $em->getRepository('DataBundle:Group')->find($groupId);
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
 
         // ensure group id is associated with payment account
         try {
-            $this->ensureAccountAssociation($paymentAccount, $group);
+            if (!$contract) {
+                throw new \Exception('Contract is undefined');
+            }
+            $this->ensureAccountAssociation($paymentAccount, $contract->getGroup());
         } catch (Exception $e) {
             return new JsonResponse(
                 array(

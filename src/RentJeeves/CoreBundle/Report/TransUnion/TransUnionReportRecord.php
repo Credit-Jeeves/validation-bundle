@@ -440,8 +440,6 @@ class TransUnionReportRecord
             $isIntegratedGroup = $this->contract->getGroup()->getGroupSettings()->getIsIntegrated();
             if ($isIntegratedGroup) {
                 return $this->contract->getIntegratedBalance();
-            } else {
-                return $this->contract->getBalance();
             }
         }
 

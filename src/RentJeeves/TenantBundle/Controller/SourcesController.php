@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
@@ -32,11 +33,16 @@ class SourcesController extends Controller
      */
     public function indexAction()
     {
-        $paymentAccounts = $this->getUser()->getPaymentAccounts();
+        $paymentAccounts = $this->getDoctrine()
+            ->getRepository('RjDataBundle:PaymentAccount')
+            ->getActivePaymentAccountsForTenant($this->getUser());
 
-        return array(
-            'paymentAccounts' => $paymentAccounts
-        );
+        return [
+            'paymentAccounts' => $paymentAccounts,
+            'needDisplayGroups' => false,
+            'isLocked' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')
+                ->isPaymentProcessorLocked($this->getUser())
+        ];
     }
 
     /**
@@ -45,6 +51,10 @@ class SourcesController extends Controller
     public function delAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
+        if ($em->getRepository('RjDataBundle:Tenant')
+            ->isPaymentProcessorLocked($this->getUser())) {
+            throw new MethodNotAllowedException('Payment Processor is Locked');
+        }
         /** @var PaymentAccount $paymentAccount */
         $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($id);
         if (empty($paymentAccount) || $this->getUser()->getId() != $paymentAccount->getUser()->getId()) {
@@ -63,7 +73,11 @@ class SourcesController extends Controller
     public function saveAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $form = new PaymentAccountType($this->getUser());
+        if ($em->getRepository('RjDataBundle:Tenant')
+            ->isPaymentProcessorLocked($user = $this->getUser())) {
+            throw new MethodNotAllowedException('Payment Processor is Locked');
+        }
+        $form = new PaymentAccountType($user);
 
         $id = null;
         $formData = $request->get($form->getName());

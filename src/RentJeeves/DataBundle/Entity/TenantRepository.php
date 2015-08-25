@@ -9,6 +9,27 @@ use Doctrine\ORM\Query\Expr;
 
 class TenantRepository extends EntityRepository
 {
+    /**
+     * @param Tenant $tenant
+     * @return bool
+     */
+    public function isPaymentProcessorLocked(Tenant $tenant)
+    {
+        $query = $this->createQueryBuilder('t');
+        $query->innerJoin('t.contracts', 'con');
+        $query->innerJoin('con.holding', 'h');
+        $query->where('con.tenant = :tenant');
+        $query->andWhere('h.isPaymentProcessorLocked = 1');
+        $query->andWhere('con.status != :deleted AND con.status != :finished');
+        $query->setParameter('tenant', $tenant);
+        $query->setParameter('deleted', ContractStatus::DELETED);
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+
+        return count($query->getScalarResult()) > 0;
+    }
+
     public function countTenants($group, $searchBy = 'address', $search = '')
     {
         $query = $this->createQueryBuilder('t');

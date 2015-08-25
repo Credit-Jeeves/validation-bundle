@@ -7,7 +7,15 @@ use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Model\DepositAccount as Base;
 
 /**
- * @ORM\Table(name="rj_deposit_account")
+ * @ORM\Table(
+ *      name="rj_deposit_account",
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(
+ *              name="da_unique_constraint",
+ *              columns={"type", "group_id", "payment_processor"}
+ *          )
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\DepositAccountRepository")
  */
 class DepositAccount extends Base

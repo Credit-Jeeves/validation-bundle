@@ -10,7 +10,10 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -347,7 +350,7 @@ abstract class Group
     protected $importSummaries;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *     targetEntity="\RentJeeves\DataBundle\Entity\DepositAccount",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"},
@@ -355,9 +358,9 @@ abstract class Group
      *     fetch="EAGER"
      * )
      *
-     * @var DepositAccount
+     * @var ArrayCollection
      */
-    protected $depositAccount;
+    protected $depositAccounts;
 
     /**
      * @ORM\OneToMany(
@@ -413,10 +416,6 @@ abstract class Group
      *     type="string",
      *     name="statement_descriptor",
      *     nullable=true
-     * )
-    * @Assert\Length(
-     *     max = 14,
-     *     maxMessage="error.statement_descriptor.too_long"
      * )
      */
     protected $statementDescriptor;
@@ -494,6 +493,7 @@ abstract class Group
         $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
         $this->disableCreditCard = false;
+        $this->depositAccounts = new ArrayCollection();
     }
 
     /**
@@ -1258,21 +1258,61 @@ abstract class Group
         return $this->contracts;
     }
 
-    public function setDepositAccount($account)
+    /**
+     * @param $account
+     */
+    public function addDepositAccount($account)
     {
-        $this->depositAccount = $account;
-
-        return $this;
+        $this->depositAccounts->add($account);
     }
 
     /**
-     * Get DepositAccount
-     *
-     * @return DepositAccount
+     * @return DepositAccount|null
      */
-    public function getDepositAccount()
+    public function getRentDepositAccountForCurrentPaymentProcessor()
     {
-        return $this->depositAccount;
+        /** @var DepositAccount $depositAccount */
+        foreach ($this->depositAccounts as $depositAccount) {
+            if ($depositAccount->getType() === DepositAccountType::RENT &&
+                $depositAccount->getPaymentProcessor() === $this->getGroupSettings()->getPaymentProcessor()
+            ) {
+                return $depositAccount;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $type
+     * @param string $paymentProcessor
+     *
+     * @return null|DepositAccount
+     */
+    public function getDepositAccount($type, $paymentProcessor)
+    {
+        if (false === DepositAccountType::isValid($type)) {
+            throw new \LogicException(sprintf('%s is not valid DepositAccountType', $type));
+        }
+        if (false === PaymentProcessor::isValid($paymentProcessor)) {
+            throw new \LogicException(sprintf('%s is not valid PaymentProcessor', $paymentProcessor));
+        }
+        /** @var DepositAccount $depositAccount */
+        foreach ($this->depositAccounts as $depositAccount) {
+            if ($depositAccount->getType() === $type && $depositAccount->getPaymentProcessor() === $paymentProcessor) {
+                return $depositAccount;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return ArrayCollection|DepositAccount[]
+     */
+    public function getDepositAccounts()
+    {
+        return $this->depositAccounts;
     }
 
     /**
@@ -1295,7 +1335,7 @@ abstract class Group
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|BillingAccount[]
      */
     public function getBillingAccounts()
     {
@@ -1356,7 +1396,7 @@ abstract class Group
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|Landlord[]
      */
     public function getGroupAgents()
     {

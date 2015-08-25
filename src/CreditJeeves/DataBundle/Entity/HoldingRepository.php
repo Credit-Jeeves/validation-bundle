@@ -7,6 +7,29 @@ use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 
 class HoldingRepository extends EntityRepository
 {
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getQueryForHoldingsWithResManSettings()
+    {
+        return $this->createQueryBuilder('holding')
+            ->innerJoin('holding.resManSettings', 'resManSettings')
+            ->innerJoin('holding.propertyMapping', 'propertyMapping')
+            ->where('holding.apiIntegrationType = :resManSettings')
+            ->setParameter('resManSettings', ApiIntegrationType::RESMAN);
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getQueryForHoldingsWithMriSettings()
+    {
+        return $this->createQueryBuilder('holding')
+            ->innerJoin('holding.mriSettings', 'mriSettings')
+            ->innerJoin('holding.propertyMapping', 'propertyMapping')
+            ->where('holding.apiIntegrationType = :mri')
+            ->setParameter('mri', ApiIntegrationType::MRI);
+    }
 
     /**
      * @return Holding[]
@@ -97,5 +120,21 @@ class HoldingRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param int $firstId
+     * @param int $lastId
+     *
+     * @return Holding[]
+     */
+    public function findHoldingsByRangeIds($firstId, $lastId)
+    {
+        return $this->createQueryBuilder('h')
+            ->where('h.id >= :firstId AND h.id <= :lastId')
+            ->setParameter('firstId', $firstId)
+            ->setParameter('lastId', $lastId)
+            ->getQuery()
+            ->execute();
     }
 }

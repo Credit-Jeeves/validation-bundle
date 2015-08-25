@@ -3,6 +3,8 @@
 namespace RentJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\BaseController;
+use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,6 +23,12 @@ class AlertController extends BaseController
         $user = $this->getUser();
         $translator = $this->get('translator.default');
         $em = $this->getEntityManager();
+        /** @var Holding $holding */
+        $holding = $user->getHolding();
+
+        if ($holding && $holding->isPaymentProcessorLocked()) {
+            $alerts[] = $translator->trans('alert.changing_payment_account');
+        }
 
         $inviteCode = $user->getInviteCode();
         if (!empty($inviteCode)) {
@@ -49,8 +57,9 @@ class AlertController extends BaseController
                 $alerts[] = $text;
             }
         } else {
+            /** @var Group $group */
             $group = $this->get('core.session.landlord')->getGroup();
-            $deposit = $group->getDepositAccount();
+            $deposit = $group->getRentDepositAccountForCurrentPaymentProcessor();
             $billing = $group->getActiveBillingAccount();
 
             if (empty($deposit) || $deposit->getStatus() == DepositAccountStatus::DA_INIT) {
@@ -89,6 +98,10 @@ class AlertController extends BaseController
     {
         $alerts = array();
         $user = $this->getUser();
+        if ($this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')
+            ->isPaymentProcessorLocked($user)) {
+            $alerts[] = $this->get('translator.default')->trans('alert.changing_payment_account');
+        }
         $inviteCode = $user->getInviteCode();
         if (!empty($inviteCode)) {
             $alerts[] = $this->get('translator.default')->trans('alert.tenant.verify_email');

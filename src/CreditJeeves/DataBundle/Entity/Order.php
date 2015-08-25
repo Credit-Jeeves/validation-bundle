@@ -8,12 +8,14 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use JMS\Serializer\GenericSerializationVisitor;
+use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 /**
@@ -556,6 +558,8 @@ class Order extends Base
                 $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
         }
+        $result['depositType'] = $this->getDepositAccount() ?
+            DepositAccountType::title($this->getDepositAccount()->getType()) : '';
 
         if ($visitor !== null) {
             $visitor->setRoot($result);
@@ -978,7 +982,7 @@ class Order extends Base
      */
     public function getResManDescription()
     {
-        return $this->getComment();
+        return ShorteningAddressUtility::shrinkAddress($this->getComment(), 50);
     }
 
     /**

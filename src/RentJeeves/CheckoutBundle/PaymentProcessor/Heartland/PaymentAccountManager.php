@@ -157,7 +157,8 @@ class PaymentAccountManager
     {
         $merchantName = $this->defaultMerchantName;
         if ($group !== null) {
-            $merchantName = $group->getMerchantName();
+            $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+            $merchantName = $depositAccount ? $depositAccount->getMerchantName() : '';
         }
         if (empty($merchantName)) {
             throw new PaymentProcessorConfigurationException(

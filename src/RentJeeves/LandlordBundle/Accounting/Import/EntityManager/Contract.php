@@ -257,6 +257,13 @@ trait Contract
             if ($moveOutInt <= $todayInt) {
                 $this->setFinishedContract();
             }
+        } elseif (isset($row[Mapping::KEY_TENANT_STATUS]) &&
+            trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) == Tenant::$tenantStatusCurrent &&
+            $leaseEnd <= $today
+        ) {
+            // if tenant status is "C" and today is past lease-end,
+            // then we should ignore month-to-month field and treat as month-to-month.
+            $this->currentImportModel->getContract()->setFinishAt(null);
         } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[Mapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {

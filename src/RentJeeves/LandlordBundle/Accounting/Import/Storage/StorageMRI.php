@@ -150,15 +150,16 @@ class StorageMRI extends ExternalApiStorage
                 $startAt = $this->getDateString($customer->getOccupyDateFormatted());
             }
 
+            $address = $customer->getAddress() ? $customer->getAddress() : $customer->getBuildingAddress();
+
             $finishAt = $this->getDateString($customer->getLeaseEnd());
             $moveOut = $this->getDateString($customer->getLeaseMoveOut());
             $monthToMonth = $customer->getLeaseMonthToMonth();
             $isCurrent = $customer->getIsCurrent();
             $monthToMonth = strtolower($isCurrent) === 'y' ? $isCurrent : $monthToMonth;
 
-            $address = $customer->getAddress() ? $customer->getAddress() : $customer->getBuildingAddress();
-            $externalUnitId = sprintf('%s_%s', $customer->getBuildingId(), $customer->getUnitId());
-            $unitName = $externalUnitId; // See https://credit.atlassian.net/browse/RT-1548
+            $externalUnitId = $customer->getExternalUnitId();
+            $unitName = $customer->getUnitId();
 
             $data = [
                 $customer->getResidentId(),
@@ -195,14 +196,12 @@ class StorageMRI extends ExternalApiStorage
      */
     protected function getPayAllowed(Value $customer)
     {
-        $payAllowed = trim(strtolower($customer->getPayAllowed()));
+        $payNotAllowed = trim(strtolower($customer->getPayAllowed()));
 
-        if ($payAllowed === 'd') {
+        if ($payNotAllowed === 'y') {
             return PaymentAccepted::DO_NOT_ACCEPT;
         }
 
-        if (empty($payAllowed) || $payAllowed === 'c') {
-            return PaymentAccepted::ANY;
-        }
+        return PaymentAccepted::ANY;
     }
 }

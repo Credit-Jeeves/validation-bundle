@@ -316,20 +316,9 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         $isIntegrated = $contract->getGroup()->getGroupSettings()->getIsIntegrated();
         $operations = $order->getOperations();
 
-        $oldBalance = $contract->getBalance();
         $oldIntegratedBalance = $contract->getIntegratedBalance();
 
         foreach ($operations as $operation) {
-            if ($operation->getType() === OperationType::RENT) {
-                if ($isSubtract) {
-                    $balance = $contract->getBalance() - $operation->getAmount();
-                } else {
-                    $balance = $contract->getBalance() + $operation->getAmount();
-                }
-
-                $contract->setBalance($balance);
-            }
-
             if ($isIntegrated && in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER])) {
                 if ($isSubtract) {
                     $balance = $contract->getIntegratedBalance() - $operation->getAmount();
@@ -347,17 +336,6 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
 
         $this->em->flush($contract);
 
-        if ($oldBalance != $contract->getBalance()) {
-            $this->logger->debug(
-                sprintf(
-                    '[OrderStatusManager]Order #%d updated balance for contract #%d from "%s" to "%s"',
-                    $order->getId(),
-                    $contract->getId(),
-                    $oldBalance,
-                    $contract->getBalance()
-                )
-            );
-        }
         if ($oldIntegratedBalance != $contract->getIntegratedBalance()) {
             $this->logger->debug(
                 sprintf(

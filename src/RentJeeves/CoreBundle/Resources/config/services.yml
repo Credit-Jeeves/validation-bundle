@@ -42,3 +42,36 @@ services:
     renttrack.geocoder:
         class: RentJeeves\CoreBundle\Services\GeoCoder
         parent: bazinga_geocoder.geocoder
+
+    jms_serializer.csv_pipe_serialization_visitor:
+        class: RentJeeves\CoreBundle\Visitor\CsvSerializationVisitor
+        arguments:
+            - '|'
+            - '"'
+        tags:
+            - { name: jms_serializer.serialization_visitor, format: csv_pipe }
+
+    aci_profiles_mapper:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper
+        public: false
+        arguments:
+            - %aci.collect_pay.business_id%
+
+    aci_profiles_exporter:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\CsvExporter
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @aci_profiles_mapper
+            - @jms_serializer
+            - @validator
+
+    aci_enrollment_file_deserializer:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer\EnrollmentResponseFileDeserializer
+        public: false
+
+    aci_profiles_importer:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\CsvImporter
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @aci_enrollment_file_deserializer
+            - @validator

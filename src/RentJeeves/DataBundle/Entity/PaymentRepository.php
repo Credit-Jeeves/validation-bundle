@@ -1,21 +1,19 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use Doctrine_Expression;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 /**
- * @author Alex Emelyanov
- *
  * Aliases for this class:
  * p - payment, table rj_payment, class Payment
  * c - contract, table rj_contract, class Contract
@@ -52,13 +50,15 @@ class PaymentRepository extends EntityRepository
         );
         $query->setParameter('contractNotActiveStatuses', array(ContractStatus::DELETED, ContractStatus::FINISHED));
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('g.depositAccount', 'd');
+        $query->innerJoin('c.holding', 'h');
+        $query->innerJoin('g.depositAccounts', 'd');
         $query->leftJoin(
             'p.jobs',
             'j',
             Expr\Join::WITH,
             "DATE(j.createdAt) = :startDate"
         );
+        $query->andWhere('h.paymentsEnabled = 1');
         $query->andWhere('j.id IS NULL');
         $query->andWhere('p.status = :status');
         $query->andWhere('c.paymentAccepted = :paymentAccepted');
@@ -85,6 +85,7 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('paymentAccepted', (string) PaymentAccepted::ANY);
 
         $query = $query->getQuery();
+
         return $query->execute();
     }
 
@@ -108,6 +109,7 @@ class PaymentRepository extends EntityRepository
         if ($jobs) {
             $em->flush();
         }
+
         return $jobs;
     }
 
@@ -195,6 +197,28 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('pa.user = :user');
         $query->setParameter('user', $user);
         $query->orderBy('p.paidFor', 'DESC');
+
+        return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $paymentProcessor
+     * @return Payment[]
+     */
+    public function getActiveHoldingPaymentsWithPaymentProcessor(Holding $holding, $paymentProcessor)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->innerJoin('p.paymentAccount', 'pa');
+        $query->innerJoin('p.contract', 'c');
+
+        $query->where('p.status = :statusActive');
+        $query->andWhere('c.holding = :holding');
+        $query->andWhere('pa.paymentProcessor = :payment_processor');
+
+        $query->setParameter('statusActive', PaymentStatus::ACTIVE);
+        $query->setParameter('holding', $holding);
+        $query->setParameter('payment_processor', $paymentProcessor);
 
         return $query->getQuery()->execute();
     }

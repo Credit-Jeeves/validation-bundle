@@ -190,7 +190,73 @@ abstract class Holding
     protected $isAllowedFutureContract = false;
 
     /**
-     * @return mixed
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="is_payment_processor_locked",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $isPaymentProcessorLocked = false;
+
+    /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="payments_enabled",
+     *      options={
+     *          "default":1
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $paymentsEnabled = true;
+
+    /**
+     * @return boolean
+     */
+    public function isPaymentsEnabled()
+    {
+        return $this->paymentsEnabled;
+    }
+
+    /**
+     * @param boolean $paymentsEnabled
+     */
+    public function setPaymentsEnabled($paymentsEnabled)
+    {
+        $this->paymentsEnabled = $paymentsEnabled;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPaymentProcessorLocked()
+    {
+        return $this->isPaymentProcessorLocked;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsPaymentProcessorLocked()
+    {
+        return $this->isPaymentProcessorLocked;
+    }
+
+    /**
+     * @param boolean $isPaymentProcessorLocked
+     */
+    public function setIsPaymentProcessorLocked($isPaymentProcessorLocked)
+    {
+        $this->isPaymentProcessorLocked = $isPaymentProcessorLocked;
+    }
+
+    /**
+     * @return boolean
      */
     public function isAllowedFutureContract()
     {

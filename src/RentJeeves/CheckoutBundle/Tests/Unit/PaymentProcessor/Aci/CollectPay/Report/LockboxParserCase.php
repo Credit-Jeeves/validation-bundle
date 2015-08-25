@@ -61,7 +61,7 @@ class LockboxParserCase extends BaseTestCase
         /** @var ReversalReportTransaction $returnedTransaction */
         $returnedTransaction = $decodedData[0];
         $this->assertEquals('7019551', $returnedTransaction->getTransactionId());
-        $this->assertEquals('1.11', $returnedTransaction->getAmount());
+        $this->assertEquals('3.11', $returnedTransaction->getAmount());
         $this->assertEquals('05292015', $returnedTransaction->getTransactionDate()->format('mdY'));
         $this->assertEquals('19 : Account Closed', $returnedTransaction->getReversalDescription());
         $this->assertEquals($returnedTransaction->getTransactionId(), $returnedTransaction->getOriginalTransactionId());
@@ -70,7 +70,7 @@ class LockboxParserCase extends BaseTestCase
         /** @var ReversalReportTransaction $refundedTransaction */
         $refundedTransaction = $decodedData[1];
         $this->assertEquals('7020506', $refundedTransaction->getTransactionId());
-        $this->assertEquals('100.00', $refundedTransaction->getAmount());
+        $this->assertEquals('101.00', $refundedTransaction->getAmount());
         $this->assertEquals('05292015', $refundedTransaction->getTransactionDate()->format('mdY'));
         $this->assertNotEquals(
             $refundedTransaction->getTransactionId(),

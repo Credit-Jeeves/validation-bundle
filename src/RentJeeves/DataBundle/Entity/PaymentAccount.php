@@ -2,9 +2,9 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\DataBundle\Model\PaymentAccount as Base;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="rj_payment_account")
