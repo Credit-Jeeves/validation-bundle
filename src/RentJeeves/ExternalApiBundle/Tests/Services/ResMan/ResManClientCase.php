@@ -26,7 +26,7 @@ class ResManClientCase extends Base
 
     const EXTERNAL_LEASE_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
 
-    const EXTERNAL_UNIT_ID = '2';
+    const EXTERNAL_UNIT_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d|TEST|2';
 
     /**
      * @test
