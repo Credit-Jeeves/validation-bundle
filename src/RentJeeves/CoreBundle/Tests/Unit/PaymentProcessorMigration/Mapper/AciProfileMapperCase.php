@@ -415,4 +415,36 @@ class AciProfileMapperCase extends BaseTestCase
             $result[1]
         );
     }
+
+    /**
+     * @test
+     */
+    public function shouldReturnEmptyArrayIfRelationUserDoesNotHaveAddressAndContracts()
+    {
+        /** @var AciProfileMapper|\PHPUnit_Framework_MockObject_MockObject $aciProfileMapper */
+        $aciProfileMapper = $this->getMock(
+            '\RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper',
+            ['getContractForUser'],
+            ['testBusinessId']
+        );
+
+        $aciProfileMapper->expects($this->once())
+            ->method('getContractForUser')
+            ->will($this->returnValue(null));
+
+        $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
+        $this->writeAttribute($user, 'addresses', []); // Fake removing addresses
+        $holding = $depositAccount = $user->getActiveContracts()[0]->getGroup()->getHolding();
+
+        $profile = new AciImportProfileMap();
+        $profile->setUser($user);
+
+        $result = $aciProfileMapper->map($profile, [$holding]);
+
+        $this->assertTrue(is_array($result), 'Result of AciProfileMapper::map must be array');
+        $this->assertTrue(
+            empty($result),
+            'Result of AciProfileMapper::map for User without Addresses and without Contracts must be empty'
+        );
+    }
 }
