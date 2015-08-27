@@ -140,7 +140,7 @@ class AciProfileMapper
             return $allContracts->first();
         }
 
-        return false;
+        return null;
     }
 
     /**
