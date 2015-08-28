@@ -33,7 +33,7 @@ class PaymentAccount extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"PaymentAccountDetails"})
+     * @Serializer\Groups({"PaymentAccountDetails", "PaymentAccountShort"})
      *
      * @return string
      */

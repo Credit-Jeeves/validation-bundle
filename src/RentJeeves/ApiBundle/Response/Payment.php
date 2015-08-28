@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Payment as Entity;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 
 /**
  * @DI\Service("response_resource.payment")
@@ -172,5 +173,28 @@ class Payment extends ResponseResource
         $paidFor = $this->entity->getPaidFor();
 
         return $paidFor ? $paidFor->format('Y-m') : "";
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"PaymentDetails"})
+     * @Serializer\Type("double")
+     *
+     * @return double
+     */
+    public function getFee()
+    {
+        if ($this->entity->getPaymentAccount()->getType() === PaymentAccountType::CARD) {
+            $amount = $this->entity->getAmount();
+            $groupFeeCC = $this->entity->getContract()->getGroup()->getGroupSettings()->getFeeCC();
+
+            return round($amount * ($groupFeeCC / 100), 2);
+        } else {
+            if (true === $this->entity->getContract()->getGroup()->getGroupSettings()->isPassedAch()) {
+                return $this->entity->getContract()->getGroup()->getGroupSettings()->getFeeACH();
+            }
+
+            return 0;
+        }
     }
 }
