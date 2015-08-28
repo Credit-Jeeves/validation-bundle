@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AMSISettings;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
@@ -69,6 +70,16 @@ abstract class Holding
      * )
      */
     protected $users;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
+     *     mappedBy="holding",
+     *     cascade={"remove", "persist"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $depositAccounts;
 
     /**
      * @ORM\OneToMany(
@@ -244,6 +255,7 @@ abstract class Holding
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
         $this->apiIntegrationType = ApiIntegrationType::NONE;
+        $this->depositAccounts = new ArrayCollection();
     }
 
     /**
@@ -303,6 +315,22 @@ abstract class Holding
     }
 
     /**
+     * @return DepositAccount[]
+     */
+    public function getDepositAccounts()
+    {
+        return $this->depositAccounts;
+    }
+
+    /**
+     * @param array $depositAccounts
+     */
+    public function setDepositAccounts(array $depositAccounts)
+    {
+        $this->depositAccounts = $depositAccounts;
+    }
+
+    /**
      * @return AMSISettings
      */
     public function getAmsiSettings()
@@ -327,7 +355,7 @@ abstract class Holding
     }
 
     /**
-     * @param MRISettings $MRISettings
+     * @param MRISetting $MRISettings
      */
     public function setMriSettings(MRISettings $MRISettings = null)
     {
@@ -644,37 +672,5 @@ abstract class Holding
     public function setApiIntegrationType($apiIntegrationType)
     {
         $this->apiIntegrationType = $apiIntegrationType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRecurringCodes()
-    {
-        return $this->recurringCodes;
-    }
-
-    /**
-     * @param string $recurringCodes
-     */
-    public function setRecurringCodes($recurringCodes)
-    {
-        $this->recurringCodes = $recurringCodes;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getUseRecurringCharges()
-    {
-        return $this->useRecurringCharges;
-    }
-
-    /**
-     * @param boolean $useRecurringCharges
-     */
-    public function setUseRecurringCharges($useRecurringCharges)
-    {
-        $this->useRecurringCharges = $useRecurringCharges;
     }
 }

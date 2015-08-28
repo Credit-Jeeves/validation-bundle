@@ -72,4 +72,30 @@ class GroupCase extends BaseTestCase
         $errors = $validator->validate($group, ['holding']);
         $this->assertCount(1, $errors);
     }
+
+    /**
+     * @test
+     */
+    public function shouldGetGroupAccountNumberPerRent()
+    {
+        $this->load(true);
+        /** @var Group $group */
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
+        $this->assertNotEmpty($group, 'We should get from fixtures group with name "Test Rent Group"');
+        $group->getGroupSettings()->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+        $this->getEntityManager()->flush();
+
+        $this->assertNotEmpty(
+            $group->getRentAccountNumberPerCurrentPaymentProcessor(),
+            'We should get account number from this group.'
+        );
+
+        $group->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
+        $this->getEntityManager()->flush();
+
+        $this->assertEmpty(
+            $group->getRentAccountNumberPerCurrentPaymentProcessor(),
+            'We should get empty account number from this group.'
+        );
+    }
 }

@@ -4,10 +4,10 @@ namespace CreditJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Model\DepositAccount;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -219,32 +219,17 @@ class Group extends BaseGroup
         return $this->getStatementDescriptor() ?: substr($this->getName(), 0, 14);
     }
 
-    public function getAccountNumber()
+    /**
+     * @return string|null
+     */
+    public function getRentAccountNumberPerCurrentPaymentProcessor()
     {
-        if ($accountNumberMapping = $this->getAccountNumberMapping()) {
-            return $accountNumberMapping->getAccountNumber();
+        $depositAccount = $this->getRentDepositAccountForCurrentPaymentProcessor();
+        if ($depositAccount && $depositAccount->getAccountNumber()) {
+            return $depositAccount->getAccountNumber();
         }
 
         return null;
-    }
-
-    public function setAccountNumber($accountNumber)
-    {
-        if (!$accountNumberMapping = $this->getAccountNumberMapping()) {
-            $accountNumberMapping = new GroupAccountNumberMapping();
-            $this->setAccountNumberMapping($accountNumberMapping);
-        }
-        $accountNumberMapping->setAccountNumber($accountNumber);
-    }
-
-    public function getAccountNumberMapping()
-    {
-        if (!$this->accountNumberMapping) {
-            $this->accountNumberMapping = new GroupAccountNumberMapping();
-            $this->accountNumberMapping->setGroup($this);
-        }
-
-        return $this->accountNumberMapping;
     }
 
     /**
