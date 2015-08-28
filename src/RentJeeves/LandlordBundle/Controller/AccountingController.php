@@ -369,7 +369,7 @@ class AccountingController extends Controller
 
         if ($total > 0) {
             $collection = $handler->getCurrentCollectionImportModel();
-        } else {
+        } elseif (!$storage->isOnlyException()) {
             $storage->clearSession();
         }
 
