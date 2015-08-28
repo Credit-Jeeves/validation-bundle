@@ -123,7 +123,7 @@ class AciProfileMapper
     }
 
     /**
-     * Return Contract or NULL if tenant hasn't contracts
+     * Return Contract or NULL if if tenant doesn't have contracts
      *
      * @param Tenant $user
      * @return \RentJeeves\DataBundle\Entity\Contract|null
