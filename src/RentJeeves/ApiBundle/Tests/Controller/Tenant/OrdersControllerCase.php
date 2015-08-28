@@ -105,7 +105,7 @@ class OrdersControllerCase extends BaseApiTestCase
     public static function getOrderDataProvider()
     {
         return [
-            [2, 'card', '123123', 1500, 0, 1500, '-49 days', '9', '-50 days'],
+            [2, 'card', '123123', 1500, 0, 1500, '', '9', '-50 days'], // OrderPayDirect
             [3, 'card', '456456', 1500, 300, 1800, '-41 days', '', '-40 days'],
             [5, 'card', '456555', 3000, 0, 3000, '', '', 'now', 'Heartland Error'],
             [6, 'card', '147741', 1500, 0, 1500, '', '', 'now'],
