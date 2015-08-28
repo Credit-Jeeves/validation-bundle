@@ -74,6 +74,7 @@ class BillingAccountListener
         }
 
         $em = $eventArgs->getEntityManager();
-        $em->getRepository('RjDataBundle:BillingAccount')->deactivateAccounts($entity->getGroup());
+        $em->getRepository('RjDataBundle:BillingAccount')
+            ->deactivateAccounts($entity->getGroup(), $entity->getPaymentProcessor());
     }
 }
