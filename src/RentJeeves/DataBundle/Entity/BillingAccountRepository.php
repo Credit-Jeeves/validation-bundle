@@ -9,17 +9,20 @@ class BillingAccountRepository extends EntityRepository
 {
     /**
      * @param Group $group
+     * @param string $paymentProcessor
      *
      * @return BillingAccount[]
      */
-    public function deactivateAccounts($group)
+    public function deactivateAccounts(Group $group, $paymentProcessor)
     {
         return $this->createQueryBuilder('c')
             ->update()
             ->set('c.isActive', 0)
             ->where('c.group = :group')
             ->andWhere('c.isActive = 1')
+            ->andWhere('c.paymentProcessor = :paymentProcessor')
             ->setParameter('group', $group)
+            ->setParameter('paymentProcessor', $paymentProcessor)
             ->getQuery()
             ->execute();
     }
