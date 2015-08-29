@@ -1816,10 +1816,6 @@
                 <source>order.paid.to</source>
                 <target>Paid To</target>
             </trans-unit>
-            <trans-unit id="order.receipt.footer">
-                <source>order.receipt.footer</source>
-                <target>This payment will appear on your statement as RENTTRK or RENTTRACK followed by your property or landlord name.</target>
-            </trans-unit>
             <trans-unit id="order.error.title">
                 <source>order.error.title</source>
                 <target>We encountered an error when attempting to make your rent payment.</target>
