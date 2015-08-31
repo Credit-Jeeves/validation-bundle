@@ -45,6 +45,14 @@ class ContractWaitingRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $unitName
+     * @param string $residentId
+     * @return ContractWaiting|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findByHoldingPropertyUnitResident(Holding $holding, Property $property, $unitName, $residentId)
     {
         $query = $this->createQueryBuilder('contract');
@@ -66,6 +74,31 @@ class ContractWaitingRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $residentId
+     * @return ContractWaiting[]
+     */
+    public function findByHoldingPropertyResident(Holding $holding, Property $property, $residentId)
+    {
+        $query = $this->createQueryBuilder('contract');
+        $query->select('contract')
+            ->innerJoin('contract.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('contract.residentId = :residentId')
+            ->andWhere('contract.property = :propertyId')
+            ->andWhere('g.holding = :holdingId')
+            ->andWhere('gs.isIntegrated = 1')
+            ->setParameter('propertyId', $property->getId())
+            ->setParameter('holdingId', $holding->getId())
+            ->setParameter('residentId', $residentId);
+
+        $query = $query->getQuery();
+
+        return $query->execute();
     }
 
     public function clearResidentContracts($residentId, $groupId)
