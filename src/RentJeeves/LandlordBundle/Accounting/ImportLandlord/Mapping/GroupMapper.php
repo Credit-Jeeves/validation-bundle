@@ -100,6 +100,7 @@ class GroupMapper extends AbstractMapper
     {
         $newGroupSettings = $group->getGroupSettings();
         $newGroupSettings->setPaymentProcessor(PaymentProcessor::ACI);
+        $newGroupSettings->setAutoApprove(true);
 
         return $newGroupSettings;
     }

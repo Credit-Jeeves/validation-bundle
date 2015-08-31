@@ -7,6 +7,7 @@ use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ApiBundle\Response\Contract as ContractResponseEntity;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 class ContractsControllerCase extends BaseApiTestCase
@@ -376,6 +377,59 @@ class ContractsControllerCase extends BaseApiTestCase
             $requestParams['lease_end'],
             $contract->getFinishAt()->format('Y-m-d'),
             'Lease end date is wrong'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateContractWithStatusApprovedIfGroupIsAutoApprove()
+    {
+        $this->load(true);
+        $params = [
+            'new_unit' => [
+                'address' => [
+                    'unit_name' => '',
+                    'street' => '320 North Dearborn Street',
+                    'city' => 'Chicago',
+                    'state' => 'IL',
+                    'zip' => '60654',
+                ],
+                'landlord' => [
+                    'email' => 'landlord1@example.com',
+                ],
+            ],
+            'rent' => 700,
+            'due_date' => 1,
+            'lease_start' => '2015-02-02',
+            'lease_end' => '2020-02-02',
+        ];
+        // Auto-Approve group
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
+        $groupSettings = $group->getGroupSettings();
+        $groupSettings->setAutoApprove(true);
+        $this->getEntityManager()->flush($groupSettings);
+
+        $response = $this->postRequest($params);
+        $this->assertResponse($response, 201);
+
+        $answer = $this->parseContent($response->getContent());
+        $tenant = $this->getUser();
+        /** Contract $contract */
+        $this->assertNotNull(
+            $contract = $this->getEntityRepository(self::WORK_ENTITY)->findOneBy(
+                [
+                    'tenant' => $tenant,
+                    'id' => $this->getIdEncoder()->decode($answer['id'])
+                ]
+            ),
+            'Contract was not created'
+        );
+
+        $this->assertEquals(
+            ContractStatus::APPROVED,
+            $contract->getStatus(),
+            'New Contract for auto-approve Group should have status \'APPROVED\''
         );
     }
 
