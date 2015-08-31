@@ -952,16 +952,15 @@
             </trans-unit>
             <trans-unit id="pidkiq.error.incorrect.answer">
                <source>pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%</source>
-               <target><![CDATA[We found your identity at the credit bureau, so you WILL be able
-                to set up your payment. However, some of the answers you provided to the
-                questions are incorrect, so you will not be able to see your credit score or
-                profile just yet. Please click Next to set up your payment, then contact
-                <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
-                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
-                 target="_blank" class="underline">
-                 to manually verify your identity.</a>
-                ]]>
-                </target>
+               <target><![CDATA[
+                   We're sorry, but we were unable to generate an online exam for you.
+                   Please contact
+                   <a href="%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                   to
+                   <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-" target="_blank" class="underline">
+                   manually verify your identity.</a>
+                 ]]>
+               </target>
             </trans-unit>
             <trans-unit id="pidkiq.error.generic">
                 <source>pidkiq.error.generic-%SUPPORT_EMAIL%</source>
