@@ -4,6 +4,9 @@ namespace RentJeeves\AdminBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
+/**
+ * @TODO need refactoring - (if we will add field - all tests will fail), we need more specific selectors
+ */
 class GroupCase extends BaseTestCase
 {
     /**
@@ -59,7 +62,7 @@ class GroupCase extends BaseTestCase
         $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
         $menu[1]->click();
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(8, $checkbox);
+        $this->assertCount(9, $checkbox);
         $checkbox[0]->check(); //remove one deposit account
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
@@ -85,7 +88,7 @@ class GroupCase extends BaseTestCase
         $menu[4]->click();
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(6, $checkbox);
+        $this->assertCount(7, $checkbox);
         $checkbox[3]->check(); //Check pay balance only
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
@@ -97,7 +100,7 @@ class GroupCase extends BaseTestCase
         $menu[4]->click();
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(6, $checkbox);
+        $this->assertCount(7, $checkbox);
         $checkbox[1]->check();  //Check is integrated
         $checkbox[3]->check(); //Check pay balance only
 
@@ -125,7 +128,7 @@ class GroupCase extends BaseTestCase
         $menu[4]->click();
 
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(10, $checkbox); // TODO check only current tab
+        $this->assertCount(11, $checkbox); // TODO check only current tab
         $checkbox[5]->check();  //Check is integrated
         $checkbox[7]->check(); //Check pay balance only
 

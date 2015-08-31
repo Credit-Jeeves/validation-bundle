@@ -206,6 +206,19 @@ abstract class GroupSettings
     protected $updatedAt;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="auto_approve_contracts",
+     *      options={
+     *          "default" : 0
+     *      }
+     * )
+     */
+    protected $autoApproveContracts = false;
+
+    /**
      * @param float $feeACH
      */
     public function setFeeACH($feeACH)
@@ -451,5 +464,21 @@ abstract class GroupSettings
     public function setShowPropertiesTab($showPropertiesTab)
     {
         $this->showPropertiesTab = $showPropertiesTab;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAutoApproveContracts()
+    {
+        return $this->autoApproveContracts;
+    }
+
+    /**
+     * @param boolean $isAutoApproveContracts
+     */
+    public function setAutoApproveContracts($isAutoApproveContracts)
+    {
+        $this->autoApproveContracts = $isAutoApproveContracts;
     }
 }
