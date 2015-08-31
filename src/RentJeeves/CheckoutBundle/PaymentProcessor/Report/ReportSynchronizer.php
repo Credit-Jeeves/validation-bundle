@@ -450,7 +450,12 @@ class ReportSynchronizer
         }
 
         $order = $transaction->getOrder();
-        if ($order->getStatus() !== OrderStatus::SENDING) {
+
+        /* PayDirect order can go to reversal state in 2 cases:
+         * 1. When order was set to complete (sending) by inbound leg and then outbound leg reverse comes
+         * 2. When order was set to returned by inbound leg and then outbound leg reverse comes
+         */
+        if ($order->getStatus() !== OrderStatus::SENDING && $order->getStatus() !== OrderStatus::RETURNED) {
             $this->logger->alert(sprintf(
                 'Unexpected order #%s status (%s) when transaction #%s processing',
                 $order->getId(),

@@ -187,30 +187,15 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldNotChangeOrderStatusWhenTryingToSetToReturnedAndOutboundLegIsInitiated()
+    public function shouldSetOrderToReturned()
     {
         $order = new OrderPayDirect();
         $order->setStatus(OrderStatus::NEWONE);
-        $transaction = new OutboundTransaction();
-        $transaction->setType(OutboundTransactionType::DEPOSIT);
-        $transaction->setStatus(OutboundTransactionStatus::SUCCESS);
-        $order->addOutboundTransaction($transaction);
-
         $this->statusManager->setReturned($order);
+        $this->assertEquals(OrderStatus::RETURNED, $order->getStatus());
 
-        $this->assertEquals(OrderStatus::NEWONE, $order->getStatus());
-    }
-
-    /**
-     * @test
-     */
-    public function shouldSetOrderToReturnedWhenOutboundLegIsNotInitiated()
-    {
-        $order = new OrderPayDirect();
-        $order->setStatus(OrderStatus::NEWONE);
-
+        $order->setStatus(OrderStatus::SENDING);
         $this->statusManager->setReturned($order);
-
         $this->assertEquals(OrderStatus::RETURNED, $order->getStatus());
     }
 
@@ -225,5 +210,18 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $this->statusManager->setSending($order);
 
         $this->assertEquals(OrderStatus::SENDING, $order->getStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotChangeOrderStatusWhenSetToRefundedIfOrderIsReturned()
+    {
+        $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::RETURNED);
+
+        $this->statusManager->setRefunded($order);
+
+        $this->assertEquals(OrderStatus::RETURNED, $order->getStatus());
     }
 }
