@@ -43,3 +43,6 @@ mink:
     selenium2: ~
 
 backup_restore: ~
+
+#hip_mandrill:
+#    disable_delivery: true # useful for dev/test environment. Default value is 'false'

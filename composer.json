@@ -268,7 +268,8 @@
         "besimple/soap-server": "dev-master",
         "besimple/wsdl2php": "dev-master",
         "renttrack/transunion-bundle": "dev-master",
-        "proberts/skip32": "dev-master"
+        "proberts/skip32": "dev-master",
+        "hipaway-travel/mandrill-bundle": "*"
     },
     "require-dev": {
         "qunit": "v1",
