@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class Mailer extends BaseMailer
 {
@@ -231,6 +232,7 @@ class Mailer extends BaseMailer
         $fee = $order->getFee();
         $amount = $order->getSum();
         $total = $fee + $amount;
+
         $vars = [
             'nameTenant' => $tenant->getFullName(),
             'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
@@ -241,6 +243,9 @@ class Mailer extends BaseMailer
             'groupName' => $order->getGroupName(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
+            'paymentProcessor' => $order->getPaymentProcessor(),
+            'type' => $order->getPaymentType(),
+            'statementDescriptor' => $this->getStatementDescriptor($order),
         ];
 
         return $this->sendBaseLetter('rjOrderReceipt', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -465,6 +470,9 @@ class Mailer extends BaseMailer
             'groupName' => $order->getGroupName(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
+            'paymentProcessor' => $order->getPaymentProcessor(),
+            'type' => $order->getPaymentType(),
+            'statementDescriptor' => $this->getStatementDescriptor($order),
         ];
 
         return $this->sendBaseLetter('rjPendingOrder', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -570,6 +578,9 @@ class Mailer extends BaseMailer
                 'amout' => $this->container->getParameter('credittrack_payment_per_month_currency') .
                     $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting
                 'number' => $order->getHeartlandTransactionId(),
+                'paymentProcessor' => $order->getPaymentProcessor(),
+                'type' => $order->getPaymentType(),
+                'statementDescriptor' => $this->getStatementDescriptor($order),
             ]
         );
     }
@@ -670,5 +681,17 @@ class Mailer extends BaseMailer
             $tenant->getEmail(),
             $tenant->getCulture()
         );
+    }
+
+    /**
+     * @param Order $order
+     * @return string
+     */
+    protected function getStatementDescriptor(Order $order)
+    {
+        $statementDescriptorPrefix = $order->getPaymentProcessor() == PaymentProcessor::HEARTLAND ? 'RENTTRK' : 'ORC';
+        $statementDescriptor = $order->getContract() ? $order->getContract()->getGroup()->getStatementDescriptor() : '';
+
+        return sprintf('%s*%s', $statementDescriptorPrefix, $statementDescriptor);
     }
 }

@@ -678,7 +678,11 @@ fixtures:
       </br>
       </br>
       </br>
-      {{ 'order.receipt.footer' | trans }}
+      {% if type == 'bank' %}
+      This payment will appear on your bank statement as RENTTRACK.
+      {% elseif type == 'card' %}
+      This payment will appear on your bank statement as {{ statementDescriptor }}.
+      {% endif %}
       {% endblock %}
 
 # rjOrderError.html
@@ -1090,7 +1094,11 @@ fixtures:
       </br>
       </br>
       </br>
-      {{ 'order.receipt.footer' | trans }}
+      {% if type == 'bank' %}
+      This payment will appear on your bank statement as RENTTRACK.
+      {% elseif type == 'card' %}
+      This payment will appear on your bank statement as {{ statementDescriptor }}.
+      {% endif %}
       {% endblock %}
 
 # rjContractAmountChanged.html
@@ -1122,7 +1130,6 @@ fixtures:
         </br>
         </br>
         </br>
-        {{ 'order.receipt.footer' | trans }}
       {% endblock %}
 
 # rjBatchDepositReportLandlord.html
@@ -1347,7 +1354,11 @@ fixtures:
         <br />
         </br>
         </br>
-        {{ 'order.receipt.footer' | trans }}
+        {% if type == 'bank' %}
+        This payment will appear on your bank statement as RENTTRACK.
+        {% elseif type == 'card' %}
+        This payment will appear on your bank statement as {{ statementDescriptor }}.
+        {% endif %}
       {% endblock %}
 
 
