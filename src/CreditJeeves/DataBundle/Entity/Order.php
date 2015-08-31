@@ -914,16 +914,20 @@ class Order extends Base
 
         if ($unitMapping) {
             $externalUnitId = $unitMapping->getExternalUnitId();
-
+            $exceptionMessage = sprintf(
+                'ResMan: Cannot post order #%d: external unit mapping (%s) invalid',
+                $this->getId(),
+                $externalUnitId
+            );
+            if (substr_count($externalUnitId, '|') !== 2) {
+                throw new \RuntimeException($exceptionMessage);
+            }
             // ResMan only uses the UnitID part when posting a payment
             list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
             if (!($propertyId && $buildingId && $unitId)) {
-                throw new \RuntimeException(sprintf(
-                    'ResMan: Cannot post order #%d: external unit mapping (%s) invalid',
-                    $this->getId(),
-                    $externalUnitId
-                ));
+                throw new \RuntimeException($exceptionMessage);
             }
+
             return $unitId;
         }
 
