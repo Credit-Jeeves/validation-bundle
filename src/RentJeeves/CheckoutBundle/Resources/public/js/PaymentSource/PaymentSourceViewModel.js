@@ -128,7 +128,11 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
      * Init object
      */
     self.init = function() {
-        self.load(self.contractId());
+        if (parent.paymentAccounts && parent.paymentAccounts().length > 0) {
+            self.mapPaymentAccounts(parent.paymentAccounts());
+        } else {
+            self.load(self.contractId());
+        }
         jQuery('input:radio[value="card"]').closest('label.radio').attr('data-bind', 'visible: !disableCreditCard()');
     };
 

@@ -52,82 +52,41 @@ function CreditTrackPayDialog(options) {
 
     this.step('source');
 
-    this.propertyFullAddress = new Address(this, window.addressesViewModels);
-
-    this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
-
     var now = new Date();
 
-    this.newUserAddress = ko.observableArray([]);
-
-    this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
-
-    this.notEmptyPaymentAccount = ko.computed(function() {
-        return self.paymentAccounts().length > 0;
+    self.propertyAddress = ko.computed(function() {
+        return new Address(self, self.addresses);
     });
 
-    this.addNewPaymentAccount = function() {
-        self.newPaymentAccount(true);
-        self.paymentSource.clear();
+    ko.utils.extend(self, new PayAddress(self, self.propertyAddress));
+
+    // Connected Payment Source Component
+    // Component should be connected after contractId and disableCreditCard and before it should be using
+    ko.utils.extend(self, new PaymentSourceViewModel(self, null, false, 'card'));
+
+    self.changePaymentAccountHandler = function() {
+        self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());
     };
 
-    this.paymentSource = new PaymentSource(
-        this,
-        true,
-        this.propertyFullAddress,
-        'card' //Temporary #RT-529
-    );
-
-    this.isNewPaymentAccount = ko.computed(function() {
-        return this.newPaymentAccount() && !self.paymentSource.id();
-    }, self);
-
     jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_type_row').hide(); //Temporary #RT-529
-    this.paymentSource.groupId(this.paymentGroup.id);
     this.getLastPaymentDay = 'no finish date';
-
-    this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
 
     this.stepExist = function(step) {
         return -1 != steps.indexOf(step);
     };
-
-    var addNewAddress = function(newAddress) {
-        var address = new Address(null);
-        ko.mapping.fromJS(newAddress, {}, address);
-        window.addressesViewModels.push(address);
-        self.address.clear();
-        self.address.addressChoice(newAddress.id);
-        self.paymentSource.address.clear();
-        self.paymentSource.address.addressChoice(newAddress.id);
-        self.newUserAddress.push(address);
-    };
-
-    this.currentAddress = ko.computed(function() {
-        if (self.paymentSource && self.paymentSource.address.addressChoice()) {
-            var result = ko.utils.arrayFirst(window.addressesViewModels, function(address) {
-                return address.id() == self.paymentSource.address.addressChoice();
-            });
-            if (result) {
-                return result.toString();
-            }
-        }
-
-        return '';
-    }, this);
 
     var onSuccessStep = function(data) {
         var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'source':
                 if (data.newAddress) {
-                    addNewAddress(data.newAddress);
+                    self.addNewAddress(data.newAddress);
                 }
 
                 if (data.paymentAccount) {
-                  // Do not change order of next calls:
-                  self.paymentAccounts.push(data.paymentAccount);
-                  self.paymentSource.id(data.paymentAccount.id);
+                    // Do not change order of next calls:
+                    self.pushPaymentAccount(data.paymentAccount);
+                    self.currentPaymentAccountId(data.paymentAccount.id);
                 }
                 // End
                 break;
@@ -142,26 +101,15 @@ function CreditTrackPayDialog(options) {
         self.step(steps[++current]);
     };
 
-    this.paymentSource.id.subscribe(function(newValue) {
-        if (null != newValue) {
-            self.newPaymentAccount(false);
-            jQuery.each(self.paymentAccounts(), function(key, val) {
-                if (newValue == val.id) {
-                    self.paymentSource.type(val.type);
-                    self.paymentSource.name(val.name);
-                    self.paymentSource.address.addressChoice(val.addressId);
-                    var exp = new Date(val.cc_expiration);
-                    self.paymentSource.ExpirationMonth(exp.getMonth());
-                    self.paymentSource.ExpirationYear(exp.getFullYear());
-                }
-            });
-        }
-    });
-
     var sendData = function(url, formId) {
         jQuery('#credit-track-pay-popup').showOverlay();
 
         var data = jQuery('#' + formId).serializeArray();
+
+        data.push({
+            'name': 'group_id',
+            'value': self.paymentGroup.id
+        });
 
         jQuery.ajax({
             url: url,
@@ -195,13 +143,13 @@ function CreditTrackPayDialog(options) {
         var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'source':
-                if (!self.newPaymentAccount() && !self.paymentSource.id()) {
+                if (!self.currentPaymentAccountId() && !self.isNewPaymentAccount()) {
                     window.formProcess.removeAllErrors('#credit-track-pay-popup ');
                     window.formProcess.addFormError(
                         '#' + forms[currentStep],
                         Translator.trans('payment_account.error.choice.empty')
                     );
-                } else if (self.newPaymentAccount()) {
+                } else if (self.isNewPaymentAccount()) {
                     sendData(Routing.generate('checkout_pay_source'), forms[currentStep]);
                 } else {
                     sendData(Routing.generate('checkout_pay_existing_source'), forms[currentStep]);
@@ -214,25 +162,35 @@ function CreditTrackPayDialog(options) {
 
     };
 
+    self.prepareDialog = function () {
+        $('#credit-track-pay-popup').dialog({ // TODO replace by knockout custom handler
+            width: 650,
+            modal: true,
+            beforeClose: function( event, ui ) {
+                current = 0;
+                self.step(steps[current]);
+                self.currentPaymentAccountId(null);
+                self.currentPaymentAccount().clear();
+                if (self.paymentAccounts().length > 0) {
+                    self.isNewPaymentAccount(false);
+                }
+            }
+        });
+
+        jQuery.each(forms, function(key, formName) {
+            jsfv[formName].addError = window.formProcess.addFormError;
+            jsfv[formName].removeErrors = function(field) {};
+            jQuery('#' + formName).submit(function() {
+                self.next();
+                return false;
+            });
+        });
+
+        window.formProcess.removeAllErrors('#credit-track-pay-popup');
+    };
+
     ko.applyBindings(this, $('#credit-track-pay-popup').get(0));
 
-    $('#credit-track-pay-popup').dialog({ // TODO replace by knockout custom handler
-        width: 650,
-        modal: true,
-        beforeClose: function( event, ui ) {
-            self.paymentAccounts([{id: '', name: ''}]);
-            self.newUserAddress([new Address()]);
-        }
-    });
-    jQuery.each(forms, function(key, formName) {
-        jsfv[formName].addError = window.formProcess.addFormError;
-        jsfv[formName].removeErrors = function(field) {};
-        jQuery('#' + formName).submit(function() {
-            self.next();
-            return false;
-        });
-    });
-
-    window.formProcess.removeAllErrors('#credit-track-pay-popup');
+    this.prepareDialog();
 }
 
