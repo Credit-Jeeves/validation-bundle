@@ -407,7 +407,7 @@ class ContractsControllerCase extends BaseApiTestCase
         // Auto-Approve group
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
         $groupSettings = $group->getGroupSettings();
-        $groupSettings->setAutoApprove(true);
+        $groupSettings->setAutoApproveContracts(true);
         $this->getEntityManager()->flush($groupSettings);
 
         $response = $this->postRequest($params);

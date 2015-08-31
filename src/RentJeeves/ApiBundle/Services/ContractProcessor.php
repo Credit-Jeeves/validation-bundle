@@ -93,7 +93,7 @@ class ContractProcessor
             throw new \Exception('Contract can\'t be processed.');
         }
 
-        if ($contract->getGroupSettings()->isAutoApprove() === true) {
+        if ($contract->getGroupSettings()->isAutoApproveContracts() === true) {
             $contract->setStatus(ContractStatus::APPROVED);
 
             $this->em->flush($contract);

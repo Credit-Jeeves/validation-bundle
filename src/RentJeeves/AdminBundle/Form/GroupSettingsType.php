@@ -144,9 +144,9 @@ class GroupSettingsType extends Base
             ['label' => 'Is passed ach', 'required' => false]
         );
         $builder->add(
-            'autoApprove',
+            'autoApproveContracts',
             'checkbox',
-            ['label' => 'Is Auto-Approve', 'required' => false]
+            ['label' => 'Is Auto-Approve Contracts', 'required' => false]
         );
 
         $self = $this;

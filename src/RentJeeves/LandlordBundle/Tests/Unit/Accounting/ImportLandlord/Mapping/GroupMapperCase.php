@@ -114,8 +114,8 @@ class GroupMapperCase extends AbstractMapperCase
         $this->assertEquals(PaymentProcessor::ACI, $groupSetting->getPaymentProcessor());
 
         $this->assertTrue(
-            $groupSetting->isAutoApprove(),
-            'New groupSetting should be isAutoApprove'
+            $groupSetting->isAutoApproveContracts(),
+            'New groupSetting should be isAutoApproveContracts'
         );
     }
 

@@ -18,7 +18,7 @@ class Version20150828142851 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_group_settings
-                ADD is_auto_approve TINYINT(1) DEFAULT '0' NOT NULL"
+                ADD auto_approve_contracts TINYINT(1) DEFAULT '0' NOT NULL"
         );
     }
 
@@ -33,7 +33,7 @@ class Version20150828142851 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_group_settings
-                DROP is_auto_approve"
+                DROP auto_approve_contracts"
         );
     }
 }

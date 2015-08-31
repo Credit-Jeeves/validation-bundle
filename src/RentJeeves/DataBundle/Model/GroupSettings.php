@@ -210,13 +210,13 @@ abstract class GroupSettings
      *
      * @ORM\Column(
      *      type="boolean",
-     *      name="is_auto_approve",
+     *      name="auto_approve_contracts",
      *      options={
      *          "default" : 0
      *      }
      * )
      */
-    protected $autoApprove = false;
+    protected $autoApproveContracts = false;
 
     /**
      * @param float $feeACH
@@ -469,16 +469,16 @@ abstract class GroupSettings
     /**
      * @return boolean
      */
-    public function isAutoApprove()
+    public function isAutoApproveContracts()
     {
-        return $this->autoApprove;
+        return $this->autoApproveContracts;
     }
 
     /**
-     * @param mixed $isAutoApprove
+     * @param boolean $isAutoApproveContracts
      */
-    public function setAutoApprove($isAutoApprove)
+    public function setAutoApproveContracts($isAutoApproveContracts)
     {
-        $this->autoApprove = $isAutoApprove;
+        $this->autoApproveContracts = $isAutoApproveContracts;
     }
 }
