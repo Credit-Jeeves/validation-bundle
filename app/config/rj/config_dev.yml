@@ -20,6 +20,3 @@ khepin_yaml_fixtures:
     datetime_class: 'RentJeeves\CoreBundle\DateTime'
 
 backup_restore: ~
-
-#hip_mandrill:
-#    disable_delivery: true # useful for dev/test environment. Default value is 'false'
