@@ -166,7 +166,7 @@ function CreditTrackPayDialog(options) {
         $('#credit-track-pay-popup').dialog({ // TODO replace by knockout custom handler
             width: 650,
             modal: true,
-            beforeClose: function( event, ui ) {
+            beforeClose: function() {
                 current = 0;
                 self.step(steps[current]);
                 self.currentPaymentAccountId(null);

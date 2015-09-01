@@ -3,7 +3,6 @@ namespace RentJeeves\CheckoutBundle\Controller;
 
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
@@ -19,7 +18,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use JMS\Serializer\SerializationContext;
-use Exception;
 
 /**
  * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
@@ -145,7 +143,7 @@ class PayController extends Controller
                 throw new \Exception('Group or Payment Account is undefined');
             }
             $this->ensureAccountAssociation($paymentAccount, $group);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse([
                 $formType->getName() => [
                     '_globals' => explode('|', $e->getMessage())
@@ -176,24 +174,14 @@ class PayController extends Controller
                 $contract = $em
                     ->getRepository('RjDataBundle:Contract')
                     ->find($contractId);
-            } elseif ($groupId = $request->get('group_id')) {
-                $contract = $this->getUser()->getContracts()->filter(
-                    function (Contract $contract) use ($groupId) {
-                        return (
-                            $contract->getStatus() !== ContractStatus::DELETED &&
-                            $contract->getStatus() !== ContractStatus::FINISHED &&
-                            $contract->getGroup()->getId() == $groupId
-                        )  ;
-                    }
-                )->first();
             }
 
             if (empty($contract)) {
-                throw new Exception('Contract is undefined.');
+                throw new \Exception('Contract is undefined.');
             }
 
             $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse([
                 $paymentAccountType->getName() => array(
                     '_globals' => explode('|', $e->getMessage())
