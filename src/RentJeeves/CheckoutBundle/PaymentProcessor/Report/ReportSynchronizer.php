@@ -398,7 +398,7 @@ class ReportSynchronizer
         }
         $order = $transaction->getOrder();
 
-        if ($order->getStatus() !== OrderStatus::SENDING) {
+        if ($order->getStatus() !== OrderStatus::SENDING && $order->getStatus() !== OrderStatus::RETURNED) {
             $this->logger->alert(sprintf(
                 'Status for Order #%d must be \'%s\', \'%s\' given',
                 $order->getId(),
