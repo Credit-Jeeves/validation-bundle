@@ -4402,7 +4402,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/RjEmailBundle.git",
-                "reference": "511a348cc665c81a6415ebad08f2c18cc017cf95"
+                "reference": "1a8dac9d7fb57ebf519532d472cd267bf282aae5"
             },
             "require": {
                 "a2lix/translation-form-bundle": "*",
