@@ -65,6 +65,11 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
     {
         $this->assertOrder($order);
 
+        // if inbound leg is already returned, don't change order status
+        if (OrderStatus::RETURNED == $order->getStatus()) {
+             return;
+        }
+
         /** @var OrderPayDirect $order */
         if ($this->isOutboundLegReversed($order)) {
             parent::setRefunded($order);
@@ -87,9 +92,9 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
                 $order->getId(),
                 $order->getDepositOutboundTransaction()->getTransactionId()
             ));
-        } else {
-            parent::setReturned($order);
         }
+
+        parent::setReturned($order);
     }
 
     /**
