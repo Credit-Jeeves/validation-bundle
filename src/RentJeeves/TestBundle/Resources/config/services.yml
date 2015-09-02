@@ -4,3 +4,4 @@ parameters:
     pidkiq.experian.pidkiq_api.class: RentJeeves\TestBundle\PidKiqProcessor\Experian\ExperianPidKiqApiClientTest
     payment_account.heartland.class: RentJeeves\TestBundle\Heartland\PaymentAccountManagerTest
     payment_processor.aci.collect_pay.report_loader.class: RentJeeves\TestBundle\Aci\CollectPayReportLoaderTest
+    project.mailer.class: RentJeeves\TestBundle\Mailer\Mailer # send messages without Mandrill
