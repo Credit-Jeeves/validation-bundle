@@ -208,7 +208,7 @@ class ResidentBalanceSynchronizer
                 if ($unit->getName() === $unitName) {
                     $this->logMessage(
                         sprintf(
-                            'We found contract with ID:%s. But have multiple contract for this parameter',
+                            'We found contract with ID:%s.',
                             $contract->getId()
                         )
                     );
