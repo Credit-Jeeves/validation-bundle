@@ -7,6 +7,8 @@ use Doctrine\ORM\EntityManager;
 use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LoggerInterface;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
@@ -38,20 +40,34 @@ class ResidentBalanceSynchronizer
      */
     protected $exceptionCatcher;
 
+    /**
+     * @var OutputInterface
+     */
+    protected $outputLogger;
+
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
     /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
      *     "clientFactory" = @DI\Inject("soap.client.factory"),
-     *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher")
+     *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher"),
+     *     "logger" = @DI\Inject("logger")
      * })
      */
-    public function __construct(EntityManager $em, SoapClientFactory $clientFactory, ExceptionCatcher $exceptionCatcher)
-    {
+    public function __construct(
+        EntityManager $em,
+        SoapClientFactory $clientFactory,
+        ExceptionCatcher $exceptionCatcher,
+        LoggerInterface $logger
+    ) {
         $this->em = $em;
         $this->clientFactory = $clientFactory;
         $this->exceptionCatcher = $exceptionCatcher;
+        $this->logger = $logger;
     }
 
     public function run()
@@ -74,7 +90,7 @@ class ResidentBalanceSynchronizer
 
     public function usingOutput(OutputInterface $logger)
     {
-        $this->logger = $logger;
+        $this->outputLogger = $logger;
 
         return $this;
     }
@@ -138,84 +154,87 @@ class ResidentBalanceSynchronizer
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
         $residentId = $resident->getCustomerId();
         $unitName = $resident->getUnit()->getUnitId();
-        $paymentAccepted = $resident->getPaymentAccepted();
 
-        $contracts = $contractRepo->findContractByHoldingPropertyResidentUnit(
-            $holding,
-            $property,
-            $residentId,
-            $unitName
+        $this->logMessage(
+            sprintf(
+                'Start Search contract by residentId:%s, property:%s, holding:%s, unitName:%s',
+                $residentId,
+                $property->getId(),
+                $holding->getId(),
+                $unitName
+            )
         );
 
-        if (count($contracts) > 1) {
-            $propertyMapping = $property->getPropertyMappingByHolding($holding);
-            if (empty($propertyMapping)) {
-                throw new \Exception(
-                    sprintf(
-                        "PropertyID '%s', don't have external ID",
-                        $property->getId()
-                    )
-                );
-            }
-            $this->logMessage(
-                sprintf(
-                    "Found more than one contract with property %s, unit %s, resident %s",
-                    $propertyMapping->getExternalPropertyId(),
-                    $unitName,
-                    $residentId
-                )
-            );
+        $contracts = $contractRepo->findContractByHoldingPropertyResident(
+            $holding,
+            $property,
+            $residentId
+        );
 
-            return null;
-        }
-
-        if (count($contracts) == 1) {
-            /**
-             * @var $contract Contract
-             */
-            $contract = reset($contracts);
-            $contract->setPaymentAccepted($paymentAccepted);
-            $this->em->flush($contract);
-            $this->logMessage(
-                sprintf(
-                    "Update payment accepted to %s, for residentId %s",
-                    $paymentAccepted,
-                    $residentId
-                )
-            );
-
+        $contract = $this->processContracts($contracts, $unitName);
+        if ($contract) {
             return $contract;
         }
 
-        $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
-            ->findByHoldingPropertyUnitResident($holding, $property, $unitName, $residentId);
+        $contractsWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
+            ->findByHoldingPropertyResident($holding, $property, $residentId);
+        $contractWaiting = $this->processContracts($contractsWaiting, $unitName);
+
         if ($contractWaiting) {
             return $contractWaiting;
         }
 
-        $propertyMapping = $property->getPropertyMappingByHolding($holding);
+        return null;
+    }
 
-        if (empty($propertyMapping)) {
-            throw new \Exception(
-                sprintf(
-                    "PropertyID '%s', don't have external ID",
-                    $property->getId()
-                )
-            );
+    /**
+     * @param array $contracts
+     * @param string $unitName
+     * @return null|Contract|ContractWaiting
+     */
+    public function processContracts(array $contracts, $unitName)
+    {
+        if (count($contracts) === 1) {
+            $contract = reset($contracts);
+            $this->logMessage(sprintf('We found contract with ID:%s', $contract->getId()));
+
+            return $contract;
         }
 
-        $this->logMessage(
-            sprintf(
-                "Could not find contract with property %s, unit %s, resident %s",
-                $propertyMapping->getExternalPropertyId(),
-                $unitName,
-                $residentId
-            )
-        );
+        if (count($contracts) > 1) {
+            $this->logMessage('We have more than 1 contract for this parameters');
+            foreach ($contracts as $contract) {
+                $unit = $contract->getUnit();
+                if ($unit->getName() === $unitName) {
+                    $this->logMessage(
+                        sprintf(
+                            'We found contract with ID:%s.',
+                            $contract->getId()
+                        )
+                    );
+
+                    return $contract;
+                }
+            }
+
+            $failedMessage = sprintf(
+                'We didn\'t find any contract with such unitName: %s in list.',
+                $unitName
+            );
+
+            $this->logMessage($failedMessage);
+            $this->logger->alert($failedMessage);
+        }
 
         return null;
     }
 
+    /**
+     * @param GetResidentTransactionsLoginResponse $residentTransactions
+     * @param Holding $holding
+     * @param Property $property
+     * @throws Exception
+     */
     protected function processResidentTransactions(
         GetResidentTransactionsLoginResponse $residentTransactions,
         Holding $holding,
@@ -230,6 +249,14 @@ class ResidentBalanceSynchronizer
             }
 
             $balance = $this->calcResidentBalance($resident);
+            $contract->setPaymentAccepted($resident->getPaymentAccepted());
+            $this->logMessage(
+                sprintf(
+                    "Setup payment accepted to %s, for residentId %s",
+                    $resident->getPaymentAccepted(),
+                    $resident->getCustomerId()
+                )
+            );
             $contract->setIntegratedBalance($balance);
             $externalLeaseId = $contract->getExternalLeaseId();
             if (empty($externalLeaseId)) {
@@ -271,8 +298,8 @@ class ResidentBalanceSynchronizer
 
     protected function logMessage($message)
     {
-        if ($this->logger) {
-            $this->logger->writeln($message);
+        if ($this->outputLogger) {
+            $this->outputLogger->writeln($message);
         }
     }
 }
