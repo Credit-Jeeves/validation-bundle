@@ -6,14 +6,143 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
+use Hip\MandrillBundle\Dispatcher;
+use Hip\MandrillBundle\Message;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class Mailer extends BaseMailer
 {
+    /**
+     * @var array
+     */
+    protected $domains = [
+        'my.renttrack.com',
+        'www.renttrack.com',
+        'renttrack.com',
+    ];
+
+    /**
+     * @param string $templateName
+     * @param array $params
+     * @param string $emailTo
+     * @param string $culture
+     *
+     * @return bool
+     */
+    public function sendBaseLetter($templateName, $params, $emailTo, $culture)
+    {
+        if (false == $this->isValidEmail($emailTo)) {
+            $this->handleException(
+                new \InvalidArgumentException(sprintf('"%s": this value is not a valid email address.', $templateName))
+            );
+
+            return false;
+        }
+        /** \Rj\EmailBundle\Entity\EmailTemplate $template */
+        if (null == $template = $this->manager->findTemplateByName($templateName . '.html')) {
+            $this->handleException(
+                new \InvalidArgumentException(sprintf('Template with name "%s" not found', $templateName))
+            );
+
+            return false;
+        }
+
+        $recipientUser = $this->getUserByEmail($emailTo);
+        $params = $this->prepareParameters($params, $recipientUser);
+
+        try {
+            $htmlContent = $this->manager->renderEmail($template->getName(), $culture, $params);
+
+            $mandrillMessage = $this->createMandrillMessage();
+            $mandrillMessage
+                ->setFromEmail($htmlContent['fromEmail'])
+                ->setFromName($htmlContent['fromName'])
+                ->addTo($emailTo)
+                ->setSubject($htmlContent['subject']);
+            // Add tags and Metadata for Mandrill`s template
+            if (null !== $recipientUser) {
+                $mandrillMessage
+                    ->addTag($recipientUser->getType())
+                    ->addMetadata(['user_id' => $recipientUser->getId()]);
+            }
+
+            if (false == $mandrillSlug = $template->getEnTranslation()->getMandrillSlug()) {
+                $mandrillMessage->setHtml($htmlContent['body']);
+                $this->getMandrillMailer()->send($mandrillMessage);
+            } else {
+                // Add params for Mandrill`s template
+                foreach ($params as $key => $param) {
+                    $mandrillMessage->addGlobalMergeVar($key, $param);
+                }
+                $this->getMandrillMailer()->send($mandrillMessage, $mandrillSlug);
+            }
+
+            return true;
+        } catch (\Twig_Error_Runtime $e) {
+            $this->handleException($e);
+        } catch (\Mandrill_Error $e) {
+            $this->container->get('logger')->alert(sprintf
+                (
+                    'The MandrillLetter has not been sent : %s',
+                    $e->getMessage()
+                )
+            );
+            $this->handleException($e);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $params
+     * @param User $user
+     *
+     * @return array
+     */
+    protected function prepareParameters(array $params, User $user = null)
+    {
+        // $params is second for higher priority (for test email)
+        $params = array_merge($this->defaultValuesForEmail, $params);
+        if (null !== $user) {
+            if (false != $partner = $user->getPartner()) {
+                if (true === $partner->isPoweredBy()) {
+                    $params['logoName'] = $partner->getLogoName();
+                    $params['partnerName'] = $partner->getName();
+                    $params['partnerAddress'] = $partner->getAddress();
+                    $params['loginUrl'] = $partner->getLoginUrl();
+                    $params['isPoweredBy'] = $partner->isPoweredBy();
+                }
+            }
+        }
+
+        return $params;
+    }
+
+    /**
+     * Create new Mandrill Message with needed header
+     *
+     * @return Message
+     */
+    protected function createMandrillMessage()
+    {
+        $mandrillMessage = new Message();
+        $mandrillMessage
+            ->setTrackClicks(true)
+            ->setTrackOpens(true)
+            ->setUrlStripQs(true);
+        foreach ($this->domains as $domain) {
+            $mandrillMessage->addGoogleAnalyticsDomain($domain);
+        }
+
+        return $mandrillMessage;
+    }
+
     /**
      * @param User $user
      *
@@ -28,7 +157,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -48,10 +177,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
-     * @param string   $isImported
+     * @param string $isImported
      *
      * @return bool
      */
@@ -73,7 +202,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -95,7 +224,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -116,10 +245,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
-     * @param Holding  $holding
+     * @param Tenant $tenant
+     * @param Holding $holding
      * @param Contract $contract
-     * @param string   $paymentType
+     * @param string $paymentType
      *
      * @return bool
      */
@@ -137,7 +266,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -155,8 +284,8 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param float    $amount
-     * @param string   $sTemplate
+     * @param float $amount
+     * @param string $sTemplate
      *
      * @return bool
      */
@@ -187,9 +316,9 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
-     * @param string   $diff
+     * @param string $diff
      *
      * @return bool
      */
@@ -206,7 +335,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param array    $tenants
+     * @param array $tenants
      *
      * @return bool
      */
@@ -281,7 +410,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -316,7 +445,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -340,7 +469,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -364,8 +493,8 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param User     $user
-     * @param Group    $group
+     * @param User $user
+     * @param Group $group
      *
      * @return bool
      */
@@ -382,7 +511,7 @@ class Mailer extends BaseMailer
     /**
      * @param Contract $contract
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      *
      * @return bool
      */
@@ -480,7 +609,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Contract $contract
-     * @param Payment  $payment
+     * @param Payment $payment
      *
      * @return bool
      */
@@ -499,10 +628,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord  $landlord
-     * @param array     $groups
+     * @param Landlord $landlord
+     * @param array $groups
      * @param \DateTime $date
-     * @param string    $resend
+     * @param string $resend
      *
      * @return bool
      */
@@ -524,10 +653,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord  $landlord
-     * @param Group     $group
+     * @param Landlord $landlord
+     * @param Group $group
      * @param \DateTime $date
-     * @param array     $batches
+     * @param array $batches
      * @param $returns
      * @param $resend
      *
@@ -587,7 +716,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param array    $data
+     * @param array $data
      *
      * @return bool
      */
@@ -693,5 +822,32 @@ class Mailer extends BaseMailer
         $statementDescriptor = $order->getContract() ? $order->getContract()->getGroup()->getStatementDescriptor() : '';
 
         return sprintf('%s*%s', $statementDescriptorPrefix, $statementDescriptor);
+    }
+
+
+    /**
+     * @param string $email
+     *
+     * @return bool
+     */
+    protected function isValidEmail($email)
+    {
+        $errors = $this->container->get('validator')->validateValue(
+            $email,
+            [new Email(), new NotBlank()]
+        );
+        if (count($errors) > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return Dispatcher
+     */
+    protected function getMandrillMailer()
+    {
+        return $this->container->get('hip_mandrill.dispatcher');
     }
 }

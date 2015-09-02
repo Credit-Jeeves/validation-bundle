@@ -5,22 +5,9 @@ use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\User;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Model\UserInterface;
-use Hip\MandrillBundle\Dispatcher;
-use Hip\MandrillBundle\Message;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class Mailer extends BaseMailer implements MailerInterface
 {
-    /**
-     * @var array
-     */
-    protected $domains = [
-        'my.renttrack.com',
-        'www.renttrack.com',
-        'renttrack.com',
-    ];
-
     /**
      * @var array
      */
@@ -33,125 +20,9 @@ class Mailer extends BaseMailer implements MailerInterface
     ];
 
     /**
-     * @param string $templateName
-     * @param array $params
-     * @param string $emailTo
-     * @param string $culture
-     *
-     * @return bool
-     */
-    public function sendBaseLetter($templateName, $params, $emailTo, $culture)
-    {
-        if (false == $this->isValidEmail($emailTo)) {
-            $this->handleException(
-                new \InvalidArgumentException(sprintf('"%s": this value is not a valid email address.', $templateName))
-            );
-
-            return false;
-        }
-        /** \Rj\EmailBundle\Entity\EmailTemplate $template */
-        if (null == $template = $this->manager->findTemplateByName($templateName . '.html')) {
-            $this->handleException(
-                new \InvalidArgumentException(sprintf('Template with name "%s" not found', $templateName))
-            );
-
-            return false;
-        }
-
-        $recipientUser = $this->getUserByEmail($emailTo);
-        $params = $this->prepareParameters($params, $recipientUser);
-
-        try {
-            $htmlContent = $this->manager->renderEmail($template->getName(), $culture, $params);
-
-            $mandrillMessage = $this->createMandrillMessage();
-            $mandrillMessage
-                ->setFromEmail($htmlContent['fromEmail'])
-                ->setFromName($htmlContent['fromName'])
-                ->addTo($emailTo)
-                ->setSubject($htmlContent['subject']);
-            // Add tags and Metadata for Mandrill`s template
-            if (null !== $recipientUser) {
-                $mandrillMessage
-                    ->addTag($recipientUser->getType())
-                    ->addMetadata(['user_id' => $recipientUser->getId()]);
-            }
-
-            if (false == $mandrillSlug = $template->getEnTranslation()->getMandrillSlug()) {
-                $mandrillMessage->setHtml($htmlContent['body']);
-                $this->getMandrillMailer()->send($mandrillMessage);
-            } else {
-                // Add params for Mandrill`s template
-                foreach ($params as $key => $param) {
-                    $mandrillMessage->addGlobalMergeVar($key, $param);
-                }
-                $this->getMandrillMailer()->send($mandrillMessage, $mandrillSlug);
-            }
-
-            return true;
-        } catch (\Twig_Error_Runtime $e) {
-            $this->handleException($e);
-        } catch (\Mandrill_Error $e) {
-            $this->container->get('logger')->alert(sprintf
-                (
-                    'The MandrillLetter has not been sent : %s',
-                    $e->getMessage()
-                )
-            );
-            $this->handleException($e);
-        }
-
-        return false;
-    }
-
-    /**
-     * @param array $params
-     * @param User $user
-     *
-     * @return array
-     */
-    protected function prepareParameters(array $params, User $user = null)
-    {
-        // $params is second for higher priority (for test email)
-        $params = array_merge($this->defaultValuesForEmail, $params);
-        if (null !== $user) {
-            if (false != $partner = $user->getPartner()) {
-                if (true === $partner->isPoweredBy()) {
-                    $params['logoName'] = $partner->getLogoName();
-                    $params['partnerName'] = $partner->getName();
-                    $params['partnerAddress'] = $partner->getAddress();
-                    $params['loginUrl'] = $partner->getLoginUrl();
-                    $params['isPoweredBy'] = $partner->isPoweredBy();
-                }
-            }
-        }
-
-        return $params;
-    }
-
-    /**
-     * Create new Mandrill Message with needed header
-     *
-     * @return Message
-     */
-    protected function createMandrillMessage()
-    {
-        $mandrillMessage = new Message();
-        $mandrillMessage
-            ->setTrackClicks(true)
-            ->setTrackOpens(true)
-            ->setUrlStripQs(true);
-        foreach ($this->domains as $domain) {
-            $mandrillMessage->addGoogleAnalyticsDomain($domain);
-        }
-
-        return $mandrillMessage;
-    }
-
-    /**
-     * @param User $user
+     * @param User   $user
      * @param string $sTemplate
-     * @param array $vars
+     * @param array  $vars
      *
      * @return bool
      */
@@ -238,7 +109,7 @@ class Mailer extends BaseMailer implements MailerInterface
     }
 
     /**
-     * @param  User $user
+     * @param  User  $user
      * @return array
      */
     public function prepareUser($user)
@@ -276,6 +147,57 @@ class Mailer extends BaseMailer implements MailerInterface
     }
 
     /**
+     * @param string $templateName
+     * @param array  $params
+     * @param string $emailTo
+     * @param string $culture
+     *
+     * @return bool
+     */
+    public function sendBaseLetter($templateName, $params, $emailTo, $culture)
+    {
+        /** \Rj\EmailBundle\Entity\EmailTemplate $template */
+        if (null == $template = $this->manager->findTemplateByName($templateName . '.html')) {
+            $this->handleException(
+                new \InvalidArgumentException(sprintf('Template with name "%s" not found', $templateName))
+            );
+
+            return false;
+        }
+        try {
+            // $params is second for higher priority (for test email)
+            $params = array_merge($this->defaultValuesForEmail, $params);
+            if (null !== $user = $this->getUserByEmail($emailTo)) {
+                if (false != $partner = $user->getPartner()) {
+                    if (true === $partner->isPoweredBy()) {
+                        $params['logoName'] = $partner->getLogoName();
+                        $params['partnerName'] = $partner->getName();
+                        $params['partnerAddress'] = $partner->getAddress();
+                        $params['loginUrl'] = $partner->getLoginUrl();
+                        $params['isPoweredBy'] = $partner->isPoweredBy();
+                    }
+                }
+            }
+
+            $htmlContent = $this->manager->renderEmail($template->getName(), $culture, $params);
+
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($htmlContent['subject']);
+            $message->setFrom([$htmlContent['fromEmail'] => $htmlContent['fromName']]);
+            $message->setTo($emailTo);
+            $message->addPart($htmlContent['body'], 'text/html');
+
+            $this->container->get('mailer')->send($message);
+
+            return true;
+        } catch (\Twig_Error_Runtime $e) {
+            $this->handleException($e);
+        }
+
+        return false;
+    }
+
+    /**
      * @param string $email
      *
      * @return User|null
@@ -285,33 +207,5 @@ class Mailer extends BaseMailer implements MailerInterface
         return $this->container->get('doctrine')->getManager()
             ->getRepository('DataBundle:User')
             ->findOneBy(['email' => $email]);
-    }
-
-    /**
-     * @param string $email
-     *
-     * @return bool
-     */
-    protected function isValidEmail($email)
-    {
-        $constraints = [new Email(), new NotBlank()];
-        $errors = $this->container->get('validator')->validateValue(
-            $email,
-            $constraints
-        );
-
-        if (count($errors) > 0) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @return Dispatcher
-     */
-    protected function getMandrillMailer()
-    {
-        return $this->container->get('hip_mandrill.dispatcher');
     }
 }
