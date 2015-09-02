@@ -24,7 +24,7 @@ interface AttributeGeneratorInterface
 
     public function startYearAttrs();
 
-    public function startDateAttrs();
+    public function startDateAttrs($isPastCutoffTime = false);
 
     public function endsAttrs();
 

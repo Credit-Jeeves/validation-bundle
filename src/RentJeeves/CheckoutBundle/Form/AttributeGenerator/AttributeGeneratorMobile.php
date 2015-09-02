@@ -50,10 +50,10 @@ class AttributeGeneratorMobile extends AttributeGenerator
         return array_merge(parent::idAttrs(), [ 'id' => 'id' ]);
     }
 
-    public function startDateAttrs()
+    public function startDateAttrs($isPastCutoffTime = false)
     {
         return array_merge(
-            parent::startDateAttrs(),
+            parent::startDateAttrs($isPastCutoffTime),
             [
                 'data-role' => 'datebox',
                 'data-options' => "{'mode':'calbox','useFocus':'true','useButton':'false'}",
