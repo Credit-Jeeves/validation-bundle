@@ -13,6 +13,10 @@ use RentJeeves\DataBundle\Model\DepositAccount as Base;
  *          @ORM\UniqueConstraint(
  *              name="da_unique_constraint",
  *              columns={"type", "group_id", "payment_processor"}
+ *          ),
+ *          @ORM\UniqueConstraint(
+ *              name="unique_constraint_account_number",
+ *              columns={"type", "holding_id", "account_number", "payment_processor"}
  *          )
  *     }
  * )

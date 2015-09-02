@@ -72,6 +72,5 @@ class DepositAccountAdmin extends Admin
                     'required' => false,
                 ]
             );
-
     }
 }

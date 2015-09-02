@@ -230,6 +230,14 @@
                 <source>admin.late_report.choose_contract</source>
                 <target>Choose a contract please</target>
             </trans-unit>
+            <trans-unit id="admin.error.deposit_account">
+                <source>admin.error.deposit_account</source>
+                <target>You already have deposit account with such type and payment processor.</target>
+            </trans-unit>
+            <trans-unit id="admin.error.deposit_account_number">
+                <source>admin.error.deposit_account_number</source>
+                <target>You already have deposit account with such type, account number and holding.</target>
+            </trans-unit>
             <trans-unit id="admin.holding.payment_processor_locked">
                 <source>admin.holding.payment_processor_locked</source>
                 <target>Payment Processor changes locked?</target>

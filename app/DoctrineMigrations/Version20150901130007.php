@@ -21,6 +21,13 @@ class Version20150901130007 extends AbstractMigration
         );
 
         $this->addSql(
+            "CREATE UNIQUE INDEX unique_constraint_account_number ON rj_deposit_account (type,
+                holding_id,
+                account_number,
+                payment_processor)"
+        );
+
+        $this->addSql(
             "UPDATE
                 rj_deposit_account
             INNER JOIN rj_group ON rj_group.id=rj_deposit_account.group_id
@@ -35,7 +42,6 @@ class Version20150901130007 extends AbstractMigration
             INNER JOIN rj_group_account_mapping ON rj_group_account_mapping.group_id=rj_group.id
             INNER JOIN  rj_group_settings ON rj_group_settings.group_id=rj_group.id
             SET
-              rj_deposit_account.holding_id = rj_group.holding_id,
               rj_deposit_account.account_number = rj_group_account_mapping.account_number
             WHERE rj_group_settings.payment_processor=rj_deposit_account.payment_processor
             AND rj_deposit_account.type='rent';"
@@ -60,6 +66,10 @@ class Version20150901130007 extends AbstractMigration
         $this->abortIf(
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
+        );
+
+        $this->addSql(
+            "DROP INDEX unique_constraint_account_number ON rj_deposit_account"
         );
 
         $this->addSql(

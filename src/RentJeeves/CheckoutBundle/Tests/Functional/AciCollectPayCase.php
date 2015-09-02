@@ -60,6 +60,7 @@ class AciCollectPayCase extends BaseTestCase
         $depositAccount->setPaymentProcessor($this->contract->getGroup()->getGroupSettings()->getPaymentProcessor());
         $depositAccount->setType(DepositAccountType::RENT);
         $depositAccount->setMerchantName(564075);
+        $depositAccount->setHolding($this->contract->getGroup()->getHolding());
 
         $this->contract->getGroup()->addDepositAccount($depositAccount);
 

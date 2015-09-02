@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -63,7 +64,14 @@ class ExportCase extends BaseTestCase
             'jb' => '40.7308364',
             'kb' => '-73.991567'
         ]);
+        /** @var DepositAccount $depositAccount */
+        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
+            [
+                'accountNumber' => '15235678'
+            ]
+        );
 
+        $this->assertNotEmpty($depositAccount);
         $this->assertNotNull($tenant);
         $this->assertNotNull($property);
         $this->assertNotNull($group);
@@ -73,6 +81,7 @@ class ExportCase extends BaseTestCase
         $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(999);
         $order->setUser($tenant);
+        $order->setDepositAccount($depositAccount);
         $oneWeekAgo = new DateTime();
         $oneWeekAgo->modify("-7 days");
         $order->setCreatedAt($oneWeekAgo);

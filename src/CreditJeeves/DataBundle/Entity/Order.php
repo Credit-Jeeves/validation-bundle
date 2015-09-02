@@ -904,11 +904,11 @@ class Order extends Base
                 $this->getId(),
                 $externalUnitId
             );
-            if (substr_count($externalUnitId, '|') !== 2) {
+            if (substr_count($externalUnitId, '|') !== 2 &&
+                list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId)) {
                 throw new \RuntimeException($exceptionMessage);
             }
-            // ResMan only uses the UnitID part when posting a payment
-            list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
+
             if (!($propertyId && $buildingId && $unitId)) {
                 throw new \RuntimeException($exceptionMessage);
             }

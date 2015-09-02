@@ -355,7 +355,7 @@ abstract class Holding
     }
 
     /**
-     * @param MRISetting $MRISettings
+     * @param MRISettings $MRISettings
      */
     public function setMriSettings(MRISettings $MRISettings = null)
     {
@@ -672,5 +672,37 @@ abstract class Holding
     public function setApiIntegrationType($apiIntegrationType)
     {
         $this->apiIntegrationType = $apiIntegrationType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecurringCodes()
+    {
+        return $this->recurringCodes;
+    }
+
+    /**
+     * @param string $recurringCodes
+     */
+    public function setRecurringCodes($recurringCodes)
+    {
+        $this->recurringCodes = $recurringCodes;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getUseRecurringCharges()
+    {
+        return $this->useRecurringCharges;
+    }
+
+    /**
+     * @param boolean $useRecurringCharges
+     */
+    public function setUseRecurringCharges($useRecurringCharges)
+    {
+        $this->useRecurringCharges = $useRecurringCharges;
     }
 }

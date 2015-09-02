@@ -84,12 +84,23 @@ class GroupCase extends BaseTestCase
         $this->assertNotEmpty($group, 'We should get from fixtures group with name "Test Rent Group"');
         $group->getGroupSettings()->setPaymentProcessor(PaymentProcessor::HEARTLAND);
         $this->getEntityManager()->flush();
+        $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+        $depositAccount->setAccountNumber(999);
+        $this->getEntityManager()->flush();
 
         $this->assertNotEmpty(
             $group->getRentAccountNumberPerCurrentPaymentProcessor(),
             'We should get account number from this group.'
         );
+        $this->assertEquals(999, $group->getRentAccountNumberPerCurrentPaymentProcessor());
+        $depositAccount->setAccountNumber(null);
+        $this->getEntityManager()->flush();
+        $this->assertEmpty(
+            $group->getRentAccountNumberPerCurrentPaymentProcessor(),
+            'We should get empty account number from this group.'
+        );
 
+        $depositAccount->setAccountNumber(999);
         $group->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
         $this->getEntityManager()->flush();
 
