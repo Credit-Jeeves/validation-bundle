@@ -1156,7 +1156,6 @@ class ContractRepository extends EntityRepository
         Holding $holding,
         Property $property,
         $residentId
-
     ) {
         $query = $this->createQueryBuilder('c');
         $query->select('c')
