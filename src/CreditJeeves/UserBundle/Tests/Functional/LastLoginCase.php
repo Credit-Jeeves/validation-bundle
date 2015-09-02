@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\UserBundle\Tests\Functional;
 
-use CreditJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class LastLoginCase extends BaseTestCase
 {
@@ -20,8 +20,8 @@ class LastLoginCase extends BaseTestCase
         $userAfterLogin = $em->getRepository('DataBundle:User')->findOneBy(['username' => 'landlord1@example.com']);
         $lastLoginAfter = $userAfterLogin->getLastLogin();
         $ip = $userAfterLogin->getLastIp();
-        $this->assertTrue($lastLoginBefore < $lastLoginAfter);
+        $this->assertTrue($lastLoginBefore < $lastLoginAfter, "The last login timestamp did not advance");
         $validIp = filter_var($ip, FILTER_VALIDATE_IP);
-        $this->assertNotEquals(false, $validIp);
+        $this->assertNotEquals(false, $validIp, "The last login IP address did not update correctly");
     }
 }
