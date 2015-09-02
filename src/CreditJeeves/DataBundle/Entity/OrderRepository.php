@@ -334,7 +334,6 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('ten.residentsMapping', 'res');
         $query->innerJoin('t.unit', 'unit');
-        $query->innerJoin('unit.unitMapping', 'uMap');
         $query->innerJoin('o.transactions', 'transaction');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
