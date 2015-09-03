@@ -59,9 +59,9 @@ class Mailer extends BaseMailer implements MailerInterface
             $message->setFrom([$htmlContent['fromEmail'] => $htmlContent['fromName']]);
             $message->setTo($emailTo);
 
-//            if (false != $template->getEnTranslation()->getMandrillSlug()) {
+            if (false != $template->getEnTranslation()->getMandrillSlug()) {
                 $message = $this->prepareMessageForMandrill($message, $template, $params, $recipientUser);
-//            }
+            }
 
             $message->addPart($htmlContent['body'], 'text/html');
 
