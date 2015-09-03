@@ -192,7 +192,7 @@ class PaymentCommandsCase extends BaseTestCase
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
         $this->assertNotNull($completeTransaction = $order->getCompleteTransaction());
-        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($order->getTransactionBatchId());
         $this->assertNotNull($paymentAccount = $order->getPaymentAccount());
         $this->assertNotNull($depositAccount = $order->getDepositAccount());
         $this->assertEquals($payment->getPaymentAccount()->getId(), $paymentAccount->getId());
@@ -254,7 +254,7 @@ class PaymentCommandsCase extends BaseTestCase
         /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
-        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($order->getTransactionBatchId());
         $operations = $order->getOperations();
         $this->assertCount(1, $operations);
 
@@ -317,7 +317,7 @@ class PaymentCommandsCase extends BaseTestCase
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $contract->getRent()));
         $this->assertNotNull($order);
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
-        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($order->getTransactionBatchId());
     }
 
     /**

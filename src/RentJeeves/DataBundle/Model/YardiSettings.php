@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Enum\PaymentTypeACH;
 use RentJeeves\DataBundle\Enum\PaymentTypeCC;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -176,6 +177,19 @@ abstract class YardiSettings
      * )
      */
     protected $synchronizationStrategy = SynchronizationStrategy::DEPOSITED;
+
+    /**
+     * @ORM\Column(
+     *      type="YardiPostMonthOption",
+     *      name="post_month_node",
+     *      options={
+     *          "default":"none"
+     *      }
+     * )
+     *
+     * @var string
+     */
+    protected $postMonthNode = YardiPostMonthOption::NONE;
 
     /**
      * @return string
@@ -407,5 +421,21 @@ abstract class YardiSettings
     public function getSyncBalance()
     {
         return $this->syncBalance;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostMonthNode()
+    {
+        return $this->postMonthNode;
+    }
+
+    /**
+     * @param string $postMonthNode
+     */
+    public function setPostMonthNode($postMonthNode)
+    {
+        $this->postMonthNode = $postMonthNode;
     }
 }

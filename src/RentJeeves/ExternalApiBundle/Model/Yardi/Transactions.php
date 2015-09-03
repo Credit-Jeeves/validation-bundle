@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Model;
+namespace RentJeeves\ExternalApiBundle\Model\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\Annotation as Serializer;
@@ -10,8 +10,8 @@ class Transactions
 {
     /**
      * @Serializer\SerializedName("Payment")
-     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\Payment")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\Yardi\Payment")
+     * @Serializer\Groups({"baseRequest", "withPostMonth", "reversedPayment"})
      */
     protected $payment;
 

@@ -13,12 +13,13 @@ use JMS\DiExtraBundle\Annotation\Service;
 use JMS\Serializer\SerializationContext;
 use \DateTime;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\ExternalApi;
-use RentJeeves\ExternalApiBundle\Model\Payment;
-use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
+use RentJeeves\ExternalApiBundle\Model\Yardi\Payment;
+use RentJeeves\ExternalApiBundle\Model\Yardi\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
@@ -269,7 +270,7 @@ class ReceiptBatchSender
              * @var $order Order
              */
             foreach ($orders as $order) {
-                $batchId = $order->getHeartlandTransaction()->getBatchId();
+                $batchId = $order->getTransaction()->getBatchId();
                 $this->pushReceiptBatch($holding, $batchId);
             }
 
@@ -308,6 +309,7 @@ class ReceiptBatchSender
                 }
                 $yardiBatchId = $this->getBatchId($remotePropertyId, $batchId);
                 $result = $this->sendReceiptsBatchToApi(
+                    $holding,
                     $ordersReceiptBatch,
                     $yardiBatchId
                 );
@@ -370,11 +372,12 @@ class ReceiptBatchSender
     }
 
     /**
+     * @param Holding $holding
      * @param array  $orders
      * @param string $batchId
      * @return boolean
      */
-    protected function sendReceiptsBatchToApi($orders, $batchId)
+    protected function sendReceiptsBatchToApi(Holding $holding, $orders, $batchId)
     {
         $this->logMessage(
             sprintf(
@@ -385,7 +388,12 @@ class ReceiptBatchSender
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups('soapYardiRequest');
+        if (YardiPostMonthOption::NONE === $holding->getYardiSettings()->getPostMonthNode()) {
+            $serializationGroup = 'baseRequest';
+        } else {
+            $serializationGroup = 'withPostMonth';
+        }
+        $context->setGroups($serializationGroup);
         $residentTransactions = new ResidentTransactions(
             $this->paymentClient->getSettings(),
             $orders
