@@ -1,7 +1,8 @@
 <?php
 namespace RentJeeves\TenantBundle\Controller;
 
-use Payum2\Request\BinaryMaskStatusRequest;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
@@ -101,11 +102,11 @@ class CreditTrackController extends Controller
             );
         }
 
-        /** @var BinaryMaskStatusRequest $statusRequest */
-        $statusRequest = $this->get('payment.pay_credit_track')
+        /** @var OrderSubmerchant $order */
+        $order = $this->get('payment.pay_credit_track')
             ->executePaymentAccount($paymentAccount);
 
-        if ($statusRequest->isSuccess()) {
+        if (OrderStatus::COMPLETE === $order->getStatus()) {
             $settings->setCreditTrackPaymentAccount($paymentAccount);
             $settings->setCreditTrackEnabledAt(new DateTime('now'));
 
@@ -122,7 +123,7 @@ class CreditTrackController extends Controller
             return new JsonResponse(
                 array(
                     PaymentAccountFromType::NAME => array(
-                        '_globals' => array($statusRequest->getModel()->getMessages())
+                        '_globals' => array($order->getErrorMessage())
                     )
                 )
             );
