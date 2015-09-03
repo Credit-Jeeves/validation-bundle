@@ -90,3 +90,5 @@ fixtures:
         name: rjLateReportingLandlord.html
     email_45:
         name: rjLateReportingTenant.html
+    email_46:
+        name: rjTenantInviteSecondChance.html

@@ -1,5 +1,0 @@
-hip_mandrill:
-    api_key: fKoP1taFZDh54rWI9MISHA
-    default:
-        sender: staging@renttrack.com
-        sender_name: Renttrack

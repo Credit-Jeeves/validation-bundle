@@ -16,3 +16,6 @@ framework:
 #        result_cache_driver: apc
 #        query_cache_driver: apc
 
+parameters:
+    # send mails via Mandrill
+    enable_mandrill: 0
