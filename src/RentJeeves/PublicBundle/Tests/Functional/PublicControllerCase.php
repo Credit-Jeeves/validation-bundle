@@ -119,7 +119,7 @@ class PublicControllerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldTernOffEmailNotificationAndOfferNotificationAfterUnsubscribePage()
+    public function shouldTurnOffEmailNotificationAndOfferNotificationAfterUnsubscribePage()
     {
         $this->load(true);
 
@@ -133,6 +133,6 @@ class PublicControllerCase extends BaseTestCase
 
         $this->getEntityManager()->refresh($user);
         $this->assertFalse($user->getEmailNotification(), 'Email notification should be false after UnsubscribePage.');
-        $this->assertFalse($user->getEmailNotification(), 'Offer notification should be false after UnsubscribePage.');
+        $this->assertFalse($user->getOfferNotification(), 'Offer notification should be false after UnsubscribePage.');
     }
 }

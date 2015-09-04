@@ -397,7 +397,7 @@ abstract class User extends BaseUser
     protected $invite_code;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"="1"})
+     * @ORM\Column(name="email_notification", type="boolean", nullable=true, options={"default"="1"})
      */
     protected $emailNotification = true;
 

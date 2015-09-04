@@ -14,7 +14,7 @@ class Version20150904141638 extends AbstractMigration
     {
         $this->addSql(
             "ALTER TABLE cj_user
-                CHANGE score_changed_notification emailNotification TINYINT(1) DEFAULT '1'"
+                CHANGE score_changed_notification email_notification TINYINT(1) DEFAULT '1'"
         );
     }
 
@@ -25,7 +25,7 @@ class Version20150904141638 extends AbstractMigration
     {
         $this->addSql(
             "ALTER TABLE cj_user
-                CHANGE emailnotification score_changed_notification TINYINT(1) DEFAULT '1'"
+                CHANGE email_notification score_changed_notification TINYINT(1) DEFAULT '1'"
         );
     }
 }

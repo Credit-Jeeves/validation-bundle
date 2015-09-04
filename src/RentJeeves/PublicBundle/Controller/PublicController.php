@@ -402,6 +402,7 @@ class PublicController extends Controller
         }
 
         $user->setEmailNotification(false);
+        $user->setOfferNotification(false);
         $this->getEntityManager()->flush($user);
 
         return $this->render('RjPublicBundle:Public:unsubscribeUser.html.twig', ['user' => $user]);
