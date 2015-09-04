@@ -702,17 +702,20 @@ class Mailer extends BaseMailer
      */
     public function sendRjSecondChanceForContract(Contract $contract)
     {
-        $date = new \DateTime();
-        $interval = date_diff($date, $contract->getFinishAt());
-
         $params = [
             'FNAME' => $contract->getTenant()->getFirstName(),
             'LANDLORDGR' => $contract->getGroup()->getName(),
             'INVITECODE' => $contract->getTenant()->getInviteCode(),
             'FEEACH' => $contract->getGroupSettings()->getFeeACH(),
             'FEECC' => $contract->getGroupSettings()->getFeeCC(),
-            'MONTHSLEFT' => $interval->format('%y') * 12 + $interval->format('%m')
         ];
+        if (null !== $contract->getFinishAt()) {
+            $date = new \DateTime();
+            $interval = date_diff($date, $contract->getFinishAt());
+            $params['MONTHSLEFT'] = $interval->format('%y') * 12 + $interval->format('%m');
+        } else {
+            $params['MONTHSLEFT'] = 0;
+        }
 
         return $this->sendBaseLetter(
             $template = 'rjSecondChanceForContract',

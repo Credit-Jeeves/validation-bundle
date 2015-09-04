@@ -1537,7 +1537,12 @@ fixtures:
         <H2>Set up your first payment in minutes</H2>
         {{ FNAME }} - we noticed you still haven't set up an online rent payment with {{ LANDLORDGR }}. Credit follows you for your whole life - it's good to start off on the right track. RentTrack is the only company that can report your rent payments to major credit bureaus so you can build credit history without taking on additional debt.
         <BR><BR>
-        Building good credit history means you can put yourself in the best position when you buy a car, get a loan, mortgage, apply for insurance, for a job and more*. With {{ MONTHSLEFT }} months left in your lease, you have a great opportunity for improvement - most tenants see a score increase within two months.
+        Building good credit history means you can put yourself in the best position when you buy a car, get a loan, mortgage, apply for insurance, for a job and more*.
+        {% if INVITECODE %}
+            With {{ MONTHSLEFT }} months left in your lease, you have a great opportunity for improvement - most tenants see a score increase within two months.
+        {% else %}
+            This is a great opportunity for improvement - most tenants see a score increase within two months.
+        {% endif %}
         <BR><BR>
         Your property manager is offering you this benefit for only {{ FEEACH }} per e-Check or {{ FEECC }} for Credit Card Payments.
         <BR><BR>
