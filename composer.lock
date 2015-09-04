@@ -8196,7 +8196,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-validator.git",
-                "reference": "45ba4eКо595ec15f4b80b04a04db2feb7e22bfda32"
+                "reference": "45ba4e595ec15f4b80b04a04db2feb7e22bfda32"
             },
             "dist": {
                 "type": "zip",

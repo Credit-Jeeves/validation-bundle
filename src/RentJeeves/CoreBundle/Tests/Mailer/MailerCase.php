@@ -22,7 +22,7 @@ class MailerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldAddMandrillHeaderIfTemlateHasMandrillSlug()
+    public function shouldAddMandrillHeaderIfTemplateHasMandrillSlug()
     {
         $this->load(true);
 
