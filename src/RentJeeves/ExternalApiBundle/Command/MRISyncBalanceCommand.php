@@ -24,7 +24,6 @@ class MRISyncBalanceCommand extends ContainerAwareCommand
     {
         $this->getContainer()
             ->get('mri.resident_balance_sync')
-            ->usingOutput($output)
             ->run();
     }
 }

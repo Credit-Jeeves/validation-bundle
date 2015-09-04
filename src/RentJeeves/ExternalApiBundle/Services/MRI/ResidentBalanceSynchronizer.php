@@ -8,7 +8,6 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
-use Symfony\Component\Console\Output\OutputInterface;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 
 class ResidentBalanceSynchronizer
@@ -29,11 +28,6 @@ class ResidentBalanceSynchronizer
      * @var LoggerInterface
      */
     protected $logger;
-
-    /**
-     * @var OutputInterface
-     */
-    protected $outputLogger;
 
     /**
      * @param EntityManager $em
@@ -66,28 +60,16 @@ class ResidentBalanceSynchronizer
                 $this->updateBalancesForHolding($holding);
             }
         } catch (\Exception $e) {
-            $this->logger->alert(
+            $this->logMessage(
                 sprintf(
                     '(MRI ResidentBalanceSynchronizer)Message: %s, File: %s, Line:%s',
                     $e->getMessage(),
                     $e->getFile(),
                     $e->getLine()
-                )
+                ),
+                true
             );
-
-            return $this->logMessage($e->getMessage());
         }
-    }
-
-    /**
-     * @param OutputInterface $outputLogger
-     * @return self
-     */
-    public function usingOutput(OutputInterface $outputLogger)
-    {
-        $this->outputLogger = $outputLogger;
-
-        return $this;
     }
 
     /**
@@ -111,13 +93,12 @@ class ResidentBalanceSynchronizer
                 try {
                     $this->updateBalancePerProperty($property, $holding);
                 } catch (\Exception $e) {
-                    print_r($e->getMessage());
-                    $this->logMessage($e->getMessage());
-                    $this->logger->alert(
+                    $this->logMessage(
                         sprintf(
-                            'We got exception: %s. When Update balance for MRI.',
+                            'MRIBalanceSync Exception: %s. When Update balance for MRI.',
                             $e->getMessage()
-                        )
+                        ),
+                        true
                     );
                 }
             }
@@ -149,7 +130,7 @@ class ResidentBalanceSynchronizer
         );
         $nextPageLink = $this->residentDataManager->getNextPageLink();
         while ($nextPageLink) {
-            $this->logMessage(sprintf('MRI get by next page link %s', $nextPageLink));
+            $this->logMessage(sprintf('MRIBalanceSync: get residents by next page link %s', $nextPageLink));
             $residentTransactionsByNextPageLink = $this->residentDataManager->getResidentsByNextPageLink(
                 $nextPageLink
             );
@@ -209,13 +190,13 @@ class ResidentBalanceSynchronizer
 
         if (count($contracts) > 1) {
             $message = sprintf(
-                'MRI update balance. Found more than one contract with property %s, externalUnitId %s, residentId %s',
+                'MRI ResidentBalanceSynchronizer: Found more than one contract with property %s,
+                 externalUnitId %s, residentId %s',
                 $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
                 $externalUnitId,
                 $residentId
             );
-            $this->logMessage($message);
-            $this->logger->alert($message);
+            $this->logMessage($message, true);
 
             return null;
         }
@@ -236,7 +217,12 @@ class ResidentBalanceSynchronizer
             );
 
         if ($contractWaiting) {
-            $this->logMessage(sprintf('Return contract waiting ID: %s', $contractWaiting->getId()));
+            $this->logMessage(
+                sprintf(
+                    'MRI ResidentBalanceSynchronizer: Found contract waiting ID: %s',
+                    $contractWaiting->getId()
+                )
+            );
 
             return $contractWaiting;
         }
@@ -298,11 +284,11 @@ class ResidentBalanceSynchronizer
     /**
      * @param string $message
      */
-    protected function logMessage($message)
+    protected function logMessage($message, $alert = false)
     {
-        $this->logger->debug($message);
-        if ($this->outputLogger) {
-            $this->outputLogger->writeln($message);
+        if ($alert) {
+            $this->logger->alert($message);
         }
+        $this->logger->info($message);
     }
 }
