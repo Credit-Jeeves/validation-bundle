@@ -48,7 +48,12 @@ class Mailer extends BaseMailer implements MailerInterface
             return false;
         }
 
-        $recipientUser = $this->getUserByEmail($emailTo);
+        if (null !== $recipientUser = $this->getUserByEmail($emailTo)) {
+            if (false === $recipientUser->getEmailNotification()) {
+                return false;
+            }
+        }
+
         $params = $this->prepareParameters($params, $recipientUser);
 
         try {

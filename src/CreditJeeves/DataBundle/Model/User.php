@@ -399,7 +399,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="1"})
      */
-    protected $score_changed_notification = true;
+    protected $emailNotification = true;
 
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
@@ -1207,26 +1207,26 @@ abstract class User extends BaseUser
     }
 
     /**
-     * Set score_changed_notification
+     * Set emailNotification
      *
      * @param  boolean $scoreChangedNotification
      * @return User
      */
-    public function setScoreChangedNotification($scoreChangedNotification)
+    public function setEmailNotification($scoreChangedNotification)
     {
-        $this->score_changed_notification = $scoreChangedNotification;
+        $this->emailNotification = $scoreChangedNotification;
 
         return $this;
     }
 
     /**
-     * Get score_changed_notification
+     * Get emailNotification
      *
      * @return boolean
      */
-    public function getScoreChangedNotification()
+    public function getEmailNotification()
     {
-        return $this->score_changed_notification;
+        return $this->emailNotification;
     }
 
     /**
