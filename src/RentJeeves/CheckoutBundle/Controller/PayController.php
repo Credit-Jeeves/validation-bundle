@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Controller;
 
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
@@ -11,6 +12,7 @@ use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorMobile;
 use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -18,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use JMS\Serializer\SerializationContext;
+use Exception;
 
 /**
  * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
@@ -130,6 +133,7 @@ class PayController extends Controller
         $groupId = $request->get('group_id');
 
         $em = $this->getDoctrine()->getManager();
+        /** @var PaymentAccount $paymentAccount */
         $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId);
         if ($contractId && $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId)) {
             $group = $contract->getGroup();
@@ -142,13 +146,25 @@ class PayController extends Controller
             if (empty($group) || empty($paymentAccount)) {
                 throw new \Exception('Group or Payment Account is undefined');
             }
-            $this->ensureAccountAssociation($paymentAccount, $group);
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                $formType->getName() => [
-                    '_globals' => explode('|', $e->getMessage())
+            $this->ensureAccountAssociation($paymentAccount, $group = $contract->getGroup());
+            /** @TODO need better place for this code */
+            if ($paymentAccount->getPaymentProcessor() === PaymentProcessor::ACI) {
+                $billingAccountManager = $this->get('payment_processor.aci.collect_pay.billing_account_manager');
+                if (!$contract->getAciCollectPayContractBilling()) {
+                    $billingAccountManager->addBillingAccount(
+                        $contract->getTenant()->getAciCollectPayProfileId(),
+                        $contract
+                    );
+                }
+            }
+        } catch (Exception $e) {
+            return new JsonResponse(
+                [
+                    $formType->getName() => [
+                        '_globals' => explode('|', $e->getMessage())
+                    ]
                 ]
-            ]);
+            );
         }
 
         return new JsonResponse(['success' => true]);
@@ -161,32 +177,27 @@ class PayController extends Controller
     public function sourceAction(Request $request)
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
-        $paymentAccountType->handleRequest($request);
+        $paymentAccountType->handleRequest($this->get('request'));
         if (!$paymentAccountType->isValid()) {
             return $this->renderErrors($paymentAccountType);
         }
 
         $em = $this->get('doctrine.orm.default_entity_manager');
+        /** @var Contract $contract */
+        $contract = $em
+            ->getRepository('RjDataBundle:Contract')
+            ->find($paymentAccountType->get('contractId')->getData());
+
         try {
-            $contractId = $paymentAccountType->get('contractId')->getData();
-            if ($contractId) {
-                /** @var Contract $contract */
-                $contract = $em
-                    ->getRepository('RjDataBundle:Contract')
-                    ->find($contractId);
-            }
-
-            if (empty($contract)) {
-                throw new \Exception('Contract is undefined.');
-            }
-
             $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                $paymentAccountType->getName() => array(
-                    '_globals' => explode('|', $e->getMessage())
+        } catch (Exception $e) {
+            return new JsonResponse(
+                array(
+                    $paymentAccountType->getName() => array(
+                        '_globals' => explode('|', $e->getMessage())
+                    )
                 )
-            ]);
+            );
         }
 
         return new JsonResponse(
