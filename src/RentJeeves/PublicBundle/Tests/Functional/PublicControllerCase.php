@@ -115,4 +115,24 @@ class PublicControllerCase extends BaseTestCase
             $this->page->find('css', '#rentjeeves_publicbundle_tenanttype_last_name')->getValue()
         );
     }
+
+    /**
+     * @test
+     */
+    public function shouldTernOffEmailNotificationAndOfferNotificationAfterUnsubscribePage()
+    {
+        $this->load(true);
+
+        $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
+        $this->assertTrue($user->getEmailNotification(), 'Email notification should be true.');
+        $this->assertTrue($user->getOfferNotification(), 'Offer notification should be true.');
+
+        $this->session->visit($this->getUrl() . 'unsub?md_email='. $user->getEmail()); // user 42
+
+        $this->assertEquals(200, $this->session->getStatusCode());
+
+        $this->getEntityManager()->refresh($user);
+        $this->assertFalse($user->getEmailNotification(), 'Email notification should be false after UnsubscribePage.');
+        $this->assertFalse($user->getEmailNotification(), 'Offer notification should be false after UnsubscribePage.');
+    }
 }

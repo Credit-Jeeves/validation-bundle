@@ -70,6 +70,7 @@ security:
         - { path: ^/invite,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/message,                        role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/iframe,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/unsub,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/public_iframe,                  role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/register,              role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/checkProperty/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
