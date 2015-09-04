@@ -41,11 +41,6 @@ class ResidentBalanceSynchronizer
     protected $exceptionCatcher;
 
     /**
-     * @var OutputInterface
-     */
-    protected $outputLogger;
-
-    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -75,7 +70,7 @@ class ResidentBalanceSynchronizer
         try {
             $holdings = $this->getHoldings();
             if (empty($holdings)) {
-                return $this->logMessage('No data to update');
+                return $this->logger->info('YardiBalanceSync: No data to update');
             }
 
             foreach ($holdings as $holding) {
@@ -84,17 +79,14 @@ class ResidentBalanceSynchronizer
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
 
-            return $this->logMessage($e->getMessage());
+            return $this->logger->alert(sprintf('YardiBalanceSync ERROR: %s', $e->getMessage()));
         }
     }
 
-    public function usingOutput(OutputInterface $logger)
-    {
-        $this->outputLogger = $logger;
-
-        return $this;
-    }
-
+    /**
+     * @param Holding $holding
+     * @throws Exception
+     */
     protected function updateBalancesForHolding(Holding $holding)
     {
         $repo = $this->em->getRepository('RjDataBundle:Property');
@@ -124,8 +116,8 @@ class ResidentBalanceSynchronizer
                 if ($residentTransactions) {
                     $this->processResidentTransactions($residentTransactions, $holding, $property);
                 } else {
-                    $this->logMessage(sprintf(
-                        'ERROR: Could not load resident transactions for property %s of holding %s: %s',
+                    $this->logger->alert(sprintf(
+                        'YardiBalanceSync ERROR: Could not load resident transactions for property %s, holding %s: %s',
                         $propertyMapping->getExternalPropertyId(),
                         $holding->getName(),
                         $residentClient->getErrorMessage()
@@ -155,7 +147,7 @@ class ResidentBalanceSynchronizer
         $residentId = $resident->getCustomerId();
         $unitName = $resident->getUnit()->getUnitId();
 
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 'Start Search contract by residentId:%s, property:%s, holding:%s, unitName:%s',
                 $residentId,
@@ -196,19 +188,19 @@ class ResidentBalanceSynchronizer
     {
         if (count($contracts) === 1) {
             $contract = reset($contracts);
-            $this->logMessage(sprintf('We found contract with ID:%s', $contract->getId()));
+            $this->logger->info(sprintf('Found contract with ID:%s', $contract->getId()));
 
             return $contract;
         }
 
         if (count($contracts) > 1) {
-            $this->logMessage('We have more than 1 contract for this parameters');
+            $this->logger->info('Found more than 1 contract for this parameters');
             foreach ($contracts as $contract) {
                 $unit = $contract->getUnit();
                 if ($unit->getName() === $unitName) {
-                    $this->logMessage(
+                    $this->logger->info(
                         sprintf(
-                            'We found contract with ID:%s.',
+                            'Found contract with ID:%s.',
                             $contract->getId()
                         )
                     );
@@ -217,13 +209,7 @@ class ResidentBalanceSynchronizer
                 }
             }
 
-            $failedMessage = sprintf(
-                'We didn\'t find any contract with such unitName: %s in list.',
-                $unitName
-            );
-
-            $this->logMessage($failedMessage);
-            $this->logger->alert($failedMessage);
+            $this->logger->alert(sprintf('YardiBalanceSync: Contract with unitName %s not found.', $unitName));
         }
 
         return null;
@@ -250,9 +236,9 @@ class ResidentBalanceSynchronizer
 
             $balance = $this->calcResidentBalance($resident);
             $contract->setPaymentAccepted($resident->getPaymentAccepted());
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
-                    "Setup payment accepted to %s, for residentId %s",
+                    'YardiBalanceSync: Setup payment accepted to %s, for residentId %s',
                     $resident->getPaymentAccepted(),
                     $resident->getCustomerId()
                 )
@@ -261,7 +247,7 @@ class ResidentBalanceSynchronizer
             $externalLeaseId = $contract->getExternalLeaseId();
             if (empty($externalLeaseId)) {
                 $contract->setExternalLeaseId($resident->getLeaseId());
-                $this->logMessage(
+                $this->logger->info(
                     sprintf(
                         'Contract #%s externalLeaseId has been updated. ExternalLeaseId #%s',
                         $contract->getId(),
@@ -269,9 +255,9 @@ class ResidentBalanceSynchronizer
                     )
                 );
             }
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
-                    "Contract #%s has been updated. Now the balance is $%s",
+                    'Contract #%s has been updated. Now the balance is $%s',
                     $contract->getId(),
                     $balance
                 )
@@ -294,12 +280,5 @@ class ResidentBalanceSynchronizer
         }
 
         return $balance;
-    }
-
-    protected function logMessage($message)
-    {
-        if ($this->outputLogger) {
-            $this->outputLogger->writeln($message);
-        }
     }
 }
