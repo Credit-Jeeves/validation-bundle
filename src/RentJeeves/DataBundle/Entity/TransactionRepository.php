@@ -249,19 +249,18 @@ class TransactionRepository extends EntityRepository
         $deposits = $query->getScalarResult();
 
         foreach ($deposits as $key => $deposit) {
-            $batchId = is_numeric($deposit['batch']) ? $deposit['batch'] : null;
 
             $ordersQuery = $ordersRepo->getDepositedOrdersQuery(
                 $group,
                 $accountType,
-                $batchId,
+                $deposit['batch'],
                 $deposit['depositDate']
             );
 
             $deposits[$key]['orders'] = $ordersQuery->getQuery()->execute();
             $depositDate = new DateTime($deposit['depositDate']);
             $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
-            $deposits[$key]['isDeposit'] = $batchId ? true : false;
+            $deposits[$key]['isDeposit'] = $deposit['batch'] ? true : false;
         }
 
         return $deposits;
