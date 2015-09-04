@@ -1521,3 +1521,30 @@ fixtures:
         Thank you so much for helping us ensure that the data we report is accurate. If you have any questions, please contact <a href="mailto:help@renttrack.com">help@renttrack.com</a>.
 
       {% endblock %}
+
+  translation_46_subject:
+    translatable: email_46
+    locale: %locale%
+    property: subject
+    value: Renttrack
+
+  translation_46_body:
+    translatable: email_46
+    locale: %locale%
+    property: body
+    value:  |
+      <H1>Pay Rent Smarter</H1>
+      <H2>Set up your first payment in minutes</H2>
+      {{ FNAME }} - we noticed you still haven't set up an online rent payment with {{ LANDLORDGR }}. Credit follows you for your whole life - it's good to start off on the right track. RentTrack is the only company that can report your rent payments to major credit bureaus so you can build credit history without taking on additional debt.
+      <BR><BR>
+      Building good credit history means you can put yourself in the best position when you buy a car, get a loan, mortgage, apply for insurance, for a job and more*. With {{ MONTHSLEFT }} months left in your lease, you have a great opportunity for improvement - most tenants see a score increase within two months.
+      <BR><BR>
+      Your property manager is offering you this benefit for only {{ FEEACH }} per e-Check or {{ FEECC }} for Credit Card Payments.
+      <BR><BR>
+      <a href="https://my.renttrack.com/tenant/invite/{{ INVITECODE }}">Pay Rent Online Today</a>
+
+  translation_46_mandrillSlug:
+    translatable: email_46
+    locale: %locale%
+    property: mandrillSlug
+    value: paying-rent-online-impacts-credit-score
