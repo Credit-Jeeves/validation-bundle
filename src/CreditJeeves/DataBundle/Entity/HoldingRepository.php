@@ -34,6 +34,14 @@ class HoldingRepository extends EntityRepository
     /**
      * @return Holding[]
      */
+    public function findHoldingsForUpdatingBalanceMRI()
+    {
+        return $this->getQueryForHoldingsWithMriSettings()->getQuery()->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
     public function findHoldingsForUpdatingBalanceAMSI()
     {
         $query = $this->createQueryBuilder('h');

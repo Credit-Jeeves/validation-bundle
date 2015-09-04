@@ -623,4 +623,18 @@ class Value
             $this->getUnitId()
         );
     }
+
+    /**
+     * @return int
+     */
+    public function getPaymentAccepted()
+    {
+        $payNotAllowed = trim(strtolower($this->getPayAllowed()));
+
+        if ($payNotAllowed === 'y') {
+            return PaymentAccepted::DO_NOT_ACCEPT;
+        }
+
+        return PaymentAccepted::ANY;
+    }
 }
