@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Model\MRI;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 class Value
 {

@@ -99,6 +99,7 @@ class MRIClientCase extends Base
     {
         $mriClient = $this->getMriClient();
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
+        file_put_contents('/var/www/Credit-Jeeves-SF2/dump.txt', print_r($mriResponse, true));
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
         $this->assertGreaterThan(
             18,

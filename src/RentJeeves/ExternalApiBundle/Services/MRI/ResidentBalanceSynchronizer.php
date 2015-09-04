@@ -111,6 +111,7 @@ class ResidentBalanceSynchronizer
                 try {
                     $this->updateBalancePerProperty($property, $holding);
                 } catch (\Exception $e) {
+                    print_r($e->getMessage());
                     $this->logMessage($e->getMessage());
                     $this->logger->alert(
                         sprintf(
@@ -198,19 +199,19 @@ class ResidentBalanceSynchronizer
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
         $residentId = $customer->getResidentId();
-        $unitName = $customer->getUnitId();
-        $contracts = $contractRepo->findContractByHoldingPropertyResidentUnit(
+        $externalUnitId = $customer->getExternalUnitId();
+        $contracts = $contractRepo->findContractsByHoldingPropertyMappingResidentAndExternalUnitId(
             $holding,
-            $property,
+            $property->getPropertyMappingByHolding($holding),
             $residentId,
-            $unitName
+            $externalUnitId
         );
 
         if (count($contracts) > 1) {
             $message = sprintf(
-                'MRI update balance. Found more than one contract with property %s, unitName %s, residentId %s',
+                'MRI update balance. Found more than one contract with property %s, externalUnitId %s, residentId %s',
                 $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
-                $unitName,
+                $externalUnitId,
                 $residentId
             );
             $this->logMessage($message);
@@ -227,7 +228,12 @@ class ResidentBalanceSynchronizer
         }
 
         $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
-            ->findByHoldingPropertyUnitResident($holding, $property, $unitName, $residentId);
+            ->findOneByHoldingPropertyMappingExternalUnitIdResident(
+                $holding,
+                $property->getPropertyMappingByHolding($holding),
+                $externalUnitId,
+                $residentId
+            );
 
         if ($contractWaiting) {
             $this->logMessage(sprintf('Return contract waiting ID: %s', $contractWaiting->getId()));
@@ -237,9 +243,9 @@ class ResidentBalanceSynchronizer
 
         $this->logMessage(
             sprintf(
-                'MRI - could not find contract with property %s, unitName %s, resident %s',
+                'MRI - could not find contract with property %s, externalUnitId %s, resident %s',
                 $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
-                $unitName,
+                $externalUnitId,
                 $residentId
             )
         );
