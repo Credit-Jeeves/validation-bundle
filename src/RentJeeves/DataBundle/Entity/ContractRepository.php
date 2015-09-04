@@ -1256,4 +1256,25 @@ class ContractRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @return Contract[]
+     */
+    public function findContractsForSecondChance()
+    {
+        $subQuery = 'SELECT o FROM DataBundle:Order o WHERE o.cj_applicant_id = t.id';
+
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.tenant', 't')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.holding', 'h')
+            ->innerJoin('g.depositAccounts', 'da')
+            ->where('c.status in (:statuses)')
+            ->andWhere("MONTH(DATE_ADD(c.createdAt, 1, 'month')) = MONTH(CURRENT_TIMESTAMP())")
+            ->andWhere(sprintf('NOT EXISTS (%s)', $subQuery))
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED])
+            ->groupBy('t.id') // 1 contract for 1 user
+            ->getQuery()
+            ->getResult();
+    }
 }
