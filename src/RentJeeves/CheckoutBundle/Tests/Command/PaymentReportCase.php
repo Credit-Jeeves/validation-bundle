@@ -72,7 +72,7 @@ class PaymentReportCase extends BaseTestCase
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
         $this->assertCount(8, $count); // +2 for Monolog Message
-        $this->assertContains('Amount of synchronized payments: 10', $result);
+        $this->assertContains('Amount of synchronized payments: 11', $result);
     }
 
     /**
@@ -226,6 +226,43 @@ class PaymentReportCase extends BaseTestCase
         $this->assertNotNull($resultTransaction = $repo->findOneBy(array('transactionId' => $transactionId)));
         // 145176 is a value from heartland report file fixture
         $this->assertEquals(145176, $resultTransaction->getBatchId(), 'Batch id was not updated');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotMoveAlreadyReversedOrderToComplete()
+    {
+        $em = $this->getEntityManager();
+        /** @var Order $order */
+        $order = $em->find('DataBundle:Order', 8); // RETURNED order with deposit and reversed transactions
+        $this->assertNotNull($order, 'Order #8 not found');
+        $this->assertEquals(OrderStatus::RETURNED, $order->getStatus());
+        $this->assertCount(2, $order->getTransactions(), 'Order should have 2 transactions');
+        $this->assertInstanceOf(
+            'RentJeeves\DataBundle\Entity\Transaction',
+            $reversedTransaction = $order->getReversedTransaction()
+        );
+        $this->assertInstanceOf(
+            'RentJeeves\DataBundle\Entity\Transaction',
+            $depositTransaction = $order->getCompleteTransaction()
+        );
+
+        // set depositDate to NULL, then process report and make sure depositDate is set, but orderStatus is not changed
+        $depositTransaction->setDepositDate(null);
+        $em->flush($depositTransaction);
+
+        $this->executeCommand();
+
+        $em->refresh($depositTransaction);
+        $em->refresh($order);
+        $this->assertNotNull($depositTransaction->getDepositDate(), 'Deposit transaction should have deposit date');
+        $this->assertEquals(
+            '2015-08-05',
+            $depositTransaction->getDepositDate()->format('Y-m-d'),
+            'Deposit date should be +1 business day from date in the report'
+        );
+        $this->assertEquals(OrderStatus::RETURNED, $order->getStatus(), 'Order status should remain RETURNED');
     }
 
     protected function createOrder($transactionId)
