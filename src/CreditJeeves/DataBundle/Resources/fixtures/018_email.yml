@@ -92,3 +92,9 @@ fixtures:
         name: rjLateReportingTenant.html
     email_46:
         name: rjSecondChanceForContract.html
+    email_47:
+        name: rjOrderSending.html
+    email_48:
+        name: rjOrderRefunding.html
+    email_49:
+        name: rjOrderReissued.html

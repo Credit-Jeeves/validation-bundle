@@ -62,7 +62,64 @@ class MailerCase extends BaseTestCase
     }
 
     /**
-     * @return \CreditJeeves\CoreBundle\Mailer\Mailer
+     * @test
+     */
+    public function shouldSendOrderSendingNotification()
+    {
+        $this->load(true);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $em = $this->getEntityManager();
+        $order = $em->find('DataBundle:Order', 2);
+        $this->getMailer()->sendOrderSendingNotification($order);
+
+        $this->assertCount(1, $plugin->getPreSendMessages());
+        $message =  $plugin->getPreSendMessage(0);
+        $this->assertEquals('Your Rent Check is in the Mail!', $message->getSubject());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendOrderRefundingNotification()
+    {
+        $this->load(true);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $em = $this->getEntityManager();
+        $order = $em->find('DataBundle:Order', 2);
+        $this->getMailer()->sendOrderRefundingNotification($order);
+
+        $this->assertCount(1, $plugin->getPreSendMessages());
+        $message =  $plugin->getPreSendMessage(0);
+        $this->assertEquals('Your Rent Payment is being Refunded', $message->getSubject());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendOrderReissuedNotification()
+    {
+        $this->load(true);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $em = $this->getEntityManager();
+        $order = $em->find('DataBundle:Order', 2);
+        $this->getMailer()->sendOrderReissuedNotification($order);
+
+        $this->assertCount(1, $plugin->getPreSendMessages());
+        $message =  $plugin->getPreSendMessage(0);
+        $this->assertEquals('Your Rent Check has been Reissued!', $message->getSubject());
+    }
+
+    /**
+     * @return \RentJeeves\CoreBundle\Mailer\Mailer
      */
     protected function getMailer()
     {
