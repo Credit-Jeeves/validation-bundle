@@ -11,7 +11,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\YardiSettings;
-use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
+use RentJeeves\ExternalApiBundle\Model\Yardi\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum as SoapClient;
@@ -201,7 +201,7 @@ class ReversalReceiptSender
         $transactionXml = $this->serializer->serialize(
             $residentTransactions,
             'xml',
-            SerializationContext::create()->setSerializeNull(true)->setGroups('soapYardiReversed')
+            SerializationContext::create()->setSerializeNull(true)->setGroups('reversedPayment')
         );
         $transactionXml = YardiXmlCleaner::prepareXml($transactionXml);
 

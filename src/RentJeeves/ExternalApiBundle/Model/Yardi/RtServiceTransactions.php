@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Model;
+namespace RentJeeves\ExternalApiBundle\Model\Yardi;
 
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\YardiSettings;
@@ -8,8 +8,8 @@ use RentJeeves\DataBundle\Entity\YardiSettings;
 class RtServiceTransactions
 {
     /**
-     * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\Transactions>")
-     * @Serializer\Groups({"soapYardiRequest", "soapYardiReversed"})
+     * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Model\Yardi\Transactions>")
+     * @Serializer\Groups({"baseRequest", "withPostMonth", "reversedPayment"})
      * @Serializer\XmlList(inline = true, entry="Transactions")
      * @Serializer\XmlKeyValuePairs
      */

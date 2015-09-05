@@ -429,7 +429,7 @@ class ExportCase extends BaseTestCase
         $columns = explode(",", $rows[0]);
         $this->assertEmpty($columns[1], 'Unit should be empty');
         $this->assertEquals(1250, $columns[2], 'Amount should be 1250');
-        $this->assertEquals($columns[3], '"Trans #446632 Batch #555000"');
+        $this->assertContains('Batch #555000', $columns[3]);
         $this->assertEquals('t0011981', $columns[4], 'Resident id should be t0011981');
     }
 

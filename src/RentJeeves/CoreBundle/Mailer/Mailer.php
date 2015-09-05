@@ -271,7 +271,7 @@ class Mailer extends BaseMailer
             'groupName' => $order->getGroupName(),
             'orderId' => $order->getId(),
             'error' => $order->getErrorMessage(),
-            'transactionId' => $order->getHeartlandTransactionId(),
+            'transactionId' => $order->getTransactionId(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
             'orderType' => $order->getPaymentType(),
@@ -577,7 +577,7 @@ class Mailer extends BaseMailer
                 'date' => $order->getCreatedAt()->format($dateShortFormat),
                 'amout' => $this->container->getParameter('credittrack_payment_per_month_currency') .
                     $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting
-                'number' => $order->getHeartlandTransactionId(),
+                'number' => $order->getTransactionId(),
                 'paymentProcessor' => $order->getPaymentProcessor(),
                 'type' => $order->getPaymentType(),
                 'statementDescriptor' => $this->getStatementDescriptor($order),

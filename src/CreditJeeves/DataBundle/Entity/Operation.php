@@ -450,7 +450,7 @@ class Operation extends Base
                 return  $trans->getTransactionId();
             }
 
-            return $order->getHeartlandTransactionId();
+            return $order->getTransactionId();
         }
 
         return null;
