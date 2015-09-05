@@ -139,7 +139,8 @@ class AccountingPaymentSynchronizer
     {
         try {
             if (!$order->hasContract()) {
-                $this->logger->alert(     // This should be an alert - orders should have associated contracts!
+                // This should be an alert - orders should have associated contracts!
+                $this->logger->alert(
                     sprintf(
                         'Order(%s) does not have an associated contract - cannot send to accounting system.',
                         $order->getId()
@@ -151,7 +152,8 @@ class AccountingPaymentSynchronizer
 
             $contract = $order->getContract();
             if (!$this->isAllowedToSend($contract)) {
-                $this->logger->debug(     // This should not be an alert since we're just checking if we should send.
+                // This should not be an alert since we're just checking if we should send.
+                $this->logger->debug(
                     sprintf(
                         "Order(%d) should not be sent to the accounting system.",
                         $order->getId()
@@ -168,7 +170,8 @@ class AccountingPaymentSynchronizer
                 $apiClient = $this->getApiClient($holding->getApiIntegrationType(), $holding->getExternalSettings()) and
                 $this->existsExternalMapping($order, $apiClient)
             )) {
-                $this->logger->alert(     // This should be an alert - mappings are missing!
+                // This should be an alert - mappings are missing!
+                $this->logger->alert(
                     sprintf(
                         'Order(%d) can not be sent to accounting system(%s) - potentially due to missing mappings.',
                         $order->getId(),
