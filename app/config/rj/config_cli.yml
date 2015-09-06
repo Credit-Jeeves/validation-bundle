@@ -35,3 +35,7 @@ monolog:
             to_email:   %monolog.alert.email_to%
             subject:    SYSTEM ALERT
             level:      alert
+        console:
+            type:       console
+            verbosity_levels:
+                VERBOSITY_NORMAL: INFO

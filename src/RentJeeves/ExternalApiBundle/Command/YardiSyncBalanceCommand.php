@@ -13,14 +13,13 @@ class YardiSyncBalanceCommand extends ContainerAwareCommand
     {
         $this
             ->setName('api:yardi:sync-balance')
-            ->setDescription('Update resident balances.');
+            ->setDescription('Update resident balances for Yardi.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getContainer()
             ->get('yardi.resident_balance_sync')
-            ->usingOutput($output)
             ->run();
     }
 }
