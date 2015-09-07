@@ -173,10 +173,12 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function startDateAttrs()
+    public function startDateAttrs($isPastCutoffTime = false)
     {
+        $minDate = $isPastCutoffTime ? new \DateTime('+1 day') : new \DateTime();
+
         return array_merge(
-            parent::startDateAttrs(),
+            parent::startDateAttrs($isPastCutoffTime),
             [
                 'class' => 'datepicker-field',
                 'row_attr' => [
@@ -184,7 +186,11 @@ class AttributeGeneratorWeb extends AttributeGenerator
                                 || contract().groupSetting.pay_balance_only'
                 ],
                 'data-bind' => 'datepicker: payment.startDate, ' .
-                    'datepickerOptions: { minDate: new Date(), dateFormat: \'m/d/yy\', beforeShowDay: isDueDay }',
+                    'datepickerOptions: {
+                        minDate: \'' . $minDate->format('m/d/Y') . '\',
+                        dateFormat: \'m/d/yy\',
+                        beforeShowDay: isDueDay
+                    }',
             ]
         );
     }

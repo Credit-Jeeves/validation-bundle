@@ -56,7 +56,7 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface
         return [];
     }
 
-    public function startDateAttrs()
+    public function startDateAttrs($isPastCutoffTime = false)
     {
         return [];
     }

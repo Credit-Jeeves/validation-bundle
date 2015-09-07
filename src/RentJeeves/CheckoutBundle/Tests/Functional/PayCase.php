@@ -961,4 +961,44 @@ class PayCase extends BaseTestCase
         $this->assertEquals($isPaymentProcessorLocked, empty($editSource));
         $this->assertEquals($isPaymentProcessorLocked, empty($delSource));
     }
+
+    /**
+     * @test
+     */
+    public function shouldDisableTodayOnDatepickerAfterCutoffTime()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton($this->payButtonName);
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '2000',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => ''
+            ]
+        );
+
+        $this->assertNotNull($this->page->find('css', '#ui-datepicker-div'), 'Datepicker not found');
+
+        $this->assertNotNull(
+            $this->page->find(
+                'css',
+                '#ui-datepicker-div td.ui-datepicker-unselectable.ui-state-disabled.ui-datepicker-today'
+            ),
+            'Today should be disabled'
+        );
+    }
 }

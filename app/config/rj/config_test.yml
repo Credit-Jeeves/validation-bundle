@@ -7,6 +7,8 @@ parameters:
 
     payment_processor.hps.report_path: 'src/RentJeeves/CheckoutBundle/Tests/Fixtures/hps'
 
+    payment_one_time_until_value: '00:01'
+
     credit_services:
         credit_summary_vendor: experian # supported values are 'transunion' or 'experian'
 

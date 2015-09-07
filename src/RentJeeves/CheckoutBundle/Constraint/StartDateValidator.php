@@ -4,14 +4,17 @@ namespace RentJeeves\CheckoutBundle\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use \DateTime;
 
 class StartDateValidator extends ConstraintValidator
 {
+    /**
+     * @param mixed $value
+     * @param Constraint $constraint
+     */
     public function validate($value, Constraint $constraint)
     {
-        $nowDateTime = new DateTime();
-        $dateValidation = ($value instanceof DateTime) ? $value : DateTime::createFromFormat('Y-m-d', $value);
+        $nowDateTime = new \DateTime();
+        $dateValidation = ($value instanceof \DateTime) ? $value : \DateTime::createFromFormat('Y-m-d', $value);
 
         if (!$dateValidation) {
             return $this->context->addViolation($constraint->messageEmptyStartDate);
@@ -25,17 +28,39 @@ class StartDateValidator extends ConstraintValidator
          * If it's today, need check time
          */
         if ($dateValidation->format('Y-m-d') === $nowDateTime->format('Y-m-d')) {
-            $nowDateTimeWithCrontabTimeExecution = new DateTime($constraint->oneTimeUntilValue);
+            if (self::isPastCutoffTime($dateValidation, $constraint->oneTimeUntilValue)) {
+                return $this->context->addViolation($constraint->messageDateCutoffTime);
+            }
+
+            return;
+        }
+
+        return $this->context->addViolation($constraint->messageDateInPast);
+    }
+
+    /**
+     * @param \DateTime $dateValidation
+     * @param string $oneTimeUntilValue
+     * @return bool
+     */
+    public static function isPastCutoffTime(\DateTime $dateValidation, $oneTimeUntilValue)
+    {
+        $nowDateTime = new \DateTime();
+
+        if ($dateValidation->format('Y-m-d') > $nowDateTime->format('Y-m-d')) {
+            return false;
+        }
+
+        if ($dateValidation->format('Y-m-d') === $nowDateTime->format('Y-m-d')) {
+            $nowDateTimeWithCrontabTimeExecution = new \DateTime($oneTimeUntilValue);
             $timeExecution = (int) $nowDateTimeWithCrontabTimeExecution->format('Hmi');
             $timeValidation = (int) $dateValidation->format('Hmi');
 
             if ($timeExecution > $timeValidation) {
-                return;
+                return false;
             }
-
-            return $this->context->addViolation($constraint->messageDateCutoffTime);
         }
 
-        return $this->context->addViolation($constraint->messageDateInPast);
+        return true;
     }
 }
