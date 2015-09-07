@@ -18,6 +18,7 @@ doctrine:
                 last_day: DoctrineExtensions\Query\Mysql\LastDay
                 month: DoctrineExtensions\Query\Mysql\Month
                 year: DoctrineExtensions\Query\Mysql\Year
+                dateadd: DoctrineExtensions\Query\Mysql\DateAdd
             string_functions:
                 field: DoctrineExtensions\Query\Mysql\Field
                 concat_ws: DoctrineExtensions\Query\Mysql\ConcatWs

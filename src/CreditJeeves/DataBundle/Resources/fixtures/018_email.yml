@@ -91,4 +91,4 @@ fixtures:
     email_45:
         name: rjLateReportingTenant.html
     email_46:
-        name: rjTenantInviteSecondChance.html
+        name: rjSecondChanceForContract.html

@@ -28,7 +28,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -48,10 +48,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
-     * @param string   $isImported
+     * @param string $isImported
      *
      * @return bool
      */
@@ -73,7 +73,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -95,7 +95,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -116,10 +116,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
-     * @param Holding  $holding
+     * @param Tenant $tenant
+     * @param Holding $holding
      * @param Contract $contract
-     * @param string   $paymentType
+     * @param string $paymentType
      *
      * @return bool
      */
@@ -137,7 +137,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -155,8 +155,8 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param float    $amount
-     * @param string   $sTemplate
+     * @param float $amount
+     * @param string $sTemplate
      *
      * @return bool
      */
@@ -187,9 +187,9 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
-     * @param string   $diff
+     * @param string $diff
      *
      * @return bool
      */
@@ -206,7 +206,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param array    $tenants
+     * @param array $tenants
      *
      * @return bool
      */
@@ -281,7 +281,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -316,7 +316,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -340,7 +340,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -364,8 +364,8 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param User     $user
-     * @param Group    $group
+     * @param User $user
+     * @param Group $group
      *
      * @return bool
      */
@@ -382,7 +382,7 @@ class Mailer extends BaseMailer
     /**
      * @param Contract $contract
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      *
      * @return bool
      */
@@ -480,7 +480,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Contract $contract
-     * @param Payment  $payment
+     * @param Payment $payment
      *
      * @return bool
      */
@@ -499,10 +499,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord  $landlord
-     * @param array     $groups
+     * @param Landlord $landlord
+     * @param array $groups
      * @param \DateTime $date
-     * @param string    $resend
+     * @param string $resend
      *
      * @return bool
      */
@@ -524,10 +524,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord  $landlord
-     * @param Group     $group
+     * @param Landlord $landlord
+     * @param Group $group
      * @param \DateTime $date
-     * @param array     $batches
+     * @param array $batches
      * @param $returns
      * @param $resend
      *
@@ -587,7 +587,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param array    $data
+     * @param array $data
      *
      * @return bool
      */
@@ -693,5 +693,35 @@ class Mailer extends BaseMailer
         $statementDescriptor = $order->getContract() ? $order->getContract()->getGroup()->getStatementDescriptor() : '';
 
         return sprintf('%s*%s', $statementDescriptorPrefix, $statementDescriptor);
+    }
+
+    /**
+     * @param Contract $contract
+     *
+     * @return bool
+     */
+    public function sendRjSecondChanceForContract(Contract $contract)
+    {
+        $params = [
+            'FNAME' => $contract->getTenant()->getFirstName(),
+            'LANDLORDGR' => $contract->getGroup()->getName(),
+            'INVITECODE' => $contract->getTenant()->getInviteCode(),
+            'FEEACH' => $contract->getGroupSettings()->getFeeACH(),
+            'FEECC' => $contract->getGroupSettings()->getFeeCC(),
+        ];
+        if (null !== $contract->getFinishAt()) {
+            $date = new \DateTime();
+            $interval = date_diff($date, $contract->getFinishAt());
+            $params['MONTHSLEFT'] = $interval->format('%y') * 12 + $interval->format('%m');
+        } else {
+            $params['MONTHSLEFT'] = 0;
+        }
+
+        return $this->sendBaseLetter(
+            $template = 'rjSecondChanceForContract',
+            $params,
+            $contract->getTenant()->getEmail(),
+            $contract->getTenant()->getCulture()
+        );
     }
 }
