@@ -49,7 +49,9 @@ class ResidentBalanceSynchronizer
         try {
             $holdings = $this->getHoldings();
             if (empty($holdings)) {
-                return $this->logMessage('MRI ResidentBalanceSynchronizer: No data to update');
+                $this->logMessage('MRI ResidentBalanceSynchronizer: No data to update');
+
+                return;
             }
 
             foreach ($holdings as $holding) {
@@ -269,7 +271,8 @@ class ResidentBalanceSynchronizer
     {
         $contract->setPaymentAccepted($customer->getPaymentAccepted());
         $contract->setIntegratedBalance($customer->getLeaseBalance());
-
+        $this->em->persist($contract);
+        $this->em->flush($contract);
         $this->logMessage(
             sprintf(
                 'MRI: payment accepted to %s, balance %s.
@@ -283,6 +286,7 @@ class ResidentBalanceSynchronizer
 
     /**
      * @param string $message
+     * @param boolean $alert
      */
     protected function logMessage($message, $alert = false)
     {

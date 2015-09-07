@@ -238,7 +238,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
         $contract = $repo->find(20);
-        $this->assertNotNull($contract);
+        $this->assertNotNull($contract, 'Must find contract');
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
@@ -258,7 +258,7 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $balanceSynchronizer = $this->getContainer()->get('mri.resident_balance_sync');
         $balanceSynchronizer->run();
         $updatedContract = $repo->find($contract->getId());
-        $this->assertLessThan((int) $updatedContract->getIntegratedBalance(), 8340);
+        $this->assertGreaterThan(8340, (int) $updatedContract->getIntegratedBalance(), 'Balance not updated');
     }
 
     /**
@@ -270,8 +270,8 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $em = $this->getEntityManager();
         $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
         $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
-        $this->assertNotNull($contractWaiting);
-        $this->assertEquals(0, $contractWaiting->getIntegratedBalance());
+        $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
+        $this->assertEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should not be 0');
         $contractWaiting->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
         $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
             $contractWaiting->getGroup()->getHolding()
@@ -291,6 +291,6 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $balanceSynchronizer->run();
         /** @var ContractWaiting $updatedContractWaiting */
         $updatedContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
-        $this->assertLessThan((int) $updatedContractWaiting->getIntegratedBalance(), 8340);
+        $this->assertGreaterThan(8340, (int) $updatedContractWaiting->getIntegratedBalance(), 'Balance not updated');
     }
 }
