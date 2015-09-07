@@ -387,4 +387,24 @@ class PublicController extends Controller
             'signinUrl' => $this->get('router')->generate('fos_user_security_login')
         );
     }
+
+    /**
+     * @Route("/unsub", name="unsubscribe_user")
+     */
+    public function unsubscribeUser(Request $request)
+    {
+        if (false == $email = $request->query->get('md_email')) {
+            throw new \LogicException('Parameter \'md_email\' not found.');
+        }
+        $user = $this->getEntityManager()->getRepository('DataBundle:User')->findOneBy(['email' => $email]);
+        if (null === $user) {
+            throw new \LogicException(sprintf('User with email \'%s\' not found.', $email));
+        }
+
+        $user->setEmailNotification(false);
+        $user->setOfferNotification(false);
+        $this->getEntityManager()->flush($user);
+
+        return $this->render('RjPublicBundle:Public:unsubscribeUser.html.twig', ['user' => $user]);
+    }
 }

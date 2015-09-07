@@ -1,0 +1,12 @@
+{% extends "CoreBundle::base.html.twig" %}
+
+{% block content %}
+    <div>
+        <h1>We`re Sorry to See You Go!</h1>
+        <p>{{ user.email }} has been removed from all emails.</p>
+        <p>
+            To change this setting, <a href="{{ path('tenant_homepage') }}"> sign in to RentTrack</a>,
+            go to the Account link in the top right of the page, and click on Email Preferences.
+        </p>
+    </div>
+{% endblock %}
