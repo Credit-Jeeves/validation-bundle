@@ -181,6 +181,26 @@ abstract class Holding
     /**
      * @ORM\Column(
      *      type="boolean",
+     *      name="use_recurring_charges",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $useRecurringCharges = false;
+
+    /**
+     * @ORM\Column(name="recurring_codes", type="string", nullable=true, length=255)
+     *
+     * @var string
+     */
+    protected $recurringCodes;
+
+    /**
+     * @ORM\Column(
+     *      type="boolean",
      *      name="is_allowed_future_contract",
      *      options={
      *          "default":0
@@ -214,6 +234,17 @@ abstract class Holding
      * @var boolean
      */
     protected $paymentsEnabled = true;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->groups = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->units = new ArrayCollection();
+        $this->contracts = new ArrayCollection();
+        $this->residentsMapping = new ArrayCollection();
+        $this->apiIntegrationType = ApiIntegrationType::NONE;
+    }
 
     /**
      * @return boolean
@@ -271,17 +302,6 @@ abstract class Holding
         $this->isAllowedFutureContract = $isAllowedFutureContract;
     }
 
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-        $this->groups = new ArrayCollection();
-        $this->users = new ArrayCollection();
-        $this->units = new ArrayCollection();
-        $this->contracts = new ArrayCollection();
-        $this->residentsMapping = new ArrayCollection();
-        $this->apiIntegrationType = ApiIntegrationType::NONE;
-    }
-
     /**
      * @return AMSISettings
      */
@@ -307,7 +327,7 @@ abstract class Holding
     }
 
     /**
-     * @param MRISetting $MRISettings
+     * @param MRISettings $MRISettings
      */
     public function setMriSettings(MRISettings $MRISettings = null)
     {
@@ -624,5 +644,37 @@ abstract class Holding
     public function setApiIntegrationType($apiIntegrationType)
     {
         $this->apiIntegrationType = $apiIntegrationType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecurringCodes()
+    {
+        return $this->recurringCodes;
+    }
+
+    /**
+     * @param string $recurringCodes
+     */
+    public function setRecurringCodes($recurringCodes)
+    {
+        $this->recurringCodes = $recurringCodes;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getUseRecurringCharges()
+    {
+        return $this->useRecurringCharges;
+    }
+
+    /**
+     * @param boolean $useRecurringCharges
+     */
+    public function setUseRecurringCharges($useRecurringCharges)
+    {
+        $this->useRecurringCharges = $useRecurringCharges;
     }
 }
