@@ -149,10 +149,24 @@ class ReportSynchronizer
         }
 
         if ($reportTransaction->getAmount() > 0 && $reportDepositDate = $reportTransaction->getDepositDate()) {
-            $this->orderStatusManager->setComplete($transaction->getOrder());
             if (!$transaction->getDepositDate()) {
                 $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportDepositDate);
                 $transaction->setDepositDate($depositDate);
+            }
+            /*
+             * Transactions in report may have such sort order that first go reversed transaction, then - deposited.
+             * Moreover, deposit report with all transactions for the month may be processed at the end of month --
+             * then again we should not set order to COMPLETE.
+             *
+             * So if order already has reversed transaction, we should not set it to COMPLETE.
+             */
+            if (!$transaction->getOrder()->getReversedTransaction()) {
+                $this->orderStatusManager->setComplete($transaction->getOrder());
+            } else {
+                $this->logger->debug(sprintf(
+                    'Deposit Transaction ID %s can not set order to COMPLETE due to existing reversed transaction',
+                    $transaction->getTransactionId()
+                ));
             }
         }
         $this->em->flush();
