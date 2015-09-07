@@ -122,6 +122,7 @@ class PublicControllerCase extends BaseTestCase
     public function shouldTurnOffEmailNotificationAndOfferNotificationAfterUnsubscribePage()
     {
         $this->load(true);
+        $this->setDefaultSession('symfony');
 
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
         $this->assertTrue($user->getEmailNotification(), 'Email notification should be true.');
