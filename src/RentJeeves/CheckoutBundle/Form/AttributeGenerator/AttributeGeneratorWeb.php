@@ -188,7 +188,8 @@ class AttributeGeneratorWeb extends AttributeGenerator
                 'data-bind' => 'datepicker: payment.startDate, ' .
                     'datepickerOptions: {
                         minDate: \'' . $minDate->format('m/d/Y') . '\',
-                        dateFormat: \'m/d/yy\', beforeShowDay: isDueDay
+                        dateFormat: \'m/d/yy\',
+                        beforeShowDay: isDueDay
                     }',
             ]
         );

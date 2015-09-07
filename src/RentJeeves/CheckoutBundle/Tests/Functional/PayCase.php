@@ -991,7 +991,7 @@ class PayCase extends BaseTestCase
             ]
         );
 
-        $this->assertNotNull($this->page->find('css','#ui-datepicker-div'), 'Datepicker doesn\'t show');
+        $this->assertNotNull($this->page->find('css', '#ui-datepicker-div'), 'Datepicker not found');
 
         $this->assertNotNull(
             $this->page->find(
