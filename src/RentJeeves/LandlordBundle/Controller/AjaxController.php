@@ -1074,16 +1074,16 @@ class AjaxController extends Controller
         $transactionRepo = $em->getRepository('RjDataBundle:Transaction');
 
         $total = $transactionRepo->getCountDeposits($group, $filter);
-        $deposits = array();
+        $deposits = [];
         if ($total) {
             $deposits = $transactionRepo->getDepositedOrders($group, $filter, $orderRepo, $page, $limit);
         }
 
-        $result = array(
+        $result = [
             'deposits' => $deposits,
             'total' => $total,
-            'pagination' => $this->datagridPagination($total, $limit)
-        );
+            'pages' => [ceil($total / $limit)]
+        ];
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);

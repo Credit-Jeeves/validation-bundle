@@ -728,4 +728,18 @@ class AccountingController extends Controller
 
         return $response;
     }
+
+    /**
+     * @Route(
+     *     "/deposit",
+     *     name="accounting_deposit"
+     * )
+     */
+    public function batchDepositsAction(Request $request)
+    {
+        return $this->render(
+            'LandlordBundle:Accounting:deposit.html.twig',
+            []
+        );
+    }
 }

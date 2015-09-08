@@ -2,9 +2,9 @@
     float: left;
     margin-left: 7px;
 }
-.sub-menu>ul>.last{
-    border-left: 1px solid grey;
-    padding-left: 5px;
+.sub-menu>ul>li:not(.last) {
+    border-right: 1px solid grey;
+    padding-right: 5px;
 }
 .sub-menu>ul>.first.last{
     border-left: none;
