@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Soap;
 
 use JMS\Serializer\Annotation as Serializer;
 
-class ResidentTransactionTransactions 
+class ResidentTransactionTransactions
 {
     /**
      * @Serializer\SerializedName("Charge")
@@ -21,10 +21,10 @@ class ResidentTransactionTransactions
     }
 
     /**
-     * @return mixed
+     * @return ResidentTransactionCharge
      */
     public function getCharge()
     {
         return $this->charge;
     }
-} 
+}

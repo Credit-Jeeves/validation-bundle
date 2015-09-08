@@ -6,6 +6,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClie
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseChargesLoginResponse;
 use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\ClientCaseBase as Base;
 
 class ResidentTransactionsClientCase extends Base
@@ -44,5 +45,28 @@ class ResidentTransactionsClientCase extends Base
         /** @var $response GetResidentTransactionsLoginResponse */
         $response = $client->getResidentTransactions('rnttrk01');
         $this->assertTrue($response instanceof GetResidentTransactionsLoginResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function getResidentLeaseCharges()
+    {
+        $client = $this->getClient();
+        /** @var $response ResidentLeaseChargesLoginResponse */
+        $response = $client->getResidentLeaseCharges('rnttrk01');
+        $this->assertTrue($response instanceof ResidentLeaseChargesLoginResponse);
+        $this->assertNotEmpty($property = $response->getProperty());
+        $this->assertNotEmpty($customers = $property->getCustomers());
+        $customer = reset($customers);
+        $this->assertNotEmpty($serviceTransactions = $customer->getServiceTransactions());
+        $transactions = $serviceTransactions->getTransactions();
+        $transaction = reset($transactions);
+        $this->assertNotEmpty($charge = $transaction->getCharge());
+        $this->assertNotEmpty($detail = $charge->getDetail());
+        $this->assertNotEmpty($detail->getAmount());
+        $this->assertNotEmpty($detail->getUnitID());
+        $this->assertNotEmpty($detail->getChargeCode());
+        $this->assertNotEmpty($detail->getCustomerID());
     }
 }

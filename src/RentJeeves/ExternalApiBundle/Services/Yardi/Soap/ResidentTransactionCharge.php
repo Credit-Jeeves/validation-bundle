@@ -14,7 +14,7 @@ class ResidentTransactionCharge
     protected $detail;
 
     /**
-     * @param mixed $detail
+     * @param ResidentTransactionChargeDetail $detail
      */
     public function setDetail($detail)
     {
@@ -22,7 +22,7 @@ class ResidentTransactionCharge
     }
 
     /**
-     * @return mixed
+     * @return ResidentTransactionChargeDetail
      */
     public function getDetail()
     {
