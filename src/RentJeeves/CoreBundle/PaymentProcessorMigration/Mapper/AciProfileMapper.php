@@ -4,11 +4,13 @@ namespace RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
+use RentJeeves\CoreBundle\PaymentProcessorMigration\Exception\CsvMapException;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingRecord;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -69,15 +71,21 @@ class AciProfileMapper
      */
     protected function mapUser()
     {
-        return array_merge(
-            [$this->mapUserConsumerRecord()],
-            $this->mapUserAccountRecords(),
-            $this->mapUserFundingRecords()
-        );
+        try {
+            return array_merge(
+                [$this->mapUserConsumerRecord()],
+                $this->mapUserAccountRecords(),
+                $this->mapUserFundingRecords()
+            );
+        } catch (CsvMapException $e) {
+            return [];
+        }
     }
 
     /**
-     * @return ConsumerRecord|null
+     * @return null|ConsumerRecord
+     *
+     * @throws CsvMapException if we can`t get address for User
      */
     protected function mapUserConsumerRecord()
     {
@@ -101,17 +109,38 @@ class AciProfileMapper
             $consumerRecord->setState($address->getArea());
             $consumerRecord->setZipCode($address->getZip());
         } else {
-            $contracts = $user->getActiveContracts();
-            if (false === empty($contracts)) {
-                $property = $contracts[0]->getProperty();
-                $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($property->getAddress(), 64));
-                $consumerRecord->setCity(substr($property->getCity(), 0, 12));
-                $consumerRecord->setState($property->getArea());
-                $consumerRecord->setZipCode($property->getZip());
+            if (null === $contract = $this->getContractForUser($user)) {
+                throw new CsvMapException();
             }
+            $property = $contract->getProperty();
+            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($property->getAddress(), 64));
+            $consumerRecord->setCity(substr($property->getCity(), 0, 12));
+            $consumerRecord->setState($property->getArea());
+            $consumerRecord->setZipCode($property->getZip());
         }
 
         return $consumerRecord;
+    }
+
+    /**
+     * Return Contract or NULL if tenant doesn't have contracts
+     *
+     * @param Tenant $user
+     * @return \RentJeeves\DataBundle\Entity\Contract|null
+     */
+    protected function getContractForUser(Tenant $user)
+    {
+        $activeContracts = $user->getActiveContracts();
+        if (false === empty($activeContracts)) {
+            return $activeContracts[0];
+        }
+
+        $allContracts = $user->getContracts();
+        if (false === $allContracts->isEmpty()) {
+            return $allContracts->first();
+        }
+
+        return null;
     }
 
     /**

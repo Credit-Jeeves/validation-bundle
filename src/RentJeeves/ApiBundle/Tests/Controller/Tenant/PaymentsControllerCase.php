@@ -5,12 +5,12 @@ namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 class PaymentsControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:Payment';
-
     const REQUEST_URL = 'payments';
 
     public static function getPaymentsDataProvider()
@@ -56,13 +56,13 @@ class PaymentsControllerCase extends BaseApiTestCase
         );
 
         $this->assertEquals(
-            $result[count($result)-1]->getId(),
-            $this->getUrlEncoder()->decode($answer[count($answer) -1]['url'])
+            $result[count($result) - 1]->getId(),
+            $this->getUrlEncoder()->decode($answer[count($answer) - 1]['url'])
         );
 
         $this->assertEquals(
-            $this->getIdEncoder()->encode($result[count($result)-1]->getId()),
-            $answer[count($answer) -1]['id']
+            $this->getIdEncoder()->encode($result[count($result) - 1]->getId()),
+            $answer[count($answer) - 1]['id']
         );
     }
 
@@ -103,6 +103,15 @@ class PaymentsControllerCase extends BaseApiTestCase
             $result->getPaymentAccountId(),
             $this->getUrlEncoder()->decode($answer["payment_account_url"])
         );
+
+        $this->assertEquals(PaymentAccountType::CARD, $result->getPaymentAccount()->getType());
+        $feeCCForGroup = $result->getContract()->getGroup()->getGroupSettings()->getFeeCC();
+        $expectedFee = round($result->getAmount() * ($feeCCForGroup / 100), 2);
+        $this->assertEquals(
+            $expectedFee,
+            $answer['fee'],
+            'Actual FEE is not equals Expected FEE'
+        );
     }
 
     /**
@@ -117,19 +126,19 @@ class PaymentsControllerCase extends BaseApiTestCase
             [
                 'contract_url' => 'contract_url/1758512013',
                 'payment_account_url' => 'payment_account_url/656765400',
-                'type' =>  'one_time',
-                'rent' =>  1200.00,
+                'type' => 'one_time',
+                'rent' => 1200.00,
                 'other' => 75.00,
                 'day' => $date->modify('+ 1 day')->format('j'),
-                'month' =>  $date->modify('+ 1 month')->format('n'),
+                'month' => $date->modify('+ 1 month')->format('n'),
                 'year' => $date->format('Y'),
-                'paid_for' =>  $date->format('Y-m')
+                'paid_for' => $date->format('Y-m')
             ],
             [
                 'contract_url' => 'contract_url/1758512013',
                 'payment_account_url' => 'payment_account_url/656765400',
-                'type' =>  'recurring',
-                'rent' =>  "600.00",
+                'type' => 'recurring',
+                'rent' => "600.00",
                 'other' => "0.00",
                 'day' => $date->modify('+ 2 day')->format('j'),
                 'month' => $date->format('n'),
@@ -156,7 +165,7 @@ class PaymentsControllerCase extends BaseApiTestCase
 
     /**
      * @param array $requestParams
-     * @param int   $statusCode
+     * @param int $statusCode
      *
      * @test
      * @dataProvider createPaymentDataProvider
@@ -207,7 +216,7 @@ class PaymentsControllerCase extends BaseApiTestCase
 
     /**
      * @param array $requestParams
-     * @param int   $statusCode
+     * @param int $statusCode
      *
      * @test
      * @dataProvider editPaymentDataProvider
@@ -240,11 +249,11 @@ class PaymentsControllerCase extends BaseApiTestCase
      */
     public static function paymentCommonData()
     {
-        return[
+        return [
             'contract_url' => 'contract_url/1758512013',
             'payment_account_url' => 'payment_account_url/656765400',
-            'type' =>  'one_time',
-            'rent' =>  1200.00,
+            'type' => 'one_time',
+            'rent' => 1200.00,
             'other' => 75.00
         ];
     }
@@ -322,9 +331,9 @@ class PaymentsControllerCase extends BaseApiTestCase
     }
 
     /**
-     * @param array  $requestParams
+     * @param array $requestParams
      * @param string $errorMessage
-     * @param int    $statusCode
+     * @param int $statusCode
      *
      * @test
      * @dataProvider createPaymentNegativeDataProvider
@@ -343,10 +352,10 @@ class PaymentsControllerCase extends BaseApiTestCase
 
         $requestParams['paid_for'] =
             $requestParams['paid_for'] ?:
-                $date->format('Y') . '-' .   $date->modify("+ 1 month")->format('m');
+                $date->format('Y') . '-' . $date->modify("+ 1 month")->format('m');
 
-        if (isset($requestParams['end_month']) && isset( $requestParams['end_year'])) {
-            $requestParams['end_month'] =  $date->modify("{$requestParams['end_month']}  month")->format('n');
+        if (isset($requestParams['end_month']) && isset($requestParams['end_year'])) {
+            $requestParams['end_month'] = $date->modify("{$requestParams['end_month']}  month")->format('n');
             $requestParams['end_year'] = $date->modify("{$requestParams['end_year']}  year")->format('Y');
         }
 

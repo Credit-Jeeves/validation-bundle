@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
@@ -26,7 +27,7 @@ class ResManClientCase extends Base
 
     const EXTERNAL_LEASE_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
 
-    const EXTERNAL_UNIT_ID = '2';
+    const EXTERNAL_UNIT_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d|TEST|2';
 
     /**
      * @test
@@ -154,7 +155,11 @@ class ResManClientCase extends Base
                 'paymentType' => OrderPaymentType::CARD
             ]
         );
-
+        /** @var UnitMapping $unitMapping */
+        $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneByExternalUnitId('AAABBB-7');
+        $this->assertNotEmpty($unitMapping, 'Should have unitMapping with externalUnitId AAABBB-7 in DB.');
+        $unitMapping->setExternalUnitId(self::EXTERNAL_UNIT_ID);
+        $em->flush();
         $this->assertNotNull($order);
         $order->setBatchId('testBatchId');
 

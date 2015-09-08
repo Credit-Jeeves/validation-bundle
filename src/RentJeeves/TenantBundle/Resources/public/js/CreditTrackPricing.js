@@ -36,6 +36,10 @@ function CreditTrackPricing(options) {
      */
     this.pay = function() {
         this.pricingDialog.dialog('close');
-        this.payDialog = new CreditTrackPayDialog(this.options);
+        if (!this.payDialog) {
+            this.payDialog = new CreditTrackPayDialog(this.options);
+        } else {
+            this.payDialog.prepareDialog();
+        }
     };
 }
