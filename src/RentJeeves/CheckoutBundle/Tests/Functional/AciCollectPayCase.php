@@ -153,8 +153,16 @@ class AciCollectPayCase extends BaseTestCase
         $this->assertEquals($merchantName, $this->contract->getAciCollectPayContractBilling()->getDivisionId());
 
         $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
-
         $this->assertEquals($countsBefore + 1, $countsAfter);
+
+        $this->page->pressButton('pay_popup.step.previous');
+        $this->assertNotEmpty($radioButton = $this->page->find('css', '.ui-dialog .payment-accounts .radio input'));
+        $radioButton->getParent()->click();
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait(
+            $this->timeout + 85000, // local need more time for passed test
+            "!jQuery('#id-source-step').is(':visible')"
+        );
 
         $this->deleteProfile($this->contract->getTenant()->getAciCollectPayProfileId());
     }

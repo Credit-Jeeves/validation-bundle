@@ -107,7 +107,6 @@ services:
 
     payment_processor.aci.collect_pay.billing_account_manager:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager
-        public: false
         arguments:
             - @doctrine.orm.entity_manager
             - @payum
