@@ -47,6 +47,10 @@ class SendSecondChanceEmailCommandCase extends BaseTestCase
         );
 
         $this->assertCount(1, $plugin->getPreSendMessages(), 'Message not sent.');
-        $this->assertEquals('Renttrack', $plugin->getPreSendMessage(0)->getSubject(), 'Sent not correct message.');
+        $this->assertEquals(
+            'Build Credit When You Pay Rent',
+            $plugin->getPreSendMessage(0)->getSubject(),
+            'Sent not correct message.'
+        );
     }
 }
