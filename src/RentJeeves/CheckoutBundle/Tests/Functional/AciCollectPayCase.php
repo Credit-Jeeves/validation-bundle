@@ -154,7 +154,8 @@ class AciCollectPayCase extends BaseTestCase
 
         $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
         $this->assertEquals($countsBefore + 1, $countsAfter);
-
+        // Now we need comeback to prev step for select payment source which we just create
+        // This need for check code which addBillingAccount when we select exist payment source
         $this->page->pressButton('pay_popup.step.previous');
         $this->assertNotEmpty($radioButton = $this->page->find('css', '.ui-dialog .payment-accounts .radio input'));
         $radioButton->getParent()->click();
@@ -163,7 +164,7 @@ class AciCollectPayCase extends BaseTestCase
             $this->timeout + 85000, // local need more time for passed test
             "!jQuery('#id-source-step').is(':visible')"
         );
-
+        //Finished checking exist payment source
         $this->deleteProfile($this->contract->getTenant()->getAciCollectPayProfileId());
     }
 
