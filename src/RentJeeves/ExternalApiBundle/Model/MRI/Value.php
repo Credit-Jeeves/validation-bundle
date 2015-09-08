@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Model\MRI;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 class Value
 {
@@ -622,5 +623,19 @@ class Value
             $this->getBuildingId(),
             $this->getUnitId()
         );
+    }
+
+    /**
+     * @return int
+     */
+    public function getPaymentAccepted()
+    {
+        $payNotAllowed = trim(strtolower($this->getPayAllowed()));
+
+        if ($payNotAllowed === 'y') {
+            return PaymentAccepted::DO_NOT_ACCEPT;
+        }
+
+        return PaymentAccepted::ANY;
     }
 }
