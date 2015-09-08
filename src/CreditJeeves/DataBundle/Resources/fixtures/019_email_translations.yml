@@ -1526,7 +1526,7 @@ fixtures:
     translatable: email_46
     locale: en
     property: subject
-    value: Renttrack
+    value: Build Credit When You Pay Rent
 
   translation_46_body:
     translatable: email_46
