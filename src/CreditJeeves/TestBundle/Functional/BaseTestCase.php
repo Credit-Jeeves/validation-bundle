@@ -27,7 +27,6 @@ abstract class BaseTestCase extends Base
      */
     protected $envPath = '/_test.php/';
     protected $timeout = 15000;
-    
 
     protected function getUrl()
     {
@@ -290,5 +289,10 @@ abstract class BaseTestCase extends Base
         $li = $this->page->find('css', sprintf('[id^=%s_li][data-value=%s]', $selectId, $value));
         $this->assertNotNull($li, sprintf('Option with value "%s" not found', $value));
         $li->click();
+    }
+
+    protected function assertNotEmptyWithMessage($value, $name)
+    {
+        $this->assertNotEmpty($value, sprintf('%s should be filled', $name));
     }
 }

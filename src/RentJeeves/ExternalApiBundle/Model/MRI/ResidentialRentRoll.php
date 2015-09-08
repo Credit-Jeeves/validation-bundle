@@ -4,10 +4,9 @@ namespace RentJeeves\ExternalApiBundle\Model\MRI;
 
 use JMS\Serializer\Annotation as Serializer;
 
-/** @Serializer\XmlRoot("mri_s-pmrm_residentleasedetailsbypropertyid") */
-class MRIResponse
+/** @Serializer\XmlRoot("mri_s-pmrm_residentialrentroll") */
+class ResidentialRentRoll
 {
-
     /**
      * @Serializer\SerializedName("NextPageLink")
      * @Serializer\XmlAttribute

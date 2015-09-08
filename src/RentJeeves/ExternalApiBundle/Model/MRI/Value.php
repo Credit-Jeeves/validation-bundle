@@ -183,6 +183,28 @@ class Value
      * @Serializer\Groups({"MRI-Response"})
      */
     protected $buildingAddress;
+    /**
+     * @Serializer\SerializedName("CurrentCharges")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\MRI\CurrentCharges")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $currentCharges;
+
+    /**
+     * @return CurrentCharges
+     */
+    public function getCurrentCharges()
+    {
+        return $this->currentCharges;
+    }
+
+    /**
+     * @param CurrentCharges $currentCharges
+     */
+    public function setCurrentCharges(CurrentCharges $currentCharges)
+    {
+        $this->currentCharges = $currentCharges;
+    }
 
     /**
      * @return string

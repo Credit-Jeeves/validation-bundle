@@ -10,6 +10,8 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\ExternalApiBundle\Model\MRI\Charge;
+use RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
@@ -98,6 +100,7 @@ class MRIClientCase extends Base
     public function shouldReturnResidents()
     {
         $mriClient = $this->getMriClient();
+        $mriClient->setDebug(false);
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
         $this->assertGreaterThan(
@@ -148,5 +151,39 @@ class MRIClientCase extends Base
         $em->flush();
 
         $this->assertTrue($mriClient->postPayment($order, self::PROPERTY_ID));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnResidentialRentRoll()
+    {
+        $mriClient = $this->getMriClient();
+        $mriClient->setDebug(false);
+        /** @var ResidentialRentRoll $mriResponse */
+        $mriResponse = $mriClient->getResidentialRentRoll(self::PROPERTY_ID);
+        $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll', $mriResponse);
+        $this->assertNotEmpty($values = $mriResponse->getValues(), 'ResidentialRentRoll should have entry');
+        /** @var Value $value */
+        $value = reset($values);
+        $this->assertNotEmpty($currentCharges = $value->getCurrentCharges(), 'Entry should have Charges');
+        $this->assertNotEmpty($charges = $currentCharges->getCharges(), 'CurrentCharges should have charges');
+        /** @var Charge $charge */
+        $charge = reset($charges);
+        $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Charge', $charge);
+        $this->assertNotEmptyWithMessage($charge->getAmount(), 'Amount for charge');
+        $this->assertNotEmptyWithMessage($charge->getBuildingId(), 'Building for charge');
+        $this->assertNotEmptyWithMessage($charge->getUnitId(), 'UnitId for charge');
+        $this->assertNotEmptyWithMessage($charge->getChargeCode(), 'ChargeCode for charge');
+        $this->assertNotEmptyWithMessage($charge->getEffectiveDate(), 'EffectiveDate for charge');
+        $this->assertNotEmptyWithMessage($charge->getPropertyId(), 'PropertyId for charge');
+
+        $this->assertNotEmptyWithMessage(
+            $nextPageLink = $mriResponse->getNextPageLink(),
+            'Next page link for ResidentRentRoll'
+        );
+
+        $mriResponse = $mriClient->getResidentialRentRollByNextPageLink($nextPageLink);
+        $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll', $mriResponse);
     }
 }
