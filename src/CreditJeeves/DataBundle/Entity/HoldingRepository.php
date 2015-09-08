@@ -58,6 +58,20 @@ class HoldingRepository extends EntityRepository
     /**
      * @return Holding[]
      */
+    public function findHoldingsForAMSISyncRecurringCharges()
+    {
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.amsiSettings', 's')
+            ->where('h.apiIntegrationType = :amsi')
+            ->andWhere('h.useRecurringCharges = 1')
+            ->setParameter('amsi', ApiIntegrationType::AMSI)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
     public function findHoldingsForUpdatingBalanceYardi()
     {
         $query = $this->createQueryBuilder('h');

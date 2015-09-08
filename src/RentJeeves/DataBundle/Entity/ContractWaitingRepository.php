@@ -4,10 +4,15 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 
 class ContractWaitingRepository extends EntityRepository
 {
     /**
+     * @deprecated
+     *
+     * @see ContractWaitingRepository::findOneByPropertyMappingExternalUnitIdResident()
+     *
      * @param Holding $holding
      * @param PropertyMapping $propertyMapping
      * @param string $externalUnitId
@@ -43,6 +48,36 @@ class ContractWaitingRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();
+    }
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     * @param string $externalUnitId
+     * @param string $residentId
+     *
+     * @return ContractWaiting
+     */
+    public function findOneByPropertyMappingExternalUnitIdAndResidentId(
+        PropertyMapping $propertyMapping,
+        $externalUnitId,
+        $residentId
+    ) {
+        return $this->createQueryBuilder('contract')
+            ->innerJoin('contract.unit', 'u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->innerJoin('contract.property', 'p')
+            ->innerJoin('contract.group', 'g')
+            ->innerJoin('p.propertyMapping', 'pm', Expr\Join::WITH, 'g.holding = pm.holding')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('contract.residentId = :residentId')
+            ->andWhere('pm.externalPropertyId = :propertyId')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->setParameter('propertyId', $propertyMapping->getExternalPropertyId())
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
