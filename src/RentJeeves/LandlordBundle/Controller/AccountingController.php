@@ -735,11 +735,8 @@ class AccountingController extends Controller
      *     name="accounting_deposit"
      * )
      */
-    public function batchDepositsAction(Request $request)
+    public function batchDepositsAction()
     {
-        return $this->render(
-            'LandlordBundle:Accounting:deposit.html.twig',
-            []
-        );
+        return $this->render('LandlordBundle:Accounting:deposit.html.twig');
     }
 }

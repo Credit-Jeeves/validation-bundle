@@ -221,11 +221,14 @@ class TransactionRepository extends EntityRepository
     }
 
     /**
-     * TODO: get result without using Orders repository
+     * @param Group $group
+     * @param string $accountType
+     * @param int $page
+     * @param int $limit
+     * @return array
      */
-    public function getDepositedOrders(Group $group, $accountType, OrderRepository $ordersRepo, $page = 1, $limit = 100)
+    public function getBatchedDeposits(Group $group, $accountType, $page = 1, $limit = 100)
     {
-        // get Batch Ids
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('h');
         $query->select('h.batchId as batchNumber, sum(p.amount) as orderAmount, h.depositDate, da.type as depositType');
@@ -246,24 +249,8 @@ class TransactionRepository extends EntityRepository
         $query->setMaxResults($limit);
         $query->orderBy('h.depositDate', 'DESC');
         $query = $query->getQuery();
-        $deposits = $query->getScalarResult();
 
-        foreach ($deposits as $key => $deposit) {
-            $depositDate = new DateTime($deposit['depositDate']);
-            $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
-
-            /** @var ArrayCollection $orders */
-            $orders = $ordersRepo->getDepositedOrdersQuery(
-                $group,
-                $accountType,
-                $deposit['batchNumber'],
-                $deposit['depositDate']
-            )->getQuery()->execute();
-
-            $deposits[$key]['orders'] = $orders;
-        }
-
-        return $deposits;
+        return $query->getScalarResult();
     }
 
     /**

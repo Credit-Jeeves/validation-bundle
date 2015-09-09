@@ -56,7 +56,7 @@ function BatchedDepositsViewModel()
         if (!isRoot) {
             cssClass += 'toggled-' + batchNumber;
         }
-        if (index%2 == 0) {
+        if (index % 2 == 0) {
             cssClass += ' zebra-tr-dark';
         }
 

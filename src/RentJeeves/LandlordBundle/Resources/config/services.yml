@@ -109,3 +109,8 @@ services:
         parent: accounting.landlord_import.abstract_mapper
         arguments:
             - @property.process
+
+    landlord.batch_deposits.manager:
+        class: RentJeeves\LandlordBundle\Services\BatchDepositsManager
+        arguments:
+            - @doctrine.orm.entity_manager
