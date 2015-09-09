@@ -7,11 +7,8 @@ function BatchedDepositsViewModel()
     
     this.deposits = ko.observableArray([]);
     this.pages = ko.observableArray([]);
-    this.pagination = ko.observableArray([]);
-
     this.total = ko.observable(0);
     this.current = ko.observable(1);
-    this.last = ko.observable('Last');
     this.isLoading = ko.observable(false);
     this.filter = ko.observable('');
 
@@ -68,12 +65,12 @@ function BatchedDepositsViewModel()
 
     this.depositTitle = function(deposit) {
         var amount = deposit.orders().length;
-        return Translator.transChoice('payments.batched_amount', amount, {"count": amount});
+        return Translator.transChoice('payments.batched_amount', amount, {'count': amount});
     };
 
     this.orderStatusTitle = function(order) {
         if (this.isSuccessfulStatus(order.status)) {
-            return Translator.trans('landlord_dashboard.payment.title', {"created": order.start, "sent": order.depositDate});
+            return Translator.trans('landlord_dashboard.payment.title', {'created': order.start, 'sent': order.depositDate});
         }
 
         return order.errorMessage;

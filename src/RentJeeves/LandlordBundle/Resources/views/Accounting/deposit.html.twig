@@ -48,7 +48,6 @@
                             </thead>
 
                             <tbody id="payments-block-tbody" data-bind="foreach: deposits">
-
                                 <tr data-bind="css: $root.toggledZebraCss(batchNumber(), $index(), true)">
                                     <td>{{ 'payments.deposit'|trans }}</td>
                                     <td data-bind="text: depositDate"></td>
@@ -84,8 +83,6 @@
                                 <!-- /ko -->
 
                             </tbody>
-                            <!-- /ko -->
-
                         </table>
                         <img src="{{ asset('/bundles/core/images/img_loading.gif') }}" id="processPayment" class="processPayment" data-bind="visible: isLoading">
                     </div>
@@ -143,5 +140,3 @@
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}
-
-
