@@ -75,8 +75,8 @@ class MailerCase extends BaseTestCase
         $order = $em->find('DataBundle:Order', 2);
         $this->getMailer()->sendOrderSendingNotification($order);
 
-        $this->assertCount(1, $plugin->getPreSendMessages());
-        $message =  $plugin->getPreSendMessage(0);
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
         $this->assertEquals('Your Rent Check is in the Mail!', $message->getSubject());
     }
 
@@ -94,8 +94,8 @@ class MailerCase extends BaseTestCase
         $order = $em->find('DataBundle:Order', 2);
         $this->getMailer()->sendOrderRefundingNotification($order);
 
-        $this->assertCount(1, $plugin->getPreSendMessages());
-        $message =  $plugin->getPreSendMessage(0);
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
         $this->assertEquals('Your Rent Payment is being Refunded', $message->getSubject());
     }
 
@@ -113,8 +113,8 @@ class MailerCase extends BaseTestCase
         $order = $em->find('DataBundle:Order', 2);
         $this->getMailer()->sendOrderReissuedNotification($order);
 
-        $this->assertCount(1, $plugin->getPreSendMessages());
-        $message =  $plugin->getPreSendMessage(0);
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
         $this->assertEquals('Your Rent Check has been Reissued!', $message->getSubject());
     }
 

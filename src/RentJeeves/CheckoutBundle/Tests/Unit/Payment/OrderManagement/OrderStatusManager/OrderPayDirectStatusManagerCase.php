@@ -249,18 +249,20 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldSendEmailWhenSetOrderStatusToSending()
     {
+        $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::NEWONE);
+
         $mailerMock = $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
         $mailerMock
             ->expects($this->once())
-            ->method('sendOrderSendingNotification');
+            ->method('sendOrderSendingNotification')
+            ->with($order);
 
         $statusManager = new OrderPayDirectStatusManager(
             $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
             $this->getMock('\Monolog\Logger', [], [], '', false),
             $mailerMock
         );
-        $order = new OrderPayDirect();
-        $order->setStatus(OrderStatus::NEWONE);
 
         $statusManager->setSending($order);
         $this->assertEquals(OrderStatus::SENDING, $order->getStatus());
@@ -271,18 +273,20 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldSendEmailWhenSetOrderStatusToRefunding()
     {
+        $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::NEWONE);
+
         $mailerMock = $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
         $mailerMock
             ->expects($this->once())
-            ->method('sendOrderRefundingNotification');
+            ->method('sendOrderRefundingNotification')
+            ->with($order);
 
         $statusManager = new OrderPayDirectStatusManager(
             $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
             $this->getMock('\Monolog\Logger', [], [], '', false),
             $mailerMock
         );
-        $order = new OrderPayDirect();
-        $order->setStatus(OrderStatus::NEWONE);
 
         $statusManager->setRefunded($order);
         $this->assertEquals(OrderStatus::REFUNDING, $order->getStatus());
@@ -293,18 +297,20 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldSendEmailWhenSetOrderStatusToReissued()
     {
+        $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::NEWONE);
+
         $mailerMock = $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
         $mailerMock
             ->expects($this->once())
-            ->method('sendOrderReissuedNotification');
+            ->method('sendOrderReissuedNotification')
+            ->with($order);
 
         $statusManager = new OrderPayDirectStatusManager(
             $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
             $this->getMock('\Monolog\Logger', [], [], '', false),
             $mailerMock
         );
-        $order = new OrderPayDirect();
-        $order->setStatus(OrderStatus::NEWONE);
 
         $statusManager->setReissued($order);
         $this->assertEquals(OrderStatus::REISSUED, $order->getStatus());
