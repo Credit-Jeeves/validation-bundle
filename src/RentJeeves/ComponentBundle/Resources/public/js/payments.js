@@ -3,7 +3,6 @@ function Payments() {
   var current = 1;
   var self = this;
   this.payments = ko.observableArray([]);
-  this.deposits = ko.observableArray([]);
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
   this.current = ko.observable(1);
@@ -16,27 +15,12 @@ function Payments() {
   this.notHaveResult = ko.observable(false);
   this.showCashPayments = ko.observable(false);
 
-  this.searchCollum.subscribe(function(newValue) {
-      if (newValue == 'deposit') {
-          self.filterDeposits();
-      }
-  });
-
   this.showCashPayments.subscribe(function(newValue) {
-      self.filterPayments();
+      self.ajaxAction();
   });
 
   this.ajaxAction = function() {
-      if (self.searchCollum() == 'deposit') {
-          self.filterDeposits();
-      } else {
-          self.filterPayments();
-      }
-  };
-
-  this.filterPayments = function() {
       self.processPayment(true);
-      self.deposits([]);
       $.ajax({
           url: Routing.generate('landlord_payments_list'),
           type: 'POST',
@@ -72,44 +56,6 @@ function Payments() {
                   $(this).hide();
               });
 
-              $('.status-text-helper')
-                  .tooltip({
-                      items: 'span',
-                      position: { my: 'left center', at: 'right+30 center' }
-                  })
-                  .off("mouseover")
-                  .on("click", function () {
-                      var message = $(this).prev().attr('title');
-                      $(this).tooltip("option", "content", self.prepareMessage(message));
-                      $(this).tooltip("open");
-
-                      return false;
-                  });
-          }
-      });
-  };
-
-  this.filterDeposits = function() {
-      self.processPayment(true);
-      self.payments([]);
-      var filter = $('#depositTypeStatus').linkselect('val');
-      if (typeof filter != 'string') {
-          filter = '';
-      }
-      $.ajax({
-          url: Routing.generate('landlord_deposits_list'),
-          type: 'POST',
-          dataType: 'json',
-          data: {
-              'page' : self.current(),
-              'limit' : limit,
-              'filter': filter
-          },
-          success: function(response) {
-              self.processPayment(false);
-              self.deposits(response.deposits);
-              self.total(response.total);
-              self.pages(response.pagination);
               $('.status-text-helper')
                   .tooltip({
                       items: 'span',
@@ -165,7 +111,6 @@ function Payments() {
   };
 
   this.sortIt = function(data, event) {
-     if (self.searchCollum() != 'deposit') {
          field = event.target.id;
 
          if(field.length == 0) {
@@ -184,36 +129,6 @@ function Payments() {
 
          self.current(1);
          self.ajaxAction();
-     }
-  };
-
-  this.togglePayments = function(deposit) {
-      if ($('.toggled-' + deposit.batch).first().is(':visible')) {
-          $('.toggled-' + deposit.batch).hide();
-          $('#title-show-' + deposit.batch).show();
-          $('#title-hide-' + deposit.batch).hide();
-      } else {
-          $('.toggled-' + deposit.batch).show();
-          $('#title-show-' + deposit.batch).hide();
-          $('#title-hide-' + deposit.batch).show();
-      }
-  };
-
-  this.toggledZebraCss = function(batchId, index, isRoot) {
-      var cssClass =  '';
-      if (!isRoot) {
-          cssClass += 'toggled-' + batchId;
-      }
-      if (index%2 == 0) {
-          cssClass += ' zebra-tr-dark';
-      }
-
-      return cssClass;
-  };
-
-  this.depositTitle = function(deposit) {
-      var amount = deposit.orders.length;
-      return Translator.transChoice('payments.batched_amount', amount, {"count": amount});
   };
 
   this.orderStatusTitle = function(order) {
@@ -273,7 +188,7 @@ function Payments() {
 
 
   this.haveData = ko.computed(function() {
-      if (self.deposits().length == 0 && self.payments().length == 0 && !self.processPayment()) {
+      if (self.payments().length == 0 && !self.processPayment()) {
           return false;
       }
 
