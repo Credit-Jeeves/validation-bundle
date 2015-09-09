@@ -19,6 +19,7 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 class ContractSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
+    const COUNT_RESODENTS_FOR_FLUSH = 20;
 
     /**
      * @var EntityManager
@@ -126,35 +127,62 @@ class ContractSynchronizer
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
             );
-            /** @var PropertyMapping $property */
             foreach ($propertyMappings as $propertyMapping) {
-                $residentTransactions = $this->residentDataManager->getResidents(
-                    $propertyMapping->getExternalPropertyId()
-                );
-
-                if ($residentTransactions) {
-                    $this->logMessage(
-                        sprintf(
-                            'AMSI ResidentBalanceSynchronizer: Processing resident transactions for property %s of
-                             holding %s',
-                            $propertyMapping->getExternalPropertyId(),
-                            $holding->getName()
-                        )
-                    );
-                    $this->processResidentTransactions($residentTransactions, $holding, $propertyMapping);
-                    continue;
-                }
-
-                $this->logMessage(
-                    sprintf(
-                        'ERROR: Could not load resident transactions for property %s of holding %s',
-                        $propertyMapping->getExternalPropertyId(),
-                        $holding->getName()
-                    )
-                );
+                $this->updateBalancesForPropertyMapping($propertyMapping);
             }
             $this->em->flush();
             $this->em->clear();
+        }
+    }
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     */
+    protected function updateBalancesForPropertyMapping(PropertyMapping $propertyMapping)
+    {
+        $this->logMessage(
+            sprintf(
+                'AMSI ResidentBalanceSynchronizer: start work with propertyMapping \'%s\'',
+                $propertyMapping->getExternalPropertyId()
+            )
+        );
+
+        try {
+            $residentTransactions = $this->residentDataManager->getResidents(
+                $propertyMapping->getExternalPropertyId()
+            );
+
+            if (false == $residentTransactions) {
+                $this->logMessage(
+                    sprintf(
+                        'AMSI ResidentBalanceSynchronizer: Not found transactions for property %s of
+                         holding %s',
+                        $propertyMapping->getExternalPropertyId(),
+                        $propertyMapping->getHolding()->getName()
+                    )
+                );
+
+                return;
+            }
+
+            $this->logMessage(
+                sprintf(
+                    'AMSI ResidentBalanceSynchronizer: Processing resident transactions for property %s of
+                         holding %s',
+                    $propertyMapping->getExternalPropertyId(),
+                    $propertyMapping->getHolding()->getName()
+                )
+            );
+
+            $this->processResidentTransactions($residentTransactions, $propertyMapping);
+        } catch (\Exception $e) {
+            $this->logMessage(
+                sprintf(
+                    'AMSI ResidentBalanceSynchronizer: Error: %s',
+                    $e->getMessage()
+                ),
+                500
+            );
         }
     }
 
@@ -241,26 +269,30 @@ class ContractSynchronizer
 
     /**
      * @param array $residentTransactions
-     * @param Holding $holding
      * @param PropertyMapping $propertyMapping
      * @throws \Exception
      */
     protected function processResidentTransactions(
         array $residentTransactions,
-        Holding $holding,
         PropertyMapping $propertyMapping
     ) {
-        /** @var Lease $resident */
-        foreach ($residentTransactions as $resident) {
-            $occupants = $resident->getOccupants();
-            foreach ($occupants as $occupant) {
-                $contract = $this->getContract($holding, $propertyMapping, $resident, $occupant);
-                if (!$contract) {
-                    continue;
-                }
+        $holding = $propertyMapping->getHolding();
+        /** @var Lease $lease */
+        foreach ($residentTransactions as $lease) {
+            $counter = 0;
+            foreach ($lease->getOccupants() as $occupant) {
+                if (false != $contract = $this->getContract($holding, $propertyMapping, $lease, $occupant)) {
+                    $this->doUpdate($lease, $occupant, $contract);
+                    $counter++;
 
-                $this->doUpdate($resident, $occupant, $contract);
+                    if ($counter === self::COUNT_RESODENTS_FOR_FLUSH) {
+                        $this->em->flush();
+                        $counter = 0;
+                    }
+                }
             }
+
+            $this->em->flush();
         }
     }
 
