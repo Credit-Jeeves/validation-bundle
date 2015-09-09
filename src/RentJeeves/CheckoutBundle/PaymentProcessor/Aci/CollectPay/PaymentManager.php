@@ -136,16 +136,9 @@ class PaymentManager extends AbstractManager
      */
     protected function getBatchIdForOrder(Order $order)
     {
-        if (null !== $contract = $order->getContract()) {
-            $group = $contract->getGroup();
-        } else {
-            /** @var Operation $firstOperation */
-            $firstOperation = $order->getOperations()->first();
-            $group = $firstOperation->getGroup();
-        }
-
+        $depositAccount = $order->getDepositAccount();
         $date = new \DateTime();
 
-        return sprintf('%dB%s', $group->getId(), $date->format('Ymd'));
+        return sprintf('%dB%s', $depositAccount->getId(), $date->format('Ymd'));
     }
 }
