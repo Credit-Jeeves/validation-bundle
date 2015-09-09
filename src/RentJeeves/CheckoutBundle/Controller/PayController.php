@@ -177,27 +177,29 @@ class PayController extends Controller
     public function sourceAction(Request $request)
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
-        $paymentAccountType->handleRequest($this->get('request'));
+        $paymentAccountType->handleRequest($request);
         if (!$paymentAccountType->isValid()) {
             return $this->renderErrors($paymentAccountType);
         }
-
         $em = $this->get('doctrine.orm.default_entity_manager');
-        /** @var Contract $contract */
-        $contract = $em
-            ->getRepository('RjDataBundle:Contract')
-            ->find($paymentAccountType->get('contractId')->getData());
-
         try {
+            $contractId = $paymentAccountType->get('contractId')->getData();
+            if ($contractId) {
+                /** @var Contract $contract */
+                $contract = $em
+                    ->getRepository('RjDataBundle:Contract')
+                    ->find($contractId);
+            }
+            if (empty($contract)) {
+                throw new \Exception('Contract is undefined.');
+            }
             $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
-        } catch (Exception $e) {
-            return new JsonResponse(
-                array(
-                    $paymentAccountType->getName() => array(
-                        '_globals' => explode('|', $e->getMessage())
-                    )
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                $paymentAccountType->getName() => array(
+                    '_globals' => explode('|', $e->getMessage())
                 )
-            );
+            ]);
         }
 
         return new JsonResponse(

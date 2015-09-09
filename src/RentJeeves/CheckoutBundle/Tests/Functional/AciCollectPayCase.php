@@ -71,7 +71,9 @@ class AciCollectPayCase extends BaseTestCase
         $this->contractForCreate->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
         $depositAccount = new DepositAccount($this->contractForCreate->getGroup());
-        $depositAccount->setPaymentProcessor($this->contractForCreate->getGroup()->getGroupSettings()->getPaymentProcessor());
+        $depositAccount->setPaymentProcessor(
+            $this->contractForCreate->getGroup()->getGroupSettings()->getPaymentProcessor()
+        );
         $depositAccount->setType(DepositAccountType::RENT);
         $depositAccount->setMerchantName(564075);
 
@@ -161,7 +163,10 @@ class AciCollectPayCase extends BaseTestCase
 
         $merchantName = $this->contractForCreate
             ->getGroup()->getRentDepositAccountForCurrentPaymentProcessor()->getMerchantName();
-        $this->assertEquals($merchantName, $this->contractForCreate->getAciCollectPayContractBilling()->getDivisionId());
+        $this->assertEquals(
+            $merchantName,
+            $this->contractForCreate->getAciCollectPayContractBilling()->getDivisionId()
+        );
 
         $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
         $this->assertEquals($countsBefore + 1, $countsAfter);
