@@ -64,6 +64,7 @@ class PaymentManager extends AbstractManager
         $transaction->setOrder($order);
         $transaction->setMerchantName($payment->getDivisionBusinessId());
         $transaction->setBatchId($this->getBatchIdForOrder($order));
+        $transaction->setBatchDate(new \DateTime());
         $transaction->setAmount($order->getSum() + $order->getFee());
 
         try {

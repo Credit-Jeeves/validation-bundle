@@ -23,7 +23,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
 
     /**
      * @param string $email
-     * @param int    $statusCode
+     * @param int $statusCode
      *
      * @test
      * @dataProvider getEmptyPaymentAccountsDataProvider
@@ -82,13 +82,23 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
         );
 
         $this->assertEquals(
-            $result[count($result)-1]->getId(),
-            $this->getUrlEncoder()->decode($answer[count($answer) -1]['url'])
+            $result[count($result) - 1]->getId(),
+            $this->getUrlEncoder()->decode($answer[count($answer) - 1]['url'])
         );
 
         $this->assertEquals(
-            $this->getIdEncoder()->encode($result[count($result)-1]->getId()),
-            $answer[count($answer) -1]['id']
+            $this->getIdEncoder()->encode($result[count($result) - 1]->getId()),
+            $answer[count($answer) - 1]['id']
+        );
+
+        $this->assertEquals(
+            $result[0]->getType(),
+            $answer[0]['type']
+        );
+
+        $this->assertEquals(
+            $result[count($answer) - 1]->getType(),
+            $answer[count($answer) - 1]['type']
         );
     }
 
@@ -146,7 +156,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
         return [
             [
                 'contract_url' => 'contract_url/656765400',
-                'type' =>  'card',
+                'type' => 'card',
                 'nickname' => 'Card Test 1',
                 'name' => 'Card Name',
                 'card' => [
@@ -158,7 +168,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
             ],
             [
                 'contract_url' => 'contract_url/656765400',
-                'type' =>  'card',
+                'type' => 'card',
                 'nickname' => 'Card Test 2',
                 'name' => 'Card Name',
                 'card' => [
@@ -170,7 +180,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
             ],
             [
                 'contract_url' => 'contract_url/656765400',
-                'type' =>  'bank',
+                'type' => 'bank',
                 'nickname' => 'Bank Test 1',
                 'name' => 'Bank Name',
                 'bank' => [
@@ -180,7 +190,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
             ],
             [
                 'contract_url' => 'contract_url/656765400',
-                'type' =>  'bank',
+                'type' => 'bank',
                 'nickname' => 'Bank Test 2',
                 'name' => 'Bank Name',
                 'bank' => [
@@ -210,7 +220,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
 
     /**
      * @param array $requestParams
-     * @param int   $statusCode
+     * @param int $statusCode
      *
      * @test
      * @dataProvider createPaymentAccountDataProvider
@@ -252,7 +262,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
 
     /**
      * @param array $requestParams
-     * @param int   $statusCode
+     * @param int $statusCode
      *
      * @test
      * @dataProvider editPaymentAccountDataProvider
@@ -331,7 +341,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     /**
      * @param array $requestParams
      * @param array $result
-     * @param int   $statusCode
+     * @param int $statusCode
      *
      * @test
      * @dataProvider wrongPaymentAccountDataProvider
@@ -358,7 +368,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
     /**
      * @param array $requestParams
      * @param array $result
-     * @param int   $statusCode
+     * @param int $statusCode
      *
      * @test
      * @dataProvider wrongPaymentAccountDataProvider

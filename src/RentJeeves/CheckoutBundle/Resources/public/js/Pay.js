@@ -331,6 +331,7 @@ function Pay(parent, contract) {
 
     self.changePaymentAccountHandler = function(newPaymentAccountId) {
         self.payment.paymentAccountId(newPaymentAccountId);
+        self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());
     };
 
     self.afterMapPaymentAccountsHandler = function () {

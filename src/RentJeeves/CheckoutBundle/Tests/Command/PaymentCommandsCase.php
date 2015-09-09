@@ -522,6 +522,11 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertEquals($expectedBatchId, $orders[0]->getTransactions()->first()->getBatchId());
         $this->assertEquals($expectedBatchId, $orders[1]->getTransactions()->first()->getBatchId());
         $this->assertEquals($expectedBatchId, $orders[2]->getTransactions()->first()->getBatchId());
+
+        $expectedDate = $date->format('Ymd');
+        $this->assertEquals($expectedDate, $orders[0]->getTransactions()->first()->getBatchDate()->format('Ymd'));
+        $this->assertEquals($expectedDate, $orders[1]->getTransactions()->first()->getBatchDate()->format('Ymd'));
+        $this->assertEquals($expectedDate, $orders[2]->getTransactions()->first()->getBatchDate()->format('Ymd'));
     }
 
     /**

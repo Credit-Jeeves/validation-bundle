@@ -137,7 +137,7 @@ class ContractsController extends Controller
 
         if ($form->isValid()) {
             if (!$entity->getId()) {
-                /** @var $processor ContractProcessor */
+                /** @var ContractProcessor $processor */
                 $processor = $this->get('api.contract.processor');
 
                 $contract = $processor->process($form, $this->getUser());

@@ -107,7 +107,7 @@ class AMSIClientCase extends Base
         $client = $this->getClient();
         $client->setDebug(false);
         $units = $client->getPropertyUnits(self::EXTERNAL_PROPERTY_ID);
-        $this->assertCount(63, $units);
+        $this->assertCount(65, $units);
         /** @var Unit $unit */
         $unit = $units[0];
         $this->assertInstanceOf(
