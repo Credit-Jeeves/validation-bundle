@@ -72,7 +72,9 @@ class ContractSynchronizer
         try {
             $holdings = $this->getHoldings();
             if (empty($holdings)) {
-                return $this->logMessage('AMSI ResidentBalanceSynchronizer: No data to update');
+                $this->logMessage('AMSI ResidentBalanceSynchronizer: No data to update');
+
+                return;
             }
 
             foreach ($holdings as $holding) {
@@ -93,7 +95,7 @@ class ContractSynchronizer
                 )
             );
 
-            return $this->logMessage($e->getMessage());
+            $this->logMessage($e->getMessage());
         }
     }
 
@@ -276,15 +278,13 @@ class ContractSynchronizer
         array $residentTransactions,
         PropertyMapping $propertyMapping
     ) {
-        $holding = $propertyMapping->getHolding();
         /** @var Lease $lease */
         foreach ($residentTransactions as $lease) {
             $counter = 0;
             foreach ($lease->getOccupants() as $occupant) {
-                if (false != $contract = $this->getContract($holding, $propertyMapping, $lease, $occupant)) {
+                if (false != $contract = $this->getContract($propertyMapping, $lease, $occupant)) {
                     $this->doUpdate($lease, $occupant, $contract);
                     $counter++;
-
                     if ($counter === self::COUNT_RESODENTS_FOR_FLUSH) {
                         $this->em->flush();
                         $counter = 0;

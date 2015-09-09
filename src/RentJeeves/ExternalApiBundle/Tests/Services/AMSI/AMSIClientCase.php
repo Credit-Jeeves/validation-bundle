@@ -85,6 +85,49 @@ class AMSIClientCase extends Base
             $openItem
         );
         $this->assertNotEmpty($openItem->getOccuLastName());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldGetPropertyResidentsWithRecurringCharges()
+    {
+        $client = $this->getClient();
+        $client->setDebug(false);
+        $propertyResidents = $client->getPropertyResidents(self::EXTERNAL_PROPERTY_ID, 'C', true);
+        $leases = $propertyResidents->getLeases();
+        $this->assertCount(41, $leases);
+        /** @var Lease $lease */
+        $lease = $leases[0];
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\AMSI\Lease',
+            $lease
+        );
+        $this->assertNotEmpty($lease->getEmail());
+        $address = $lease->getAddress();
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\AMSI\Address',
+            $address
+        );
+        $occupants = $lease->getOccupants();
+        $this->assertCount(2, $occupants);
+        /** @var Occupant $occupant */
+        $occupant = $occupants[0];
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\AMSI\Occupant',
+            $occupant
+        );
+
+        $this->assertNotEmpty($occupant->getOccuFirstName());
+        $openItems = $lease->getOpenItems();
+        $this->assertCount(2, $openItems);
+        /** @var OpenItem $openItem */
+        $openItem = $openItems[0];
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\AMSI\OpenItem',
+            $openItem
+        );
+        $this->assertNotEmpty($openItem->getOccuLastName());
 
         $recurringCharges = $lease->getRecurringCharges();
         $this->assertCount(1, $recurringCharges);

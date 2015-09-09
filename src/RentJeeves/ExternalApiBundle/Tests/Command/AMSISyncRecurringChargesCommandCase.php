@@ -26,6 +26,7 @@ class AMSISyncRecurringChargesCommandCase extends BaseTestCase
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
         $contract->getHolding()->setUseRecurringCharges(true);
+        $contract->getHolding()->setRecurringCodes('RENT');
         $contract->setRent(123321); // test value
 
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
