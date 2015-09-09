@@ -3,7 +3,7 @@ function BatchedDepositsViewModel()
     var self = this;
     var mapping = new BatchedDepositsMapping();
 
-    var limit = 5;
+    var limit = 10;
     
     this.deposits = ko.observableArray([]);
     this.pages = ko.observableArray([]);
