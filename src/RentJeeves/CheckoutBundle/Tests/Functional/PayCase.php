@@ -992,7 +992,7 @@ class PayCase extends BaseTestCase
 
         $this->login('tenant11@example.com', 'pass');
 
-        $this->session->executeScript(sprintf('window.open("%s", "new_window")',$this->getUrl()));
+        $this->session->executeScript(sprintf('window.open("%s", "new_window")', $this->getUrl()));
 
         $this->session->switchToWindow('new_window');
 
