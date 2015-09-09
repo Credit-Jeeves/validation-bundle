@@ -14,7 +14,7 @@ class AMSISyncRecurringChargesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('api:accounting:amsi:sync-recurring-charges')
+            ->setName('api:amsi:sync-recurring-charges')
             ->setDescription(
                 'Fetch all recurring charges for checked AMSI customers and update rent for contract'
             );

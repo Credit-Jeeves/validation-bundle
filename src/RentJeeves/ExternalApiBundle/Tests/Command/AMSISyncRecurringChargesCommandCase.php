@@ -44,7 +44,7 @@ class AMSISyncRecurringChargesCommandCase extends BaseTestCase
         $application = new Application($this->getKernel());
         $application->add(new AMSISyncRecurringChargesCommand());
 
-        $command = $application->find('api:accounting:amsi:sync-recurring-charges');
+        $command = $application->find('api:amsi:sync-recurring-charges');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),

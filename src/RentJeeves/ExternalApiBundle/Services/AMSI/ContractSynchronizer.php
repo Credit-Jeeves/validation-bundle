@@ -320,7 +320,6 @@ class ContractSynchronizer
         foreach ($holdings as $holding) {
             $this->updateContractsRentForHolding($holding);
         }
-
     }
 
     /**
@@ -409,7 +408,7 @@ class ContractSynchronizer
      */
     protected function updateContractsRentForResidentTransaction(PropertyMapping $propertyMapping, Lease $lease)
     {
-        $this->logMessage('AMSI sync Recurring Charge: Finding contracts.');
+        $this->logMessage('AMSI sync Recurring Charge: Searching for contracts.');
 
         $contractIds = [];
         foreach ($lease->getOccupants() as $occupant) {
@@ -424,7 +423,19 @@ class ContractSynchronizer
             return;
         }
 
-        $sumRecurringCharges = $this->getSumRecurringCharges($lease);
+        if (false == $recurringCodes = explode(',', $propertyMapping->getHolding()->getRecurringCodes())) {
+            $this->logMessage(
+                sprintf(
+                    'AMSI sync Recurring Charge: ERROR: Holding#%d does not have RecurringCodes',
+                    $propertyMapping->getHolding()->getId()
+                ),
+                500
+            );
+
+            return;
+        }
+
+        $sumRecurringCharges = $this->getSumRecurringCharges($lease, $recurringCodes);
 
         if ($sumRecurringCharges <= 0) {
             $this->logMessage(
@@ -467,15 +478,16 @@ class ContractSynchronizer
 
     /**
      * @param Lease $lease
+     * @param array $recurringCodes
      *
      * @return int
      */
-    protected function getSumRecurringCharges(Lease $lease)
+    protected function getSumRecurringCharges(Lease $lease, array $recurringCodes)
     {
         $sumRecurringCharges = 0;
         /** @var RecurringCharge $recurringCharge */
         foreach ($lease->getRecurringCharges() as $recurringCharge) {
-            if ($recurringCharge->getIncCode() === 'RENT' && $recurringCharge->getFreqCode() === 'M') {
+            if (in_array($recurringCharge->getIncCode(), $recurringCodes) && $recurringCharge->getFreqCode() === 'M') {
                 $sumRecurringCharges += $recurringCharge->getAmount();
             }
         }
