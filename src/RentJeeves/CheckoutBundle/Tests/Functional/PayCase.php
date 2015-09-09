@@ -1,9 +1,12 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
@@ -960,5 +963,173 @@ class PayCase extends BaseTestCase
 
         $this->assertEquals($isPaymentProcessorLocked, empty($editSource));
         $this->assertEquals($isPaymentProcessorLocked, empty($delSource));
+    }
+
+    /**
+     * @test
+     */
+    public function tryToCreate2ActivePayments()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $em = $this->getEntityManager();
+
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+
+        $this->assertNotEmpty(
+            $tenant,
+            'Please check fixtures, should be present tenant with email tenant11@example.com'
+        );
+
+        $tenant->setIsVerified(UserIsVerified::PASSED);
+
+        $em->flush($tenant);
+
+        /** @var Contract $contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->find(9);
+
+        $this->assertNotEmpty($contract, 'Please check fixtures, should be present contract with id 9');
+
+        $this->assertEmpty(
+            $contract->getActivePayment(),
+            'Please check fixtures, contract should not have active payments'
+        );
+
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->session->executeScript(sprintf('window.open("%s", "new_window")',$this->getUrl()));
+
+        $this->session->switchToWindow('new_window');
+
+        $this->page->pressButton($this->payButtonName);
+
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '2000',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $existingPaymentSource = $this->page->find(
+            'css',
+            '#id-source-step .payment-accounts label:nth-of-type(2)'
+        );
+        $this->assertNotNull($existingPaymentSource);
+        $existingPaymentSource->click();
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#pay-popup div.pay-step:visible').length"
+        );
+
+        $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(pay_popup.close)').is(':visible')"
+        );
+
+        $em->refresh($contract);
+
+        $this->assertNotEmpty($payment = $contract->getActivePayment(), 'Payment should be created for this contract');
+
+        $this->assertEquals(2000, $payment->getAmount());
+
+        $this->session->switchToWindow(); // switch to parent
+
+        $this->page->pressButton($this->payButtonName);
+
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '2001',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $existingPaymentSource = $this->page->find(
+            'css',
+            '#id-source-step .payment-accounts label:nth-of-type(2)'
+        );
+        $this->assertNotNull($existingPaymentSource);
+        $existingPaymentSource->click();
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#pay-popup div.pay-step:visible').length"
+        );
+
+        $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(pay_popup.close)').is(':visible')"
+        );
+
+        $em->clear();
+
+        $contract = $em->getRepository('RjDataBundle:Contract')->find(9);
+
+        $payments = $contract->getPayments()->filter(
+            function (Payment $payment) {
+                if (PaymentStatus::ACTIVE == $payment->getStatus()) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        $this->assertCount(1, $payments, 'Should not be created duplicate payment for contract');
+
+        $em->refresh($payments->first());
+
+        $this->assertEquals(2001, $payments->first()->getAmount(), 'Active Payment should be updated');
     }
 }
