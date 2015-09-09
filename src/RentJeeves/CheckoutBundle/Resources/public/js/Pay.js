@@ -260,7 +260,8 @@ function Pay(parent, contract) {
                 } else if (data.payment_id) {
                     self.payment.id(data.payment_id);
                     // should resend data if we already have active payment for this contract
-                    return sendData(url, formId);
+                    sendData(url, formId);
+                    return;
                 }
                 successStepHandler(data);
             }

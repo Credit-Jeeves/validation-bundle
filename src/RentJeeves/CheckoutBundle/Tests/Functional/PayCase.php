@@ -1017,10 +1017,7 @@ class PayCase extends BaseTestCase
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
 
-        $this->assertNotEmpty(
-            $tenant,
-            'Please check fixtures, should be present tenant with email tenant11@example.com'
-        );
+        $this->assertNotEmpty($tenant, 'Check fixtures, should be present tenant with email tenant11@example.com');
 
         $tenant->setIsVerified(UserIsVerified::PASSED);
 
@@ -1029,12 +1026,9 @@ class PayCase extends BaseTestCase
         /** @var Contract $contract */
         $contract = $em->getRepository('RjDataBundle:Contract')->find(9);
 
-        $this->assertNotEmpty($contract, 'Please check fixtures, should be present contract with id 9');
+        $this->assertNotEmpty($contract, 'Check fixtures, should be present contract with id 9');
 
-        $this->assertEmpty(
-            $contract->getActivePayment(),
-            'Please check fixtures, contract should not have active payments'
-        );
+        $this->assertEmpty($contract->getActivePayment(), 'Check fixtures, contract should not have active payments');
 
         $this->login('tenant11@example.com', 'pass');
 
@@ -1156,6 +1150,8 @@ class PayCase extends BaseTestCase
 
         $contract = $em->getRepository('RjDataBundle:Contract')->find(9);
 
+        // getActivePayment method can throw Exception if we have more then 1 active payment for contract
+        // so should check manually count of it
         $payments = $contract->getPayments()->filter(
             function (Payment $payment) {
                 if (PaymentStatus::ACTIVE == $payment->getStatus()) {
