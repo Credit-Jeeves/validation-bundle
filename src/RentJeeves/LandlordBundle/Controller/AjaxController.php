@@ -14,6 +14,7 @@ use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\LandlordBundle\Services\BatchDepositsManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -1068,22 +1069,16 @@ class AjaxController extends Controller
         $limit = $request->request->get('limit');
         $filter = $request->request->get('filter');
 
-        $group = $this->getCurrentGroup();
-        $em = $this->getDoctrine()->getManager();
-        $orderRepo = $em->getRepository('DataBundle:Order');
-        $transactionRepo = $em->getRepository('RjDataBundle:Transaction');
+        /** @var BatchDepositsManager $batchDepositsManager */
+        $batchDepositsManager = $this->get('landlord.batch_deposits.manager');
+        $total = $batchDepositsManager->getCountDeposits($this->getCurrentGroup(), $filter);
+        $deposits = $batchDepositsManager->getDeposits($this->getCurrentGroup(), $filter, $page, $limit);
 
-        $total = $transactionRepo->getCountDeposits($group, $filter);
-        $deposits = array();
-        if ($total) {
-            $deposits = $transactionRepo->getDepositedOrders($group, $filter, $orderRepo, $page, $limit);
-        }
-
-        $result = array(
+        $result = [
             'deposits' => $deposits,
             'total' => $total,
-            'pagination' => $this->datagridPagination($total, $limit)
-        );
+            'pages' => [ceil($total / $limit)]
+        ];
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);

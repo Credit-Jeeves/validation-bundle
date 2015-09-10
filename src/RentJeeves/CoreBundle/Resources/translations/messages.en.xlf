@@ -2302,7 +2302,7 @@
             </trans-unit>
             <trans-unit id="payments.batched_amount">
                 <source>payments.batched_amount</source>
-                <target>{1}1 payment is batched into this deposit.|[2,Inf]%count% payments are batched into this deposit.</target>
+                <target>{1}1 payment in Deposit Batch|[2,Inf]%count% payments in Deposit Batch</target>
             </trans-unit>
             <trans-unit id="already.invited.error">
                 <source>already.invited.error</source>
@@ -2411,13 +2411,17 @@
                 <source>tab.accounting</source>
                 <target>Accounting</target>
             </trans-unit>
-            <trans-unit id="import">
-                <source>import</source>
+            <trans-unit id="accounting.menu.import">
+                <source>accounting.menu.import</source>
                 <target>Import</target>
             </trans-unit>
-            <trans-unit id="export">
-                <source>export</source>
+            <trans-unit id="accounting.menu.export">
+                <source>accounting.menu.export</source>
                 <target>Export</target>
+            </trans-unit>
+            <trans-unit id="accounting.menu.batched_deposits">
+                <source>accounting.menu.batched_deposits</source>
+                <target>Batched Deposits</target>
             </trans-unit>
             <trans-unit id="accounting.file.import">
                 <source>accounting.file.import</source>
@@ -3228,6 +3232,22 @@
             <trans-unit id="export.all_properties">
                 <source>export.all_properties</source>
                 <target>(All Properties)</target>
+            </trans-unit>
+            <trans-unit id="admin.error.deposit_account">
+                <source>admin.error.deposit_account</source>
+                <target>You already have deposit account with such type and payment processor.</target>
+            </trans-unit>
+            <trans-unit id="deposits.batch_or_transaction">
+                <source>deposits.batch_or_transaction</source>
+                <target>Batch or Transaction ID</target>
+            </trans-unit>
+            <trans-unit id="deposits.deposit_info">
+                <source>deposits.deposit_info</source>
+                <target>Deposit Information</target>
+            </trans-unit>
+            <trans-unit id="deposits.deposit_type">
+                <source>deposits.deposit_type</source>
+                <target>For</target>
             </trans-unit>
         </body>
     </file>

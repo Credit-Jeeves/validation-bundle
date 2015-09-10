@@ -376,30 +376,40 @@ class OrderRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getDepositedOrdersQuery($group, $accountType, $batchId, $depositDate)
+    /**
+     * @param Group $group
+     * @param string $accountType
+     * @param string $batchId
+     * @param string $depositDate
+     * @return Order[]
+     */
+    public function getDepositedOrders(Group $group, $accountType, $batchId, $depositDate)
     {
-        $ordersQuery = $this->createQueryBuilder('o');
-        $ordersQuery->innerJoin('o.operations', 'p');
-        $ordersQuery->innerJoin('p.contract', 't');
-        $ordersQuery->innerJoin('o.transactions', 'h');
-        $ordersQuery->where('t.group = :group');
-        $ordersQuery->andWhere('h.depositDate IS NOT NULL');
+        $ordersQuery = $this->createQueryBuilder('o')
+            ->innerJoin('o.operations', 'p')
+            ->innerJoin('p.contract', 't')
+            ->innerJoin('o.transactions', 'h')
+            ->where('t.group = :group')
+            ->andWhere('h.depositDate IS NOT NULL')
+            ->setParameter('group', $group);
         if ($batchId) {
-            $ordersQuery->andWhere('h.batchId = :batchId');
-            $ordersQuery->setParameter('batchId', $batchId);
+            $ordersQuery
+                ->andWhere('h.batchId = :batchId')
+                ->setParameter('batchId', $batchId);
         } else {
-            $ordersQuery->andWhere('h.batchId is null');
-            $ordersQuery->andWhere('h.depositDate = :depositDate');
-            $ordersQuery->setParameter('depositDate', $depositDate);
+            $ordersQuery
+                ->andWhere('h.batchId is null')
+                ->andWhere('h.depositDate = :depositDate')
+                ->setParameter('depositDate', $depositDate);
         }
 
-        $ordersQuery->setParameter('group', $group);
         if ($accountType) {
-            $ordersQuery->andWhere('o.paymentType = :type');
-            $ordersQuery->setParameter('type', $accountType);
+            $ordersQuery
+                ->andWhere('o.paymentType = :type')
+                ->setParameter('type', $accountType);
         }
 
-        return $ordersQuery;
+        return $ordersQuery->getQuery()->execute();
     }
 
     public function getTenantPayments(Tenant $tenant, $page = 1, $contractId = null, $limit = 20)

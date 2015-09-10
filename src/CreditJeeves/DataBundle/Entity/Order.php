@@ -532,7 +532,7 @@ class Order extends Base
         $result = array();
         /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
-        $result['amount'] = $this->getSum(); //TODO check. May be it must be operation getAmount()
+        $result['amount'] = $this->getSum();
         $result['tenant'] = $contract ? $contract->getTenant()->getFullName() : '';
         $result['address'] = $contract ? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
@@ -560,6 +560,7 @@ class Order extends Base
         }
         $result['depositType'] = $this->getDepositAccount() ?
             DepositAccountType::title($this->getDepositAccount()->getType()) : '';
+        $result['transactionId'] = $this->getTransactionId();
 
         if ($visitor !== null) {
             $visitor->setRoot($result);

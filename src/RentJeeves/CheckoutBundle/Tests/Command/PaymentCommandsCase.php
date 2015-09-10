@@ -516,13 +516,23 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertNotEmpty($orders[1]->getTransactions()->first()->getTransactionId());
         $this->assertNotEmpty($orders[2]->getTransactions()->first()->getMessages());
 
-        $group = $contract->getGroup(); // group is the same
         $date = new \DateTime();
-        $expectedBatchId = sprintf('%dB%s', $group->getId(), $date->format('Ymd'));
 
-        $this->assertEquals($expectedBatchId, $orders[0]->getTransactions()->first()->getBatchId());
-        $this->assertEquals($expectedBatchId, $orders[1]->getTransactions()->first()->getBatchId());
-        $this->assertEquals($expectedBatchId, $orders[2]->getTransactions()->first()->getBatchId());
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[0]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[0]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order1'
+        );
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[1]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[1]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order2'
+        );
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[2]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[2]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order3'
+        );
 
         $expectedDate = $date->format('Ymd');
         $this->assertEquals($expectedDate, $orders[0]->getTransactions()->first()->getBatchDate()->format('Ymd'));

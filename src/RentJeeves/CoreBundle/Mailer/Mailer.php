@@ -5,6 +5,7 @@ use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -681,6 +682,72 @@ class Mailer extends BaseMailer
             $tenant->getEmail(),
             $tenant->getCulture()
         );
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     *
+     * @return bool
+     */
+    public function sendOrderSendingNotification(OrderPayDirect $order)
+    {
+        $tenant = $order->getUser();
+        $group = $order->getContract()->getGroup();
+        $mailingAddress = sprintf(
+            '%s, %s, %s, %s',
+            $group->getStreetAddress1(),
+            $group->getCity(),
+            $group->getState(),
+            $group->getZip()
+        );
+
+        $vars = [
+            'firstName' => $tenant->getFirstName(),
+            'groupName' => $order->getGroupName(),
+            'sendDate' => $order->getDepositOutboundTransaction()->getCreatedAt()->format('m/d/Y'),
+            'checkAmount' => $order->getDepositOutboundTransaction()->getAmount(),
+            'mailingAddress' => $mailingAddress,
+            'mailingAddressName' => $group->getMailingAddressName(),
+        ];
+
+        return $this->sendBaseLetter('rjOrderSending', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     *
+     * @return bool
+     */
+    public function sendOrderRefundingNotification(OrderPayDirect $order)
+    {
+        $tenant = $order->getUser();
+
+        $vars = [
+            'firstName' => $tenant->getFirstName(),
+            'totalAmount' => $order->getFee() + $order->getSum(),
+            'rentalAddress' => $order->getContract()->getRentAddress(),
+            'paymentAcctName' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getName() : '',
+        ];
+
+        return $this->sendBaseLetter('rjOrderRefunding', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     *
+     * @return bool
+     */
+    public function sendOrderReissuedNotification(OrderPayDirect $order)
+    {
+        $tenant = $order->getUser();
+
+        $vars = [
+            'firstName' => $tenant->getFirstName(),
+            'totalAmount' => $order->getFee() + $order->getSum(),
+            'rentalAddress' => $order->getContract()->getRentAddress(),
+        ];
+
+        return $this->sendBaseLetter('rjOrderReissued', $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
     /**
