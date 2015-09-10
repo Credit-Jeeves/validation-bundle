@@ -62,6 +62,8 @@ abstract class BillingAccount
      *      type="BankAccountType",
      *      nullable=false
      * )
+     * @Type("string")
+     * @Serializer\SerializedName("accountType")
      */
     protected $bankAccountType;
 
