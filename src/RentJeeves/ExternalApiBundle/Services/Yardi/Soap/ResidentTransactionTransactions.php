@@ -13,7 +13,7 @@ class ResidentTransactionTransactions
     protected $charge;
 
     /**
-     * @param mixed $charge
+     * @param ResidentTransactionCharge $charge
      */
     public function setCharge($charge)
     {

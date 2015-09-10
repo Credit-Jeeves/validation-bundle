@@ -655,6 +655,14 @@ abstract class Holding
     }
 
     /**
+     * @return array
+     */
+    public function getRecurringCodesArray()
+    {
+        return explode(',', $this->recurringCodes);
+    }
+
+    /**
      * @param string $recurringCodes
      */
     public function setRecurringCodes($recurringCodes)
