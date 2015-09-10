@@ -859,7 +859,7 @@ class Contract extends Base
             return null;
         }
 
-        return $collection[0];
+        return $collection->first();
     }
 
     /**
