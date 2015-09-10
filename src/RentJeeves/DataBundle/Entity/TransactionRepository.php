@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
@@ -220,17 +221,19 @@ class TransactionRepository extends EntityRepository
     }
 
     /**
-     * TODO: get result without using Orders repository
+     * @param Group $group
+     * @param string $accountType
+     * @param int $page
+     * @param int $limit
+     * @return array
      */
-    public function getDepositedOrders(Group $group, $accountType, OrderRepository $ordersRepo, $page = 1, $limit = 100)
+    public function getBatchedDeposits(Group $group, $accountType, $page = 1, $limit = 100)
     {
-        // get Batch Ids
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('h');
-        $query->select(
-            "IF(h.batchId is null, h.depositDate, h.batchId) as batch, sum(p.amount) as order_amount, h.depositDate"
-        );
+        $query->select('h.batchId as batchNumber, sum(p.amount) as orderAmount, h.depositDate, da.type as depositType');
         $query->innerJoin('h.order', 'o');
+        $query->innerJoin('o.depositAccount', 'da');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->where('t.group = :group');
@@ -241,29 +244,13 @@ class TransactionRepository extends EntityRepository
             $query->andWhere('o.paymentType = :type');
             $query->setParameter('type', $accountType);
         }
-        $query->groupBy('batch');
+        $query->groupBy('batchNumber');
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query->orderBy('h.depositDate', 'DESC');
         $query = $query->getQuery();
-        $deposits = $query->getScalarResult();
 
-        foreach ($deposits as $key => $deposit) {
-
-            $ordersQuery = $ordersRepo->getDepositedOrdersQuery(
-                $group,
-                $accountType,
-                $deposit['batch'],
-                $deposit['depositDate']
-            );
-
-            $deposits[$key]['orders'] = $ordersQuery->getQuery()->execute();
-            $depositDate = new DateTime($deposit['depositDate']);
-            $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
-            $deposits[$key]['isDeposit'] = $deposit['batch'] ? true : false;
-        }
-
-        return $deposits;
+        return $query->getScalarResult();
     }
 
     /**
