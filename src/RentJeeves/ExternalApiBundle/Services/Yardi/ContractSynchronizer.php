@@ -12,7 +12,6 @@ use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
-use RentJeeves\ExternalApiBundle\Model\Yardi\RtCustomer;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseChargesLoginResponse;
@@ -90,7 +89,7 @@ class ContractSynchronizer
     {
         $holdings = $this->getHoldingsSyncRecurringCharges();
         if (empty($holdings)) {
-            $this->logMessage('Yardi Sync Recurring Charge: No data to update.');
+            $this->logger->info('Yardi Sync Recurring Charge: No data to update.');
         }
 
         foreach ($holdings as $holding) {
@@ -103,17 +102,16 @@ class ContractSynchronizer
      */
     protected function updateContractsRentForHolding(Holding $holding)
     {
-        $this->logMessage(sprintf('Yardi sync Recurring Charge: start work with holding %d', $holding->getId()));
-        $propertyMappingRepository = $this->em->getRepository('RjDataBundle:ResidentMapping');
-        $this->residentDataManager->setSettings($holding->getExternalSettings());
+        $this->logger->info(sprintf('Yardi sync Recurring Charge: start work with holding %d', $holding->getId()));
+        $propertyMappingRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
         $countPropertyMappingSets = ceil(
             $propertyMappingRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
         );
 
-        $this->logMessage(sprintf('Found %d pages of property mappings', $countPropertyMappingSets));
+        $this->logger->info(sprintf('Found %d pages of property mappings', $countPropertyMappingSets));
 
         for ($offset = 1; $offset <= $countPropertyMappingSets; $offset++) {
-            $this->logMessage(sprintf('Open %d page of property mappings', $offset));
+            $this->logger->info(sprintf('Open %d page of property mappings', $offset));
 
             $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
                 $holding,
@@ -142,7 +140,7 @@ class ContractSynchronizer
             SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS
         );
 
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 'Yardi sync Recurring Charge: start work with propertyMapping \'%s\'',
                 $propertyMapping->getExternalPropertyId()
@@ -154,7 +152,7 @@ class ContractSynchronizer
                 $propertyMapping->getExternalPropertyId()
             );
         } catch (\Exception $e) {
-            $this->logMessage(
+            $this->logger->alert(
                 sprintf(
                     'Yardi sync Recurring Charge: \'%s\'',
                     $e->getMessage()
@@ -175,7 +173,7 @@ class ContractSynchronizer
             return;
         }
 
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 'Yardi sync Recurring Charge: Empty response for Property %s of Holding#%d',
                 $propertyMapping->getExternalPropertyId(),
@@ -187,13 +185,12 @@ class ContractSynchronizer
 
     /**
      * @param PropertyMapping $propertyMapping
-     * @param RtCustomer $customer
+     * @param ResidentTransactionPropertyCustomer $customer
      */
-    public function updateContractsRentForResidentTransaction(PropertyMapping $propertyMapping, RtCustomer $customer)
+    public function updateContractsRentForResidentTransaction(PropertyMapping $propertyMapping, ResidentTransactionPropertyCustomer $customer)
     {
-
         $recurringCodes = $propertyMapping->getHolding()->getRecurringCodesArray();
-        $serviceTransactions = $customer->getRtServiceTransactions();
+        $serviceTransactions = $customer->getServiceTransactions();
         $transactions = $serviceTransactions->getTransactions();
         $amount = 0;
         /** @var ResidentTransactionTransactions $transaction */

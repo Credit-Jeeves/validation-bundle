@@ -63,7 +63,6 @@ class ResidentTransactionsClientCase extends Base
         $transactions = $serviceTransactions->getTransactions();
 
         $transaction = reset($transactions);
-        var_dump($transaction);exit;
         $this->assertNotEmpty($charge = $transaction->getCharge());
         $this->assertNotEmpty($detail = $charge->getDetail());
         $this->assertNotEmpty($detail->getAmount());
