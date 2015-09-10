@@ -71,6 +71,7 @@ class OrderCreationManager
         $order->setPaymentProcessor($payment->getContract()->getGroup()->getGroupSettings()->getPaymentProcessor());
         $order->setPaymentAccount($payment->getPaymentAccount());
         $order->setDepositAccount($payment->getDepositAccount());
+        $order->setDescriptor($payment->getContract()->getGroup()->getStatementDescriptor());
 
         $this->createRentOperations($payment, $order);
 
