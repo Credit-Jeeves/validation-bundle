@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderPayDirectStatusManager;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 use RentJeeves\DataBundle\Enum\OutboundTransactionType;
@@ -103,13 +104,31 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldSetOrderToSendingWhenOutboundLegIsNotInitiated()
+    public function shouldCreateJobForSendingCheckWhenSetOrderToCompleteAndOutboundLegIsNotInitiated()
     {
+        $emMock = $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false);
+        $job = new Job('payment:pay-anyone:send-check', ['--app=rj', null]);
+        $emMock
+            ->expects($this->once())
+            ->method('persist')
+            ->with($job);
+        $emMock
+            ->expects($this->once())
+            ->method('flush')
+            ->with($job);
+
+        $statusManager = new OrderPayDirectStatusManager(
+            $emMock,
+            $this->getMock('\Monolog\Logger', [], [], '', false),
+            $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false)
+        );
+
         $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::PENDING);
 
-        $this->statusManager->setComplete($order);
+        $statusManager->setComplete($order);
 
-        $this->assertEquals(OrderStatus::SENDING, $order->getStatus());
+        $this->assertEquals(OrderStatus::PENDING, $order->getStatus());
     }
 
     /**
@@ -223,5 +242,77 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $this->statusManager->setRefunded($order);
 
         $this->assertEquals(OrderStatus::RETURNED, $order->getStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendEmailWhenSetOrderStatusToSending()
+    {
+        $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::NEWONE);
+
+        $mailerMock = $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
+        $mailerMock
+            ->expects($this->once())
+            ->method('sendOrderSendingNotification')
+            ->with($order);
+
+        $statusManager = new OrderPayDirectStatusManager(
+            $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
+            $this->getMock('\Monolog\Logger', [], [], '', false),
+            $mailerMock
+        );
+
+        $statusManager->setSending($order);
+        $this->assertEquals(OrderStatus::SENDING, $order->getStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendEmailWhenSetOrderStatusToRefunding()
+    {
+        $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::NEWONE);
+
+        $mailerMock = $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
+        $mailerMock
+            ->expects($this->once())
+            ->method('sendOrderRefundingNotification')
+            ->with($order);
+
+        $statusManager = new OrderPayDirectStatusManager(
+            $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
+            $this->getMock('\Monolog\Logger', [], [], '', false),
+            $mailerMock
+        );
+
+        $statusManager->setRefunded($order);
+        $this->assertEquals(OrderStatus::REFUNDING, $order->getStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendEmailWhenSetOrderStatusToReissued()
+    {
+        $order = new OrderPayDirect();
+        $order->setStatus(OrderStatus::NEWONE);
+
+        $mailerMock = $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
+        $mailerMock
+            ->expects($this->once())
+            ->method('sendOrderReissuedNotification')
+            ->with($order);
+
+        $statusManager = new OrderPayDirectStatusManager(
+            $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
+            $this->getMock('\Monolog\Logger', [], [], '', false),
+            $mailerMock
+        );
+
+        $statusManager->setReissued($order);
+        $this->assertEquals(OrderStatus::REISSUED, $order->getStatus());
     }
 }
