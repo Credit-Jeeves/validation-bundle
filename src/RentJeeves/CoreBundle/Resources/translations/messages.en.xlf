@@ -1736,10 +1736,6 @@
                 <source>expiration</source>
                 <target>Expiration</target>
             </trans-unit>
-            <trans-unit id="payment_account_bank">
-                <source>payment_account_bank</source>
-                <target>Checking</target>
-            </trans-unit>
             <trans-unit id="payment_account_card">
                 <source>payment_account_card</source>
                 <target>Credit Card</target>
