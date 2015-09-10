@@ -8,7 +8,7 @@ parameters:
     mri.client.class: RentJeeves\ExternalApiBundle\Services\MRI\MRIClient
     soap.client.amsi.leasing.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient'
     soap.client.amsi.ledger.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient'
-    resman.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\ResMan\ResidentBalanceSynchronizer'
+    resman.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\ResMan\ContractSynchronizer'
     amsi.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'
     mri.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\MRI\ResidentBalanceSynchronizer'
 
@@ -97,8 +97,8 @@ services:
             - "@soap.wsdl.twig.renderer"
             - "@besimple.soap.client.amsi_ledger"
             - "@jms_serializer"
-    resman.resident_balance_sync:
-        class: "%resman.resident_balance_sync.class%"
+    resman.contract_sync:
+        class: "%resman.contract_sync.class%"
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@resman.resident_data"

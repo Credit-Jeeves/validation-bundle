@@ -247,6 +247,38 @@ class ResManClient implements ClientInterface
     }
 
     /**
+     * @param string $externalPropertyId
+     * @param \DateTime $date
+     *
+     * @return ResidentTransactions
+     *
+     * @throws Exception
+     */
+    public function getTransactionsForRecurringCharges($externalPropertyId, \DateTime $date)
+    {
+        $method = 'GetRecurringCharges2_0';
+        $params = [
+            'PropertyID' => $externalPropertyId,
+            'PostingMonth' => $date->format('Y-m-d'),
+        ];
+
+        $this->debugMessage("Call ResMan method: {$method}");
+        try {
+            $resMan = $this->sendRequest($method, $params);
+        } catch (Exception $e) {
+            throw new Exception(
+                sprintf(
+                    'Can\'t get residents by externalPropertyId(ID#%s) : %s',
+                    $externalPropertyId,
+                    $e
+                )
+            );
+        }
+
+        return $resMan->getResponse()->getResidentTransactions();
+    }
+
+    /**
      * @param $externalPropertyId
      * @param  \DateTime $batchDate
      * @param  string    $description

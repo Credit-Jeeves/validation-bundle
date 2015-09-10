@@ -86,6 +86,20 @@ class HoldingRepository extends EntityRepository
     /**
      * @return Holding[]
      */
+    public function findHoldingsForResmanSyncRecurringCharges()
+    {
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.resManSettings', 's')
+            ->where('h.apiIntegrationType = :resman')
+            ->andWhere('h.useRecurringCharges = 1')
+            ->setParameter('resman', ApiIntegrationType::RESMAN)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
     public function findHoldingsForUpdatingBalanceYardi()
     {
         $query = $this->createQueryBuilder('h');
