@@ -455,16 +455,11 @@ class ContractSynchronizer
             return;
         }
 
-        if (false == $recurringCodes = explode(',', $propertyMapping->getHolding()->getRecurringCodes())) {
-            $this->logMessage(
-                sprintf(
-                    'AMSI sync Recurring Charge: ERROR: Holding#%d does not have RecurringCodes',
-                    $propertyMapping->getHolding()->getId()
-                ),
-                500
-            );
-
-            return;
+        $recurringCodes = $propertyMapping->getHolding()->getRecurringCodes();
+        if (empty($recurringCodes)) {
+            $recurringCodes = [];
+        } else {
+            $recurringCodes = explode(',', $propertyMapping->getHolding()->getRecurringCodes());
         }
 
         $sumRecurringCharges = $this->getSumRecurringCharges($lease, $recurringCodes);
@@ -519,7 +514,9 @@ class ContractSynchronizer
         $sumRecurringCharges = 0;
         /** @var RecurringCharge $recurringCharge */
         foreach ($lease->getRecurringCharges() as $recurringCharge) {
-            if (in_array($recurringCharge->getIncCode(), $recurringCodes) && $recurringCharge->getFreqCode() === 'M') {
+            if ((empty($recurringCodes) || in_array($recurringCharge->getIncCode(), $recurringCodes)) &&
+                $recurringCharge->getFreqCode() === 'M'
+            ) {
                 $sumRecurringCharges += $recurringCharge->getAmount();
             }
         }
