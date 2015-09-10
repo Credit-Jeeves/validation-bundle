@@ -1064,6 +1064,10 @@ class ContractRepository extends EntityRepository
     }
 
     /**
+     * @deprecated
+     *
+     * @see ContractRepository::findContractsByPropertyMappingResidentAndExternalUnitId()
+     *
      * @param Holding $holding
      * @param PropertyMapping $propertyMapping
      * @param string $residentId
@@ -1102,6 +1106,42 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     * @param string $residentId
+     * @param string $externalUnitId
+     *
+     * @return Contract[]
+     */
+    public function findContractsByPropertyMappingResidentAndExternalUnitId
+    (
+        PropertyMapping $propertyMapping,
+        $residentId,
+        $externalUnitId
+    ) {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.unit', 'u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyMapping', 'pm', Expr\Join::WITH, 'c.holding = pm.holding')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->innerJoin('c.tenant', 't')
+            ->innerJoin('t.residentsMapping', 'rm')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.externalPropertyId = :propertyId')
+            ->andWhere('c.holding = pm.holding')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->andWhere('rm.residentId = :residentId')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('propertyId', $propertyMapping->getExternalPropertyId())
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->execute();
     }
 
     /**

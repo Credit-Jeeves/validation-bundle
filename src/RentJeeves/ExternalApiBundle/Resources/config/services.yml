@@ -9,7 +9,7 @@ parameters:
     soap.client.amsi.leasing.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient'
     soap.client.amsi.ledger.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient'
     resman.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\ResMan\ResidentBalanceSynchronizer'
-    amsi.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\ResidentBalanceSynchronizer'
+    amsi.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'
     mri.resident_balance_sync.class: 'RentJeeves\ExternalApiBundle\Services\MRI\ResidentBalanceSynchronizer'
 
 services:
@@ -19,8 +19,8 @@ services:
             - "@doctrine.orm.entity_manager"
             - "@mri.resident_data"
             - "@logger"
-    amsi.resident_balance_sync:
-        class: "%amsi.resident_balance_sync.class%"
+    amsi.contract_sync:
+        class: "%amsi.contract_sync.class%"
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@amsi.resident_data"

@@ -41,14 +41,15 @@ class AMSILeasingClient extends AMSIBaseClient
     /**
      * @param  string            $propertyId
      * @param  string            $leaseStatus
+     * @param  boolean           $includeRecurringCharges
      * @return PropertyResidents
      * @throws \Exception
      */
-    public function getPropertyResidents($propertyId, $leaseStatus)
+    public function getPropertyResidents($propertyId, $leaseStatus, $includeRecurringCharges = false)
     {
         $result = $this->sendRequest(
             'GetPropertyResidents',
-            $this->getParametersForPropertyResidents($propertyId, $leaseStatus)
+            $this->getParametersForPropertyResidents($propertyId, $leaseStatus, $includeRecurringCharges)
         );
 
         $result = SerializerXmlHelper::replaceEscapeToCorrectSymbol($result);
@@ -118,13 +119,16 @@ class AMSILeasingClient extends AMSIBaseClient
     /**
      * @param  string $propertyId
      * @param  string $leaseStatus
+     * @param  boolean $includeRecurringCharges
+     *
      * @return array
      */
-    protected function getParametersForPropertyResidents($propertyId, $leaseStatus)
+    protected function getParametersForPropertyResidents($propertyId, $leaseStatus, $includeRecurringCharges = false)
     {
         $edex = new EdexResidents();
         $edex->setPropertyId($propertyId);
         $edex->setLeaseStatus($leaseStatus);
+        $edex->setIncludeRecurringCharges((int) $includeRecurringCharges);
 
         $xmlData = SerializerXmlHelper::removeStandartHeaderXml(
             $this->serializer->serialize(
