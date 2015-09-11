@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Controller;
 
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
@@ -33,6 +34,7 @@ class PayController extends Controller
     {
 
         $contractId = $request->get('contract_id');
+        /** @var Contract $contract */
         $contract = $this->getDoctrine()
             ->getManager()
             ->getRepository('RjDataBundle:Contract')
@@ -73,8 +75,7 @@ class PayController extends Controller
                 $this->getDoctrine()->getManager(),
                 $contract->getGroup()->getGroupSettings()->getOpenDate(),
                 $contract->getGroup()->getGroupSettings()->getCloseDate(),
-                $attributes,
-                $this->get('translator')
+                $attributes
             );
         } else {
             $dueDays = $contract->getSettings()->getDueDays();
@@ -107,6 +108,25 @@ class PayController extends Controller
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
+        }
+
+        /** @var Payment $paymentEntity */
+        $paymentEntity = $paymentType->getData();
+
+        $contractId = $request->get('contract_id');
+        /** @var Contract $contract */
+        $contract = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('RjDataBundle:Contract')
+            ->find($contractId);
+
+        if (!$paymentEntity->getId() && $activePayment = $contract->getActivePayment()) {
+            $this->get('logger')->alert('Trying to create duplicate payment for contract #' . $contractId);
+
+            return new JsonResponse([
+                'success' => true,
+                'payment_id' => $activePayment->getId(),
+            ]);
         }
 
         return new JsonResponse(
@@ -237,6 +257,9 @@ class PayController extends Controller
     /**
      * @Route("/exec", name="checkout_pay_exec", options={"expose"=true})
      * @Method({"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ErrorException
      */
     public function execAction(Request $request)
     {

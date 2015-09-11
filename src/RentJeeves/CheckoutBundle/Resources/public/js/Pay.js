@@ -187,9 +187,6 @@ function Pay(parent, contract) {
                 break;
             case 'finish':
                 jQuery('#pay-popup').dialog('close');
-                jQuery('body').showOverlay();
-                window.location.reload();
-                return;
                 break;
         }
 
@@ -260,6 +257,11 @@ function Pay(parent, contract) {
                 if (!data.success) {
                     window.formProcess.applyErrors(data);
                     return;
+                } else if (data.payment_id) {
+                    self.payment.id(data.payment_id);
+                    // should resend data if we already have active payment for this contract
+                    sendData(url, formId);
+                    return;
                 }
                 successStepHandler(data);
             }
@@ -270,7 +272,11 @@ function Pay(parent, contract) {
         jQuery('#pay-popup').dialog({
             width: 650,
             modal: true,
-            beforeClose: function( event, ui ) {
+            beforeClose: function() {
+                if ('finish' === self.getCurrentStep()) {
+                    jQuery('body').showOverlay();
+                    window.location.reload();
+                }
                 current = 0;
                 self.step(steps[current]);
                 jQuery("input.datepicker-field").datepicker("destroy");
