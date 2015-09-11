@@ -83,8 +83,12 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->getEntityManager()->flush();
 
-        $this->paidForStringForCreate = $this->getPaidForDate($this->contractForCreate)->format('Y-m-d');
-        $this->paidForStringForUpdate = $this->getPaidForDate($this->contractForUpdate)->format('Y-m-d');
+        $dateTimeForCreate = $this->getPaidForDate($this->contractForCreate);
+        $dateTimeForCreate->modify('+1 day');
+        $this->paidForStringForCreate = $dateTimeForCreate->format('Y-m-d');
+        $dateTimeForUpdate = $this->getPaidForDate($this->contractForUpdate);
+        $dateTimeForUpdate->modify('+1 day');
+        $this->paidForStringForUpdate = $dateTimeForUpdate->format('Y-m-d');
 
         $this->payButtonNameForCreate = "contract-pay-" . ($contractToSelectForCreate);
         $this->payButtonNameForUpdate = "contract-pay-". ($contractToSelectForUpdate);
