@@ -357,6 +357,10 @@
                 <source>checkout.error.card_number.empty</source>
                 <target>Card Number is required.</target>
             </trans-unit>
+            <trans-unit id="checkout.error.card_number.count_numbers">
+                <source>checkout.error.card_number.count_numbers</source>
+                <target>Card Number should contains only 16 numbers.</target>
+            </trans-unit>
             <trans-unit id="checkout.csc">
                 <source>checkout.csc</source>
                 <target>CSC</target>
@@ -364,6 +368,10 @@
             <trans-unit id="checkout.error.csc.empty">
                 <source>checkout.error.csc.empty</source>
                 <target>CSC is required.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.csc.type">
+                <source>checkout.error.csc.type</source>
+                <target>CSC should be only numbers.</target>
             </trans-unit>
             <trans-unit id="checkout.csc.help">
                 <source>checkout.csc.help</source>
