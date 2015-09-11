@@ -10,6 +10,8 @@ parameters:
     mailer_delivery_address: 'staging@renttrack.com'  # force all email to be delivered to test mailbox
     mailer_disable_delivery: false
 
+    mailer.survey_url: my.renttrack.com
+
     session.lifetime:  3600 #in seconds
     mink.browser_name: 'firefox'
     mink.base_url: 'http://%server_name%/_test.php'

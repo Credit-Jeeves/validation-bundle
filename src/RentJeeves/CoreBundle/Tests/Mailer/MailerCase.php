@@ -119,6 +119,25 @@ class MailerCase extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldSendEmailChurnRecaptureForOrder()
+    {
+        $this->load(true);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $em = $this->getEntityManager();
+        $order = $em->find('DataBundle:Order', 2);
+        $this->getMailer()->sendChurnRecaptureForOrder($order);
+
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
+        $this->assertEquals('Did you miss a rent payment?', $message->getSubject());
+    }
+
+    /**
      * @return \RentJeeves\CoreBundle\Mailer\Mailer
      */
     protected function getMailer()

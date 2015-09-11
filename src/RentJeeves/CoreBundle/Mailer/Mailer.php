@@ -767,7 +767,7 @@ class Mailer extends BaseMailer
      *
      * @return bool
      */
-    public function sendRjSecondChanceForContract(Contract $contract)
+    public function sendSecondChanceForContract(Contract $contract)
     {
         $params = [
             'FNAME' => $contract->getTenant()->getFirstName(),
@@ -789,6 +789,37 @@ class Mailer extends BaseMailer
             $params,
             $contract->getTenant()->getEmail(),
             $contract->getTenant()->getCulture()
+        );
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return bool
+     */
+    public function sendChurnRecaptureForOrder(Order $order)
+    {
+        $isReporting = false;
+        if ($order->getContract()->getReportToExperian() || $order->getContract()->getReportToTransUnion()) {
+            $isReporting = true;
+        }
+
+        $surveyUrl = $this->container->getParameter('mailer.survey_url');
+
+        $params = [
+            'FNAME' => $order->getUser()->getFirstName(),
+            'LAST_PAYMENT_DATE' => $order->getCreatedAt()->format('Y-m-d'),
+            'LAST_PAYMENT_AMOUNT' => $order->getSum(),
+            'LEASE_END' => $order->getContract()->getFinishAt()->format('Y-m-d'),
+            'REPORTING' => $isReporting,
+            'SURVEY_URL' => $surveyUrl,
+        ];
+
+        return $this->sendBaseLetter(
+            $template = 'rjChurnRecapture',
+            $params,
+            $order->getUser()->getEmail(),
+            $order->getUser()->getCulture()
         );
     }
 }
