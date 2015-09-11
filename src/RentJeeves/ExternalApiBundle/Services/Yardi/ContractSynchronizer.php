@@ -187,8 +187,10 @@ class ContractSynchronizer
      * @param PropertyMapping $propertyMapping
      * @param ResidentTransactionPropertyCustomer $customer
      */
-    public function updateContractsRentForResidentTransaction(PropertyMapping $propertyMapping, ResidentTransactionPropertyCustomer $customer)
-    {
+    public function updateContractsRentForResidentTransaction(
+        PropertyMapping $propertyMapping,
+        ResidentTransactionPropertyCustomer $customer
+    ) {
         $recurringCodes = $propertyMapping->getHolding()->getRecurringCodesArray();
         $serviceTransactions = $customer->getServiceTransactions();
         $transactions = $serviceTransactions->getTransactions();

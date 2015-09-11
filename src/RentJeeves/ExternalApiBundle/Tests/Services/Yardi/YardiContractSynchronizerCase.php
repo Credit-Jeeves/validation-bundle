@@ -105,4 +105,48 @@ class YardiContractSynchronizerCase extends Base
         $this->assertNotNull($contract);
         $this->assertEquals(900.00, $contract->getRent());
     }
+
+    /**
+     * @test
+     */
+    public function shouldSyncContractWaitingRentForYardi()
+    {
+        $this->load(true);
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $repo = $em->getRepository('RjDataBundle:Contract');
+        /** @var Contract $contract */
+        $contract = $repo->find(20);
+        $this->assertNotNull($contract);
+        $this->assertNotNull($contract);
+        $contract->setStatus(ContractStatus::FINISHED);
+        $em->flush($contract);
+        $unit = $contract->getUnit();
+        $unit->setName('101');
+        $contractWaiting = new ContractWaiting();
+        $today = new \DateTime();
+        $contractWaiting->setGroup($contract->getGroup());
+        $contractWaiting->setProperty($contract->getProperty());
+        $contractWaiting->setUnit($contract->getUnit());
+        $contractWaiting->setRent($contract->getRent());
+        $contractWaiting->setResidentId('t0012027');
+        $contractWaiting->setStartAt($today);
+        $contractWaiting->setFinishAt($today);
+        $contractWaiting->setFirstName('Papa');
+        $contractWaiting->setLastName('Karlo');
+        $em->persist($contractWaiting);
+        $em->flush($contractWaiting);
+
+        $this->assertEquals(850.00, $contractWaiting->getRent());
+
+        $holding = $contractWaiting->getGroup()->getHolding();
+        $holding->setUseRecurringCharges(true);
+        $holding->setRecurringCodes('.rent,sss');
+        $contract->getGroup()->getGroupSettings()->setIsIntegrated(true);
+        $em->flush();
+
+        $contractSyncronizer = $this->getContainer()->get('yardi.contract_sync');
+        $contractSyncronizer->syncRecurringCharge();
+        /** @var Contract $contract */
+        $this->assertEquals(900.00, $contractWaiting->getRent());
+    }
 }
