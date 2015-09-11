@@ -83,13 +83,8 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->getEntityManager()->flush();
 
-        $dateTimeForCreate = $this->getPaidForDate($this->contractForCreate);
-        $dateTimeForCreate->modify('+1 day');
-        $this->paidForStringForCreate = $dateTimeForCreate->format('Y-m-d');
-        $dateTimeForUpdate = $this->getPaidForDate($this->contractForUpdate);
-        $dateTimeForUpdate->modify('+1 day');
-        $this->paidForStringForUpdate = $dateTimeForUpdate->format('Y-m-d');
-
+        $this->paidForStringForCreate = $this->getPaidForDate($this->contractForCreate)->format('Y-m-d');
+        $this->paidForStringForUpdate = $this->getPaidForDate($this->contractForUpdate)->format('Y-m-d');
         $this->payButtonNameForCreate = "contract-pay-" . ($contractToSelectForCreate);
         $this->payButtonNameForUpdate = "contract-pay-". ($contractToSelectForUpdate);
     }
@@ -134,10 +129,10 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
-                'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+1 day'))->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
             ]
         );
 
@@ -197,7 +192,7 @@ class AciCollectPayCase extends BaseTestCase
         );
         $forms[0]->find('css', 'input[name="rentjeeves_checkoutbundle_paymenttype[amount]"]')->setValue('1000');
         $forms[0]->find('css', 'input[name="rentjeeves_checkoutbundle_paymenttype[start_date]"]')->setValue(
-            date('n/j/Y')
+            (new \DateTime('+2 day'))->format('n/j/Y')
         );
         $this->page->pressButton('pay_popup.step.next');
 
