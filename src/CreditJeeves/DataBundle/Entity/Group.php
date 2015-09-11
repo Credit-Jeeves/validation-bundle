@@ -272,12 +272,18 @@ class Group extends BaseGroup
     /**
      * @Assert\True(message = "admin.error.deposit_account_number", groups={"unique_mapping"})
      * @return boolean
+     *
      */
-    public function isValidDepositAccountUniqueIndex()
+    public function isValidDepositAccountUniqueIndexForAccountNumber()
     {
         $alreadyUsedDepositAccounts = [];
         foreach ($this->getDepositAccounts() as $account) {
-            $key = $account->getType().$account->getPaymentProcessor();
+            $accountNumber = $account->getAccountNumber();
+            if (empty($accountNumber)) {
+                continue;
+            }
+            $key = $account->getType() . $account->getPaymentProcessor() . $accountNumber . $this->getHolding()
+                    ->getId();
             if (in_array($key, $alreadyUsedDepositAccounts)) {
                 return false;
             }
@@ -291,16 +297,11 @@ class Group extends BaseGroup
      * @Assert\True(message = "admin.error.deposit_account", groups={"unique_mapping"})
      * @return boolean
      */
-    public function isValidDepositAccountUniqueIndexForAccountNumber()
+    public function isValidDepositAccountUniqueIndex()
     {
         $alreadyUsedDepositAccounts = [];
         foreach ($this->getDepositAccounts() as $account) {
-            $accountNumber = $account->getAccountNumber();
-            if (empty($accountNumber)) {
-                continue;
-            }
-
-            $key = $account->getType().$account->getHolding()->getId().$accountNumber;
+            $key = $account->getType() . $this->getId() . $account->getPaymentProcessor();
             if (in_array($key, $alreadyUsedDepositAccounts)) {
                 return false;
             }
