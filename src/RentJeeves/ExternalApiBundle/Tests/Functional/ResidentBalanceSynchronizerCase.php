@@ -95,7 +95,8 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $settings->setSyncBalance(true);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
-        $contract->getUnit()->setName('2');
+        $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
+
         $tenant = $contract->getTenant();
         $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
         $residentMapping->setResidentId(ResManClientCase::RESIDENT_ID);
@@ -124,30 +125,29 @@ class ResidentBalanceSynchronizerCase extends BaseTestCase
         $settings->setSyncBalance(true);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
-        $contract->getUnit()->setName('2');
+        $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
         $tenant = $contract->getTenant();
         $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
         $residentMapping->setResidentId(ResManClientCase::RESIDENT_ID);
         $contract->setStatus(ContractStatus::FINISHED);
-        $em->flush($contract);
+        $em->flush();
 
         $contractWaiting = new ContractWaiting();
         $today = new DateTime();
         $contractWaiting->setGroup($contract->getGroup());
         $contractWaiting->setProperty($contract->getProperty());
-        $contractWaiting->setUnit($contract->getUnit()->setName('2'));
+        $contractWaiting->setUnit($contract->getUnit());
         $contractWaiting->setRent($contract->getRent());
         $contractWaiting->setResidentId(ResManClientCase::RESIDENT_ID);
         $contractWaiting->setStartAt($today);
         $contractWaiting->setFinishAt($today);
         $contractWaiting->setFirstName('Papa');
         $contractWaiting->setLastName('Karlo');
+        $contractWaiting->setIntegratedBalance(-500);
         $em->persist($contractWaiting);
         $em->flush($contractWaiting);
 
-        $this->assertEquals(0, $contractWaiting->getIntegratedBalance());
-
-        $balanceSynchronizer = $this->getContainer()->get('yardi.resident_balance_sync');
+        $balanceSynchronizer = $this->getContainer()->get('resman.resident_balance_sync');
         $balanceSynchronizer->run();
 
         $repo = $em->getRepository('RjDataBundle:ContractWaiting');
