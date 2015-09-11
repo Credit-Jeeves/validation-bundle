@@ -4,7 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\CoreBundle\Services\GeoCoder;
+use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -16,16 +16,16 @@ use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingExcepti
 class GroupMapper extends AbstractMapper
 {
     /**
-     * @var GeoCoder
+     * @var PropertyProcess
      */
-    protected $geoCoder;
+    protected $propertyProcess;
 
     /**
-     * @param GeoCoder $geoCoder
+     * @param PropertyProcess $propertyProcess
      */
-    public function __construct(GeoCoder $geoCoder)
+    public function __construct(PropertyProcess $propertyProcess)
     {
-        $this->geoCoder = $geoCoder;
+        $this->propertyProcess = $propertyProcess;
     }
 
     /**
@@ -43,7 +43,7 @@ class GroupMapper extends AbstractMapper
         if (false === $this->isValidAddress()) {
             throw new MappingException(
                 sprintf(
-                    '[Mapping] : Address (%s) is not found by geocoder',
+                    '[Mapping] : Address (%s) is not found by PropertyProcess',
                     $this->getAddress()
                 )
             );
@@ -86,7 +86,7 @@ class GroupMapper extends AbstractMapper
     protected function createHolding()
     {
         $newHolding = new Holding();
-        $newHolding->setName($this->get('ll_email'));
+        $newHolding->setName($this->getEmail());
 
         return $newHolding;
     }
@@ -124,7 +124,7 @@ class GroupMapper extends AbstractMapper
      */
     protected function isValidAddress()
     {
-        return $this->geoCoder->getGoogleGeocode($this->getAddress()) === false ? false : true;
+        return $this->propertyProcess->getGoogleGeocode($this->getAddress()) === false ? false : true;
     }
 
     /**

@@ -37,7 +37,7 @@ class LandlordMapper extends AbstractMapper
         }
 
         $holding = $group->getHolding();
-        $findBy = ['holding' => $holding, 'externalLandlordId' => $this->get('landlordID')];
+        $findBy = ['holding' => $holding, 'externalLandlordId' => $this->get('landlordid')];
         if (null !== $holding->getId() && $landlord = $this->getLandlordRepository()->findOneBy($findBy)) {
             return $landlord;
         }
@@ -54,12 +54,12 @@ class LandlordMapper extends AbstractMapper
         $newLandlord->setHolding($this->getGroup()->getHolding());
         $newLandlord->setFirstName($this->get('first_name'));
         $newLandlord->setLastName($this->get('last_name'));
-        $newLandlord->setEmail($this->get('ll_email'));
+        $newLandlord->setEmail($this->getEmail());
         $newLandlord->setPhone(PhoneNumberFormatter::formatToDigitsOnly($this->get('ll_phone')));
         $newLandlord->setPassword(md5(rand(1, 99999)));
         $newLandlord->setCulture($this->locale);
         $newLandlord->setAgentGroups($this->getGroup());
-        $newLandlord->setExternalLandlordId($this->get('landlordID'));
+        $newLandlord->setExternalLandlordId($this->get('landlordid'));
 
         return $newLandlord;
     }

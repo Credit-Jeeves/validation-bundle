@@ -40,12 +40,12 @@ class UnitMapper extends AbstractMapper
 
         $holding = $group->getHolding();
         if (null !== $holding->getId() &&
-            null !== $this->getUnitRepository()->findOneByHoldingAndExternalId($holding, $this->get('UnitID'))
+            null !== $this->getUnitRepository()->findOneByHoldingAndExternalId($holding, $this->get('unitid'))
         ) {
             throw new DuplicatedUnitException(
                 sprintf(
                     '[Mapping] : Unit with externalId#%s and Holding#%d already exists',
-                    $this->get('UnitID'),
+                    $this->get('unitid'),
                     $holding->getId()
                 )
             );
@@ -59,10 +59,17 @@ class UnitMapper extends AbstractMapper
      */
     protected function createUnit()
     {
+        if (true === $this->isSingleProperty()) {
+            $property = $this->getOrCreateProperty();
+            $property->addPropertyGroup($this->getGroup());
+
+            return $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+        }
+
         $newUnit = new Unit();
-        $newUnit->setGroup($group = $this->getGroup());
-        $newUnit->setHolding($group->getHolding());
-        $newUnit->setName($this->get('UnitNumber') ?: $this->get('UnitID'));
+        $newUnit->setGroup($this->getGroup());
+        $newUnit->setHolding($this->getGroup()->getHolding());
+        $newUnit->setName($this->get('unitnumber'));
         $newUnit->setProperty($this->getOrCreateProperty());
 
         return $newUnit;
@@ -78,15 +85,25 @@ class UnitMapper extends AbstractMapper
         $property = $this->propertyProcess->getPropertyByAddress($this->getAddress());
         if ($property === null) {
             throw new MappingException(
-                sprintf('[Mapping] : Address (%s) is not found by geocoder', $this->getAddress())
+                sprintf('[Mapping] : Address (%s) is not found by PropertyProcess', $this->getAddress())
             );
         }
 
-        if (false === $property->getPropertyGroups()->contains($this->getGroup())) {
-            $property->addPropertyGroup($this->getGroup());
+        if (false === $this->getGroup()->getGroupProperties()->contains($property)) {
+            $this->getGroup()->addGroupProperty($property);
         }
 
         return $property;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isSingleProperty()
+    {
+        $unitId = $this->get('unitid');
+
+        return empty($unitId);
     }
 
     /**
@@ -96,7 +113,7 @@ class UnitMapper extends AbstractMapper
     {
         return sprintf(
             '%s , %s, %s, %s',
-            $this->get('StreetAddress'),
+            $this->get('streetaddress'),
             $this->get('city_name'),
             $this->get('state_name'),
             $this->get('zipcode')
