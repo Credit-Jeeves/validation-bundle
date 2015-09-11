@@ -5,6 +5,7 @@ fixtures:
         status: complete
         paymentType: card
         paymentAccount: PaymentAccount_14
+        depositAccount: DepositAccount_3
         sum: 1500
         created_at: '-50 days'
         updated_at: '-50 days'

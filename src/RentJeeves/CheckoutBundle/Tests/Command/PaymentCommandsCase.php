@@ -382,6 +382,7 @@ class PaymentCommandsCase extends BaseTestCase
         $depositAccount->setPaymentProcessor($contract->getGroup()->getGroupSettings()->getPaymentProcessor());
         $depositAccount->setType(DepositAccountType::RENT);
         $depositAccount->setMerchantName(564075);
+        $depositAccount->setHolding($contract->getGroup()->getHolding());
 
         $contract->getGroup()->addDepositAccount($depositAccount);
 

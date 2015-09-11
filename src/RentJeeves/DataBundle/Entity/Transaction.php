@@ -277,12 +277,8 @@ class Transaction extends Base
      */
     public function getDepositAccountNumber()
     {
-        $contract = $this->getContract();
+        $depositAccount = $this->getOrder()->getDepositAccount();
 
-        if (!$contract || !($group = $contract->getGroup())) {
-            return null;
-        }
-
-        return $group->getAccountNumber();
+        return $depositAccount ? $depositAccount->getAccountNumber() : null;
     }
 }

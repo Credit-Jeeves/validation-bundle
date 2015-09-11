@@ -83,7 +83,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 $reversalData = $repoTransaction->getReversalDepositedInfo($group, $date);
                 $groups[] = [
                     'groupName' => $group->getName(),
-                    'accountNumber' => $group->getAccountNumber(),
+                    'accountNumber' => $group->getRentAccountNumberPerCurrentPaymentProcessor(),
                     'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
                     'batches' => $this->prepareBatchReportData($batchData),
                     'returns' => $reversalData,

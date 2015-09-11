@@ -17,7 +17,7 @@ class BatchDepositsManagerCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        
+
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->depositManager = new BatchDepositsManager($this->em);
         $this->load(true);

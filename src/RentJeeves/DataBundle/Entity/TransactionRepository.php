@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;

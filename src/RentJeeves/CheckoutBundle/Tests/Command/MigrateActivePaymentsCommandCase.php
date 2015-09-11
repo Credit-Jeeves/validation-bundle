@@ -189,6 +189,7 @@ class MigrateActivePaymentsCommandCase extends BaseTestCase
         $aciDepositAccount->setPaymentProcessor(PaymentProcessor::ACI);
         $aciDepositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
         $aciDepositAccount->setType(DepositAccountType::RENT);
+        $aciDepositAccount->setHolding($aciDepositAccount->getGroup()->getHolding());
 
         $paymentAccountMigration = new PaymentAccountMigration();
         $paymentAccountMigration->setHeartlandPaymentAccount($hpsActivePayment->getPaymentAccount());

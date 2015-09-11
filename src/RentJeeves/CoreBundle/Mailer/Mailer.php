@@ -547,7 +547,7 @@ class Mailer extends BaseMailer
             'date' => $date,
             'groupName' => $group->getName(),
             'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
-            'accountNumber' => $group->getAccountNumber(),
+            'accountNumber' => $group->getRentAccountNumberPerCurrentPaymentProcessor(),
             'batches' => $batches,
             'returns' => $returns,
             'resend' => $resend,

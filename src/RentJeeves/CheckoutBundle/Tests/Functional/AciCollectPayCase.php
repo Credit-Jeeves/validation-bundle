@@ -76,6 +76,7 @@ class AciCollectPayCase extends BaseTestCase
         );
         $depositAccount->setType(DepositAccountType::RENT);
         $depositAccount->setMerchantName(564075);
+        $depositAccount->setHolding($this->contract->getGroup()->getHolding());
 
         $this->contractForCreate->getGroup()->addDepositAccount($depositAccount);
 

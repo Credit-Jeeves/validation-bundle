@@ -37,16 +37,16 @@ class GroupCase extends BaseTestCase
             "$('.sonata-ba-tbody').children().length > 0"
         );
         $this->assertNotNull($inputText = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(13, $inputText);
+        $this->assertCount(14, $inputText);
         $inputText[8]->setValue('MerchantName');
         $buttonsAction[2]->click(); //add new Deposit Account
         $this->session->wait(
             10000,
-            "$('input[type=text]').length > 13"
+            "$('input[type=text]').length > 14"
         );
         $this->assertNotNull($inputText = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(14, $inputText);
-        $inputText[9]->setValue('MerchantName1');
+        $this->assertCount(16, $inputText);
+        $inputText[10]->setValue('MerchantName1');
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
         $this->assertNotNull($this->page->find('css', '.sonata-ba-form-error'));

@@ -3,7 +3,6 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use ACI\Client\CollectPay\Enum\BankAccountType;
-use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use Payum\AciCollectPay\Model\Enum\FundingAccountType;
 use Payum\AciCollectPay\Model\Payment;

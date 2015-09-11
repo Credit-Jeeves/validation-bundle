@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Entity\DepositAccount;
-use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -419,19 +418,6 @@ abstract class Group
      * )
      */
     protected $statementDescriptor;
-
-    /**
-     * @ORM\OneToOne(
-     *     targetEntity="\RentJeeves\DataBundle\Entity\GroupAccountNumberMapping",
-     *     mappedBy="group",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true,
-     *     fetch="EAGER"
-     * )
-     * @Assert\Valid
-     * @var GroupAccountNumberMapping
-     */
-    protected $accountNumberMapping;
 
     /**
      * @var string
@@ -1433,22 +1419,6 @@ abstract class Group
     public function setStatementDescriptor($statementDescriptor)
     {
         $this->statementDescriptor = $statementDescriptor;
-    }
-
-    /**
-     * @return GroupAccountNumberMapping
-     */
-    public function getAccountNumberMapping()
-    {
-        return $this->accountNumberMapping;
-    }
-
-    /**
-     * @param GroupAccountNumberMapping $accountNumberMapping
-     */
-    public function setAccountNumberMapping(GroupAccountNumberMapping $accountNumberMapping)
-    {
-        $this->accountNumberMapping = $accountNumberMapping;
     }
 
     /**
