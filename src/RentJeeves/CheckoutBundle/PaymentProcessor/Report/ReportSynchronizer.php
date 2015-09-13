@@ -60,13 +60,20 @@ class ReportSynchronizer
      * Synchronizes payment processor report's data.
      *
      * @param  PaymentProcessorReport $report
+     * @param  string $reportName - the name of the report to be used in log statements
+     * @param  boolean $alertIfEmpty - should we send an alert if there are no transactions?
      * @return int
      * @throws \Exception
      */
-    public function synchronize(PaymentProcessorReport $report)
+    public function synchronize(PaymentProcessorReport $report, $reportName = "", $alertIfEmpty = true)
     {
         if (!$report->getTransactions()) {
-            $this->logger->alert('Report synchronizer: No transactions in payment processor report');
+            $message = sprintf('%s Report synchronizer: No transactions in payment processor report', $reportName);
+            if ($alertIfEmpty) {
+                $this->logger->alert($message);
+            } else {
+                $this->logger->info($message);
+            }
 
             return 0;
         }

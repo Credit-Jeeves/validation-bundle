@@ -54,7 +54,7 @@ abstract class AbstractParser implements AciPayAnyoneParserInterface
         }
 
         if (count($transactions) === 0) {
-            $this->logger->alert('ACI: PayAnyone parser found no transactions in the XML data');
+            $this->logger->debug('ACI: PayAnyone parser found no transactions in the XML data');
         }
 
         return $transactions;
