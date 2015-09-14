@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
@@ -15,6 +16,16 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 class ReportSynchronizer
 {
+    /*
+     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
+     */
+    const EM_CLEANUP_PERIOD = 100;
+
+    /**
+     * @var PeriodicExecutor
+     */
+    protected $periodicExecutor;
+
     /**
      * @var  OrderStatusManagerInterface
      */
@@ -60,6 +71,10 @@ class ReportSynchronizer
             return 0;
         }
 
+        // setup running EM cleanup periodically
+        $this->periodicExecutor =
+            new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
+
         /** @var PaymentProcessorReportTransaction $reportTransaction */
         foreach ($report->getTransactions() as $reportTransaction) {
             switch ($reportTransaction) {
@@ -81,9 +96,20 @@ class ReportSynchronizer
                 default:
                     throw new \Exception('Report synchronizer: Unknown report transaction type to synchronize');
             }
+            $this->periodicExecutor->increment();
         }
 
         return count($report->getTransactions());
+    }
+
+    /**
+     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     /**

@@ -61,9 +61,16 @@ class ReportLoader
         $this->logger->debug('HPS: Trying to load report');
 
         $depositReport = $this->loadDepositReport();
-        $reversalReport = $this->loadReversalReport();
+        $depositReportBackwards = array_reverse($depositReport);
+        unset($depositReport);
 
-        $reportTransactions = array_merge($depositReport, $reversalReport);
+        $reversalReport = $this->loadReversalReport();
+        $reversalReportBackwards = array_reverse($reversalReport);
+        unset($reversalReport);
+
+        $reportTransactions = array_merge($depositReportBackwards, $reversalReportBackwards);
+        unset($depositReportBackwards);
+        unset($reversalReportBackwards);
 
         $report = new PaymentProcessorReport();
         $report->setTransactions($reportTransactions);
