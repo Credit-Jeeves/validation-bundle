@@ -17,6 +17,8 @@ use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 class ResidentDataManager
 {
     const CURRENT_RESIDENT = 'Current';
+    //@TODO need approve correct value for this constant!!!
+    const NOTICE_RESIDENT = 'Notice';
 
     /**
      * @var SoapClientFactory
@@ -40,6 +42,12 @@ class ResidentDataManager
         $this->exceptionCatcher = $exceptionCatcher;
     }
 
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @return array
+     * @throws \Exception
+     */
     public function getResidents(Holding $holding, Property $property)
     {
         $residentClient = $this->getApiClient($holding);
@@ -57,14 +65,21 @@ class ResidentDataManager
         return $residents->getPropertyResidents()->getResidents()->getResidents();
     }
 
-    public function getCurrentResidents(Holding $holding, Property $property)
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @return array
+     * @throws \Exception
+     */
+    public function getCurrentAndNoticesResidents(Holding $holding, Property $property)
     {
         $residents = $this->getResidents($holding, $property);
 
         $currentResidents = array_filter(
             $residents,
             function ($resident) {
-                return $resident->getStatus() == self::CURRENT_RESIDENT;
+                return $resident->getStatus() == self::CURRENT_RESIDENT ||
+                $resident->getStatus() == self::NOTICE_RESIDENT;
             }
         );
 
