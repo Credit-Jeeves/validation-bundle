@@ -9,11 +9,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\CardScheme;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\ExecutionContext;
 
 class PaymentAccountType extends AbstractType
 {
@@ -240,12 +238,13 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.card_number.empty',
                         ]
                     ),
-                    new Callback(
+                    new CardScheme(
                         [
                             'groups' => ['card'],
-                            'methods' => [
-                                [$this, 'isCardNumberValid']
-                            ],
+                            'schemes' => [
+                                'VISA',
+                                'MASTERCARD'
+                            ]
                         ]
                     )
                 ]
@@ -273,9 +272,9 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.csc.empty',
                         ]
                     ),
-                    new Type(
+                    new Regex(
                         [
-                            'type' => 'int',
+                            'pattern' => '/^[0-9]{3}$/',
                             'groups' => ['card'],
                             'message' => 'checkout.error.csc.type',
                         ]
@@ -474,18 +473,6 @@ class PaymentAccountType extends AbstractType
                 }
             ]
         );
-    }
-
-    /**
-     * @param string $cardNumber
-     * @param ExecutionContext $context
-     */
-    public function isCardNumberValid($cardNumber, ExecutionContext $context)
-    {
-        $cardNumber = str_replace(' ', '', $cardNumber);
-        if (strlen($cardNumber) > 16) {
-            $context->addViolation('checkout.error.card_number.count_numbers');
-        }
     }
 
     public function getName()
