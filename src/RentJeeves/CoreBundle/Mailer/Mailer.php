@@ -805,12 +805,14 @@ class Mailer extends BaseMailer
         }
 
         $surveyUrl = $this->container->getParameter('mailer.survey_url');
+        $contract = $order->getContract();
+        $leaseEnd = $contract->getFinishAt() === null ? false : $contract->getFinishAt()->format('Y-m-d');
 
         $params = [
             'FNAME' => $order->getUser()->getFirstName(),
             'LAST_PAYMENT_DATE' => $order->getCreatedAt()->format('Y-m-d'),
             'LAST_PAYMENT_AMOUNT' => $order->getSum(),
-            'LEASE_END' => $order->getContract()->getFinishAt()->format('Y-m-d'),
+            'LEASE_END' => $leaseEnd,
             'REPORTING' => $isReporting,
             'SURVEY_URL' => $surveyUrl,
         ];
