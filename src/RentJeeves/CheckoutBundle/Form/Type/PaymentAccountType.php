@@ -243,7 +243,8 @@ class PaymentAccountType extends AbstractType
                             'groups' => ['card'],
                             'schemes' => [
                                 'VISA',
-                                'MASTERCARD'
+                                'MASTERCARD',
+                                'DISCOVER'
                             ]
                         ]
                     )
