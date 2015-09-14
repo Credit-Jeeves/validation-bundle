@@ -56,18 +56,21 @@ class ResidentTransactionsClientCase extends Base
         /** @var $response ResidentLeaseChargesLoginResponse */
         $response = $client->getResidentLeaseCharges('rnttrk01');
         $this->assertTrue($response instanceof ResidentLeaseChargesLoginResponse);
-        $this->assertNotEmpty($property = $response->getProperty());
-        $this->assertNotEmpty($customers = $property->getCustomers());
+        $this->assertNotEmpty($property = $response->getProperty(), 'Property not found in response.');
+        $this->assertNotEmpty($customers = $property->getCustomers(), 'Customers not found in property.');
         $customer = reset($customers);
-        $this->assertNotEmpty($serviceTransactions = $customer->getServiceTransactions());
+        $this->assertNotEmpty(
+            $serviceTransactions = $customer->getServiceTransactions(),
+            'ServiceTransactions not found in customer'
+        );
         $transactions = $serviceTransactions->getTransactions();
 
         $transaction = reset($transactions);
-        $this->assertNotEmpty($charge = $transaction->getCharge());
-        $this->assertNotEmpty($detail = $charge->getDetail());
-        $this->assertNotEmpty($detail->getAmount());
-        $this->assertNotEmpty($detail->getUnitID());
-        $this->assertNotEmpty($detail->getChargeCode());
-        $this->assertNotEmpty($detail->getCustomerID());
+        $this->assertNotEmpty($charge = $transaction->getCharge(), 'Charge not found in transaction');
+        $this->assertNotEmpty($detail = $charge->getDetail(), 'Detail not found in charge');
+        $this->assertNotEmpty($detail->getAmount(), 'Amount is empty on detail');
+        $this->assertNotEmpty($detail->getUnitID(), 'UnitId is empty on detail');
+        $this->assertNotEmpty($detail->getChargeCode(), 'ChargeCode is empty on detail');
+        $this->assertNotEmpty($detail->getCustomerID(), 'CustomerID is empty on detail');
     }
 }

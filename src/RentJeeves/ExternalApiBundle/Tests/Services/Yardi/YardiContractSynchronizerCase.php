@@ -20,12 +20,20 @@ class YardiContractSynchronizerCase extends Base
         $repo = $em->getRepository('RjDataBundle:Contract');
         $contract = $repo->find(20);
         $this->assertNotNull($contract);
-        $this->assertEquals(0, $contract->getIntegratedBalance());
+        $this->assertEquals(
+            0,
+            $contract->getIntegratedBalance(),
+            'Contract in fixture should have 9 integrated balance.'
+        );
 
         $balanceSynchronizer= $this->getContainer()->get('yardi.contract_sync');
         $balanceSynchronizer->syncBalance();
         $updatedContract = $repo->find(20);
-        $this->assertGreaterThan(4360.5, $updatedContract->getIntegratedBalance());
+        $this->assertGreaterThan(
+            4360.5,
+            $updatedContract->getIntegratedBalance(),
+            'We did not update integrated balance for contract.'
+        );
     }
 
     /**
@@ -39,7 +47,7 @@ class YardiContractSynchronizerCase extends Base
         $repo = $em->getRepository('RjDataBundle:Contract');
 
         $contract = $repo->find(20);
-        $this->assertNotNull($contract);
+        $this->assertNotNull($contract, 'We should have contract in fixture.');
         $contract->setStatus(ContractStatus::FINISHED);
         $em->flush($contract);
 
@@ -57,7 +65,11 @@ class YardiContractSynchronizerCase extends Base
         $em->persist($contractWaiting);
         $em->flush($contractWaiting);
 
-        $this->assertEquals(0, $contractWaiting->getIntegratedBalance());
+        $this->assertEquals(
+            0,
+            $contractWaiting->getIntegratedBalance(),
+            'Integrated balance for Contract Waiting should be 0. Because this is new.'
+        );
 
         $balanceSynchronizer = $this->getContainer()->get('yardi.contract_sync');
         $balanceSynchronizer->syncBalance();
@@ -69,8 +81,12 @@ class YardiContractSynchronizerCase extends Base
             $contract->getUnit()->getName(),
             't0011984'
         );
-        $this->assertNotNull($updatedContractWaiting);
-        $this->assertGreaterThan(4360.5, $updatedContractWaiting->getIntegratedBalance());
+        $this->assertNotNull($updatedContractWaiting, 'We should find contract waiting which we just created');
+        $this->assertGreaterThan(
+            4360.5,
+            $updatedContractWaiting->getIntegratedBalance(),
+            'We did not update integrated balance for contract waiting'
+        );
     }
 
     /**
@@ -83,11 +99,11 @@ class YardiContractSynchronizerCase extends Base
         $repo = $em->getRepository('RjDataBundle:Contract');
         /** @var Contract $contract */
         $contract = $repo->find(20);
-        $this->assertNotNull($contract);
-        $this->assertEquals(850.00, $contract->getRent());
+        $this->assertNotNull($contract, 'We didn\'t find contract in fixtures.');
+        $this->assertEquals(850.00, $contract->getRent(), 'Contract rent in fixtures is wrong.');
         $tenant = $contract->getTenant();
         $residentMapping = $tenant->getResidentForHolding($holding = $contract->getHolding());
-        $this->assertNotEmpty($residentMapping);
+        $this->assertNotEmpty($residentMapping, 'Wrong fixtures, resident mapping didn\'t find');
         $residentMapping->setResidentId('t0012027');
         $em->persist($residentMapping);
         $unit = $contract->getUnit();
@@ -102,8 +118,8 @@ class YardiContractSynchronizerCase extends Base
         $contractSynchronizer->syncRecurringCharge();
         /** @var Contract $contract */
         $contract = $repo->find(20);
-        $this->assertNotNull($contract);
-        $this->assertEquals(900.00, $contract->getRent());
+        $this->assertNotNull($contract, 'Did not find contract which should be updated');
+        $this->assertEquals(900.00, $contract->getRent(), 'Rent didn\'t updated');
     }
 
     /**
@@ -116,7 +132,7 @@ class YardiContractSynchronizerCase extends Base
         $repo = $em->getRepository('RjDataBundle:Contract');
         /** @var Contract $contract */
         $contract = $repo->find(20);
-        $this->assertNotNull($contract);
+        $this->assertNotNull($contract, 'We didn\'t find contract in fixtures.');
         $contract->setStatus(ContractStatus::FINISHED);
         $em->flush($contract);
         $unit = $contract->getUnit();
@@ -135,7 +151,11 @@ class YardiContractSynchronizerCase extends Base
         $em->persist($contractWaiting);
         $em->flush($contractWaiting);
 
-        $this->assertEquals(850.00, $contractWaiting->getRent());
+        $this->assertEquals(
+            850.00,
+            $contractWaiting->getRent(),
+            'Contract rent in fixtures is wrong.'
+        );
 
         $holding = $contractWaiting->getGroup()->getHolding();
         $holding->setUseRecurringCharges(true);
@@ -146,6 +166,10 @@ class YardiContractSynchronizerCase extends Base
         $contractSyncronizer = $this->getContainer()->get('yardi.contract_sync');
         $contractSyncronizer->syncRecurringCharge();
         /** @var Contract $contract */
-        $this->assertEquals(900.00, $contractWaiting->getRent());
+        $this->assertEquals(
+            900.00,
+            $contractWaiting->getRent(),
+            'Rent contract waiting didn\'t update'
+        );
     }
 }
