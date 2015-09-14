@@ -175,8 +175,11 @@ class UnitRepository extends EntityRepository
         }
 
         return $this->createQueryBuilder('u')
+            ->addSelect('CONCAT(property.number, property.street) AS HIDDEN sortField')
             ->innerJoin('u.contractsWaiting', 'cw')
+            ->innerJoin('u.property', 'property')
             ->where('cw.id IN (:ids)')
+            ->orderBy('sortField')
             ->setParameter('ids', implode(' , ', $contractWaitingIds))
             ->getQuery()
             ->execute();

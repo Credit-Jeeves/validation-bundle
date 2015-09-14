@@ -243,6 +243,32 @@ EOT;
         return $result;
     }
 
+    /**
+     * @param Holding $holding
+     * @return array
+     */
+    public function findByHoldingOrderedByAddress(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+            ->innerJoin('p.property_groups', 'p_group')
+            ->leftJoin('p.units', 'unit')
+            ->where('p_group.holding_id = :holdingId')
+            ->andWhere('unit.holding = :holdingId')
+            ->andWhere('p.jb IS NOT NULL AND p.kb IS NOT NULL')
+            ->setParameter('holdingId', $holding->getId())
+            ->orderBy('sortField')
+            ->getQuery();
+
+        $result = $query->getResult();
+
+        if (!empty($result)) {
+            $result = array_map('current', $result);
+        }
+
+        return $result;
+    }
+
     public function findByHolding(Holding $holding = null)
     {
         $query = $this->createQueryBuilder('p');
