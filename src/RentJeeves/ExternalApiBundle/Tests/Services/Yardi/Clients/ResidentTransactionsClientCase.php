@@ -50,7 +50,7 @@ class ResidentTransactionsClientCase extends Base
     /**
      * @test
      */
-    public function getResidentLeaseCharges()
+    public function shouldGetResidentLeaseCharges()
     {
         $client = $this->getClient();
         /** @var $response ResidentLeaseChargesLoginResponse */

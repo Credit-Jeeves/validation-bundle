@@ -12,7 +12,7 @@ class YardiContractSynchronizerCase extends Base
     /**
      * @test
      */
-    public function shouldSyncContractBalanceForYardi()
+    public function shouldSyncContractBalance()
     {
         $this->load(true);
 
@@ -22,8 +22,8 @@ class YardiContractSynchronizerCase extends Base
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
 
-        $balanceSyncronizer = $this->getContainer()->get('yardi.contract_sync');
-        $balanceSyncronizer->syncBalance();
+        $balanceSynchronizer= $this->getContainer()->get('yardi.contract_sync');
+        $balanceSynchronizer->syncBalance();
         $updatedContract = $repo->find(20);
         $this->assertGreaterThan(4360.5, $updatedContract->getIntegratedBalance());
     }
@@ -31,7 +31,7 @@ class YardiContractSynchronizerCase extends Base
     /**
      * @test
      */
-    public function shouldSyncContractWaitingBalanceForYardi()
+    public function shouldSyncContractWaitingBalance()
     {
         $this->load(true);
 
@@ -98,8 +98,8 @@ class YardiContractSynchronizerCase extends Base
         $contract->getGroup()->getGroupSettings()->setIsIntegrated(true);
         $em->flush();
 
-        $contractSyncronizer = $this->getContainer()->get('yardi.contract_sync');
-        $contractSyncronizer->syncRecurringCharge();
+        $contractSynchronizer = $this->getContainer()->get('yardi.contract_sync');
+        $contractSynchronizer->syncRecurringCharge();
         /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract);
@@ -116,7 +116,6 @@ class YardiContractSynchronizerCase extends Base
         $repo = $em->getRepository('RjDataBundle:Contract');
         /** @var Contract $contract */
         $contract = $repo->find(20);
-        $this->assertNotNull($contract);
         $this->assertNotNull($contract);
         $contract->setStatus(ContractStatus::FINISHED);
         $em->flush($contract);

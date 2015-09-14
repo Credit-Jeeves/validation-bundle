@@ -156,8 +156,7 @@ class ContractSynchronizer
                 sprintf(
                     'Yardi sync Recurring Charge: \'%s\'',
                     $e->getMessage()
-                ),
-                500
+                )
             );
 
             return;
@@ -173,13 +172,12 @@ class ContractSynchronizer
             return;
         }
 
-        $this->logger->info(
+        $this->logger->alert(
             sprintf(
                 'Yardi sync Recurring Charge: Empty response for Property %s of Holding#%d',
                 $propertyMapping->getExternalPropertyId(),
                 $propertyMapping->getHolding()->getId()
-            ),
-            500
+            )
         );
     }
 
@@ -201,7 +199,7 @@ class ContractSynchronizer
             if (!in_array($charge->getDetail()->getChargeCode(), $recurringCodes)) {
                 $this->logger->info(
                     sprintf(
-                        'Charge code(%s) not contains in list %s',
+                        'RecurringCodes list(%s) does not contain charge code (%s)',
                         $charge->getDetail()->getChargeCode(),
                         $propertyMapping->getHolding()->getRecurringCodes()
                     )
@@ -221,7 +219,7 @@ class ContractSynchronizer
         $contract = $this->getContract($propertyMapping, $residentId, $unitName);
 
         if (empty($contract)) {
-            $this->logger->info('Yardi synch rent: empty contract.');
+            $this->logger->info(' Yardi sync Recurring Charge: empty contract.');
 
             return;
         }
@@ -381,10 +379,7 @@ class ContractSynchronizer
         GetResidentTransactionsLoginResponse $residentTransactions,
         PropertyMapping $propertyMapping
     ) {
-        $holding = $propertyMapping->getHolding();
-        $property = $propertyMapping->getProperty();
         $residents = $residentTransactions->getProperty()->getCustomers();
-        $propertyMapping = $property->getPropertyMappingByHolding($holding); //@TODO move above and put PropertyMapping
         foreach ($residents as $resident) {
             $residentId = $resident->getCustomerId();
             $unitName = $resident->getUnit()->getUnitId();
