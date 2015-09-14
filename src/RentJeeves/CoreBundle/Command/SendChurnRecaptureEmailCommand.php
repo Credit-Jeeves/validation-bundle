@@ -15,8 +15,9 @@ class SendChurnRecaptureEmailCommand extends ContainerAwareCommand
     {
         $this
             ->setName('email:churn_recapture')
-            ->setDescription('run once per month, and look for people who did not pay the previous month,
-             but did pay two months before (and who still have active leases)'
+            ->setDescription(
+                'run once per month, and look for people who did not pay the previous month,
+                but did pay two months before (and who still have active leases)'
             );
     }
 
