@@ -196,7 +196,7 @@ class AjaxController extends Controller
     {
         $group = $this->getCurrentGroup();
         $repo = $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Property');
-        $properties = $repo->getPropetiesAll($group);
+        $properties = $repo->getAllPropertiesInGroup($group);
 
         foreach ($properties as $property) {
             $item = $property->getItem($group);

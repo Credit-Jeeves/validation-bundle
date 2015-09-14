@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -63,7 +64,11 @@ EOT;
         return $stmt->fetchAll();
     }
 
-    public function getPropetiesAll($group)
+    /**
+     * @param Group $group
+     * @return Property[]
+     */
+    public function getAllPropertiesInGroup(Group $group)
     {
         $query = $this->createQueryBuilder('p');
         $query->innerJoin('p.property_groups', 'g');
