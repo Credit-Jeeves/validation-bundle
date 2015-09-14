@@ -70,11 +70,28 @@ EOT;
      */
     public function getAllPropertiesInGroup(Group $group)
     {
-        $query = $this->createQueryBuilder('p');
-        $query->innerJoin('p.property_groups', 'g');
-        $query->where('g.id = :group_id');
-        $query->setParameter('group_id', $group->getId());
-        $query = $query->getQuery();
+        $query = $this->createQueryBuilder('p')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('g.id = :group_id')
+            ->setParameter('group_id', $group->getId())
+            ->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param Group $group
+     * @return Property[]
+     */
+    public function getAllPropertiesInGroupOrderedByAddress(Group $group)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('g.id = :group_id')
+            ->setParameter('group_id', $group->getId())
+            ->orderBy('sortField')
+            ->getQuery();
 
         return $query->execute();
     }
@@ -245,7 +262,7 @@ EOT;
 
     /**
      * @param Holding $holding
-     * @return array
+     * @return Property[]
      */
     public function findByHoldingOrderedByAddress(Holding $holding)
     {
@@ -260,13 +277,7 @@ EOT;
             ->orderBy('sortField')
             ->getQuery();
 
-        $result = $query->getResult();
-
-        if (!empty($result)) {
-            $result = array_map('current', $result);
-        }
-
-        return $result;
+        return $query->execute();
     }
 
     public function findByHolding(Holding $holding = null)

@@ -283,7 +283,7 @@ class PublicController extends Controller
                     $tenant->setLastName($contracts[0]->getLastName());
                 } else {
                     $holdingPropertyList = $em->getRepository('RjDataBundle:Property')
-                        ->findByHoldingAndAlphaNumericSort($holding);
+                        ->findByHoldingOrderedByAddress($holding);
                 }
             }
         }
@@ -341,8 +341,8 @@ class PublicController extends Controller
     }
 
     /**
-     * @param int      $id
-     * @param Request  $request
+     * @param int     $id
+     * @param Request $request
      *
      * @Route(
      *      "/user/new/{id}/holding",
@@ -365,7 +365,7 @@ class PublicController extends Controller
             return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
         }
 
-        $propertyList = $em->getRepository('RjDataBundle:Property')->findByHoldingAndAlphaNumericSort($holding);
+        $propertyList = $em->getRepository('RjDataBundle:Property')->findByHoldingOrderedByAddress($holding);
 
         return $this->render('RjPublicBundle:Public:new.html.twig', [
             'form' => $form->createView(),
@@ -402,7 +402,7 @@ class PublicController extends Controller
             return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
         }
 
-        $propertyList = $em->getRepository('RjDataBundle:Property')->getAllPropertiesInGroup($group);
+        $propertyList = $em->getRepository('RjDataBundle:Property')->getAllPropertiesInGroupOrderedByAddress($group);
 
         return $this->render('RjPublicBundle:Public:new.html.twig', [
             'form' => $form->createView(),
