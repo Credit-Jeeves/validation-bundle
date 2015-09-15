@@ -280,9 +280,9 @@ class ContractSynchronizer
     /**
      * @param string $message
      */
-    protected function logMessage($message)
+    protected function logMessage($message, $level = 100)
     {
-        $this->logger->debug($message);
+        $this->logger->log($level, $message);
         if ($this->outputLogger) {
             $this->outputLogger->writeln($message);
         }
