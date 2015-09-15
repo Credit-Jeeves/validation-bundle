@@ -4,10 +4,11 @@ namespace CreditJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
-use RentJeeves\DataBundle\Model\DepositAccount;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -327,5 +328,25 @@ class Group extends BaseGroup
         $length = strlen($this->getStatementDescriptor());
 
         return $length <= $limit;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|DepositAccount[]
+     */
+    public function getNotRentDepositAccounts()
+    {
+        return $this->getDepositAccounts()->filter(function (DepositAccount $account) {
+            return DepositAccountType::RENT !== $account->getType() &&
+                $account->getPaymentProcessor() === $this->getGroupSettings()->getPaymentProcessor();
+        });
+    }
+
+    /**
+     * @param string $type
+     * @return DepositAccount|null
+     */
+    public function getDepositAccountForCurrentPaymentProcessor($type)
+    {
+        return $this->getDepositAccount($type, $this->getGroupSettings()->getPaymentProcessor());
     }
 }
