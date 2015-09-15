@@ -92,6 +92,43 @@ class OrderCreationManager
     }
 
     /**
+     * Creates a new order for custom payment.
+     *
+     * @param  Payment $payment
+     * @return Order
+     */
+    public function createCustomOrder(Payment $payment)
+    {
+        $order = OrderFactory::getOrder($payment->getContract()->getGroup());
+        $paymentAccount = $payment->getPaymentAccount();
+        $contract = $payment->getContract();
+        $groupSettings = $contract->getGroup()->getGroupSettings();
+        $order->setSum($payment->getTotal());
+        $order->setUser($paymentAccount->getUser());
+        $order->setPaymentProcessor($payment->getContract()->getGroup()->getGroupSettings()->getPaymentProcessor());
+        $order->setPaymentAccount($payment->getPaymentAccount());
+        $order->setDepositAccount($payment->getDepositAccount());
+        $order->setDescriptor($payment->getContract()->getGroup()->getStatementDescriptor());
+
+        $this->createCustomOperation($payment, $order);
+
+        if (PaymentAccountType::CARD == $paymentAccount->getType()) {
+            $order->setFee(round($order->getSum() * ($contract->getGroupSettings()->getFeeCC() / 100), 2));
+            $order->setPaymentType(OrderPaymentType::CARD);
+        } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
+            if (true === $groupSettings->isPassedAch()) {
+                $order->setFee($groupSettings->getFeeACH());
+            } else {
+                $order->setFee(0);
+            }
+
+            $order->setPaymentType(OrderPaymentType::BANK);
+        }
+
+        return $order;
+    }
+
+    /**
      * Creates a new order for credit track payment.
      *
      * @param  PaymentAccount $paymentAccount
@@ -188,6 +225,20 @@ class OrderCreationManager
         } else {
             $this->createRegularOperations($payment, $order);
         }
+    }
+
+    /**
+     * @param Payment $payment
+     * @param Order $order
+     */
+    protected function createCustomOperation(Payment $payment, Order $order)
+    {
+        $operation = new Operation();
+        $operation->setOrder($order);
+        $operation->setType(OperationType::CUSTOM);
+        $operation->setContract($payment->getContract());
+        $operation->setAmount($payment->getTotal());
+        $operation->setPaidFor($payment->getPaidFor() ? $payment->getPaidFor() : new \DateTime());
     }
 
     /**
