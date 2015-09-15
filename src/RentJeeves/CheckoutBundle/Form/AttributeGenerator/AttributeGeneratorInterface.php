@@ -4,41 +4,98 @@ namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
 interface AttributeGeneratorInterface
 {
-    public function isMobile();
+    /**
+     * @return bool
+     */
+    public static function isMobile();
 
-    public function amountAttrs();
+    /**
+     * @return array
+     */
+    public static function amountAttrs();
 
-    public function paidForAttrs();
+    /**
+     * @return array
+     */
+    public static function paidForAttrs();
 
-    public function amountOtherAttrs();
+    /**
+     * @return array
+     */
+    public static function amountOtherAttrs();
 
-    public function totalAttrs();
+    /**
+     * @return array
+     */
+    public static function totalAttrs();
 
-    public function typeAttrs();
+    /**
+     * @return array
+     */
+    public static function typeAttrs();
 
-    public function frequencyAttrs();
+    /**
+     * @return array
+     */
+    public static function frequencyAttrs();
 
-    public function dueDateAttrs();
+    /**
+     * @return array
+     */
+    public static function dueDateAttrs();
 
-    public function startMonthAttrs();
+    /**
+     * @return array
+     */
+    public static function startMonthAttrs();
 
-    public function startYearAttrs();
+    /**
+     * @return array
+     */
+    public static function startYearAttrs();
 
-    public function startDateAttrs($isPastCutoffTime = false);
+    /**
+     * @return array
+     */
+    public static function startDateAttrs($isPastCutoffTime = false);
 
-    public function endsAttrs();
+    /**
+     * @return array
+     */
+    public static function endsAttrs();
 
-    public function endMonthAttrs();
+    /**
+     * @return array
+     */
+    public static function endMonthAttrs();
 
-    public function endYearAttrs();
+    /**
+     * @return array
+     */
+    public static function endYearAttrs();
 
-    public function paymentAccountIdAttrs();
+    /**
+     * @return array
+     */
+    public static function paymentAccountIdAttrs();
 
-    public function contractIdAttrs();
+    /**
+     * @return array
+     */
+    public static function contractIdAttrs();
 
-    public function idAttrs();
+    /**
+     * @return array
+     */
+    public static function idAttrs();
 
-    public function submitAttrs();
+    /**
+     * @return array
+     */
+    public static function submitAttrs();
 
-    public function paymentAccountAttrs();
+    /**
+     * @return array
+     */
+    public static function paymentAccountAttrs();
 }

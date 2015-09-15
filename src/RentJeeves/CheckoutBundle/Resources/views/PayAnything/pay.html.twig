@@ -1,0 +1,76 @@
+<script src="{{ asset('bundles/rjcheckout/js/PayAnything.js') }}"></script>
+{% form_theme payAnythingPaymentType 'RjCoreBundle::form.html.twig' %}
+
+<div id="pay-anything-cancel-popup" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'checkout.payment.cancel.title' | trans() }}</h1>
+    <div class="clearfix col-box">
+        <div class="attention-box pie-el">
+            {{ 'checkout.payment.cancel.text' | trans() }}
+        </div>
+        <div class="row-20"></div>
+        <div class="footer-button-box">
+            <a class="button" data-bind="attr: { href: cancelUrl }" style="display: inline-block;">
+                <span>{{ 'checkout.payment.cancel.yes' | trans() }}</span>
+            </a>
+            <button data-bind="click: cancelClose" class="button grey buttonFix">
+                <span>{{ 'checkout.payment.cancel.no' | trans() }}</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="pay-anything-popup" class="pricing-popup dashboard-popup properties-popup payments-popup verify-min">
+    <h1 data-bind="visible: !payment.id()">{{ 'pay_anything_popup.title' | trans }}</h1>
+    <h1 data-bind="visible: payment.id()">{{ 'pay_anything_popup.title.edit' | trans }}</h1>
+    <div class="clearfix col-box attention-container">
+
+        <ul class="steps clearfix">
+            <li class="step1" data-bind="css: { 'active': 'details' == step(), check: isPassed('details') }">
+                <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
+            </li>
+            <li class="step2" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
+                <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
+            </li>
+            <li class="step3" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
+                <span class="step"><span>{{ 'pay_popup.step.4' | trans }}</span></span>
+            </li>
+        </ul>
+
+        <div class="attention-box pie-el" style="display: none">
+            <h3>{{ 'pay_popup.errors.title' | trans }}</h3>
+            <ul class="default">
+            </ul>
+        </div>
+
+        <div class="information-box pie-el" data-bind="visible: infoMessage() != null && ('details' == step() || 'pay' == step()), text: infoMessage()">
+        </div>
+
+        <div class="col" data-bind="visible: 'details' == step()">
+            {% include 'RjCheckoutBundle:PayAnything:_step-1-details.html.twig' %}
+        </div>
+
+        <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
+            {% include 'RjCheckoutBundle:PayAnything:_step-2-source.html.twig' %}
+        </div>
+
+        <div data-bind="visible: 'pay' == step() || 'finish' == step()" class="pay-step">
+            {% include 'RjCheckoutBundle:PayAnything:_step-3-pay.html.twig' %}
+        </div>
+    </div>
+
+    <div class="footer-button-box">
+        <button class="button grey fixed" data-bind="visible: 'details' != step() && 'finish' != step(), click: previous">
+            <span>{{ 'pay_popup.step.previous' | trans }}</span>
+        </button>
+        <button class="button fixed" data-bind="visible: 'pay' != step() && 'finish' != step(), click: next">
+            <span>{{ 'pay_popup.step.next' | trans }}</span>
+        </button>
+        <button class="button" data-bind="visible: 'pay' == step(), click: next">
+            <span>{{ 'checkout.make_payment' | trans }}</span>
+        </button>
+        <button class="button" data-bind="visible: 'finish' == step(), click: next">
+            <span>{{ 'pay_popup.close' | trans }}</span>
+        </button>
+        {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': false}) }}
+    </div>
+</div>

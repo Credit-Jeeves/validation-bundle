@@ -2,6 +2,18 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="application_fee">
+                <source>Application fee</source>
+                <target>Application Fee</target>
+            </trans-unit>
+            <trans-unit id="rent">
+                <source>Rent</source>
+                <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="security_deposit">
+                <source>Security deposit</source>
+                <target>Security Deposit</target>
+            </trans-unit>
             <trans-unit id="pay_popup.title">
                 <source>pay_popup.title</source>
                 <target>Pay Rent</target>
@@ -50,6 +62,14 @@
                 <source>checkout.amount</source>
                 <target>Rent</target>
             </trans-unit>
+            <trans-unit id="checkout.pay_anything.amount">
+                <source>checkout.pay_anything.amount</source>
+                <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.payFor">
+                <source>checkout.pay_anything.payFor</source>
+                <target>Pay for</target>
+            </trans-unit>
             <trans-unit id="checkout.error.amount.empty">
                 <source>checkout.error.amount.empty</source>
                 <target>Rent amount is required.</target>
@@ -61,6 +81,14 @@
             <trans-unit id="checkout.error.amount.valid">
                 <source>checkout.error.amount.valid</source>
                 <target>Rent amount should be a valid number.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.amount.pay_anything.valid">
+                <source>checkout.error.amount.pay_anything.valid</source>
+                <target>Amount should be a valid number.</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.error.payFor.invalid">
+                <source>checkout.pay_anything.error.payFor.invalid</source>
+                <target>Pay for is required field.</target>
             </trans-unit>
             <trans-unit id="checkout.date">
                 <source>checkout.date</source>
@@ -345,6 +373,14 @@
                 <source>checkout.payment.save</source>
                 <target>Save this payment information for later</target>
             </trans-unit>
+            <trans-unit id="checkout.pay_anything.payment.cancel">
+                <source>checkout.pay_anything.payment.cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.payment.scheduled.text">
+                <source>checkout.pay_anything.payment.scheduled.text</source>
+                <target>%pay_for% Scheduled for %payment_date%</target>
+            </trans-unit>
             <trans-unit id="checkout.payment.save.help">
                 <source>checkout.payment.save.help</source>
                 <target>checkout.payment.save.help Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.</target>
@@ -562,6 +598,14 @@
             <trans-unit id="checkout.thankyou_message">
                 <source>checkout.thankyou_message</source>
                 <target>Thank you. Your rent payment is now set up.</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.thankyou_message">
+                <source>checkout.pay_anything.thankyou_message</source>
+                <target>Thank you. Your %PAY_FOR% payment is now set up.</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.fullPayTo">
+                <source>checkout.pay_anything.fullPayTo</source>
+                <target>Creation %PAY_FOR% payment for %FULL_PAY_TO%.</target>
             </trans-unit>
             <trans-unit id="checkout.one_time.info_message">
                 <source>checkout.one_time.info_message</source>
