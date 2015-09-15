@@ -85,6 +85,15 @@ class GroupSettingsType extends Base
             ]
         );
 
+        $builder->add(
+            'canPayAnything',
+            'checkbox',
+            [
+                'error_bubbling'    => true,
+                'required'          => false,
+            ]
+        );
+
         $dueDate = array();
         foreach (range(1, 31, 1) as $key => $value) {
             $dueDate[$value] = $value;
