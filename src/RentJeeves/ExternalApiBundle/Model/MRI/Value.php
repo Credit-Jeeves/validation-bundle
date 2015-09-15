@@ -183,12 +183,36 @@ class Value
      * @Serializer\Groups({"MRI-Response"})
      */
     protected $buildingAddress;
+
     /**
      * @Serializer\SerializedName("CurrentCharges")
      * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\MRI\CurrentCharges")
      * @Serializer\Groups({"MRI-Response"})
      */
     protected $currentCharges;
+
+    /**
+     * @Serializer\SerializedName("Residents")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\MRI\Residents")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $residents;
+
+    /**
+     * @return Residents Residents
+     */
+    public function getResidents()
+    {
+        return $this->residents;
+    }
+
+    /**
+     * @param Residents $residents
+     */
+    public function setResidents(Residents $residents)
+    {
+        $this->residents = $residents;
+    }
 
     /**
      * @return CurrentCharges

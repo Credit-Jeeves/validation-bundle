@@ -96,4 +96,33 @@ class ResidentDataManager
 
         return $mriResponse->getValues();
     }
+
+    /**
+     * @param string $nextPageLink
+     * @return array
+     */
+    public function getResidentsRentRollByNextPageLink($nextPageLink)
+    {
+        $this->logger->debug(sprintf('Get MRI Residents RentRoll by page:%s', $nextPageLink));
+        $mriResponse = $this->client->getResidentialRentRollByNextPageLink($nextPageLink);
+
+        $this->setNextPageLink($mriResponse->getNextPageLink());
+
+        return $mriResponse->getValues();
+    }
+
+    /**
+     * @param string $externalPropertyId
+     * @return array
+     */
+    public function getResidentsRentRoll($externalPropertyId)
+    {
+        $this->logger->debug(sprintf('Get MRI Residents RentRoll by external property ID:%s', $externalPropertyId));
+        $mriResponse = $this->client->getResidentialRentRoll($externalPropertyId);
+
+        $this->setNextPageLink($mriResponse->getNextPageLink());
+
+        return $mriResponse->getValues();
+    }
+
 }

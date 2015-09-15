@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\ExternalApiBundle\Model\MRI\Charge;
+use RentJeeves\ExternalApiBundle\Model\MRI\Resident;
 use RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
@@ -177,7 +178,15 @@ class MRIClientCase extends Base
         $this->assertNotEmptyWithMessage($charge->getChargeCode(), 'ChargeCode for charge');
         $this->assertNotEmptyWithMessage($charge->getEffectiveDate(), 'EffectiveDate for charge');
         $this->assertNotEmptyWithMessage($charge->getPropertyId(), 'PropertyId for charge');
-
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\MRI\Residents',
+            $residents = $value->getResidents()
+        );
+        $residentsArray = $residents->getResidentArray();
+        /** @var Resident $resident */
+        $resident = reset($residentsArray);
+        $this->assertNotEmptyWithMessage($resident->getResidentId(), 'ResidentId for resident');
+        $this->assertNotEmptyWithMessage($resident->getResidentStatus(), 'Status for resident');
         $this->assertNotEmptyWithMessage(
             $nextPageLink = $mriResponse->getNextPageLink(),
             'Next page link for ResidentRentRoll'

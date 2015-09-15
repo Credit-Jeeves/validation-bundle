@@ -258,4 +258,28 @@ class Charge
     {
         $this->unitId = $unitId;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateTimeEffectiveDate()
+    {
+        if (emty($this->effectiveDate)) {
+            return null;
+        }
+
+        return \DateTime::createFromFormat(Value::DATE_FORMAT, $this->leaseBeginDate);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateTimeEndDate()
+    {
+        if (emty($this->endDate)) {
+            return null;
+        }
+
+        return \DateTime::createFromFormat(Value::DATE_FORMAT, $this->endDate);
+    }
 }

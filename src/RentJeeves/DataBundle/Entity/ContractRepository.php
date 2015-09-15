@@ -1317,4 +1317,34 @@ class ContractRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     * @param string $externalUnitId
+     *
+     * @return Contract[]
+     */
+    public function findContractsByPropertyMappingAndExternalUnitId
+    (
+        PropertyMapping $propertyMapping,
+        $externalUnitId
+    ) {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.unit', 'u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyMapping', 'pm', Expr\Join::WITH, 'c.holding = pm.holding')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.externalPropertyId = :propertyId')
+            ->andWhere('c.holding = pm.holding')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('propertyId', $propertyMapping->getExternalPropertyId())
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->getQuery()
+            ->execute();
+    }
 }
