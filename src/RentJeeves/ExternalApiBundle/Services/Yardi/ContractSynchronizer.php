@@ -134,7 +134,7 @@ class ContractSynchronizer
      */
     protected function updateContractsRentForPropertyMapping(PropertyMapping $propertyMapping)
     {
-        /** @var $residentClient ResidentTransactionsClient */
+        /** @var ResidentTransactionsClient $residentClient */
         $residentClient = $this->clientFactory->getClient(
             $propertyMapping->getHolding()->getYardiSettings(),
             SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS
@@ -212,20 +212,28 @@ class ContractSynchronizer
             $amount += $charge->getDetail()->getAmount();
         }
 
-        if (empty($residentId) || empty($unitName) || $amount === 0) {
+        if (empty($residentId) || empty($unitName)) {
             return;
         }
 
         $contract = $this->getContract($propertyMapping, $residentId, $unitName);
 
         if (empty($contract)) {
-            $this->logger->info(' Yardi sync Recurring Charge: empty contract.');
+            $this->logger->info('Yardi sync Recurring Charge: empty contract.');
 
             return;
         }
 
+        if ($amount === 0) {
+            $this->logger->error(
+                sprintf(
+                    'Yardi sync Recurring Charge: ERROR: sum of RecurringCharges for contract#%d = 0',
+                    $contract->getId()
+                )
+            );
+        }
+
         $contract->setRent($amount);
-        $this->em->persist($contract);
     }
 
     /**
