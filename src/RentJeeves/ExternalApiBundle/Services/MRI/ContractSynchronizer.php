@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 
-class ResidentBalanceSynchronizer
+class ContractSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
 
@@ -44,7 +44,7 @@ class ResidentBalanceSynchronizer
     /**
      * Execute synchronization balance
      */
-    public function run()
+    public function syncBalance()
     {
         try {
             $holdings = $this->getHoldings();

@@ -23,7 +23,7 @@ class MRISyncBalanceCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getContainer()
-            ->get('mri.resident_balance_sync')
-            ->run();
+            ->get('mri.contract_sync')
+            ->syncBalance();
     }
 }
