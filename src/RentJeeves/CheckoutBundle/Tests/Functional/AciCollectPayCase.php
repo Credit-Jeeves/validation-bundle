@@ -254,13 +254,15 @@ class AciCollectPayCase extends BaseTestCase
         );
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        $startDate = new \DateTime();
+        $startDate->modify('+1 day');
 
         $this->fillForm(
             $form,
             [
                 'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
-                'rentjeeves_checkoutbundle_paymenttype_start_date' => date('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => $startDate->format('n/j/Y'),
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
             ]
         );
