@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class PublicControllerCase extends BaseTestCase
@@ -135,5 +137,95 @@ class PublicControllerCase extends BaseTestCase
         $this->getEntityManager()->refresh($user);
         $this->assertFalse($user->getEmailNotification(), 'Email notification should be false after UnsubscribePage.');
         $this->assertFalse($user->getOfferNotification(), 'Offer notification should be false after UnsubscribePage.');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldFilterPropertiesByHoldingIfHoldingIsSpecified()
+    {
+        $this->load(true);
+        $this->setDefaultSession('goutte');
+        $em = $this->getEntityManager();
+
+        /** @var Holding $holdingFirst */
+        $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(['name' => 'Rent Holding']);
+
+        /** @var Holding $holdingSecond */
+        $holdingSecond = $em->getRepository('DataBundle:Holding')->findOneBy(['name' => 'Estate Holding']);
+
+        $this->assertNotNull($holdingFirst, 'Rent Holding not found');
+        $this->assertNotNull($holdingSecond, 'Estate Holding not found');
+
+        $link1 = sprintf(
+            '%suser/new/%d/holding',
+            $this->getUrl(),
+            $holdingFirst->getId()
+        );
+
+        $link2 = sprintf(
+            '%suser/new/%d/holding',
+            $this->getUrl(),
+            $holdingSecond->getId()
+        );
+
+        $this->session->visit($link1);
+        $this->assertNotNull(
+            $thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'),
+            'ThisIsMyRental not found for Rent Holding'
+        );
+        $this->assertEquals(5, count($thisIsMyRental), 'Wrong count of rental property for Rent Holding');
+
+        $this->session->visit($link2);
+        $this->assertNotNull(
+            $thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'),
+            'ThisIsMyRental not found for Estate Holding'
+        );
+        $this->assertEquals(1, count($thisIsMyRental), 'Wrong count of rental property for Estate Holding');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldFilterPropertiesByGroupIfGroupIsSpecified()
+    {
+        $this->load(true);
+        $this->setDefaultSession('goutte');
+        $em = $this->getEntityManager();
+
+        /** @var Group $groupFirst */
+        $groupFirst = $em->find('DataBundle:Group', 24);
+
+        /** @var Group $groupSecond */
+        $groupSecond = $em->find('DataBundle:Group', 26);
+
+        $this->assertNotNull($groupFirst, 'Group #24 not found');
+        $this->assertNotNull($groupSecond, 'Group #26 not found');
+
+        $link1 = sprintf(
+            '%suser/new/%d/group',
+            $this->getUrl(),
+            $groupFirst->getId()
+        );
+
+        $link2 = sprintf(
+            '%suser/new/%d/group',
+            $this->getUrl(),
+            $groupSecond->getId()
+        );
+
+        $this->session->visit($link1);
+        $this->assertNotNull(
+            $thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'),
+            'ThisIsMyRental not found for Group #24'
+        );
+        $this->assertEquals(19, count($thisIsMyRental), 'Wrong count of rental property for Group #24');
+
+        $this->session->visit($link2);
+        $this->assertNotNull(
+            $thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'),
+            'ThisIsMyRental not found for Group #26'
+        );
+        $this->assertEquals(1, count($thisIsMyRental), 'Wrong count of rental property for Group #26');
     }
 }

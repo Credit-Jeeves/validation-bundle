@@ -908,6 +908,7 @@ class Order extends Base
             if (substr_count($externalUnitId, '|') !== 2) {
                 throw new \RuntimeException($exceptionMessage);
             }
+
             list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
             if (empty($propertyId) || empty($buildingId) || empty($unitId)) {
                 throw new \RuntimeException($exceptionMessage);

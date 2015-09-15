@@ -15,9 +15,11 @@ use RentJeeves\PublicBundle\Form\InviteTenantType;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\PublicBundle\Form\TenantType;
 use CreditJeeves\DataBundle\Enum\UserType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Process\Exception\LogicException;
 
 class PublicController extends Controller
@@ -25,6 +27,8 @@ class PublicController extends Controller
     const TYPE_PROPERTY = 'property';
 
     const TYPE_HOLDING = 'holding';
+
+    const TYPE_GROUP = 'group';
 
     /**
      * @Route("/iframe", name="iframe")
@@ -127,7 +131,7 @@ class PublicController extends Controller
                 $propertyProcess->saveToGoogle($property);
             }
 
-            return $this->redirect($this->generateUrl("iframe_new", array('id' => $propertyId)));
+            return $this->redirectToRoute('iframe_new_property', ['id' => $propertyId]);
         }
 
         return $this->redirect($this->generateUrl("iframe_invite", array('propertyId' => $propertyId)));
@@ -197,15 +201,39 @@ class PublicController extends Controller
      *      },
      *      options={"expose"=true}
      * )
-     * @Template()
-     *
-     * @return array
      */
-    public function newAction($id, $type, Request $request)
+    public function newAction($id, $type)
     {
-        if (false === in_array($type, [self::TYPE_HOLDING, self::TYPE_PROPERTY])) {
+        if (false === in_array($type, [self::TYPE_HOLDING, self::TYPE_PROPERTY, self::TYPE_GROUP])) {
             return $this->createNotFoundException(sprintf('Undefined type "%s"', $type));
         }
+
+        if (self::TYPE_GROUP === $type) {
+            return $this->forward('RjPublicBundle:Public:newWithGroup', ['id' => $id]);
+        }
+
+        if (self::TYPE_HOLDING === $type) {
+            return $this->forward('RjPublicBundle:Public:newWithHolding', ['id' => $id]);
+        }
+
+        return $this->forward('RjPublicBundle:Public:newWithProperty', ['id' => $id]);
+    }
+
+    /**
+     * @param int     $id
+     * @param Request $request
+     *
+     * @Route(
+     *      "/user/new/{id}/property",
+     *      name="iframe_new_property",
+     *      defaults={
+     *          "id"=null
+     *      },
+     *      options={"expose"=true}
+     * )
+     */
+    public function newWithPropertyAction($id, Request $request)
+    {
         /** @var Session $session */
         $session = $request->getSession();
         $em = $this->getEntityManager();
@@ -255,48 +283,15 @@ class PublicController extends Controller
                     $tenant->setLastName($contracts[0]->getLastName());
                 } else {
                     $holdingPropertyList = $em->getRepository('RjDataBundle:Property')
-                        ->findByHoldingAndAlphaNumericSort($holding);
+                        ->findByHoldingOrderedByAddress($holding);
                 }
             }
-        }
-
-        $google = $this->get('google');
-
-        if (self::TYPE_PROPERTY === $type) {
-            $property = $em->getRepository('RjDataBundle:Property')->findOneWithUnitAndAlphaNumericSort($id);
-        } else {
-            $holding = $em->getRepository("DataBundle:Holding")->find($id);
         }
 
         $form = $this->createForm($tenantType = new TenantType($em), $tenant);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $password = $form->get('password')->getData();
-            /** @var $tenant Tenant */
-            $tenant = $form->getData();
-            $password = $this->container->get('user.security.encoder.digest')
-                ->encodePassword($password, $tenant->getSalt());
-            $tenant->setPassword($password);
-            $tenant->setCulture($this->container->getParameter('kernel.default_locale'));
-            /** @var Unit $unit */
-            $unit = $form->get('unit')->getData();
-            $propertyIdForm = $form->get('propertyId')->getData();
-            /** @var Property $propertyForm */
-            $propertyForm = $em->getRepository('RjDataBundle:Property')
-                ->findOneWithUnitAndAlphaNumericSort($propertyIdForm);
-
-            $em->persist($tenant);
-            $em->flush();
-            /** @var ContractProcess $contractProcess */
-            $contractProcess = $this->get('contract.process');
-            $contractProcess->createContractFromTenantSide(
-                $tenant,
-                $propertyForm,
-                $unit->getActualName(),
-                $tenantType->getWaitingContract()
-            );
-
-            $this->get('project.mailer')->sendRjCheckEmail($tenant);
+            $tenant = $this->processNewTenantForm($form, $tenantType);
 
             $session->remove('holding_id');
             $session->remove('resident_id');
@@ -305,25 +300,21 @@ class PublicController extends Controller
         }
 
         $propertyList = [];
+        $property = $em->getRepository('RjDataBundle:Property')->findOneWithUnitAndAlphaNumericSort($id);
+        if (null !== $property) {
+            $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
 
-        if (self::TYPE_PROPERTY === $type && $property) {
-            $propertyList = $google->searchPropertyInRadius($property);
+            if ($countGroup === 0) {
+                return $this->redirectToRoute('iframe_invite', ['propertyId' => $id]);
+            }
+
+            $propertyList = $this->get('google')->searchPropertyInRadius($property);
 
             if (isset($propertyList[$property->getId()])) {
                 unset($propertyList[$property->getId()]);
             }
 
             $propertyList = array_merge([$property], $propertyList);
-
-            $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
-
-            if ($countGroup === 0) {
-                return $this->redirectToRoute('iframe_invite', ['propertyId' => $id]);
-            }
-        }
-
-        if (self::TYPE_HOLDING === $type && $holding) {
-            $propertyList = $em->getRepository('RjDataBundle:Property')->findByHoldingAndAlphaNumericSort($holding);
         }
 
         if (true === isset($holdingPropertyList)) {
@@ -336,7 +327,7 @@ class PublicController extends Controller
             'propertyList' => $propertyList,
             'countPropery' => count($propertyList),
             'id' => $id,
-            'type' => $type,
+            'type' => self::TYPE_PROPERTY,
         ];
 
         if (true === isset($contractProperties) && count($contractProperties) > 0) {
@@ -346,7 +337,118 @@ class PublicController extends Controller
             $parameters['contractUnits'] = $contractUnits;
         }
 
-        return $parameters;
+        return $this->render('RjPublicBundle:Public:new.html.twig', $parameters);
+    }
+
+    /**
+     * @param int     $id
+     * @param Request $request
+     *
+     * @Route(
+     *      "/user/new/{id}/holding",
+     *      name="iframe_new_holding",
+     *      options={"expose"=true}
+     * )
+     */
+    public function newWithHoldingAction($id, Request $request)
+    {
+        $em = $this->getEntityManager();
+        if (null === $holding = $em->getRepository('DataBundle:Holding')->find($id)) {
+            $this->createNotFoundException('Holding not found');
+        }
+
+        $form = $this->createForm($tenantType = new TenantType($em));
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $tenant = $this->processNewTenantForm($form, $tenantType);
+
+            return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
+        }
+
+        $propertyList = $em->getRepository('RjDataBundle:Property')->findByHoldingOrderedByAddress($holding);
+
+        return $this->render('RjPublicBundle:Public:new.html.twig', [
+            'form' => $form->createView(),
+            'property' => new Property(),
+            'propertyList' => $propertyList,
+            'countPropery' => count($propertyList),
+            'id' => $id,
+            'type' => self::TYPE_HOLDING,
+        ]);
+    }
+
+    /**
+     * @param int     $id
+     * @param Request $request
+     *
+     * @Route(
+     *      "/user/new/{id}/group",
+     *      name="iframe_new_group",
+     *      options={"expose"=true}
+     * )
+     */
+    public function newWithGroupAction($id, Request $request)
+    {
+        $em = $this->getEntityManager();
+        if (null === $group = $em->getRepository('DataBundle:Group')->find($id)) {
+            $this->createNotFoundException('Group not found');
+        }
+
+        $form = $this->createForm($tenantType = new TenantType($em));
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $tenant = $this->processNewTenantForm($form, $tenantType);
+
+            return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
+        }
+
+        $propertyList = $em->getRepository('RjDataBundle:Property')->getAllPropertiesInGroupOrderedByAddress($group);
+
+        return $this->render('RjPublicBundle:Public:new.html.twig', [
+            'form' => $form->createView(),
+            'property' => new Property(),
+            'propertyList' => $propertyList,
+            'countPropery' => count($propertyList),
+            'id' => $id,
+            'type' => self::TYPE_GROUP,
+        ]);
+    }
+
+    /**
+     * @param FormInterface $form
+     * @param TenantType $tenantType
+     * @return Tenant
+     */
+    protected function processNewTenantForm(FormInterface $form, TenantType $tenantType)
+    {
+        $password = $form->get('password')->getData();
+        /** @var Tenant $tenant */
+        $tenant = $form->getData();
+        $password = $this->container->get('user.security.encoder.digest')
+            ->encodePassword($password, $tenant->getSalt());
+        $tenant->setPassword($password);
+        $tenant->setCulture($this->container->getParameter('kernel.default_locale'));
+        $em = $this->getEntityManager();
+        $em->persist($tenant);
+        $em->flush($tenant);
+        /** @var Unit $unit */
+        $unit = $form->get('unit')->getData();
+        /** @var Property $property */
+        $property = $em->getRepository('RjDataBundle:Property')
+            ->findOneWithUnitAndAlphaNumericSort($form->get('propertyId')->getData());
+
+        /** @var ContractProcess $contractProcess */
+        $contractProcess = $this->get('contract.process');
+        $contractProcess->createContractFromTenantSide(
+            $tenant,
+            $property,
+            $unit->getActualName(),
+            $tenantType->getWaitingContract()
+        );
+
+        $this->get('project.mailer')->sendRjCheckEmail($tenant);
+
+        return $tenant;
     }
 
     /**
