@@ -101,8 +101,8 @@ class UnitMapperCase extends AbstractMapperCase
             ],
             [
                 [
-                    'unitid' => '',
-                    'unitnumber' => 'testUnitNumber',
+                    'unitid' => 'testUnitID',
+                    'unitnumber' => '',
                     'streetaddress' => '50 Orange Street',
                     'city_name' => 'Brooklyn',
                     'state_name' => 'NY',
@@ -141,6 +141,8 @@ class UnitMapperCase extends AbstractMapperCase
         $this->assertEquals('US', $property->getCountry());
         $this->assertEquals('Brooklyn', $property->getDistrict());
         $this->assertTrue($group->getGroupProperties()->contains($property));
+
+        $this->assertEquals('testUnitID', $unit->getUnitMapping()->getExternalUnitId());
     }
 
     /**

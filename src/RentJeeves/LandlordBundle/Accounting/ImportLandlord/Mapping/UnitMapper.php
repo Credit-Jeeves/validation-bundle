@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\DuplicatedUnitException;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException;
 
@@ -56,23 +57,76 @@ class UnitMapper extends AbstractMapper
 
     /**
      * @return Unit
+     *
+     * @throws MappingException
      */
     protected function createUnit()
     {
-        if (true === $this->isSingleProperty()) {
+        $unitNumber = $this->get('unitnumber');
+        if (true === empty($unitNumber)) {
+            $newUnit = $this->createSinglePropertyUnit();
+        } else {
             $property = $this->getOrCreateProperty();
-            $property->addPropertyGroup($this->getGroup());
+            if ($property->getId() !== null && $property->isSingle()) {
+                throw new MappingException(
+                    sprintf(
+                        '[Mapping] : We can`t create new Unit for single Property#%d',
+                        $property->getId()
+                    )
+                );
+            }
 
-            return $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+            $newUnit = new Unit();
+            $newUnit->setGroup($this->getGroup());
+            $newUnit->setHolding($this->getGroup()->getHolding());
+            $newUnit->setName($this->get('unitnumber'));
+            $newUnit->setProperty($property);
         }
 
-        $newUnit = new Unit();
-        $newUnit->setGroup($this->getGroup());
-        $newUnit->setHolding($this->getGroup()->getHolding());
-        $newUnit->setName($this->get('unitnumber'));
-        $newUnit->setProperty($this->getOrCreateProperty());
+        $newUnit->setUnitMapping($this->createUnitMapping($newUnit));
 
         return $newUnit;
+    }
+
+    /**
+     * @return Unit
+     *
+     * @throws MappingException
+     */
+    protected function createSinglePropertyUnit()
+    {
+        $property = $this->getOrCreateProperty();
+        if ($property->getId() !== null) {
+            throw new MappingException(
+                sprintf(
+                    '[Mapping] : We can`t create one more SinglePropertyUnit for existing Property#%d',
+                    $property->getId()
+                )
+            );
+        }
+        $property->addPropertyGroup($this->getGroup()); // for correct work propertyProcess
+
+        try {
+            $newUnit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+        } catch (\RuntimeException $e) {
+            throw new MappingException(sprintf('[Mapping] : %s', $e->getMessage()));
+        }
+
+        return $newUnit;
+    }
+
+    /**
+     * @param Unit $unit
+     *
+     * @return UnitMapping
+     */
+    protected function createUnitMapping(Unit $unit)
+    {
+        $newUnitMapping = new UnitMapping();
+        $newUnitMapping->setExternalUnitId($this->get('unitid'));
+        $newUnitMapping->setUnit($unit);
+
+        return $newUnitMapping;
     }
 
     /**
@@ -94,16 +148,6 @@ class UnitMapper extends AbstractMapper
         }
 
         return $property;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isSingleProperty()
-    {
-        $unitId = $this->get('unitid');
-
-        return empty($unitId);
     }
 
     /**
