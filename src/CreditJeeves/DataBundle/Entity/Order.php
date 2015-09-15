@@ -905,12 +905,11 @@ class Order extends Base
                 $this->getId(),
                 $externalUnitId
             );
-            if (substr_count($externalUnitId, '|') !== 2 &&
-                list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId)) {
+            if (substr_count($externalUnitId, '|') !== 2) {
                 throw new \RuntimeException($exceptionMessage);
             }
-
-            if (!($propertyId && $buildingId && $unitId)) {
+            list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
+            if (empty($propertyId) || empty($buildingId) || empty($unitId)) {
                 throw new \RuntimeException($exceptionMessage);
             }
 

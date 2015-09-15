@@ -567,4 +567,49 @@ class OrderRepository extends EntityRepository
 
         return $query->getQuery()->execute();
     }
+
+    /**
+     * @return Order[]
+     */
+    public function findOrdersForChurnRecapture()
+    {
+        $currentDate = new \DateTime();
+
+        $forMinus2month = clone $currentDate;
+        $minus2month = $forMinus2month->modify('-2 month');
+
+        $forMinus1month = clone $currentDate;
+        $minus1month = $forMinus1month->modify('-1 month');
+
+        $subQuery = '
+          SELECT o2
+          FROM DataBundle:Order o2
+          WHERE o2.cj_applicant_id = o.cj_applicant_id
+          AND o2.status IN (:statuses)
+          AND o2.paymentType in (:paymentTypes)
+          AND o2.fee IS NOT NULL
+          AND o2.sum > 3
+          AND o2.created_at >= :minus1month AND o2.created_at < :currentDate
+        ';
+
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.operations', 'op')
+            ->innerJoin('op.contract', 'c')
+            ->where('o.status in (:statuses)')
+            ->where('o.sum > 3')
+            ->andWhere('o.paymentType in (:paymentTypes)')
+            ->andWhere('o.fee IS NOT NULL')
+            ->andWhere('o.created_at >= :minus2month AND o.created_at < :minus1month')
+            ->andWhere('c.finishAt > :currentDate')
+            ->andWhere(sprintf('NOT EXISTS (%s)', $subQuery))
+            ->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::PENDING])
+            ->setParameter('paymentTypes', [OrderPaymentType::BANK, OrderPaymentType::CARD])
+            ->setParameter('currentDate', $currentDate)
+            ->setParameter('minus2month', $minus2month)
+            ->setParameter('minus1month', $minus1month)
+            ->groupBy('o.cj_applicant_id')// need 1 order for 1 tenant
+            ->orderBy('o.created_at', 'DESC')// need Order with max created_at
+            ->getQuery()
+            ->getResult();
+    }
 }

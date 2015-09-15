@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SendSecondChanceEmailCommand extends ContainerAwareCommand
+class SendChurnRecaptureEmailCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
@@ -14,8 +14,11 @@ class SendSecondChanceEmailCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('email:second_chance')
-            ->setDescription('Send email to people, which we want invite but who did not make a payment');
+            ->setName('email:churn_recapture')
+            ->setDescription(
+                'run once per month, and look for people who did not pay the previous month,
+                but did pay two months before (and who still have active leases)'
+            );
     }
 
     /**
@@ -24,7 +27,7 @@ class SendSecondChanceEmailCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $em = $this->getEm();
-        $data = $em->getRepository('RjDataBundle:Contract')->findContractsForSecondChance();
+        $data = $em->getRepository('DataBundle:Order')->findOrdersForChurnRecapture();
 
         if (empty($data)) {
             $output->writeln('Contracts not found.');
@@ -32,12 +35,12 @@ class SendSecondChanceEmailCommand extends ContainerAwareCommand
             return;
         }
 
-        foreach ($data as $contract) {
-            $result = $this->getMailer()->sendSecondChanceForContract($contract);
+        foreach ($data as $order) {
+            $result = $this->getMailer()->sendChurnRecaptureForOrder($order);
             $output->writeln(sprintf(
-                'Email for Tenant#%d with Contract#%d %ssent.',
-                $contract->getTenant()->getId(),
-                $contract->getId(),
+                'Email for User#%d and Order#%d %ssent.',
+                $order->getUser()->getId(),
+                $order->getId(),
                 $result === false ? 'not ' : ''
             ));
         }
