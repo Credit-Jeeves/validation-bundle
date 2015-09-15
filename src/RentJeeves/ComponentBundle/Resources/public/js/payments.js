@@ -148,12 +148,17 @@ function Payments() {
   };
 
   this.getTenantWithDepositTitle = function(order) {
-      var title = order.tenant;
-      if (order.depositType.length > 0 && order.depositType.toLowerCase() != 'rent') {
-          title += ' (paid for ' + order.depositType + ')';
+      if (order.depositType.length == 0 || order.depositType.toLowerCase() == 'rent') {
+          return order.tenant;
       }
 
-      return title;
+      return Translator.trans(
+          'landlord.dashboard.additional_paid_for',
+          {
+            'paid_for': Translator.trans(order.depositType),
+            'tenant' : order.tenant
+          }
+      );
   };
 
   this.getOrderAmount = function(isDeposit, order) {
