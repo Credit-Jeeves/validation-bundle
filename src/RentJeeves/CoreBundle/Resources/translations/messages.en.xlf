@@ -1084,7 +1084,11 @@
             </trans-unit>
             <trans-unit id="contract.pay">
                 <source>contract.pay</source>
-                <target>Make a Payment</target>
+                <target>Pay Rent</target>
+            </trans-unit>
+            <trans-unit id="contract.pay_anything">
+                <source>contract.pay_anything</source>
+                <target>Pay Something Else</target>
             </trans-unit>
             <trans-unit id="contract.paid.cash">
                 <source>contract.paid.cash</source>
@@ -1104,7 +1108,7 @@
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
-                <target>Edit Payment</target>
+                <target>Edit Rent Payment</target>
             </trans-unit>
             <trans-unit id="contract.pay.source">
                 <source>contract.pay.source</source>
@@ -1590,7 +1594,7 @@
             </trans-unit>
             <trans-unit id="contract.status.invite.text">
                 <source>contract.status.invite.text</source>
-                <target>No Payment Scheduled</target>
+                <target>No Rent Payment Scheduled</target>
             </trans-unit>
             <trans-unit id="contract.status.approved">
                 <source>contract.status.approved</source>
@@ -1610,11 +1614,11 @@
             </trans-unit>
             <trans-unit id="contract.status.current.text">
                 <source>contract.status.current.text</source>
-                <target>No Payment Scheduled</target>
+                <target>No Rent Payment Scheduled</target>
             </trans-unit>
             <trans-unit id="contract.status.approved.text">
                 <source>contract.status.approved.text</source>
-                <target>No Payment Scheduled</target>
+                <target>No Rent Payment Scheduled</target>
             </trans-unit>
             <trans-unit id="contract.status.one_time.text">
                 <source>contract.status.one_time.text</source>
@@ -3121,6 +3125,10 @@
                 <source>landlord_dashboard.payment.title</source>
                 <target>Charged: %created%. Deposited: %sent%</target>
             </trans-unit>
+            <trans-unit id="landlord.dashboard.additional_paid_for">
+                <source>landlord.dashboard.additional_paid_for</source>
+                <target>%tenant% (paid for %paid_for%)</target>
+            </trans-unit>
             <trans-unit id="landlord.payments_list.show_external_payments">
                 <source>landlord.payments_list.show_external_payments</source>
                 <target>Show External Payments</target>
@@ -3236,6 +3244,10 @@
             <trans-unit id="deposits.deposit_type">
                 <source>deposits.deposit_type</source>
                 <target>For</target>
+            </trans-unit>
+            <trans-unit id="pay_anything_popup.title">
+                <source>pay_anything_popup.title</source>
+                <target>Pay Something Else</target>
             </trans-unit>
         </body>
     </file>

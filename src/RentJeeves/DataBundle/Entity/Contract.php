@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
@@ -196,26 +197,6 @@ class Contract extends Base
         }
 
         return $holdingName;
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("payment")
-     * @Serializer\Type("RentJeeves\DataBundle\Entity\Payment")
-     * @Serializer\Groups({"payRent"})
-     *
-     * @return Payment
-     */
-    public function getNotClosedPayment()
-    {
-        /** @var Payment $payment */
-        if (($payments = $this->getPayments()) && ($payment = $payments->last())) {
-            if (PaymentStatus::CLOSE != $payment->getStatus()) {
-                return $payment;
-            }
-        }
-
-        return null;
     }
 
     public function isDeniedOnExternalApi()
@@ -711,7 +692,7 @@ class Contract extends Base
             }
         }
 
-        if ($payment = $this->getNotClosedPayment()) {
+        if ($payment = $this->getActivePayment()) {
             $result['isPayment'] = true;
             $result['payment_type'] = $payment->getType();
             $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
@@ -721,6 +702,20 @@ class Contract extends Base
             if (10 < strlen($result['row_payment_source'])) {
                 $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10).'...';
                 $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
+            }
+        }
+
+        $result['hasNoRentPayments'] = false;
+
+        if ($payments = $this->getActiveNotRentPayments() and !$payments->isEmpty()) {
+            $result['hasNoRentPayments'] = true;
+            foreach ($payments as $payment) {
+                $paymentsResult['amount'] = $payment->getAmount();
+                $paymentsResult['scheduled_date'] = $payment->getNextPaymentDate()->format('m/d/Y');
+                $paymentsResult['pay_for'] = DepositAccountType::title($payment->getDepositAccount()->getType());
+                $paymentsResult['id'] = $payment->getId();
+
+                $result['noRentPayments'][] = $paymentsResult;
             }
         }
 
@@ -739,6 +734,8 @@ class Contract extends Base
         $result['isDeniedOnExternalApi'] = $this->isDeniedOnExternalApi();
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
+        $result['is_allowed_to_pay_anything'] =
+            ($groupSettings->getCanPayAnything() && !$this->getGroup()->getNotRentDepositAccounts()->isEmpty());
         // display only integrated balance
         $result['balance'] = $isIntegrated ? sprintf('$%s', $this->getIntegratedBalance()) : '';
         $result['in_day_range'] = DayRangeValidator::inRange(
@@ -839,13 +836,20 @@ class Contract extends Base
     /**
      * @throws RuntimeException
      *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("payment")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\Payment")
+     * @Serializer\Groups({"payRent"})
+     *
      * @return Payment
      */
     public function getActivePayment()
     {
         $collection = $this->getPayments()->filter(
             function (Payment $payment) {
-                if (PaymentStatus::ACTIVE == $payment->getStatus()) {
+                if (PaymentStatus::ACTIVE === $payment->getStatus() &&
+                    DepositAccountType::RENT === $payment->getDepositAccount()->getType()
+                ) {
                     return true;
                 }
 
@@ -860,6 +864,24 @@ class Contract extends Base
         }
 
         return $collection->first();
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|Payment[]
+     */
+    public function getActiveNotRentPayments()
+    {
+        return $this->getPayments()->filter(
+            function (Payment $payment) {
+                if (PaymentStatus::ACTIVE === $payment->getStatus() &&
+                    DepositAccountType::RENT !== $payment->getDepositAccount()->getType()
+                ) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
     }
 
     /**

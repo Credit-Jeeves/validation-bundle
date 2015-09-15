@@ -563,3 +563,7 @@ ul.error_list {
 .linkselect-link {
     line-height: 20px;
 }
+
+.no-rent-scheduled-payment {
+    padding-top: 3px;
+}

@@ -481,6 +481,29 @@ class Order extends Base
         return $operationCollection->last();
     }
 
+    /**
+     * @return Operation|null
+     */
+    public function getCustomOperation()
+    {
+        $operationCollection = $this->getOperations()
+            ->filter(
+                function (Operation $operation) {
+                    if (OperationType::CUSTOM == $operation->getType()) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            );
+
+        if ($operationCollection->isEmpty()) {
+            return null;
+        }
+
+        return $operationCollection->last();
+    }
+
     public function getRentAmount()
     {
         $result = 0;
@@ -496,6 +519,10 @@ class Order extends Base
         $result = 0;
         if ($this->getOtherOperation()) {
             $result = $this->getOtherOperation()->getAmount();
+        }
+
+        if ($this->getCustomOperation()) {
+            $result += $this->getCustomOperation()->getAmount();
         }
 
         return number_format($result, 2, '.', '');
@@ -624,6 +651,11 @@ class Order extends Base
         $result['rent'] = $this->getRentAmount();
         $result['other'] = $this->getOtherAmount();
         $result['total'] = $this->getTotalAmount();
+        $result['deposit_type'] = '';
+        if ($this->getDepositAccount()) {
+            $depositAccountType = DepositAccountType::title($this->getDepositAccount()->getType());
+            $result['deposit_type'] = $this->getCustomOperation() ? $depositAccountType : '';
+        }
         $result['type'] = $this->getOrderPaymentTypes();
 
         return $result;

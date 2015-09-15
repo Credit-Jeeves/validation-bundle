@@ -94,6 +94,24 @@
                                     {% else %}
                                         {{ contract.status | upper }}
                                     {% endif %}
+                                    {% if contract.hasNoRentPayments %}
+                                        {% for payment in contract.noRentPayments %}
+                                            <div class="no-rent-scheduled-payment">
+                                                <p>${{ payment.amount|number_format(2, '.', ',') }}</p>
+                                                {{
+                                                    'checkout.pay_anything.payment.scheduled.text' |
+                                                    trans({
+                                                        '%payment_date%': payment.scheduled_date,
+                                                        '%pay_for%': payment.pay_for | trans
+                                                    })
+                                                }}
+                                                <a href="javascript:void(0)"
+                                                   data-bind="click: openPayAnythingCancelPopup.bind($data, {{ payment.id }})">
+                                                    {{ 'checkout.pay_anything.payment.cancel' | trans }}
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
                                 {% endif %}
                             </td>
 
@@ -121,6 +139,9 @@
 </div>
 
 {{ render(controller('RjCheckoutBundle:Component:pay')) }}
+{% if canPayAnything %}
+    {{ render(controller('RjCheckoutBundle:PayAnything:pay')) }}
+{% endif %}
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -140,4 +161,3 @@
         {% endif %}
     });
 </script>
-
