@@ -17,7 +17,7 @@ use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 class ResidentDataManager
 {
     const CURRENT_RESIDENT = 'Current';
-    //@TODO need approve correct value for this constant!!!
+
     const NOTICE_RESIDENT = 'Notice';
 
     /**
