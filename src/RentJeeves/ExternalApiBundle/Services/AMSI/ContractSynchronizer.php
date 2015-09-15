@@ -455,13 +455,7 @@ class ContractSynchronizer
             return;
         }
 
-        $recurringCodes = $propertyMapping->getHolding()->getRecurringCodes();
-        if (empty($recurringCodes)) {
-            $recurringCodes = [];
-        } else {
-            $recurringCodes = explode(',', $propertyMapping->getHolding()->getRecurringCodes());
-        }
-
+        $recurringCodes = $propertyMapping->getHolding()->getRecurringCodesArray();
         $sumRecurringCharges = $this->getSumRecurringCharges($lease, $recurringCodes);
 
         if ($sumRecurringCharges <= 0) {

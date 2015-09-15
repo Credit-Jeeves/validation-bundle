@@ -72,6 +72,20 @@ class HoldingRepository extends EntityRepository
     /**
      * @return Holding[]
      */
+    public function findHoldingsForSyncRecurringChargesYardi()
+    {
+        $query = $this->createQueryBuilder('h')
+            ->innerJoin('h.yardiSettings', 'ys')
+            ->where('h.useRecurringCharges = 1')
+            ->andWhere('h.apiIntegrationType = :yardi')
+            ->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
+
+        return $query->getQuery()->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
     public function findHoldingsForUpdatingBalanceYardi()
     {
         $query = $this->createQueryBuilder('h');
