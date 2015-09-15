@@ -79,7 +79,7 @@ class SourcesCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'New Card',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy Applegate',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
-                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '90210',
+                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '902',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => date('n'),
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 1,
 //                'rentjeeves_checkoutbundle_paymentaccounttype_address_choice_24' => true,
