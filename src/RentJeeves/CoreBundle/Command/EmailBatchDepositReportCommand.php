@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Entity\LandlordRepository;
 use RentJeeves\DataBundle\Entity\Landlord;
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -148,6 +149,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                     'batchId' => $data[$i]['batchId'],
                     'paymentType' => $data[$i]['paymentType'],
                     'transactions' => $transactions,
+                    'accountNumber' => $data[$i]['accountNumber'],
+                    'depositAccountType' => DepositAccountType::title($data[$i]['depositAccountType']),
                     'paymentTotal' => number_format($paymentTotal, 2, '.', ''),
                 ];
                 $transactions = [];

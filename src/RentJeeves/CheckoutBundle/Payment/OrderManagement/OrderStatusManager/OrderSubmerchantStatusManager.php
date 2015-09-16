@@ -80,8 +80,8 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
                 return;
             }
 
-            if (in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER])) {
-                $this->mailer->sendRentReceipt($order);
+            if (in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER, OperationType::CUSTOM])) {
+                $this->mailer->sendPaymentReceipt($order);
                 $this->logger->debug('[OrderStatusManager]Sent receipt email for rent order #' . $order->getId());
             } elseif ($operation->getType() === OperationType::REPORT) {
                 $this->mailer->sendReportReceipt($order);

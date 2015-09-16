@@ -487,7 +487,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
 
         $mailerMock = $this->getMailerMock();
         $mailerMock->expects($this->once())
-            ->method('sendRentReceipt');
+            ->method('sendPaymentReceipt');
         $statusManager = new OrderSubmerchantStatusManager(
             $this->getEntityManager(),
             $this->getLoggerMock(),
