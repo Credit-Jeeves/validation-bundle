@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\CardScheme;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -237,6 +238,16 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.card_number.empty',
                         ]
                     ),
+                    new CardScheme(
+                        [
+                            'groups' => ['card'],
+                            'schemes' => [
+                                'VISA',
+                                'MASTERCARD',
+                                'DISCOVER'
+                            ]
+                        ]
+                    )
                 ]
             ]
         );
@@ -262,6 +273,13 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.csc.empty',
                         ]
                     ),
+                    new Regex(
+                        [
+                            'pattern' => '/^[0-9]{3}$/',
+                            'groups' => ['card'],
+                            'message' => 'checkout.error.csc.type',
+                        ]
+                    )
                 ]
             ]
         );

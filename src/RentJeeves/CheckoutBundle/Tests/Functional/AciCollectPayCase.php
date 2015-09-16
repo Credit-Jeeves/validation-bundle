@@ -235,4 +235,71 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->unsetOldProfileId($profileId);
     }
+
+    /**
+     * @test
+     */
+    public function shouldCheckValidationCardAndCVSOnPaymentSource()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->pressButton($this->payButtonName);
+
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        $startDate = new \DateTime();
+        $startDate->modify('+1 day');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => $startDate->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '511020020000111588',
+                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '12H',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => '12',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => '2025',
+                'rentjeeves_checkoutbundle_paymentaccounttype_address_choice_53' => true,
+            ]
+        );
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout,
+            "!jQuery('#id-source-step').is(':visible')"
+        );
+
+        $this->assertNotEmpty($errors = $this->page->findAll('css', '.attention-box li'));
+        $this->assertCount(2, $errors);
+        $this->assertEquals('Unsupported card type or invalid card number.', $errors[0]->getText());
+        $this->assertEquals('checkout.error.csc.type', $errors[1]->getText());
+
+    }
 }
