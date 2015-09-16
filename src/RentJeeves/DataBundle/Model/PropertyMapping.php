@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use CreditJeeves\DataBundle\Entity\Holding;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\Property as PropertyEntity;
 
 /**
  * @ORM\MappedSuperclass
@@ -96,15 +97,15 @@ abstract class PropertyMapping
     }
 
     /**
-     * @param Property $property
+     * @param PropertyEntity $property
      */
-    public function setProperty(Property $property)
+    public function setProperty(PropertyEntity $property)
     {
         $this->property = $property;
     }
 
     /**
-     * @return Property
+     * @return PropertyEntity
      */
     public function getProperty()
     {

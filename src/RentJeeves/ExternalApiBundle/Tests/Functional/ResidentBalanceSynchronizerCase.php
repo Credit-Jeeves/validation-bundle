@@ -8,94 +8,10 @@ use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
-use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class ResidentBalanceSynchronizerCase extends BaseTestCase
 {
-    /**
-     * @test
-     */
-    public function shouldSyncContractBalanceResMan()
-    {
-        $this->load(true);
-        $em = $this->getEntityManager();
-        $repo = $em->getRepository('RjDataBundle:Contract');
-        $contract = $repo->find(20);
-        $this->assertNotNull($contract);
-        $this->assertEquals(0, $contract->getIntegratedBalance());
-        $contract->setIntegratedBalance(-2000.00);
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
-        $settings = $contract->getHolding()->getResManSettings();
-        $settings->setSyncBalance(true);
-        $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
-        $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
-        $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
-
-        $tenant = $contract->getTenant();
-        $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
-        $residentMapping->setResidentId(ResManClientCase::RESIDENT_ID);
-        $em->flush();
-        $balanceSynchronizer = $this->getContainer()->get('resman.resident_balance_sync');
-        $balanceSynchronizer->run();
-        $updatedContract = $repo->find($contract->getId());
-        $this->assertEquals(0, $updatedContract->getIntegratedBalance());
-    }
-
-    /**
-     * @test
-     */
-    public function shouldSyncContractWaitingBalanceResMan()
-    {
-        $this->load(true);
-        $em = $this->getEntityManager();
-        $repo = $em->getRepository('RjDataBundle:Contract');
-
-        $contract = $repo->find(20);
-        $this->assertNotNull($contract);
-        $this->assertEquals(0, $contract->getIntegratedBalance());
-        $contract->setIntegratedBalance(-2000.00);
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
-        $settings = $contract->getHolding()->getResManSettings();
-        $settings->setSyncBalance(true);
-        $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
-        $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
-        $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
-        $tenant = $contract->getTenant();
-        $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
-        $residentMapping->setResidentId(ResManClientCase::RESIDENT_ID);
-        $contract->setStatus(ContractStatus::FINISHED);
-        $em->flush();
-
-        $contractWaiting = new ContractWaiting();
-        $today = new DateTime();
-        $contractWaiting->setGroup($contract->getGroup());
-        $contractWaiting->setProperty($contract->getProperty());
-        $contractWaiting->setUnit($contract->getUnit());
-        $contractWaiting->setRent($contract->getRent());
-        $contractWaiting->setResidentId(ResManClientCase::RESIDENT_ID);
-        $contractWaiting->setStartAt($today);
-        $contractWaiting->setFinishAt($today);
-        $contractWaiting->setFirstName('Papa');
-        $contractWaiting->setLastName('Karlo');
-        $contractWaiting->setIntegratedBalance(-500);
-        $em->persist($contractWaiting);
-        $em->flush($contractWaiting);
-
-        $balanceSynchronizer = $this->getContainer()->get('resman.resident_balance_sync');
-        $balanceSynchronizer->run();
-
-        $repo = $em->getRepository('RjDataBundle:ContractWaiting');
-        $updatedContractWaiting = $repo->findByHoldingPropertyUnitResident(
-            $contract->getGroup()->getHolding(),
-            $contract->getProperty(),
-            $contract->getUnit()->getName(),
-            ResManClientCase::RESIDENT_ID
-        );
-        $this->assertNotNull($updatedContractWaiting);
-        $this->assertEquals(0, $updatedContractWaiting->getIntegratedBalance());
-    }
-
     /**
      * @test
      */
