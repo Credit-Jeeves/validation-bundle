@@ -33,7 +33,7 @@ class ResManSyncRecurringChargesCommandCase extends BaseTestCase
         $application = new Application($this->getKernel());
         $application->add(new ResManSyncRecurringChargesCommand());
 
-        $command = $application->find('api:resman:sync-recurring-charges');
+        $command = $application->find('api:resman:sync-rent');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),

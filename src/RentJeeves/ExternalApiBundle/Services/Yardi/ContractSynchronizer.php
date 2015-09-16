@@ -196,7 +196,7 @@ class ContractSynchronizer
         /** @var ResidentTransactionTransactions $transaction */
         foreach ($transactions as $transaction) {
             $charge = $transaction->getCharge();
-            if (!in_array($charge->getDetail()->getChargeCode(), $recurringCodes)) {
+            if (!in_array($charge->getDetail()->getChargeCode(), $recurringCodes) && !empty($recurringCodes)) {
                 $this->logger->info(
                     sprintf(
                         'RecurringCodes list(%s) does not contain charge code (%s)',

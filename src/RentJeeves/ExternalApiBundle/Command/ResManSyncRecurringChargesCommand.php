@@ -14,7 +14,7 @@ class ResManSyncRecurringChargesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('api:resman:sync-recurring-charges')
+            ->setName('api:resman:sync-rent')
             ->setDescription(
                 'Fetch all recurring charges for checked ResMan customers and update rent for contract'
             );

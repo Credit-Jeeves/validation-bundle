@@ -322,7 +322,7 @@ class ContractSynchronizer
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
             );
-            /** @var Property $propertyMapping*/
+            /** @var PropertyMapping $propertyMapping*/
             foreach ($propertyMappings as $propertyMapping) {
                 try {
                     $this->updateRentPerPropertyMapping($propertyMapping, $holding);
@@ -351,13 +351,12 @@ class ContractSynchronizer
         $residentTransactions = $this->residentDataManager->getResidentsRentRoll(
             $propertyMapping->getExternalPropertyId()
         );
-        $nextPageLink = $this->residentDataManager->getNextPageLink();
-        while ($nextPageLink) {
+
+        while ($nextPageLink = $this->residentDataManager->getNextPageLink()) {
             $this->logMessage(sprintf('MRIRentSync: get residents RentRoll by next page link %s', $nextPageLink));
             $residentTransactionsByNextPageLink = $this->residentDataManager->getResidentsRentRollByNextPageLink(
                 $nextPageLink
             );
-            $nextPageLink = $this->residentDataManager->getNextPageLink();
             $residentTransactions = array_merge($residentTransactions, $residentTransactionsByNextPageLink);
         }
 
@@ -386,13 +385,12 @@ class ContractSynchronizer
     /**
      * @param array $residentTransactions
      * @param PropertyMapping $propertyMapping
-     * @throws \Exception
      */
     protected function processResidentTransactionsForUpdateRent(
         array $residentTransactions,
         PropertyMapping $propertyMapping
     ) {
-        /** @var $customer Value  */
+        /** @var Value $customer */
         foreach ($residentTransactions as $customer) {
             /** @var Resident $resident */
             foreach ($customer->getResidents()->getResidentArray() as $resident) {
@@ -417,11 +415,7 @@ class ContractSynchronizer
      */
     protected function doUpdateRent(Value $customer, $contract)
     {
-        if ($contract instanceof Contract) {
-            $chargeCodes = $contract->getHolding()->getRecurringCodesArray();
-        } else {
-            $chargeCodes = $contract->getGroup()->getHolding()->getRecurringCodesArray();
-        }
+        $chargeCodes = $contract->getGroup()->getHolding()->getRecurringCodesArray();
         $currentCharges = $customer->getCurrentCharges();
         $charges = $currentCharges->getCharges();
         $amount = 0;
@@ -433,13 +427,13 @@ class ContractSynchronizer
             }
 
             $chargeCode = $charge->getChargeCode();
-            if (!in_array($chargeCode, $chargeCodes)) {
+            if (!in_array($chargeCode, $chargeCodes) && !empty($chargeCodes)) {
                 $this->logMessage('Charge code not in list');
                 continue;
             }
 
             $effectiveDate = $charge->getDateTimeEffectiveDate();
-            $endDate = $charge->getEndDate();
+            $endDate = $charge->getDateTimeEndDate();
 
             if (!$this->doesDateFallBetweenDate($effectiveDate, $endDate)) {
                 $this->logMessage('Does not fall between date.');
@@ -450,6 +444,8 @@ class ContractSynchronizer
         }
 
         if ($amount === 0) {
+            $this->logMessage('Amount is 0');
+
             return;
         }
 
@@ -465,8 +461,8 @@ class ContractSynchronizer
     }
 
     /**
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
+     * @param \DateTime|null $startDate
+     * @param \DateTime|null $endDate
      * @return boolean
      */
     protected function doesDateFallBetweenDate($startDate, $endDate)
