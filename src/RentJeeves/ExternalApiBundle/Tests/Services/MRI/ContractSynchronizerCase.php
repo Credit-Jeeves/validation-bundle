@@ -155,6 +155,7 @@ class ContractSynchronizerCase extends BaseTestCase
             [null, $endDate = new \DateTime('-1 day'), false],
             [null, $endDate = new \DateTime('+1 day'), true],
             [$startDate = new \DateTime('+1 day'), $endDate = new \DateTime('-1 day'), false],
+            [$startDate = new \DateTime('-1 year'), null, true]
         ];
     }
 

@@ -64,7 +64,7 @@ class Charge
 
     /**
      * @Serializer\SerializedName("EffectiveDate")
-     * @Serializer\Type("double")
+     * @Serializer\Type("string")
      * @Serializer\Groups({"MRI-Response"})
      */
     protected $effectiveDate;
@@ -264,11 +264,11 @@ class Charge
      */
     public function getDateTimeEffectiveDate()
     {
-        if (emty($this->effectiveDate)) {
+        if (empty($this->effectiveDate)) {
             return null;
         }
 
-        return \DateTime::createFromFormat(Value::DATE_FORMAT, $this->leaseBeginDate);
+        return \DateTime::createFromFormat(Value::DATE_FORMAT, $this->effectiveDate);
     }
 
     /**
@@ -276,7 +276,7 @@ class Charge
      */
     public function getDateTimeEndDate()
     {
-        if (emty($this->endDate)) {
+        if (empty($this->endDate)) {
             return null;
         }
 

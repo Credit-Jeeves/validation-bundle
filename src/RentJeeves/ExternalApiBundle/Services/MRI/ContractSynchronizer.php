@@ -465,7 +465,7 @@ class ContractSynchronizer
      * @param \DateTime|null $endDate
      * @return boolean
      */
-    protected function doesDateFallBetweenDate($startDate, $endDate)
+    protected function doesDateFallBetweenDate(\DateTime $startDate = null, \DateTime $endDate = null)
     {
         $today = new \DateTime();
         $todayStr = (int) $today->format('Ymd');
