@@ -23,6 +23,7 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 class ContractRepository extends EntityRepository
 {
     use DateCommon;
+
     /**
      * We'll use following aliases in this class
      * c - Contracts
@@ -37,8 +38,8 @@ class ContractRepository extends EntityRepository
      * In other cases, please use native names
      *
      * @param QueryBuilder $query
-     * @param string       $searchField
-     * @param string       $searchString
+     * @param string $searchField
+     * @param string $searchString
      *
      * @return mixed
      */
@@ -53,30 +54,30 @@ class ContractRepository extends EntityRepository
                 case 'property':
                     foreach ($search as $item) {
                         $query->andWhere('CONCAT(p.number, p.street) LIKE :search');
-                        $query->setParameter('search', '%'.$item.'%');
+                        $query->setParameter('search', '%' . $item . '%');
                     }
                     break;
                 case 'tenant':
                 case 'tenantA':
                     foreach ($search as $item) {
                         $query->andWhere('CONCAT(t.first_name, t.last_name) LIKE :search');
-                        $query->setParameter('search', '%'.$item.'%');
+                        $query->setParameter('search', '%' . $item . '%');
                     }
                     break;
                 case 'phone':
                     //Remove all chars except number
                     $searchString = preg_replace('[\D]', '', $searchString);
                     $query->andWhere('t.phone LIKE :search');
-                    $query->setParameter('search', '%'.$searchString.'%');
+                    $query->setParameter('search', '%' . $searchString . '%');
                     break;
                 case 'email':
                     $query->andWhere('t.email LIKE :search');
-                    $query->setParameter('search', '%'.$searchString.'%');
+                    $query->setParameter('search', '%' . $searchString . '%');
                     break;
                 case 'amount':
                 case 'amountA':
                     $query->andWhere('c.rent LIKE :rent');
-                    $query->setParameter('rent', '%'.$searchString.'%');
+                    $query->setParameter('rent', '%' . $searchString . '%');
                     break;
                 case 'status':
                 case 'statusA':
@@ -86,8 +87,8 @@ class ContractRepository extends EntityRepository
                     break;
                 default:
                     foreach ($search as $item) {
-                        $query->andWhere('c.'.$searchField.' LIKE :search');
-                        $query->setParameter('search', '%'.$item.'%');
+                        $query->andWhere('c.' . $searchField . ' LIKE :search');
+                        $query->setParameter('search', '%' . $item . '%');
                     }
                     break;
             }
@@ -115,8 +116,8 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param QueryBuilder $query
-     * @param string       $sortField
-     * @param string       $sortOrder
+     * @param string $sortField
+     * @param string $sortOrder
      *
      * @return mixed
      */
@@ -159,7 +160,7 @@ class ContractRepository extends EntityRepository
                     $query->orderBy('status_sort_order');
                     break;
                 default:
-                    $sortField = 'c.'.$sortField;
+                    $sortField = 'c.' . $sortField;
                     $query->orderBy($sortField, $sortOrder);
                     break;
             }
@@ -171,7 +172,7 @@ class ContractRepository extends EntityRepository
     /**
      * Count records for Tenant Tab
      *
-     * @param Group  $group
+     * @param Group $group
      * @param string $searchBy
      * @param string $search
      *
@@ -193,12 +194,12 @@ class ContractRepository extends EntityRepository
     /**
      *
      * @param \CreditJeeves\DataBundle\Entity\Group $group
-     * @param integer                               $page
-     * @param integer                               $limit
-     * @param string                                $sortField
-     * @param string                                $sortOrder
-     * @param string                                $searchField
-     * @param string                                $searchString
+     * @param integer $page
+     * @param integer $limit
+     * @param string $sortField
+     * @param string $sortOrder
+     * @param string $searchField
+     * @param string $searchString
      *
      * @return mixed
      */
@@ -210,7 +211,8 @@ class ContractRepository extends EntityRepository
         $sortOrder = 'ASC',
         $searchField = '',
         $searchString = ''
-    ) {
+    )
+    {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
@@ -228,9 +230,9 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param Group  $group
-     * @param int    $page
-     * @param int    $limit
+     * @param Group $group
+     * @param int $page
+     * @param int $limit
      * @param string $sortField
      * @param string $sortOrder
      * @param string $searchField
@@ -246,13 +248,14 @@ class ContractRepository extends EntityRepository
         $sortOrder = 'ASC',
         $searchField = 'p.street',
         $searchString = ''
-    ) {
+    )
+    {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where(
-            '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
+            '(c.group = :group AND c.status <> :status1 AND c.status <> :status2' .
             ' AND (c.paidTo < :date OR c.finishAt < :today ))' .
             ' AND c.id IN (SELECT IDENTITY(o.contract) FROM DataBundle:Operation o WHERE' .
             ' o.contract = c.id )'
@@ -383,7 +386,8 @@ class ContractRepository extends EntityRepository
     public function getPaymentsToLandlord(
         $orderStatus = array(OrderStatus::COMPLETE),
         $orderType = array(OrderPaymentType::BANK, OrderPaymentType::CARD)
-    ) {
+    )
+    {
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
@@ -458,13 +462,13 @@ class ContractRepository extends EntityRepository
     /**
      * Complicated query, have unit test
      *
-     * @param  int             $days
+     * @param  int $days
      * @return ArrayCollection
      */
     public function getLateContracts($days = 5)
     {
         $days *= -1;
-        $date = new DateTime($days.' days');
+        $date = new DateTime($days . ' days');
         $now = new DateTime();
         $dueDays = $this->getDueDays(0, $date);
 
@@ -500,14 +504,15 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param  Holding         $holding
-     * @param  array           $status
+     * @param  Holding $holding
+     * @param  array $status
      * @return ArrayCollection
      */
     public function getAllLateContractsByHolding(
         Holding $holding,
         $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED)
-    ) {
+    )
+    {
         $query = $this->createQueryBuilder('c');
         $query->leftJoin('c.operations', 'op');
         $query->leftJoin('op.order', 'o');
@@ -526,7 +531,7 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param  ArrayCollection $groups
-     * @param  array           $status
+     * @param  array $status
      * @return ArrayCollection
      */
     public function getAllLateContractsByGroups($groups, $status = [ContractStatus::CURRENT, ContractStatus::APPROVED])
@@ -563,10 +568,10 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param  Tenant                                 $tenant
-     * @param  Group                                  $group
-     * @param  Holding                                $holding
-     * @param  string                                 $externalLeaseId
+     * @param  Tenant $tenant
+     * @param  Group $group
+     * @param  Holding $holding
+     * @param  string $externalLeaseId
      * @return null|Contract
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -575,7 +580,8 @@ class ContractRepository extends EntityRepository
         Tenant $tenant,
         Group $group = null,
         Holding $holding = null
-    ) {
+    )
+    {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
@@ -605,12 +611,12 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param  integer                                $tenantId
-     * @param  string                                 $unitName
-     * @param  string                                 $externalUnitId
-     * @param  string                                 $propertyId
-     * @param  Group                                  $group
-     * @param  Holding                                $holding
+     * @param  integer $tenantId
+     * @param  string $unitName
+     * @param  string $externalUnitId
+     * @param  string $propertyId
+     * @param  Group $group
+     * @param  Holding $holding
      * @return Contract
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -621,7 +627,8 @@ class ContractRepository extends EntityRepository
         $propertyId = null,
         Group $group = null,
         Holding $holding = null
-    ) {
+    )
+    {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
@@ -985,8 +992,8 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param QueryBuilder $query
-     * @param string       $orderStatus
-     * @param int          $monthAgo
+     * @param string $orderStatus
+     * @param int $monthAgo
      *
      * @return QueryBuilder
      */
@@ -1031,7 +1038,8 @@ class ContractRepository extends EntityRepository
     public function findByTenantIdInvertedStatusesForPayments(
         $tenantId,
         $statuses = array(ContractStatus::DELETED)
-    ) {
+    )
+    {
         $query = $this->createQueryBuilder('c');
         $query->leftJoin('c.holding', 'h');
         $query->leftJoin('c.property', 'p');
@@ -1079,7 +1087,8 @@ class ContractRepository extends EntityRepository
         PropertyMapping $propertyMapping,
         $residentId,
         $externalUnitId
-    ) {
+    )
+    {
         $query = $this->createQueryBuilder('c');
         $query->select('c');
         $query->innerJoin('c.unit', 'u');
@@ -1120,7 +1129,8 @@ class ContractRepository extends EntityRepository
         PropertyMapping $propertyMapping,
         $residentId,
         $externalUnitId
-    ) {
+    )
+    {
         return $this->createQueryBuilder('c')
             ->innerJoin('c.unit', 'u')
             ->innerJoin('u.unitMapping', 'um')
@@ -1156,7 +1166,8 @@ class ContractRepository extends EntityRepository
         Property $property,
         $residentId,
         $unitName
-    ) {
+    )
+    {
         $query = $this->createQueryBuilder('c');
         $query->select('c');
         $query->innerJoin('c.unit', 'u');
@@ -1196,7 +1207,8 @@ class ContractRepository extends EntityRepository
         Holding $holding,
         Property $property,
         $residentId
-    ) {
+    )
+    {
         $query = $this->createQueryBuilder('c');
         $query->select('c')
             ->innerJoin('c.group', 'g')
@@ -1220,7 +1232,7 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param  Tenant $tenant
-     * @param  Unit   $unit
+     * @param  Unit $unit
      * @return bool
      */
     public function isExistDuplicateByTenantUnit(Tenant $tenant, Unit $unit, $id = null)
@@ -1313,38 +1325,8 @@ class ContractRepository extends EntityRepository
             ->andWhere("MONTH(DATE_ADD(c.createdAt, 1, 'month')) = MONTH(CURRENT_TIMESTAMP())")
             ->andWhere(sprintf('NOT EXISTS (%s)', $subQuery))
             ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED])
-            ->groupBy('t.id') // 1 contract for 1 user
+            ->groupBy('t.id')// 1 contract for 1 user
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * @param PropertyMapping $propertyMapping
-     * @param string $externalUnitId
-     *
-     * @return Contract[]
-     */
-    public function findContractsByPropertyMappingAndExternalUnitId
-    (
-        PropertyMapping $propertyMapping,
-        $externalUnitId
-    ) {
-        return $this->createQueryBuilder('c')
-            ->innerJoin('c.unit', 'u')
-            ->innerJoin('u.unitMapping', 'um')
-            ->innerJoin('c.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm', Expr\Join::WITH, 'c.holding = pm.holding')
-            ->innerJoin('c.group', 'g')
-            ->innerJoin('g.groupSettings', 'gs')
-            ->where('c.status in (:statuses)')
-            ->andWhere('pm.externalPropertyId = :propertyId')
-            ->andWhere('c.holding = pm.holding')
-            ->andWhere('gs.isIntegrated = 1')
-            ->andWhere('um.externalUnitId = :externalUnitId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
-            ->setParameter('propertyId', $propertyMapping->getExternalPropertyId())
-            ->setParameter('externalUnitId', $externalUnitId)
-            ->getQuery()
-            ->execute();
     }
 }

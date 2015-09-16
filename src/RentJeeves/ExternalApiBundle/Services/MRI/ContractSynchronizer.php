@@ -278,8 +278,6 @@ class ContractSynchronizer
     {
         $contract->setPaymentAccepted($customer->getPaymentAccepted());
         $contract->setIntegratedBalance($customer->getLeaseBalance());
-        $this->em->persist($contract);
-        $this->em->flush($contract);
         $this->logMessage(
             sprintf(
                 'MRI: payment accepted to %s, balance %s.
@@ -456,7 +454,6 @@ class ContractSynchronizer
         }
 
         $contract->setRent($amount);
-        $this->em->flush($contract);
         $this->logMessage(
             sprintf(
                 'MRI: rent set %s.

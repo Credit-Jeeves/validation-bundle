@@ -143,6 +143,9 @@ class ContractSynchronizerCase extends BaseTestCase
         $this->assertGreaterThan(0, (int) $updatedContractWaiting->getRent(), 'Balance not updated');
     }
 
+    /**
+     * @return array
+     */
     public function dateProvider()
     {
         return [
