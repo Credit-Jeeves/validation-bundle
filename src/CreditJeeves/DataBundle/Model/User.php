@@ -81,8 +81,7 @@ abstract class User extends BaseUser
      *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
      *     message="regexp.error.name",
      *     groups = {
-     *         "import",
-     *         "landlordImport"
+     *         "import"
      *     }
      * )
      * @Assert\Regex(
@@ -159,8 +158,7 @@ abstract class User extends BaseUser
      *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
      *     message="regexp.error.name",
      *     groups = {
-     *         "import",
-     *         "landlordImport"
+     *         "import"
      *     }
      * )
      * @Assert\Regex(

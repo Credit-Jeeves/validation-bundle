@@ -16,7 +16,7 @@ class GroupMapperCase extends AbstractMapperCase
      */
     public function shouldThrowExceptionIfGetNonexistentValue()
     {
-        $mapper = new GroupMapper($this->getGeoCoder());
+        $mapper = new GroupMapper($this->getPropertyProcess());
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEmMock());
 
@@ -27,11 +27,11 @@ class GroupMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException
-     * @expectedExceptionMessage [Mapping] : Address (test test, test, test, test) is not found by geocoder
+     * @expectedExceptionMessage [Mapping] : Address (test test, test, test, test) is not found by PropertyProcess
      */
     public function shouldThrowExceptionIfAddressIsNotValid()
     {
-        $mapper = new GroupMapper($this->getGeoCoder());
+        $mapper = new GroupMapper($this->getPropertyProcess());
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEntityManager());
 
@@ -90,7 +90,7 @@ class GroupMapperCase extends AbstractMapperCase
      */
     public function shouldCreateGroupAndRelatedEntityIfAddressIsValid($data, $groupName)
     {
-        $mapper = new GroupMapper($this->getGeoCoder());
+        $mapper = new GroupMapper($this->getPropertyProcess());
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEntityManager());
 
@@ -129,7 +129,7 @@ class GroupMapperCase extends AbstractMapperCase
 
         $this->getEntityManager()->flush($group);
 
-        $mapper = new GroupMapper($this->getGeoCoder());
+        $mapper = new GroupMapper($this->getPropertyProcess());
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEntityManager());
 
@@ -141,10 +141,10 @@ class GroupMapperCase extends AbstractMapperCase
     }
 
     /**
-     * @return \RentJeeves\CoreBundle\Services\GeoCoder
+     * @return \RentJeeves\CoreBundle\Services\PropertyProcess
      */
-    protected function getGeoCoder()
+    protected function getPropertyProcess()
     {
-        return $this->getContainer()->get('renttrack.geocoder');
+        return $this->getContainer()->get('property.process');
     }
 }

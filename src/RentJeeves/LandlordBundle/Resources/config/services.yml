@@ -96,7 +96,7 @@ services:
         class: RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\GroupMapper
         parent: accounting.landlord_import.abstract_mapper
         arguments:
-            - @renttrack.geocoder
+            - @property.process
 
     accounting.landlord_import.landlord_mapper:
         class: RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\LandlordMapper

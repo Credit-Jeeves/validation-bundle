@@ -25,7 +25,7 @@ class UnitMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage [Mapping] : value with key 'UnitID' not found
+     * @expectedExceptionMessage [Mapping] : value with key 'unitid' not found
      */
     public function shouldThrowExceptionIfGetNonexistentValue()
     {
@@ -42,7 +42,7 @@ class UnitMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException
-     * @expectedExceptionMessage [Mapping] : Address (test , test, test, test) is not found by geocoder
+     * @expectedExceptionMessage [Mapping] : Address (test , test, test, test) is not found by PropertyProcess
      */
     public function shouldThrowExceptionIfAddressIsNotValid()
     {
@@ -54,9 +54,9 @@ class UnitMapperCase extends AbstractMapperCase
 
         $mapper->map(
             [
-                'UnitID' => 'testUnitID',
-                'UnitNumber' => 'test',
-                'StreetAddress' => 'test',
+                'unitid' => 'testUnitID',
+                'unitnumber' => 'test',
+                'streetaddress' => 'test',
                 'city_name' => 'test',
                 'state_name' => 'test',
                 'zipcode' => 'test',
@@ -79,7 +79,7 @@ class UnitMapperCase extends AbstractMapperCase
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEntityManager());
         // AAABBB-7 - value from fixtures
-        $mapper->map(['UnitID' => 'AAABBB-7'], $group);
+        $mapper->map(['unitid' => 'AAABBB-7'], $group);
     }
 
     /**
@@ -90,9 +90,9 @@ class UnitMapperCase extends AbstractMapperCase
         return [
             [
                 [
-                    'UnitID' => 'testUnitID',
-                    'UnitNumber' => 'testUnitNumber',
-                    'StreetAddress' => '50 Orange Street',
+                    'unitid' => 'testUnitID',
+                    'unitnumber' => 'testUnitNumber',
+                    'streetaddress' => '50 Orange Street',
                     'city_name' => 'Brooklyn',
                     'state_name' => 'NY',
                     'zipcode' => '11201',
@@ -101,14 +101,14 @@ class UnitMapperCase extends AbstractMapperCase
             ],
             [
                 [
-                    'UnitID' => 'testUnitID',
-                    'UnitNumber' => '',
-                    'StreetAddress' => '50 Orange Street',
+                    'unitid' => 'testUnitID',
+                    'unitnumber' => '',
+                    'streetaddress' => '50 Orange Street',
                     'city_name' => 'Brooklyn',
                     'state_name' => 'NY',
                     'zipcode' => '11201',
                 ],
-                'testUnitID'
+                '' // For SINGLE_PROPERTY
             ],
         ];
     }
@@ -140,7 +140,9 @@ class UnitMapperCase extends AbstractMapperCase
         $this->assertEquals('11201', $property->getZip());
         $this->assertEquals('US', $property->getCountry());
         $this->assertEquals('Brooklyn', $property->getDistrict());
-        $this->assertTrue($property->getPropertyGroups()->contains($group));
+        $this->assertTrue($group->getGroupProperties()->contains($property));
+
+        $this->assertEquals('testUnitID', $unit->getUnitMapping()->getExternalUnitId());
     }
 
     /**

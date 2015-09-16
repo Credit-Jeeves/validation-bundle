@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\DuplicatedUnitException;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException;
 
@@ -40,12 +41,12 @@ class UnitMapper extends AbstractMapper
 
         $holding = $group->getHolding();
         if (null !== $holding->getId() &&
-            null !== $this->getUnitRepository()->findOneByHoldingAndExternalId($holding, $this->get('UnitID'))
+            null !== $this->getUnitRepository()->findOneByHoldingAndExternalId($holding, $this->get('unitid'))
         ) {
             throw new DuplicatedUnitException(
                 sprintf(
                     '[Mapping] : Unit with externalId#%s and Holding#%d already exists',
-                    $this->get('UnitID'),
+                    $this->get('unitid'),
                     $holding->getId()
                 )
             );
@@ -56,16 +57,76 @@ class UnitMapper extends AbstractMapper
 
     /**
      * @return Unit
+     *
+     * @throws MappingException
      */
     protected function createUnit()
     {
-        $newUnit = new Unit();
-        $newUnit->setGroup($group = $this->getGroup());
-        $newUnit->setHolding($group->getHolding());
-        $newUnit->setName($this->get('UnitNumber') ?: $this->get('UnitID'));
-        $newUnit->setProperty($this->getOrCreateProperty());
+        $unitNumber = $this->get('unitnumber');
+        if (true === empty($unitNumber)) {
+            $newUnit = $this->createSinglePropertyUnit();
+        } else {
+            $property = $this->getOrCreateProperty();
+            if ($property->getId() !== null && $property->isSingle()) {
+                throw new MappingException(
+                    sprintf(
+                        '[Mapping] : We can`t create new Unit for single Property#%d',
+                        $property->getId()
+                    )
+                );
+            }
+
+            $newUnit = new Unit();
+            $newUnit->setGroup($this->getGroup());
+            $newUnit->setHolding($this->getGroup()->getHolding());
+            $newUnit->setName($this->get('unitnumber'));
+            $newUnit->setProperty($property);
+        }
+
+        $newUnit->setUnitMapping($this->createUnitMapping($newUnit));
 
         return $newUnit;
+    }
+
+    /**
+     * @return Unit
+     *
+     * @throws MappingException
+     */
+    protected function createSinglePropertyUnit()
+    {
+        $property = $this->getOrCreateProperty();
+        if ($property->getId() !== null) {
+            throw new MappingException(
+                sprintf(
+                    '[Mapping] : We can`t create one more SinglePropertyUnit for existing Property#%d',
+                    $property->getId()
+                )
+            );
+        }
+        $property->addPropertyGroup($this->getGroup()); // for correct work propertyProcess
+
+        try {
+            $newUnit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+        } catch (\RuntimeException $e) {
+            throw new MappingException(sprintf('[Mapping] : %s', $e->getMessage()));
+        }
+
+        return $newUnit;
+    }
+
+    /**
+     * @param Unit $unit
+     *
+     * @return UnitMapping
+     */
+    protected function createUnitMapping(Unit $unit)
+    {
+        $newUnitMapping = new UnitMapping();
+        $newUnitMapping->setExternalUnitId($this->get('unitid'));
+        $newUnitMapping->setUnit($unit);
+
+        return $newUnitMapping;
     }
 
     /**
@@ -78,12 +139,12 @@ class UnitMapper extends AbstractMapper
         $property = $this->propertyProcess->getPropertyByAddress($this->getAddress());
         if ($property === null) {
             throw new MappingException(
-                sprintf('[Mapping] : Address (%s) is not found by geocoder', $this->getAddress())
+                sprintf('[Mapping] : Address (%s) is not found by PropertyProcess', $this->getAddress())
             );
         }
 
-        if (false === $property->getPropertyGroups()->contains($this->getGroup())) {
-            $property->addPropertyGroup($this->getGroup());
+        if (false === $this->getGroup()->getGroupProperties()->contains($property)) {
+            $this->getGroup()->addGroupProperty($property);
         }
 
         return $property;
@@ -96,7 +157,7 @@ class UnitMapper extends AbstractMapper
     {
         return sprintf(
             '%s , %s, %s, %s',
-            $this->get('StreetAddress'),
+            $this->get('streetaddress'),
             $this->get('city_name'),
             $this->get('state_name'),
             $this->get('zipcode')

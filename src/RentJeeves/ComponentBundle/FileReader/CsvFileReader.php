@@ -13,8 +13,13 @@ class CsvFileReader
 {
     protected $delimiter = ",";
     protected $enclosure = "\"";
-    protected $escape    = "\\";
+    protected $escape = "\\";
     protected $useHeader = true;
+
+    /**
+     * @var bool
+     */
+    protected $convertHeaderToLowercase = false;
 
     /**
      * @param string $delimiter
@@ -80,6 +85,11 @@ class CsvFileReader
         return $this->useHeader;
     }
 
+    /**
+     * @param string $filename
+     *
+     * @return array
+     */
     public function read($filename)
     {
         $result = array();
@@ -88,7 +98,8 @@ class CsvFileReader
 
         while ($row = $file->current()) {
             foreach ($row as $valueIndex => $value) {
-                $result[$file->key()][$header[$valueIndex]] = $value;
+                $columnName = $this->convertHeaderToLowercase ? strtolower($header[$valueIndex]) : $header[$valueIndex];
+                $result[$file->key()][$columnName] = $value;
             }
             $file->next();
         }
@@ -112,6 +123,7 @@ class CsvFileReader
             SplFileObject::READ_AHEAD
         );
         $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
+
         return $file;
     }
 
@@ -123,9 +135,18 @@ class CsvFileReader
             $header = $file->current();
             $targetRowIndex = $currentRowIndex > 0 ? $currentRowIndex : 1;
             $file->seek($targetRowIndex);
+
             return $header;
         }
 
         return range(0, count($file->current()));
+    }
+
+    /**
+     * @param boolean $convertHeaderToLowercase
+     */
+    public function setConvertHeaderToLowercase($convertHeaderToLowercase)
+    {
+        $this->convertHeaderToLowercase = $convertHeaderToLowercase;
     }
 }
