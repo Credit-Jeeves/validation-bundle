@@ -1581,6 +1581,12 @@ label.error b {
   width:200px;
 }
 
+.payments-popup .tooltip-box.type4 {
+  left:270px;
+  top:0;
+  width:200px;
+}
+
 .payments-popup .tooltip-box.type2:before {
   bottom:22px;
   top:auto;
@@ -2390,6 +2396,10 @@ label.checkbox input[type="radio"]:checked + i {
 .payments-popup .half-box {
   width:270px;
   padding:0;
+}
+
+.payments-popup .half-box.pay-anything {
+  width:240px;
 }
 
 .payments-popup .half-box .form-row {

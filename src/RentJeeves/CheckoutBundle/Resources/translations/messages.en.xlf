@@ -611,6 +611,22 @@
                 <source>checkout.one_time.info_message</source>
                 <target>Please allow a few hours for the payment to process. We'll send you an email once it is complete.</target>
             </trans-unit>
+            <trans-unit id="checkout.pay_anything.choose_payFor.title">
+                <source>checkout.pay_anything.choose_payFor.title</source>
+                <target>Choose Pay For</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.choose_payFor.text">
+                <source>checkout.pay_anything.choose_payFor.text</source>
+                <target>Please select reason of payment.</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.pay_for.tooltip.title">
+                <source>checkout.pay_anything.pay_for.tooltip.title-%PAY_FOR%</source>
+                <target>Paying %PAY_FOR%</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.pay_for.tooltip.text">
+                <source>checkout.pay_anything.pay_for.tooltip.text-%PAY_FOR%</source>
+                <target>Only include the %PAY_FOR%.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

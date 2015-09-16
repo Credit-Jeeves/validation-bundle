@@ -163,7 +163,7 @@ function PayAnything(parent, contract) {
 
     self.prepareDialog = function () {
         rootNode.dialog({
-            width: 650,
+            width: 580,
             modal: true,
             beforeClose: function( event, ui ) {
                 current = 0;
