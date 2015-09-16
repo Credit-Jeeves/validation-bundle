@@ -51,7 +51,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
         $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
         $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
-        $this->assertEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should not be 0');
+        $this->assertEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should be 0');
         $contractWaiting->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
         $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
             $contractWaiting->getGroup()->getHolding()
@@ -163,7 +163,7 @@ class ContractSynchronizerCase extends BaseTestCase
      * @test
      * @dataProvider dateProvider
      */
-    public function doesDateFallBetweenDate($startDate, $endDate, $result)
+    public function shouldCheckDateFallsBetweenDates($startDate, $endDate, $result)
     {
         $contractSync = $this->getContainer()->get('mri.contract_sync');
         $contractSyncReflectionClass = new \ReflectionClass($contractSync);

@@ -52,27 +52,26 @@ class ContractSynchronizer
         try {
             $holdings = $this->getHoldingsForUpdateBalanceMRI();
             if (empty($holdings)) {
-                $this->logMessage('MRI ResidentBalanceSynchronizer: No data to update');
+                $this->logger->info('MRI ResidentBalanceSynchronizer: No data to update');
 
                 return;
             }
 
             foreach ($holdings as $holding) {
                 $this->residentDataManager->setSettings($holding->getExternalSettings());
-                $this->logMessage(
+                $this->logger->info(
                     sprintf('MRI ResidentBalanceSynchronizer start work with holding %s', $holding->getId())
                 );
                 $this->updateBalancesForHolding($holding);
             }
         } catch (\Exception $e) {
-            $this->logMessage(
+            $this->logger->alert(
                 sprintf(
                     '(MRI ResidentBalanceSynchronizer)Message: %s, File: %s, Line:%s',
                     $e->getMessage(),
                     $e->getFile(),
                     $e->getLine()
-                ),
-                true
+                )
             );
         }
     }
@@ -98,12 +97,11 @@ class ContractSynchronizer
                 try {
                     $this->updateBalancePerProperty($property, $holding);
                 } catch (\Exception $e) {
-                    $this->logMessage(
+                    $this->logger->alert(
                         sprintf(
                             'MRIBalanceSync Exception: %s. When Update balance for MRI.',
                             $e->getMessage()
-                        ),
-                        true
+                        )
                     );
                 }
             }
@@ -135,7 +133,7 @@ class ContractSynchronizer
         );
         $nextPageLink = $this->residentDataManager->getNextPageLink();
         while ($nextPageLink) {
-            $this->logMessage(sprintf('MRIBalanceSync: get residents by next page link %s', $nextPageLink));
+            $this->logger->info(sprintf('MRIBalanceSync: get residents by next page link %s', $nextPageLink));
             $residentTransactionsByNextPageLink = $this->residentDataManager->getResidentsByNextPageLink(
                 $nextPageLink
             );
@@ -144,7 +142,7 @@ class ContractSynchronizer
         }
 
         if ($residentTransactions) {
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     'MRI ResidentBalanceSynchronizer: Processing resident transactions for property %s of
                              holding %s',
@@ -157,7 +155,7 @@ class ContractSynchronizer
             return;
         }
 
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 'ERROR: Could not load resident transactions MRI for property %s of holding %s',
                 $propertyMapping->getExternalPropertyId(),
@@ -206,7 +204,7 @@ class ContractSynchronizer
                 $externalUnitId,
                 $residentId
             );
-            $this->logMessage($message, true);
+            $this->logger->alert($message);
 
             return null;
         }
@@ -226,7 +224,7 @@ class ContractSynchronizer
             );
 
         if ($contractWaiting) {
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     'MRI ResidentBalanceSynchronizer: Found contract waiting ID: %s',
                     $contractWaiting->getId()
@@ -236,7 +234,7 @@ class ContractSynchronizer
             return $contractWaiting;
         }
 
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 'MRI - could not find contract with property %s, externalUnitId %s, resident %s',
                 $propertyMapping->getExternalPropertyId(),
@@ -278,7 +276,7 @@ class ContractSynchronizer
     {
         $contract->setPaymentAccepted($customer->getPaymentAccepted());
         $contract->setIntegratedBalance($customer->getLeaseBalance());
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 'MRI: payment accepted to %s, balance %s.
                 For ContractID: %s',
@@ -293,14 +291,14 @@ class ContractSynchronizer
     {
         $holdings = $this->getHoldingsForUpdateRentMRI();
         if (empty($holdings)) {
-            $this->logMessage('MRI sync Recurring Charge: No data to update.');
+            $this->logger->info('MRI sync Recurring Charge: No data to update.');
 
             return;
         }
 
         foreach ($holdings as $holding) {
             $this->residentDataManager->setSettings($holding->getExternalSettings());
-            $this->logMessage(
+            $this->logger->info(
                 sprintf('MRI ResidentBalanceSynchronizer start work with holding %s', $holding->getId())
             );
             $this->updateRentForHolding($holding);
@@ -327,12 +325,11 @@ class ContractSynchronizer
                 try {
                     $this->updateRentPerPropertyMapping($propertyMapping, $holding);
                 } catch (\Exception $e) {
-                    $this->logMessage(
+                    $this->logger->alert(
                         sprintf(
                             'MRIRentSync Exception: %s. When Update balance for MRI.',
                             $e->getMessage()
-                        ),
-                        true
+                        )
                     );
                 }
             }
@@ -353,7 +350,7 @@ class ContractSynchronizer
         );
 
         while ($nextPageLink = $this->residentDataManager->getNextPageLink()) {
-            $this->logMessage(sprintf('MRIRentSync: get residents RentRoll by next page link %s', $nextPageLink));
+            $this->logger->info(sprintf('MRIRentSync: get residents RentRoll by next page link %s', $nextPageLink));
             $residentTransactionsByNextPageLink = $this->residentDataManager->getResidentsRentRollByNextPageLink(
                 $nextPageLink
             );
@@ -361,7 +358,7 @@ class ContractSynchronizer
         }
 
         if ($residentTransactions) {
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     'MRI ResidentBalanceSynchronizer: Processing resident RentRoll transactions for property %s of
                              holding %s',
@@ -374,7 +371,7 @@ class ContractSynchronizer
             return;
         }
 
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 'ERROR: Could not load resident RentRoll transactions MRI for property %s of holding %s',
                 $propertyMapping->getExternalPropertyId(),
@@ -422,21 +419,22 @@ class ContractSynchronizer
         /** @var Charge $charge */
         foreach ($charges as $charge) {
             if (strtolower($charge->getFrequency()) !== 'm') {
-                $this->logMessage('Frequency not equals "m"');
+                $this->logger->info(sprintf('Frequency not equals "m" it "%s"', $charge->getFrequency()));
                 continue;
             }
 
             $chargeCode = $charge->getChargeCode();
             if (!in_array($chargeCode, $chargeCodes) && !empty($chargeCodes)) {
-                $this->logMessage('Charge code not in list');
+                $this->logger->info(
+                    sprintf('Charge code(%s) not in list (%s)', $contract->getGroup()->getHolding()->getRecurringCodes)
+                );
                 continue;
             }
 
             $effectiveDate = $charge->getDateTimeEffectiveDate();
             $endDate = $charge->getDateTimeEndDate();
 
-            if (!$this->doesDateFallBetweenDate($effectiveDate, $endDate)) {
-                $this->logMessage('Does not fall between date.');
+            if (!$this->checkDateFallsBetweenDates($effectiveDate, $endDate)) {
                 continue;
             }
 
@@ -444,13 +442,13 @@ class ContractSynchronizer
         }
 
         if ($amount === 0) {
-            $this->logMessage('Amount is 0');
+            $this->logger->info('Amount is 0');
 
             return;
         }
 
         $contract->setRent($amount);
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 'MRI: rent set %s.
                 For ContractID: %s',
@@ -465,7 +463,7 @@ class ContractSynchronizer
      * @param \DateTime|null $endDate
      * @return boolean
      */
-    protected function doesDateFallBetweenDate(\DateTime $startDate = null, \DateTime $endDate = null)
+    protected function checkDateFallsBetweenDates(\DateTime $startDate = null, \DateTime $endDate = null)
     {
         $today = new \DateTime();
         $todayStr = (int) $today->format('Ymd');
@@ -491,17 +489,5 @@ class ContractSynchronizer
         }
 
         return false;
-    }
-
-    /**
-     * @param string $message
-     * @param boolean $alert
-     */
-    protected function logMessage($message, $alert = false)
-    {
-        if ($alert) {
-            $this->logger->alert($message);
-        }
-        $this->logger->info($message);
     }
 }

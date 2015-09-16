@@ -186,7 +186,7 @@ class MRIClientCase extends Base
         $this->assertNotEmpty($resident->getResidentStatus(), 'Status for resident should be filled');
         $this->assertNotEmpty(
             $nextPageLink = $mriResponse->getNextPageLink(),
-            'Next page link for ResidentRentRoll'
+            'Next page link for ResidentRentRoll should be filled'
         );
 
         $mriResponse = $mriClient->getResidentialRentRollByNextPageLink($nextPageLink);
