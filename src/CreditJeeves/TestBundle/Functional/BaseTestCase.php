@@ -290,14 +290,4 @@ abstract class BaseTestCase extends Base
         $this->assertNotNull($li, sprintf('Option with value "%s" not found', $value));
         $li->click();
     }
-
-    /**
-     * @param mixed $value
-     * @param string $name
-     * @return void
-     */
-    protected function assertNotEmptyWithMessage($value, $name)
-    {
-        $this->assertNotEmpty($value, sprintf('%s should be filled', $name));
-    }
 }

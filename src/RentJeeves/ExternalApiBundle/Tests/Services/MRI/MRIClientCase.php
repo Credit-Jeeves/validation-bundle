@@ -169,12 +169,12 @@ class MRIClientCase extends Base
         /** @var Charge $charge */
         $charge = reset($charges);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Charge', $charge);
-        $this->assertNotEmptyWithMessage($charge->getAmount(), 'Amount for charge');
-        $this->assertNotEmptyWithMessage($charge->getBuildingId(), 'Building for charge');
-        $this->assertNotEmptyWithMessage($charge->getUnitId(), 'UnitId for charge');
-        $this->assertNotEmptyWithMessage($charge->getChargeCode(), 'ChargeCode for charge');
-        $this->assertNotEmptyWithMessage($charge->getEffectiveDate(), 'EffectiveDate for charge');
-        $this->assertNotEmptyWithMessage($charge->getPropertyId(), 'PropertyId for charge');
+        $this->assertNotEmpty($charge->getAmount(), 'Amount for charge should be filled');
+        $this->assertNotEmpty($charge->getBuildingId(), 'Building for charge should be filled');
+        $this->assertNotEmpty($charge->getUnitId(), 'UnitId for charge should be filled');
+        $this->assertNotEmpty($charge->getChargeCode(), 'ChargeCode for charge should be filled');
+        $this->assertNotEmpty($charge->getEffectiveDate(), 'EffectiveDate for charge should be filled');
+        $this->assertNotEmpty($charge->getPropertyId(), 'PropertyId for charge should be filled');
         $this->assertInstanceOf(
             'RentJeeves\ExternalApiBundle\Model\MRI\Residents',
             $residents = $value->getResidents()
@@ -182,9 +182,9 @@ class MRIClientCase extends Base
         $residentsArray = $residents->getResidentArray();
         /** @var Resident $resident */
         $resident = reset($residentsArray);
-        $this->assertNotEmptyWithMessage($resident->getResidentId(), 'ResidentId for resident');
-        $this->assertNotEmptyWithMessage($resident->getResidentStatus(), 'Status for resident');
-        $this->assertNotEmptyWithMessage(
+        $this->assertNotEmpty($resident->getResidentId(), 'ResidentId for resident should be filled');
+        $this->assertNotEmpty($resident->getResidentStatus(), 'Status for resident should be filled');
+        $this->assertNotEmpty(
             $nextPageLink = $mriResponse->getNextPageLink(),
             'Next page link for ResidentRentRoll'
         );
