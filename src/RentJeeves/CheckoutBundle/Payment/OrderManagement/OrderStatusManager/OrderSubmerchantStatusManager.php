@@ -242,7 +242,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
 
         $oldPaidTo = clone $contract->getPaidTo();
 
-        $payment = $contract->getActivePayment();
+        $payment = $contract->getActiveRentPayment();
         if ($payment) {
             $date = new DateTime($payment->getPaidFor()->format('c'));
 
@@ -442,7 +442,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
             return;
         }
 
-        $payment = $contract->getActivePayment();
+        $payment = $contract->getActiveRentPayment();
         if (!$payment) {
             return;
         }

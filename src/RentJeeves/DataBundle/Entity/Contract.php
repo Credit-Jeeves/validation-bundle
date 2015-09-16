@@ -692,7 +692,7 @@ class Contract extends Base
             }
         }
 
-        if ($payment = $this->getActivePayment()) {
+        if ($payment = $this->getActiveRentPayment()) {
             $result['isPayment'] = true;
             $result['payment_type'] = $payment->getType();
             $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
@@ -705,17 +705,17 @@ class Contract extends Base
             }
         }
 
-        $result['hasNoRentPayments'] = false;
+        $result['hasCustomPayments'] = false;
 
-        if ($payments = $this->getActiveNotRentPayments() and !$payments->isEmpty()) {
-            $result['hasNoRentPayments'] = true;
+        if ($payments = $this->getActiveCustomPayments() and !$payments->isEmpty()) {
+            $result['hasCustomPayments'] = true;
             foreach ($payments as $payment) {
-                $paymentsResult['amount'] = $payment->getAmount();
-                $paymentsResult['scheduled_date'] = $payment->getNextPaymentDate()->format('m/d/Y');
-                $paymentsResult['pay_for'] = DepositAccountType::title($payment->getDepositAccount()->getType());
-                $paymentsResult['id'] = $payment->getId();
+                $paymentResult['amount'] = $payment->getAmount();
+                $paymentResult['scheduled_date'] = $payment->getNextPaymentDate()->format('m/d/Y');
+                $paymentResult['pay_for'] = DepositAccountType::title($payment->getDepositAccount()->getType());
+                $paymentResult['id'] = $payment->getId();
 
-                $result['noRentPayments'][] = $paymentsResult;
+                $result['customPayments'][] = $paymentResult;
             }
         }
 
@@ -735,7 +735,8 @@ class Contract extends Base
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
         $result['is_allowed_to_pay_anything'] =
-            ($groupSettings->getCanPayAnything() && !$this->getGroup()->getNotRentDepositAccounts()->isEmpty());
+            ($groupSettings->isAllowPayAnything() &&
+                !$this->getGroup()->getNotRentDepositAccountsForCurrentPaymentProcessor()->isEmpty());
         // display only integrated balance
         $result['balance'] = $isIntegrated ? sprintf('$%s', $this->getIntegratedBalance()) : '';
         $result['in_day_range'] = DayRangeValidator::inRange(
@@ -843,12 +844,13 @@ class Contract extends Base
      *
      * @return Payment
      */
-    public function getActivePayment()
+    public function getActiveRentPayment()
     {
         $collection = $this->getPayments()->filter(
             function (Payment $payment) {
                 if (PaymentStatus::ACTIVE === $payment->getStatus() &&
-                    DepositAccountType::RENT === $payment->getDepositAccount()->getType()
+                    (!$payment->getDepositAccount() ||
+                        DepositAccountType::RENT === $payment->getDepositAccount()->getType())
                 ) {
                     return true;
                 }
@@ -869,17 +871,12 @@ class Contract extends Base
     /**
      * @return \Doctrine\Common\Collections\Collection|Payment[]
      */
-    public function getActiveNotRentPayments()
+    public function getActiveCustomPayments()
     {
         return $this->getPayments()->filter(
             function (Payment $payment) {
-                if (PaymentStatus::ACTIVE === $payment->getStatus() &&
-                    DepositAccountType::RENT !== $payment->getDepositAccount()->getType()
-                ) {
-                    return true;
-                }
-
-                return false;
+                return (PaymentStatus::ACTIVE === $payment->getStatus() &&
+                    DepositAccountType::RENT !== $payment->getDepositAccount()->getType());
             }
         );
     }

@@ -1028,7 +1028,10 @@ class PayCase extends BaseTestCase
 
         $this->assertNotEmpty($contract, 'Check fixtures, should be present contract with id 9');
 
-        $this->assertEmpty($contract->getActivePayment(), 'Check fixtures, contract should not have active payments');
+        $this->assertEmpty(
+            $contract->getActiveRentPayment(),
+            'Check fixtures, contract should not have active payments'
+        );
 
         $this->login('tenant11@example.com', 'pass');
 
@@ -1089,7 +1092,10 @@ class PayCase extends BaseTestCase
 
         $em->refresh($contract);
 
-        $this->assertNotEmpty($payment = $contract->getActivePayment(), 'Payment should be created for this contract');
+        $this->assertNotEmpty(
+            $payment = $contract->getActiveRentPayment(),
+            'Payment should be created for this contract'
+        );
 
         $this->assertEquals(2000, $payment->getAmount());
 

@@ -108,11 +108,11 @@ class PaymentSourceController extends Controller
      *      defaults={"formNameSuffix"=null}
      * )
      * @Method({"POST"})
-     * @param string|null $formNameSuffix
      * @param Request $request
+     * @param string|null $formNameSuffix
      * @return JsonResponse
      */
-    public function createSourceAction($formNameSuffix = null, Request $request)
+    public function createSourceAction(Request $request, $formNameSuffix = null)
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser(), $formNameSuffix));
         $paymentAccountType->handleRequest($request);
@@ -146,7 +146,7 @@ class PaymentSourceController extends Controller
             'paymentAccount' => $this->get('jms_serializer')->serialize(
                 $paymentAccountEntity,
                 'array',
-                SerializationContext::create()->setGroups(array('basic'))
+                SerializationContext::create()->setGroups(['basic'])
             ),
             'newAddress' => $this->hasNewAddress($paymentAccountType) ?
                 $this->get('jms_serializer')->serialize(
@@ -164,11 +164,11 @@ class PaymentSourceController extends Controller
      *      defaults={"formNameSuffix"=null}
      * )
      * @Method({"POST"})
-     * @param null $formNameSuffix
      * @param Request $request
+     * @param string|null $formNameSuffix
      * @return JsonResponse
      */
-    public function sourceExistingAction($formNameSuffix = null, Request $request)
+    public function sourceExistingAction(Request $request, $formNameSuffix = null)
     {
         $formType = new PaymentAccountType($this->getUser(), $formNameSuffix);
         $formData = $request->get($formType->getName());

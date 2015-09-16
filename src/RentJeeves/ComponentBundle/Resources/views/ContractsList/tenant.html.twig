@@ -94,8 +94,8 @@
                                     {% else %}
                                         {{ contract.status | upper }}
                                     {% endif %}
-                                    {% if contract.hasNoRentPayments %}
-                                        {% for payment in contract.noRentPayments %}
+                                    {% if contract.hasCustomPayments %}
+                                        {% for payment in contract.customPayments %}
                                             <div class="no-rent-scheduled-payment">
                                                 <p>${{ payment.amount|number_format(2, '.', ',') }}</p>
                                                 {{
@@ -139,7 +139,7 @@
 </div>
 
 {{ render(controller('RjCheckoutBundle:Component:pay')) }}
-{% if canPayAnything %}
+{% if allowPayAnything %}
     {{ render(controller('RjCheckoutBundle:PayAnything:pay')) }}
 {% endif %}
 

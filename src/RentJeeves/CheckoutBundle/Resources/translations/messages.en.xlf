@@ -82,8 +82,8 @@
                 <source>checkout.error.amount.valid</source>
                 <target>Rent amount should be a valid number.</target>
             </trans-unit>
-            <trans-unit id="checkout.error.amount.pay_anything.valid">
-                <source>checkout.error.amount.pay_anything.valid</source>
+            <trans-unit id="checkout.error.amount.pay_anything.invalid">
+                <source>checkout.error.amount.pay_anything.invalid</source>
                 <target>Amount should be a valid number.</target>
             </trans-unit>
             <trans-unit id="checkout.pay_anything.error.payFor.invalid">

@@ -68,10 +68,10 @@ class OrderCreationManager
         $groupSettings = $contract->getGroup()->getGroupSettings();
         $order->setSum($payment->getAmount() + $payment->getOther());
         $order->setUser($paymentAccount->getUser());
-        $order->setPaymentProcessor($payment->getContract()->getGroup()->getGroupSettings()->getPaymentProcessor());
-        $order->setPaymentAccount($payment->getPaymentAccount());
+        $order->setPaymentProcessor($groupSettings->getPaymentProcessor());
+        $order->setPaymentAccount($paymentAccount);
         $order->setDepositAccount($payment->getDepositAccount());
-        $order->setDescriptor($payment->getContract()->getGroup()->getStatementDescriptor());
+        $order->setDescriptor($contract->getGroup()->getStatementDescriptor());
 
         $this->createRentOperations($payment, $order);
 
@@ -105,10 +105,10 @@ class OrderCreationManager
         $groupSettings = $contract->getGroup()->getGroupSettings();
         $order->setSum($payment->getTotal());
         $order->setUser($paymentAccount->getUser());
-        $order->setPaymentProcessor($payment->getContract()->getGroup()->getGroupSettings()->getPaymentProcessor());
-        $order->setPaymentAccount($payment->getPaymentAccount());
+        $order->setPaymentProcessor($groupSettings->getPaymentProcessor());
+        $order->setPaymentAccount($paymentAccount);
         $order->setDepositAccount($payment->getDepositAccount());
-        $order->setDescriptor($payment->getContract()->getGroup()->getStatementDescriptor());
+        $order->setDescriptor($contract->getGroup()->getStatementDescriptor());
 
         $this->createCustomOperation($payment, $order);
 

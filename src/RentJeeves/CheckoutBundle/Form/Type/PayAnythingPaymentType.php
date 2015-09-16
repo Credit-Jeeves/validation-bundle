@@ -31,7 +31,7 @@ class PayAnythingPaymentType extends AbstractType
             [
                 'mapped'=> false,
                 'label' => 'checkout.pay_anything.payFor',
-                'choices' => !empty($options['availablePayFor']) ? $options['availablePayFor'] : [],
+                'choices' => $options['availablePayFor'],
                 'attr' => AttributeGenerator::payForAttrs(),
                 'constraints' => [
                     new NotBlank([
@@ -49,10 +49,10 @@ class PayAnythingPaymentType extends AbstractType
                 'required' => true,
                 'label' => 'checkout.pay_anything.amount',
                 'attr' => AttributeGenerator::amountAttrs(),
-                'invalid_message' => 'checkout.error.amount.pay_anything.valid',
+                'invalid_message' => 'checkout.error.amount.pay_anything.invalid',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'checkout.error.amount.pay_anything.valid',
+                        'message' => 'checkout.error.amount.pay_anything.invalid',
                         'groups'  => ['pay_anything'],
                     ])
                 ]
@@ -154,12 +154,13 @@ class PayAnythingPaymentType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $resolver->setRequired(['oneTimeUntilValue']);
+
         $resolver->setDefaults([
             'cascade_validation' => true,
             'data_class' => 'RentJeeves\DataBundle\Entity\Payment',
             'validation_groups' => ['pay_anything'],
             'availablePayFor' => [],
-            'oneTimeUntilValue' => null,
             'openDay' => 0,
             'closeDay' => 0,
         ]);

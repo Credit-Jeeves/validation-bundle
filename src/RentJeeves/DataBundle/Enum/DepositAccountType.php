@@ -24,7 +24,7 @@ class DepositAccountType extends Enum
         $result = [];
 
         foreach ($depositAccounts as $depositAccount) {
-            $result[$depositAccount->getType()]= self::title($depositAccount->getType());
+            $result[$depositAccount->getType()] = self::title($depositAccount->getType());
         }
 
         return $result;

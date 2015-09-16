@@ -189,15 +189,15 @@ abstract class GroupSettings
      * @var boolean
      * @ORM\Column(
      *     type="boolean",
-     *     name="can_pay_anything",
+     *     name="allow_pay_anything",
      *     options={
-     *         "default":1
+     *         "default":0
      *      }
      * )
      *
      * @Serializer\Exclude
      */
-    protected $canPayAnything = true;
+    protected $allowPayAnything = false;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -483,17 +483,17 @@ abstract class GroupSettings
     /**
      * @return boolean
      */
-    public function getCanPayAnything()
+    public function isAllowPayAnything()
     {
-        return $this->canPayAnything;
+        return $this->allowPayAnything;
     }
 
     /**
-     * @param boolean $canPayAnything
+     * @param boolean $allowPayAnything
      */
-    public function setCanPayAnything($canPayAnything)
+    public function setAllowPayAnything($allowPayAnything)
     {
-        $this->canPayAnything = !!$canPayAnything;
+        $this->allowPayAnything = !!$allowPayAnything;
     }
 
     /**

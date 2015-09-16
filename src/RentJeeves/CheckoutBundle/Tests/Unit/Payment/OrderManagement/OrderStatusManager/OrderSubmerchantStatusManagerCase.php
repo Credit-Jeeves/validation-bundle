@@ -77,6 +77,9 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setPaymentType($paymentType);
+        if ($paymentType !== OrderPaymentType::CASH) {
+            $order->setDepositAccount($contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor());
+        }
 
         for ($i = 0; $i < $countOperations; $i++) {
             $operation = new Operation();
@@ -441,6 +444,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $payment->setStartDate();
         $payment->setPaymentAccount($order->getContract()->getTenant()->getPaymentAccounts()->first());
         $payment->setContract($order->getContract());
+        !$order->getDepositAccount() || $payment->setDepositAccount($order->getDepositAccount());
         $order->getContract()->addPayment($payment);
 
         $paidFor = clone $payment->getPaidFor();
@@ -738,6 +742,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $payment->setStartDate();
         $payment->setPaymentAccount($order->getContract()->getTenant()->getPaymentAccounts()->first());
         $payment->setContract($order->getContract());
+        !$order->getDepositAccount() || $payment->setDepositAccount($order->getDepositAccount());
         $order->getContract()->addPayment($payment);
 
         $paidFor = clone $payment->getPaidFor();
@@ -1114,6 +1119,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $payment->setStartDate();
         $payment->setPaymentAccount($order->getContract()->getTenant()->getPaymentAccounts()->first());
         $payment->setContract($order->getContract());
+        !$order->getDepositAccount() || $payment->setDepositAccount($order->getDepositAccount());
         $order->getContract()->addPayment($payment);
 
         $paidFor = clone $payment->getPaidFor();
@@ -1403,6 +1409,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $payment->setStartDate();
         $payment->setPaymentAccount($order->getContract()->getTenant()->getPaymentAccounts()->first());
         $payment->setContract($order->getContract());
+        !$order->getDepositAccount() || $payment->setDepositAccount($order->getDepositAccount());
         $order->getContract()->addPayment($payment);
 
         $statusManager->setReturned($order);

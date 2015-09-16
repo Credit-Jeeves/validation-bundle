@@ -2,18 +2,18 @@
 {% form_theme payAnythingPaymentType 'RjCoreBundle::form.html.twig' %}
 
 <div id="pay-anything-cancel-popup" class="pricing-popup dashboard-popup properties-popup">
-    <h1>{{ 'checkout.payment.cancel.title' | trans() }}</h1>
+    <h1>{{ 'checkout.payment.cancel.title' | trans }}</h1>
     <div class="clearfix col-box">
         <div class="attention-box pie-el">
-            {{ 'checkout.payment.cancel.text' | trans() }}
+            {{ 'checkout.payment.cancel.text' | trans }}
         </div>
         <div class="row-20"></div>
         <div class="footer-button-box">
             <a class="button" data-bind="attr: { href: cancelUrl }" style="display: inline-block;">
-                <span>{{ 'checkout.payment.cancel.yes' | trans() }}</span>
+                <span>{{ 'checkout.payment.cancel.yes' | trans }}</span>
             </a>
             <button data-bind="click: cancelClose" class="button grey buttonFix">
-                <span>{{ 'checkout.payment.cancel.no' | trans() }}</span>
+                <span>{{ 'checkout.payment.cancel.no' | trans }}</span>
             </button>
         </div>
     </div>

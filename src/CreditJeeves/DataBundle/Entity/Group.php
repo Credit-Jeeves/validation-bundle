@@ -333,7 +333,7 @@ class Group extends BaseGroup
     /**
      * @return \Doctrine\Common\Collections\Collection|DepositAccount[]
      */
-    public function getNotRentDepositAccounts()
+    public function getNotRentDepositAccountsForCurrentPaymentProcessor()
     {
         return $this->getDepositAccounts()->filter(function (DepositAccount $account) {
             return DepositAccountType::RENT !== $account->getType() &&

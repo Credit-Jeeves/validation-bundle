@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\Controller;
 
+use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -10,22 +11,17 @@ use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CheckoutBundle\Form\Type\PayAnythingPaymentType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/checkout/pay-anything")
  */
-class PayAnythingController extends Controller
+class PayAnythingController extends BaseController
 {
     use FormErrors;
 
-    /**
-     * @Template()
-     */
     public function payAction()
     {
         $payAnythingPaymentType = $this->createForm(
@@ -36,7 +32,7 @@ class PayAnythingController extends Controller
 
         return [
             'payAnythingPaymentType' => $payAnythingPaymentType->createView(),
-            'isLocked' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')
+            'isLocked' => $this->getEntityManager()->getRepository('RjDataBundle:Tenant')
                 ->isPaymentProcessorLocked($this->getUser())
         ];
     }
@@ -55,13 +51,13 @@ class PayAnythingController extends Controller
     public function payForLisAction($groupId)
     {
         /** @var Group $group */
-        $group = $this->getDoctrine()->getManager()->getRepository('DataBundle:Group')->find($groupId);
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find($groupId);
 
         if (!$group) {
             throw new \InvalidArgumentException('Group is undefined.');
         }
 
-        $depositAccounts = $group->getNotRentDepositAccounts();
+        $depositAccounts = $group->getNotRentDepositAccountsForCurrentPaymentProcessor();
 
         $depositAccountsList = [];
 
@@ -78,10 +74,13 @@ class PayAnythingController extends Controller
     }
 
     /**
-     * @Route("/payment", name="pay_anything_payment", options={"expose"=true})
+     * @Route("/payment", name="pay_anything_validate_payment", options={"expose"=true})
      * @Method({"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ErrorException
      */
-    public function paymentAction(Request $request)
+    public function validatePaymentAction(Request $request)
     {
         $paymentType = $this->createPaymentForm($request);
         $paymentType->handleRequest($request);
@@ -113,7 +112,7 @@ class PayAnythingController extends Controller
          * @var Contract $contract
          */
         $contractId = $paymentType->get('contractId')->getData();
-        if (!$contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($contractId)) {
+        if (!$contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find($contractId)) {
             throw $this->createNotFoundException('Contract does not exist');
         }
 
@@ -121,7 +120,8 @@ class PayAnythingController extends Controller
          * @var PaymentAccount $paymentAccount
          */
         $accountId = $paymentType->get('paymentAccountId')->getData();
-        if (!$paymentAccount = $this->getDoctrine()->getRepository('RjDataBundle:PaymentAccount')->find($accountId)) {
+        $paymentAccount = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount')->find($accountId);
+        if (!$paymentAccount) {
             throw $this->createNotFoundException('Payment account does not exist');
         }
 
@@ -146,8 +146,7 @@ class PayAnythingController extends Controller
     {
         $contractId = $request->get('contract_id');
         /** @var Contract $contract */
-        $contract = $this->getDoctrine()
-            ->getManager()
+        $contract = $this->getEntityManager()
             ->getRepository('RjDataBundle:Contract')
             ->findOneBy(['id' => $contractId, 'tenant' => $this->getUser()]);
 
@@ -160,11 +159,9 @@ class PayAnythingController extends Controller
             null,
             [
                 'availablePayFor' => DepositAccountType::getAvailableChoices(
-                    $contract->getGroup()->getNotRentDepositAccounts()
+                    $contract->getGroup()->getNotRentDepositAccountsForCurrentPaymentProcessor()
                 ),
                 'oneTimeUntilValue' => $this->container->getParameter('payment_one_time_until_value'),
-                'openDay' => $contract->getGroup()->getGroupSettings()->getOpenDate(),
-                'closeDay' => $contract->getGroup()->getGroupSettings()->getCloseDate(),
             ]
         );
     }
@@ -186,14 +183,14 @@ class PayAnythingController extends Controller
 
         $depositAccount = $contract
             ->getGroup()
-            ->getDepositAccount($depositAccountType, $paymentAccount->getPaymentProcessor());
+            ->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
         if (null !== $depositAccount) {
             $payment->setDepositAccount($depositAccount);
         } else {
             throw $this->createNotFoundException('DepositAccount cannot be null');
         }
 
-        $this->getDoctrine()->getManager()->persist($payment);
-        $this->getDoctrine()->getManager()->flush();
+        $this->getEntityManager()->persist($payment);
+        $this->getEntityManager()->flush($payment);
     }
 }

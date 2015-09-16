@@ -16,7 +16,7 @@ class Version20150911140130 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_group_settings
-                ADD can_pay_anything TINYINT(1) DEFAULT '1' NOT NULL"
+                ADD allow_pay_anything TINYINT(1) DEFAULT '0' NOT NULL"
         );
     }
 
@@ -29,7 +29,7 @@ class Version20150911140130 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_group_settings
-                DROP can_pay_anything"
+                DROP allow_pay_anything"
         );
     }
 }

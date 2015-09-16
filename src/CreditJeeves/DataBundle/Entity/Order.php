@@ -489,11 +489,7 @@ class Order extends Base
         $operationCollection = $this->getOperations()
             ->filter(
                 function (Operation $operation) {
-                    if (OperationType::CUSTOM == $operation->getType()) {
-                        return true;
-                    }
-
-                    return false;
+                    return OperationType::CUSTOM === $operation->getType();
                 }
             );
 
@@ -517,12 +513,14 @@ class Order extends Base
     public function getOtherAmount()
     {
         $result = 0;
-        if ($this->getOtherOperation()) {
-            $result = $this->getOtherOperation()->getAmount();
+        $operation = $this->getOtherOperation();
+        if ($operation) {
+            $result = $operation->getAmount();
         }
 
-        if ($this->getCustomOperation()) {
-            $result += $this->getCustomOperation()->getAmount();
+        $operation = $this->getCustomOperation();
+        if ($operation) {
+            $result += $operation->getAmount();
         }
 
         return number_format($result, 2, '.', '');

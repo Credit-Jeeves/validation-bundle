@@ -86,7 +86,7 @@ class GroupSettingsType extends Base
         );
 
         $builder->add(
-            'canPayAnything',
+            'allowPayAnything',
             'checkbox',
             [
                 'error_bubbling'    => true,

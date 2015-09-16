@@ -117,7 +117,7 @@ class PayController extends Controller
             ->getRepository('RjDataBundle:Contract')
             ->find($contractId);
 
-        if (!$paymentEntity->getId() && $activePayment = $contract->getActivePayment()) {
+        if (!$paymentEntity->getId() && $activePayment = $contract->getActiveRentPayment()) {
             $this->get('logger')->alert('Trying to create duplicate payment for contract #' . $contractId);
 
             return new JsonResponse([

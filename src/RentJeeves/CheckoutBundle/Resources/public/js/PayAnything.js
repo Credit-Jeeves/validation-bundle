@@ -42,7 +42,7 @@ function PayAnything(parent, contract) {
         var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'details':
-                sendData(Routing.generate('pay_anything_payment'), forms[currentStep]);
+                sendData(Routing.generate('pay_anything_validate_payment'), forms[currentStep]);
                 break;
             case 'source':
                 if (!self.payment.paymentAccountId() && !self.isNewPaymentAccount()) {
