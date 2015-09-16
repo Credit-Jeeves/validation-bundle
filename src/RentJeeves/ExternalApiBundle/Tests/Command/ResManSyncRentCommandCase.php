@@ -3,13 +3,13 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\ExternalApiBundle\Command\ResManSyncRecurringChargesCommand;
+use RentJeeves\ExternalApiBundle\Command\ResManSyncRentCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ResManSyncRecurringChargesCommandCase extends BaseTestCase
+class ResManSyncRentCommandCase extends BaseTestCase
 {
     /**
      * @test
@@ -31,7 +31,7 @@ class ResManSyncRecurringChargesCommandCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $application = new Application($this->getKernel());
-        $application->add(new ResManSyncRecurringChargesCommand());
+        $application->add(new ResManSyncRentCommand());
 
         $command = $application->find('api:resman:sync-rent');
         $commandTester = new CommandTester($command);
