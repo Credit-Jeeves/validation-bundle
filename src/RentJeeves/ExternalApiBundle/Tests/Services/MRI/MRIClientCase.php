@@ -101,7 +101,6 @@ class MRIClientCase extends Base
     public function shouldReturnResidents()
     {
         $mriClient = $this->getMriClient();
-        $mriClient->setDebug(false);
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
         $this->assertGreaterThan(
@@ -129,7 +128,6 @@ class MRIClientCase extends Base
     public function shouldPostPayments()
     {
         $mriClient = $this->getMriClient();
-        $mriClient->setDebug(false);
         $order = $this->getOrder();
         $property = $order->getContract()->getProperty();
         /** @var PropertyMapping $propertyMapping */
@@ -160,7 +158,6 @@ class MRIClientCase extends Base
     public function shouldReturnResidentialRentRoll()
     {
         $mriClient = $this->getMriClient();
-        $mriClient->setDebug(false);
         /** @var ResidentialRentRoll $mriResponse */
         $mriResponse = $mriClient->getResidentialRentRoll(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll', $mriResponse);

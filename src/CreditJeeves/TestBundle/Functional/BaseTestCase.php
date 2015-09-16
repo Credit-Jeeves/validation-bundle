@@ -291,6 +291,11 @@ abstract class BaseTestCase extends Base
         $li->click();
     }
 
+    /**
+     * @param mixed $value
+     * @param string $name
+     * @return void
+     */
     protected function assertNotEmptyWithMessage($value, $name)
     {
         $this->assertNotEmpty($value, sprintf('%s should be filled', $name));

@@ -348,7 +348,7 @@ class ContractSynchronizer
      * @param PropertyMapping $propertyMapping
      * @param Holding $holding
      */
-    public function updateRentPerPropertyMapping(PropertyMapping $propertyMapping, Holding $holding)
+    protected function updateRentPerPropertyMapping(PropertyMapping $propertyMapping, Holding $holding)
     {
         $residentTransactions = $this->residentDataManager->getResidentsRentRoll(
             $propertyMapping->getExternalPropertyId()
@@ -440,6 +440,14 @@ class ContractSynchronizer
                 continue;
             }
 
+            $effectiveDate = $charge->getDateTimeEffectiveDate();
+            $endDate = $charge->getEndDate();
+
+            if (!$this->doesDateFallBetweenDate($effectiveDate, $endDate)) {
+                $this->logMessage('Does not fall between date.');
+                continue;
+            }
+
             $amount += $charge->getAmount();
         }
 
@@ -457,6 +465,39 @@ class ContractSynchronizer
                 $contract->getId()
             )
         );
+    }
+
+    /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return boolean
+     */
+    protected function doesDateFallBetweenDate($startDate, $endDate)
+    {
+        $today = new \DateTime();
+        $todayStr = (int) $today->format('Ymd');
+        //both parameter provider
+        if (($startDate instanceof \DateTime && $endDate instanceof \DateTime) &&
+            (int) $startDate->format('Ymd') <= $todayStr && (int) $endDate->format('Ymd') >= $todayStr
+        ) {
+            return true;
+        }
+
+        //only startDate parameter provider
+        if (($startDate instanceof \DateTime && !($endDate instanceof \DateTime)) &&
+            (int) $startDate->format('Ymd') <= $todayStr
+        ) {
+            return true;
+        }
+
+        //only endDate parameter provider
+        if ((!($startDate instanceof \DateTime) && $endDate instanceof \DateTime) &&
+            (int) $endDate->format('Ymd') >= $todayStr
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

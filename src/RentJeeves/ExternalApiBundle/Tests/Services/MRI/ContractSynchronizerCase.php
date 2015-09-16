@@ -19,7 +19,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
         $contract = $repo->find(20);
-        $this->assertNotNull($contract, 'Must find contract');
+        $this->assertNotNull($contract, 'Should have contract in fixtures');
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
@@ -84,7 +84,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
         $contract = $repo->find(20);
-        $this->assertNotNull($contract, 'Must find contract');
+        $this->assertNotNull($contract, 'Should have contract in fixtures');
         $contract->setRent(0);
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
@@ -141,5 +141,40 @@ class ContractSynchronizerCase extends BaseTestCase
         /** @var ContractWaiting $updatedContractWaiting */
         $updatedContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
         $this->assertGreaterThan(0, (int) $updatedContractWaiting->getRent(), 'Balance not updated');
+    }
+
+    public function dateProvider()
+    {
+        return [
+            [$startDate = new \DateTime('-1 day'), $endDate = new \DateTime(), true],
+            [$startDate = new \DateTime('+1 day'), $endDate = new \DateTime(), false],
+            [$startDate = new \DateTime('-1 day'), null, true],
+            [null, $endDate = new \DateTime('-1 day'), false],
+            [null, $endDate = new \DateTime('+1 day'), true],
+            [$startDate = new \DateTime('+1 day'), $endDate = new \DateTime('-1 day'), false],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider dateProvider
+     */
+    public function doesDateFallBetweenDate($startDate, $endDate, $result)
+    {
+        $contractSync = $this->getContainer()->get('mri.contract_sync');
+        $contractSyncReflectionClass = new \ReflectionClass($contractSync);
+
+        $doesDateFallBetweenDateMethod = $contractSyncReflectionClass->getMethod('doesDateFallBetweenDate');
+        $doesDateFallBetweenDateMethod->setAccessible(true);
+
+        $resultExecute = $doesDateFallBetweenDateMethod->invokeArgs(
+            $contractSync,
+            [
+                $startDate,
+                $endDate
+            ]
+        );
+
+        $this->assertEquals($result, $resultExecute);
     }
 }
