@@ -1152,7 +1152,8 @@ fixtures:
       <br />
       {% if batches %}
         {% for batch in batches %}
-        For: {{ batch.depositAccountType | trans }} (Account #{{ batch.accountNumber }})
+        For: {{ batch.depositAccountType | trans }}
+        {% if batch.accountNumber %}(Account #{{ batch.accountNumber }}){% endif %}<br />
         Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
         {% if groupPaymentProcessor == 'heartland' %}
             Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
@@ -1251,7 +1252,8 @@ fixtures:
       <br />
         {% if group.batches %}
           {% for batch in group.batches %}
-          For: {{ batch.depositAccountType | trans }} (Account #{{ batch.accountNumber }})<br />
+          For: {{ batch.depositAccountType | trans }}
+          {% if batch.accountNumber %}(Account #{{ batch.accountNumber }}){% endif %}<br />
           Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
           {% if group.groupPaymentProcessor == 'heartland' %}
               Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />

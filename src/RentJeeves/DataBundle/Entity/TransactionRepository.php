@@ -38,7 +38,7 @@ class TransactionRepository extends EntityRepository
         );
         $query->orderBy('h.batchId', 'DESC');
         $query->innerJoin('h.order', 'o');
-        $query->innerJoin('o.depositAccount', 'd');
+        $query->leftJoin('o.depositAccount', 'd');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');

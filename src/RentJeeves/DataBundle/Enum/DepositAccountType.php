@@ -29,4 +29,9 @@ class DepositAccountType extends Enum
 
         return $result;
     }
+
+    public static function defautVal()
+    {
+        return self::RENT;
+    }
 }

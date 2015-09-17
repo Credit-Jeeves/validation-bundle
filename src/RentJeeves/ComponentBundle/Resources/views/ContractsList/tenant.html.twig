@@ -105,7 +105,8 @@
                                                         '%pay_for%': payment.pay_for | trans
                                                     })
                                                 }}
-                                                <a href="javascript:void(0)"
+                                                <a id="pay-anything-cancel-{{ payment.id }}"
+                                                   href="javascript:void(0)"
                                                    data-bind="click: openPayAnythingCancelPopup.bind($data, {{ payment.id }})">
                                                     {{ 'checkout.pay_anything.payment.cancel' | trans }}
                                                 </a>

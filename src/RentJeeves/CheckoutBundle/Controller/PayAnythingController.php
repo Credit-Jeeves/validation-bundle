@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use RentJeeves\CheckoutBundle\Form\Type\PayAnythingPaymentType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,6 +23,9 @@ class PayAnythingController extends BaseController
 {
     use FormErrors;
 
+    /**
+     * @Template()
+     */
     public function payAction()
     {
         $payAnythingPaymentType = $this->createForm(
