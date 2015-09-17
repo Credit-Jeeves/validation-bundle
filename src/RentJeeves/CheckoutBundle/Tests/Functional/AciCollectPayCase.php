@@ -305,7 +305,7 @@ class AciCollectPayCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
-        $this->page->pressButton($this->payButtonName);
+        $this->page->pressButton($this->payButtonNameForCreate);
 
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
         $this->assertNotNull($payPopup = $payPopup->getParent());
@@ -322,7 +322,7 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
                 'rentjeeves_checkoutbundle_paymenttype_start_date' => $startDate->format('n/j/Y'),
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
