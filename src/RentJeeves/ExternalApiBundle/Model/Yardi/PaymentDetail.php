@@ -159,7 +159,7 @@ class PaymentDetail
     protected function calcDepositDate()
     {
         if (OrderPaymentType::BANK === $this->order->getPaymentType() &&
-            PaymentProcessor::HEARTLAND == $this->order->getPaymentProcessor()
+            PaymentProcessor::HEARTLAND === $this->order->getPaymentProcessor()
         ) {
             $synchronizationStrategy = $this->order
                 ->getContract()
@@ -178,6 +178,12 @@ class PaymentDetail
             ) {
                 return $depositDate;
             }
+        }
+
+        if (OrderPaymentType::CARD === $this->order->getPaymentType() &&
+            PaymentProcessor::HEARTLAND === $this->order->getPaymentProcessor()
+        ) {
+            return BusinessDaysCalculator::getBusinessDate($this->order->getCreatedAt(), 2);
         }
 
         return BusinessDaysCalculator::getNextBusinessDate($this->order->getCreatedAt());
