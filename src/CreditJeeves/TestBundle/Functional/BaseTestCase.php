@@ -27,7 +27,6 @@ abstract class BaseTestCase extends Base
      */
     protected $envPath = '/_test.php/';
     protected $timeout = 15000;
-    
 
     protected function getUrl()
     {

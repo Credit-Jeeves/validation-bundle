@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AMSISyncRecurringChargesCommand extends ContainerAwareCommand
+class AMSISyncRentCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
@@ -14,7 +14,7 @@ class AMSISyncRecurringChargesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('api:amsi:sync-recurring-charges')
+            ->setName('api:amsi:sync-rent')
             ->setDescription(
                 'Fetch all recurring charges for checked AMSI customers and update rent for contract'
             );

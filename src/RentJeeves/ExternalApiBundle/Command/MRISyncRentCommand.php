@@ -6,13 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class MRISyncBalanceCommand extends ContainerAwareCommand
+class MRISyncRentCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('api:mri:sync-balance')
-            ->setDescription('Update resident balances.');
+            ->setName('api:mri:sync-rent')
+            ->setDescription('Update resident rent.');
     }
 
     /**
@@ -24,6 +24,6 @@ class MRISyncBalanceCommand extends ContainerAwareCommand
     {
         $this->getContainer()
             ->get('mri.contract_sync')
-            ->syncBalance();
+            ->syncRecurringCharge();
     }
 }

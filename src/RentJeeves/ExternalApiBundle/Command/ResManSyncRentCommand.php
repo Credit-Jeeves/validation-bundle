@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ResManSyncRecurringChargesCommand extends ContainerAwareCommand
+class ResManSyncRentCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
@@ -14,7 +14,7 @@ class ResManSyncRecurringChargesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('api:resman:sync-recurring-charges')
+            ->setName('api:resman:sync-rent')
             ->setDescription(
                 'Fetch all recurring charges for checked ResMan customers and update rent for contract'
             );

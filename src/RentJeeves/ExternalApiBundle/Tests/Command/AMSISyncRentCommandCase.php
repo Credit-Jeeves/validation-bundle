@@ -4,13 +4,13 @@ namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\ExternalApiBundle\Command\AMSISyncRecurringChargesCommand;
+use RentJeeves\ExternalApiBundle\Command\AMSISyncRentCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\AMSI\AMSIClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class AMSISyncRecurringChargesCommandCase extends BaseTestCase
+class AMSISyncRentCommandCase extends BaseTestCase
 {
     /**
      * @test
@@ -43,9 +43,9 @@ class AMSISyncRecurringChargesCommandCase extends BaseTestCase
         $em->flush();
 
         $application = new Application($this->getKernel());
-        $application->add(new AMSISyncRecurringChargesCommand());
+        $application->add(new AMSISyncRentCommand());
 
-        $command = $application->find('api:amsi:sync-recurring-charges');
+        $command = $application->find('api:amsi:sync-rent');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),
