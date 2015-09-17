@@ -4,8 +4,6 @@ namespace RentJeeves\CheckoutBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PaymentReportCommand extends ContainerAwareCommand
@@ -27,7 +25,7 @@ class PaymentReportCommand extends ContainerAwareCommand
     {
         $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
         $report = $paymentProcessor->loadReport();
-        $result = $this->getContainer()->get('payment_processor.report_synchronizer')->synchronize($report);
+        $result = $this->getContainer()->get('payment_processor.report_synchronizer')->synchronize($report, "HPS");
         $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
     }
 }

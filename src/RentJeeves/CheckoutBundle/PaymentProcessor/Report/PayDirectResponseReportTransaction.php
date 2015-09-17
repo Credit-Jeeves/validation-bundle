@@ -4,7 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 
 class PayDirectResponseReportTransaction extends PaymentProcessorReportTransaction
 {
-    const PAY_DIRECT_RESPONSE_STATUS = 'READY TO DISBURSE';
+    const PAY_DIRECT_RESPONSE_STATUS = 'WAITING FOR FUNDS';
 
     /**
      * @var \DateTime

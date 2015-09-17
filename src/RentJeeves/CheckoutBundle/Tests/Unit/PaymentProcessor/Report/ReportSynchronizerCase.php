@@ -208,7 +208,7 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $report = new PaymentProcessorReport();
         $transaction = new PayDirectResponseReportTransaction();
-        $transaction->setResponseCode('READY TO DISBURSE');
+        $transaction->setResponseCode(PayDirectResponseReportTransaction::PAY_DIRECT_RESPONSE_STATUS);
         $transaction->setTransactionId($outboundTransaction->getTransactionId());
         $transaction->setBatchId(123456789);
         $transaction->setBatchCloseDate($date);
