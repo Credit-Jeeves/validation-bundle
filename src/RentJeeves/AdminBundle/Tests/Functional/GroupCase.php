@@ -145,7 +145,7 @@ class GroupCase extends BaseTestCase
         $this->assertTrue(
             $groupSettings->getPayBalanceOnly(),
             'Should be set pay_balance_only setting'
-        );;
+        );
     }
 
     /**

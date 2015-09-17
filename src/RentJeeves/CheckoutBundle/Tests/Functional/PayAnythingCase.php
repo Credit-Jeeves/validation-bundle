@@ -116,7 +116,7 @@ class PayAnythingCase extends BaseTestCase
         $this->session->wait($this->timeout, '(document.readyState == "complete")'); // wait reload page
 
         $this->assertNotNull(
-            $dashboardPayments = $this->page->findAll('css','div.no-rent-scheduled-payment'),
+            $dashboardPayments = $this->page->findAll('css', 'div.no-rent-scheduled-payment'),
             'Should be present scheduled payment on dashboard'
         );
 
