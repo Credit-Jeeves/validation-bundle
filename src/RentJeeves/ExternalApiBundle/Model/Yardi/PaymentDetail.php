@@ -180,9 +180,9 @@ class PaymentDetail
             }
         }
 
-        if(OrderPaymentType::CARD === $this->order->getPaymentType() &&
+        if (OrderPaymentType::CARD === $this->order->getPaymentType() &&
             PaymentProcessor::HEARTLAND === $this->order->getPaymentProcessor()
-        ){
+        ) {
             return BusinessDaysCalculator::getBusinessDate($this->order->getCreatedAt(), 2);
         }
 
