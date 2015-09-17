@@ -401,6 +401,10 @@
                 <source>checkout.error.csc.empty</source>
                 <target>CSC is required.</target>
             </trans-unit>
+            <trans-unit id="checkout.error.csc.type">
+                <source>checkout.error.csc.type</source>
+                <target>CSC should be only numbers.</target>
+            </trans-unit>
             <trans-unit id="checkout.csc.help">
                 <source>checkout.csc.help</source>
                 <target>This is a 3 number code found on the signature strip for Visa and MasterCard, or a 4 number code found on the top right of American Express.</target>

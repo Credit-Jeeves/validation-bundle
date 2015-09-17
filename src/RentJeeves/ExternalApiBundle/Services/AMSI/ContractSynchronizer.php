@@ -315,7 +315,7 @@ class ContractSynchronizer
         $contract->setPaymentAccepted($disallow);
         $currentExternalLeaseId = $contract->getExternalLeaseId();
         if (empty($currentExternalLeaseId)) {
-            $contract->setExternalLeaseId($lease->getExternalUnitId());
+            $contract->setExternalLeaseId($externalLeaseId);
         }
         $contract->setIntegratedBalance($balance);
         $this->logMessage(
