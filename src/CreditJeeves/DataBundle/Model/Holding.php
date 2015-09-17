@@ -691,7 +691,12 @@ abstract class Holding
             return [];
         }
 
-        return explode(',', $this->recurringCodes);
+        $recurringCodes = explode(',', $this->recurringCodes);
+        foreach ($recurringCodes as $key => $code) {
+            $recurringCodes[$key] = trim($code);
+        }
+
+        return $recurringCodes;
     }
 
     /**
