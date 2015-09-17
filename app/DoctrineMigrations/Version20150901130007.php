@@ -85,8 +85,10 @@ class Version20150901130007 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_deposit_account
-                DROP holding_id,
-                DROP account_number"
+                DROP holding_id"
+        );
+        $this->addSql(
+            "ALTER TABLE rj_deposit_account CHANGE account_number account_number INT(11) DEFAULT NULL"
         );
     }
 }
