@@ -4,7 +4,6 @@ namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
 use ACI\Utils\OldProfilesStorage;
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -38,7 +37,6 @@ class VirtualTerminalCase extends BaseTestCase
      */
     public function chargeHeartland()
     {
-        $this->markTestSkipped('Skipped until RT-1335');
         $paymentProcessor = PaymentProcessor::HEARTLAND;
         $this->setDefaultSession('selenium2');
 
@@ -182,7 +180,6 @@ JS;
      */
     public function chargeAciCollectPay()
     {
-        $this->markTestSkipped('Skipped until RT-1335');
         $paymentProcessor = PaymentProcessor::ACI;
         $this->setDefaultSession('selenium2');
 
@@ -323,12 +320,8 @@ JS;
         );
         /** @var OrderSubmerchant $order */
         $order = reset($ordersAfter);
-        /** @var Operation $operation */
-        $operation = $order->getOperations()->last();
-        $group = $operation->getGroup();
-
         $date = new \DateTime();
-        $expectedBatchId = sprintf('%dB%s', $group->getId(), $date->format('Ymd'));
+        $expectedBatchId = sprintf('%dB%s', $order->getDepositAccount()->getId(), $date->format('Ymd'));
 
         $this->assertEquals($expectedBatchId, $order->getTransactions()->first()->getBatchId());
     }
