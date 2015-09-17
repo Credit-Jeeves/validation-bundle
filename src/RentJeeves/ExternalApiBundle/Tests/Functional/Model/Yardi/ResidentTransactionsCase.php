@@ -3,7 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Functional\Model\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\YardiSettings;
@@ -67,20 +66,17 @@ class ResidentTransactionsCase extends BaseTestCase
         $this->assertNotNull($yardiSettings, 'YardiSettings not found');
         $yardiSettings->setPostMonthNode($postMonthNode);
         $yardiSettings->setSynchronizationStrategy($syncStrategy);
-        $em->flush($yardiSettings);
-        /** @var Group $group */
-        $group = $em->find('DataBundle:Group', 24);
-        $this->assertNotNull($group, 'Group with ID#24 not found');
-        $group->getGroupSettings()->setPaymentProcessor($paymentProcessor);
-        $em->flush($group->getGroupSettings());
+
         /** @var Order $order */
         $order = $em->find('DataBundle:Order', 2);
         $this->assertNotNull($order, 'Order with ID#2 not found');
 
         $order->setCreatedAt($createdAt);
+        $order->setPaymentProcessor($paymentProcessor);
         $order->getCompleteTransaction()->setDepositDate($depositedAt);
         $order->setPaymentType($paymentType);
-        $em->flush($order);
+
+        $em->flush();
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);
@@ -149,7 +145,7 @@ class ResidentTransactionsCase extends BaseTestCase
                 OrderPaymentType::CARD,
                 new \DateTime('2015-12-05'),
                 new \DateTime('2016-01-01'),
-                '<PostMonth>2015-12-07</PostMonth>' // next business day for HPS card
+                '<PostMonth>2015-12-08</PostMonth>' // +2 business days for HPS card
             ],
             [
                 YardiPostMonthOption::TRANSACTION_DATE,
