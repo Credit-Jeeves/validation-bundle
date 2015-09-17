@@ -16,11 +16,8 @@ class Version20150901130007 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_deposit_account
-                ADD holding_id BIGINT DEFAULT NULL"
-        );
-
-        $this->addSql(
-            "ALTER TABLE rj_deposit_account CHANGE account_number account_number VARCHAR(255) DEFAULT NULL"
+                ADD holding_id BIGINT DEFAULT NULL,
+                ADD account_number VARCHAR(255) DEFAULT NULL"
         );
 
         $this->addSql(
@@ -85,10 +82,8 @@ class Version20150901130007 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_deposit_account
-                DROP holding_id"
-        );
-        $this->addSql(
-            "ALTER TABLE rj_deposit_account CHANGE account_number account_number INT(11) DEFAULT NULL"
+                DROP holding_id,
+                DROP account_number"
         );
     }
 }
