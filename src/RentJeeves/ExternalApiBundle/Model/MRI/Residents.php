@@ -31,5 +31,4 @@ class Residents
     {
         $this->residentArray = $residentArray;
     }
-
 }

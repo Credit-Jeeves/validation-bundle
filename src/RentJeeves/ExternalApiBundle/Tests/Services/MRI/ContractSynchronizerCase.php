@@ -168,7 +168,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $contractSync = $this->getContainer()->get('mri.contract_sync');
         $contractSyncReflectionClass = new \ReflectionClass($contractSync);
 
-        $doesDateFallBetweenDateMethod = $contractSyncReflectionClass->getMethod('doesDateFallBetweenDate');
+        $doesDateFallBetweenDateMethod = $contractSyncReflectionClass->getMethod('checkDateFallsBetweenDates');
         $doesDateFallBetweenDateMethod->setAccessible(true);
 
         $resultExecute = $doesDateFallBetweenDateMethod->invokeArgs(

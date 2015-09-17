@@ -211,8 +211,7 @@ class ContractRepository extends EntityRepository
         $sortOrder = 'ASC',
         $searchField = '',
         $searchString = ''
-    )
-    {
+    ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
@@ -248,8 +247,7 @@ class ContractRepository extends EntityRepository
         $sortOrder = 'ASC',
         $searchField = 'p.street',
         $searchString = ''
-    )
-    {
+    ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
@@ -386,8 +384,7 @@ class ContractRepository extends EntityRepository
     public function getPaymentsToLandlord(
         $orderStatus = array(OrderStatus::COMPLETE),
         $orderType = array(OrderPaymentType::BANK, OrderPaymentType::CARD)
-    )
-    {
+    ) {
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
@@ -511,8 +508,7 @@ class ContractRepository extends EntityRepository
     public function getAllLateContractsByHolding(
         Holding $holding,
         $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED)
-    )
-    {
+    ) {
         $query = $this->createQueryBuilder('c');
         $query->leftJoin('c.operations', 'op');
         $query->leftJoin('op.order', 'o');
@@ -580,8 +576,7 @@ class ContractRepository extends EntityRepository
         Tenant $tenant,
         Group $group = null,
         Holding $holding = null
-    )
-    {
+    ) {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
@@ -627,8 +622,7 @@ class ContractRepository extends EntityRepository
         $propertyId = null,
         Group $group = null,
         Holding $holding = null
-    )
-    {
+    ) {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
@@ -1038,8 +1032,7 @@ class ContractRepository extends EntityRepository
     public function findByTenantIdInvertedStatusesForPayments(
         $tenantId,
         $statuses = array(ContractStatus::DELETED)
-    )
-    {
+    ) {
         $query = $this->createQueryBuilder('c');
         $query->leftJoin('c.holding', 'h');
         $query->leftJoin('c.property', 'p');
@@ -1087,8 +1080,7 @@ class ContractRepository extends EntityRepository
         PropertyMapping $propertyMapping,
         $residentId,
         $externalUnitId
-    )
-    {
+    ) {
         $query = $this->createQueryBuilder('c');
         $query->select('c');
         $query->innerJoin('c.unit', 'u');
@@ -1129,8 +1121,7 @@ class ContractRepository extends EntityRepository
         PropertyMapping $propertyMapping,
         $residentId,
         $externalUnitId
-    )
-    {
+    ) {
         return $this->createQueryBuilder('c')
             ->innerJoin('c.unit', 'u')
             ->innerJoin('u.unitMapping', 'um')
@@ -1166,8 +1157,7 @@ class ContractRepository extends EntityRepository
         Property $property,
         $residentId,
         $unitName
-    )
-    {
+    ) {
         $query = $this->createQueryBuilder('c');
         $query->select('c');
         $query->innerJoin('c.unit', 'u');
@@ -1207,8 +1197,7 @@ class ContractRepository extends EntityRepository
         Holding $holding,
         Property $property,
         $residentId
-    )
-    {
+    ) {
         $query = $this->createQueryBuilder('c');
         $query->select('c')
             ->innerJoin('c.group', 'g')

@@ -124,5 +124,4 @@ class ResidentDataManager
 
         return $mriResponse->getValues();
     }
-
 }
