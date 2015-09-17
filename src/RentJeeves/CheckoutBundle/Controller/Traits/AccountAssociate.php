@@ -26,17 +26,18 @@ trait AccountAssociate
      * association between the paymentAccount and the group's depositAccount.
      *
      * @param  PaymentAccount $paymentAccount
-     * @param  Group          $group
-     * @return Boolean
+     * @param  Group $group
+     * @param  string $depositAccountType
+     * @return bool
      */
-    protected function ensureAccountAssociation(PaymentAccount $paymentAccount, Group $group)
+    protected function ensureAccountAssociation(PaymentAccount $paymentAccount, Group $group, $depositAccountType)
     {
         if ($paymentAccount->getPaymentProcessor() !== PaymentProcessor::HEARTLAND) {
             return true;
         }
 
         $em = $this->getDoctrine()->getManager();
-        if (null === $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor()) {
+        if (null === $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType)) {
             throw new \RuntimeException('Cannot register to a group without deposit account.');
         }
         if (null == $registerToMerchantName = $depositAccount->getMerchantName()) {

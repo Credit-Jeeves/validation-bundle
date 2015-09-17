@@ -24,7 +24,11 @@
     </div>
 </div>
 <div data-bind="visible: isNewPaymentAccount()">
-    {{ render(controller('RjCheckoutBundle:PaymentSource:source')) }}
+    {% if form_name_suffix is defined %}
+        {{ render(controller('RjCheckoutBundle:PaymentSource:source', {'formNameSuffix' : form_name_suffix})) }}
+    {% else %}
+        {{ render(controller('RjCheckoutBundle:PaymentSource:source')) }}
+    {% endif %}
     <p class="note" data-bind="visible: getFee">
         <strong data-bind="text: getFeeNote, i18n: {'FEE': getFeeText}"></strong>
         <i data-bind="attr: {'title': getFeeNoteHelp}" class="help after-checkbox pie-el tooltip-link">

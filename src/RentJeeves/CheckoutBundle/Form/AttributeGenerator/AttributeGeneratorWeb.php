@@ -4,12 +4,18 @@ namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
 class AttributeGeneratorWeb extends AttributeGenerator
 {
-    public function isMobile()
+    /**
+     * {@inheritdoc}
+     */
+    public static function isMobile()
     {
         return false;
     }
 
-    public function amountAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function amountAttrs()
     {
         return array_merge(
             parent::amountAttrs(),
@@ -20,7 +26,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function paidForAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function paidForAttrs()
     {
         return array_merge(
             parent::paidForAttrs(),
@@ -34,7 +43,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function amountOtherAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function amountOtherAttrs()
     {
         return array_merge(
             parent::amountOtherAttrs(),
@@ -45,7 +57,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function totalAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function totalAttrs()
     {
         return array_merge(
             parent::totalAttrs(),
@@ -58,7 +73,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function typeAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function typeAttrs()
     {
         return array_merge(
             parent::typeAttrs(),
@@ -104,7 +122,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function frequencyAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function frequencyAttrs()
     {
         return array_merge(
             parent::frequencyAttrs(),
@@ -118,7 +139,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function dueDateAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function dueDateAttrs()
     {
         return array_merge(
             parent::dueDateAttrs(),
@@ -133,7 +157,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function startMonthAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function startMonthAttrs()
     {
         return array_merge(
             parent::startMonthAttrs(),
@@ -153,7 +180,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function startYearAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function startYearAttrs()
     {
         return array_merge(
             parent::startYearAttrs(),
@@ -173,7 +203,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function startDateAttrs($isPastCutoffTime = false)
+    /**
+     * {@inheritdoc}
+     */
+    public static function startDateAttrs($isPastCutoffTime = false)
     {
         $minDate = $isPastCutoffTime ? new \DateTime('+1 day') : new \DateTime();
 
@@ -195,7 +228,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function endsAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function endsAttrs()
     {
         return array_merge(
             parent::endsAttrs(),
@@ -208,7 +244,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function endMonthAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function endMonthAttrs()
     {
         return array_merge(
             parent::endMonthAttrs(),
@@ -222,7 +261,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function endYearAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function endYearAttrs()
     {
         return array_merge(
             parent::endYearAttrs(),
@@ -236,7 +278,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function paymentAccountIdAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function paymentAccountIdAttrs()
     {
         return array_merge(
             parent::paymentAccountIdAttrs(),
@@ -246,7 +291,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function contractIdAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function contractIdAttrs()
     {
         return array_merge(
             parent::contractIdAttrs(),
@@ -256,7 +304,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function idAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function idAttrs()
     {
         return array_merge(
             parent::idAttrs(),
@@ -266,7 +317,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function submitAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function submitAttrs()
     {
         return array_merge(
             parent::submitAttrs(),
@@ -276,7 +330,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
         );
     }
 
-    public function paymentAccountAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function paymentAccountAttrs()
     {
         return array_merge(
             parent::paymentAccountAttrs(),

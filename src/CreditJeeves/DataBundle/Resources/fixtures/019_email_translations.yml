@@ -624,14 +624,14 @@ fixtures:
     translatable: email_24
     locale: %locale%
     property: subject
-    value: Rent Payment Receipt
+    value: RentTrack Payment Receipt
   translation_24_body:
     translatable: email_24
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Your Rent is Paid{% endblock %}
+      {% block h1 %}Your Payment is Complete{% endblock %}
       {% block email %}
       {% if nameTenant %}
         Hi {{ nameTenant }}! <br /><br />
@@ -639,7 +639,7 @@ fixtures:
         Hello!  <br /><br />
       {% endif %}
 
-      Your rent payment to {{ groupName }} was sent just now. They should see the deposit in their account in 1-3 days.
+      Your {{ depositType | trans }} payment to {{ groupName }} was sent just now. They should see the deposit in their account in 1-3 days.
 
       The details:
 
@@ -1149,10 +1149,11 @@ fixtures:
       {% block email %}
       Dear {{ landlordFirstName }}, <br />
       Your batch deposit report for <b>{{ date | date("m/d/Y") }}</b> for group <b>{{ groupName }}</b>
-      {% if accountNumber %}(Account #{{ accountNumber }}){% endif %} is below:<br />
       <br />
       {% if batches %}
         {% for batch in batches %}
+        For: {{ batch.depositAccountType | trans }}
+        {% if batch.accountNumber %}(Account #{{ batch.accountNumber }}){% endif %}<br />
         Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
         {% if groupPaymentProcessor == 'heartland' %}
             Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
@@ -1251,6 +1252,8 @@ fixtures:
       <br />
         {% if group.batches %}
           {% for batch in group.batches %}
+          For: {{ batch.depositAccountType | trans }}
+          {% if batch.accountNumber %}(Account #{{ batch.accountNumber }}){% endif %}<br />
           Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
           {% if group.groupPaymentProcessor == 'heartland' %}
               Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />

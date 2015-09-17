@@ -28,6 +28,8 @@ class TransactionRepository extends EntityRepository
             date_format(h.createdAt, '%m/%d/%Y') as dateInitiated,
             o.paymentType as paymentType,
             o.status as orderStatus,
+            d.accountNumber as accountNumber,
+            d.type as depositAccountType,
             h.status as transactionStatus,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
             CONCAT_WS(' ', prop.number, prop.street) as property,
@@ -36,6 +38,7 @@ class TransactionRepository extends EntityRepository
         );
         $query->orderBy('h.batchId', 'DESC');
         $query->innerJoin('h.order', 'o');
+        $query->leftJoin('o.depositAccount', 'd');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');

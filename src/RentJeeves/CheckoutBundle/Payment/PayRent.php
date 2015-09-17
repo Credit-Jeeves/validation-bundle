@@ -13,6 +13,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
@@ -87,7 +88,11 @@ class PayRent
                 $payment->getId()
             )
         );
-        $order = $this->orderCreationManager->createRentOrder($payment);
+        if (DepositAccountType::RENT === $payment->getDepositAccount()->getType()) {
+            $order = $this->orderCreationManager->createRentOrder($payment);
+        } else {
+            $order = $this->orderCreationManager->createCustomOrder($payment);
+        }
 
         $this->orderStatusManager->setNew($order);
 

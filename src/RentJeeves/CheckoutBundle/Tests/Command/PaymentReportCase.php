@@ -10,6 +10,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
@@ -277,12 +278,16 @@ class PaymentReportCase extends BaseTestCase
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(array('email' => 'tenant11@example.com'));
         $order->setUser($tenant);
 
+        /** @var Contract $contract */
+        $contract = $tenant->getContracts()->last();
+        $order->setDepositAccount($contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor());
+
         $operation = new Operation();
         $operation->setAmount(999);
         $operation->setType(OperationType::RENT);
         $operation->setOrder($order);
         $operation->setPaidFor(new DateTime('8/1/2014'));
-        $operation->setContract($tenant->getContracts()->last());
+        $operation->setContract($contract);
 
         $transaction = new HeartlandTransaction();
         $transaction->setIsSuccessful(true);

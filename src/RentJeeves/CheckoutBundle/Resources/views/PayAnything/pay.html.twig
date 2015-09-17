@@ -1,9 +1,7 @@
-{% form_theme paymentType 'RjCoreBundle::form.html.twig' %}
-{% form_theme paymentBalanceOnlyType 'RjCoreBundle::form.html.twig' %}
-{% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
+<script src="{{ asset('bundles/rjcheckout/js/PayAnything.js') }}"></script>
+{% form_theme payAnythingPaymentType 'RjCoreBundle::form.html.twig' %}
 
-
-<div id="payment-account-cancel" class="pricing-popup dashboard-popup properties-popup">
+<div id="pay-anything-cancel-popup" class="pricing-popup dashboard-popup properties-popup">
     <h1>{{ 'checkout.payment.cancel.title' | trans }}</h1>
     <div class="clearfix col-box">
         <div class="attention-box pie-el">
@@ -21,31 +19,19 @@
     </div>
 </div>
 
-<div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup verify-min">
-    <h1 data-bind="visible: !payment.id()">{{ 'pay_popup.title' | trans }}</h1>
-    <h1 data-bind="visible: payment.id()">{{ 'pay_popup.title.edit' | trans }}</h1>
+<div id="pay-anything-popup" class="pricing-popup dashboard-popup properties-popup payments-popup verify-min">
+    <h1 data-bind="visible: !payment.id()">{{ 'pay_anything_popup.title' | trans }}</h1>
+    <h1 data-bind="visible: payment.id()">{{ 'pay_anything_popup.title.edit' | trans }}</h1>
     <div class="clearfix col-box attention-container">
 
-        <ul class="steps clearfix"
-            data-bind="css: isPidVerificationSkipped() == false ? 'steps clearfix' : 'steps clearfix isPidVerificationSkipped'"
-                >
+        <ul class="steps clearfix">
             <li class="step1" data-bind="css: { 'active': 'details' == step(), check: isPassed('details') }">
                 <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
             </li>
             <li class="step2" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
-            <li class="step3"
-                data-bind="
-                css: {
-                    'active': 'user' == step() || 'questions' == step(),
-                    check: isPassed('questions')
-                },
-                visible: isPidVerificationSkipped() == false
-                ">
-                <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
-            </li>
-            <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
+            <li class="step3" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
                 <span class="step"><span>{{ 'pay_popup.step.4' | trans }}</span></span>
             </li>
         </ul>
@@ -60,23 +46,15 @@
         </div>
 
         <div class="col" data-bind="visible: 'details' == step()">
-            {% include 'RjCheckoutBundle:Component:_step-1-details.html.twig' %}
+            {% include 'RjCheckoutBundle:PayAnything:_step-1-details.html.twig' %}
         </div>
 
-        <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
-            {% include 'RjCheckoutBundle:Component:_step-2-source.html.twig' %}
-        </div>
-
-        <div class="col" data-bind="visible: 'user' == step()">
-            {% include 'RjCheckoutBundle:Component:_step-3-user.html.twig' %}
-        </div>
-
-        <div class="col long-label" data-bind="visible: 'questions' == step()">
-            {% include 'RjCheckoutBundle:Component:_step-4-questions.html.twig' %}
+        <div class="col long-label" data-bind="visible: 'source' == step()">
+            {% include 'RjCheckoutBundle:PayAnything:_step-2-source.html.twig' %}
         </div>
 
         <div data-bind="visible: 'pay' == step() || 'finish' == step()" class="pay-step">
-            {% include 'RjCheckoutBundle:Component:_step-5-pay.html.twig' %}
+            {% include 'RjCheckoutBundle:PayAnything:_step-3-pay.html.twig' %}
         </div>
     </div>
 
@@ -84,7 +62,7 @@
         <button class="button grey fixed" data-bind="visible: 'details' != step() && 'finish' != step(), click: previous">
             <span>{{ 'pay_popup.step.previous' | trans }}</span>
         </button>
-        <button class="button fixed" data-bind="visible: 'pay' != step() && 'finish' != step(), click: next, css: {'grey': !$root.isValidUser() }">
+        <button class="button fixed" data-bind="visible: 'pay' != step() && 'finish' != step(), click: next">
             <span>{{ 'pay_popup.step.next' | trans }}</span>
         </button>
         <button class="button" data-bind="visible: 'pay' == step(), click: next">
@@ -93,9 +71,6 @@
         <button class="button" data-bind="visible: 'finish' == step(), click: next">
             <span>{{ 'pay_popup.close' | trans }}</span>
         </button>
-        <a href="#" class="link removePropertyConfirm" data-bind="visible: 'details' == step() && payment.id(), click: cancelDialog">
-            {{ 'checkout.payment.cancel' | trans | raw }}
-        </a>
         {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': false}) }}
     </div>
 </div>

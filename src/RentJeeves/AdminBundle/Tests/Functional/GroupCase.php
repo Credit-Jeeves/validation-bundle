@@ -62,7 +62,7 @@ class GroupCase extends BaseTestCase
         $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
         $menu[1]->click();
         $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(9, $checkbox);
+        $this->assertCount(10, $checkbox);
         $checkbox[0]->check(); //remove one deposit account
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
@@ -76,20 +76,41 @@ class GroupCase extends BaseTestCase
     public function settingFirst()
     {
         $this->load(true);
+        $this->setDefaultSession('selenium2');
+        /** @var Group $group */
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(['name' => '700Credit']);
+
+        $this->assertNotEmpty($group, 'Check fixtures group with name 700Credit not found');
+        $groupSettings = $group->getGroupSettings();
+
+        $this->assertFalse(
+            $groupSettings->getIsIntegrated(),
+            sprintf('Check fixtures group #%d should not be integrated', $group->getId())
+        );
+        $this->assertFalse(
+            $groupSettings->getPayBalanceOnly(),
+            sprintf('Check fixtures group #%d should not have pay balance setting', $group->getId())
+        );
+
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
 
         $tableBlock->clickLink('link_list');
 
-        $this->assertNotNull($edit = $this->page->findAll('css', 'a.edit_link'));
-        $edit[4]->click();
+        $this->assertNotNull($editLink = $this->page->find('css', 'a:contains("700Credit")'));
+        $editLink->click();
 
         $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[4]->click();
+        $menu[4]->click(); // go to settings tag
 
-        $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(7, $checkbox);
-        $checkbox[3]->check(); //Check pay balance only
+        $this->assertNotNull(
+            $payBalanceOnlyCheckBox = $this->page->find(
+                'css',
+                'input[type=checkbox][id*="_groupSettings_payBalanceOnly"]'
+            ),
+            'Pay Balance Only settings not found'
+        );
+        $payBalanceOnlyCheckBox->check();
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
 
@@ -99,15 +120,32 @@ class GroupCase extends BaseTestCase
         $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
         $menu[4]->click();
 
-        $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(7, $checkbox);
-        $checkbox[1]->check();  //Check is integrated
-        $checkbox[3]->check(); //Check pay balance only
+        $this->assertNotNull(
+            $isIntegratedCheckBox = $this->page->find(
+                'css',
+                'input[type=checkbox][id*="_groupSettings_isIntegrated"]'
+            ),
+            'Integrated settings not found'
+        );
+
+        $payBalanceOnlyCheckBox->check();
+        $isIntegratedCheckBox->check();
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
 
         $this->assertNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
+
+        $this->getEntityManager()->refresh($group);
+        $groupSettings = $group->getGroupSettings();
+        $this->assertTrue(
+            $groupSettings->getIsIntegrated(),
+            'Should be set is_integrated setting'
+        );
+        $this->assertTrue(
+            $groupSettings->getPayBalanceOnly(),
+            'Should be set pay_balance_only setting'
+        );
     }
 
     /**
@@ -116,21 +154,42 @@ class GroupCase extends BaseTestCase
     public function settingSecond()
     {
         $this->load(true);
+        $this->setDefaultSession('selenium2');
+        /** @var Group $group */
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(['name' => 'Test Rent Group']);
+
+        $this->assertNotEmpty($group, 'Check fixtures group with name Test Rent Group not found');
+        $groupSettings = $group->getGroupSettings();
+
+        $this->assertTrue(
+            $groupSettings->getIsIntegrated(),
+            sprintf('Check fixtures group #%d should be integrated', $group->getId())
+        );
+        $this->assertFalse(
+            $groupSettings->getPayBalanceOnly(),
+            sprintf('Check fixtures group #%d should not have pay balance setting', $group->getId())
+        );
+
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
 
         $tableBlock->clickLink('link_list');
 
-        $this->assertNotNull($edit = $this->page->findAll('css', 'a.edit_link'));
-        $edit[8]->click();
+        $this->assertNotNull($editLink = $this->page->find('css', 'a:contains("Test Rent Group")'));
+        $editLink->click();
 
         $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[4]->click();
+        $menu[4]->click(); // go to settings tag
 
-        $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(11, $checkbox); // TODO check only current tab
-        $checkbox[5]->check();  //Check is integrated
-        $checkbox[7]->check(); //Check pay balance only
+        $this->assertNotNull(
+            $payBalanceOnlyCheckBox = $this->page->find(
+                'css',
+                'input[type=checkbox][id*="_groupSettings_payBalanceOnly"]'
+            ),
+            'Pay Balance Only settings not found'
+        );
+
+        $payBalanceOnlyCheckBox->click();
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();

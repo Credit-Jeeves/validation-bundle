@@ -123,7 +123,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
         $this->assertCount(1, $this->plugin->getPreSendMessages());
-        $this->assertEquals('Rent Payment Receipt', $this->plugin->getPreSendMessage(0)->getSubject());
+        $this->assertEquals('RentTrack Payment Receipt', $this->plugin->getPreSendMessage(0)->getSubject());
 
         $this->plugin->clean();
 

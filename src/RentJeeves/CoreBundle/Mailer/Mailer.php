@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class Mailer extends BaseMailer
@@ -226,7 +227,7 @@ class Mailer extends BaseMailer
      *
      * @return bool
      */
-    public function sendRentReceipt(Order $order)
+    public function sendPaymentReceipt(Order $order)
     {
         $tenant = $order->getUser();
         $history = $order->getCompleteTransaction();
@@ -246,6 +247,7 @@ class Mailer extends BaseMailer
             'otherAmount' => $order->getOtherAmount(),
             'paymentProcessor' => $order->getPaymentProcessor(),
             'type' => $order->getPaymentType(),
+            'depositType' => DepositAccountType::title($order->getDepositAccount()->getType()),
             'statementDescriptor' => $this->getStatementDescriptor($order),
         ];
 
@@ -547,7 +549,6 @@ class Mailer extends BaseMailer
             'date' => $date,
             'groupName' => $group->getName(),
             'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
-            'accountNumber' => $group->getRentAccountNumberPerCurrentPaymentProcessor(),
             'batches' => $batches,
             'returns' => $returns,
             'resend' => $resend,

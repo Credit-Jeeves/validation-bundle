@@ -7,6 +7,13 @@ fixtures:
         type: rent
         holding: rjHolding_1
         accountNumber: 15235678
+    DepositAccount_1_app_fee:
+        merchantName: Monticeto_Percent
+        group:  RentGroup_1
+        status: complete
+        type: application_fee
+        holding: rjHolding_1
+        accountNumber: 15235698
     DepositAccount_2:
         merchantName: Monticeto_Percent
         group: RentGroup_2

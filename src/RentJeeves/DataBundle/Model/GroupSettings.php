@@ -186,6 +186,20 @@ abstract class GroupSettings
     protected $showPropertiesTab = true;
 
     /**
+     * @var boolean
+     * @ORM\Column(
+     *     type="boolean",
+     *     name="allow_pay_anything",
+     *     options={
+     *         "default":0
+     *      }
+     * )
+     *
+     * @Serializer\Exclude
+     */
+    protected $allowPayAnything = false;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -464,6 +478,22 @@ abstract class GroupSettings
     public function setShowPropertiesTab($showPropertiesTab)
     {
         $this->showPropertiesTab = $showPropertiesTab;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowPayAnything()
+    {
+        return $this->allowPayAnything;
+    }
+
+    /**
+     * @param boolean $allowPayAnything
+     */
+    public function setAllowPayAnything($allowPayAnything)
+    {
+        $this->allowPayAnything = !!$allowPayAnything;
     }
 
     /**

@@ -80,8 +80,8 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
                 return;
             }
 
-            if (in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER])) {
-                $this->mailer->sendRentReceipt($order);
+            if (in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER, OperationType::CUSTOM])) {
+                $this->mailer->sendPaymentReceipt($order);
                 $this->logger->debug('[OrderStatusManager]Sent receipt email for rent order #' . $order->getId());
             } elseif ($operation->getType() === OperationType::REPORT) {
                 $this->mailer->sendReportReceipt($order);
@@ -242,7 +242,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
 
         $oldPaidTo = clone $contract->getPaidTo();
 
-        $payment = $contract->getActivePayment();
+        $payment = $contract->getActiveRentPayment();
         if ($payment) {
             $date = new DateTime($payment->getPaidFor()->format('c'));
 
@@ -442,7 +442,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
             return;
         }
 
-        $payment = $contract->getActivePayment();
+        $payment = $contract->getActiveRentPayment();
         if (!$payment) {
             return;
         }
